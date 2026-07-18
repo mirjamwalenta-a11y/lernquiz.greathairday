@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernquiz · A Great Hair Day</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#F9F7F4;min-height:100vh}
+.seite{display:none;max-width:640px;margin:0 auto;padding:20px}
+.seite.aktiv{display:block}
+.kopf{background:#2C2C2C;padding:18px 20px}
+.kopf-klein{font-size:10px;letter-spacing:2px;color:#6B8F71;text-transform:uppercase;margin-bottom:4px}
+.kopf h1{font-family:Georgia,serif;font-size:22px;color:#F9F7F4;font-weight:normal}
+.kopf p{font-size:11px;color:#5A5550;margin-top:3px}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:system-ui;text-align:center}
+.btn-d{background:#2C2C2C;color:#F9F7F4}
+.btn-g{background:#6B8F71;color:#F9F7F4}
+.btn-h{background:#EDE8E0;color:#2C2C2C}
+.btn-r{background:#EDE8E0;color:#C44030}
+.btn-grau{background:#DDD8D0;color:#9A9188}
+input,select,textarea{width:100%;border:1.5px solid #DDD8D0;border-radius:8px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#fff;outline:none;margin-bottom:10px}
+textarea{resize:vertical;margin-bottom:0}
+.lj-r{display:flex;gap:8px;margin-bottom:16px}
+.lj-b{flex:1;padding:11px 4px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;font-size:12px;cursor:pointer;font-family:system-ui;text-align:center}
+.lj-b.a1{border-color:#8FAF7A;background:#8FAF7A22;color:#5A8A5A;font-weight:700}
+.lj-b.a2{border-color:#C4B86A;background:#C4B86A22;color:#8A7A30;font-weight:700}
+.lj-b.a3{border-color:#D4A97A;background:#D4A97A22;color:#8A6030;font-weight:700}
+.mod-b{width:100%;padding:13px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;margin-bottom:8px;text-align:left;cursor:pointer;font-family:system-ui}
+.mod-b.ak{border-color:#6B8F71;background:#6B8F7115}
+.mod-t{font-size:14px;font-weight:600;color:#2C2C2C}
+.mod-i{font-size:11px;color:#9A9188;margin-top:2px}
+.prog{height:4px;background:#EDE8E0}
+.prog-f{height:4px;background:#6B8F71;transition:width .3s}
+.frage-box{background:#2C2C2C;border-radius:12px;padding:20px;margin-bottom:14px}
+.frage-txt{font-family:Georgia,serif;font-size:16px;color:#F9F7F4;line-height:1.55}
+.meta{font-size:11px;color:#9A9188;margin-bottom:8px;display:flex;justify-content:space-between}
+.badge{display:inline-block;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:700}
+.bmc{background:#8FAF7A22;color:#5A8A5A;border:1px solid #8FAF7A}
+.bof{background:#C4B86A22;color:#8A7A30;border:1px solid #C4B86A}
+.opt{width:100%;padding:12px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;text-align:left;font-size:13px;cursor:pointer;margin-bottom:8px;font-family:system-ui;line-height:1.4;display:block}
+.opt.gew{border-color:#2C2C2C;background:#2C2C2C0D}
+.opt.ric{border-color:#6B8F71;background:#8FAF7A22;color:#3D6B50}
+.opt.fal{border-color:#C44030;background:#D4584820;color:#C44030}
+.fb{border-radius:12px;padding:16px;margin-bottom:12px}
+.fb-g{background:#8FAF7A22;border:1.5px solid #6B8F71}
+.fb-o{background:#C4B86A22;border:1.5px solid #C4B86A}
+.fb-r{background:#D4584820;border:1.5px solid #C44030}
+.ml-box{background:#2C2C2C;border-radius:8px;padding:14px;margin-top:10px}
+.ml-lab{font-size:10px;color:#6B8F71;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.ml-txt{font-size:13px;color:#F9F7F4;line-height:1.55}
+.score-box{background:#EDE8E0;border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.karte{background:#F3EFE8;border-radius:10px;padding:14px;margin-bottom:8px}
+.lab{display:block;font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9188;text-transform:uppercase;margin-bottom:6px}
+.link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
+.laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
+.fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="kopf">
+  <div class="kopf-klein">A Great Hair Day · Lehrlingsbegleitung</div>
+  <h1>Lernquiz ✂</h1>
+  <p>Österreichisches Berufsbild Friseur/in</p>
+</div>
+
+<div id="s-login" class="seite aktiv">
+  <div style="padding-top:32px">
+    <div class="lab" style="margin-bottom:16px;font-size:13px;color:#2C2C2C;text-transform:none;letter-spacing:0">Bitte einloggen</div>
+    <div id="login-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">Name</div>
+    <input type="text" id="login-name" placeholder="Dein Name (z.B. Ronya)" autocomplete="off">
+    <div class="lab">PIN</div>
+    <input type="password" id="login-pin" placeholder="6-stellige PIN" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <button class="btn btn-d" id="btn-login">Einloggen →</button>
+    <button class="link-k" id="btn-zu-meisterin">Meisterinnen-Login</button>
+  </div>
+</div>
+
+<div id="s-mlogin" class="seite">
+  <div style="padding-top:32px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Meisterinnen-Login</h2>
+    <div id="mlogin-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">E-Mail</div>
+    <input type="email" id="mlogin-email" value="mirjam.walenta@gmail.com">
+    <div class="lab">Passwort</div>
+    <input type="password" id="mlogin-pw" placeholder="Passwort" style="margin-bottom:16px">
+    <button class="btn btn-d" id="btn-mlogin">Einloggen →</button>
+    <button class="btn btn-h" id="btn-mlogin-back">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-start" class="seite">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:20px">
+    <div>
+      <div class="lab">Lehrling</div>
+      <div id="start-name" style="font-family:Georgia,serif;font-size:20px;color:#2C2C2C"></div>
+    </div>
+    <button id="btn-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:system-ui">Abmelden</button>
+  </div>
+  <div id="start-letztes"></div>
+  <div style="margin-bottom:18px">
+    <div class="lab">Lehrjahr</div>
+    <div class="lj-r">
+      <button class="lj-b" id="lj1">1. Lehrjahr</button>
+      <button class="lj-b" id="lj2">2. Lehrjahr</button>
+      <button class="lj-b" id="lj3">3. Lehrjahr</button>
+    </div>
+  </div>
+  <div style="margin-bottom:24px">
+    <div class="lab">Modus</div>
+    <button class="mod-b" id="mod-schnell"><div class="mod-t">Schnell-Check</div><div class="mod-i">10 Fragen · 10 Min</div></button>
+    <button class="mod-b" id="mod-tief"><div class="mod-t">Lerneinheit</div><div class="mod-i">15 Fragen · 20 Min</div></button>
+    <button class="mod-b" id="mod-lap"><div class="mod-t">LAP-Vorbereitung</div><div class="mod-i">Alle Fragen</div></button>
+  </div>
+  <button class="btn btn-d" id="btn-quiz-los">Quiz starten →</button>
+  <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
+</div>
+
+<div id="s-quiz" class="seite">
+  <div class="prog"><div class="prog-f" id="prog" style="width:0%"></div></div>
+  <div style="padding:16px 0 0">
+    <div class="meta"><span id="q-nr"></span><span id="q-badge"></span></div>
+    <div style="font-size:10px;color:#9A9188;margin-bottom:10px" id="q-thema"></div>
+    <div class="frage-box"><div class="frage-txt" id="q-txt"></div></div>
+    <div id="q-antwort"></div>
+    <div id="q-feedback" style="display:none"></div>
+    <div id="q-btns"></div>
+  </div>
+</div>
+
+<div id="s-ergebnis" class="seite">
+  <div style="padding-top:20px">
+    <div class="score-box" id="score-box"></div>
+    <div id="erg-details"></div>
+    <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
+  </div>
+</div>
+
+<div id="s-verlauf" class="seite">
+  <div style="padding-top:20px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:16px">Verlauf</h2>
+    <div id="v-liste"><div class="laden">Wird geladen…</div></div>
+    <button class="btn btn-h" id="btn-v-zurueck">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-dashboard" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Übersicht</h2>
+      <button id="btn-m-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:system-ui">Abmelden</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button class="btn btn-h" id="btn-lehrling-neu" style="margin:0">+ Lehrling anlegen</button>
+      <button class="btn btn-h" id="btn-fragen-verw" style="margin:0">✎ Fragen</button>
+    </div>
+    <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-neu-lehrling" class="seite">
+  <div style="padding-top:20px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Neuen Lehrling anlegen</h2>
+    <div id="neu-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">Name</div>
+    <input type="text" id="neu-name" placeholder="z.B. Ronya">
+    <div class="lab">Lehrjahr</div>
+    <select id="neu-lj" style="margin-bottom:10px">
+      <option value="1">1. Lehrjahr</option>
+      <option value="2">2. Lehrjahr</option>
+      <option value="3">3. Lehrjahr</option>
+    </select>
+    <div class="lab">PIN (6 Stellen)</div>
+    <input type="text" id="neu-pin" placeholder="z.B. 123456" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <button class="btn btn-g" id="btn-neu-speichern">Lehrling anlegen</button>
+    <button class="btn btn-h" id="btn-neu-back">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-lehrling-detail" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px" id="detail-name"></h2>
+      <button class="btn btn-h" id="btn-detail-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+    </div>
+    <div id="detail-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-verw" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Fragen</h2>
+      <button class="btn btn-h" id="btn-verw-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+    </div>
+    <div class="lj-r">
+      <button class="lj-b" id="vlj1">1. LJ</button>
+      <button class="lj-b" id="vlj2">2. LJ</button>
+      <button class="lj-b" id="vlj3">3. LJ</button>
+    </div>
+    <div id="verw-liste"></div>
+    <button class="btn btn-h" id="btn-verw-neu" style="border:2px dashed #DDD8D0;background:none;color:#9A9188">+ Neue Frage</button>
+  </div>
+</div>
+
+<div id="s-editor" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:18px" id="ed-titel">Frage</h2>
+      <button class="btn btn-h" id="btn-ed-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+    </div>
+    <div id="ed-inhalt"></div>
+  </div>
+</div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NEUE BEWERTUNGSLOGIK – nur dieser Block wurde geändert
+// Alles andere in der App bleibt identisch zum Original.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * normalisiereText()
+ * Bereinigt Text vor dem Vergleich:
+ * - Kleinschreibung
+ * - Satzzeichen entfernen
+ * - Umlaute vereinheitlichen (ae→ä, oe→ö, ue→ü, ss→ß)
+ * - Mehrfachleerzeichen bereinigen
+ */
+function normalisiereText(txt) {
+  return txt
+    .toLowerCase()
+    .replace(/ae/g,'ä').replace(/oe/g,'ö').replace(/ue/g,'ü').replace(/ss/g,'ß')
+    .replace(/[.,;:!?„"'()\-]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+/**
+ * bewertungsGruppen()
+ * Konvertiert das mb-Feld einer Frage in ein einheitliches Format.
+ *
+ * Neue Struktur (empfohlen):
+ *   mb: [
+ *     { begriffe: ["schutzmantel","frisiermantel","umhang"], teilwort: false },
+ *     { begriffe: ["haut","hautschutz"], teilwort: true }
+ *   ]
+ *
+ * Alte Struktur (rückwärtskompatibel, funktioniert weiterhin):
+ *   mb: ["schutz","mantel","haut"]
+ *   → wird behandelt als: jeder Begriff = eigene Gruppe, teilwort: false
+ */
+function bewertungsGruppen(frage) {
+  var mb = frage.mb || [];
+  if (!mb.length) return [];
+
+  // Alte Struktur: Array aus Strings
+  if (typeof mb[0] === 'string') {
+    return mb.map(function(b) {
+      return { begriffe: [b], teilwort: false };
+    });
+  }
+
+  // Neue Struktur: Array aus Objekten
+  return mb;
+}
+
+/**
+ * pruefeOffeneAntwort()
+ * Hauptfunktion für die Bewertung offener Antworten.
+ *
+ * Gibt zurück: { treffer, gesamt, punkte }
+ *
+ * Pro Gruppe gilt:
+ * - Treffer wenn mind. ein Begriff der Gruppe in der Antwort vorkommt
+ * - Bei teilwort:true → auch Teilwort-Treffer (z.B. "Mantel" findet "Schutzmantel")
+ * - Bei teilwort:false → nur exakte Wort-Treffer (Standard: streng)
+ */
+function pruefeOffeneAntwort(antwortRoh, frage) {
+  var antwort = normalisiereText(antwortRoh);
+  var gruppen = bewertungsGruppen(frage);
+  if (!gruppen.length) return { treffer: 0, gesamt: 0, punkte: 5 };
+
+  var treffer = 0;
+  gruppen.forEach(function(gruppe) {
+    var gefunden = gruppe.begriffe.some(function(b) {
+      var bNorm = normalisiereText(b);
+      if (gruppe.teilwort) {
+        // Teilwort-Treffer erlaubt: "mantel" findet "schutzmantel"
+        return antwort.includes(bNorm);
+      } else {
+        // Strenger Modus: nur als eigenständiges Wort
+        // Wortgrenze: Leerzeichen oder Anfang/Ende
+        var wortgrenze = new RegExp('(^|\\s)' + bNorm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '(\\s|$)');
+        return wortgrenze.test(antwort);
+      }
+    });
+    if (gefunden) treffer++;
+  });
+
+  var punkte = gruppen.length > 0 ? Math.round((treffer / gruppen.length) * 10) : 5;
+  return { treffer: treffer, gesamt: gruppen.length, punkte: punkte };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FRAGENBANK
+// Offene Fragen (t:"of") können jetzt neue mb-Struktur verwenden.
+//
+// BEISPIELE für neue Struktur:
+//
+// Fall A – Teilwort erlaubt (z.B. "Mantel" soll "Schutzmantel" finden):
+//   mb: [{ begriffe:["schutzmantel","frisiermantel","umhang"], teilwort:true }]
+//
+// Fall B – Synonyme, kein Teilwort:
+//   mb: [{ begriffe:["desinfizieren","desinfektion","keime abtöten"], teilwort:false }]
+//
+// Fall C – streng (Standard, wie bisher):
+//   mb: ["blondierung","melanin","oxidation"]  ← alte Schreibweise, funktioniert noch
+// ═══════════════════════════════════════════════════════════════════════════════
+
+var FB={1:[
+{id:"1-1",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Welche drei Hygieneebenen unterscheidet man im Friseursalon?",o:["Reinigen, Desinfizieren, Sterilisieren","Waschen, Spülen, Trocknen","Abwischen, Einsprühen, Abdecken","Putzen, Desinfizieren, Lüften"],r:0,e:"Reinigen → Desinfizieren → Sterilisieren. Im Salon wird meist bis zur Desinfektion gearbeitet."},
+{id:"1-2",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Kämme und Bürsten nach jedem Kunden desinfiziert werden?",
+  // NEUE STRUKTUR: Synonyme pro Gruppe, teilwort:true wo sinnvoll
+  mb:[
+    {begriffe:["übertragung","ansteckung","weitergeben"], teilwort:false},
+    {begriffe:["pilze","pilzsporen","schimmelpilz"], teilwort:true},
+    {begriffe:["bakterien","keime","erreger"], teilwort:true},
+    {begriffe:["hauterkrankung","infektion","erkrankung"], teilwort:true},
+    {begriffe:["schutz","schützen","hygiene"], teilwort:false}
+  ],
+  ml:"Kämme und Bürsten können Bakterien und Pilzsporen übertragen. Ohne Desinfektion besteht die Gefahr Hauterkrankungen weiterzugeben."},
+{id:"1-3",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was tust du sofort wenn du dich beim Schneiden schneidest?",o:["Weiterarbeiten","Schnitt abspülen, Pflaster, Einmalhandschuh","Nur Pflaster","Kunden nach Hause schicken"],r:1,e:"Wunde reinigen, Pflaster, Einmalhandschuh – so schützt du dich und den Kunden."},
+{id:"1-4",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Welche Schutzmaßnahmen trägst du beim Auftragen von Farbe?",
+  mb:[
+    {begriffe:["handschuhe","einmalhandschuhe","schutzhandschuhe"], teilwort:true},
+    {begriffe:["kittel","schutzkleidung","frisierkittel","umhang","schutzmantel","mantel"], teilwort:true},
+    {begriffe:["haut","hautschutz"], teilwort:false},
+    {begriffe:["allergie","reizung","schutz"], teilwort:false}
+  ],
+  ml:"Einmalhandschuhe und Friseurkittel. Farbe kann Hautreizungen oder Allergien verursachen."},
+{id:"1-5",t:"mc",th:"Werkzeugkunde",f:"Was ist der Unterschied zwischen Modellierschere und Effilierer?",o:["Kein Unterschied","Modellierschere glatt, Effilierer hat Zähne und dünnt aus","Effilierer ist größer","Nur für Damen"],r:1,e:"Modellierschere: glatte Klingen. Effilierer: gezahnte Klinge – entfernt Volumen."},
+{id:"1-6",t:"of",th:"Werkzeugkunde",f:"Wie pflegst du eine Haarschere richtig?",
+  mb:[
+    {begriffe:["ölen","einölen","schereöl","öl"], teilwort:false},
+    {begriffe:["reinigen","säubern","abwischen"], teilwort:false},
+    {begriffe:["nicht fallenlassen","vorsicht","schonen"], teilwort:true},
+    {begriffe:["trocken","trocknnen"], teilwort:false},
+    {begriffe:["schleifen","schleifer","fachmann"], teilwort:false}
+  ],
+  ml:"Reinigen, trocken abwischen, mit Schereöl ölen. Nie fallenlassen. Beim Fachmann schleifen lassen."},
+{id:"1-7",t:"mc",th:"Haarkunde & Haarstruktur",f:"Aus welchen drei Schichten besteht ein Haar?",o:["Wurzel, Schaft, Spitze","Cuticula, Cortex, Medulla","Keratin, Melanin, Lipide","Schuppenschicht, Farbschicht, Kern"],r:1,e:"Cuticula (außen) → Cortex (Melanin) → Medulla (innen)."},
+{id:"1-8",t:"of",th:"Haarkunde & Haarstruktur",f:"Was bedeutet es wenn Haar porös ist?",
+  mb:[
+    {begriffe:["schuppenschicht","cuticula","oberhäutchen"], teilwort:true},
+    {begriffe:["geöffnet","beschädigt","aufgeraut"], teilwort:false},
+    {begriffe:["feuchtigkeit","wasser","nässe"], teilwort:false},
+    {begriffe:["trocken","spröde","stumpf"], teilwort:false}
+  ],
+  ml:"Poröses Haar hat eine beschädigte Schuppenschicht. Saugt Wasser schnell auf, verliert es aber auch schnell."},
+{id:"1-9",t:"mc",th:"Hautkunde",f:"Welche Aussage über die Kopfhaut ist richtig?",o:["Keine Talgdrüsen","Fettreichste Zone","Viele Haarfollikel und Talgdrüsen","Erneuert sich nie"],r:2,e:"Die Kopfhaut hat viele Haarfollikel und Talgdrüsen."},
+{id:"1-10",t:"mc",th:"Farbenlehre & Coloration",f:"Welche drei Grundfarben gibt es?",o:["Rot, Grün, Blau","Rot, Gelb, Blau","Orange, Violett, Grün","Schwarz, Weiß, Grau"],r:1,e:"Rot, Gelb und Blau sind die drei Grundfarben."},
+{id:"1-11",t:"of",th:"Farbenlehre & Coloration",f:"Was passiert mit den Haarpigmenten beim Blondieren?",
+  mb:[
+    {begriffe:["melanin","pigment","farbpigment"], teilwort:true},
+    {begriffe:["aufhellen","aufgehellet","heller"], teilwort:false},
+    {begriffe:["oxidation","oxidiert","wasserstoffperoxid","peroxid"], teilwort:true},
+    {begriffe:["zerstört","zerstören","abgebaut"], teilwort:false}
+  ],
+  ml:"Wasserstoffperoxid zerstört die natürlichen Farbpigmente (Melanin). Je länger einwirkt, desto heller."},
+{id:"1-12",t:"mc",th:"Dauerwelle & Umformung",f:"Was macht das Wellemittel bei einer Dauerwelle?",o:["Färbt das Haar","Bricht Disulfidbrücken auf","Klebt Haare zusammen","Macht Haar fester"],r:1,e:"Das Wellemittel löst die Schwefelbrücken. Das Haar nimmt die Form der Wickler an."},
+{id:"1-13",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Eine Kundin kommt zum ersten Mal. Wie läuft das Beratungsgespräch ab?",
+  mb:[
+    {begriffe:["begrüßen","begrüßung","willkommen","hallo"], teilwort:false},
+    {begriffe:["wunsch","wünsche","vorhaben"], teilwort:false},
+    {begriffe:["haartyp","haarstruktur","haaranalyse","haarzustand"], teilwort:true},
+    {begriffe:["vorbehandlung","vorgeschichte","früher"], teilwort:false},
+    {begriffe:["alltag","lebensstil","pflege zuhause"], teilwort:true},
+    {begriffe:["pflege","pflegeprodukte","empfehlung"], teilwort:false}
+  ],
+  ml:"Freundlich begrüßen. Fragen nach Wunsch, Vorbehandlungen und Pflege zuhause."},
+{id:"1-14",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Eine Kundin beschwert sich laut. Was ist der erste Schritt?",o:["Zurückdiskutieren","Ruhig bleiben, zuhören, dann nachfragen","Chef holen","Alles umsonst anbieten"],r:1,e:"Ruhig bleiben und aktiv zuhören. Erst dann gemeinsam Lösung suchen."},
+{id:"1-15",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Wie lange muss ein Desinfektionsmittel einwirken?",o:["Sofort abwischen","Mindestens 30 Sekunden","5 Minuten","Über Nacht"],r:1,e:"Mindestens 30 Sekunden. Sofortiges Abwischen macht die Desinfektion unwirksam."},
+{id:"1-16",t:"mc",th:"Hautkunde",f:"Welche Aufgaben hat die Haut?",o:["Nur Schutz","Schutz, Temperaturregulierung, Fettspeicherung, Sinnesorgan","Nur Wärme","Nur ästhetisch"],r:1,e:"Die Haut schützt, reguliert Temperatur, speichert Fett und ist Sinnesorgan."},
+{id:"1-17",t:"mc",th:"Hautkunde",f:"Aus welchen Schichten besteht die Haut?",o:["Cuticula, Cortex, Medulla","Oberhaut, Lederhaut, Unterhaut","Hornschicht, Keimschicht, Unterhaut","Schutz-, Fett-, Muskelschicht"],r:1,e:"Oberhaut (Epidermis), Lederhaut (Dermis), Unterhaut (Subcutis)."},
+{id:"1-18",t:"mc",th:"Hautkunde",f:"Welche Funktion hat die Talgdrüse?",o:["Temperatur regulieren","Talg produzieren der Haut geschmeidig hält","Hautzellen bilden","Schadstoffe filtern"],r:1,e:"Die Talgdrüse produziert Talg – schützt vor dem Austrocknen."},
+{id:"1-19",t:"mc",th:"Haarkunde & Haarstruktur",f:"Aus welchem Stoff bestehen Haare hauptsächlich?",o:["Kollagen","Melanin","Keratin","Elastin"],r:2,e:"Haare bestehen hauptsächlich aus Keratin (Eiweiß)."},
+{id:"1-20",t:"mc",th:"Haarkunde & Haarstruktur",f:"Wie schnell wächst ein Haar?",o:["0,5 cm/Monat","1–1,5 cm/Monat","3 cm/Monat","5 mm/Woche"],r:1,e:"Etwa 1 bis 1,5 cm pro Monat."},
+{id:"1-21",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Farben entstehen durch Mischen von zwei Grundfarben?",o:["Weiß, Grau, Schwarz","Orange, Grün, Violett","Rosa, Türkis, Braun","Gold, Silber, Kupfer"],r:1,e:"Rot+Gelb=Orange, Gelb+Blau=Grün, Rot+Blau=Violett."},
+{id:"1-22",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Welchen pH-Wert hat gesundes Haar?",o:["pH 7 neutral","pH 4,5–5,5 leicht sauer","pH 8 alkalisch","pH 2 stark sauer"],r:1,e:"Gesundes Haar hat pH 4,5–5,5 – leicht sauer."},
+{id:"1-23",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist aktives Zuhören im Kundengespräch wichtig?",
+  mb:[
+    {begriffe:["vertrauen","vertrauen aufbauen"], teilwort:false},
+    {begriffe:["nachfragen","rückfragen","fragen"], teilwort:false},
+    {begriffe:["zusammenfassen","wiederholen","bestätigen"], teilwort:false},
+    {begriffe:["bedürfnisse","wünsche","anliegen"], teilwort:false}
+  ],
+  ml:"Aktives Zuhören schafft Vertrauen. Nachfragen, Gesagtes zusammenfassen und Verständnis zeigen."},
+{id:"1-n1",t:"of",th:"Hautkunde",f:"Welche Aufgaben hat die Haut?",mb:["schutz","temperatur","fett","wasser","sinnesorgan"],ml:"Die Haut schützt den Körper vor äußeren Einflüssen, reguliert die Körpertemperatur, speichert Fett und Wasser und dient als Sinnesorgan."},
+{id:"1-n2",t:"of",th:"Hautkunde",f:"Warum ist gesunde Kopfhaut wichtig?",mb:["haarwachstum","krankheitserreger","grundlage","schutz"],ml:"Sie ist die Grundlage für gesundes Haarwachstum und schützt vor Krankheitserregern."},
+{id:"1-n3",t:"of",th:"Hautkunde",f:"Welche Funktion hat die Talgdrüse?",mb:["talg","geschmeidig","austrocknen","schutz"],ml:"Sie produziert Talg, der Haut und Haare geschmeidig hält und vor dem Austrocknen schützt."},
+{id:"1-n4",t:"of",th:"Hautkunde",f:"Welche Aufgabe hat die Schweißdrüse?",mb:["temperatur","ausscheidung","reguliert"],ml:"Sie reguliert die Körpertemperatur und unterstützt die Ausscheidung."},
+{id:"1-n5",t:"of",th:"Hautkunde",f:"Was ist der Säureschutzmantel der Haut?",
+  mb:[
+    {begriffe:["schutzfilm","schutzmantel","film"], teilwort:true},
+    {begriffe:["ph","ph-wert","säure"], teilwort:false},
+    {begriffe:["5,5","4,5","sauer"], teilwort:false},
+    {begriffe:["krankheitserreger","keime","bakterien","schutz"], teilwort:true}
+  ],
+  ml:"Ein natürlicher Schutzfilm der Haut mit einem pH-Wert von etwa 5,5, der Krankheitserreger abwehrt."},
+{id:"1-n6",t:"of",th:"Hautkunde",f:"Welche Ursachen können Schuppen haben?",
+  mb:[
+    {begriffe:["trocken","trockene","trockenheit","trockne"], teilwort:true},
+    {begriffe:["pilze","pilz","pilzbefall","fungus"], teilwort:false},
+    {begriffe:["pflegeprodukte","produkte","pflegefehler","falsche produkte","ungeeignet"], teilwort:true},
+    {begriffe:["hauterkrankung","erkrankung","entzündung","entzündet","krankheit"], teilwort:true}
+  ],
+  ml:"Trockene Haut, Pilze, ungeeignete Pflegeprodukte oder Hauterkrankungen."},
+{id:"1-n7",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Aufgaben haben Haare?",
+  mb:[
+    {begriffe:["schutz","schützen","schützend"], teilwort:false},
+    {begriffe:["wärme","wärmeregulierung","temperatur","wärmen"], teilwort:false},
+    {begriffe:["ästhetisch","ästhetik","schönheit","optisch","aussehen","schön","dekoration"], teilwort:false}
+  ],
+  ml:"Schutz, Wärmeregulierung und ästhetische Wirkung."},
+{id:"1-n8",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Haarstrukturen gibt es?",mb:["glattes","welliges","lockiges","krauses"],ml:"Glattes, welliges, lockiges und krauses Haar."},
+{id:"1-n9",t:"of",th:"Haarkunde & Haarstruktur",f:"Wann ist Haarausfall normal?",mb:["100","pro tag","täglich"],ml:"Bis zu etwa 100 Haare pro Tag."},
+{id:"1-n10",t:"of",th:"Haarkunde & Haarstruktur",f:"Was ist Spliss?",
+  mb:[
+    {begriffe:["aufspalten","aufgespalten","spalten","gespaltene","split"], teilwort:true},
+    {begriffe:["haarspitzen","spitzen","haarende","ende"], teilwort:true},
+    {begriffe:["schädigung","schaden","beschädigt","kaputtgehen"], teilwort:false}
+  ],
+  ml:"Das Aufspalten der Haarspitzen durch Schädigung."},
+{id:"1-n11",t:"of",th:"Haarkunde & Haarstruktur",f:"Warum sollte nasses Haar vorsichtig gekämmt werden?",mb:["empfindlich","dehnbar","vorsichtig"],ml:"Weil es empfindlicher und leichter dehnbar ist."},
+{id:"1-n12",t:"of",th:"Haarkunde & Haarstruktur",f:"Was versteht man unter Haarporosität?",mb:["feuchtigkeit","wirkstoffe","aufnehmen"],ml:"Die Fähigkeit des Haares, Feuchtigkeit und Wirkstoffe aufzunehmen."},
+{id:"1-n13",t:"of",th:"Farbenlehre & Coloration",f:"Was neutralisiert einen orangefarbenen Untergrundton?",mb:["blau","neutralisiert","orange"],ml:"Blau neutralisiert Orange."},
+{id:"1-n14",t:"of",th:"Farbenlehre & Coloration",f:"Was ist eine Tönung?",mb:["nicht dauerhaft","auswäscht","haarwäschen"],ml:"Eine nicht dauerhafte Haarfarbe, die sich nach mehreren Haarwäschen auswäscht."},
+{id:"1-n15",t:"of",th:"Farbenlehre & Coloration",f:"Was ist Blondierung?",mb:["chemisch","aufhellung","haarpigment","natürlich"],ml:"Eine chemische Aufhellung des natürlichen Haarpigments."},
+{id:"1-n16",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was gehört zur öffentlichen Hygiene?",mb:["bevölkerung","trinkwasser","abfall","schutz"],ml:"Maßnahmen zum Schutz der Bevölkerung, z.B. Trinkwasserkontrolle und Abfallentsorgung."},
+{id:"1-n17",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Wie oft müssen Umhänge gereinigt werden?",
+  mb:[
+    {begriffe:["nach jedem kunden","pro kunde","jeder kunde"], teilwort:true},
+    {begriffe:["einweg","einweghalskragen","einmalhalskragen","einmalprodukt"], teilwort:true},
+    {begriffe:["halskragen","kragen"], teilwort:true}
+  ],
+  ml:"Nach jedem Kunden oder mit einem hygienischen Einweg-Halskragen."},
+{id:"1-n18",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum dürfen benutzte Rasierklingen nicht wiederverwendet werden?",
+  mb:[
+    {begriffe:["verletzung","verletzungsgefahr","schnitt","schnittgefahr","wunde"], teilwort:true},
+    {begriffe:["infektion","infektionsgefahr","keime","übertragung","ansteckung"], teilwort:true},
+    {begriffe:["gefahr","gefährlich","hygiene","sicherheit"], teilwort:false}
+  ],
+  ml:"Wegen der Verletzungs- und Infektionsgefahr."},
+{id:"1-n19",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Wie entsorgt man Rasierklingen?",mb:["stichfest","sicherheitsbehälter"],ml:"In einem stichfesten Sicherheitsbehälter."},
+{id:"1-n20",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie begrüßt man einen Kunden richtig?",mb:["freundlich","höflich","blickkontakt"],ml:"Freundlich, höflich und mit Blickkontakt."},
+{id:"1-n21",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was gehört zu einem professionellen Auftreten?",
+  mb:[
+    {begriffe:["freundlichkeit","freundlich","nett"], teilwort:false},
+    {begriffe:["höflichkeit","höflich","respektvoll"], teilwort:false},
+    {begriffe:["erscheinungsbild","kleidung","gepflegt","sauber","outfit","äußeres"], teilwort:false},
+    {begriffe:["zuverlässigkeit","zuverlässig","pünktlich","körperhaltung","sprache","kommunikation"], teilwort:false}
+  ],
+  ml:"Freundlichkeit, Höflichkeit, gepflegtes Erscheinungsbild und Zuverlässigkeit."},
+{id:"1-n22",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet pH-Wert und welchen hat gesundes Haar?",mb:["sauer","neutral","alkalisch","4,5","5,5"],ml:"Der pH-Wert zeigt an ob eine Lösung sauer, neutral oder alkalisch ist. Gesundes Haar hat etwa pH 4,5 bis 5,5."},
+{id:"1-n23",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum wird Conditioner verwendet?",mb:["schuppenschicht","kämmbarkeit","schützt"],ml:"Er schließt die Schuppenschicht, verbessert die Kämmbarkeit und schützt das Haar."},
+{id:"1-n24",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum ist Arbeitsschutz im Salon wichtig?",mb:["mitarbeiter","kunden","unfälle","infektionen","schäden"],ml:"Er schützt Mitarbeiter und Kunden vor Unfällen, Infektionen und gesundheitlichen Schäden."},
+{id:"1-n25",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum ist eine gute Körperhaltung beim Friseur wichtig?",mb:["rücken","gelenk","beschwerden","vorbeugen"],ml:"Um Rücken- und Gelenkbeschwerden vorzubeugen."},
+{id:"1-p1",t:"of",th:"Haarkunde & Haarstruktur",f:"Was bedeutet feines Haar?",
+  mb:[{begriffe:["kleiner durchmesser","dünner durchmesser","durchmesser","dünn","fein"], teilwort:true}],
+  ml:"Das einzelne Haar hat einen kleinen Durchmesser."},
+{id:"1-p2",t:"of",th:"Haarkunde & Haarstruktur",f:"Wodurch kann Haar geschädigt werden?",
+  mb:[
+    {begriffe:["hitze","wärme","föhnen","glätten"], teilwort:false},
+    {begriffe:["chemisch","chemikalien","farbe","dauerwelle"], teilwort:false},
+    {begriffe:["uv","sonne","sonnenstrahlen"], teilwort:false},
+    {begriffe:["pflege","falsche pflege","pflegefehler"], teilwort:false}
+  ],
+  ml:"Durch Hitze, chemische Behandlungen, UV-Strahlen und falsche Pflege."},
+{id:"1-p3",t:"of",th:"Haarkunde & Haarstruktur",f:"Wie viele Haare hat ein Mensch durchschnittlich?",
+  mb:[{begriffe:["80.000","100.000","150.000","80000","100000","150000"], teilwort:false}],
+  ml:"Etwa 80.000 bis 150.000 Haare."},
+{id:"1-p4",t:"of",th:"Haarkunde & Haarstruktur",f:"Wie lange dauert die Wachstumsphase des Haares?",
+  mb:[{begriffe:["2","7","jahre","wachstum"], teilwort:false}],
+  ml:"Etwa 2 bis 7 Jahre."},
+{id:"1-p5",t:"of",th:"Farbenlehre & Coloration",f:"Welche warmen Farben gibt es?",
+  mb:[
+    {begriffe:["rot"], teilwort:false},
+    {begriffe:["orange"], teilwort:false},
+    {begriffe:["gelb"], teilwort:false}
+  ],
+  ml:"Rot, Orange und Gelb."},
+{id:"1-p6",t:"of",th:"Farbenlehre & Coloration",f:"Welche kalten Farben gibt es?",
+  mb:[
+    {begriffe:["blau"], teilwort:false},
+    {begriffe:["grün"], teilwort:false},
+    {begriffe:["violett","lila"], teilwort:false}
+  ],
+  ml:"Blau, Grün und Violett."},
+{id:"1-p7",t:"of",th:"Farbenlehre & Coloration",f:"Welche Farbe neutralisiert Gelb?",
+  mb:[{begriffe:["violett","lila"], teilwort:false}],
+  ml:"Violett neutralisiert Gelb."},
+{id:"1-p8",t:"of",th:"Farbenlehre & Coloration",f:"Welche Farbe neutralisiert Rot?",
+  mb:[{begriffe:["grün"], teilwort:false}],
+  ml:"Grün neutralisiert Rot."},
+{id:"1-p9",t:"of",th:"Farbenlehre & Coloration",f:"Warum wird Wasserstoffperoxid verwendet?",
+  mb:[
+    {begriffe:["aufhellen","aufhellung","pigment"], teilwort:false},
+    {begriffe:["entwickeln","aktivieren","farbe entwickeln"], teilwort:false}
+  ],
+  ml:"Zum Aufhellen des Naturpigments und Entwickeln der Haarfarbe."},
+{id:"1-p10",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet persönliche Hygiene?",
+  mb:[
+    {begriffe:["arbeitskleidung","kleidung","bekleidung","sauber","uniform","kittel"], teilwort:true},
+    {begriffe:["hände","gepflegte hände","handpflege"], teilwort:false},
+    {begriffe:["fingernägel","fingernagel","nägel","nagel"], teilwort:true},
+    {begriffe:["körperpflege","körperhygiene","hygiene","duschen","zähne","zähneputzen","pflege"], teilwort:true}
+  ],
+  ml:"Saubere Arbeitskleidung, gepflegte Hände, kurze Fingernägel und tägliche Körperpflege."},
+{id:"1-p11",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Arbeitsgeräte gereinigt werden?",
+  mb:[
+    {begriffe:["keime","krankheiten","infektion"], teilwort:false},
+    {begriffe:["übertragen","weitergeben","verhindern"], teilwort:false}
+  ],
+  ml:"Um Krankheiten und Keime nicht zu übertragen."},
+{id:"1-p12",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet gewerbliche Hygiene?",
+  mb:[
+    {begriffe:["salon","reinigung","desinfektion"], teilwort:false},
+    {begriffe:["gesetzlich","vorschriften","hygienemaßnahmen"], teilwort:false}
+  ],
+  ml:"Hygienemaßnahmen im Salon wie Reinigung, Desinfektion und Einhaltung gesetzlicher Vorschriften."},
+{id:"1-p13",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum trägt man Handschuhe?",
+  mb:[
+    {begriffe:["chemikalien","farbe","chemisch"], teilwort:false},
+    {begriffe:["keime","schutz","infektionen"], teilwort:false}
+  ],
+  ml:"Zum Schutz vor Chemikalien und Keimen."},
+{id:"1-p14",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist ein Beratungsgespräch wichtig?",
+  mb:[
+    {begriffe:["wünsche","wunsch","bedürfnisse"], teilwort:false},
+    {begriffe:["missverständnisse","verstehen","klar"], teilwort:false}
+  ],
+  ml:"Damit die Wünsche des Kunden verstanden werden und Missverständnisse vermieden werden."},
+{id:"1-p15",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist Körpersprache wichtig?",
+  mb:[
+    {begriffe:["interesse","aufmerksamkeit"], teilwort:false},
+    {begriffe:["freundlichkeit","freundlich"], teilwort:false},
+    {begriffe:["sicherheit","vertrauen"], teilwort:false}
+  ],
+  ml:"Sie vermittelt Interesse, Freundlichkeit und Sicherheit."},
+{id:"1-p16",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet aktives Zuhören?",
+  mb:[
+    {begriffe:["aufmerksam","zuhören","aufmerksamkeit"], teilwort:false},
+    {begriffe:["nachfragen","fragen","rückfragen"], teilwort:false},
+    {begriffe:["zusammenfassen","wiederholen","bestätigen"], teilwort:false}
+  ],
+  ml:"Dem Kunden aufmerksam zuhören, nachfragen und das Gesagte zusammenfassen."},
+{id:"1-p17",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie reagiert man auf einen unzufriedenen Kunden?",
+  mb:[
+    {begriffe:["ruhig","ruhig bleiben"], teilwort:false},
+    {begriffe:["verständnis","zuhören"], teilwort:false},
+    {begriffe:["lösung","gemeinsam"], teilwort:false}
+  ],
+  ml:"Ruhig bleiben, Verständnis zeigen und gemeinsam nach einer Lösung suchen."},
+{id:"1-p18",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum sollte der Salon regelmäßig gelüftet werden?",
+  mb:[
+    {begriffe:["dämpfe","gerüche","chemisch"], teilwort:false},
+    {begriffe:["frische luft","lüften","luft"], teilwort:false}
+  ],
+  ml:"Um Dämpfe und Gerüche zu reduzieren und für frische Luft zu sorgen."},
+{id:"1-p19",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Welche persönliche Schutzausrüstung wird im Salon verwendet?",
+  mb:[
+    {begriffe:["handschuhe","handschuh","schutzhandschuh"], teilwort:true},
+    {begriffe:["schürze","kittel","mantel","schutzkleidung","umhang","schutzmantel","frisiermantel"], teilwort:true}
+  ],
+  ml:"Handschuhe und Schürzen."},
+{id:"1-p20",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum müssen elektrische Geräte regelmäßig überprüft werden?",
+  mb:[
+    {begriffe:["stromunfall","stromschlag","strom","elektro","kurzschluss","brand"], teilwort:true},
+    {begriffe:["sicherheit","betriebssicherheit","schutz","sicherheitsgrund","gefahr"], teilwort:true}
+  ],
+  ml:"Zur Vermeidung von Stromunfällen und zur Gewährleistung der Betriebssicherheit."},
+{id:"1-p21",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wann sollte ein Allergietest durchgeführt werden?",
+  mb:[
+    {begriffe:["erste coloration","erstmals","neu","erste"], teilwort:false},
+    {begriffe:["unsicherheit","unsicher","zweifel","vorsicht"], teilwort:false}
+  ],
+  ml:"Vor einer ersten Coloration oder wenn Unsicherheiten bestehen."},
+{id:"1-p22",t:"of",th:"Haarkunde & Haarstruktur",f:"Woraus besteht Keratin?",
+  mb:[{begriffe:["eiweiß","protein","aminosäure"], teilwort:false}],
+  ml:"Aus Eiweiß (Protein)."},
+{id:"1-mc1",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was ist Keratin?",o:["Ein Farbpigment","Ein Strukturprotein aus dem Haare bestehen","Ein Pflegeöl","Eine Haarwurzel"],r:1,e:"Keratin ist das Hauptprotein des Haares – es macht etwa 90% der Haarstruktur aus."},
+{id:"1-mc2",t:"mc",th:"Haarkunde & Haarstruktur",f:"Welche Haarschicht enthält die Farbpigmente?",o:["Cuticula","Medulla","Cortex","Haarwurzel"],r:2,e:"Der Cortex (Rinde) enthält Melanin – das Pigment das die Haarfarbe bestimmt."},
+{id:"1-mc3",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was ist Spliss?",o:["Eine Haarerkrankung","Das Aufspalten der Haarspitzen durch Schädigung","Ein Pilzbefall","Normaler Haarausfall"],r:1,e:"Spliss entsteht wenn die Cuticula beschädigt ist und sich die Haarspitzen aufspalten."},
+{id:"1-mc4",t:"mc",th:"Haarkunde & Haarstruktur",f:"Wie viele Haare verliert man täglich normal?",o:["10–20","50–100","200–300","Über 500"],r:1,e:"Bis zu 100 Haare täglich ist normaler Haarausfall im Telogen-Zyklus."},
+{id:"1-mc5",t:"mc",th:"Haarkunde & Haarstruktur",f:"Warum ist nasses Haar besonders empfindlich?",o:["Es ist schwerer","Es ist dehnbarer und leichter zu beschädigen","Es verliert Farbe","Es trocknet die Kopfhaut aus"],r:1,e:"Nasses Haar quillt auf und die Cuticula öffnet sich – dadurch ist es bis zu 30% dehnbarer."},
+{id:"1-mc6",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was bedeutet feines Haar?",o:["Das Haar ist kurz","Der einzelne Haarschaft hat einen kleinen Durchmesser","Das Haar ist hell","Das Haar ist glatt"],r:1,e:"Feines Haar hat einen geringen Schaftdurchmesser – es ist empfindlicher und wirkt schnell schlapp."},
+{id:"1-mc7",t:"mc",th:"Haarkunde & Haarstruktur",f:"Wie lange dauert die Anagenphase (Wachstumsphase)?",o:["3–6 Monate","1–2 Jahre","2–7 Jahre","10–15 Jahre"],r:2,e:"Die Anagenphase dauert 2–7 Jahre – je länger sie dauert, desto länger kann das Haar wachsen."},
+{id:"1-mc8",t:"mc",th:"Haarkunde & Haarstruktur",f:"Wodurch wird Haar NICHT geschädigt?",o:["Hitze beim Föhnen","Kaltes Wasser","UV-Strahlung","Chemische Behandlungen"],r:1,e:"Kaltes Wasser schließt die Cuticula und schützt das Haar – es schadet nicht."},
+{id:"1-mc9",t:"mc",th:"Hautkunde",f:"Welche Schicht der Haut erneuert sich ständig?",o:["Unterhaut","Lederhaut","Oberhaut (Epidermis)","Talgdrüse"],r:2,e:"Die Epidermis erneuert sich alle 28 Tage – alte Hautzellen werden abgestoßen."},
+{id:"1-mc10",t:"mc",th:"Hautkunde",f:"Welchen pH-Wert hat der Säureschutzmantel der Haut?",o:["pH 7 (neutral)","pH 9–10 (alkalisch)","pH 4,5–5,5 (leicht sauer)","pH 2 (stark sauer)"],r:2,e:"Der Säureschutzmantel hat pH 4,5–5,5 – dieser saure Schutzfilm wehrt Keime ab."},
+{id:"1-mc11",t:"mc",th:"Hautkunde",f:"Was produziert die Talgdrüse?",o:["Schweiß","Keratin","Talg","Melanin"],r:2,e:"Talg hält Haut und Haar geschmeidig und bildet zusammen mit Schweiß den Säureschutzmantel."},
+{id:"1-mc12",t:"mc",th:"Hautkunde",f:"Was kann Schuppen verursachen?",o:["Zu häufiges Waschen","Nur Pilze","Trockene Haut, Pilze, falsche Produkte oder Erkrankungen","Ausschließlich genetische Faktoren"],r:2,e:"Schuppen haben viele Ursachen – trockene Haut, Pilze (Malassezia), falsche Pflegeprodukte oder Erkrankungen."},
+{id:"1-mc13",t:"mc",th:"Hautkunde",f:"Welche Schicht der Haut enthält Haarwurzeln und Talgdrüsen?",o:["Oberhaut","Lederhaut (Dermis)","Unterhaut","Hornschicht"],r:1,e:"In der Lederhaut (Dermis) liegen Haarfollikel, Talgdrüsen und Schweißdrüsen."},
+{id:"1-mc14",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Farbe neutralisiert Orange?",o:["Rot","Gelb","Blau","Grün"],r:2,e:"Blau ist die Komplementärfarbe zu Orange – blaue/aschige Töne neutralisieren orangefarbene Stiche."},
+{id:"1-mc15",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Farbe neutralisiert Gelb?",o:["Rot","Violett","Blau","Orange"],r:1,e:"Violett neutralisiert Gelb – wichtig bei zu hell geblondiertem Haar."},
+{id:"1-mc16",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Farbe neutralisiert Rot?",o:["Blau","Orange","Grün","Violett"],r:2,e:"Grün ist die Komplementärfarbe zu Rot."},
+{id:"1-mc17",t:"mc",th:"Farbenlehre & Coloration",f:"Was sind warme Farbtöne?",o:["Blau, Grün, Violett","Rot, Orange, Gelb","Schwarz, Weiß, Grau","Silber, Beige, Creme"],r:1,e:"Warme Töne enthalten rote und gelbe Anteile – sie wirken lebendig und strahlend."},
+{id:"1-mc18",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist eine Tönung?",o:["Eine dauerhafte Oxidationsfarbe","Eine semi-permanente Farbe ohne Aufhellung","Eine Blondierpaste","Ein Pflegeprodukt"],r:1,e:"Tönungen sind semi-permanent – sie dringen nicht tief ins Haar ein und wachsen aus."},
+{id:"1-mc19",t:"mc",th:"Farbenlehre & Coloration",f:"Wofür wird Wasserstoffperoxid beim Färben benötigt?",o:["Als Pflegestoff","Zum Aufhellen des Naturpigments und Entwickeln der Farbe","Als Fixierer","Zum Schließen der Cuticula"],r:1,e:"H₂O₂ oxidiert das Melanin (Aufhellung) und aktiviert den Farbentwickler in der Oxidationsfarbe."},
+{id:"1-mc20",t:"mc",th:"Farbenlehre & Coloration",f:"Was sind Komplementärfarben?",o:["Farben der gleichen Farbfamilie","Farben die sich im Farbkreis gegenüberliegen und neutralisieren","Die drei Grundfarben","Warme und kalte Töne"],r:1,e:"Komplementärfarben stehen sich im Farbkreis gegenüber und heben sich gegenseitig auf."},
+{id:"1-mc21",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet gewerbliche Hygiene?",o:["Persönliche Körperpflege","Hygienemaßnahmen im Salon wie Reinigung und Desinfektion","Öffentliche Abfallentsorgung","Handpflege des Friseurs"],r:1,e:"Gewerbliche Hygiene umfasst alle Maßnahmen im Betrieb – Reinigung, Desinfektion, gesetzliche Vorschriften."},
+{id:"1-mc22",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Wie entsorgt man Rasierklingen richtig?",o:["In den Hausmüll","In den Papiermüll","In einem stichfesten Sicherheitsbehälter","Ins Waschbecken spülen"],r:2,e:"Rasierklingen müssen in stichfesten Sicherheitsbehältern entsorgt werden – Verletzungsgefahr!"},
+{id:"1-mc23",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet Desinfektion?",o:["Schmutz sichtbar entfernen","Alle Keime vollständig vernichten","Keimzahl auf ein unbedenkliches Maß reduzieren","Das Gerät einölen"],r:2,e:"Desinfektion reduziert Keime – Sterilisation vernichtet alle Keime. Im Salon reicht meist Desinfektion."},
+{id:"1-mc24",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Warum trägt man beim Färben Handschuhe?",o:["Nur zur Gewohnheit","Schutz vor Chemikalien und Keimen","Weil es Pflicht vom Kunden ist","Damit die Hände warm bleiben"],r:1,e:"Haarfarben enthalten Chemikalien wie PPD die Allergien und Hautreizungen verursachen können."},
+{id:"1-mc25",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum sollte der Salon regelmäßig gelüftet werden?",o:["Damit es kühler wird","Um Dämpfe und Gerüche zu reduzieren","Wegen der Kunden","Nur im Sommer nötig"],r:1,e:"Friseurprodukte enthalten flüchtige Stoffe – Lüften schützt Mitarbeiter und Kunden vor Einatmen."},
+{id:"1-mc26",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Welche persönliche Schutzausrüstung wird im Salon verwendet?",o:["Helm und Schutzbrille","Handschuhe und Schürzen","Sicherheitsschuhe und Maske","Nur Handschuhe"],r:1,e:"Handschuhe schützen vor Chemikalien, Schürzen/Kittel schützen die Kleidung und Haut."},
+{id:"1-mc27",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum müssen elektrische Geräte regelmäßig geprüft werden?",o:["Wegen der Optik","Damit sie länger halten","Zur Vermeidung von Stromunfällen","Nur bei sichtbaren Schäden"],r:2,e:"Defekte Kabel oder Geräte können Stromunfälle verursachen – regelmäßige Prüfung ist Pflicht."},
+{id:"1-mc28",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist Körpersprache im Kundengespräch wichtig?",o:["Sie ist nicht wichtig","Sie vermittelt Interesse, Freundlichkeit und Sicherheit","Nur bei schwierigen Kunden","Nur beim ersten Termin"],r:1,e:"Über 50% der Kommunikation läuft nonverbal ab – Körperhaltung, Blickkontakt und Mimik sind entscheidend."},
+{id:"1-mc29",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was ist aktives Zuhören?",o:["Schweigend zuhören","Aufmerksam zuhören, nachfragen und zusammenfassen","Den Kunden unterbrechen","Sofort Ratschläge geben"],r:1,e:"Aktives Zuhören zeigt dem Kunden, dass man ihn versteht – es schafft Vertrauen und verhindert Fehler."},
+{id:"1-mc30",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist ein Beratungsgespräch vor der Behandlung wichtig?",o:["Nur bei Neukunden nötig","Damit Wünsche verstanden und Missverständnisse vermieden werden","Gesetzlich vorgeschrieben","Nur für chemische Behandlungen"],r:1,e:"Das Beratungsgespräch klärt Wünsche, Vorbehandlungen, Allergien und setzt realistische Erwartungen."},
+{id:"1-mc31",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie reagiert man professionell auf eine Reklamation?",o:["Sofort widersprechen","Ruhig bleiben, zuhören und gemeinsam eine Lösung suchen","Den Chef rufen","Rabatt anbieten ohne zuzuhören"],r:1,e:"Ruhig bleiben, Verständnis zeigen und lösungsorientiert handeln – das erhält die Kundenbeziehung."},
+{id:"1-mc32",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Wann sollte ein Allergietest durchgeführt werden?",o:["Nie, wenn der Kunde es ablehnt","Nur bei bekannten Allergien","Vor der ersten Coloration oder bei Unsicherheiten","Nur bei Blondierungen"],r:2,e:"Der Epikutantest (48h vorher) ist Berufspflicht vor jeder ersten Coloration – und bei Unsicherheiten."},
+{id:"1-mc33",t:"mc",th:"Werkzeugkunde",f:"Wofür verwendet man eine Paddelbürste?",o:["Zum Locken definieren","Zum Entwirren und Glätten langer Haare","Für kurze Männerschnitte","Zum Hochstecken"],r:1,e:"Die breite Fläche der Paddelbürste ist ideal zum sanften Entwirren und Glätten langer Haare."},
+{id:"1-mc34",t:"mc",th:"Werkzeugkunde",f:"Was ist der Effilierer?",o:["Eine Schere mit glatten Klingen","Eine Schere mit gezahnter Klinge zum Ausdünnen","Ein Kamm","Ein Haarglätter"],r:1,e:"Der Effilierer (Modellierschere mit Zähnen) entfernt gezielt Volumen ohne sichtbare Schnittlinie."},
+{id:"1-mc35",t:"mc",th:"Werkzeugkunde",f:"Wie pflegt man eine Haarschere richtig?",o:["Mit Wasser abspülen","Reinigen, trocken abwischen und ölen","In Wasser einlegen","Nie reinigen"],r:1,e:"Scheren regelmäßig reinigen, abtrocknen und mit Schereöl pflegen – nie fallenlassen, beim Fachmann schleifen."},
+],2:[
+{id:"2-1",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was ist Kontaktdermatitis?",o:["Haarerkrankung","Hautentzündung durch Kontakt mit Wasser, Chemikalien oder Handschuhen","Allergie gegen Haarschnitte","Infektion durch Scheren"],r:1,e:"Kontaktdermatitis: Hautentzündung durch Reizstoffe wie Farben oder Dauerwellenmittel."},
+{id:"2-2",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was ist der Unterschied zwischen Reinigung, Desinfektion und Sterilisation?",
+  mb:[
+    {begriffe:["reinigen","reinigung","schmutz entfernen"], teilwort:false},
+    {begriffe:["desinfizieren","desinfektion","keime abtöten","keime reduzieren"], teilwort:false},
+    {begriffe:["sterilisieren","sterilisation","alle keime","vollständig"], teilwort:false}
+  ],
+  ml:"Reinigen: Schmutz entfernen. Desinfizieren: Keime abtöten. Sterilisieren: alle Keime vernichten."},
+{id:"2-3",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was bedeutet das GHS-Ausrufezeichen?",o:["Besonders wirksam","Kann Hautreizungen oder Gesundheitsschäden verursachen","Leicht entzündlich","Kühl lagern"],r:1,e:"GHS07 warnt vor reizenden oder gesundheitsschädlichen Stoffen."},
+{id:"2-4",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Wie verhältst du dich bei einer allergischen Reaktion auf Haarfarbe?",
+  mb:[
+    {begriffe:["sofort","abbrechen","stopp"], teilwort:false},
+    {begriffe:["abspülen","ausspülen","wasser abwaschen"], teilwort:false},
+    {begriffe:["meisterin","mirjam","informieren","melden"], teilwort:false},
+    {begriffe:["arzt","notruf","medizinisch"], teilwort:false}
+  ],
+  ml:"Sofort abbrechen, mit Wasser abspülen, Mirjam informieren. Bei starker Reaktion Arzt rufen."},
+{id:"2-5",t:"mc",th:"Werkzeugkunde",f:"Welche Clipper-Größe ergibt die kürzeste Länge?",o:["Größe 8","Größe 4","Größe 1 (3mm)","Größe 0"],r:2,e:"Größe 1 = 3mm. Je kleiner die Zahl, desto kürzer."},
+{id:"2-6",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was bestimmt die natürliche Haarfarbe?",o:["Stärke der Cuticula","Melaninpigmente im Cortex","Anzahl Haarfollikel","Talgproduktion"],r:1,e:"Eumelanin (dunkel) und Phäomelanin (hell/rot) bestimmen die Farbe."},
+{id:"2-7",t:"of",th:"Haarkunde & Haarstruktur",f:"Eine Kundin hat feines Haar und möchte mehr Volumen. Was empfiehlst du?",mb:["stufig","volumen","föhnen","rundbürste","verdickend"],ml:"Stufiger Schnitt, Rundbürste beim Föhnen, Volumenmousse und volumenverdickende Produkte."},
+{id:"2-8",t:"mc",th:"Hautkunde",f:"Welche Hautveränderungen sollte ein Friseur erkennen?",o:["Nur Schuppen","Schuppen, Rötungen, Ekzeme, Warzen, Entzündungen","Nur Rötungen","Nur Pigmentflecken"],r:1,e:"Bei auffälligen Veränderungen den Kunden zum Hautarzt schicken."},
+{id:"2-9",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet warm oder kalt in der Haarfarbe?",o:["Warm = erhitzt","Warm = rot-goldene Anteile, Kalt = aschige blaue Anteile","Kalt = hält nicht lange","Nur Einwirkzeit"],r:1,e:"Warme Töne: rote/goldene Pigmente. Kühle Töne: aschige/blaue Pigmente."},
+{id:"2-10",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist eine Oxidationshaarfarbe?",o:["Wäscht sich aus","Dauerhafte Farbe mit Wasserstoffperoxid","Pflanzenhaarfarbe","Nur für graues Haar"],r:1,e:"Dauerhaft, dringt mit H2O2 in den Cortex ein."},
+{id:"2-11",t:"mc",th:"Dauerwelle & Umformung",f:"Warum ist der Haarzustand vor einer Dauerwelle wichtig?",o:["Spielt keine Rolle","Geschädigtes Haar kann brechen oder sich auflösen","Nur das Wetter entscheidet","Vorgeschädigtes nimmt Welle besser an"],r:1,e:"Stark geschädigtes Haar hat geschwächte Disulfidbrücken – Vorab Haarstrukturtest!"},
+{id:"2-12",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Welche Frage ist eine offene Frage?",o:["Wollen Sie eine Tönung?","Möchten Sie es kürzer?","Was stört Sie an Ihrem Schnitt?","Soll ich anfangen?"],r:2,e:"Offene Fragen beginnen mit Was, Wie, Warum."},
+{id:"2-13",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Wann müssen Hände desinfiziert werden?",o:["Nur morgens","Vor und nach jedem Kunden sowie nach Verschmutzungen","Nur nach Farbauftrag","Stündlich"],r:1,e:"Vor und nach jedem Kunden sowie nach Verschmutzungen."},
+{id:"2-14",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Welche Fragen gehören zur Haaranalyse?",mb:["naturhaarfarbe","coloration","haarzustand","kopfhaut","pflege","allergie"],ml:"Naturhaarfarbe, frühere Colorationen, Haarzustand, Kopfhaut, Pflegegewohnheiten und Allergien."},
+{id:"2-15",t:"mc",th:"Werkzeugkunde",f:"Warum muss der Frisiermantel nach jedem Kunden gewechselt werden?",o:["Dekoration","Überträgt Haare, Schuppen und Keime","Nur wöchentlich nötig","Schützt nur Friseurkleidung"],r:1,e:"Der Frisiermantel liegt direkt am Kunden an – Keime können übertragen werden."},
+{id:"2-n1",t:"of",th:"Hautkunde",f:"Welche Hautveränderungen sollte ein Friseur erkennen?",mb:["schuppen","rötungen","ekzeme","warzen","entzündungen"],ml:"Schuppen, Rötungen, Ekzeme, Warzen oder Entzündungen."},
+{id:"2-n2",t:"of",th:"Haarkunde & Haarstruktur",f:"Wovon hängt die Haarstruktur ab?",mb:["genetisch","durchmesser","haarfollikel","form"],ml:"Von der genetischen Veranlagung, dem Durchmesser und der Form des Haarfollikels."},
+{id:"2-n3",t:"of",th:"Haarkunde & Haarstruktur",f:"Was bedeutet elastisches Haar?",mb:["dehnen","form","ursprünglich","zurück"],ml:"Es lässt sich dehnen und kehrt in seine ursprüngliche Form zurück."},
+{id:"2-n4",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Haarstruktur eignet sich besonders gut für Dauerwellen?",mb:["gesund","elastisch","geschädigt"],ml:"Gesundes, elastisches und nicht zu stark geschädigtes Haar."},
+{id:"2-n5",t:"of",th:"Farbenlehre & Coloration",f:"Was versteht man unter dem Farbkreis?",mb:["grund","sekundär","komplementär","darstellung"],ml:"Eine Darstellung der Grund-, Sekundär- und Komplementärfarben."},
+{id:"2-n6",t:"of",th:"Farbenlehre & Coloration",f:"Warum werden Komplementärfarben beim Färben verwendet?",mb:["farbstiche","neutralisieren","unerwünschte"],ml:"Um unerwünschte Farbstiche zu neutralisieren."},
+{id:"2-n7",t:"of",th:"Farbenlehre & Coloration",f:"Was bedeutet Tonhöhe bei der Haarfarbe?",mb:["helligkeit","dunkelheit","haarfarbe"],ml:"Die Helligkeit oder Dunkelheit einer Haarfarbe."},
+{id:"2-n8",t:"of",th:"Farbenlehre & Coloration",f:"Was ist eine Nuance?",mb:["farbton","tonhöhe","innerhalb"],ml:"Der Farbton innerhalb einer Tonhöhe."},
+{id:"2-n9",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was ist der Unterschied zwischen Reinigen und Desinfizieren?",mb:["reinigen","schmutz","desinfizieren","keime"],ml:"Reinigen entfernt Schmutz, Desinfizieren reduziert oder tötet Keime."},
+{id:"2-n10",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist aktives Zuhören im Kundengespräch wichtig?",mb:["vertrauen","beratung","verbessert"],ml:"Es schafft Vertrauen und verbessert die Beratung."},
+{id:"2-n11",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie geht man mit einer Reklamation um?",mb:["ruhig","zuhören","verständnis","lösung"],ml:"Ruhig bleiben, zuhören, Verständnis zeigen und gemeinsam eine Lösung finden."},
+{id:"2-n12",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum empfiehlt man Pflegeprodukte nach der Behandlung?",mb:["ergebnis","schön","gesund","gepflegt"],ml:"Damit das Ergebnis länger schön bleibt und das Haar gesund gepflegt wird."},
+{id:"2-n13",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum dokumentiert man chemische Behandlungen?",mb:["sicher","geplant","spätere","behandlungen"],ml:"Damit spätere Behandlungen sicher geplant werden können."},
+{id:"2-n14",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum sollte man Fachbegriffe verständlich erklären?",mb:["nachvollziehen","beratung","kunde"],ml:"Damit der Kunde die Beratung nachvollziehen kann."},
+{id:"2-n15",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Welche Eigenschaften zeichnen einen guten Friseur aus?",mb:["freundlichkeit","geduld","fachwissen","kreativität","zuverlässigkeit"],ml:"Freundlichkeit, Geduld, Fachwissen, Kreativität und Zuverlässigkeit."},
+{id:"2-n16",t:"of",th:"Haarkunde & Haarstruktur",f:"Was versteht man unter Haarqualität?",mb:["zustand","gesundheit","festigkeit","elastizität"],ml:"Den Zustand des Haares hinsichtlich Gesundheit, Festigkeit und Elastizität."},
+{id:"2-n17",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Faktoren beeinflussen die Haarqualität?",mb:["ernährung","pflege","alter","krankheiten","umwelt","chemisch"],ml:"Ernährung, Pflege, Alter, Krankheiten, Umwelt und chemische Behandlungen."},
+{id:"2-n18",t:"of",th:"Haarkunde & Haarstruktur",f:"Warum ist Feuchtigkeit für das Haar wichtig?",mb:["elastizität","glanz","geschmeidigkeit"],ml:"Sie erhält Elastizität, Glanz und Geschmeidigkeit."},
+{id:"2-n19",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was ist das wichtigste Ziel jeder Friseurbehandlung?",mb:["gesund","schön","zufrieden","kunde"],ml:"Ein gesundes, schönes Ergebnis und ein zufriedener Kunde."},
+{id:"2-p1",t:"of",th:"Hautkunde",f:"Wann sollte ein Kunde an einen Hautarzt verwiesen werden?",
+  mb:[
+    {begriffe:["auffällig","veränderung","hautveränderung"], teilwort:false},
+    {begriffe:["entzündung","entzündet"], teilwort:false},
+    {begriffe:["ansteckend","infektion","erkrankung"], teilwort:false}
+  ],
+  ml:"Bei auffälligen Hautveränderungen, Entzündungen oder ansteckenden Erkrankungen."},
+{id:"2-p2",t:"of",th:"Haarkunde & Haarstruktur",f:"Warum muss die Haarstruktur vor einer chemischen Behandlung beurteilt werden?",
+  mb:[
+    {begriffe:["produkt","richtiges produkt","passend"], teilwort:false},
+    {begriffe:["einwirkzeit","einwirken","zeit"], teilwort:false}
+  ],
+  ml:"Damit das richtige Produkt und die passende Einwirkzeit gewählt werden."},
+{id:"2-p3",t:"of",th:"Farbenlehre & Coloration",f:"Welche Pigmente bestimmen die natürliche Haarfarbe?",
+  mb:[
+    {begriffe:["eumelanin"], teilwort:false},
+    {begriffe:["phäomelanin","phaomelanin"], teilwort:false}
+  ],
+  ml:"Eumelanin (dunkel) und Phäomelanin (hell/rot)."},
+{id:"2-p4",t:"of",th:"Farbenlehre & Coloration",f:"Warum ist eine Haaranalyse vor dem Färben wichtig?",
+  mb:[
+    {begriffe:["haarzustand","zustand"], teilwort:false},
+    {begriffe:["naturfarbe","naturhaarfarbe"], teilwort:false},
+    {begriffe:["risiken","risiko","gefahr"], teilwort:false}
+  ],
+  ml:"Um Haarzustand, Naturfarbe und mögliche Risiken zu beurteilen."},
+{id:"2-p5",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Handtücher nach jedem Kunden gewechselt werden?",
+  mb:[
+    {begriffe:["keime","bakterien","übertragung"], teilwort:false},
+    {begriffe:["hygiene","sauber","verhindern"], teilwort:false}
+  ],
+  ml:"Um die Übertragung von Keimen zu verhindern."},
+{id:"2-p6",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Wie werden Scheren und Kämme hygienisch aufbereitet?",
+  mb:[
+    {begriffe:["reinigen","reinigung","säubern"], teilwort:false},
+    {begriffe:["desinfizieren","desinfektion"], teilwort:false},
+    {begriffe:["trocken","trocken lagern","lagern"], teilwort:false}
+  ],
+  ml:"Reinigen, gegebenenfalls desinfizieren und trocken lagern."},
+{id:"2-p7",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Welche Fragen stellt man bei einer Beratung?",
+  mb:[
+    {begriffe:["wünsche","wunsch"], teilwort:false},
+    {begriffe:["behandlungen","vorbehandlung","bisherige"], teilwort:false},
+    {begriffe:["haarpflege","pflege"], teilwort:false},
+    {begriffe:["allergie","allergien","unverträglichkeit"], teilwort:false}
+  ],
+  ml:"Wünsche, bisherige Behandlungen, Haarpflege und Allergien."},
+{id:"2-p8",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet pH-Wert?",
+  mb:[
+    {begriffe:["sauer","alkalisch","neutral"], teilwort:false},
+    {begriffe:["lösung","konzentration"], teilwort:false}
+  ],
+  ml:"Er zeigt an, ob eine Lösung sauer, neutral oder alkalisch ist."},
+{id:"2-mc1",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist der Untergrundton bei dunkelbraunem Haar nach dem Blondieren?",o:["Gelb","Asch","Rot-Orange","Violett"],r:2,e:"Dunkles Haar enthält viel rotes Pigment – beim Aufhellen erscheint zuerst ein rot-oranger Untergrundton."},
+{id:"2-mc2",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet die erste Zahl in '7.3'?",o:["Reflexton","Einwirkzeit","Tonhöhe (Helligkeit)","Peroxidstärke"],r:2,e:"Die erste Zahl = Tonhöhe (Helligkeit). 1=Schwarz bis 10=Hell. 7=Mittelblond."},
+{id:"2-mc3",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet '.3' in der Farbformel '7.3'?",o:["Einwirkzeit 30 Min","Reflexton Gold","3% Peroxid","3. Lehrjahr"],r:1,e:"Die Zahl nach dem Punkt = Reflexton. 3=Gold, 1=Asch, 4=Kupfer, 6=Violett."},
+{id:"2-mc4",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist der Unterschied zwischen Eumelanin und Phäomelanin?",o:["Kein Unterschied","Eumelanin=dunkel/schwarz, Phäomelanin=hell/rot","Eumelanin=rot, Phäomelanin=dunkel","Eumelanin ist künstlich"],r:1,e:"Eumelanin: braun/schwarz. Phäomelanin: rot/gelb/blond. Das Verhältnis bestimmt die natürliche Haarfarbe."},
+{id:"2-mc5",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Peroxidstärke verwendet man für maximale Aufhellung?",o:["3% (10 Vol)","6% (20 Vol)","9% (30 Vol)","12% (40 Vol)"],r:3,e:"12% (40 Vol) ist die stärkste Konzentration – maximale Aufhellung, aber auch höchste Haarbelastung."},
+{id:"2-mc6",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist Balayage?",o:["Foliensträhnen","Freihand-Aufhellung ohne Folie","Komplettfärbung","Eine Tönungstechnik"],r:1,e:"Balayage (franz. fegen) = freihand aufgemalte Aufhellung – wirkt natürlich, kein harter Ansatz."},
+{id:"2-mc7",t:"mc",th:"Dauerwelle & Umformung",f:"Was bewirkt das Wellemittel bei der Dauerwelle?",o:["Schließt die Cuticula","Bricht Disulfidbrücken auf damit das Haar formbar wird","Färbt das Haar","Fixiert die Welle"],r:1,e:"Das Wellemittel (Thioglykolat) bricht die S-S-Bindungen im Cortex auf – das Haar nimmt Wellerform an."},
+{id:"2-mc8",t:"mc",th:"Dauerwelle & Umformung",f:"Was macht der Fixierer bei der Dauerwelle?",o:["Öffnet die Cuticula","Löst die Schwefelbrücken","Schließt die neuen Schwefelbrücken in der Wellenform","Färbt das Haar"],r:2,e:"Der Fixierer (H₂O₂) re-oxidiert die Disulfidbrücken in der neuen gewellten Form – die Welle bleibt."},
+{id:"2-mc9",t:"mc",th:"Dauerwelle & Umformung",f:"Warum darf man nicht direkt nach einer Coloration dauerwellen?",o:["Das dauert zu lang","Farbe und Wellemittel reagieren positiv","Das Haar ist doppelt chemisch belastet und kann brechen","Geht problemlos"],r:2,e:"Doppelte chemische Belastung kann zu Haarbruch führen – mindestens 2 Wochen Abstand halten."},
+{id:"2-mc10",t:"mc",th:"Dauerwelle & Umformung",f:"Was bestimmt die Stärke der Wellung bei einer Dauerwelle?",o:["Nur die Einwirkzeit","Nur das Wellemittel","Wicklerdurchmesser, Einwirkzeit, Haarstruktur und Mittelstärke","Nur der Wicklerdurchmesser"],r:2,e:"Alle Faktoren zusammen bestimmen das Ergebnis – feines Haar braucht anderes Mittel als kräftiges Haar."},
+{id:"2-mc11",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was sind Disulfidbrücken?",o:["Verbindungen in der Cuticula","Chemische S-S-Bindungen im Cortex die die Haarform bestimmen","Verbindungen im Follikel","Proteinverbindungen in der Medulla"],r:1,e:"Disulfidbrücken (S-S) im Cortex bestimmen ob Haar gerade oder wellig ist – Dauerwellen brechen sie auf."},
+{id:"2-mc12",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was bedeutet Haarporosität?",o:["Die Farbe des Haares","Die Länge des Haares","Die Fähigkeit Feuchtigkeit und Wirkstoffe aufzunehmen","Die Stärke des Haares"],r:2,e:"Poröses Haar saugt Feuchtigkeit schnell auf – verliert sie aber auch schnell wieder."},
+{id:"2-mc13",t:"mc",th:"Haarkunde & Haarstruktur",f:"Welches Haar ist am besten für eine Dauerwelle geeignet?",o:["Stark geschädigtes Haar","Feines blondes Haar","Gesundes elastisches Haar","Frisch coloriertes Haar"],r:2,e:"Gesundes elastisches Haar hat intakte Disulfidbrücken – die Welle haftet gleichmäßig und hält."},
+{id:"2-mc14",t:"mc",th:"Hautkunde",f:"Was ist Kontaktdermatitis?",o:["Eine Haarerkrankung","Hautentzündung durch Kontakt mit Reizstoffen wie Farben oder Chemikalien","Pilzerkrankung","Normales trockenes Haar"],r:1,e:"Kontaktdermatitis = Berufsrisiko im Friseurhandwerk – häufig durch Farben, Dauerwellmittel oder Latex."},
+{id:"2-mc15",t:"mc",th:"Hautkunde",f:"Was ist Psoriasis?",o:["Pilzerkrankung des Haares","Chronische Hautkrankheit mit silbrigen Schuppen","Normale Schuppung","Haarausfall"],r:1,e:"Psoriasis (Schuppenflechte) ist chronisch-entzündlich – keine Colorationen ohne ärztliche Freigabe."},
+{id:"2-mc16",t:"mc",th:"Hautkunde",f:"Was tut man wenn man auffällige Hautveränderungen beim Kunden sieht?",o:["Weiterbehandeln","Sofort abbrechen und Arzt rufen","Den Kunden zum Hautarzt verweisen","Nichts – ist nicht unser Job"],r:2,e:"Der Friseur erkennt – der Arzt diagnostiziert. Kunden mit auffälligen Veränderungen an den Hautarzt verweisen."},
+{id:"2-mc17",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Wann müssen Handtücher gewechselt werden?",o:["Einmal täglich","Einmal pro Woche","Nach jedem Kunden","Nur wenn sie sichtbar schmutzig sind"],r:2,e:"Handtücher direkt am Körper des Kunden – müssen nach jedem Kunden gewechselt werden."},
+{id:"2-mc18",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet das GHS-Flammen-Symbol auf einem Produkt?",o:["Giftig","Leicht entzündlich","Gesundheitsschädlich","Umweltgefährlich"],r:1,e:"GHS02 (Flamme) = leicht oder hochentzündlich – von Wärmequellen fernhalten."},
+{id:"2-mc19",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was ist ein Sicherheitsdatenblatt?",o:["Preisliste für Chemikalien","Dokument mit Gefahren, Inhaltsstoffen und Erste-Hilfe-Infos","Bedienungsanleitung","Zertifikat"],r:1,e:"Sicherheitsdatenblätter sind für alle Gefahrstoffe im Salon Pflicht – müssen zugänglich aufbewahrt werden."},
+{id:"2-mc20",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was ist eine offene Frage?",o:["Ja/Nein Frage","Frage die mit Wie/Was/Warum beginnt und ausführliche Antwort ermöglicht","Frage über den Preis","Frage die man stellen darf"],r:1,e:"Offene Fragen (W-Fragen) fördern Gespräch – 'Was wünschen Sie sich?' statt 'Wollen Sie einen Schnitt?'"},
+{id:"2-mc21",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum dokumentiert man chemische Behandlungen?",o:["Für die Steuererklärung","Damit spätere Behandlungen sicher geplant werden können","Gesetzliche Pflicht","Nur bei Reklamationen"],r:1,e:"Dokumentation von Farbformeln, Einwirkzeiten und Ergebnissen schützt Kunde und Friseur."},
+{id:"2-mc22",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was ist Cross-Selling im Friseursalon?",o:["Günstigere Preise anbieten","Passende Zusatzprodukte oder -leistungen empfehlen","Konkurrenz abwerben","Rabatte geben"],r:1,e:"Cross-Selling = nach der Coloration das passende Pflegeprodukt empfehlen – Mehrwert für den Kunden."},
+{id:"2-mc23",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was regelt die TRGS 530?",o:["Öffnungszeiten von Friseursalons","Den Umgang mit Gefahrstoffen im Friseurhandwerk","Ausbildungsinhalte","Mindestlöhne im Friseurhandwerk"],r:1,e:"TRGS 530 = Technische Regel für Gefahrstoffe im Friseurhandwerk – regelt Umgang mit Farben und Dauerwellmitteln."},
+{id:"2-mc24",t:"mc",th:"Werkzeugkunde",f:"Welche Clipper-Aufsatzgröße ergibt das kürzeste Ergebnis?",o:["Größe 8 (25mm)","Größe 4 (13mm)","Größe 1 (3mm)","Kein Aufsatz (0mm)"],r:2,e:"Je kleiner die Nummer, desto kürzer das Ergebnis. Größe 1 = 3mm. Ohne Aufsatz = direkter Hautkontakt."},
+{id:"2-mc25",t:"mc",th:"Werkzeugkunde",f:"Wofür verwendet man eine Rundbürste beim Föhnen?",o:["Zum Entwirren","Zum Definieren von Locken","Für Volumen, Schwung und Form","Für Männerschnitte"],r:2,e:"Die Rundbürste gibt beim Föhnen Form, Volumen und Bewegung – größerer Durchmesser = lockerere Welle."},
+],3:[
+{id:"3-1",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Erkläre den Begriff Infektionskette und wie du sie im Salon unterbrichst.",mb:["erreger","übertragungsweg","desinfektion","reinigung","unterbrechen"],ml:"Infektionskette: Erreger → Übertragungsweg → neuer Wirt. Unterbrechen durch Desinfektion und Einmalprodukte."},
+{id:"3-2",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was regelt die TRGS 530?",o:["Öffnungszeiten","Regeln für Gefahrstoffe im Friseurhandwerk","Ausbildungsdauer","Mindestlöhne"],r:1,e:"TRGS 530: Umgang mit Farben, Blondiermitteln und Dauerwellmitteln."},
+{id:"3-3",t:"mc",th:"Haarkunde & Haarstruktur",f:"Welche Haarstruktur hat das langsamste Farbaufnahmeverhalten?",o:["Feines blondes Haar","Mittelstarkes braunes Haar","Grobes widerstandsfähiges graues Haar","Lockiges Haar"],r:2,e:"Grobes graues Haar hat eine dichte Cuticula – Farbe dringt schwerer ein."},
+{id:"3-4",t:"of",th:"Haarkunde & Haarstruktur",f:"Erkläre den Haarwachstumszyklus (Anagen, Katagen, Telogen).",mb:["anagen","katagen","telogen","wachstum","ruhe","ausfall"],ml:"Anagen: Wachstum (2–7 Jahre). Katagen: Übergang. Telogen: Ruhe, Haar fällt aus."},
+{id:"3-5",t:"mc",th:"Hautkunde",f:"Was ist Seborrhoe?",o:["Seltene Erkrankung","Übermäßige Talgproduktion mit fettiger schuppiger Haut","Vitaminmangel","Allergie"],r:1,e:"Seborrhoe = übermäßige Talgproduktion. Ölige schuppige Kopfhaut."},
+{id:"3-6",t:"of",th:"Hautkunde",f:"Eine Kundin hat gerötete schuppige Kopfhaut. Kannst du ihr Haar färben?",mb:["nicht","abbrechen","arzt","reizung","informieren"],ml:"Nicht färben! Kundin zum Arzt schicken. Erst nach ärztlicher Freigabe weiterbehandeln."},
+{id:"3-7",t:"of",th:"Farbenlehre & Coloration",f:"Was ist Komplementärkontrast und wie nutzt du ihn bei Farbkorrekturen?",mb:["gegenfarbe","orange","blau","neutralisieren","farbrad"],ml:"Komplementärfarben neutralisieren sich. Orange → mit blau-aschigem Ton neutralisieren."},
+{id:"3-8",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet die '3' in einer Haarfarbe wie '6.3'?",o:["Oxidationsstufe","Reflexton Gold","Einwirkzeit","Stärke des Peroxids"],r:1,e:"Erste Zahl = Tiefe. Nach dem Punkt = Reflexton. 3=Gold, 1=Asch, 4=Kupfer."},
+{id:"3-9",t:"of",th:"Dauerwelle & Umformung",f:"Welche Faktoren bestimmen die Stärke einer Dauerwelle?",mb:["wickler","einwirkzeit","haarstruktur","mittel","fixierer"],ml:"Wicklerdurchmesser, Einwirkzeit, Stärke des Wellemittels, Haarstruktur und Fixierung."},
+{id:"3-10",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Nenne die 6 wichtigsten Punkte für das LAP-Beratungsgespräch.",mb:["wunsch","vorgeschichte","haaranalyse","pflege","produkt","nachtermin"],ml:"1) Kundenwunsch, 2) Haarvorgeschichte, 3) Haaranalyse, 4) Lebensstil, 5) Pflegeempfehlung, 6) Nachtermin."},
+{id:"3-11",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet Einwandbehandlung?",o:["Kunden unterbrechen","Einwände ernst nehmen und entkräften","Kunden sagen er liegt falsch","Gespräch beenden"],r:1,e:"Einwand ernst nehmen, Nutzen erklären. Nie wegdiskutieren."},
+{id:"3-12",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet RKI-gelistetes Desinfektionsmittel?",o:["Vom Radio empfohlen","Vom Robert Koch Institut geprüftes Mittel","Besonders günstig","Für Restaurants"],r:1,e:"RKI-gelistete Mittel haben nachgewiesene Wirksamkeit."},
+{id:"3-13",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Was ist ein Sicherheitsdatenblatt?",mb:["gefahrstoff","inhaltsstoff","erste hilfe","lagerung","entsorgung"],ml:"Gibt Infos zu chemischen Produkten: Inhaltsstoffe, Gefahren, Erste-Hilfe, Lagerung, Entsorgung."},
+{id:"3-mc1",t:"mc",th:"Farbenlehre & Coloration",f:"Was versteht man unter einer Farbkorrektur?",o:["Haarfarbe auffrischen","Unerwünschte Farbergebnisse wie Farbstiche korrigieren","Neue Farbe auftragen","Graues Haar decken"],r:1,e:"Farbkorrekturen beseitigen Farbfehler – z.B. unerwünschte orange/rote Töne nach dem Blondieren."},
+{id:"3-mc2",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist Ombré?",o:["Freihand-Aufhellung wie Balayage","Gleichmäßiger Verlauf von dunkel nach hell","Komplette Blondierung","Strähnen mit Folie"],r:1,e:"Ombré = gleichmäßiger Farbverlauf dunkel→hell. Balayage ist freier und natürlicher – beides hat keinen harten Ansatz."},
+{id:"3-mc3",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet Tonhöhe 6 in der internationalen Farbskala?",o:["Sehr hell (fast weiß)","Mittelblond","Dunkelblond","Hellbraun"],r:2,e:"Skala 1–10: 1=Schwarz, 5=Hellbraun, 6=Dunkelblond, 7=Mittelblond, 10=Sehr hell."},
+{id:"3-mc4",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was ist diffuser Haarausfall?",o:["Kreisrunder Haarausfall","Gleichmäßiger Haarausfall über den ganzen Kopf","Haarausfall nur am Scheitel","Haarausfall durch Pilze"],r:1,e:"Diffuser Haarausfall = gleichmäßig über den ganzen Kopf – oft durch Stress, Mangelernährung oder Hormonschwankungen."},
+{id:"3-mc5",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was ist Alopecia areata?",o:["Normaler Haarausfall","Schuppenflechte der Kopfhaut","Kreisrunder Haarausfall durch Autoimmunreaktion","Pilzerkrankung"],r:2,e:"Alopecia areata = kreisrunder Haarausfall – Autoimmunerkrankung, keine Chemikalien auftragen!"},
+{id:"3-mc6",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was ist Trichologie?",o:["Lehre der Farbenlehre","Wissenschaft von Haar und Kopfhaut","Technik des Haarschneidens","Dauerwellenkunde"],r:1,e:"Trichologie = Wissenschaft von Haar und Kopfhaut – Diagnose und Behandlung von Haarerkrankungen."},
+{id:"3-mc7",t:"mc",th:"Dauerwelle & Umformung",f:"Was ist der Unterschied zwischen saurer und alkalischer Dauerwelle?",o:["Kein Unterschied","Sauer = schonender und langsamer, Alkalisch = stärker und schneller","Sauer = stärker","Alkalisch = für feines Haar"],r:1,e:"Saure DW: pH 6–7, schonender, für sensibles/coloriertes Haar. Alkalische DW: pH 8–9, stärker, schneller."},
+{id:"3-mc8",t:"mc",th:"Dauerwelle & Umformung",f:"Was ist ein Relaxer?",o:["Eine Dauerwelle","Ein Mittel zum chemischen Glätten von kraused Haar","Ein Pflegeprodukt","Ein Haarfestiger"],r:1,e:"Relaxer bricht Disulfidbrücken im kraused Haar dauerhaft auf – das Haar wird chemisch geglättet."},
+{id:"3-mc9",t:"mc",th:"Hautkunde",f:"Was ist Seborrhoe?",o:["Trockene Schuppenkrankheit","Übermäßige Talgproduktion mit fettiger schuppiger Kopfhaut","Pilzerkrankung","Allergie"],r:1,e:"Seborrhoe = übermäßige Talgproduktion. Ölige Kopfhaut, gelbliche Schuppen – oft am Haaransatz."},
+{id:"3-mc10",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet 'begrenzt viruzid plus'?",o:["Wirkt nur gegen Bakterien","Wirkt gegen Bakterien, Pilze und die wichtigsten Viren","Wirkt gegen alle Keime","Nur für medizinischen Bereich"],r:1,e:"'Begrenzt viruzid plus' = das empfohlene Wirkspektrum für Friseursalons – schützt vor den wichtigsten Keimen."},
+{id:"3-mc11",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was ist Einwandbehandlung?",o:["Den Kunden ignorieren","Einwände ernst nehmen, Nutzen erklären und entkräften","Sofort nachgeben","Den Preis senken"],r:1,e:"Professionelle Einwandbehandlung: zuhören, verstehen, sachlich erklären – nie wegdiskutieren oder ignorieren."},
+{id:"3-mc12",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was gehört zur schriftlichen Colorationsdokumentation?",o:["Nur der Name des Kunden","Farbformel, Peroxidstärke, Einwirkzeit und Ergebnis","Nur das Datum","Nur bei Problemen"],r:1,e:"Vollständige Dokumentation schützt beide Seiten und ermöglicht reproduzierbare Ergebnisse beim nächsten Termin."},
+{id:"3-mc13",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was regelt das ArbeitnehmerInnenschutzgesetz für den Arbeitgeber?",o:["Nur die Arbeitszeiten","Mitarbeiter unterweisen, Schutzkleidung bereitstellen, sichere Arbeitsbedingungen","Nur den Mindestlohn","Urlaubsregelungen"],r:1,e:"ASchG: Arbeitgeber muss Risiken beurteilen, Mitarbeiter unterweisen und Schutzmaßnahmen bereitstellen."},
+
+]};
+// ── KOMPETENZ ─────────────────────────────────────────────────────────────────
+var LABEL={sitzt:'sitzt ✓',teilweise:'teilweise sicher',unsicher:'unsicher'};
+var CFARBE={sitzt:'#6B8F71',teilweise:'#C4A830',unsicher:'#C44030'};
+var CBG={sitzt:'#8FAF7A22',teilweise:'#C4B86A22',unsicher:'#D4584820'};
+
+function berechneStatus(d){
+  if(!d||!d.durchlaeufe||d.durchlaeufe===0) return null;
+  var g=d.richtig+d.falsch;
+  if(g===0) return null;
+  var q=d.richtig/g;
+  if(q>=0.80&&d.durchlaeufe>=2&&g>=4&&(d.letzte_runde==='gut'||d.letzte_runde==='sehrgut')) return 'sitzt';
+  if(d.richtig>=2&&q>=0.60) return 'teilweise';
+  if(d.richtig>=3&&q>=0.50) return 'teilweise';
+  return 'unsicher';
+}
+
+function renderKompetenz(kompdaten,themen){
+  var html='<div style="margin-bottom:20px">';
+  html+='<div class="lab" style="margin-bottom:10px">Kompetenzstand</div>';
+  var fokus=[];
+  themen.forEach(function(th){
+    var d=kompdaten[th];
+    var st=berechneStatus(d);
+    if(!st) return;
+    var col=CFARBE[st],bg=CBG[st];
+    html+='<div style="background:'+bg+';border-left:4px solid '+col+';border-radius:10px;padding:11px 14px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">'+
+      '<div style="font-size:13px;color:#2C2C2C;line-height:1.3">'+th+'</div>'+
+      '<div style="font-weight:700;font-size:12px;color:'+col+';white-space:nowrap;margin-left:10px">'+LABEL[st]+'</div>'+
+    '</div>';
+    if(st==='unsicher'||st==='teilweise') fokus.push({th:th,st:st});
+  });
+  html+='</div>';
+  if(fokus.length){
+    html+='<div style="background:#EDE8E0;border-radius:12px;padding:14px 16px;margin-bottom:16px">';
+    html+='<div class="lab" style="margin-bottom:8px">Als Nächstes üben</div>';
+    fokus.sort(function(a,b){return a.st==='unsicher'?-1:1;});
+    fokus.forEach(function(x){html+='<div style="font-size:13px;color:#2C2C2C;margin-bottom:4px">→ '+x.th+'</div>';});
+    html+='</div>';
+  }
+  return html;
+}
+
+// ── ZUSTAND ───────────────────────────────────────────────────────────────────
+var LJ=1,MODUS='schnell';
+var QFRAGEN=[],QIDX=0,QANT=[];
+var WIEDERHOLUNG=false;
+var AKTLEHRLING=null;
+var ISTMEISTERIN=false;
+var VLEHRJAHR=1,VIDX=null;
+
+function zeige(id){
+  document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
+  document.getElementById(id).classList.add('aktiv');
+  window.scrollTo(0,0);
+}
+function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
+function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
+
+async function ladeKompetenz(lehrlingId){
+  var {data}=await sb.from('kompetenz').select('*').eq('lehrling_id',lehrlingId);
+  var komp={};
+  if(data) data.forEach(function(r){komp[r.thema]=r;});
+  return komp;
+}
+
+async function speichereKompetenz(lehrlingId,antworten){
+  var runde={};
+  antworten.forEach(function(a){
+    var th=a.q.th;
+    if(!runde[th]) runde[th]={richtig:0,falsch:0};
+    if(a.korrekt) runde[th].richtig++; else runde[th].falsch++;
+  });
+  var {data:bestehend}=await sb.from('kompetenz').select('*').eq('lehrling_id',lehrlingId);
+  var existiert={};
+  if(bestehend) bestehend.forEach(function(r){existiert[r.thema]=r;});
+  for(var th in runde){
+    var r=runde[th].richtig,f=runde[th].falsch,ges=r+f;
+    var qr=ges>0?r/ges:0;
+    var lr=qr===1.0?'sehrgut':qr>0.60?'gut':qr>=0.40?'gemischt':'falsch';
+    if(existiert[th]){
+      await sb.from('kompetenz').update({richtig:existiert[th].richtig+r,falsch:existiert[th].falsch+f,durchlaeufe:existiert[th].durchlaeufe+1,letzte_runde:lr}).eq('id',existiert[th].id);
+    } else {
+      await sb.from('kompetenz').insert({lehrling_id:lehrlingId,thema:th,richtig:r,falsch:f,durchlaeufe:1,letzte_runde:lr});
+    }
+  }
+  return await ladeKompetenz(lehrlingId);
+}
+
+async function loginLehrling(){
+  var name=document.getElementById('login-name').value.trim();
+  var pin=document.getElementById('login-pin').value.trim();
+  versteckeFehler('login-fehler');
+  if(!name||!pin){zeigeFehler('login-fehler','Bitte Name und PIN eingeben.');return;}
+  var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
+  var {data,error}=await sb.auth.signInWithPassword({email:email,password:pin});
+  if(error){zeigeFehler('login-fehler','Fehler: '+error.message);return;}
+  var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
+  if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
+  AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');
+}
+
+async function loginMeisterin(){
+  var email=document.getElementById('mlogin-email').value.trim();
+  var pw=document.getElementById('mlogin-pw').value;
+  versteckeFehler('mlogin-fehler');
+  var {data,error}=await sb.auth.signInWithPassword({email:email,password:pw});
+  if(error){zeigeFehler('mlogin-fehler','E-Mail oder Passwort nicht korrekt.');return;}
+  ISTMEISTERIN=true;AKTLEHRLING=null;await ladeDashboard();zeige('s-dashboard');
+}
+
+async function logout(){
+  await sb.auth.signOut();AKTLEHRLING=null;ISTMEISTERIN=false;
+  document.getElementById('login-pin').value='';zeige('s-login');
+}
+
+function updateStart(){
+  var el=document.getElementById('start-name');
+  if(el&&AKTLEHRLING) el.textContent=AKTLEHRLING.name;
+  [1,2,3].forEach(function(l){var b=document.getElementById('lj'+l);if(b)b.className='lj-b'+(LJ===l?' a'+l:'');});
+  ['schnell','tief','lap'].forEach(function(m){var b=document.getElementById('mod-'+m);if(b)b.className='mod-b'+(MODUS===m?' ak':'');});
+}
+
+function starteQuiz(){
+  var pool=FB[LJ].slice();
+  var mc=pool.filter(function(q){return q.t==='mc';}).sort(function(){return Math.random()-.5;});
+  var of=pool.filter(function(q){return q.t==='of';}).sort(function(){return Math.random()-.5;});
+  if(MODUS==='schnell') QFRAGEN=mc.slice(0,5).concat(of.slice(0,5)).sort(function(){return Math.random()-.5;});
+  else if(MODUS==='tief') QFRAGEN=pool.sort(function(){return Math.random()-.5;}).slice(0,15);
+  else QFRAGEN=pool.sort(function(){return Math.random()-.5;});
+  QIDX=0;QANT=[];WIEDERHOLUNG=false;zeigeFrage();zeige('s-quiz');
+}
+
+function zeigeFrage(){
+  var q=QFRAGEN[QIDX];
+  document.getElementById('prog').style.width=Math.round((QIDX/QFRAGEN.length)*100)+'%';
+  document.getElementById('q-nr').textContent='Frage '+(QIDX+1)+' von '+QFRAGEN.length;
+  document.getElementById('q-badge').innerHTML='<span class="badge '+(q.t==='mc'?'bmc':'bof')+'">'+(q.t==='mc'?'Multiple Choice':'Offene Frage')+'</span>';
+  document.getElementById('q-thema').textContent=q.th;
+  document.getElementById('q-txt').textContent=q.f;
+  document.getElementById('q-feedback').style.display='none';
+  document.getElementById('q-feedback').innerHTML='';
+  var antDiv=document.getElementById('q-antwort');
+  var btnDiv=document.getElementById('q-btns');
+  antDiv.innerHTML='';btnDiv.innerHTML='';
+  if(q.t==='mc'){
+    q.o.forEach(function(opt,i){
+      var b=document.createElement('button');
+      b.className='opt';
+      b.innerHTML='<b style="color:#9A9188;margin-right:8px">'+String.fromCharCode(65+i)+')</b>'+opt;
+      b.addEventListener('click',function(){
+        document.querySelectorAll('.opt').forEach(function(x){x.className='opt';});
+        b.className='opt gew';
+        var pb=document.getElementById('btn-prüfe');
+        if(pb){pb.className='btn btn-d';pb.disabled=false;pb.onclick=function(){pruefeMC(i);};}
+      });
+      antDiv.appendChild(b);
+    });
+    var pb=document.createElement('button');
+    pb.id='btn-prüfe';pb.className='btn btn-grau';pb.textContent='Antwort prüfen';pb.disabled=true;
+    btnDiv.appendChild(pb);
+  } else {
+    var ta=document.createElement('textarea');
+    ta.rows=5;ta.placeholder='Schreib was du weißt…';ta.id='ta-antwort';
+    ta.addEventListener('input',function(){
+      var sb2=document.getElementById('btn-senden');
+      if(sb2){if(ta.value.trim().length>0){sb2.className='btn btn-d';sb2.disabled=false;}else{sb2.className='btn btn-grau';sb2.disabled=true;}}
+    });
+    antDiv.appendChild(ta);
+    var sb2=document.createElement('button');
+    sb2.id='btn-senden';sb2.className='btn btn-grau';sb2.textContent='Antwort abschicken →';sb2.disabled=true;
+    sb2.addEventListener('click',pruefeOffen);
+    btnDiv.appendChild(sb2);
+    var wb=document.createElement('button');
+    wb.className='btn btn-h';wb.textContent='Ich weiß es nicht – Lösung zeigen';
+    wb.addEventListener('click',function(){
+      QANT.push({q:QFRAGEN[QIDX],korrekt:false,punkte:0});
+      zeigeOffen(0,'Nicht gewusst – kein Problem!',null,QFRAGEN[QIDX].ml);
+    });
+    btnDiv.appendChild(wb);
+  }
+}
+
+function pruefeMC(gew){
+  var q=QFRAGEN[QIDX];
+  var kor=gew===q.r;
+  document.querySelectorAll('.opt').forEach(function(b,i){
+    b.disabled=true;
+    if(i===q.r) b.className='opt ric';
+    else if(i===gew&&!kor) b.className='opt fal';
+  });
+  var fb=document.getElementById('q-feedback');
+  fb.className='fb '+(kor?'fb-g':'fb-r');
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#3D6B50':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>';
+  fb.style.display='block';
+  QANT.push({q:q,korrekt:kor,punkte:kor?10:0});
+  zeigeWeiter();
+}
+
+// ── NEUE pruefeOffen – verwendet neue Bewertungslogik ─────────────────────────
+function pruefeOffen(){
+  var q=QFRAGEN[QIDX];
+  var ta=document.getElementById('ta-antwort');
+  var antwortText=ta?ta.value:'';
+
+  var ergebnis=pruefeOffeneAntwort(antwortText,q);
+  var treffer=ergebnis.treffer;
+  var gesamt=ergebnis.gesamt;
+  var punkte=ergebnis.punkte;
+
+  var staerke=gesamt>0?(treffer+' von '+gesamt+' Punkten erreicht'):null;
+  QANT.push({q:q,korrekt:punkte>=6,punkte:punkte});
+  zeigeOffen(punkte,null,staerke,q.ml);
+}
+
+function zeigeOffen(punkte,hinweis,staerke,muster){
+  var ta=document.getElementById('ta-antwort');
+  if(ta) ta.disabled=true;
+  var cls=punkte>=7?'fb-g':punkte>=4?'fb-o':'fb-r';
+  var note=hinweis||(punkte>=7?'Gut gemacht!':punkte>=4?'Teilweise richtig':'Nochmal anschauen');
+  var col=punkte>=7?'#6B8F71':punkte>=4?'#A09050':'#C44030';
+  var fb=document.getElementById('q-feedback');
+  fb.className='fb '+cls;
+  fb.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:8px">'+
+    '<div style="font-weight:700;font-size:14px;color:#2C2C2C">'+note+'</div>'+
+    '<div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:'+col+'">'+punkte+'/10</div>'+
+  '</div>'+(staerke?'<div style="font-size:12px;color:#3D6B50;margin-bottom:4px">✓ '+staerke+'</div>':'')+
+  '<div class="ml-box"><div class="ml-lab">Musterlösung</div><div class="ml-txt">'+muster+'</div></div>';
+  fb.style.display='block';
+  zeigeWeiter();
+}
+
+function zeigeWeiter(){
+  var bd=document.getElementById('q-btns');
+  bd.innerHTML='';
+  var nb=document.createElement('button');
+  nb.className='btn btn-g';
+
+  // Button-Text je nach Situation
+  var istLetzte=QIDX+1>=QFRAGEN.length;
+  var falsche=QANT.filter(function(a){return !a.korrekt;});
+  if(!istLetzte){
+    nb.textContent='Nächste Frage →';
+  } else if(!WIEDERHOLUNG && falsche.length>0){
+    nb.textContent='Falsche Fragen wiederholen ('+falsche.length+') →';
+    nb.style.background='#C4B86A';nb.style.color='#2C2C2C';
+  } else {
+    nb.textContent='Auswertung →';
+  }
+
+  nb.addEventListener('click',function(){
+    if(QIDX+1<QFRAGEN.length){
+      // Nächste Frage im laufenden Quiz
+      QIDX++;zeigeFrage();
+    } else if(!WIEDERHOLUNG && falsche.length>0){
+      // Wiederholungsrunde starten
+      WIEDERHOLUNG=true;
+      QFRAGEN=falsche.map(function(a){return a.q;}).sort(function(){return Math.random()-.5;});
+      QIDX=0;
+      // Info-Banner kurz anzeigen
+      var banner=document.createElement('div');
+      banner.style.cssText='background:#C4B86A22;border:1.5px solid #C4B86A;border-radius:10px;padding:11px 14px;margin-bottom:10px;font-size:13px;color:#8A7A30;font-weight:600;text-align:center';
+      banner.textContent='\u21ba Wiederholung: '+falsche.length+' Fragen die du noch \u00fcben solltest';
+      var prog=document.querySelector('.prog');
+      if(prog&&prog.parentNode){prog.parentNode.insertBefore(banner,prog.nextSibling);}
+      setTimeout(function(){if(banner.parentNode)banner.parentNode.removeChild(banner);},3000);
+      zeigeFrage();
+    } else {
+      // Auswertung
+      zeigeErgebnis();
+    }
+  });
+  bd.appendChild(nb);
+}
+
+async function zeigeErgebnis(){
+  zeige('s-ergebnis');
+  var g=QANT.length;
+  var p=QANT.reduce(function(s,a){return s+(a.punkte||0);},0);
+  var ok=QANT.filter(function(a){return a.korrekt;}).length;
+  var s=Math.round(p/g);
+  var note=s>=9?'Sehr gut ✦':s>=7?'Gut':s>=5?'Befriedigend':'Weiter üben';
+  var col=s>=9?'#3D6B50':s>=7?'#6B8F71':s>=5?'#A09050':'#C44030';
+  var schwach=[];
+  QANT.forEach(function(a){if(!a.korrekt&&schwach.indexOf(a.q.th)<0)schwach.push(a.q.th);});
+  document.getElementById('score-box').innerHTML=
+    '<div style="font-size:14px;color:'+col+';font-weight:700;margin-bottom:4px">'+note+'</div>'+
+    '<div style="font-size:12px;color:#6B6560">'+ok+' von '+g+' richtig · '+p+' von '+(g*10)+' Punkten</div>';
+  var komp={};
+  if(AKTLEHRLING){
+    komp=await speichereKompetenz(AKTLEHRLING.id,QANT);
+    await sb.from('verlauf').insert({lehrling_id:AKTLEHRLING.id,datum:new Date().toLocaleDateString('de-AT'),lehrjahr:LJ,richtig:ok,falsch:g-ok,gesamt:g,punkte:p,schwach:schwach});
+  }
+  var themen=[];
+  QANT.forEach(function(a){if(themen.indexOf(a.q.th)<0)themen.push(a.q.th);});
+  var html=renderKompetenz(komp,themen);
+  html+='<div class="lab" style="margin-bottom:8px;margin-top:4px">Einzelfragen</div>';
+  QANT.forEach(function(a){
+    html+='<div class="karte" style="border-left:3px solid '+(a.korrekt?'#6B8F71':'#D4A97A')+';margin-bottom:8px">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:3px">'+
+        '<div style="font-size:11px;color:#9A9188">'+a.q.th+'</div>'+
+        '<div style="font-size:12px;font-weight:700;color:'+(a.korrekt?'#6B8F71':'#C44030')+'">'+
+          (a.q.t==='mc'?(a.korrekt?'✓':'✗'):(a.punkte||0)+'/10')+'</div>'+
+      '</div>'+
+      '<div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+a.q.f+'</div>'+
+    '</div>';
+  });
+  document.getElementById('erg-details').innerHTML=html;
+}
+
+async function zeigeVerlauf(){
+  zeige('s-verlauf');
+  if(!AKTLEHRLING){document.getElementById('v-liste').innerHTML='<p style="color:#9A9188;font-size:13px">Nicht eingeloggt.</p>';return;}
+  var komp=await ladeKompetenz(AKTLEHRLING.id);
+  var alleThemen=['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Dauerwelle & Umformung','Beratungsgespräch & Kundenkommunikation'];
+  var bekannt=alleThemen.filter(function(t){return komp[t]&&berechneStatus(komp[t]);});
+  var {data:verlauf}=await sb.from('verlauf').select('*').eq('lehrling_id',AKTLEHRLING.id).order('erstellt_am',{ascending:false}).limit(20);
+  var html='';
+  if(bekannt.length) html+=renderKompetenz(komp,bekannt);
+  if(verlauf&&verlauf.length){
+    html+='<div class="lab" style="margin-bottom:8px">Durchläufe</div>';
+    verlauf.forEach(function(v){
+      var sc=Math.round(v.punkte/v.gesamt);
+      html+='<div class="karte" style="border-left:3px solid '+(sc>=7?'#6B8F71':sc>=5?'#C4B86A':'#D4A97A')+';margin-bottom:8px">'+
+        '<div style="display:flex;justify-content:space-between">'+
+          '<div style="font-size:12px;color:#9A9188">'+v.datum+' · '+v.lehrjahr+'. Lehrjahr</div>'+
+          '<div style="font-weight:700;font-size:14px;color:'+(sc>=7?'#6B8F71':'#D4A97A')+'">'+sc+'/10</div>'+
+        '</div>'+
+        (v.schwach&&v.schwach.length?'<div style="font-size:11px;color:#9A6530;margin-top:3px">→ '+v.schwach.join(', ')+'</div>':'')+
+      '</div>';
+    });
+  } else {
+    html+='<p style="color:#9A9188;font-size:13px">Noch keine Quizze absolviert.</p>';
+  }
+  document.getElementById('v-liste').innerHTML=html;
+}
+
+async function ladeDashboard(){
+  document.getElementById('dashboard-liste').innerHTML='<div class="laden">Wird geladen…</div>';
+  var {data:lehrlinge}=await sb.from('lehrlinge').select('*').order('name');
+  if(!lehrlinge||!lehrlinge.length){document.getElementById('dashboard-liste').innerHTML='<p style="color:#9A9188;font-size:13px">Noch keine Lehrlinge angelegt.</p>';return;}
+  var html='';
+  for(var i=0;i<lehrlinge.length;i++){
+    var l=lehrlinge[i];
+    var {data:vl}=await sb.from('verlauf').select('punkte,gesamt').eq('lehrling_id',l.id).order('erstellt_am',{ascending:false}).limit(1);
+    var letztes=vl&&vl.length?'Letztes: '+Math.round(vl[0].punkte/vl[0].gesamt)+'/10':'Noch kein Quiz';
+    html+='<div class="karte" style="cursor:pointer;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center" id="dl-'+l.id+'">'+
+      '<div><div style="font-family:Georgia,serif;font-size:18px;color:#2C2C2C">'+l.name+'</div>'+
+      '<div style="font-size:11px;color:#9A9188;margin-top:2px">'+l.lehrjahr+'. Lehrjahr · '+letztes+'</div></div>'+
+      '<div style="font-size:20px;color:#9A9188">›</div></div>';
+  }
+  document.getElementById('dashboard-liste').innerHTML=html;
+  lehrlinge.forEach(function(l){
+    var el=document.getElementById('dl-'+l.id);
+    if(el) el.addEventListener('click',function(){zeigeDetailLehrling(l);});
+  });
+}
+
+async function zeigeDetailLehrling(lehrling){
+  document.getElementById('detail-name').textContent=lehrling.name;
+  zeige('s-lehrling-detail');
+  document.getElementById('detail-inhalt').innerHTML='<div class="laden">Wird geladen…</div>';
+  var komp=await ladeKompetenz(lehrling.id);
+  var alleThemen=['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Dauerwelle & Umformung','Beratungsgespräch & Kundenkommunikation'];
+  var bekannt=alleThemen.filter(function(t){return komp[t]&&berechneStatus(komp[t]);});
+  var {data:verlauf}=await sb.from('verlauf').select('*').eq('lehrling_id',lehrling.id).order('erstellt_am',{ascending:false}).limit(10);
+  var html='';
+  if(bekannt.length) html+=renderKompetenz(komp,bekannt);
+  else html+='<p style="color:#9A9188;font-size:13px;margin-bottom:16px">Noch kein Kompetenzstand vorhanden.</p>';
+  if(verlauf&&verlauf.length){
+    html+='<div class="lab" style="margin-bottom:8px">Letzte Durchläufe</div>';
+    verlauf.forEach(function(v){
+      var sc=Math.round(v.punkte/v.gesamt);
+      html+='<div class="karte" style="border-left:3px solid '+(sc>=7?'#6B8F71':sc>=5?'#C4B86A':'#D4A97A')+';margin-bottom:8px">'+
+        '<div style="display:flex;justify-content:space-between">'+
+          '<div style="font-size:12px;color:#9A9188">'+v.datum+' · '+v.lehrjahr+'. LJ</div>'+
+          '<div style="font-weight:700;font-size:14px;color:'+(sc>=7?'#6B8F71':'#D4A97A')+'">'+sc+'/10</div>'+
+        '</div>'+
+        (v.schwach&&v.schwach.length?'<div style="font-size:11px;color:#9A6530;margin-top:3px">→ '+v.schwach.join(', ')+'</div>':'')+
+      '</div>';
+    });
+  }
+  html+='<div style="display:flex;gap:10px;margin-top:16px">'+
+    '<button class="btn btn-h" id="btn-reset-verlauf" style="flex:1">↺ Verlauf zurückstellen</button>'+
+    '<button class="btn btn-r" id="btn-del-lehrling" style="flex:1">✕ Lehrling löschen</button>'+
+  '</div>';
+  document.getElementById('detail-inhalt').innerHTML=html;
+  document.getElementById('btn-reset-verlauf').addEventListener('click',async function(){
+    if(!confirm('Verlauf von '+lehrling.name+' wirklich zurückstellen?')) return;
+    await sb.from('verlauf').delete().eq('lehrling_id',lehrling.id);
+    await sb.from('kompetenz').delete().eq('lehrling_id',lehrling.id);
+    alert('Verlauf von '+lehrling.name+' wurde zurückgestellt.');
+    zeigeDetailLehrling(lehrling);
+  });
+  document.getElementById('btn-del-lehrling').addEventListener('click',async function(){
+    if(!confirm(lehrling.name+' wirklich löschen?')) return;
+    await sb.from('lehrlinge').delete().eq('id',lehrling.id);
+    await sb.auth.admin.deleteUser(lehrling.user_id).catch(function(){});
+    await ladeDashboard();zeige('s-dashboard');
+  });
+}
+
+async function speichereNeuenLehrling(){
+  var name=document.getElementById('neu-name').value.trim();
+  var lj=parseInt(document.getElementById('neu-lj').value);
+  var pin=document.getElementById('neu-pin').value.trim();
+  versteckeFehler('neu-fehler');
+  if(!name||!pin){zeigeFehler('neu-fehler','Bitte alle Felder ausfüllen.');return;}
+  if(pin.length!==6||!/^\d{6}$/.test(pin)){zeigeFehler('neu-fehler','PIN muss genau 6 Ziffern sein.');return;}
+  var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
+  var {data:authData,error:authErr}=await sb.auth.signUp({email:email,password:pin,options:{data:{name:name},emailRedirectTo:null}});
+  if(authData&&authData.user) await sb.rpc('confirm_user_email',{user_id:authData.user.id}).catch(function(){});
+  if(authErr){zeigeFehler('neu-fehler','Fehler: '+authErr.message);return;}
+  var {error:dbErr}=await sb.from('lehrlinge').insert({user_id:authData.user.id,name:name,lehrjahr:lj});
+  if(dbErr){zeigeFehler('neu-fehler','Datenbankfehler: '+dbErr.message);return;}
+  document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
+  await ladeDashboard();zeige('s-dashboard');
+}
+
+function zeigeVerw(){updateVerwListe();zeige('s-verw');}
+
+function updateVerwListe(){
+  [1,2,3].forEach(function(l){var b=document.getElementById('vlj'+l);if(b)b.className='lj-b'+(VLEHRJAHR===l?' a'+l:'');});
+  var fragen=FB[VLEHRJAHR];
+  var el=document.getElementById('verw-liste');
+  el.innerHTML='';
+  fragen.forEach(function(q,i){
+    var d=document.createElement('div');
+    d.className='karte';
+    d.style.cssText='border-left:3px solid '+(q.t==='mc'?'#8FAF7A':'#C4B86A')+';cursor:pointer;margin-bottom:8px';
+    d.innerHTML='<div style="font-size:10px;color:#9A9188;font-weight:700;margin-bottom:3px">'+(q.t==='mc'?'MC':'OFFEN')+' · #'+(i+1)+' · '+q.th+'</div><div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+q.f.substring(0,80)+(q.f.length>80?'…':'')+'</div>';
+    d.addEventListener('click',(function(idx){return function(){editiere(idx);};})(i));
+    el.appendChild(d);
+  });
+}
+
+function editiere(idx){
+  VIDX=idx;
+  var q=FB[VLEHRJAHR][idx];
+  document.getElementById('ed-titel').textContent='Frage bearbeiten';
+  var THEMEN=['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Dauerwelle & Umformung','Beratungsgespräch & Kundenkommunikation'];
+  var html='<div style="margin-bottom:12px"><div class="lab">Thema</div><select id="e-th">'+THEMEN.map(function(t){return '<option'+(q.th===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>';
+  html+='<div style="margin-bottom:12px"><div class="lab">Frage</div><textarea id="e-f" rows="3">'+q.f+'</textarea></div>';
+  if(q.t==='mc'){
+    html+='<div class="lab">Antworten (✓ = richtig)</div>';
+    q.o.forEach(function(opt,i){html+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><button id="er'+i+'" style="width:30px;height:30px;border-radius:50%;border:2px solid '+(q.r===i?'#6B8F71':'#DDD8D0')+';background:'+(q.r===i?'#6B8F71':'white')+';color:'+(q.r===i?'white':'#ccc')+';cursor:pointer;font-weight:700;font-family:system-ui">✓</button><input id="eo'+i+'" value="'+opt.replace(/"/g,'&quot;')+'" style="flex:1;margin:0"></div>';});
+    html+='<div style="margin-top:10px"><div class="lab">Erklärung</div><textarea id="e-e" rows="2">'+q.e+'</textarea></div>';
+  } else {
+    html+='<div style="margin-bottom:12px"><div class="lab">Musterlösung</div><textarea id="e-ml" rows="3">'+q.ml+'</textarea></div>';
+    var mbAnzeige=Array.isArray(q.mb)&&q.mb.length&&typeof q.mb[0]==='object'?'[Neue Struktur – im Code bearbeiten]':((q.mb||[]).join(', '));
+    html+='<div><div class="lab">Schlüsselbegriffe</div><input id="e-mb" value="'+mbAnzeige+'" style="margin:0"></div>';
+  }
+  html+='<div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-g" id="e-save" style="flex:1">Speichern</button><button class="btn btn-r" id="e-del" style="flex:1">Löschen</button></div>';
+  document.getElementById('ed-inhalt').innerHTML=html;
+  if(q.t==='mc'){
+    [0,1,2,3].forEach(function(i){
+      var b=document.getElementById('er'+i);
+      if(!b) return;
+      b.addEventListener('click',function(){
+        FB[VLEHRJAHR][VIDX].r=i;
+        [0,1,2,3].forEach(function(k){var x=document.getElementById('er'+k);if(!x)return;x.style.borderColor=k===i?'#6B8F71':'#DDD8D0';x.style.background=k===i?'#6B8F71':'white';x.style.color=k===i?'white':'#ccc';});
+      });
+    });
+  }
+  document.getElementById('e-save').addEventListener('click',function(){
+    var q2=FB[VLEHRJAHR][VIDX];
+    q2.th=document.getElementById('e-th').value;
+    q2.f=document.getElementById('e-f').value;
+    if(q2.t==='mc'){[0,1,2,3].forEach(function(i){var el2=document.getElementById('eo'+i);if(el2)q2.o[i]=el2.value;});var ee=document.getElementById('e-e');if(ee)q2.e=ee.value;}
+    else{var ml=document.getElementById('e-ml');if(ml)q2.ml=ml.value;var mb=document.getElementById('e-mb');if(mb&&typeof q2.mb[0]==='string')q2.mb=mb.value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
+    zeige('s-verw');updateVerwListe();
+  });
+  document.getElementById('e-del').addEventListener('click',function(){
+    if(!confirm('Frage löschen?'))return;
+    FB[VLEHRJAHR].splice(VIDX,1);zeige('s-verw');updateVerwListe();
+  });
+  zeige('s-editor');
+}
+
+window.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('btn-login').addEventListener('click',loginLehrling);
+  document.getElementById('login-pin').addEventListener('keydown',function(e){if(e.key==='Enter')loginLehrling();});
+  document.getElementById('btn-zu-meisterin').addEventListener('click',function(){zeige('s-mlogin');});
+  document.getElementById('btn-mlogin').addEventListener('click',loginMeisterin);
+  document.getElementById('btn-mlogin-back').addEventListener('click',function(){zeige('s-login');});
+  document.getElementById('btn-logout').addEventListener('click',logout);
+  document.getElementById('btn-m-logout').addEventListener('click',logout);
+  [1,2,3].forEach(function(l){document.getElementById('lj'+l).addEventListener('click',function(){LJ=l;updateStart();});});
+  ['schnell','tief','lap'].forEach(function(m){document.getElementById('mod-'+m).addEventListener('click',function(){MODUS=m;updateStart();});});
+  document.getElementById('btn-quiz-los').addEventListener('click',starteQuiz);
+  document.getElementById('btn-verlauf-zeigen').addEventListener('click',zeigeVerlauf);
+  document.getElementById('btn-neu-quiz').addEventListener('click',function(){updateStart();zeige('s-start');});
+  document.getElementById('btn-v-zurueck').addEventListener('click',function(){zeige('s-start');});
+  document.getElementById('btn-lehrling-neu').addEventListener('click',function(){zeige('s-neu-lehrling');});
+  document.getElementById('btn-fragen-verw').addEventListener('click',zeigeVerw);
+  document.getElementById('btn-detail-back').addEventListener('click',function(){zeige('s-dashboard');});
+  document.getElementById('btn-neu-speichern').addEventListener('click',speichereNeuenLehrling);
+  document.getElementById('btn-neu-back').addEventListener('click',function(){zeige('s-dashboard');});
+  document.getElementById('btn-verw-back').addEventListener('click',function(){zeige('s-dashboard');});
+  [1,2,3].forEach(function(l){document.getElementById('vlj'+l).addEventListener('click',function(){VLEHRJAHR=l;updateVerwListe();});});
+  document.getElementById('btn-verw-neu').addEventListener('click',function(){alert('Neue Frage: Bitte im Verwaltungsbereich über Bearbeiten hinzufügen.');});
+  document.getElementById('btn-ed-back').addEventListener('click',function(){zeige('s-verw');updateVerwListe();});
+  sb.auth.getSession().then(function(result){
+    if(result.data&&result.data.session){
+      sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
+        if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');}
+      });
+    }
+  });
+});
+</script>
+</body>
+</html>
