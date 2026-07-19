@@ -1,0 +1,292 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/
+Subject: =?utf-8?Q?Lernquiz=20=C2=B7=20A=20Great=20Hair=20Day?=
+Date: Sun, 19 Jul 2026 15:48:19 +0200
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--W2m3TZDbTwE2yaBXQDlRWVVHyP4z93sF62QmAoSktV----"
+
+
+------MultipartBoundary--W2m3TZDbTwE2yaBXQDlRWVVHyP4z93sF62QmAoSktV----
+Content-Type: text/html
+Content-ID: <frame-E0F0B7917CB6340E5FEEB852C3D728DD@mhtml.blink>
+Content-Transfer-Encoding: binary
+Content-Location: https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/
+
+<!DOCTYPE html><html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" type="text/css" href="cid:css-e0f7bc59-9b84-434c-b27a-7ae1ccce1c0e@mhtml.blink" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lernquiz · A Great Hair Day</title>
+
+
+</head>
+<body>
+
+<div class="kopf">
+  <div class="kopf-klein">A Great Hair Day · Lehrlingsbegleitung</div>
+  <h1>Lernquiz ✂</h1>
+  <p>Österreichisches Berufsbild Friseur/in</p>
+</div>
+
+<div id="s-login" class="seite aktiv">
+  <div style="padding-top:32px">
+    <div class="lab" style="margin-bottom:16px;font-size:13px;color:#2C2C2C;text-transform:none;letter-spacing:0">Bitte einloggen</div>
+    <div id="login-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">Name</div>
+    <input type="text" id="login-name" placeholder="Dein Name (z.B. Ronya)" autocomplete="off">
+    <div class="lab">PIN</div>
+    <input type="password" id="login-pin" placeholder="6-stellige PIN" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <button class="btn btn-d" id="btn-login">Einloggen →</button>
+    <button class="link-k" id="btn-zu-meisterin">Meisterinnen-Login</button>
+  </div>
+</div>
+
+<div id="s-mlogin" class="seite">
+  <div style="padding-top:32px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Meisterinnen-Login</h2>
+    <div id="mlogin-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">E-Mail</div>
+    <input type="email" id="mlogin-email" value="mirjam.walenta@gmail.com">
+    <div class="lab">Passwort</div>
+    <input type="password" id="mlogin-pw" placeholder="Passwort" style="margin-bottom:16px">
+    <button class="btn btn-d" id="btn-mlogin">Einloggen →</button>
+    <button class="btn btn-h" id="btn-mlogin-back">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-start" class="seite">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:20px">
+    <div>
+      <div class="lab">Lehrling</div>
+      <div id="start-name" style="font-family:Georgia,serif;font-size:20px;color:#2C2C2C"></div>
+    </div>
+    <button id="btn-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:system-ui">Abmelden</button>
+  </div>
+  <div id="start-letztes"></div>
+  <div style="margin-bottom:18px">
+    <div class="lab">Lehrjahr</div>
+    <div class="lj-r">
+      <button class="lj-b" id="lj1">1. Lehrjahr</button>
+      <button class="lj-b" id="lj2">2. Lehrjahr</button>
+      <button class="lj-b" id="lj3">3. Lehrjahr</button>
+    </div>
+  </div>
+  <div style="margin-bottom:24px">
+    <div class="lab">Modus</div>
+    <button class="mod-b" id="mod-schnell"><div class="mod-t">Schnell-Check</div><div class="mod-i">10 Fragen · 10 Min</div></button>
+    <button class="mod-b" id="mod-tief"><div class="mod-t">Lerneinheit</div><div class="mod-i">15 Fragen · 20 Min</div></button>
+    <button class="mod-b" id="mod-lap"><div class="mod-t">LAP-Vorbereitung</div><div class="mod-i">Alle Fragen</div></button>
+  </div>
+  <button class="btn btn-d" id="btn-quiz-los">Quiz starten →</button>
+  <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
+</div>
+
+<div id="s-quiz" class="seite">
+  <div class="prog"><div class="prog-f" id="prog" style="width:0%"></div></div>
+  <div style="padding:16px 0 0">
+    <div class="meta"><span id="q-nr"></span><span id="q-badge"></span></div>
+    <div style="font-size:10px;color:#9A9188;margin-bottom:10px" id="q-thema"></div>
+    <div class="frage-box"><div class="frage-txt" id="q-txt"></div></div>
+    <div id="q-antwort"></div>
+    <div id="q-feedback" style="display:none"></div>
+    <div id="q-btns"></div>
+  </div>
+</div>
+
+<div id="s-ergebnis" class="seite">
+  <div style="padding-top:20px">
+    <div class="score-box" id="score-box"></div>
+    <div id="erg-details"></div>
+    <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
+  </div>
+</div>
+
+<div id="s-verlauf" class="seite">
+  <div style="padding-top:20px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:16px">Verlauf</h2>
+    <div id="v-liste"><div class="laden">Wird geladen…</div></div>
+    <button class="btn btn-h" id="btn-v-zurueck">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-dashboard" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Übersicht</h2>
+      <button id="btn-m-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:system-ui">Abmelden</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button class="btn btn-h" id="btn-lehrling-neu" style="margin:0">+ Lehrling anlegen</button>
+      <button class="btn btn-h" id="btn-fragen-verw" style="margin:0">✎ Fragen</button>
+    </div>
+    <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-neu-lehrling" class="seite">
+  <div style="padding-top:20px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Neuen Lehrling anlegen</h2>
+    <div id="neu-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">Name</div>
+    <input type="text" id="neu-name" placeholder="z.B. Ronya">
+    <div class="lab">Lehrjahr</div>
+    <select id="neu-lj" style="margin-bottom:10px">
+      <option value="1">1. Lehrjahr</option>
+      <option value="2">2. Lehrjahr</option>
+      <option value="3">3. Lehrjahr</option>
+    </select>
+    <div class="lab">PIN (6 Stellen)</div>
+    <input type="text" id="neu-pin" placeholder="z.B. 123456" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <button class="btn btn-g" id="btn-neu-speichern">Lehrling anlegen</button>
+    <button class="btn btn-h" id="btn-neu-back">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-lehrling-detail" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px" id="detail-name"></h2>
+      <button class="btn btn-h" id="btn-detail-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+    </div>
+    <div id="detail-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-verw" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Fragen</h2>
+      <button class="btn btn-h" id="btn-verw-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+    </div>
+    <div class="lj-r">
+      <button class="lj-b" id="vlj1">1. LJ</button>
+      <button class="lj-b" id="vlj2">2. LJ</button>
+      <button class="lj-b" id="vlj3">3. LJ</button>
+    </div>
+    <div id="verw-liste"></div>
+    <button class="btn btn-h" id="btn-verw-neu" style="border:2px dashed #DDD8D0;background:none;color:#9A9188">+ Neue Frage</button>
+  </div>
+</div>
+
+<div id="s-editor" class="seite">
+  <div style="padding-top:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:18px" id="ed-titel">Frage</h2>
+      <button class="btn btn-h" id="btn-ed-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+    </div>
+    <div id="ed-inhalt"></div>
+  </div>
+</div>
+
+
+
+
+</body></html>
+------MultipartBoundary--W2m3TZDbTwE2yaBXQDlRWVVHyP4z93sF62QmAoSktV----
+Content-Type: text/css
+Content-Transfer-Encoding: binary
+Content-Location: cid:css-e0f7bc59-9b84-434c-b27a-7ae1ccce1c0e@mhtml.blink
+
+@charset "utf-8";
+
+* { box-sizing: border-box; margin: 0px; padding: 0px; }
+
+body { font-family: system-ui, sans-serif; background: rgb(249, 247, 244); min-height: 100vh; }
+
+.seite { display: none; max-width: 640px; margin: 0px auto; padding: 20px; }
+
+.seite.aktiv { display: block; }
+
+.kopf { background: rgb(44, 44, 44); padding: 18px 20px; }
+
+.kopf-klein { font-size: 10px; letter-spacing: 2px; color: rgb(107, 143, 113); text-transform: uppercase; margin-bottom: 4px; }
+
+.kopf h1 { font-family: Georgia, serif; font-size: 22px; color: rgb(249, 247, 244); font-weight: normal; }
+
+.kopf p { font-size: 11px; color: rgb(90, 85, 80); margin-top: 3px; }
+
+.btn { display: block; width: 100%; padding: 14px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-family: system-ui; text-align: center; }
+
+.btn-d { background: rgb(44, 44, 44); color: rgb(249, 247, 244); }
+
+.btn-g { background: rgb(107, 143, 113); color: rgb(249, 247, 244); }
+
+.btn-h { background: rgb(237, 232, 224); color: rgb(44, 44, 44); }
+
+.btn-r { background: rgb(237, 232, 224); color: rgb(196, 64, 48); }
+
+.btn-grau { background: rgb(221, 216, 208); color: rgb(154, 145, 136); }
+
+input, select, textarea { width: 100%; border: 1.5px solid rgb(221, 216, 208); border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: system-ui; background: rgb(255, 255, 255); outline: none; margin-bottom: 10px; }
+
+textarea { resize: vertical; margin-bottom: 0px; }
+
+.lj-r { display: flex; gap: 8px; margin-bottom: 16px; }
+
+.lj-b { flex: 1 1 0%; padding: 11px 4px; border-radius: 10px; border: 2px solid rgb(221, 216, 208); background: rgb(255, 255, 255); font-size: 12px; cursor: pointer; font-family: system-ui; text-align: center; }
+
+.lj-b.a1 { border-color: rgb(143, 175, 122); background: rgba(143, 175, 122, 0.133); color: rgb(90, 138, 90); font-weight: 700; }
+
+.lj-b.a2 { border-color: rgb(196, 184, 106); background: rgba(196, 184, 106, 0.133); color: rgb(138, 122, 48); font-weight: 700; }
+
+.lj-b.a3 { border-color: rgb(212, 169, 122); background: rgba(212, 169, 122, 0.133); color: rgb(138, 96, 48); font-weight: 700; }
+
+.mod-b { width: 100%; padding: 13px 14px; border-radius: 10px; border: 2px solid rgb(221, 216, 208); background: rgb(255, 255, 255); margin-bottom: 8px; text-align: left; cursor: pointer; font-family: system-ui; }
+
+.mod-b.ak { border-color: rgb(107, 143, 113); background: rgba(107, 143, 113, 0.082); }
+
+.mod-t { font-size: 14px; font-weight: 600; color: rgb(44, 44, 44); }
+
+.mod-i { font-size: 11px; color: rgb(154, 145, 136); margin-top: 2px; }
+
+.prog { height: 4px; background: rgb(237, 232, 224); }
+
+.prog-f { height: 4px; background: rgb(107, 143, 113); transition: width 0.3s; }
+
+.frage-box { background: rgb(44, 44, 44); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+
+.frage-txt { font-family: Georgia, serif; font-size: 16px; color: rgb(249, 247, 244); line-height: 1.55; }
+
+.meta { font-size: 11px; color: rgb(154, 145, 136); margin-bottom: 8px; display: flex; justify-content: space-between; }
+
+.badge { display: inline-block; border-radius: 20px; padding: 2px 9px; font-size: 10px; font-weight: 700; }
+
+.bmc { background: rgba(143, 175, 122, 0.133); color: rgb(90, 138, 90); border: 1px solid rgb(143, 175, 122); }
+
+.bof { background: rgba(196, 184, 106, 0.133); color: rgb(138, 122, 48); border: 1px solid rgb(196, 184, 106); }
+
+.opt { width: 100%; padding: 12px 14px; border-radius: 10px; border: 2px solid rgb(221, 216, 208); background: rgb(255, 255, 255); text-align: left; font-size: 13px; cursor: pointer; margin-bottom: 8px; font-family: system-ui; line-height: 1.4; display: block; }
+
+.opt.gew { border-color: rgb(44, 44, 44); background: rgba(44, 44, 44, 0.05); }
+
+.opt.ric { border-color: rgb(107, 143, 113); background: rgba(143, 175, 122, 0.133); color: rgb(61, 107, 80); }
+
+.opt.fal { border-color: rgb(196, 64, 48); background: rgba(212, 88, 72, 0.125); color: rgb(196, 64, 48); }
+
+.fb { border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+
+.fb-g { background: rgba(143, 175, 122, 0.133); border: 1.5px solid rgb(107, 143, 113); }
+
+.fb-o { background: rgba(196, 184, 106, 0.133); border: 1.5px solid rgb(196, 184, 106); }
+
+.fb-r { background: rgba(212, 88, 72, 0.125); border: 1.5px solid rgb(196, 64, 48); }
+
+.ml-box { background: rgb(44, 44, 44); border-radius: 8px; padding: 14px; margin-top: 10px; }
+
+.ml-lab { font-size: 10px; color: rgb(107, 143, 113); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+
+.ml-txt { font-size: 13px; color: rgb(249, 247, 244); line-height: 1.55; }
+
+.score-box { background: rgb(237, 232, 224); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; }
+
+.karte { background: rgb(243, 239, 232); border-radius: 10px; padding: 14px; margin-bottom: 8px; }
+
+.lab { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: rgb(154, 145, 136); text-transform: uppercase; margin-bottom: 6px; }
+
+.link-k { background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; color: rgb(200, 192, 184); font-size: 11px; cursor: pointer; font-family: system-ui; text-decoration: underline; display: block; text-align: center; margin-top: 12px; padding: 6px; width: 100%; }
+
+.laden { text-align: center; padding: 40px 20px; color: rgb(154, 145, 136); font-size: 13px; }
+
+.fehler-box { background: rgba(212, 88, 72, 0.125); border: 1.5px solid rgb(196, 64, 48); border-radius: 10px; padding: 12px 14px; color: rgb(196, 64, 48); font-size: 13px; margin-bottom: 12px; }
+------MultipartBoundary--W2m3TZDbTwE2yaBXQDlRWVVHyP4z93sF62QmAoSktV------
