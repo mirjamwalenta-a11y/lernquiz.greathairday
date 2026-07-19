@@ -222,6 +222,72 @@ const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
 const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
+// ── FRAGEN AUS SUPABASE LADEN ────────────────────────────────────────────────
+// Beim Start: geänderte Fragen aus Supabase laden und in FB einspielen
+async function ladeFragenAusSupabase(){
+  try {
+    var {data} = await sb.from('mirjamwalenta-a11y\'s Project').select('*');
+    if(!data||!data.length) return;
+    data.forEach(function(row){
+      var lj = row.lehrjahr;
+      if(!FB[lj]) return;
+      var inhalt = JSON.parse(row.inhalt);
+      var idx = FB[lj].findIndex(function(q){return q.id===row.frage_id;});
+      if(idx>=0){
+        // Bestehende Frage aktualisieren
+        FB[lj][idx] = inhalt;
+      } else {
+        // Neue Frage hinzufügen
+        FB[lj].push(inhalt);
+      }
+    });
+    console.log('Fragen aus Supabase geladen:', data.length);
+  } catch(e) {
+    console.log('Fragen laden fehlgeschlagen:', e.message);
+  }
+}
+
+// Frage in Supabase speichern
+async function speichereFrage(lj, frage){
+  try {
+    var inhalt = JSON.stringify(frage);
+    // Prüfen ob schon vorhanden
+    var {data:bestehend} = await sb.from('mirjamwalenta-a11y\'s Project').select('*').eq('frage_id', frage.id);
+    if(bestehend && bestehend.length>0){
+      await sb.from('mirjamwalenta-a11y\'s Project').update({
+        lehrjahr: lj,
+        thema: frage.th,
+        typ: frage.t,
+        frage: frage.f,
+        inhalt: inhalt
+      }).eq('frage_id', frage.id);
+    } else {
+      await sb.from('mirjamwalenta-a11y\'s Project').insert({
+        frage_id: frage.id,
+        lehrjahr: lj,
+        thema: frage.th,
+        typ: frage.t,
+        frage: frage.f,
+        inhalt: inhalt
+      });
+    }
+    console.log('Frage gespeichert:', frage.id);
+  } catch(e) {
+    console.log('Frage speichern fehlgeschlagen:', e.message);
+  }
+}
+
+// Frage aus Supabase löschen
+async function loescheFrage(frageId){
+  try {
+    await sb.from('mirjamwalenta-a11y\'s Project').delete().eq('frage_id', frageId);
+    console.log('Frage gelöscht:', frageId);
+  } catch(e) {
+    console.log('Frage löschen fehlgeschlagen:', e.message);
+  }
+}
+
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // NEUE BEWERTUNGSLOGIK – nur dieser Block wurde geändert
 // Alles andere in der App bleibt identisch zum Original.
@@ -416,11 +482,30 @@ var FB={1:[
     {begriffe:["krankheitserreger","keime","bakterien","schutz"], teilwort:true}
   ],
   ml:"Ein natürlicher Schutzfilm der Haut mit einem pH-Wert von etwa 5,5, der Krankheitserreger abwehrt."},
-{id:"1-n6",t:"of",th:"Hautkunde",f:"Welche Ursachen können Schuppen haben?",mb:["trocken","pilze","pflegeprodukte","hauterkrankungen"],ml:"Trockene Haut, Pilze, ungeeignete Pflegeprodukte oder Hauterkrankungen."},
-{id:"1-n7",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Aufgaben haben Haare?",mb:["schutz","wärme","ästhetisch"],ml:"Schutz, Wärmeregulierung und ästhetische Wirkung."},
+{id:"1-n6",t:"of",th:"Hautkunde",f:"Welche Ursachen können Schuppen haben?",
+  mb:[
+    {begriffe:["trocken","trockene","trockenheit","trockne"], teilwort:true},
+    {begriffe:["pilze","pilz","pilzbefall","fungus"], teilwort:false},
+    {begriffe:["pflegeprodukte","produkte","pflegefehler","falsche produkte","ungeeignet"], teilwort:true},
+    {begriffe:["hauterkrankung","erkrankung","entzündung","entzündet","krankheit"], teilwort:true}
+  ],
+  ml:"Trockene Haut, Pilze, ungeeignete Pflegeprodukte oder Hauterkrankungen."},
+{id:"1-n7",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Aufgaben haben Haare?",
+  mb:[
+    {begriffe:["schutz","schützen","schützend"], teilwort:false},
+    {begriffe:["wärme","wärmeregulierung","temperatur","wärmen"], teilwort:false},
+    {begriffe:["ästhetisch","ästhetik","schönheit","optisch","aussehen","schön","dekoration"], teilwort:false}
+  ],
+  ml:"Schutz, Wärmeregulierung und ästhetische Wirkung."},
 {id:"1-n8",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Haarstrukturen gibt es?",mb:["glattes","welliges","lockiges","krauses"],ml:"Glattes, welliges, lockiges und krauses Haar."},
 {id:"1-n9",t:"of",th:"Haarkunde & Haarstruktur",f:"Wann ist Haarausfall normal?",mb:["100","pro tag","täglich"],ml:"Bis zu etwa 100 Haare pro Tag."},
-{id:"1-n10",t:"of",th:"Haarkunde & Haarstruktur",f:"Was ist Spliss?",mb:["aufspalten","haarspitzen","schädigung"],ml:"Das Aufspalten der Haarspitzen durch Schädigung."},
+{id:"1-n10",t:"of",th:"Haarkunde & Haarstruktur",f:"Was ist Spliss?",
+  mb:[
+    {begriffe:["aufspalten","aufgespalten","spalten","gespaltene","split"], teilwort:true},
+    {begriffe:["haarspitzen","spitzen","haarende","ende"], teilwort:true},
+    {begriffe:["schädigung","schaden","beschädigt","kaputtgehen"], teilwort:false}
+  ],
+  ml:"Das Aufspalten der Haarspitzen durch Schädigung."},
 {id:"1-n11",t:"of",th:"Haarkunde & Haarstruktur",f:"Warum sollte nasses Haar vorsichtig gekämmt werden?",mb:["empfindlich","dehnbar","vorsichtig"],ml:"Weil es empfindlicher und leichter dehnbar ist."},
 {id:"1-n12",t:"of",th:"Haarkunde & Haarstruktur",f:"Was versteht man unter Haarporosität?",mb:["feuchtigkeit","wirkstoffe","aufnehmen"],ml:"Die Fähigkeit des Haares, Feuchtigkeit und Wirkstoffe aufzunehmen."},
 {id:"1-n13",t:"of",th:"Farbenlehre & Coloration",f:"Was neutralisiert einen orangefarbenen Untergrundton?",mb:["blau","neutralisiert","orange"],ml:"Blau neutralisiert Orange."},
@@ -434,7 +519,13 @@ var FB={1:[
     {begriffe:["halskragen","kragen"], teilwort:true}
   ],
   ml:"Nach jedem Kunden oder mit einem hygienischen Einweg-Halskragen."},
-{id:"1-n18",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum dürfen benutzte Rasierklingen nicht wiederverwendet werden?",mb:["verletzung","infektion","gefahr"],ml:"Wegen der Verletzungs- und Infektionsgefahr."},
+{id:"1-n18",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum dürfen benutzte Rasierklingen nicht wiederverwendet werden?",
+  mb:[
+    {begriffe:["verletzung","verletzungsgefahr","schnitt","schnittgefahr","wunde"], teilwort:true},
+    {begriffe:["infektion","infektionsgefahr","keime","übertragung","ansteckung"], teilwort:true},
+    {begriffe:["gefahr","gefährlich","hygiene","sicherheit"], teilwort:false}
+  ],
+  ml:"Wegen der Verletzungs- und Infektionsgefahr."},
 {id:"1-n19",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Wie entsorgt man Rasierklingen?",mb:["stichfest","sicherheitsbehälter"],ml:"In einem stichfesten Sicherheitsbehälter."},
 {id:"1-n20",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie begrüßt man einen Kunden richtig?",mb:["freundlich","höflich","blickkontakt"],ml:"Freundlich, höflich und mit Blickkontakt."},
 {id:"1-n21",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was gehört zu einem professionellen Auftreten?",
@@ -494,10 +585,10 @@ var FB={1:[
   ml:"Zum Aufhellen des Naturpigments und Entwickeln der Haarfarbe."},
 {id:"1-p10",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet persönliche Hygiene?",
   mb:[
-    {begriffe:["arbeitskleidung","saubere kleidung","kleidung"], teilwort:false},
-    {begriffe:["hände","gepflegte hände"], teilwort:false},
-    {begriffe:["fingernägel","kurze fingernägel"], teilwort:true},
-    {begriffe:["körperpflege","hygiene"], teilwort:false}
+    {begriffe:["arbeitskleidung","kleidung","bekleidung","sauber","uniform","kittel"], teilwort:true},
+    {begriffe:["hände","gepflegte hände","handpflege"], teilwort:false},
+    {begriffe:["fingernägel","fingernagel","nägel","nagel"], teilwort:true},
+    {begriffe:["körperpflege","körperhygiene","hygiene","duschen","zähne","zähneputzen","pflege"], teilwort:true}
   ],
   ml:"Saubere Arbeitskleidung, gepflegte Hände, kurze Fingernägel und tägliche Körperpflege."},
 {id:"1-p11",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Arbeitsgeräte gereinigt werden?",
@@ -553,14 +644,14 @@ var FB={1:[
   ml:"Um Dämpfe und Gerüche zu reduzieren und für frische Luft zu sorgen."},
 {id:"1-p19",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Welche persönliche Schutzausrüstung wird im Salon verwendet?",
   mb:[
-    {begriffe:["handschuhe"], teilwort:false},
-    {begriffe:["schürze","kittel","schutzkleidung"], teilwort:false}
+    {begriffe:["handschuhe","handschuh","schutzhandschuh"], teilwort:true},
+    {begriffe:["schürze","kittel","mantel","schutzkleidung","umhang","schutzmantel","frisiermantel"], teilwort:true}
   ],
   ml:"Handschuhe und Schürzen."},
 {id:"1-p20",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum müssen elektrische Geräte regelmäßig überprüft werden?",
   mb:[
-    {begriffe:["stromunfall","strom","elektrisch"], teilwort:false},
-    {begriffe:["sicherheit","betriebssicherheit","schutz"], teilwort:false}
+    {begriffe:["stromunfall","stromschlag","strom","elektro","kurzschluss","brand"], teilwort:true},
+    {begriffe:["sicherheit","betriebssicherheit","schutz","sicherheitsgrund","gefahr"], teilwort:true}
   ],
   ml:"Zur Vermeidung von Stromunfällen und zur Gewährleistung der Betriebssicherheit."},
 {id:"1-p21",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wann sollte ein Allergietest durchgeführt werden?",
@@ -1231,11 +1322,19 @@ function editiere(idx){
     q2.f=document.getElementById('e-f').value;
     if(q2.t==='mc'){[0,1,2,3].forEach(function(i){var el2=document.getElementById('eo'+i);if(el2)q2.o[i]=el2.value;});var ee=document.getElementById('e-e');if(ee)q2.e=ee.value;}
     else{var ml=document.getElementById('e-ml');if(ml)q2.ml=ml.value;var mb=document.getElementById('e-mb');if(mb&&typeof q2.mb[0]==='string')q2.mb=mb.value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
+    // In Supabase speichern
+    speichereFrage(VLEHRJAHR, q2);
+    var btn=document.getElementById('e-save');
+    if(btn){btn.textContent='✓ Gespeichert!';btn.style.background='#6B8F71';setTimeout(function(){btn.textContent='Speichern';btn.style.background='';},2000);}
     zeige('s-verw');updateVerwListe();
   });
   document.getElementById('e-del').addEventListener('click',function(){
     if(!confirm('Frage löschen?'))return;
-    FB[VLEHRJAHR].splice(VIDX,1);zeige('s-verw');updateVerwListe();
+    var frageId=FB[VLEHRJAHR][VIDX].id;
+    FB[VLEHRJAHR].splice(VIDX,1);
+    // Aus Supabase löschen
+    loescheFrage(frageId);
+    zeige('s-verw');updateVerwListe();
   });
   zeige('s-editor');
 }
@@ -1261,14 +1360,32 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-neu-back').addEventListener('click',function(){zeige('s-dashboard');});
   document.getElementById('btn-verw-back').addEventListener('click',function(){zeige('s-dashboard');});
   [1,2,3].forEach(function(l){document.getElementById('vlj'+l).addEventListener('click',function(){VLEHRJAHR=l;updateVerwListe();});});
-  document.getElementById('btn-verw-neu').addEventListener('click',function(){alert('Neue Frage: Bitte im Verwaltungsbereich über Bearbeiten hinzufügen.');});
+  document.getElementById('btn-verw-neu').addEventListener('click',function(){
+    // Neue Frage anlegen
+    var neueId = VLEHRJAHR + '-neu-' + Date.now();
+    var neueFrage = {
+      id: neueId,
+      t: 'mc',
+      th: 'Hygiene & Schutzmaßnahmen',
+      f: 'Neue Frage',
+      o: ['Antwort A','Antwort B','Antwort C','Antwort D'],
+      r: 0,
+      e: 'Erklärung hier eingeben.'
+    };
+    FB[VLEHRJAHR].push(neueFrage);
+    VIDX = FB[VLEHRJAHR].length - 1;
+    editiere(VIDX);
+  });
   document.getElementById('btn-ed-back').addEventListener('click',function(){zeige('s-verw');updateVerwListe();});
-  sb.auth.getSession().then(function(result){
-    if(result.data&&result.data.session){
-      sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
-        if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');}
-      });
-    }
+  // Beim Start: zuerst geänderte Fragen aus Supabase laden
+  ladeFragenAusSupabase().then(function(){
+    sb.auth.getSession().then(function(result){
+      if(result.data&&result.data.session){
+        sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
+          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');}
+        });
+      }
+    });
   });
 });
 </script>
