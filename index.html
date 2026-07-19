@@ -226,7 +226,7 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 // Beim Start: geänderte Fragen aus Supabase laden und in FB einspielen
 async function ladeFragenAusSupabase(){
   try {
-    var {data} = await sb.from('mirjamwalenta-a11y\'s Project').select('*');
+    var {data} = await sb.from('fragen').select('*');
     if(!data||!data.length) return;
     data.forEach(function(row){
       var lj = row.lehrjahr;
@@ -252,9 +252,9 @@ async function speichereFrage(lj, frage){
   try {
     var inhalt = JSON.stringify(frage);
     // Prüfen ob schon vorhanden
-    var {data:bestehend} = await sb.from('mirjamwalenta-a11y\'s Project').select('*').eq('frage_id', frage.id);
+    var {data:bestehend} = await sb.from('fragen').select('*').eq('frage_id', frage.id);
     if(bestehend && bestehend.length>0){
-      await sb.from('mirjamwalenta-a11y\'s Project').update({
+      await sb.from('fragen').update({
         lehrjahr: lj,
         thema: frage.th,
         typ: frage.t,
@@ -262,7 +262,7 @@ async function speichereFrage(lj, frage){
         inhalt: inhalt
       }).eq('frage_id', frage.id);
     } else {
-      await sb.from('mirjamwalenta-a11y\'s Project').insert({
+      await sb.from('fragen').insert({
         frage_id: frage.id,
         lehrjahr: lj,
         thema: frage.th,
@@ -280,7 +280,7 @@ async function speichereFrage(lj, frage){
 // Frage aus Supabase löschen
 async function loescheFrage(frageId){
   try {
-    await sb.from('mirjamwalenta-a11y\'s Project').delete().eq('frage_id', frageId);
+    await sb.from('fragen').delete().eq('frage_id', frageId);
     console.log('Frage gelöscht:', frageId);
   } catch(e) {
     console.log('Frage löschen fehlgeschlagen:', e.message);
