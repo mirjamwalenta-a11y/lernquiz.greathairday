@@ -971,3 +971,85 @@ window.addEventListener('DOMContentLoaded',function(){
 </script>
 </body>
 </html>
+<!-- DIESER TEIL ERZEUGT DEN BEARBEITEN-KNOPF UND DAS FENSTER -->
+<div style="text-align: center; margin: 20px 0;">
+  <button onclick="oeffneEditor()" style="background: #A09050; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer;">
+    ⚙️ Frage bearbeiten / Schlüsselwörter ändern
+  </button>
+</div>
+
+<div id="admin-editor" style="background: #f9f9f9; border: 3px solid #A09050; padding: 20px; border-radius: 10px; margin: 20px auto; max-width: 600px; display: none; font-family: sans-serif;">
+  <h3 style="margin-top: 0; color: #2C2C2C;">Frage anpassen</h3>
+  
+  <p><b>Fragetext für Ronya:</b></p>
+  <input type="text" id="edit-frage" style="width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;">
+  
+  <p><b>Richtige Musterlösung:</b></p>
+  <textarea id="edit-musterloesung" style="width: 100%; padding: 10px; height: 80px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+  
+  <p><b>Schlüsselwörter (Mit Komma trennen. Jede Zeile ist ein Punkt):</b></p>
+  <textarea id="edit-varianten" style="width: 100%; padding: 10px; height: 120px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;" placeholder="Zeile 1: melanin, pigmente&#10;Zeile 2: oxidation, wasserstoff"></textarea>
+  
+  <p style="margin-top: 15px;">
+    <label style="font-size: 15px; cursor: pointer;">
+      <input type="checkbox" id="edit-teilwort" style="transform: scale(1.3); margin-right: 8px;"> Teilwort erlauben (z.B. Mantel statt Schutzmantel)
+    </label>
+  </p>
+  
+  <div style="margin-top: 20px; text-align: right;">
+    <button onclick="speichereFrage()" style="background: #6B8F71; color: white; padding: 12px 20px; border: none; border-radius: 5px; font-weight: bold; font-size: 14px; cursor: pointer;">💾 Im Internet speichern</button>
+    <button onclick="schliesseEditor()" style="background: #ccc; color: black; padding: 12px 20px; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; margin-left: 10px;">Abbrechen</button>
+  </div>
+</div>
+
+<script>
+function oeffneEditor() {
+  var q = QFRAGEN[QIDX];
+  if (!q) return alert("Bitte zuerst eine Frage aufrufen!");
+  document.getElementById('edit-frage').value = q.f || "";
+  document.getElementById('edit-musterloesung').value = q.ml || "";
+  document.getElementById('edit-teilwort').checked = q.teilwortErlaubt || false;
+  var variantenText = "";
+  if (q.varianten && q.varianten.length > 0) {
+    variantenText = q.varianten.map(function(g) { return g.join(", "); }).join("\n");
+  } else if (q.mb) {
+    variantenText = q.mb.join(", ");
+  }
+  document.getElementById('edit-varianten').value = variantenText;
+  document.getElementById('admin-editor').style.display = 'block';
+  document.getElementById('admin-editor').scrollIntoView({ behavior: 'smooth' });
+}
+
+function schliesseEditor() {
+  document.getElementById('admin-editor').style.display = 'none';
+}
+
+async function speichereFrage() {
+  var q = QFRAGEN[QIDX];
+  if (!q) return;
+  var neuerText = document.getElementById('edit-frage').value;
+  var neueLoesung = document.getElementById('edit-musterloesung').value;
+  var teilwort = document.getElementById('edit-teilwort').checked;
+  var roherText = document.getElementById('edit-varianten').value;
+  var neueVarianten = roherText.split("\n").map(function(z) {
+    return z.split(",").map(function(w) { return w.trim(); }).filter(Boolean);
+  }).filter(function(a) { return a.length > 0; });
+
+  q.f = neuerText;
+  q.ml = neueLoesung;
+  q.teilwortErlaubt = teilwort;
+  q.varianten = neueVarianten;
+
+  try {
+    const { error } = await supabase.from('fragen').update({ 
+      f: neuerText, ml: neueLoesung, teilwortErlaubt: teilwort, varianten: neueVarianten 
+    }).eq('id', q.id);
+    if (error) throw error;
+    alert("Super! Die Änderungen sind jetzt live im Internet.");
+    schliesseEditor();
+    if (typeof zeigeFrage === "function") zeigeFrage();
+  } catch (err) {
+    alert("Fehler beim Speichern: " + err.message);
+  }
+}
+</script>
