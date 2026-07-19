@@ -274,6 +274,7 @@ async function speichereFrage(lj, frage){
     console.log('Frage gespeichert:', frage.id);
   } catch(e) {
     console.log('Frage speichern fehlgeschlagen:', e.message);
+    throw e; // Fehler weitergeben damit .catch() greift
   }
 }
 
@@ -1322,11 +1323,16 @@ function editiere(idx){
     q2.f=document.getElementById('e-f').value;
     if(q2.t==='mc'){[0,1,2,3].forEach(function(i){var el2=document.getElementById('eo'+i);if(el2)q2.o[i]=el2.value;});var ee=document.getElementById('e-e');if(ee)q2.e=ee.value;}
     else{var ml=document.getElementById('e-ml');if(ml)q2.ml=ml.value;var mb=document.getElementById('e-mb');if(mb&&typeof q2.mb[0]==='string')q2.mb=mb.value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
-    // In Supabase speichern
-    speichereFrage(VLEHRJAHR, q2);
+    // In Supabase speichern - async, dann navigieren
     var btn=document.getElementById('e-save');
-    if(btn){btn.textContent='✓ Gespeichert!';btn.style.background='#6B8F71';setTimeout(function(){btn.textContent='Speichern';btn.style.background='';},2000);}
-    zeige('s-verw');updateVerwListe();
+    if(btn){btn.textContent='Wird gespeichert…';btn.disabled=true;btn.style.background='#9A9188';}
+    speichereFrage(VLEHRJAHR, q2).then(function(){
+      zeige('s-verw');
+      updateVerwListe();
+    }).catch(function(e){
+      if(btn){btn.textContent='Speichern';btn.disabled=false;btn.style.background='';}
+      alert('Fehler beim Speichern: ' + e.message);
+    });
   });
   document.getElementById('e-del').addEventListener('click',function(){
     if(!confirm('Frage löschen?'))return;
