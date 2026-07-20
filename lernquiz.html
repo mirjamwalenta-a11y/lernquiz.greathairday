@@ -219,7 +219,7 @@ textarea{resize:vertical;margin-bottom:0}
 <script>
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
-const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
 // ── FRAGEN AUS SUPABASE LADEN ────────────────────────────────────────────────
@@ -1199,9 +1199,11 @@ function zeigeVerw(){updateVerwListe();zeige('s-verw');}
 
 function updateVerwListe(){
   [1,2,3].forEach(function(l){var b=document.getElementById('vlj'+l);if(b)b.className='lj-b'+(VLEHRJAHR===l?' a'+l:'');});
-  var fragen=FB[VLEHRJAHR];
   var el=document.getElementById('verw-liste');
-  el.innerHTML='';
+  el.innerHTML='<div style="color:#9A9188;font-size:12px;padding:8px">Wird aktualisiert…</div>';
+  ladeFragenAusSupabase().then(function(){
+    el.innerHTML='';
+    var fragen=FB[VLEHRJAHR];
   fragen.forEach(function(q,i){
     var d=document.createElement('div');
     d.className='karte';
@@ -1209,6 +1211,7 @@ function updateVerwListe(){
     d.innerHTML='<div style="font-size:10px;color:#9A9188;font-weight:700;margin-bottom:3px">'+(q.t==='mc'?'MC':'OFFEN')+' · #'+(i+1)+' · '+q.th+'</div><div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+q.f.substring(0,80)+(q.f.length>80?'…':'')+'</div>';
     d.addEventListener('click',(function(idx){return function(){editiere(idx);};})(i));
     el.appendChild(d);
+  });
   });
 }
 
