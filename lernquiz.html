@@ -247,25 +247,15 @@ async function ladeFragenAusSupabase(){
 async function speichereFrage(lj, frage){
   try {
     var inhalt = JSON.stringify(frage);
-    var {data:bestehend} = await sb.from('fragen').select('*').eq('frage_id', frage.id);
-    if(bestehend && bestehend.length>0){
-      await sb.from('fragen').update({
-        lehrjahr: lj,
-        thema: frage.th,
-        typ: frage.t,
-        frage: frage.f,
-        inhalt: inhalt
-      }).eq('frage_id', frage.id);
-    } else {
-      await sb.from('fragen').insert({
-        frage_id: frage.id,
-        lehrjahr: lj,
-        thema: frage.th,
-        typ: frage.t,
-        frage: frage.f,
-        inhalt: inhalt
-      });
-    }
+    var {error} = await sb.from('fragen').upsert({
+      frage_id: frage.id,
+      lehrjahr: lj,
+      thema: frage.th,
+      typ: frage.t,
+      frage: frage.f,
+      inhalt: inhalt
+    }, { onConflict: 'frage_id' }).select();
+    if(error) throw error;
     console.log('Frage gespeichert:', frage.id);
   } catch(e) {
     console.log('Frage speichern fehlgeschlagen:', e.message);
