@@ -332,7 +332,7 @@ function bewertungsGruppen(frage) {
   // Alte Struktur: Array aus Strings
   if (typeof mb[0] === 'string') {
     return mb.map(function(b) {
-      return { begriffe: [b], teilwort: false };
+      return { begriffe: [b], teilwort: true };
     });
   }
 
