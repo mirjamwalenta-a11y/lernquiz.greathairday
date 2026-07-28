@@ -56,7 +56,11 @@ textarea{resize:vertical;margin-bottom:0}
 .link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
 .fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
-
+.btn-erklaer{width:100%;padding:11px;border:2px solid #6B8F71;border-radius:10px;background:none;color:#6B8F71;font-size:13px;font-weight:600;cursor:pointer;font-family:system-ui;margin-top:8px}
+.btn-erklaer:disabled{border-color:#DDD8D0;color:#9A9188;cursor:default}
+.erklaer-box{background:#2C2C2C;border-radius:12px;padding:16px;margin-top:10px}
+.erklaer-lab{font-size:10px;color:#6B8F71;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.erklaer-txt{font-size:13px;color:#F9F7F4;line-height:1.65}
 </style>
 </head>
 <body>
@@ -118,6 +122,7 @@ textarea{resize:vertical;margin-bottom:0}
   </div>
   <button class="btn btn-d" id="btn-quiz-los">Quiz starten →</button>
   <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
+  <a href="https://mirjamwalenta-a11y.github.io/lerntool.index.html/lerntool.html" target="_blank" style="display:block;margin-top:12px;padding:11px;border:2px solid #5B7B6F;border-radius:10px;text-align:center;color:#5B7B6F;font-size:13px;font-weight:600;text-decoration:none;font-family:system-ui">🎓 Lern-Tool öffnen</a>
 </div>
 
 <div id="s-quiz" class="seite">
@@ -1066,8 +1071,16 @@ function pruefeMC(gew){
   });
   var fb=document.getElementById('q-feedback');
   fb.className='fb '+(kor?'fb-g':'fb-r');
-  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#3D6B50':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>';
+  var erklaerBtn=!kor?'<button class="btn-erklaer" id="btn-erklaer-ki">💡 Erklär mir das nochmal</button><div class="erklaer-box" id="erklaer-inhalt" style="display:none"></div>':'';
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#3D6B50':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>'+erklaerBtn;
   fb.style.display='block';
+  if(!kor){
+    var ekBtn=document.getElementById('btn-erklaer-ki');
+    var ekBox=document.getElementById('erklaer-inhalt');
+    if(ekBtn&&ekBox){
+      (function(f,e){ ekBtn.addEventListener('click',function(){ ekBox.style.display='block'; ekBtn.disabled=true; ekBtn.textContent='Wird erklärt …'; holeKiErklaerung(f,null,e); }); })(q.f,q.e);
+    }
+  }
   QANT.push({q:q,korrekt:kor,punkte:kor?10:0});
   zeigeWeiter();
 }
@@ -1101,12 +1114,43 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
     '<div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:'+col+'">'+punkte+'/10</div>'+
   '</div>'+(staerke?'<div style="font-size:12px;color:#3D6B50;margin-bottom:4px">✓ '+staerke+'</div>':'')+
   '<div class="ml-box"><div class="ml-lab">Musterlösung</div><div class="ml-txt">'+muster+'</div></div>';
+  var erklaerBtn2=punkte<7?'<button class="btn-erklaer" id="btn-erklaer-ki">💡 Erklär mir das nochmal</button><div class="erklaer-box" id="erklaer-inhalt" style="display:none"></div>':'';
+  fb.innerHTML+=erklaerBtn2;
   fb.style.display='block';
+  if(punkte<7){
+    var ekBtn2=document.getElementById('btn-erklaer-ki');
+    var ekBox2=document.getElementById('erklaer-inhalt');
+    if(ekBtn2&&ekBox2){
+      (function(f,m){ ekBtn2.addEventListener('click',function(){ ekBox2.style.display='block'; ekBtn2.disabled=true; ekBtn2.textContent='Wird erklärt …'; holeKiErklaerung(f,m,null); }); })(QFRAGEN[QIDX]?QFRAGEN[QIDX].f:'',muster);
+    }
+  }
   zeigeWeiter();
 }
 
 
+// ── KI-ERKLÄRUNG ─────────────────────────────────────────────────────────────
+function holeKiErklaerung(frage, musterloesung, erklaerung) {
+  var btn = document.getElementById('btn-erklaer-ki');
+  var box = document.getElementById('erklaer-inhalt');
+  if (!box) return;
+  var text = musterloesung || erklaerung || '';
+  box.innerHTML = '<div class="erklaer-lab">💡 Merkhilfe</div><div class="erklaer-txt">' + text + '</div>';
+  if (btn) btn.style.display = 'none';
+}
 
+function fuegeErklaerButtonEin(frage, musterloesung, erklaerung) {
+  var fb = document.getElementById('q-feedback');
+  if (!fb) return;
+  var extra = document.createElement('div');
+  extra.innerHTML = '<button class="btn-erklaer" id="btn-erklaer-ki">💡 Erklär mir das nochmal</button><div class="erklaer-box" id="erklaer-inhalt" style="display:none"></div>';
+  fb.appendChild(extra);
+  var btn = document.getElementById('btn-erklaer-ki');
+  var erkBox = document.getElementById('erklaer-inhalt');
+  btn.addEventListener('click', function() {
+    erkBox.style.display = 'block';
+    holeKiErklaerung(frage, musterloesung, erklaerung);
+  });
+}
 
 function zeigeWeiter(){
   var bd=document.getElementById('q-btns');
