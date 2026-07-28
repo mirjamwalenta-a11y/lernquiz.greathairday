@@ -1128,32 +1128,13 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
 
 
 // ── KI-ERKLÄRUNG ─────────────────────────────────────────────────────────────
-async function holeKiErklaerung(frage, musterloesung, erklaerung) {
+function holeKiErklaerung(frage, musterloesung, erklaerung) {
   var btn = document.getElementById('btn-erklaer-ki');
-  if (btn) { btn.disabled = true; btn.textContent = 'Wird erklärt …'; }
-
-  var prompt = 'Ronya ist 15 Jahre alt und Friseur-Lehrling im 1. Lehrjahr in Wien. Sie hat gerade diese Prüfungsfrage nicht gewusst:\n\nFRAGE: ' + frage + '\nRICHTIGE ANTWORT: ' + (musterloesung || erklaerung || '') + '\n\nErkläre ihr WARUM das so ist – nicht nur WAS die Antwort ist. Sie kennt die Antwort schon (sie hat sie gerade gelesen). Sie will jetzt verstehen warum.\n\nSo schreibst du:\n- Stell dir vor du erklärst es ihr persönlich im Salon\n- Fang mit \"Stell dir vor...\" oder \"Denk daran wenn...\" an – mit einem echten Salon-Moment\n- Dann erkläre das Warum dahinter in 2-3 einfachen Sätzen\n- Keine Aufzählungen, kein Bullet-Points – fließender Text\n- Sprich sie direkt an (du)\n- Maximal 5 Sätze gesamt\n- Kein \"Das ist richtig weil\" oder \"Die Antwort lautet\" – sie weiß das schon';
-
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    var data = await res.json();
-    var text = (data.content || []).map(function(b) { return b.text || ''; }).join('').trim();
-    var box = document.getElementById('erklaer-inhalt');
-    if (box) box.innerHTML = '<div class="erklaer-lab">Erklärung für Ronya</div><div class="erklaer-txt">' + text.replace(/\n/g, '<br>') + '</div>';
-    if (btn) { btn.style.display = 'none'; }
-  } catch(e) {
-    var box = document.getElementById('erklaer-inhalt');
-    if (box) box.innerHTML = '<div class="erklaer-txt" style="color:#C44030">Fehler beim Laden. Bitte nochmal versuchen.</div>';
-    if (btn) { btn.disabled = false; btn.textContent = '💡 Erklär mir das nochmal'; }
-  }
+  var box = document.getElementById('erklaer-inhalt');
+  if (!box) return;
+  var text = musterloesung || erklaerung || '';
+  box.innerHTML = '<div class="erklaer-lab">💡 Merkhilfe</div><div class="erklaer-txt">' + text + '</div>';
+  if (btn) btn.style.display = 'none';
 }
 
 function fuegeErklaerButtonEin(frage, musterloesung, erklaerung) {
