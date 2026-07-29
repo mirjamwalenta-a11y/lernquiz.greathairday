@@ -67,6 +67,11 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   </div>
 
   <div class="grid2">
+    <button class="nav-card" onclick="heuteOeffnen()" style="grid-column:1/-1;border-color:#5B7B6F;background:#EAF0EE">
+      <div class="nav-icon">📋</div>
+      <div class="nav-title">Heute laut Lernplan</div>
+      <div class="nav-desc">Direkt einsteigen</div>
+    </button>
     <button class="nav-card" onclick="zeige('quiz')">
       <div class="nav-icon">❓</div>
       <div class="nav-title">Quiz starten</div>
@@ -87,6 +92,27 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-title">LAP-Vorbereitung</div>
       <div class="nav-desc">Prüfung üben</div>
     </button>
+  </div>
+</div>
+
+<!-- ── HEUTE LAUT LERNPLAN ── -->
+<div id="p-heute" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Heute</div>
+  <h1>Heute laut Lernplan</h1>
+
+  <div class="card">
+    <div class="label">Thema</div>
+    <div id="heute-thema" style="font-size:16px;font-weight:600;color:#1C1C1A;margin-bottom:16px"></div>
+    <div class="label">Dauer</div>
+    <div id="heute-dauer" style="font-size:14px;color:#1C1C1A;margin-bottom:16px"></div>
+    <div class="label">Lerntipp</div>
+    <div id="heute-tipp" style="font-size:13px;color:#1C1C1A;line-height:1.6;background:#EAF0EE;border-radius:6px;padding:12px;margin-bottom:20px"></div>
+    <button class="btn-primary" onclick="heuteStarten()">Jetzt starten →</button>
+    <div id="heute-verschieben-wrap" style="margin-top:10px;text-align:center">
+      <button id="heute-verschieben-btn" onclick="heuteVerschieben()" style="background:none;border:none;color:#7A7A70;font-size:13px;cursor:pointer;text-decoration:underline;font-family:system-ui">Später — in 1 Stunde</button>
+    </div>
+    <div id="heute-msg" style="display:none;font-size:13px;color:#5B7B6F;text-align:center;margin-top:10px"></div>
   </div>
 </div>
 
@@ -757,6 +783,73 @@ function lapNeu() {
   document.getElementById('lap-ergebnis').style.display = 'block';
   window.scrollTo(0, document.getElementById('lap-ergebnis').offsetTop - 20);
 }
+
+// ── HEUTE LAUT LERNPLAN ────────────────────────────────────────
+var HEUTE_VERSCHOBEN = false;
+
+function heuteOeffnen() {
+  // Heutiges Thema bestimmen — erstes Thema des gewählten Lehrjahrs als Beispiel
+  var themen = THEMEN[AKT_LJ] || [];
+  if (!themen.length) { zeige('home'); return; }
+
+  // Thema des Tages: Index basierend auf Wochentag (0=Mo…6=So)
+  var tag = new Date().getDay(); // 0=So,1=Mo…
+  var themaIdx = tag % themen.length;
+  var thema = themen[themaIdx];
+
+  // Tipp laden
+  var tipp = FORTSCHRITT_TIPPS[thema] || 'Lies die Fragen genau durch. Nimm dir Zeit für jede Antwort.';
+
+  document.getElementById('heute-thema').textContent = thema;
+  document.getElementById('heute-dauer').textContent = '20 Minuten';
+  document.getElementById('heute-tipp').textContent = tipp;
+
+  // Verschieben-Button zurücksetzen
+  var vBtn = document.getElementById('heute-verschieben-btn');
+  var vWrap = document.getElementById('heute-verschieben-wrap');
+  var msg = document.getElementById('heute-msg');
+  if (HEUTE_VERSCHOBEN) {
+    vWrap.style.display = 'none';
+    msg.style.display = 'block';
+    msg.textContent = 'Du hast deinen Lernmoment heute bereits verschoben.';
+  } else {
+    vWrap.style.display = 'block';
+    msg.style.display = 'none';
+  }
+
+  // Thema für Quiz vorauswählen
+  zeige('heute');
+}
+
+function heuteStarten() {
+  // Thema im Quiz vorauswählen und Quiz öffnen
+  var thema = document.getElementById('heute-thema').textContent;
+  zeige('quiz');
+  var sel = document.getElementById('quiz-thema');
+  if (sel) {
+    sel.value = thema;
+    quizReset();
+  }
+}
+
+function heuteVerschieben() {
+  if (HEUTE_VERSCHOBEN) return;
+  HEUTE_VERSCHOBEN = true;
+  document.getElementById('heute-verschieben-wrap').style.display = 'none';
+  var msg = document.getElementById('heute-msg');
+  msg.style.display = 'block';
+  msg.textContent = 'Verschoben. Du bekommst in 1 Stunde eine letzte Erinnerung.';
+}
+
+// Reset HEUTE_VERSCHOBEN täglich (bei neuem Tag)
+(function() {
+  var heute = new Date().toDateString();
+  var letzterTag = localStorage.getItem('lt_heute_tag');
+  if (letzterTag !== heute) {
+    HEUTE_VERSCHOBEN = false;
+    localStorage.setItem('lt_heute_tag', heute);
+  }
+})();
 
 function lapZeigAntwort() {
   document.getElementById('lap-antwort').style.display = 'block';
