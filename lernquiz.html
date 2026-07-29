@@ -118,7 +118,19 @@ textarea{resize:vertical;margin-bottom:0}
   </div>
   <button class="btn btn-d" id="btn-quiz-los">Quiz starten →</button>
   <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
-  <a href="https://mirjamwalenta-a11y.github.io/lerntool.index.html/lerntool.html" target="_blank" style="display:block;margin-top:12px;padding:11px;border:2px solid #5B7B6F;border-radius:10px;text-align:center;color:#5B7B6F;font-size:13px;font-weight:600;text-decoration:none;font-family:system-ui">🎓 Lern-Tool öffnen</a>
+
+  <!-- HEUTE LAUT LERNPLAN -->
+  <div id="heute-box" style="margin-top:16px;background:#EDE8E0;border-radius:12px;padding:16px;display:none">
+    <div class="lab">Heute laut Lernplan</div>
+    <div id="heute-thema-q" style="font-family:Georgia,serif;font-size:17px;color:#2C2C2C;margin-bottom:6px"></div>
+    <div id="heute-dauer-q" style="font-size:12px;color:#9A9188;margin-bottom:10px"></div>
+    <div id="heute-tipp-q" style="font-size:13px;color:#5A5550;background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.5"></div>
+    <button class="btn btn-g" id="heute-start-btn" style="margin-bottom:8px">Jetzt starten →</button>
+    <button id="heute-verschieben-btn" style="background:none;border:none;color:#9A9188;font-size:12px;cursor:pointer;font-family:system-ui;text-decoration:underline;width:100%;text-align:center;padding:4px">Später — in 1 Stunde</button>
+    <div id="heute-msg-q" style="display:none;font-size:12px;color:#6B8F71;text-align:center;padding:6px"></div>
+  </div>
+
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html" target="_blank" style="display:block;margin-top:12px;padding:11px;border:2px solid #5B7B6F;border-radius:10px;text-align:center;color:#5B7B6F;font-size:13px;font-weight:600;text-decoration:none;font-family:system-ui">🎓 Lern-Tool öffnen</a>
 </div>
 
 <div id="s-quiz" class="seite">
@@ -998,6 +1010,69 @@ function updateStart(){
     b.style.cursor='pointer';
   });
   ['schnell','tief','lap'].forEach(function(m){var b=document.getElementById('mod-'+m);if(b)b.className='mod-b'+(MODUS===m?' ak':'');});
+  heuteAktualisieren();
+}
+
+// ── HEUTE LAUT LERNPLAN ────────────────────────────────────────
+var HEUTE_VERSCHOBEN = false;
+
+(function resetHeuteTaglich(){
+  var heute = new Date().toDateString();
+  var letzter = localStorage.getItem('lq_heute_tag');
+  if(letzter !== heute){ HEUTE_VERSCHOBEN = false; localStorage.setItem('lq_heute_tag', heute); }
+})();
+
+function heuteAktualisieren(){
+  var box = document.getElementById('heute-box');
+  if(!box) return;
+
+  // Themen des aktuellen Lehrjahrs
+  var pool = FB[LJ] || [];
+  if(!pool.length){ box.style.display='none'; return; }
+
+  // Thema des Tages nach Wochentag
+  var wochentag = new Date().getDay(); // 0=So,1=Mo...6=Sa
+  // Mo-Sa lernen, So frei
+  if(wochentag === 0){ box.style.display='none'; return; }
+
+  var themen = [...new Set(pool.map(function(q){return q.th;}))];
+  var thema = themen[(wochentag-1) % themen.length];
+
+  document.getElementById('heute-thema-q').textContent = thema;
+  document.getElementById('heute-dauer-q').textContent = '20 Minuten · ' + (pool.filter(function(q){return q.th===thema;}).length) + ' Fragen verfügbar';
+
+  // Verschieben-Status
+  var vBtn = document.getElementById('heute-verschieben-btn');
+  var msg = document.getElementById('heute-msg-q');
+  if(HEUTE_VERSCHOBEN){
+    vBtn.style.display = 'none';
+    msg.style.display = 'block';
+    msg.textContent = 'Du hast deinen Lernmoment heute bereits verschoben. Letzte Chance!';
+  } else {
+    vBtn.style.display = 'block';
+    msg.style.display = 'none';
+  }
+
+  // Start-Button — startet Quiz mit diesem Thema
+  document.getElementById('heute-start-btn').onclick = function(){
+    // Thema filtern und Quiz starten
+    var filtered = pool.filter(function(q){return q.th===thema;});
+    if(!filtered.length) filtered = pool;
+    QFRAGEN = filtered.sort(function(){return Math.random()-.5;}).slice(0,10);
+    QIDX=0; QANT=[]; WIEDERHOLUNG=false;
+    zeigeFrage(); zeige('s-quiz');
+  };
+
+  document.getElementById('heute-verschieben-btn').onclick = function(){
+    if(HEUTE_VERSCHOBEN) return;
+    HEUTE_VERSCHOBEN = true;
+    document.getElementById('heute-verschieben-btn').style.display = 'none';
+    var m = document.getElementById('heute-msg-q');
+    m.style.display = 'block';
+    m.textContent = 'Verschoben. In 1 Stunde deine letzte Erinnerung.';
+  };
+
+  box.style.display = 'block';
 }
 
 function starteQuiz(){
