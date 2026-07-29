@@ -56,6 +56,9 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div class="tag">greathairday · Wien</div>
   <h1>Lern-Tool ✂</h1>
   <p class="sub">Für Ronya — Lehrlings-Begleitung</p>
+  <div id="admin-hinweis" style="display:none;background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#2C2C2C">
+    ✂ Du bist als Meisterin eingeloggt — <button onclick="zeige('admin')" style="background:none;border:none;color:#5B7B6F;font-size:13px;cursor:pointer;text-decoration:underline;font-family:system-ui;padding:0">Admin-Bereich öffnen</button>
+  </div>
 
   <div class="card">
     <div class="label">Lehrjahr wählen</div>
@@ -932,8 +935,8 @@ async function sbLoeschen(typ, schluessel) {
   await sb2.from(TABELLE).delete().eq('schluessel', schluessel).eq('typ', typ);
 }
 
-// ── ADMIN ────────────────────────────────────────────────────────
-var ADMIN_PW = 'MW121272-1050';
+// ── SUPABASE AUTH LOGIN ─────────────────────────────────────────
+var MEISTERIN_EMAIL = 'mirjam.walenta@gmail.com';
 var AQ_LJ = '1';
 var AL_TYP = 'theorie';
 var ALP_LJ = '1';
@@ -941,18 +944,43 @@ var AQEDIT_THEMA = '';
 var AQEDIT_IDX = -1;
 var ALEDIT_IDX = -1;
 
-function adminLogin() {
+async function adminLogin() {
   var pw = document.getElementById('admin-pw').value;
-  if (pw === ADMIN_PW) {
-    document.getElementById('admin-fehler').style.display = 'none';
+  var st = document.getElementById('admin-fehler');
+  st.style.display = 'none';
+  try {
+    var res = await sb2.auth.signInWithPassword({
+      email: MEISTERIN_EMAIL,
+      password: pw
+    });
+    if (res.error) {
+      st.style.display = 'block';
+      st.textContent = 'Falsches Passwort';
+      return;
+    }
     document.getElementById('admin-pw').value = '';
     zeige('admin');
-  } else {
-    document.getElementById('admin-fehler').style.display = 'block';
+  } catch(e) {
+    st.style.display = 'block';
+    st.textContent = 'Fehler: ' + e.message;
   }
 }
 
-function adminLogout() { zeige('home'); }
+async function adminLogout() {
+  await sb2.auth.signOut();
+  zeige('home');
+}
+
+// Beim Laden prüfen ob bereits eingeloggt
+window.addEventListener('DOMContentLoaded', function(){
+  sb2.auth.getSession().then(function(res){
+    if (res.data && res.data.session && res.data.session.user.email === MEISTERIN_EMAIL) {
+      // Bereits eingeloggt — Admin direkt zugänglich
+      document.getElementById('admin-hinweis').style.display = 'block';
+    }
+  });
+  ladeAllesDatenAusSupabase();
+});
 
 // ── ADMIN QUIZ ──────────────────────────────────────────────────
 function adminQuizInit() {
