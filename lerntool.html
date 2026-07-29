@@ -7,8 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
 body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100vh;padding:1.5rem 1rem}
-.wrap{max-width:580px;margin:0 auto}
+.wrap{max-width:580px;margin:0 auto;min-height:100vh}
 .label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
 .card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
 .btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
@@ -144,6 +145,12 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <h1>Lernplan</h1>
 
   <div class="card">
+    <div class="label">Lehrjahr</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button class="btn-lj ak" id="lp-lj1" onclick="lpLjWahl('1',this)">1. Lehrjahr</button>
+      <button class="btn-lj" id="lp-lj2" onclick="lpLjWahl('2',this)">2. Lehrjahr</button>
+      <button class="btn-lj" id="lp-lj3" onclick="lpLjWahl('3',this)">3. Lehrjahr</button>
+    </div>
     <div class="label">Lernzeit pro Woche</div>
     <select id="lp-stunden" style="margin-bottom:14px">
       <option value="2">2 Stunden</option>
@@ -733,11 +740,22 @@ function quizPruefe(btn, gewaehlt, richtig, erklaerung) {
 }
 
 // ── LERNPLAN ────────────────────────────────────────────────────
+var LP_LJ = '1';
+
+function lpLjWahl(lj, btn) {
+  LP_LJ = lj;
+  ['1','2','3'].forEach(function(l){
+    var b = document.getElementById('lp-lj'+l);
+    if(b) b.className = 'btn-lj' + (LP_LJ===l?' ak':'');
+  });
+  document.getElementById('lp-ergebnis').style.display = 'none';
+}
+
 function lernplanErstellen() {
   var std = document.getElementById('lp-stunden').value;
-  var plaene = LERNPLAENE[LEHRJAHR] || {};
+  var plaene = LERNPLAENE[LP_LJ] || {};
   var plan = plaene[std] || plaene['5'] || 'Für diese Kombination ist noch kein Plan hinterlegt.';
-  document.getElementById('lp-titel').textContent = LEHRJAHR+'. Lehrjahr · '+std+' Stunden / Woche';
+  document.getElementById('lp-titel').textContent = LP_LJ+'. Lehrjahr · '+std+' Stunden / Woche';
   document.getElementById('lp-inhalt').textContent = plan;
   document.getElementById('lp-ergebnis').style.display = 'block';
 }
@@ -975,8 +993,11 @@ async function adminLogout() {
 window.addEventListener('DOMContentLoaded', function(){
   sb2.auth.getSession().then(function(res){
     if (res.data && res.data.session && res.data.session.user.email === MEISTERIN_EMAIL) {
-      // Bereits eingeloggt — Admin direkt zugänglich
       document.getElementById('admin-hinweis').style.display = 'block';
+      // Wenn URL-Parameter admin=1 → direkt Admin öffnen
+      if (window.location.search.indexOf('admin=1') >= 0) {
+        zeige('admin');
+      }
     }
   });
   ladeAllesDatenAusSupabase();
