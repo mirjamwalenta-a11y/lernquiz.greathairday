@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lern-Tool · A Great Hair Day</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100vh;padding:1.5rem 1rem}
@@ -186,59 +187,37 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 </div>
 </div>
 
-<!-- ── MEISTERIN LOGIN ── -->
-<div id="p-mlogin" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
-  <div class="tag">greathairday · Wien</div>
+<div id="p-mlogin" class="page">
+  <button class="back-btn" onclick="zeige('home')">&#8592; Zurueck</button>
+  <div class="tag">greathairday</div>
   <h1>Meisterin-Login</h1>
-  <p class="sub">Für Mirjam · Admin-Bereich</p>
+  <p class="sub">Fuer Mirjam</p>
   <div class="card">
     <div class="label">Passwort</div>
-    <input type="password" id="admin-pw" placeholder="Admin-Passwort" style="margin-bottom:14px" onkeydown="if(event.key==='Enter')adminLogin()">
-    <div id="admin-fehler" style="display:none;color:#C44030;font-size:13px;margin-bottom:10px">❌ Falsches Passwort</div>
-    <button class="btn-primary" onclick="adminLogin()">Einloggen →</button>
+    <input type="password" id="admin-pw" placeholder="Passwort" style="margin-bottom:14px" onkeydown="if(event.key==='Enter')adminLogin()">
+    <div id="admin-fehler" style="display:none;color:#C44030;font-size:13px;margin-bottom:10px">Falsches Passwort</div>
+    <button class="btn-primary" onclick="adminLogin()">Einloggen</button>
   </div>
 </div>
 
-<!-- ── ADMIN DASHBOARD ── -->
-<div id="p-admin" class="page" style="display:none">
+<div id="p-admin" class="page">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-    <div>
-      <div class="tag">greathairday · Admin</div>
-      <h1 style="margin-bottom:0">Admin-Bereich</h1>
-    </div>
+    <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E2DDD5;border-radius:6px;padding:6px 12px;font-size:12px;color:#7A7A70;cursor:pointer;font-family:system-ui">Abmelden</button>
   </div>
-  <p class="sub">Hallo Mirjam ✂</p>
+  <p class="sub">Hallo Mirjam</p>
+  <div id="admin-sync-status" style="font-size:12px;color:#5B7B6F;margin-bottom:12px"></div>
   <div class="grid2">
-    <button class="nav-card" onclick="zeige('admin-quiz')">
-      <div class="nav-icon">❓</div>
-      <div class="nav-title">Quiz-Fragen</div>
-      <div class="nav-desc">Fragen bearbeiten</div>
-    </button>
-    <button class="nav-card" onclick="zeige('admin-lap')">
-      <div class="nav-icon">🎓</div>
-      <div class="nav-title">LAP-Fragen</div>
-      <div class="nav-desc">Prüfungsfragen</div>
-    </button>
-    <button class="nav-card" onclick="zeige('admin-lernplan')">
-      <div class="nav-icon">📅</div>
-      <div class="nav-title">Lernpläne</div>
-      <div class="nav-desc">Wochenpläne</div>
-    </button>
-    <button class="nav-card" onclick="zeige('admin-tipps')">
-      <div class="nav-icon">💡</div>
-      <div class="nav-title">Lerntipps</div>
-      <div class="nav-desc">Tipps pro Thema</div>
-    </button>
+    <button class="nav-card" onclick="zeige('admin-quiz')"><div class="nav-icon">?</div><div class="nav-title">Quiz-Fragen</div><div class="nav-desc">Fragen bearbeiten</div></button>
+    <button class="nav-card" onclick="zeige('admin-lap')"><div class="nav-icon">&#127891;</div><div class="nav-title">LAP-Fragen</div><div class="nav-desc">Pruefungsfragen</div></button>
+    <button class="nav-card" onclick="zeige('admin-lernplan')"><div class="nav-icon">&#128197;</div><div class="nav-title">Lernplaene</div><div class="nav-desc">Wochenplaene</div></button>
+    <button class="nav-card" onclick="zeige('admin-tipps')"><div class="nav-icon">&#128161;</div><div class="nav-title">Lerntipps</div><div class="nav-desc">Tipps pro Thema</div></button>
   </div>
 </div>
 
-<!-- ── ADMIN: QUIZ-FRAGEN ── -->
-<div id="p-admin-quiz" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('admin')">← Admin-Bereich</button>
-  <div class="tag">Admin · Quiz-Fragen</div>
-  <h1>Quiz-Fragen</h1>
+<div id="p-admin-quiz" class="page">
+  <button class="back-btn" onclick="zeige('admin')">&#8592; Admin</button>
+  <div class="tag">Admin Quiz-Fragen</div><h1>Quiz-Fragen</h1>
   <div class="card">
     <div class="label">Lehrjahr</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
@@ -248,52 +227,37 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     </div>
     <div class="label">Thema</div>
     <select id="aq-thema" onchange="adminQuizLadeThema()" style="margin-bottom:14px"></select>
-    <button class="btn-primary" onclick="adminQuizNeu()">+ Neue Frage hinzufügen</button>
+    <button class="btn-primary" onclick="adminQuizNeu()">+ Neue Frage</button>
   </div>
   <div id="aq-liste"></div>
 </div>
 
-<!-- ── ADMIN: QUIZ EDITOR ── -->
-<div id="p-admin-qedit" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('admin-quiz')">← Quiz-Fragen</button>
-  <div class="tag">Admin · Frage bearbeiten</div>
-  <h1 id="qedit-titel">Frage bearbeiten</h1>
+<div id="p-admin-qedit" class="page">
+  <button class="back-btn" onclick="zeige('admin-quiz')">&#8592; Quiz-Fragen</button>
+  <div class="tag">Admin Frage bearbeiten</div><h1 id="qedit-titel">Frage bearbeiten</h1>
   <div class="card">
-    <div class="label">Thema</div>
-    <select id="qe-thema" style="margin-bottom:14px"></select>
-    <div class="label">Frage</div>
-    <textarea id="qe-frage" rows="3" style="margin-bottom:14px"></textarea>
-    <div class="label">Antwort A</div>
-    <input id="qe-a0" style="margin-bottom:8px">
-    <div class="label">Antwort B</div>
-    <input id="qe-a1" style="margin-bottom:8px">
-    <div class="label">Antwort C</div>
-    <input id="qe-a2" style="margin-bottom:8px">
-    <div class="label">Antwort D</div>
-    <input id="qe-a3" style="margin-bottom:14px">
+    <div class="label">Thema</div><select id="qe-thema" style="margin-bottom:14px"></select>
+    <div class="label">Frage</div><textarea id="qe-frage" rows="3" style="margin-bottom:14px"></textarea>
+    <div class="label">Antwort A</div><input id="qe-a0" style="margin-bottom:8px">
+    <div class="label">Antwort B</div><input id="qe-a1" style="margin-bottom:8px">
+    <div class="label">Antwort C</div><input id="qe-a2" style="margin-bottom:8px">
+    <div class="label">Antwort D</div><input id="qe-a3" style="margin-bottom:14px">
     <div class="label">Richtige Antwort</div>
-    <select id="qe-richtig" style="margin-bottom:14px">
-      <option value="0">A</option>
-      <option value="1">B</option>
-      <option value="2">C</option>
-      <option value="3">D</option>
-    </select>
-    <div class="label">Erklärung (wird nach der Antwort gezeigt)</div>
-    <textarea id="qe-erkl" rows="3" style="margin-bottom:14px"></textarea>
+    <select id="qe-richtig" style="margin-bottom:14px"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+    <div class="label">Erklaerung</div><textarea id="qe-erkl" rows="3" style="margin-bottom:14px"></textarea>
+    <div id="qedit-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
     <div style="display:flex;gap:8px">
-      <button class="btn-primary" onclick="adminQuizSpeichern()" style="flex:1">Speichern ✓</button>
-      <button onclick="adminQuizLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui">Löschen</button>
+      <button class="btn-primary" onclick="adminQuizSpeichern()" style="flex:1">Speichern</button>
+      <button onclick="adminQuizLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui">Loeschen</button>
     </div>
   </div>
 </div>
 
-<!-- ── ADMIN: LAP-FRAGEN ── -->
-<div id="p-admin-lap" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('admin')">← Admin-Bereich</button>
-  <div class="tag">Admin · LAP-Fragen</div>
-  <h1>LAP-Fragen</h1>
+<div id="p-admin-lap" class="page">
+  <button class="back-btn" onclick="zeige('admin')">&#8592; Admin</button>
+  <div class="tag">Admin LAP-Fragen</div><h1>LAP-Fragen</h1>
   <div class="card">
-    <div class="label">Prüfungsteil</div>
+    <div class="label">Pruefungsteil</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
       <button class="btn-lj ak" id="al-th" onclick="adminLapWahl('theorie',this)">Theorie</button>
       <button class="btn-lj" id="al-pr" onclick="adminLapWahl('praxis',this)">Praxis</button>
@@ -303,28 +267,23 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div id="al-liste"></div>
 </div>
 
-<!-- ── ADMIN: LAP EDITOR ── -->
-<div id="p-admin-lapedit" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('admin-lap')">← LAP-Fragen</button>
-  <div class="tag">Admin · LAP-Frage bearbeiten</div>
-  <h1>LAP-Frage bearbeiten</h1>
+<div id="p-admin-lapedit" class="page">
+  <button class="back-btn" onclick="zeige('admin-lap')">&#8592; LAP-Fragen</button>
+  <div class="tag">Admin LAP bearbeiten</div><h1>LAP-Frage bearbeiten</h1>
   <div class="card">
-    <div class="label">Frage</div>
-    <textarea id="le-frage" rows="4" style="margin-bottom:14px"></textarea>
-    <div class="label">Musterlösung / Antwort</div>
-    <textarea id="le-antwort" rows="6" style="margin-bottom:14px"></textarea>
+    <div class="label">Frage</div><textarea id="le-frage" rows="4" style="margin-bottom:14px"></textarea>
+    <div class="label">Musterloesung</div><textarea id="le-antwort" rows="6" style="margin-bottom:14px"></textarea>
+    <div id="lapedit-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
     <div style="display:flex;gap:8px">
-      <button class="btn-primary" onclick="adminLapSpeichern()" style="flex:1">Speichern ✓</button>
-      <button onclick="adminLapLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui">Löschen</button>
+      <button class="btn-primary" onclick="adminLapSpeichern()" style="flex:1">Speichern</button>
+      <button onclick="adminLapLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui">Loeschen</button>
     </div>
   </div>
 </div>
 
-<!-- ── ADMIN: LERNPLÄNE ── -->
-<div id="p-admin-lernplan" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('admin')">← Admin-Bereich</button>
-  <div class="tag">Admin · Lernpläne</div>
-  <h1>Lernpläne</h1>
+<div id="p-admin-lernplan" class="page">
+  <button class="back-btn" onclick="zeige('admin')">&#8592; Admin</button>
+  <div class="tag">Admin Lernplaene</div><h1>Lernplaene</h1>
   <div class="card">
     <div class="label">Lehrjahr</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
@@ -334,29 +293,22 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     </div>
     <div class="label">Stunden / Woche</div>
     <select id="alp-std" onchange="adminLpLade()" style="margin-bottom:14px">
-      <option value="2">2 Stunden</option>
-      <option value="3">3 Stunden</option>
-      <option value="5" selected>5 Stunden</option>
-      <option value="7">7 Stunden</option>
-      <option value="10">10 Stunden</option>
+      <option value="2">2 Stunden</option><option value="3">3 Stunden</option><option value="5" selected>5 Stunden</option><option value="7">7 Stunden</option><option value="10">10 Stunden</option>
     </select>
-    <div class="label">Plan-Inhalt</div>
-    <textarea id="alp-inhalt" rows="10" style="margin-bottom:14px"></textarea>
-    <button class="btn-primary" onclick="adminLpSpeichern()">Speichern ✓</button>
+    <div class="label">Plan-Inhalt</div><textarea id="alp-inhalt" rows="10" style="margin-bottom:14px"></textarea>
+    <div id="lp-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
+    <button class="btn-primary" onclick="adminLpSpeichern()">Speichern</button>
   </div>
 </div>
 
-<!-- ── ADMIN: LERNTIPPS ── -->
-<div id="p-admin-tipps" class="page" style="display:none">
-  <button class="back-btn" onclick="zeige('admin')">← Admin-Bereich</button>
-  <div class="tag">Admin · Lerntipps</div>
-  <h1>Lerntipps</h1>
+<div id="p-admin-tipps" class="page">
+  <button class="back-btn" onclick="zeige('admin')">&#8592; Admin</button>
+  <div class="tag">Admin Lerntipps</div><h1>Lerntipps</h1>
   <div class="card">
-    <div class="label">Thema</div>
-    <select id="at-thema" onchange="adminTippLade()" style="margin-bottom:14px"></select>
-    <div class="label">Tipp-Text</div>
-    <textarea id="at-inhalt" rows="10" style="margin-bottom:14px"></textarea>
-    <button class="btn-primary" onclick="adminTippSpeichern()">Speichern ✓</button>
+    <div class="label">Thema</div><select id="at-thema" onchange="adminTippLade()" style="margin-bottom:14px"></select>
+    <div class="label">Tipp-Text</div><textarea id="at-inhalt" rows="10" style="margin-bottom:14px"></textarea>
+    <div id="tipp-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
+    <button class="btn-primary" onclick="adminTippSpeichern()">Speichern</button>
   </div>
 </div>
 
@@ -679,14 +631,9 @@ var LAP_IDX = {theorie:0, praxis:0};
 // ── NAVIGATION ───────────────────────────────────────────────────
 function zeige(seite) {
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('ak'); });
-  var el = document.getElementById('p-'+seite);
-  if (el) el.classList.add('ak');
+  document.getElementById('p-'+seite).classList.add('ak');
   if (seite === 'quiz') quizInit();
   if (seite === 'fortschritt') fsInit();
-  if (seite === 'admin-quiz') adminQuizInit();
-  if (seite === 'admin-lap') adminLapInit();
-  if (seite === 'admin-lernplan') adminLpInit();
-  if (seite === 'admin-tipps') adminTippInit();
   window.scrollTo(0,0);
 }
 
@@ -815,20 +762,95 @@ function lapZeigAntwort() {
   document.getElementById('lap-antwort').style.display = 'block';
 }
 
+// ── NAVIGATION erweitert ─────────────────────────────────────────
+var _zeige_orig = zeige;
+zeige = function(seite) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('ak'); });
+  var el = document.getElementById('p-'+seite);
+  if (el) el.classList.add('ak');
+  if (seite === 'quiz') quizInit();
+  if (seite === 'fortschritt') fsInit();
+  if (seite === 'admin-quiz') adminQuizInit();
+  if (seite === 'admin-lap') adminLapInit();
+  if (seite === 'admin-lernplan') adminLpInit();
+  if (seite === 'admin-tipps') adminTippInit();
+  window.scrollTo(0,0);
+};
+
+// ── SUPABASE ────────────────────────────────────────────────────
+var SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+var SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+var sb2 = supabase.createClient(SB_URL, SB_KEY);
+var TABELLE = 'lerntool_daten';
+
+// Beim Start: Daten aus Supabase laden und in lokale Variablen einspielen
+async function ladeAllesDatenAusSupabase() {
+  try {
+    var res = await sb2.from(TABELLE).select('*');
+    if (!res.data || !res.data.length) return;
+    res.data.forEach(function(row) {
+      try {
+        var wert = JSON.parse(row.wert);
+        if (row.typ === 'quiz_frage') {
+          // Quiz-Frage: row.schluessel = "lj_thema_id"
+          var teile = row.schluessel.split('|');
+          var thema = teile[1];
+          var id = teile[2];
+          if (!FRAGEN[thema]) FRAGEN[thema] = [];
+          var idx = FRAGEN[thema].findIndex(function(q){ return q.id === id; });
+          if (idx >= 0) { FRAGEN[thema][idx] = wert; }
+          else { FRAGEN[thema].push(wert); }
+        } else if (row.typ === 'lap_frage') {
+          var teile2 = row.schluessel.split('|');
+          var lapTyp = teile2[1]; // theorie oder praxis
+          var lapId = teile2[2];
+          if (!LAP_FRAGEN[lapTyp]) LAP_FRAGEN[lapTyp] = [];
+          var idx2 = LAP_FRAGEN[lapTyp].findIndex(function(q){ return q.id === lapId; });
+          if (idx2 >= 0) { LAP_FRAGEN[lapTyp][idx2] = wert; }
+          else { LAP_FRAGEN[lapTyp].push(wert); }
+        } else if (row.typ === 'lernplan') {
+          var teile3 = row.schluessel.split('|');
+          var lj3 = teile3[1]; var std3 = teile3[2];
+          if (!LERNPLAENE[lj3]) LERNPLAENE[lj3] = {};
+          LERNPLAENE[lj3][std3] = wert;
+        } else if (row.typ === 'lerntipp') {
+          var thema3 = row.schluessel.replace('lerntipp|','');
+          FORTSCHRITT_TIPPS[thema3] = wert;
+        }
+      } catch(e2) {}
+    });
+    console.log('Lerntool-Daten geladen:', res.data.length);
+  } catch(e) {
+    console.log('Laden fehlgeschlagen:', e.message);
+  }
+}
+
+async function sbSpeichern(typ, schluessel, wert) {
+  var wertJson = JSON.stringify(wert);
+  var res = await sb2.from(TABELLE).select('id').eq('schluessel', schluessel).eq('typ', typ);
+  if (res.data && res.data.length > 0) {
+    await sb2.from(TABELLE).update({ wert: wertJson }).eq('schluessel', schluessel).eq('typ', typ);
+  } else {
+    await sb2.from(TABELLE).insert({ typ: typ, schluessel: schluessel, wert: wertJson });
+  }
+}
+
+async function sbLoeschen(typ, schluessel) {
+  await sb2.from(TABELLE).delete().eq('schluessel', schluessel).eq('typ', typ);
+}
+
 // ── ADMIN ────────────────────────────────────────────────────────
-var ADMIN_MODUS = false;
-var ADMIN_PW = 'MW121272-1050'; // Passwort — kann hier geändert werden
+var ADMIN_PW = 'MW121272-1050';
 var AQ_LJ = '1';
 var AL_TYP = 'theorie';
 var ALP_LJ = '1';
 var AQEDIT_THEMA = '';
-var AQEDIT_IDX = -1; // -1 = neue Frage
+var AQEDIT_IDX = -1;
 var ALEDIT_IDX = -1;
 
 function adminLogin() {
   var pw = document.getElementById('admin-pw').value;
   if (pw === ADMIN_PW) {
-    ADMIN_MODUS = true;
     document.getElementById('admin-fehler').style.display = 'none';
     document.getElementById('admin-pw').value = '';
     zeige('admin');
@@ -837,10 +859,7 @@ function adminLogin() {
   }
 }
 
-function adminLogout() {
-  ADMIN_MODUS = false;
-  zeige('home');
-}
+function adminLogout() { zeige('home'); }
 
 // ── ADMIN QUIZ ──────────────────────────────────────────────────
 function adminQuizInit() {
@@ -852,15 +871,12 @@ function adminQuizInit() {
 function adminQuizLjUpdate() {
   ['1','2','3'].forEach(function(l){
     var b = document.getElementById('aq-lj'+l);
-    if(b) b.className = 'btn-lj' + (AQ_LJ===l?' ak':'');
+    if(b) b.className = 'btn-lj'+(AQ_LJ===l?' ak':'');
   });
 }
 
 function adminQuizLj(lj, btn) {
-  AQ_LJ = lj;
-  adminQuizLjUpdate();
-  adminQuizFuelleThemen();
-  adminQuizLadeThema();
+  AQ_LJ = lj; adminQuizLjUpdate(); adminQuizFuelleThemen(); adminQuizLadeThema();
 }
 
 function adminQuizFuelleThemen() {
@@ -877,23 +893,22 @@ function adminQuizLadeThema() {
   var liste = document.getElementById('aq-liste');
   liste.innerHTML = '';
   if (!pool.length) {
-    liste.innerHTML = '<p style="color:#7A7A70;font-size:13px;padding:10px 0">Noch keine Fragen für dieses Thema.</p>';
+    liste.innerHTML = '<p style="color:#7A7A70;font-size:13px;padding:10px 0">Noch keine Fragen.</p>';
     return;
   }
   pool.forEach(function(f, i){
     var d = document.createElement('div');
     d.className = 'card';
     d.style.cssText = 'cursor:pointer;border-left:3px solid #5B7B6F;margin-bottom:8px';
-    d.innerHTML = '<div style="font-size:10px;color:#7A7A70;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;color:#1C1C1A;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'…':'')+'</div>';
-    d.addEventListener('click', (function(idx){ return function(){ adminQuizEdit(thema, idx); }; })(i));
+    d.innerHTML = '<div style="font-size:10px;color:#7A7A70;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'...':'')+'</div>';
+    d.addEventListener('click',(function(idx){ return function(){ adminQuizEdit(thema,idx); }; })(i));
     liste.appendChild(d);
   });
 }
 
 function adminQuizNeu() {
   var thema = document.getElementById('aq-thema').value;
-  AQEDIT_THEMA = thema;
-  AQEDIT_IDX = -1;
+  AQEDIT_THEMA = thema; AQEDIT_IDX = -1;
   document.getElementById('qedit-titel').textContent = 'Neue Frage';
   adminQuizFuelleThemenEdit();
   document.getElementById('qe-thema').value = thema;
@@ -901,12 +916,12 @@ function adminQuizNeu() {
   ['qe-a0','qe-a1','qe-a2','qe-a3'].forEach(function(id){ document.getElementById(id).value=''; });
   document.getElementById('qe-richtig').value = '0';
   document.getElementById('qe-erkl').value = '';
+  document.getElementById('qedit-status').textContent = '';
   zeige('admin-qedit');
 }
 
 function adminQuizEdit(thema, idx) {
-  AQEDIT_THEMA = thema;
-  AQEDIT_IDX = idx;
+  AQEDIT_THEMA = thema; AQEDIT_IDX = idx;
   var f = FRAGEN[thema][idx];
   document.getElementById('qedit-titel').textContent = 'Frage bearbeiten';
   adminQuizFuelleThemenEdit();
@@ -914,7 +929,8 @@ function adminQuizEdit(thema, idx) {
   document.getElementById('qe-frage').value = f.f;
   f.o.forEach(function(opt,i){ document.getElementById('qe-a'+i).value = opt; });
   document.getElementById('qe-richtig').value = String(f.r);
-  document.getElementById('qe-erkl').value = f.e;
+  document.getElementById('qe-erkl').value = f.e || '';
+  document.getElementById('qedit-status').textContent = '';
   zeige('admin-qedit');
 }
 
@@ -928,60 +944,56 @@ function adminQuizFuelleThemenEdit() {
   });
 }
 
-function adminQuizSpeichern() {
+async function adminQuizSpeichern() {
   var thema = document.getElementById('qe-thema').value;
+  var st = document.getElementById('qedit-status');
+  st.textContent = 'Wird gespeichert...';
+  var id = (AQEDIT_IDX === -1) ? ('lt-q-'+Date.now()) : (FRAGEN[AQEDIT_THEMA][AQEDIT_IDX].id || ('lt-q-'+Date.now()));
   var neueFrage = {
-    t: 'mc',
+    id: id, t: 'mc',
     f: document.getElementById('qe-frage').value.trim(),
-    o: [
-      document.getElementById('qe-a0').value.trim(),
-      document.getElementById('qe-a1').value.trim(),
-      document.getElementById('qe-a2').value.trim(),
-      document.getElementById('qe-a3').value.trim()
-    ],
+    o: [document.getElementById('qe-a0').value.trim(), document.getElementById('qe-a1').value.trim(), document.getElementById('qe-a2').value.trim(), document.getElementById('qe-a3').value.trim()],
     r: parseInt(document.getElementById('qe-richtig').value),
     e: document.getElementById('qe-erkl').value.trim()
   };
-  if (!neueFrage.f) { alert('Bitte eine Frage eingeben.'); return; }
+  if (!neueFrage.f) { st.textContent = 'Bitte Frage eingeben!'; return; }
   if (!FRAGEN[thema]) FRAGEN[thema] = [];
-  if (AQEDIT_IDX === -1) {
-    FRAGEN[thema].push(neueFrage);
-  } else {
-    // Wenn Thema gewechselt wurde
-    if (thema !== AQEDIT_THEMA && AQEDIT_IDX >= 0) {
-      FRAGEN[AQEDIT_THEMA].splice(AQEDIT_IDX, 1);
-      FRAGEN[thema].push(neueFrage);
-    } else {
-      FRAGEN[thema][AQEDIT_IDX] = neueFrage;
-    }
+  if (AQEDIT_IDX === -1) { FRAGEN[thema].push(neueFrage); }
+  else {
+    if (thema !== AQEDIT_THEMA) { FRAGEN[AQEDIT_THEMA].splice(AQEDIT_IDX,1); FRAGEN[thema].push(neueFrage); }
+    else { FRAGEN[thema][AQEDIT_IDX] = neueFrage; }
   }
-  // Thema im Selektor setzen
-  var selHauptThema = document.getElementById('aq-thema');
-  selHauptThema.value = thema;
-  zeige('admin-quiz');
+  try {
+    await sbSpeichern('quiz_frage', AQ_LJ+'|'+thema+'|'+id, neueFrage);
+    st.textContent = 'Gespeichert!';
+    setTimeout(function(){ zeige('admin-quiz'); }, 800);
+  } catch(e) {
+    st.textContent = 'Fehler: '+e.message;
+  }
 }
 
-function adminQuizLoeschen() {
-  if (!confirm('Diese Frage wirklich löschen?')) return;
-  if (AQEDIT_IDX >= 0) FRAGEN[AQEDIT_THEMA].splice(AQEDIT_IDX, 1);
+async function adminQuizLoeschen() {
+  if (!confirm('Frage wirklich loeschen?')) return;
+  var st = document.getElementById('qedit-status');
+  st.textContent = 'Wird geloescht...';
+  if (AQEDIT_IDX >= 0) {
+    var f = FRAGEN[AQEDIT_THEMA][AQEDIT_IDX];
+    FRAGEN[AQEDIT_THEMA].splice(AQEDIT_IDX, 1);
+    try {
+      await sbLoeschen('quiz_frage', AQ_LJ+'|'+AQEDIT_THEMA+'|'+(f.id||''));
+    } catch(e) {}
+  }
   zeige('admin-quiz');
 }
 
 // ── ADMIN LAP ───────────────────────────────────────────────────
-function adminLapInit() {
-  adminLapLjUpdate();
-  adminLapListe();
-}
+function adminLapInit() { adminLapLjUpdate(); adminLapListe(); }
 
-function adminLapWahl(typ, btn) {
-  AL_TYP = typ;
-  adminLapLjUpdate();
-  adminLapListe();
-}
+function adminLapWahl(typ, btn) { AL_TYP = typ; adminLapLjUpdate(); adminLapListe(); }
 
 function adminLapLjUpdate() {
-  document.getElementById('al-th').className = 'btn-lj' + (AL_TYP==='theorie'?' ak':'');
-  document.getElementById('al-pr').className = 'btn-lj' + (AL_TYP==='praxis'?' ak':'');
+  document.getElementById('al-th').className = 'btn-lj'+(AL_TYP==='theorie'?' ak':'');
+  document.getElementById('al-pr').className = 'btn-lj'+(AL_TYP==='praxis'?' ak':'');
 }
 
 function adminLapListe() {
@@ -992,7 +1004,7 @@ function adminLapListe() {
     var d = document.createElement('div');
     d.className = 'card';
     d.style.cssText = 'cursor:pointer;border-left:3px solid #5B7B6F;margin-bottom:8px';
-    d.innerHTML = '<div style="font-size:10px;color:#7A7A70;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;color:#1C1C1A;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'…':'')+'</div>';
+    d.innerHTML = '<div style="font-size:10px;color:#7A7A70;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'...':'')+'</div>';
     d.addEventListener('click',(function(idx){ return function(){ adminLapEdit(idx); }; })(i));
     liste.appendChild(d);
   });
@@ -1002,6 +1014,7 @@ function adminLapNeu() {
   ALEDIT_IDX = -1;
   document.getElementById('le-frage').value = '';
   document.getElementById('le-antwort').value = '';
+  document.getElementById('lapedit-status').textContent = '';
   zeige('admin-lapedit');
 }
 
@@ -1010,45 +1023,44 @@ function adminLapEdit(idx) {
   var f = LAP_FRAGEN[AL_TYP][idx];
   document.getElementById('le-frage').value = f.f;
   document.getElementById('le-antwort').value = f.a;
+  document.getElementById('lapedit-status').textContent = '';
   zeige('admin-lapedit');
 }
 
-function adminLapSpeichern() {
-  var neueFrage = {
-    f: document.getElementById('le-frage').value.trim(),
-    a: document.getElementById('le-antwort').value.trim()
-  };
-  if (!neueFrage.f) { alert('Bitte eine Frage eingeben.'); return; }
-  if (ALEDIT_IDX === -1) {
-    LAP_FRAGEN[AL_TYP].push(neueFrage);
-  } else {
-    LAP_FRAGEN[AL_TYP][ALEDIT_IDX] = neueFrage;
+async function adminLapSpeichern() {
+  var st = document.getElementById('lapedit-status');
+  st.textContent = 'Wird gespeichert...';
+  var id = (ALEDIT_IDX === -1) ? ('lt-lap-'+Date.now()) : (LAP_FRAGEN[AL_TYP][ALEDIT_IDX].id || ('lt-lap-'+Date.now()));
+  var neueFrage = { id: id, f: document.getElementById('le-frage').value.trim(), a: document.getElementById('le-antwort').value.trim() };
+  if (!neueFrage.f) { st.textContent = 'Bitte Frage eingeben!'; return; }
+  if (ALEDIT_IDX === -1) { LAP_FRAGEN[AL_TYP].push(neueFrage); }
+  else { LAP_FRAGEN[AL_TYP][ALEDIT_IDX] = neueFrage; }
+  try {
+    await sbSpeichern('lap_frage', 'lap|'+AL_TYP+'|'+id, neueFrage);
+    st.textContent = 'Gespeichert!';
+    setTimeout(function(){ zeige('admin-lap'); }, 800);
+  } catch(e) { st.textContent = 'Fehler: '+e.message; }
+}
+
+async function adminLapLoeschen() {
+  if (!confirm('Frage loeschen?')) return;
+  if (ALEDIT_IDX >= 0) {
+    var f = LAP_FRAGEN[AL_TYP][ALEDIT_IDX];
+    LAP_FRAGEN[AL_TYP].splice(ALEDIT_IDX, 1);
+    try { await sbLoeschen('lap_frage', 'lap|'+AL_TYP+'|'+(f.id||'')); } catch(e) {}
   }
   zeige('admin-lap');
 }
 
-function adminLapLoeschen() {
-  if (!confirm('Diese LAP-Frage wirklich löschen?')) return;
-  if (ALEDIT_IDX >= 0) LAP_FRAGEN[AL_TYP].splice(ALEDIT_IDX, 1);
-  zeige('admin-lap');
-}
+// ── ADMIN LERNPLAENE ────────────────────────────────────────────
+function adminLpInit() { adminLpLjUpdate(); adminLpLade(); }
 
-// ── ADMIN LERNPLÄNE ─────────────────────────────────────────────
-function adminLpInit() {
-  adminLpLjUpdate();
-  adminLpLade();
-}
-
-function adminLpLj(lj, btn) {
-  ALP_LJ = lj;
-  adminLpLjUpdate();
-  adminLpLade();
-}
+function adminLpLj(lj, btn) { ALP_LJ = lj; adminLpLjUpdate(); adminLpLade(); }
 
 function adminLpLjUpdate() {
   ['1','2','3'].forEach(function(l){
     var b = document.getElementById('alp-lj'+l);
-    if(b) b.className = 'btn-lj' + (ALP_LJ===l?' ak':'');
+    if(b) b.className = 'btn-lj'+(ALP_LJ===l?' ak':'');
   });
 }
 
@@ -1056,20 +1068,21 @@ function adminLpLade() {
   var std = document.getElementById('alp-std').value;
   var plan = (LERNPLAENE[ALP_LJ] && LERNPLAENE[ALP_LJ][std]) || '';
   document.getElementById('alp-inhalt').value = plan;
+  document.getElementById('lp-status').textContent = '';
 }
 
-function adminLpSpeichern() {
+async function adminLpSpeichern() {
   var std = document.getElementById('alp-std').value;
   var inhalt = document.getElementById('alp-inhalt').value;
+  var st = document.getElementById('lp-status');
+  st.textContent = 'Wird gespeichert...';
   if (!LERNPLAENE[ALP_LJ]) LERNPLAENE[ALP_LJ] = {};
   LERNPLAENE[ALP_LJ][std] = inhalt;
-  var ok = document.createElement('div');
-  ok.className = 'fb-g'; ok.textContent = '✓ Gespeichert!'; ok.style.marginTop='10px';
-  var card = document.querySelector('#p-admin-lernplan .card');
-  var alt = card.querySelector('.fb-g');
-  if (alt) alt.remove();
-  card.appendChild(ok);
-  setTimeout(function(){ ok.remove(); }, 2000);
+  try {
+    await sbSpeichern('lernplan', 'lernplan|'+ALP_LJ+'|'+std, inhalt);
+    st.textContent = 'Gespeichert!';
+    setTimeout(function(){ st.textContent=''; }, 2000);
+  } catch(e) { st.textContent = 'Fehler: '+e.message; }
 }
 
 // ── ADMIN LERNTIPPS ─────────────────────────────────────────────
@@ -1087,19 +1100,28 @@ function adminTippInit() {
 function adminTippLade() {
   var thema = document.getElementById('at-thema').value;
   document.getElementById('at-inhalt').value = FORTSCHRITT_TIPPS[thema] || '';
+  document.getElementById('tipp-status').textContent = '';
 }
 
-function adminTippSpeichern() {
+async function adminTippSpeichern() {
   var thema = document.getElementById('at-thema').value;
-  FORTSCHRITT_TIPPS[thema] = document.getElementById('at-inhalt').value;
-  var ok = document.createElement('div');
-  ok.className = 'fb-g'; ok.textContent = '✓ Gespeichert!'; ok.style.marginTop='10px';
-  var card = document.querySelector('#p-admin-tipps .card');
-  var alt = card.querySelector('.fb-g');
-  if (alt) alt.remove();
-  card.appendChild(ok);
-  setTimeout(function(){ ok.remove(); }, 2000);
+  var inhalt = document.getElementById('at-inhalt').value;
+  var st = document.getElementById('tipp-status');
+  st.textContent = 'Wird gespeichert...';
+  FORTSCHRITT_TIPPS[thema] = inhalt;
+  try {
+    await sbSpeichern('lerntipp', 'lerntipp|'+thema, inhalt);
+    st.textContent = 'Gespeichert!';
+    setTimeout(function(){ st.textContent=''; }, 2000);
+  } catch(e) { st.textContent = 'Fehler: '+e.message; }
 }
+
+// ── INIT ────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function(){
+  ladeAllesDatenAusSupabase().then(function(){
+    console.log('Lerntool bereit');
+  });
+});
 </script>
 </body>
 </html>
