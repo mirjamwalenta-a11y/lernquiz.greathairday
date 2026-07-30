@@ -7,9 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100vh;padding:1.5rem 1rem}
-.wrap{max-width:580px;margin:0 auto;min-height:100vh}
+html,body{height:100%;min-height:100dvh}
+body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+.wrap{max-width:580px;margin:0 auto;min-height:100dvh}
 .label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
 .card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
 .btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
@@ -991,13 +991,17 @@ async function adminLogout() {
 
 // Beim Laden prüfen ob bereits eingeloggt
 window.addEventListener('DOMContentLoaded', function(){
+  // Wenn direkt aufgerufen (nicht vom Lernquiz) → zum Login weiterleiten
+  var ref = document.referrer;
+  var vonLernquiz = ref.indexOf('lernquiz.greathairday') >= 0 || ref === '';
+  var istAdmin = window.location.search.indexOf('admin=1') >= 0;
+  // Setze Marker dass wir vom Lerntool kommen
+  sessionStorage.setItem('lt_besucht', '1');
+
   sb2.auth.getSession().then(function(res){
     if (res.data && res.data.session && res.data.session.user.email === MEISTERIN_EMAIL) {
       document.getElementById('admin-hinweis').style.display = 'block';
-      // Wenn URL-Parameter admin=1 → direkt Admin öffnen
-      if (window.location.search.indexOf('admin=1') >= 0) {
-        zeige('admin');
-      }
+      if (istAdmin) { zeige('admin'); }
     }
   });
   ladeAllesDatenAusSupabase();
