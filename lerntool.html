@@ -805,9 +805,9 @@ function fortschrittAnalyse() {
   document.getElementById('fs-ergebnis').style.display = 'block';
 }
 
-// ── FORTSCHRITT MIT BALKEN ──────────────────────────────────────
+// ── FORTSCHRITT MIT BALKEN (aus Supabase) ──────────────────────
 var PROG_LJ = '1';
-// Speicherung im localStorage: lt_prog_THEMA = 0-100
+
 function progLjWahl(lj, btn) {
   PROG_LJ = lj;
   ['1','2','3'].forEach(function(l){
@@ -817,34 +817,59 @@ function progLjWahl(lj, btn) {
   progZeige();
 }
 
-function progZeige() {
+async function progZeige() {
   var liste = document.getElementById('prog-liste');
-  liste.innerHTML = '';
+  liste.innerHTML = '<div style="color:#7A7A70;font-size:13px">Wird geladen…</div>';
+
+  // Lehrling-ID aus Supabase Auth holen
+  var session = await sb2.auth.getSession();
+  var userId = session.data && session.data.session ? session.data.session.user.id : null;
+
+  // Lehrling-Datensatz holen
+  var lehrlingId = null;
+  if (userId) {
+    var lRes = await sb2.from('lehrlinge').select('id').eq('user_id', userId).single();
+    if (lRes.data) lehrlingId = lRes.data.id;
+  }
+
+  // Kompetenzdaten laden
+  var kompDaten = {};
+  if (lehrlingId) {
+    var kRes = await sb2.from('kompetenz').select('*').eq('lehrling_id', lehrlingId);
+    if (kRes.data) {
+      kRes.data.forEach(function(row){ kompDaten[row.thema] = row; });
+    }
+  }
+
   var themen = (THEMEN[PROG_LJ] || []).slice().sort(function(a,b){ return a.localeCompare(b,'de'); });
+  liste.innerHTML = '';
+
+  if (!lehrlingId) {
+    liste.innerHTML = '<div style="color:#7A7A70;font-size:13px">Bitte im Lernquiz einloggen um den Fortschritt zu sehen.</div>';
+    return;
+  }
+
   themen.forEach(function(t){
-    var key = 'lt_prog_'+t;
-    var wert = parseInt(localStorage.getItem(key)||'0');
+    var d = kompDaten[t];
+    var gesamt = d ? (d.richtig + d.falsch) : 0;
+    var richtig = d ? d.richtig : 0;
+    var prozent = gesamt > 0 ? Math.round((richtig / gesamt) * 100) : 0;
+    var farbe = prozent >= 80 ? '#5B7B6F' : prozent >= 50 ? '#C4B86A' : prozent > 0 ? '#D4957A' : '#DDD8D0';
+    var label = prozent >= 80 ? 'Gut ✓' : prozent >= 50 ? 'Im Aufbau' : prozent > 0 ? 'Üben' : 'Noch nicht geübt';
+
     var div = document.createElement('div');
-    div.style.cssText = 'margin-bottom:16px';
+    div.style.cssText = 'margin-bottom:14px';
     div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">' +
         '<span style="font-size:13px;color:#1C1C1A">'+t+'</span>' +
-        '<span style="font-size:12px;color:#7A7A70">'+wert+'%</span>' +
+        '<span style="font-size:11px;color:'+farbe+';font-weight:600">'+label+'</span>' +
       '</div>' +
-      '<div style="background:#E2DDD5;border-radius:4px;height:8px;overflow:hidden;margin-bottom:6px">' +
-        '<div style="background:#5B7B6F;height:100%;width:'+wert+'%;border-radius:4px;transition:width 0.3s"></div>' +
+      '<div style="background:#E2DDD5;border-radius:4px;height:8px;overflow:hidden">' +
+        '<div style="background:'+farbe+';height:100%;width:'+prozent+'%;border-radius:4px;transition:width 0.4s"></div>' +
       '</div>' +
-      '<input type="range" min="0" max="100" value="'+wert+'" style="width:100%;accent-color:#5B7B6F" ' +
-        'oninput="progSpeichern(\''+t+'\',this.value,this)">';
+      (gesamt > 0 ? '<div style="font-size:11px;color:#9A9188;margin-top:3px">'+richtig+' von '+gesamt+' Fragen richtig</div>' : '');
     liste.appendChild(div);
   });
-}
-
-function progSpeichern(thema, wert, slider) {
-  localStorage.setItem('lt_prog_'+thema, wert);
-  var parent = slider.parentElement;
-  parent.querySelector('span:last-child').textContent = wert+'%';
-  parent.querySelector('div > div').style.width = wert+'%';
 }
 
 // ── LAP ─────────────────────────────────────────────────────────
