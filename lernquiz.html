@@ -120,14 +120,20 @@ textarea{resize:vertical;margin-bottom:0}
   <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
 
   <!-- HEUTE LAUT LERNPLAN -->
-  <div id="heute-box" style="margin-top:16px;background:#EDE8E0;border-radius:12px;padding:16px;display:none">
+  <div id="heute-box" style="display:none;margin-top:16px;background:#EDE8E0;border-radius:12px;padding:16px">
     <div class="lab">Heute laut Lernplan</div>
-    <div id="heute-thema-q" style="font-family:Georgia,serif;font-size:17px;color:#2C2C2C;margin-bottom:6px"></div>
+    <div id="heute-thema-q" style="font-family:Georgia,serif;font-size:17px;color:#2C2C2C;margin-bottom:4px"></div>
     <div id="heute-dauer-q" style="font-size:12px;color:#9A9188;margin-bottom:10px"></div>
     <div id="heute-tipp-q" style="font-size:13px;color:#5A5550;background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.5"></div>
-    <button class="btn btn-g" id="heute-start-btn" style="margin-bottom:8px">Jetzt starten →</button>
+    <button class="btn btn-d" id="heute-start-btn" style="margin-bottom:8px;width:100%">Jetzt starten →</button>
     <button id="heute-verschieben-btn" style="background:none;border:none;color:#9A9188;font-size:12px;cursor:pointer;font-family:system-ui;text-decoration:underline;width:100%;text-align:center;padding:4px">Später — in 1 Stunde</button>
-    <div id="heute-msg-q" style="display:none;font-size:12px;color:#6B8F71;text-align:center;padding:6px"></div>
+    <div id="heute-msg-q" style="display:none;font-size:12px;color:#6B8F71;text-align:center;padding:6px 0"></div>
+  </div>
+
+  <!-- PUSH ERLAUBNIS -->
+  <div id="push-box" style="display:none;margin-top:12px;background:#EAF0EE;border:1px solid #5B7B6F;border-radius:10px;padding:14px">
+    <div style="font-size:13px;color:#2C2C2C;margin-bottom:10px">🔔 Darf die App dich an deinen Lernmoment erinnern?</div>
+    <button onclick="pushErlauben()" class="btn btn-d" style="width:100%;margin-bottom:0">Ja, erinnere mich</button>
   </div>
 
   <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html" style="display:block;margin-top:12px;padding:11px;border:2px solid #5B7B6F;border-radius:10px;text-align:center;color:#5B7B6F;font-size:13px;font-weight:600;text-decoration:none;font-family:system-ui">🎓 Lern-Tool öffnen</a>
@@ -171,7 +177,7 @@ textarea{resize:vertical;margin-bottom:0}
       <button class="btn btn-h" id="btn-lehrling-neu" style="margin:0">+ Lehrling anlegen</button>
       <button class="btn btn-h" id="btn-fragen-verw" style="margin:0">✎ Fragen</button>
     </div>
-    <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?admin=1" style="display:block;margin-bottom:20px;padding:13px;background:#5B7B6F;color:#fff;border-radius:10px;text-align:center;font-size:14px;font-weight:600;text-decoration:none;font-family:system-ui">✂ Lern-Tool Admin öffnen</a>
+    <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?admin=1" style="display:block;margin-bottom:16px;padding:13px;background:#5B7B6F;color:#fff;border-radius:10px;text-align:center;font-size:14px;font-weight:600;text-decoration:none;font-family:system-ui">✂ Lern-Tool Admin öffnen</a>
     <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
@@ -1011,69 +1017,6 @@ function updateStart(){
     b.style.cursor='pointer';
   });
   ['schnell','tief','lap'].forEach(function(m){var b=document.getElementById('mod-'+m);if(b)b.className='mod-b'+(MODUS===m?' ak':'');});
-  heuteAktualisieren();
-}
-
-// ── HEUTE LAUT LERNPLAN ────────────────────────────────────────
-var HEUTE_VERSCHOBEN = false;
-
-(function resetHeuteTaglich(){
-  var heute = new Date().toDateString();
-  var letzter = localStorage.getItem('lq_heute_tag');
-  if(letzter !== heute){ HEUTE_VERSCHOBEN = false; localStorage.setItem('lq_heute_tag', heute); }
-})();
-
-function heuteAktualisieren(){
-  var box = document.getElementById('heute-box');
-  if(!box) return;
-
-  // Themen des aktuellen Lehrjahrs
-  var pool = FB[LJ] || [];
-  if(!pool.length){ box.style.display='none'; return; }
-
-  // Thema des Tages nach Wochentag
-  var wochentag = new Date().getDay(); // 0=So,1=Mo...6=Sa
-  // Mo-Sa lernen, So frei
-  if(wochentag === 0){ box.style.display='none'; return; }
-
-  var themen = [...new Set(pool.map(function(q){return q.th;}))];
-  var thema = themen[(wochentag-1) % themen.length];
-
-  document.getElementById('heute-thema-q').textContent = thema;
-  document.getElementById('heute-dauer-q').textContent = '20 Minuten · ' + (pool.filter(function(q){return q.th===thema;}).length) + ' Fragen verfügbar';
-
-  // Verschieben-Status
-  var vBtn = document.getElementById('heute-verschieben-btn');
-  var msg = document.getElementById('heute-msg-q');
-  if(HEUTE_VERSCHOBEN){
-    vBtn.style.display = 'none';
-    msg.style.display = 'block';
-    msg.textContent = 'Du hast deinen Lernmoment heute bereits verschoben. Letzte Chance!';
-  } else {
-    vBtn.style.display = 'block';
-    msg.style.display = 'none';
-  }
-
-  // Start-Button — startet Quiz mit diesem Thema
-  document.getElementById('heute-start-btn').onclick = function(){
-    // Thema filtern und Quiz starten
-    var filtered = pool.filter(function(q){return q.th===thema;});
-    if(!filtered.length) filtered = pool;
-    QFRAGEN = filtered.sort(function(){return Math.random()-.5;}).slice(0,10);
-    QIDX=0; QANT=[]; WIEDERHOLUNG=false;
-    zeigeFrage(); zeige('s-quiz');
-  };
-
-  document.getElementById('heute-verschieben-btn').onclick = function(){
-    if(HEUTE_VERSCHOBEN) return;
-    HEUTE_VERSCHOBEN = true;
-    document.getElementById('heute-verschieben-btn').style.display = 'none';
-    var m = document.getElementById('heute-msg-q');
-    m.style.display = 'block';
-    m.textContent = 'Verschoben. In 1 Stunde deine letzte Erinnerung.';
-  };
-
-  box.style.display = 'block';
 }
 
 function starteQuiz(){
@@ -1491,12 +1434,95 @@ window.addEventListener('DOMContentLoaded',function(){
     sb.auth.getSession().then(function(result){
       if(result.data&&result.data.session){
         sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
-          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');}
+          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');heuteInit();}
         });
       }
     });
   });
 });
+
+// ── HEUTE LAUT LERNPLAN ────────────────────────────────────────
+var HEUTE_VERSCHOBEN = false;
+
+(function(){
+  var heute = new Date().toDateString();
+  var letzter = localStorage.getItem('lq_heute_tag');
+  if(letzter !== heute){ HEUTE_VERSCHOBEN = false; localStorage.setItem('lq_heute_tag', heute); }
+  else { HEUTE_VERSCHOBEN = localStorage.getItem('lq_verschoben') === 'ja'; }
+})();
+
+function heuteInit() {
+  var wochentag = new Date().getDay();
+  if(wochentag === 0) return; // Sonntag frei
+
+  var pool = FB[LJ] || [];
+  if(!pool.length) return;
+
+  var themen = [];
+  pool.forEach(function(q){ if(themen.indexOf(q.th)<0) themen.push(q.th); });
+  var thema = themen[(wochentag-1) % themen.length];
+
+  document.getElementById('heute-thema-q').textContent = thema;
+  document.getElementById('heute-dauer-q').textContent = '20 Minuten · ' + pool.filter(function(q){return q.th===thema;}).length + ' Fragen';
+  document.getElementById('heute-tipp-q').textContent = 'Lies jede Frage genau durch. Nimm dir Zeit für jede Antwort.';
+
+  if(HEUTE_VERSCHOBEN){
+    document.getElementById('heute-verschieben-btn').style.display = 'none';
+    document.getElementById('heute-msg-q').style.display = 'block';
+    document.getElementById('heute-msg-q').textContent = 'Bereits verschoben — das ist deine letzte Chance heute.';
+  }
+
+  document.getElementById('heute-start-btn').onclick = function(){
+    var filtered = pool.filter(function(q){return q.th===thema;});
+    if(!filtered.length) filtered = pool;
+    QFRAGEN = filtered.sort(function(){return Math.random()-.5;}).slice(0,10);
+    QIDX=0; QANT=[]; WIEDERHOLUNG=false;
+    zeigeFrage(); zeige('s-quiz');
+  };
+
+  document.getElementById('heute-verschieben-btn').onclick = function(){
+    if(HEUTE_VERSCHOBEN) return;
+    HEUTE_VERSCHOBEN = true;
+    localStorage.setItem('lq_verschoben','ja');
+    document.getElementById('heute-verschieben-btn').style.display = 'none';
+    var m = document.getElementById('heute-msg-q');
+    m.style.display = 'block';
+    m.textContent = 'Verschoben. In 45 Minuten deine letzte Erinnerung.';
+    pushPlanen(45);
+  };
+
+  document.getElementById('heute-box').style.display = 'block';
+  pushErlaubnisZeigen();
+}
+
+// ── PUSH-NACHRICHTEN ───────────────────────────────────────────
+function pushErlaubnisZeigen() {
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'default') {
+    document.getElementById('push-box').style.display = 'block';
+  }
+}
+
+function pushErlauben() {
+  if(!('Notification' in window)) return;
+  Notification.requestPermission().then(function(result){
+    document.getElementById('push-box').style.display = 'none';
+    if(result === 'granted') {
+      pushPlanen(15); // erste Erinnerung in 15 Min
+    }
+  });
+}
+
+function pushPlanen(minuten) {
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  var thema = document.getElementById('heute-thema-q').textContent;
+  setTimeout(function(){
+    new Notification('A Great Hair Day · Lernmoment', {
+      body: 'Dein Thema heute: ' + thema + ' — kurz reinschauen?',
+      icon: 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/customcolor_logo_customcolor_ba...',
+    });
+  }, minuten * 60 * 1000);
+}
 </script>
 </body>
 </html>
