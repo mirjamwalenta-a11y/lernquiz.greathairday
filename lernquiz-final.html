@@ -1700,6 +1700,19 @@ function streakMarkiereGezeigt(lj, id) {
 // Aufgerufene Queue (mehrere auf einmal)
 var STREAK_QUEUE = [];
 
+function streakTestZeigen() {
+  // Reset gezeigt-Liste damit Popups wieder erscheinen
+  localStorage.removeItem('streak_lj1_gezeigt');
+  localStorage.removeItem('streak_lj2_gezeigt');
+  localStorage.removeItem('streak_lj3_gezeigt');
+  // Setze Zähler auf 10 für Test
+  streakSpeichereZaehler(1, 10);
+  streakSpeichereZaehler(2, 10);
+  streakSpeichereZaehler(3, 10);
+  alert('Zähler gesetzt auf 10. Popup kommt jetzt...');
+  streakPruefeRückwirkend(LJ || 1);
+}
+
 async function streakSyncMitVerlauf(lehrlingId, lj) {
   try {
     // Zähle echte Verlauf-Einträge aus Supabase
@@ -1719,17 +1732,18 @@ async function streakSyncMitVerlauf(lehrlingId, lj) {
 }
 
 function streakPruefeRückwirkend(lj) {
-  // Beim Start prüfen ob bereits verdiente Stufen noch nie gezeigt wurden
   var n = streakLadeZaehler(lj);
   var gezeigt = streakGezeigtIds(lj);
+  console.log('[STREAK] LJ:'+lj+' Quizze:'+n+' Gezeigt:'+JSON.stringify(gezeigt));
   STREAK_QUEUE = [];
   STREAK_DEFS.forEach(function(s) {
     if (n >= s.schwelle && gezeigt.indexOf(s.id) < 0) {
       STREAK_QUEUE.push(s);
+      console.log('[STREAK] In Queue: Stufe '+s.id+' (Schwelle '+s.schwelle+')');
     }
   });
+  console.log('[STREAK] Queue-Länge:', STREAK_QUEUE.length);
   if (STREAK_QUEUE.length) {
-    // Kurz warten bis App geladen
     setTimeout(function() { streakZeigeNaechsten(lj); }, 800);
   }
 }
@@ -1748,6 +1762,7 @@ function streakNachQuiz(lj) {
 }
 
 function streakZeigeNaechsten(lj) {
+  console.log('[STREAK] ZeigeNaechsten, Queue:', STREAK_QUEUE.length);
   if (!STREAK_QUEUE.length) return;
   var s = STREAK_QUEUE.shift();
   streakMarkiereGezeigt(lj, s.id);
