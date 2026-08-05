@@ -1067,7 +1067,9 @@ async function loginLehrling(){
   if(error){zeigeFehler('login-fehler','Fehler: '+error.message);return;}
   var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
   if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
-  AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');streakPruefeRückwirkend(LJ);
+  AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');
+    // Streak-Zähler mit echtem Verlauf synchronisieren (einmalig)
+    streakSyncMitVerlauf(ldat.id, ldat.lehrjahr||1);
 }
 
 async function loginMeisterin(){
@@ -1580,7 +1582,8 @@ window.addEventListener('DOMContentLoaded',function(){
     sb.auth.getSession().then(function(result){
       if(result.data&&result.data.session){
         sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
-          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');heuteInit();streakPruefeRückwirkend(LJ);}
+          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');heuteInit();
+        streakSyncMitVerlauf(res.data.id, res.data.lehrjahr||1);}
         });
       } else {
         // Kein eingeloggter User → Login zeigen, Verlauf bereinigen
@@ -1696,6 +1699,24 @@ function streakMarkiereGezeigt(lj, id) {
 
 // Aufgerufene Queue (mehrere auf einmal)
 var STREAK_QUEUE = [];
+
+async function streakSyncMitVerlauf(lehrlingId, lj) {
+  try {
+    // Zähle echte Verlauf-Einträge aus Supabase
+    var {data} = await sb.from('verlauf').select('id').eq('lehrling_id', lehrlingId);
+    var anzahl = data ? data.length : 0;
+    // Nur hochsetzen, nie runter
+    var lokal = streakLadeZaehler(lj);
+    if (anzahl > lokal) {
+      streakSpeichereZaehler(lj, anzahl);
+    }
+    // Jetzt rückwirkend prüfen
+    streakPruefeRückwirkend(lj);
+  } catch(e) {
+    // Fallback: nur lokal prüfen
+    streakPruefeRückwirkend(lj);
+  }
+}
 
 function streakPruefeRückwirkend(lj) {
   // Beim Start prüfen ob bereits verdiente Stufen noch nie gezeigt wurden
