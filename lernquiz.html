@@ -335,7 +335,7 @@ textarea{resize:vertical;margin-bottom:0}
   </div>
   <button class="btn btn-d" id="btn-quiz-los">Quiz starten →</button>
   <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
-  <button class="link-k" id="btn-fortschritte-zeigen" style="color:#8B7535;font-weight:700">✦ Meine Streak-Fortschritte</button>
+  <button class="link-k" id="btn-fortschritte-zeigen" onclick="zeigeFortschritte()" style="color:#8B7535;font-weight:700">✦ Meine Streak-Fortschritte</button>
 
   <!-- HEUTE LAUT LERNPLAN -->
   <div id="heute-box" style="margin-top:16px;background:#EDE8E0;border-radius:12px;padding:16px;display:none">
@@ -1692,9 +1692,7 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-verlauf-zeigen').addEventListener('click',zeigeVerlauf);
   document.getElementById('btn-neu-quiz').addEventListener('click',function(){updateStart();zeige('s-start');});
   document.getElementById('btn-v-zurueck').addEventListener('click',function(){zeige('s-start');});
-  document.getElementById('btn-ft-back').addEventListener('click',function(){zeige('s-start');});
-  document.getElementById('btn-fortschritte-zeigen').addEventListener('click',function(){zeigeFortschritte();});
-  document.getElementById('sp-weiter').addEventListener('click',spSchliessen);
+  // streak buttons haben onclick direkt
   document.getElementById('btn-lehrling-neu').addEventListener('click',function(){zeige('s-neu-lehrling');});
   document.getElementById('btn-fragen-verw').addEventListener('click',zeigeVerw);
   document.getElementById('btn-detail-back').addEventListener('click',function(){zeige('s-dashboard');});
@@ -1747,7 +1745,7 @@ window.addEventListener('DOMContentLoaded',function(){
     </div>
     <div class="sp-titel" id="sp-titel"></div>
     <div class="sp-sub" id="sp-sub"></div>
-    <button class="sp-weiter" id="sp-weiter">Weiter lernen ✂</button>
+    <button class="sp-weiter" id="sp-weiter" onclick="spSchliessen()">Weiter lernen ✂</button>
   </div>
 </div>
 
@@ -1756,7 +1754,7 @@ window.addEventListener('DOMContentLoaded',function(){
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
       <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Fortschritte ✦</h2>
-      <button class="btn btn-h" id="btn-ft-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+      <button class="btn btn-h" id="btn-ft-back" onclick="zeige('s-start')" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
     </div>
     <div class="ft-tabs">
       <button class="ft-tab t1" id="ft-lj1" onclick="ftZeige(1)">1. Lehrjahr</button>
