@@ -1369,15 +1369,19 @@ async function renderWochenquizUebersicht() {
   var div = document.getElementById('pzd-inhalt');
   div.innerHTML = '<div class="laden">Wird geladen…</div>';
 
-  // Ergebnisse + individuelle Fragen laden
-  var [ergRes, fragenRes] = await Promise.all([
-    sb.from('probezeit_quiz').select('*').eq('probezeit_id', AKT_PROBEZEIT.id).order('woche').catch(function(){ return { data: [] }; }),
-    sb.from('probezeit_quiz_fragen').select('woche').eq('probezeit_id', AKT_PROBEZEIT.id).catch(function(){ return { data: [] }; })
-  ]);
+  // Ergebnisse laden (mit Fallback)
   var ergMap = {};
-  (ergRes.data || []).forEach(function(e){ ergMap[e.woche] = e; });
   var individuelleWochen = {};
-  (fragenRes.data || []).forEach(function(f){ individuelleWochen[f.woche] = true; });
+  try {
+    var ergRes = await sb.from('probezeit_quiz').select('*')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).order('woche');
+    (ergRes.data || []).forEach(function(e){ ergMap[e.woche] = e; });
+  } catch(e) {}
+  try {
+    var fragenRes = await sb.from('probezeit_quiz_fragen').select('woche')
+      .eq('probezeit_id', AKT_PROBEZEIT.id);
+    (fragenRes.data || []).forEach(function(f){ individuelleWochen[f.woche] = true; });
+  } catch(e) {}
 
   var html = '<div class="card-amber" style="font-size:13px;line-height:1.6">' +
     '<strong>🎯 Wöchentlicher Wissensquiz</strong><br>' +
