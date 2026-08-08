@@ -517,6 +517,15 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 
 var MEISTERIN_OK = false;
 var AKT_PROBEZEIT = null;
+
+// Hilfsfunktion: einzelne Zeile sicher laden (ersetzt maybeSingle)
+async function eineLaden(query) {
+  try {
+    var res = await query.limit(1);
+    if (res.error) return null;
+    return (res.data && res.data.length) ? res.data[0] : null;
+  } catch(e) { return null; }
+}
 var AKT_PUNKTE = {gs1:null, gs2:null, gs3:null, rp:null};
 var AKT_ENTSCHEIDUNG = null;
 var PZ_ENTSCHEIDUNG = null;
@@ -1061,8 +1070,8 @@ async function renderMonat(monat) {
   var { data: wochen } = await sb.from('probezeit_wochen')
     .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).order('woche');
 
-  var { data: zieleData } = await sb.from('probezeit_ziele')
-    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle().catch(function(){ return { data: null }; });
+  var zieleData = await eineLaden(sb.from('probezeit_ziele')
+    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
 
   var mInfo = MONAT_ZIELE[monat];
   var html = '<div class="card" style="background:' + mInfo.farbe + '1A;border-color:' + mInfo.farbe + ';padding:14px;margin-bottom:12px">' +
@@ -1107,8 +1116,8 @@ async function renderMonat(monat) {
 
   // MONATSFEEDBACK
   html += '<div class="section-head">Feedbackgespräch Ende Monat ' + monat + '</div>';
-  var { data: fbData } = await sb.from('probezeit_monats_feedback')
-    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle().catch(function(){ return { data: null }; });
+  var fbData = await eineLaden(sb.from('probezeit_monats_feedback')
+    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
   html += '<div class="card">' +
     '<div class="label">Was läuft gut? Was muss besser werden?</div>' +
     '<textarea rows="3" id="fb-m' + monat + '" placeholder="Notizen Feedbackgespräch…">' + (fbData ? fbData.notiz||'' : '') + '</textarea>' +
@@ -1135,8 +1144,8 @@ var ZIELE_CACHE = {}; // monat -> { erledigt: [], abzeichen: [] }
 async function ladeZieleCache(monat) {
   if (ZIELE_CACHE[monat]) return ZIELE_CACHE[monat];
   try {
-    var { data } = await sb.from('probezeit_ziele')
-      .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle();
+    var data = await eineLaden(sb.from('probezeit_ziele')
+      .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
     ZIELE_CACHE[monat] = data || { erledigt: [], abzeichen: [] };
   } catch(e) {
     ZIELE_CACHE[monat] = { erledigt: [], abzeichen: [] };
@@ -1170,8 +1179,8 @@ async function toggleAbzeichen(abzId, monat, el) {
 async function speichereZiele(monat, cache) {
   var payload = { probezeit_id: AKT_PROBEZEIT.id, monat: monat, erledigt: cache.erledigt, abzeichen: cache.abzeichen };
   try {
-    var { data: bestehend } = await sb.from('probezeit_ziele').select('id')
-      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle();
+    var bestehend = await eineLaden(sb.from('probezeit_ziele').select('id')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
     if (bestehend && bestehend.id) {
       await sb.from('probezeit_ziele').update(payload).eq('id', bestehend.id);
     } else {
@@ -1307,8 +1316,8 @@ async function renderWochenquizUebersicht() {
 // Lädt individuelle Fragen aus Supabase, fällt auf Standard zurück
 async function ladeFragenFuerWoche(woche) {
   try {
-    var { data } = await sb.from('probezeit_quiz_fragen')
-      .select('fragen').eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle();
+    var data = await eineLaden(sb.from('probezeit_quiz_fragen')
+      .select('fragen').eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche));
     if (data && data.fragen && data.fragen.length) return data.fragen;
   } catch(e) {}
   return WOCHENQUIZ_FRAGEN[woche - 1] || [];
@@ -1322,8 +1331,8 @@ async function oeffneWochenquiz(woche, bereitsGemacht) {
 
   // Wenn Meisterin und bereits gemacht → Auswertung anzeigen
   if (!istLehrling && bereitsGemacht) {
-    var { data: erg } = await sb.from('probezeit_quiz').select('*')
-      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle().catch(function(){ return { data: null }; });
+    var erg = await eineLaden(sb.from('probezeit_quiz').select('*')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche));
     if (erg) {
       var pct = Math.round((erg.richtig/erg.gesamt)*100);
       var html = '<button class="btn-sec" style="margin-bottom:12px" onclick="renderWochenquizUebersicht()">← Zurück</button>' +
@@ -1443,8 +1452,8 @@ async function quizAbgeben(woche) {
   // Speichern
   try {
     var payload = { probezeit_id: AKT_PROBEZEIT.id, woche: woche, richtig: richtig, gesamt: gesamt, antworten: antworten };
-    var { data: bestehend } = await sb.from('probezeit_quiz').select('id')
-      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle();
+    var bestehend = await eineLaden(sb.from('probezeit_quiz').select('id')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche));
     if (bestehend && bestehend.id) {
       await sb.from('probezeit_quiz').update(payload).eq('id', bestehend.id);
     } else {
@@ -1591,8 +1600,8 @@ async function speichereQuizEditor() {
 
   try {
     var payload = { probezeit_id: AKT_PROBEZEIT.id, woche: woche, fragen: fragen };
-    var { data: bestehend } = await sb.from('probezeit_quiz_fragen').select('id')
-      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle();
+    var bestehend = await eineLaden(sb.from('probezeit_quiz_fragen').select('id')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche));
     if (bestehend && bestehend.id) {
       await sb.from('probezeit_quiz_fragen').update(payload).eq('id', bestehend.id);
     } else {
@@ -1659,8 +1668,8 @@ async function speichereWoche(woche, monat) {
   var notizEl = document.getElementById('w' + woche + '-notiz');
   payload.notiz = notizEl ? notizEl.value : '';
 
-  var { data: bestehend } = await sb.from('probezeit_wochen').select('id')
-    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle().catch(function(){ return { data: null }; });
+  var bestehend = await eineLaden(sb.from('probezeit_wochen').select('id')
+    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche));
 
   var error;
   if (bestehend && bestehend.id) {
@@ -1681,8 +1690,8 @@ async function speichereFeedback(monat) {
   var notiz = (document.getElementById('fb-m' + monat)||{}).value || '';
   var status = FB_STATUS[monat] || null;
   var payload = { probezeit_id: AKT_PROBEZEIT.id, monat: monat, notiz: notiz, status: status };
-  var { data: bestehend } = await sb.from('probezeit_monats_feedback').select('id')
-    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle().catch(function(){ return { data: null }; });
+  var bestehend = await eineLaden(sb.from('probezeit_monats_feedback').select('id')
+    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
   if (bestehend && bestehend.id) {
     await sb.from('probezeit_monats_feedback').update(payload).eq('id', bestehend.id);
   } else {
