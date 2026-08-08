@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Englisch im Salon · A Great Hair Day</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;min-height:100dvh}
+body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+.wrap{max-width:580px;margin:0 auto;min-height:100dvh}
+.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
+.card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
+.btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;font-weight:600;transition:background 0.15s}
+.btn-primary:hover{background:#4a6a5e}
+.btn-ghost{padding:10px 16px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;width:100%;margin-bottom:8px}
+.btn-toggle{flex:1;padding:9px 6px;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui;border:1.5px solid #E2DDD5;background:#fff;color:#7A7A70;text-align:center;font-weight:600}
+.btn-toggle.ak{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.page{display:none}.page.ak{display:block}
+.back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:16px;display:block}
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
+h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
+.sub{color:#7A7A70;font-size:14px;margin-bottom:20px}
+.nav-card{background:#fff;border:1.5px solid #E2DDD5;border-radius:10px;padding:16px 14px;text-align:left;cursor:pointer;transition:border-color 0.15s,background 0.15s;width:100%;margin-bottom:10px;display:block}
+.nav-card:hover{border-color:#5B7B6F;background:#F7FBF9}
+.nav-card.ak{border-color:#5B7B6F;background:#EAF0EE}
+.nav-icon{font-size:1.4rem;margin-bottom:5px}
+.nav-title{font-weight:600;color:#1C1C1A;font-size:14px}
+.nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
+.frage-box{background:#2C2C2C;border-radius:10px;padding:20px;margin-bottom:14px}
+.frage-lang{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#5B7B6F;margin-bottom:8px;font-weight:700}
+.frage-txt{font-size:17px;color:#F7F5F0;line-height:1.5;font-weight:500}
+.frage-kontext{font-size:12px;color:#9A9A90;margin-top:8px;font-style:italic}
+.opt-btn{width:100%;padding:12px 14px;text-align:left;border:1.5px solid #E2DDD5;border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:system-ui;color:#1C1C1A;margin-bottom:8px;transition:all 0.15s;line-height:1.4}
+.opt-btn:disabled{cursor:default}
+.opt-btn.ric{border-color:#5B7B6F;background:#EAF0EE;color:#2C2C2C;font-weight:600}
+.opt-btn.fal{border-color:#C44030;background:#FDECEA;color:#C44030}
+.fb-g{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px;margin-top:6px}
+.fb-r{background:#FDECEA;border:1px solid #C44030;border-radius:8px;padding:14px;margin-top:6px}
+.muster{background:#2C2C2C;border-radius:6px;padding:12px;margin-top:8px;font-size:13px;color:#F7F5F0;line-height:1.6}
+.muster-lab{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
+.prog-wrap{height:4px;background:#E2DDD5;border-radius:2px;margin-bottom:16px}
+.prog-fill{height:4px;background:#5B7B6F;border-radius:2px;transition:width 0.3s}
+.score-box{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.score-zahl{font-size:36px;font-weight:700;color:#5B7B6F;text-align:center;margin-bottom:4px}
+.score-sub{font-size:13px;color:#5B7B6F;text-align:center}
+.karte-vorder{background:#2C2C2C;border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px}
+.karte-hint{font-size:11px;color:#9A9A90;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.karte-wort{font-size:22px;font-weight:600;color:#F7F5F0;line-height:1.4}
+.karte-kontext{font-size:12px;color:#7A7A70;margin-top:10px;font-style:italic}
+.karte-rueck{background:#EAF0EE;border:1.5px solid #5B7B6F;border-radius:10px;padding:20px;text-align:center;margin-bottom:12px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.karte-uebersetzung{font-size:18px;font-weight:600;color:#2C2C2C}
+.karte-tipp{font-size:12px;color:#5B7B6F;margin-top:6px;line-height:1.5}
+.karte-row{display:flex;gap:8px;margin-bottom:12px}
+.btn-kannte{flex:1;padding:11px;border:none;border-radius:8px;background:#5B7B6F;color:#fff;font-size:13px;cursor:pointer;font-family:system-ui;font-weight:600}
+.btn-nochmal{flex:1;padding:11px;border:1.5px solid #C44030;border-radius:8px;background:#fff;color:#C44030;font-size:13px;cursor:pointer;font-family:system-ui;font-weight:600}
+
+/* ── STREAK LEISTE ── */
+.streak-bar{background:#fff;border:1px solid #E2DDD5;border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.streak-feuer{font-size:28px;line-height:1}
+.streak-info{flex:1}
+.streak-zahl{font-size:20px;font-weight:700;color:#C4830A}
+.streak-text{font-size:11px;color:#7A7A70;margin-top:1px}
+.streak-gesamt{font-size:11px;color:#9A9A90;text-align:right}
+
+/* ── BADGES ── */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+.badge-item{text-align:center;padding:10px 4px;border-radius:8px;border:1.5px solid #E2DDD5;background:#fff;transition:all 0.2s}
+.badge-item.frei{border-color:#C4A830;background:#FDF6E3}
+.badge-icon{font-size:22px;margin-bottom:4px}
+.badge-name{font-size:9px;font-weight:700;color:#7A7A70;text-transform:uppercase;letter-spacing:0.5px;line-height:1.3}
+.badge-item.frei .badge-name{color:#8A7020}
+.badge-item.locked{opacity:0.4}
+.badge-item.locked .badge-icon{filter:grayscale(1)}
+
+/* ── STREAK POPUP ── */
+.sp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(3px)}
+.sp-overlay.an{opacity:1;pointer-events:all}
+.sp-box{background:#FDFCFA;border:2px solid #C4A830;border-radius:16px;width:min(88vw,340px);padding:32px 24px 24px;text-align:center;transform:scale(.88) translateY(16px);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;position:relative;overflow:hidden}
+.sp-overlay.an .sp-box{transform:scale(1) translateY(0);opacity:1}
+.sp-emoji{font-size:52px;margin-bottom:10px;display:block;animation:spBounce .5s .1s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes spBounce{from{transform:scale(0)}to{transform:scale(1)}}
+.sp-titel{font-size:22px;font-weight:700;color:#2C2C2C;margin-bottom:6px}
+.sp-sub{font-size:13px;color:#5A5550;line-height:1.6;margin-bottom:20px}
+.sp-btn{padding:11px 28px;background:#5B7B6F;color:#fff;border:none;border-radius:8px;font-family:system-ui;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.05em}
+.sp-konf{position:absolute;border-radius:2px;pointer-events:none}
+@keyframes spkf{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(110px) rotate(400deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── STREAK POPUP ── -->
+<div class="sp-overlay" id="sp-overlay">
+  <div class="sp-box" id="sp-box">
+    <span class="sp-emoji" id="sp-emoji"></span>
+    <div class="sp-titel" id="sp-titel"></div>
+    <div class="sp-sub" id="sp-sub"></div>
+    <button class="sp-btn" onclick="spSchliessen()">Weiter lernen! →</button>
+  </div>
+</div>
+
+<!-- ── HOME ── -->
+<div id="p-home" class="page ak">
+  <button class="back-btn" onclick="window.location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html')">← Zurück zum Lern-Tool</button>
+  <div class="tag">greathairday · Wien</div>
+  <h1>🇬🇧 Englisch im Salon</h1>
+  <p class="sub">Fachvokabular für Friseur-Kommunikation</p>
+
+  <!-- Streak Leiste -->
+  <div class="streak-bar">
+    <div class="streak-feuer" id="home-feuer">🔥</div>
+    <div class="streak-info">
+      <div class="streak-zahl"><span id="home-streak">0</span> Tage Streak</div>
+      <div class="streak-text" id="home-streak-text">Starte heute deinen ersten Tag!</div>
+    </div>
+    <div class="streak-gesamt" id="home-gesamt">0 Sessions</div>
+  </div>
+
+  <!-- Badges -->
+  <div class="card">
+    <div class="label" style="margin-bottom:12px">Meine Abzeichen</div>
+    <div class="badge-grid" id="badge-grid"></div>
+    <div style="font-size:11px;color:#9A9A90;margin-top:10px;text-align:center" id="naechstes-badge"></div>
+  </div>
+
+  <div class="card">
+    <div class="label">Bereich wählen</div>
+    <button class="nav-card ak" id="nav-alle" onclick="katWahl('alle',this)">
+      <div class="nav-title">🗂 Alle Kategorien</div>
+      <div class="nav-desc">Kompletter Wortschatz · 90 Sätze</div>
+    </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="nav-card" id="nav-begruessung" onclick="katWahl('begruessung',this)">
+        <div class="nav-icon">👋</div><div class="nav-title">Begrüßung</div><div class="nav-desc">Willkommen & Ankommen</div>
+      </button>
+      <button class="nav-card" id="nav-beratung" onclick="katWahl('beratung',this)">
+        <div class="nav-icon">💬</div><div class="nav-title">Beratung</div><div class="nav-desc">Wunsch & Analyse</div>
+      </button>
+      <button class="nav-card" id="nav-schnitt" onclick="katWahl('schnitt',this)">
+        <div class="nav-icon">✂️</div><div class="nav-title">Während des Schnitts</div><div class="nav-desc">Kommunikation & Technik</div>
+      </button>
+      <button class="nav-card" id="nav-farbe" onclick="katWahl('farbe',this)">
+        <div class="nav-icon">🎨</div><div class="nav-title">Farbe & Behandlung</div><div class="nav-desc">Coloration & Pflege</div>
+      </button>
+      <button class="nav-card" id="nav-termin" onclick="katWahl('termin',this)">
+        <div class="nav-icon">📅</div><div class="nav-title">Termine</div><div class="nav-desc">Buchen & Absagen</div>
+      </button>
+      <button class="nav-card" id="nav-verabschiedung" onclick="katWahl('verabschiedung',this)">
+        <div class="nav-icon">🤝</div><div class="nav-title">Verabschiedung</div><div class="nav-desc">Abschluss & Empfehlung</div>
+      </button>
+      <button class="nav-card" id="nav-vokabular" onclick="katWahl('vokabular',this)">
+        <div class="nav-icon">📖</div><div class="nav-title">Fachvokabular</div><div class="nav-desc">Haartypen & Techniken</div>
+      </button>
+      <button class="nav-card" id="nav-beschwerden" onclick="katWahl('beschwerden',this)">
+        <div class="nav-icon">🛠</div><div class="nav-title">Beschwerden</div><div class="nav-desc">Probleme lösen</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Lernmodus</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn-toggle ak" id="mod-de-en" onclick="modusWahl('de-en',this)">🇩🇪 → 🇬🇧</button>
+      <button class="btn-toggle" id="mod-en-de" onclick="modusWahl('en-de',this)">🇬🇧 → 🇩🇪</button>
+      <button class="btn-toggle" id="mod-karte" onclick="modusWahl('karte',this)">🃏 Karten</button>
+    </div>
+    <div id="modus-info" style="font-size:12px;color:#7A7A70;margin-bottom:14px">Deutsch lesen → Englisch auswählen</div>
+    <button class="btn-primary" onclick="starteLernen()">Jetzt starten →</button>
+  </div>
+</div>
+
+<!-- ── QUIZ ── -->
+<div id="p-quiz" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div style="font-size:12px;color:#9A9A90;margin-bottom:12px;display:flex;justify-content:space-between">
+    <span id="quiz-nr">Frage 1</span>
+    <span id="quiz-score-live">✓ 0</span>
+  </div>
+  <div class="frage-box">
+    <div class="frage-lang" id="frage-lang"></div>
+    <div class="frage-txt" id="frage-txt"></div>
+    <div class="frage-kontext" id="frage-kontext"></div>
+  </div>
+  <div id="optionen"></div>
+  <div id="feedback" style="display:none"></div>
+  <div id="quiz-btns"></div>
+</div>
+
+<!-- ── KARTEIKARTEN ── -->
+<div id="p-karte" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="prog-wrap"><div class="prog-fill" id="karte-prog" style="width:0%"></div></div>
+  <div style="font-size:12px;color:#9A9A90;margin-bottom:12px;display:flex;justify-content:space-between">
+    <span id="karte-nr"></span><span id="karte-rest"></span>
+  </div>
+  <div class="karte-vorder" id="karte-vorder" onclick="karteUmdrehen()">
+    <div class="karte-hint" id="karte-hint-v"></div>
+    <div class="karte-wort" id="karte-de"></div>
+    <div class="karte-kontext" id="karte-kontext-v"></div>
+    <div style="margin-top:16px;font-size:11px;color:#5B7B6F">Tippen zum Umdrehen ↓</div>
+  </div>
+  <div class="karte-rueck" id="karte-rueck" style="display:none">
+    <div class="karte-hint" id="karte-hint-r"></div>
+    <div class="karte-uebersetzung" id="karte-en"></div>
+    <div class="karte-tipp" id="karte-tipp"></div>
+  </div>
+  <div id="karte-antwort-btns" style="display:none">
+    <div class="karte-row">
+      <button class="btn-nochmal" onclick="karteNochmal()">✗ Nochmal</button>
+      <button class="btn-kannte" onclick="karteKannte()">✓ Kannte ich</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ERGEBNIS ── -->
+<div id="p-ergebnis" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück zur Übersicht</button>
+  <div class="tag">greathairday · Ergebnis</div>
+  <h1 id="erg-titel">Fertig! 🎉</h1>
+  <div style="margin-bottom:16px"></div>
+  <div class="score-box">
+    <div class="score-zahl" id="erg-zahl"></div>
+    <div class="score-sub" id="erg-sub"></div>
+  </div>
+  <!-- Streak im Ergebnis -->
+  <div class="streak-bar" id="erg-streak-bar" style="display:none">
+    <div class="streak-feuer" style="font-size:28px">🔥</div>
+    <div class="streak-info">
+      <div class="streak-zahl"><span id="erg-streak-zahl"></span></div>
+      <div class="streak-text" id="erg-streak-text"></div>
+    </div>
+  </div>
+  <div id="erg-detail"></div>
+  <button class="btn-primary" onclick="starteLernen()" style="margin-top:8px">Nochmal versuchen →</button>
+  <button class="btn-ghost" onclick="zeige('home')" style="margin-top:8px">Andere Kategorie wählen</button>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// FRAGENBANK
+// ════════════════════════════════════════════════════════
+var FRAGEN = [
+// BEGRÜSSUNG
+{de:"Herzlich willkommen in unserem Salon!",en:"Welcome to our salon!",kontext:"Begrüßung beim Eintreten",tipp:"'Welcome' ist immer freundlich und reicht oft alleine.",kat:"begruessung"},
+{de:"Wie kann ich Ihnen heute helfen?",en:"How can I help you today?",kontext:"Eröffnungsfrage",tipp:"Immer mit 'today' — zeigt, dass du präsent bist.",kat:"begruessung"},
+{de:"Bitte nehmen Sie Platz.",en:"Please have a seat.",kontext:"Beim Empfang",tipp:"'Have a seat' ist höflicher als 'Sit down'.",kat:"begruessung"},
+{de:"Einen Moment bitte, ich bin gleich bei Ihnen.",en:"One moment please, I'll be right with you.",kontext:"Wenn man kurz beschäftigt ist",tipp:"'I'll be right with you' zeigt Aufmerksamkeit trotz kurzer Wartezeit.",kat:"begruessung"},
+{de:"Möchten Sie während des Wartens einen Kaffee oder Tee?",en:"Would you like a coffee or tea while you wait?",kontext:"Kleiner Willkommensservice",tipp:"'While you wait' — freundliche Einladung zum Entspannen.",kat:"begruessung"},
+{de:"Haben Sie einen Termin?",en:"Do you have an appointment?",kontext:"Beim Eingang prüfen",tipp:"'Appointment' = der Termin. Auch: 'Do you have a booking?'",kat:"begruessung"},
+{de:"Auf welchen Namen ist der Termin?",en:"What name is the appointment under?",kontext:"Im Terminbuch nachschauen",tipp:"'Under' wird bei Namen/Buchungen immer verwendet.",kat:"begruessung"},
+{de:"Schön, Sie wiederzusehen!",en:"Great to see you again!",kontext:"Stammkunde begrüßen",tipp:"Persönlich und warm — Stammkunden lieben das!",kat:"begruessung"},
+{de:"Darf ich Ihre Jacke nehmen?",en:"Can I take your jacket?",kontext:"Kunden empfangen",tipp:"Einfach aber sehr aufmerksam — macht einen professionellen Eindruck.",kat:"begruessung"},
+{de:"Kommen Sie bitte mit.",en:"Please follow me.",kontext:"Kunden zum Platz führen",tipp:"'Follow me' ist direkt und freundlich.",kat:"begruessung"},
+// BERATUNG
+{de:"Wie möchten Sie Ihre Haare heute gestaltet haben?",en:"How would you like your hair done today?",kontext:"Einstieg ins Beratungsgespräch",tipp:"Die wichtigste Frage im Beratungsgespräch — immer offen formulieren!",kat:"beratung"},
+{de:"Was stört Sie an Ihrem aktuellen Haarschnitt?",en:"What don't you like about your current haircut?",kontext:"Veränderungswunsch erfragen",tipp:"'What don't you like' — direkter Einstieg in den Verbesserungswunsch.",kat:"beratung"},
+{de:"Wie lange haben Sie diesen Stil schon?",en:"How long have you had this style?",kontext:"Haargeschichte verstehen",tipp:"Gute Frage um zu verstehen ob der Kunde zufrieden war.",kat:"beratung"},
+{de:"Haben Sie ein Referenzbild dabei?",en:"Do you have a reference picture?",kontext:"Wunsch konkretisieren",tipp:"'Reference picture' sehr gebräuchlich. Auch: 'inspiration photo'.",kat:"beratung"},
+{de:"Wie tragen Sie Ihre Haare normalerweise?",en:"How do you usually wear your hair?",kontext:"Alltag und Pflege erfragen",tipp:"'Usually' = normalerweise. Wichtig um realistische Empfehlungen zu geben.",kat:"beratung"},
+{de:"Wie viel Zeit investieren Sie morgens in Ihre Haare?",en:"How much time do you spend on your hair in the morning?",kontext:"Pflegeaufwand erfragen",tipp:"'Spend time on' = Zeit investieren für. Hilft bei der Schnitt-Empfehlung.",kat:"beratung"},
+{de:"Haben Sie Allergien, über die ich Bescheid wissen sollte?",en:"Do you have any allergies I should know about?",kontext:"Vor chemischen Behandlungen",tipp:"Sehr wichtig! Immer fragen vor Farbe oder Dauerwelle.",kat:"beratung"},
+{de:"Wie ist Ihr Haar normalerweise — fettig, trocken oder normal?",en:"How is your hair normally — oily, dry or normal?",kontext:"Haartyp einschätzen",tipp:"'Oily' = fettig, 'dry' = trocken — die drei Grundtypen auf Englisch.",kat:"beratung"},
+{de:"Haben Sie Ihr Haar zuletzt chemisch behandelt?",en:"Have you had any chemical treatments recently?",kontext:"Vorbehandlungen erfragen",tipp:"'Chemical treatments' = Farbe, Dauerwelle, Blondierung.",kat:"beratung"},
+{de:"Ich empfehle Ihnen diese Behandlung.",en:"I would recommend this treatment for you.",kontext:"Empfehlung aussprechen",tipp:"'I would recommend' — höflicher als 'You should'. Klingt professionell.",kat:"beratung"},
+{de:"Was ist Ihr Budget für heute?",en:"What's your budget for today?",kontext:"Kostenrahmen klären",tipp:"Direkt aber wichtig — erspart Überraschungen an der Kasse.",kat:"beratung"},
+{de:"Ich erkläre Ihnen kurz was ich machen werde.",en:"Let me explain what I'm going to do.",kontext:"Vor Behandlungsbeginn",tipp:"'Let me explain' = erlauben Sie mir zu erklären. Sehr professionell!",kat:"beratung"},
+{de:"Haben Sie Erfahrungen mit dieser Behandlung?",en:"Have you had this treatment before?",kontext:"Erstmalige Behandlungen klären",tipp:"'Before' = früher. Wer keine Erfahrung hat, braucht mehr Erklärung.",kat:"beratung"},
+// WÄHREND DES SCHNITTS
+{de:"Wie kurz möchten Sie es?",en:"How short would you like it?",kontext:"Beim Schnitt",tipp:"Immer fragen! Lieber einmal zu viel als einen Fehler.",kat:"schnitt"},
+{de:"Soll ich die Spitzen stutzen oder mehr abschneiden?",en:"Shall I trim the ends or cut more off?",kontext:"Länge klären",tipp:"'Trim the ends' = nur Spitzen. 'Cut more off' = mehr abnehmen.",kat:"schnitt"},
+{de:"Wie fühlt sich das Wasser an? Zu heiß oder zu kalt?",en:"How's the water temperature? Too hot or too cold?",kontext:"Beim Haarewaschen",tipp:"Komfort-Frage — zeigt Aufmerksamkeit für den Kunden.",kat:"schnitt"},
+{de:"Ist der Druck in Ordnung für Sie?",en:"Is the pressure okay for you?",kontext:"Beim Kopfmassage",tipp:"'Pressure' = Druck. 'Okay for you' = für Sie angenehm.",kat:"schnitt"},
+{de:"Möchten Sie nach rechts oder links gescheitelt werden?",en:"Would you like it parted on the right or left?",kontext:"Scheitelrichtung",tipp:"'Parted' = gescheitelt. 'On the right/left' = auf der rechten/linken Seite.",kat:"schnitt"},
+{de:"Ich nehme hier etwas mehr weg.",en:"I'm going to take a little more off here.",kontext:"Nachkorrektur erklären",tipp:"'Take off' = abnehmen. 'A little more' beruhigt den Kunden.",kat:"schnitt"},
+{de:"Ist es so kurz genug?",en:"Is that short enough?",kontext:"Länge bestätigen lassen",tipp:"Immer zeigen und bestätigen lassen — bevor man zu viel abschneidet!",kat:"schnitt"},
+{de:"Ich mache jetzt die Seiten kürzer.",en:"I'm going to taper the sides now.",kontext:"Männerschnitt",tipp:"'Taper' = ausblenden/stufig kürzen — typisch beim Herrenschnitt.",kat:"schnitt"},
+{de:"Schauen Sie kurz in den Spiegel.",en:"Please take a look in the mirror.",kontext:"Zwischencheck",tipp:"'Take a look' = einen Blick werfen. Kunden lieben es einbezogen zu werden!",kat:"schnitt"},
+{de:"Möchten Sie vorne mehr Volumen?",en:"Would you like more volume at the front?",kontext:"Styling besprechen",tipp:"'Volume at the front' = Volumen vorne.",kat:"schnitt"},
+{de:"Ich wasche Ihnen jetzt die Haare.",en:"I'm going to wash your hair now.",kontext:"Ablauf erklären",tipp:"Immer ansagen was man als nächstes macht — der Kunde fühlt sich sicher.",kat:"schnitt"},
+{de:"Ich trage jetzt die Spülung auf.",en:"I'm going to apply the conditioner now.",kontext:"Beim Waschen",tipp:"'Apply' = auftragen. 'Conditioner' = Spülung/Pflegespülung.",kat:"schnitt"},
+// FARBE & BEHANDLUNG
+{de:"Wir müssen vorher einen Allergietest machen.",en:"We need to do a patch test first.",kontext:"Vor der Coloration",tipp:"'Patch test' = Allergietest. Immer erklären warum!",kat:"farbe"},
+{de:"Welche Farbe hatten Sie zuletzt?",en:"What colour did you have last time?",kontext:"Farbgeschichte",tipp:"'Last time' = beim letzten Mal. Wichtig für die Farbwahl.",kat:"farbe"},
+{de:"Ich mische jetzt die Farbe an.",en:"I'm mixing the colour now.",kontext:"Ablauf erklären",tipp:"'Mix' = anmischen. Kunden fragen gerne wie das funktioniert!",kat:"farbe"},
+{de:"Die Farbe muss jetzt 30 Minuten einwirken.",en:"The colour needs to develop for 30 minutes.",kontext:"Einwirkzeit erklären",tipp:"'Develop' = entwickeln/einwirken.",kat:"farbe"},
+{de:"Möchten Sie Highlights oder eine Komplettfärbung?",en:"Would you like highlights or a full colour?",kontext:"Farbbehandlung klären",tipp:"'Highlights' = Strähnen. 'Full colour' = Komplettfärbung.",kat:"farbe"},
+{de:"Ich empfehle eine Pflegekur nach der Blondierung.",en:"I recommend a treatment after the bleaching.",kontext:"Pflegeempfehlung",tipp:"'Treatment' = Kur/intensive Pflege.",kat:"farbe"},
+{de:"Ihre Haare sind schon etwas strapaziert.",en:"Your hair is already a little damaged.",kontext:"Haarzustand erklären",tipp:"'Damaged' = strapaziert/beschädigt. Ehrlichkeit schützt das Haar.",kat:"farbe"},
+{de:"Das Ergebnis sieht fantastisch aus!",en:"The result looks fantastic!",kontext:"Abschlusskompliment",tipp:"Echte Begeisterung überträgt sich — der Kunde strahlt mit!",kat:"farbe"},
+{de:"Ich spüle die Farbe jetzt aus.",en:"I'm going to rinse out the colour now.",kontext:"Ende der Einwirkzeit",tipp:"'Rinse out' = ausspülen.",kat:"farbe"},
+{de:"Ich trage jetzt die Blondierung auf.",en:"I'm going to apply the bleach now.",kontext:"Blondierungsbehandlung",tipp:"'Bleach' = Blondierungsmittel. 'Apply' = auftragen.",kat:"farbe"},
+{de:"Dieses Shampoo ist speziell für coloriertes Haar.",en:"This shampoo is specially designed for coloured hair.",kontext:"Produktempfehlung",tipp:"'Specially designed for' = speziell für.",kat:"farbe"},
+{de:"Der Farbton passt perfekt zu Ihrer Haut.",en:"The shade suits your skin tone perfectly.",kontext:"Farbbestätigung",tipp:"'Shade' = Farbton. 'Suit' = passen/stehen. 'Skin tone' = Hautton.",kat:"farbe"},
+// TERMINE
+{de:"Ich würde gerne einen Termin vereinbaren.",en:"I would like to make an appointment.",kontext:"Terminanfrage vom Kunden",tipp:"'Make an appointment' = klassisch. Auch: 'book an appointment'.",kat:"termin"},
+{de:"Wann passt es Ihnen?",en:"When would suit you?",kontext:"Terminvereinbarung",tipp:"'Would suit you' = würde Ihnen passen.",kat:"termin"},
+{de:"Wir sind leider heute ausgebucht.",en:"I'm afraid we're fully booked today.",kontext:"Keine freien Termine",tipp:"'I'm afraid' = leider. 'Fully booked' = ausgebucht.",kat:"termin"},
+{de:"Kann ich Sie für nächsten Dienstag eintragen?",en:"Can I book you in for next Tuesday?",kontext:"Terminvorschlag",tipp:"'Book you in' = Sie eintragen. Sehr typisch in Salons.",kat:"termin"},
+{de:"Wie lange dauert eine Blondierung ungefähr?",en:"How long does a bleaching take approximately?",kontext:"Zeitfrage vom Kunden",tipp:"'Approximately' = ungefähr. 'It takes 2 hours' = es dauert 2 Stunden.",kat:"termin"},
+{de:"Ich muss meinen Termin leider absagen.",en:"I need to cancel my appointment, I'm afraid.",kontext:"Terminabsage",tipp:"'Cancel' = absagen. 'I'm afraid' zeigt dass es dem Kunden unangenehm ist.",kat:"termin"},
+{de:"Kann ich meinen Termin verschieben?",en:"Can I reschedule my appointment?",kontext:"Terminverschiebung",tipp:"'Reschedule' = verschieben/neu terminieren.",kat:"termin"},
+{de:"Bitte denken Sie daran, 24 Stunden vorher abzusagen.",en:"Please remember to cancel at least 24 hours in advance.",kontext:"Cancellation-Policy erklären",tipp:"'In advance' = im Voraus. 'At least' = mindestens.",kat:"termin"},
+{de:"Um wie viel Uhr möchten Sie kommen?",en:"What time would you like to come?",kontext:"Uhrzeit erfragen",tipp:"'What time' = um wie viel Uhr.",kat:"termin"},
+{de:"Ich schicke Ihnen eine Terminerinnerung.",en:"I'll send you a reminder.",kontext:"Digitale Terminverwaltung",tipp:"'Reminder' = Erinnerung. Viele Kunden schätzen das sehr.",kat:"termin"},
+{de:"Ihr nächster Termin ist am Montag um 10 Uhr.",en:"Your next appointment is on Monday at 10 o'clock.",kontext:"Terminbestätigung",tipp:"Wochentage immer mit 'on', Uhrzeiten mit 'at'.",kat:"termin"},
+{de:"Wie lange waren Sie nicht mehr beim Friseur?",en:"How long has it been since your last haircut?",kontext:"Beim Erstbesuch oder langer Pause",tipp:"'How long has it been' = wie lange ist es her.",kat:"termin"},
+// VERABSCHIEDUNG
+{de:"Sind Sie mit dem Ergebnis zufrieden?",en:"Are you happy with the result?",kontext:"Wichtigste Abschlussfrage",tipp:"'Happy with' = zufrieden mit. Nie vergessen zu fragen!",kat:"verabschiedung"},
+{de:"Ich empfehle dieses Pflegeprodukt für zu Hause.",en:"I recommend this care product for home use.",kontext:"Produktverkauf",tipp:"'For home use' = für die Heimanwendung.",kat:"verabschiedung"},
+{de:"Möchten Sie gleich den nächsten Termin ausmachen?",en:"Would you like to book your next appointment now?",kontext:"Nachbuchung",tipp:"'Book your next appointment now' — die beste Zeit ist direkt nach dem Termin!",kat:"verabschiedung"},
+{de:"Vielen Dank für Ihren Besuch!",en:"Thank you so much for coming!",kontext:"Verabschiedung",tipp:"'Thank you so much' — herzlicher als nur 'thank you'.",kat:"verabschiedung"},
+{de:"Bis zum nächsten Mal!",en:"See you next time!",kontext:"Freundlicher Abschied",tipp:"Kurz, warmherzig und einladend.",kat:"verabschiedung"},
+{de:"Ihre Haare sehen wunderschön aus!",en:"Your hair looks amazing!",kontext:"Abschlusskompliment",tipp:"'Amazing' ist enthusiastischer als 'nice'.",kat:"verabschiedung"},
+{de:"Das steht Ihnen sehr gut!",en:"It really suits you!",kontext:"Kompliment",tipp:"'Suit' = passen/stehen. 'Really' verstärkt das Kompliment.",kat:"verabschiedung"},
+{de:"Verwenden Sie bitte dieses Shampoo erst nach 48 Stunden.",en:"Please don't use shampoo for 48 hours after the treatment.",kontext:"Pflegehinweis nach Coloration",tipp:"Wichtiger Pflegehinweis nach der Behandlung.",kat:"verabschiedung"},
+{de:"Schönen Tag noch!",en:"Have a lovely day!",kontext:"Herzlicher Abschluss",tipp:"'Lovely' klingt wärmer als 'nice'.",kat:"verabschiedung"},
+{de:"Kommen Sie bald wieder!",en:"Hope to see you again soon!",kontext:"Einladung zur Wiederkehr",tipp:"Zeigt echte Vorfreude auf den nächsten Besuch.",kat:"verabschiedung"},
+// FACHVOKABULAR
+{de:"der Haaransatz / die Wurzel",en:"the roots / the regrowth",kontext:"Colorationsbereich",tipp:"'Roots' = die Wurzeln. 'Regrowth' = nachwachsender Ansatz.",kat:"vokabular"},
+{de:"die Schläfen",en:"the temples",kontext:"Kopfpartie",tipp:"Wichtig beim Herrenschnitt — 'temple fade' ist eine beliebte Technik.",kat:"vokabular"},
+{de:"der Pony",en:"the fringe / the bangs",kontext:"Haarschnitt",tipp:"'Fringe' = britisch, 'bangs' = amerikanisch.",kat:"vokabular"},
+{de:"die Haarspitzen",en:"the ends / the tips",kontext:"Haarlänge",tipp:"'Split ends' = Spliss. 'Trim the ends' = die Spitzen kürzen.",kat:"vokabular"},
+{de:"der Scheitel",en:"the parting",kontext:"Frisur",tipp:"'Parting on the left/right' = links/rechts gescheitelt.",kat:"vokabular"},
+{de:"das Blondieren",en:"bleaching / lightening",kontext:"Chemische Behandlung",tipp:"'Bleaching' = chemisches Aufhellen. 'Lightening' klingt schonender.",kat:"vokabular"},
+{de:"die Strähnen / Highlights",en:"highlights",kontext:"Colorationstechnik",tipp:"Highlights = hellere Strähnen. Lowlights = dunklere Strähnen.",kat:"vokabular"},
+{de:"die Tönung",en:"toner / semi-permanent colour",kontext:"Farbbehandlung",tipp:"'Toner' = Tönung nach Blondierung.",kat:"vokabular"},
+{de:"das lockige Haar",en:"curly hair",kontext:"Haartyp",tipp:"'Curly' = lockig. 'Wavy' = wellig. 'Straight' = glatt.",kat:"vokabular"},
+{de:"feines Haar",en:"fine hair",kontext:"Haarstruktur",tipp:"'Fine hair' = feines Haar. 'Thick hair' = dickes Haar.",kat:"vokabular"},
+{de:"krauses / afroamerikanisches Haar",en:"coily / afro-textured hair",kontext:"Haartyp",tipp:"'Afro-textured' ist respektvoll und professionell.",kat:"vokabular"},
+{de:"der Haarausfall",en:"hair loss",kontext:"Haarproblem",tipp:"'Hair loss' = Haarausfall. 'Alopecia' = medizinischer Begriff.",kat:"vokabular"},
+{de:"die Dauerwelle",en:"perm / permanent wave",kontext:"Behandlung",tipp:"'Perm' = Kurzform von 'permanent wave'.",kat:"vokabular"},
+{de:"das Balayage",en:"balayage",kontext:"Colorationstechnik",tipp:"Gleicher Begriff auf Englisch! Ausgesprochen: 'bal-ee-AHZH'.",kat:"vokabular"},
+{de:"die Spülung",en:"conditioner",kontext:"Pflegeprodukt",tipp:"'Rinse-out conditioner' = auswaschbare Spülung.",kat:"vokabular"},
+{de:"die Haarkur / Intensivpflege",en:"hair treatment / hair mask",kontext:"Pflegeprodukt",tipp:"'Treatment' oder 'mask' — beide Begriffe werden verwendet.",kat:"vokabular"},
+{de:"der Föhn",en:"hairdryer / blow dryer",kontext:"Gerät",tipp:"'Blow dry' = föhnen. 'Can I blow dry your hair?'",kat:"vokabular"},
+{de:"das Glätteisen",en:"flat iron / hair straightener",kontext:"Styling-Gerät",tipp:"'Flat iron' = amerikanisch. 'Straighteners' = britisch.",kat:"vokabular"},
+{de:"der Lockenwickler",en:"roller / curler",kontext:"Styling",tipp:"'Roller' = Wickler. 'Curling iron' = Lockenstab.",kat:"vokabular"},
+{de:"der Spliss",en:"split ends",kontext:"Haarproblem",tipp:"'She has split ends' = Sie hat Spliss. Sehr häufig im Kundengespräch.",kat:"vokabular"},
+// BESCHWERDEN
+{de:"Es tut mir sehr leid, das war nicht meine Absicht.",en:"I'm so sorry, that wasn't my intention.",kontext:"Bei Missverständnissen",tipp:"Aufrichtige Entschuldigung ohne direkte Schuldzuweisung.",kat:"beschwerden"},
+{de:"Ich verstehe Ihre Enttäuschung.",en:"I understand your disappointment.",kontext:"Auf Beschwerden reagieren",tipp:"Zeigt dass man die Gefühle ernst nimmt.",kat:"beschwerden"},
+{de:"Lassen Sie mich das sofort korrigieren.",en:"Let me fix that right away.",kontext:"Lösung anbieten",tipp:"'Fix' = reparieren/korrigieren. 'Right away' = sofort.",kat:"beschwerden"},
+{de:"Wie kann ich das für Sie in Ordnung bringen?",en:"How can I make this right for you?",kontext:"Lösungsfindung",tipp:"'Make this right' = das wieder gutmachen.",kat:"beschwerden"},
+{de:"Das entspricht leider nicht Ihren Erwartungen.",en:"This isn't quite what you were hoping for.",kontext:"Unzufriedenheit ansprechen",tipp:"Einfühlsam formuliert — klar ohne anklagend zu klingen.",kat:"beschwerden"},
+{de:"Wir bieten Ihnen das gerne kostenlos an.",en:"We'd be happy to offer this complimentary.",kontext:"Kulanzlösung",tipp:"'Complimentary' = kostenlos/auf Kosten des Hauses.",kat:"beschwerden"},
+{de:"Bitte kommen Sie wieder, ich mache das kostenlos nochmal.",en:"Please come back and I'll redo it for you at no charge.",kontext:"Nachbesserungsangebot",tipp:"'Redo' = nochmal machen. 'At no charge' = kostenlos.",kat:"beschwerden"},
+{de:"Meine Kollegin wird sich jetzt um Sie kümmern.",en:"My colleague will take care of you now.",kontext:"An jemand anderen übergeben",tipp:"'Take care of you' = sich um Sie kümmern.",kat:"beschwerden"},
+{de:"Das war ein Missverständnis, es tut mir leid.",en:"There was a miscommunication, I apologise.",kontext:"Fehler eingestehen",tipp:"'Miscommunication' = Kommunikationsfehler.",kat:"beschwerden"},
+{de:"Ich rufe Sie zurück um alles zu klären.",en:"I'll call you back to sort everything out.",kontext:"Telefonische Nachbetreuung",tipp:"'Sort out' = klären/lösen. 'Call back' = zurückrufen.",kat:"beschwerden"},
+];
+
+// ════════════════════════════════════════════════════════
+// BADGES DEFINITION
+// ════════════════════════════════════════════════════════
+var BADGES = [
+  {id:'erste',    icon:'🌱', name:'Erster Start',    sessions:1,  text:'Du hast das erste Mal gelernt!'},
+  {id:'drei',     icon:'✂️', name:'3 Sessions',      sessions:3,  text:'3 Lerneinheiten abgeschlossen!'},
+  {id:'woche',    icon:'🔥', name:'7 Tage Streak',   streak:7,    text:'7 Tage in Folge — unglaublich!'},
+  {id:'zehn',     icon:'⭐', name:'10 Sessions',     sessions:10, text:'10 Lerneinheiten — du bist auf dem Weg!'},
+  {id:'experte',  icon:'💬', name:'Kommunikations-Profi', sessions:20, text:'20 Sessions — Englisch sitzt!'},
+  {id:'streak14', icon:'🏆', name:'2 Wochen Streak', streak:14,   text:'14 Tage in Folge — einfach Spitze!'},
+  {id:'meisterin',icon:'👑', name:'Salon-Meisterin', sessions:30, text:'30 Sessions — du bist eine echte Profi!'},
+  {id:'marathon', icon:'🎓', name:'Sprachkünstlerin',sessions:50, text:'50 Sessions! Bewundernswert!'},
+];
+
+// ════════════════════════════════════════════════════════
+// STREAK LOGIK (localStorage)
+// ════════════════════════════════════════════════════════
+function getStreak(){
+  try{
+    var d=localStorage.getItem('en_streak');
+    return d?JSON.parse(d):{sessions:0,streak:0,letzterTag:'',erhalteneBadges:[]};
+  }catch(e){return {sessions:0,streak:0,letzterTag:'',erhalteneBadges:[]};}
+}
+function saveStreak(s){try{localStorage.setItem('en_streak',JSON.stringify(s));}catch(e){}}
+
+function heuteDatum(){
+  var d=new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+
+function sessionAbgeschlossen(){
+  var s=getStreak();
+  s.sessions=(s.sessions||0)+1;
+  var heute=heuteDatum();
+  // Streak berechnen
+  if(s.letzterTag===heute){
+    // Heute schon gelernt — Streak bleibt
+  } else {
+    var gestern=new Date(); gestern.setDate(gestern.getDate()-1);
+    var gD=gestern.getFullYear()+'-'+(gestern.getMonth()+1)+'-'+gestern.getDate();
+    if(s.letzterTag===gD){
+      s.streak=(s.streak||0)+1; // Streak verlängern
+    } else {
+      s.streak=1; // Streak neu starten
+    }
+    s.letzterTag=heute;
+  }
+  saveStreak(s);
+  // Badges prüfen
+  var neueBadges=[];
+  BADGES.forEach(function(b){
+    if(s.erhalteneBadges.indexOf(b.id)>=0) return;
+    var frei=(b.sessions&&s.sessions>=b.sessions)||(b.streak&&s.streak>=b.streak);
+    if(frei){s.erhalteneBadges.push(b.id);neueBadges.push(b);}
+  });
+  saveStreak(s);
+  return {streak:s,neueBadges:neueBadges};
+}
+
+function renderStreakHome(){
+  var s=getStreak();
+  var streakEl=document.getElementById('home-streak');
+  var textEl=document.getElementById('home-streak-text');
+  var gesamtEl=document.getElementById('home-gesamt');
+  var feuerEl=document.getElementById('home-feuer');
+  if(streakEl) streakEl.textContent=s.streak||0;
+  if(gesamtEl) gesamtEl.textContent=(s.sessions||0)+' Sessions';
+  if(feuerEl){
+    if(s.streak>=7) feuerEl.textContent='🔥';
+    else if(s.streak>=3) feuerEl.textContent='⚡';
+    else feuerEl.textContent='✨';
+  }
+  if(textEl){
+    if(s.streak>=14) textEl.textContent='Unglaublich — '+s.streak+' Tage in Folge!';
+    else if(s.streak>=7) textEl.textContent='Eine ganze Woche — super!';
+    else if(s.streak>=3) textEl.textContent='Schon '+s.streak+' Tage dabei — weiter so!';
+    else if(s.streak>=1) textEl.textContent='Heute gelernt — mach morgen weiter!';
+    else textEl.textContent='Starte heute deinen ersten Tag!';
+  }
+  // Badges rendern
+  var grid=document.getElementById('badge-grid');
+  if(grid){
+    grid.innerHTML='';
+    BADGES.forEach(function(b){
+      var frei=s.erhalteneBadges.indexOf(b.id)>=0;
+      var div=document.createElement('div');
+      div.className='badge-item'+(frei?' frei':' locked');
+      div.title=b.name+(frei?'':' (noch nicht erreicht)');
+      div.innerHTML='<div class="badge-icon">'+b.icon+'</div><div class="badge-name">'+b.name+'</div>';
+      grid.appendChild(div);
+    });
+  }
+  // Nächstes Badge
+  var naechstesEl=document.getElementById('naechstes-badge');
+  if(naechstesEl){
+    var naechstes=null;
+    for(var i=0;i<BADGES.length;i++){
+      var b=BADGES[i];
+      if(s.erhalteneBadges.indexOf(b.id)<0){naechstes=b;break;}
+    }
+    if(naechstes){
+      var fehlt='';
+      if(naechstes.sessions) fehlt=(naechstes.sessions-s.sessions)+' Sessions';
+      if(naechstes.streak) fehlt=(naechstes.streak-s.streak)+' Streak-Tage';
+      naechstesEl.textContent='Nächstes Abzeichen: '+naechstes.icon+' '+naechstes.name+' — noch '+fehlt;
+    } else {
+      naechstesEl.textContent='🏅 Alle Abzeichen gesammelt — einfach Spitze!';
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// STREAK POPUP
+// ════════════════════════════════════════════════════════
+var PopupQueue=[];
+function zeigeStreakPopup(streak,neueBadges){
+  // Streak-Meilenstein?
+  if(streak.streak===7||streak.streak===14||streak.streak===30){
+    PopupQueue.push({emoji:'🔥',titel:streak.streak+' Tage Streak!',sub:'Wow — '+streak.streak+' Tage in Folge gelernt! Du bist unaufhaltsam!'});
+  } else if(streak.streak===3){
+    PopupQueue.push({emoji:'⚡',titel:'3 Tage dabei!',sub:'Du bist dran — weiter so! Jeden Tag ein bisschen Englisch.'});
+  }
+  // Neue Badges
+  neueBadges.forEach(function(b){
+    PopupQueue.push({emoji:b.icon,titel:'Abzeichen erhalten!',sub:'"'+b.name+'" — '+b.text});
+  });
+  if(PopupQueue.length) naechstesPopup();
+}
+function naechstesPopup(){
+  if(!PopupQueue.length) return;
+  var p=PopupQueue.shift();
+  document.getElementById('sp-emoji').textContent=p.emoji;
+  document.getElementById('sp-titel').textContent=p.titel;
+  document.getElementById('sp-sub').textContent=p.sub;
+  konfetti();
+  document.getElementById('sp-overlay').classList.add('an');
+}
+function spSchliessen(){
+  document.getElementById('sp-overlay').classList.remove('an');
+  setTimeout(function(){if(PopupQueue.length)naechstesPopup();},400);
+}
+function konfetti(){
+  var box=document.getElementById('sp-box');
+  var alt=box.querySelectorAll('.sp-konf');
+  alt.forEach(function(e){if(e.parentNode)e.parentNode.removeChild(e);});
+  var farben=['#5B7B6F','#C4A830','#E2DDD5','#2C2C2C','#F7F5F0'];
+  for(var i=0;i<18;i++){
+    var el=document.createElement('div');
+    el.className='sp-konf';
+    var d=(0.7+Math.random()*1).toFixed(2);
+    var dl=(Math.random()*0.4).toFixed(2);
+    var sz=(4+Math.random()*7).toFixed(1);
+    el.style.cssText='left:'+Math.round(Math.random()*100)+'%;top:'+Math.round(Math.random()*20)+'%;background:'+farben[Math.floor(Math.random()*farben.length)]+';width:'+sz+'px;height:'+sz+'px;border-radius:'+(Math.random()>0.5?'50%':'2px')+';animation:spkf '+d+'s '+dl+'s ease-out forwards';
+    box.appendChild(el);
+    setTimeout(function(e){if(e.parentNode)e.parentNode.removeChild(e);},2500,el);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// NAVIGATION & STATE
+// ════════════════════════════════════════════════════════
+var AktKat='alle', AktModus='de-en';
+var QuizFragen=[], QuizIdx=0, QuizRichtig=0;
+var KarteWiederholung=[], KarteIdx=0, KarteUmgedreht=false, AktFrage=null;
+
+function zeige(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('ak');});
+  var el=document.getElementById('p-'+id);
+  if(el) el.classList.add('ak');
+  if(id==='home') renderStreakHome();
+  window.scrollTo(0,0);
+}
+
+function katWahl(kat,btn){
+  AktKat=kat;
+  document.querySelectorAll('.nav-card').forEach(function(b){b.classList.remove('ak');});
+  if(btn) btn.classList.add('ak');
+}
+
+function modusWahl(modus,btn){
+  AktModus=modus;
+  document.querySelectorAll('.btn-toggle').forEach(function(b){b.classList.remove('ak');});
+  if(btn) btn.classList.add('ak');
+  var info=document.getElementById('modus-info');
+  if(modus==='de-en') info.textContent='Deutsch lesen → Englisch auswählen';
+  if(modus==='en-de') info.textContent='Englisch lesen → Deutsch auswählen';
+  if(modus==='karte') info.textContent='Satz anzeigen → selbst überlegen → umdrehen';
+}
+
+function getPool(){
+  if(AktKat==='alle') return FRAGEN.slice();
+  return FRAGEN.filter(function(f){return f.kat===AktKat;});
+}
+
+function shuffle(arr){
+  var a=arr.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+
+function falscheOptionen(richtig,pool,feld){
+  var andere=shuffle(pool.filter(function(f){return f[feld]!==richtig;}));
+  var opts=[];
+  for(var i=0;i<Math.min(3,andere.length);i++) opts.push(andere[i][feld]);
+  return opts;
+}
+
+// ════════════════════════════════════════════════════════
+// QUIZ
+// ════════════════════════════════════════════════════════
+function starteLernen(){
+  var pool=getPool();
+  if(pool.length<4){alert('Diese Kategorie hat zu wenige Fragen. Bitte wähle "Alle Kategorien".');return;}
+  if(AktModus==='karte'){starteKarteikarten(pool);return;}
+  QuizFragen=shuffle(pool);
+  QuizIdx=0;QuizRichtig=0;
+  zeige('quiz');zeigeFrage();
+}
+
+function zeigeFrage(){
+  var q=QuizFragen[QuizIdx];AktFrage=q;
+  var pool=getPool();
+  document.getElementById('prog-fill').style.width=Math.round((QuizIdx/QuizFragen.length)*100)+'%';
+  document.getElementById('quiz-nr').textContent='Frage '+(QuizIdx+1)+' von '+QuizFragen.length;
+  document.getElementById('quiz-score-live').textContent='✓ '+QuizRichtig;
+  var ff=AktModus==='de-en'?'de':'en';
+  var af=AktModus==='de-en'?'en':'de';
+  document.getElementById('frage-lang').textContent=AktModus==='de-en'?'🇩🇪 Auf Englisch:':'🇬🇧 Auf Deutsch:';
+  document.getElementById('frage-txt').textContent=q[ff];
+  document.getElementById('frage-kontext').textContent=q.kontext?'📍 '+q.kontext:'';
+  var richtig=q[af];
+  var alle=shuffle([richtig].concat(falscheOptionen(richtig,pool,af)));
+  var optDiv=document.getElementById('optionen');
+  optDiv.innerHTML='';
+  alle.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){pruefeAntwort(opt,richtig,btn);});
+    optDiv.appendChild(btn);
+  });
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('quiz-btns').innerHTML='';
+}
+
+function pruefeAntwort(gewaehlt,richtig,geklickt){
+  var kor=gewaehlt===richtig;
+  if(kor) QuizRichtig++;
+  document.getElementById('quiz-score-live').textContent='✓ '+QuizRichtig;
+  document.querySelectorAll('.opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent===richtig) b.className='opt-btn ric';
+    else if(b===geklickt&&!kor) b.className='opt-btn fal';
+  });
+  var fb=document.getElementById('feedback');
+  fb.className=kor?'fb-g':'fb-r';
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#5B7B6F':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
+    '<div class="muster-lab">Übersetzung</div>'+
+    '<div class="muster">'+AktFrage.de+'<br><span style="color:#5B7B6F;font-weight:600">'+AktFrage.en+'</span>'+
+    (AktFrage.tipp?'<br><br><span style="color:#C4B86A;font-size:11px">💡 '+AktFrage.tipp+'</span>':'')+'</div>';
+  fb.style.display='block';
+  var btns=document.getElementById('quiz-btns');
+  var nb=document.createElement('button');
+  nb.className='btn-primary';
+  nb.style.marginTop='10px';
+  nb.textContent=QuizIdx+1<QuizFragen.length?'Nächste Frage →':'Auswertung →';
+  nb.addEventListener('click',function(){
+    QuizIdx++;
+    if(QuizIdx<QuizFragen.length) zeigeFrage();
+    else zeigeErgebnis();
+  });
+  btns.innerHTML='';btns.appendChild(nb);
+}
+
+// ════════════════════════════════════════════════════════
+// ERGEBNIS
+// ════════════════════════════════════════════════════════
+function zeigeErgebnis(){
+  // Session speichern & Streak berechnen
+  var ergebnis=sessionAbgeschlossen();
+  zeige('ergebnis');
+  var g=QuizFragen.length;
+  var pct=Math.round((QuizRichtig/g)*100);
+  document.getElementById('erg-zahl').textContent=QuizRichtig+' / '+g;
+  var note=pct>=90?'Ausgezeichnet! 🌟':pct>=70?'Sehr gut! 👏':pct>=50?'Gut — weiter üben! 💪':'Noch etwas üben — du schaffst das! 🍀';
+  document.getElementById('erg-sub').textContent=pct+'% richtig · '+note;
+  // Streak im Ergebnis zeigen
+  var sBar=document.getElementById('erg-streak-bar');
+  sBar.style.display='flex';
+  var s=ergebnis.streak;
+  document.getElementById('erg-streak-zahl').textContent=s.streak+' Tage Streak 🔥';
+  document.getElementById('erg-streak-text').textContent=s.sessions+' Sessions insgesamt';
+  document.getElementById('erg-detail').innerHTML='';
+  // Popup nach kurzer Verzögerung
+  setTimeout(function(){zeigeStreakPopup(s,ergebnis.neueBadges);},600);
+}
+
+// ════════════════════════════════════════════════════════
+// KARTEIKARTEN
+// ════════════════════════════════════════════════════════
+function starteKarteikarten(pool){
+  KarteWiederholung=shuffle(pool);KarteIdx=0;KarteUmgedreht=false;
+  zeige('karte');zeigeKarte();
+}
+
+function zeigeKarte(){
+  if(KarteIdx>=KarteWiederholung.length){zeigeKartenEnde();return;}
+  var q=KarteWiederholung[KarteIdx];AktFrage=q;KarteUmgedreht=false;
+  document.getElementById('karte-prog').style.width=Math.round((KarteIdx/KarteWiederholung.length)*100)+'%';
+  document.getElementById('karte-nr').textContent='Karte '+(KarteIdx+1)+' von '+KarteWiederholung.length;
+  document.getElementById('karte-rest').textContent=(KarteWiederholung.length-KarteIdx-1)+' verbleibend';
+  document.getElementById('karte-hint-v').textContent='🇩🇪 Deutsch';
+  document.getElementById('karte-de').textContent=q.de;
+  document.getElementById('karte-kontext-v').textContent=q.kontext||'';
+  document.getElementById('karte-vorder').style.display='flex';
+  document.getElementById('karte-rueck').style.display='none';
+  document.getElementById('karte-antwort-btns').style.display='none';
+}
+
+function karteUmdrehen(){
+  if(KarteUmgedreht) return;
+  KarteUmgedreht=true;
+  document.getElementById('karte-hint-r').textContent='🇬🇧 Englisch';
+  document.getElementById('karte-en').textContent=AktFrage.en;
+  document.getElementById('karte-tipp').textContent=AktFrage.tipp?'💡 '+AktFrage.tipp:'';
+  document.getElementById('karte-rueck').style.display='flex';
+  document.getElementById('karte-antwort-btns').style.display='block';
+}
+
+function karteKannte(){KarteIdx++;zeigeKarte();}
+function karteNochmal(){KarteWiederholung.push(AktFrage);KarteIdx++;zeigeKarte();}
+
+function zeigeKartenEnde(){
+  var ergebnis=sessionAbgeschlossen();
+  zeige('ergebnis');
+  document.getElementById('erg-zahl').textContent='🃏';
+  document.getElementById('erg-sub').textContent='Alle '+KarteWiederholung.length+' Karten gemeistert!';
+  var s=ergebnis.streak;
+  var sBar=document.getElementById('erg-streak-bar');
+  sBar.style.display='flex';
+  document.getElementById('erg-streak-zahl').textContent=s.streak+' Tage Streak 🔥';
+  document.getElementById('erg-streak-text').textContent=s.sessions+' Sessions insgesamt';
+  document.getElementById('erg-detail').innerHTML='';
+  setTimeout(function(){zeigeStreakPopup(s,ergebnis.neueBadges);},600);
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',function(){
+  renderStreakHome();
+  var cnt=document.createElement('div');
+  cnt.style.cssText='text-align:center;font-size:11px;color:#C8C4BC;margin-top:2rem;padding-bottom:2rem';
+  cnt.textContent='A Great Hair Day · '+FRAGEN.length+' Sätze & Ausdrücke';
+  document.querySelector('.wrap').appendChild(cnt);
+});
+</script>
+</div>
+</body>
+</html>
