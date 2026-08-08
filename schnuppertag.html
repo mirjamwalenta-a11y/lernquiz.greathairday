@@ -507,6 +507,34 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <div id="archiv-liste"><div class="laden">Wird geladen…</div></div>
 </div>
 
+
+<!-- ── LERNZIELE EDITOR ── -->
+<div id="p-lernziele-editor" class="page">
+  <button class="back-btn" onclick="lernzieleEditorZurueck()">← Zurück</button>
+  <div class="tag">A Great Hair Day · Lernziele</div>
+  <h1>Lernziele bearbeiten ✏️</h1>
+  <p class="sub" id="lze-sub">Aufgaben pro Monat anpassen</p>
+
+  <div class="card-green" style="font-size:13px;line-height:1.6;margin-bottom:16px">
+    <strong>So funktioniert's:</strong> Bearbeite die Aufgaben für jeden Monat. Tippe auf ✏️ zum Bearbeiten, auf 🗑️ zum Löschen. Neue Aufgaben unten hinzufügen. Änderungen gelten sofort für alle Probezeiten.
+  </div>
+
+  <div class="tab-nav" id="lze-tabs">
+    <button class="tab-btn ak" onclick="lzeTab(1,this)">Monat 1</button>
+    <button class="tab-btn" onclick="lzeTab(2,this)">Monat 2</button>
+    <button class="tab-btn" onclick="lzeTab(3,this)">Monat 3</button>
+  </div>
+
+  <div id="lze-inhalt"></div>
+
+  <div class="section-head">Neue Aufgabe hinzufügen</div>
+  <div class="card">
+    <textarea rows="2" id="lze-neue-text" placeholder="Neue Aufgabe beschreiben…" style="margin-bottom:10px"></textarea>
+    <div id="lze-neue-fehler" class="fehler-box"></div>
+    <button class="btn-primary" onclick="lzeNeueAufgabe()">+ Aufgabe hinzufügen</button>
+  </div>
+</div>
+
 </div><!-- /wrap -->
 
 <script>
@@ -1016,7 +1044,7 @@ function oeffneProbezeit(pz) {
 }
 
 // ── LERNZIELE PRO MONAT ───────────────────────────────────────────────────────
-var MONAT_ZIELE = {
+var MONAT_ZIELE_DEFAULT = {
   1: {
     titel: 'Monat 1 — Ankommen & Kundenkontakt',
     farbe: '#5B7B6F',
@@ -1062,89 +1090,140 @@ var MONAT_ZIELE = {
   }
 };
 
+function ladeMonatZiele() {
+  try {
+    var s = localStorage.getItem('ghd_monat_ziele');
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(MONAT_ZIELE_DEFAULT));
+}
+
+function speichereMonatZiele(mz) {
+  try { localStorage.setItem('ghd_monat_ziele', JSON.stringify(mz)); } catch(e) {}
+}
+
+var MONAT_ZIELE = ladeMonatZiele();
+
 // ── MONAT RENDERN ──────────────────────────────────────────────────────────────
 async function renderMonat(monat) {
   var div = document.getElementById('pzd-inhalt');
-  div.innerHTML = '<div class="laden">Wird geladen…</div>';
-  try {
-
-  var wochen = [];
-  try {
-    var wRes = await sb.from('probezeit_wochen')
-      .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).order('woche');
-    wochen = wRes.data || [];
-  } catch(e) { wochen = []; }
-
-  var zieleData = await eineLaden(sb.from('probezeit_ziele')
-    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
-
   var mInfo = MONAT_ZIELE[monat];
-  var html = '<div class="card" style="background:' + mInfo.farbe + '1A;border-color:' + mInfo.farbe + ';padding:14px;margin-bottom:12px">' +
+
+  // Sofort Grundstruktur zeigen
+  var html = '<div class="card" style="background:' + mInfo.farbe + '1A;border-color:' + mInfo.farbe + ';padding:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">' +
     '<div style="font-weight:700;color:' + mInfo.farbe + ';font-size:14px">' + mInfo.titel + '</div>' +
+    '<button class="btn-sm-ghost nur-meisterin" onclick="oeffneLernzieleEditor(' + monat + ')" style="font-size:11px;padding:4px 10px">✏️ Ziele</button>' +
   '</div>';
 
-  // LERNZIELE
+  // Lernziele (ohne DB-Daten zuerst)
   html += '<div class="section-head">Lernziele Monat ' + monat + '</div>';
-  html += '<div class="card" style="padding:14px">';
-  var erledigteZiele = zieleData && zieleData.erledigt ? zieleData.erledigt : [];
+  html += '<div class="card" style="padding:14px" id="ziele-box-' + monat + '">';
   mInfo.ziele.forEach(function(z) {
-    var ok = erledigteZiele.indexOf(z.id) >= 0;
     html += '<div class="ziel-row">' +
-      '<div class="ziel-check' + (ok ? ' ok' : '') + '" onclick="toggleZiel(\'' + z.id + '\',' + monat + ',this)">' + (ok ? '✓' : '') + '</div>' +
-      '<span class="ziel-text' + (ok ? ' erledigt' : '') + '" id="ziel-text-' + z.id + '">' + z.text + '</span>' +
+      '<div class="ziel-check" onclick="toggleZiel('' + z.id + '',' + monat + ',this)"></div>' +
+      '<span class="ziel-text" id="ziel-text-' + z.id + '">' + z.text + '</span>' +
     '</div>';
   });
   html += '</div>';
 
-  // ABZEICHEN
+  // Abzeichen
   html += '<div class="section-head">Abzeichen-Ziele</div>';
-  html += '<div class="card" style="padding:14px">';
-  var erledigteAbzeichen = zieleData && zieleData.abzeichen ? zieleData.abzeichen : [];
-  html += '<div class="abzeichen-grid">';
+  html += '<div class="card" style="padding:14px"><div class="abzeichen-grid">';
   mInfo.abzeichen.forEach(function(a) {
-    var ok = erledigteAbzeichen.indexOf(a.id) >= 0;
-    html += '<div class="abzeichen' + (ok ? ' erreicht' : '') + '" onclick="toggleAbzeichen(\'' + a.id + '\',' + monat + ',this)" style="cursor:pointer">' +
-      '<span class="abzeichen-icon">' + a.icon + (ok ? '' : '') + '</span>' +
+    html += '<div class="abzeichen" id="abz-' + a.id + '" onclick="toggleAbzeichen('' + a.id + '',' + monat + ',this)" style="cursor:pointer">' +
+      '<span class="abzeichen-icon">' + a.icon + '</span>' +
       '<div class="abzeichen-label" style="white-space:pre-line">' + a.label + '</div>' +
     '</div>';
   });
   html += '</div></div>';
 
-  // WOCHENBERICHTE
+  // Wochenberichte
   html += '<div class="section-head">Wochenberichte</div>';
   var startWoche = (monat - 1) * 4 + 1;
   for (var w = startWoche; w < startWoche + 4; w++) {
-    var wo = null;
-    if (wochen) wo = wochen.find(function(x){ return x.woche === w; }) || null;
-    html += renderWocheForm(w, monat, wo);
+    html += renderWocheForm(w, monat, null);
   }
 
-  // MONATSFEEDBACK
+  // Monatsfeedback
   html += '<div class="section-head">Feedbackgespräch Ende Monat ' + monat + '</div>';
-  var fbData = await eineLaden(sb.from('probezeit_monats_feedback')
-    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
   html += '<div class="card">' +
     '<div class="label">Was läuft gut? Was muss besser werden?</div>' +
-    '<textarea rows="3" id="fb-m' + monat + '" placeholder="Notizen Feedbackgespräch…">' + (fbData ? fbData.notiz||'' : '') + '</textarea>' +
+    '<textarea rows="3" id="fb-m' + monat + '" placeholder="Notizen Feedbackgespräch…"></textarea>' +
     '<div style="display:flex;gap:8px;margin-top:10px">' +
-      '<button class="pts-btn" id="fb-weiter-' + monat + '" onclick="setFbStatus(' + monat + ',\'weiter\',this)">✓ Weiter</button>' +
-      '<button class="pts-btn" id="fb-gep-' + monat + '" onclick="setFbStatus(' + monat + ',\'gespraech\',this)">! Gespräch</button>' +
-      '<button class="pts-btn" id="fb-abbruch-' + monat + '" onclick="setFbStatus(' + monat + ',\'abbruch\',this)">✗ Abbruch</button>' +
+      '<button class="pts-btn" id="fb-weiter-' + monat + '" onclick="setFbStatus(' + monat + ','weiter',this)">✓ Weiter</button>' +
+      '<button class="pts-btn" id="fb-gep-' + monat + '" onclick="setFbStatus(' + monat + ','gespraech',this)">! Gespräch</button>' +
+      '<button class="pts-btn" id="fb-abbruch-' + monat + '" onclick="setFbStatus(' + monat + ','abbruch',this)">✗ Abbruch</button>' +
     '</div>' +
     '<button class="btn-primary" style="margin-top:10px" onclick="speichereFeedback(' + monat + ')">Feedback speichern</button>' +
   '</div>';
 
   div.innerHTML = html;
 
-  if (fbData && fbData.status) {
-    var map = {weiter:'fb-weiter-',gespraech:'fb-gep-',abbruch:'fb-abbruch-'};
-    var b = document.getElementById(map[fbData.status] + monat);
-    if (b) b.classList.add('sel');
-  }
-  } catch(err) {
-    div.innerHTML = '<div class="laden" style="color:#C44030">Fehler beim Laden: ' + (err.message||err) + '</div>';
-  }
+  // DANN Daten aus DB nachladen (non-blocking)
+  ladeMonatDaten(monat);
 }
+
+async function ladeMonatDaten(monat) {
+  // Ziele laden
+  try {
+    var res = await sb.from('probezeit_ziele').select('*')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).limit(1);
+    var zieleData = (res.data && res.data.length) ? res.data[0] : null;
+    if (zieleData) {
+      var erledigteZiele = zieleData.erledigt || [];
+      var mInfo = MONAT_ZIELE[monat];
+      mInfo.ziele.forEach(function(z) {
+        var ok = erledigteZiele.indexOf(z.id) >= 0;
+        var checkEl = document.querySelector('[onclick="toggleZiel('' + z.id + '',' + monat + ',this)"]');
+        var textEl = document.getElementById('ziel-text-' + z.id);
+        if (checkEl && ok) { checkEl.classList.add('ok'); checkEl.textContent = '✓'; }
+        if (textEl && ok) { textEl.classList.add('erledigt'); }
+      });
+      var erledigteAbzeichen = zieleData.abzeichen || [];
+      mInfo.abzeichen.forEach(function(a) {
+        if (erledigteAbzeichen.indexOf(a.id) >= 0) {
+          var el = document.getElementById('abz-' + a.id);
+          if (el) el.classList.add('erreicht');
+        }
+      });
+      ZIELE_CACHE[monat] = zieleData;
+    }
+  } catch(e) {}
+
+  // Wochendaten laden
+  try {
+    var wRes = await sb.from('probezeit_wochen').select('*')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).order('woche');
+    var wochen = wRes.data || [];
+    var startWoche = (monat - 1) * 4 + 1;
+    wochen.forEach(function(wo) {
+      var felder = ['fachliches','teamverhalten','kundenkontakt','puenktlichkeit','lernbereitschaft'];
+      felder.forEach(function(f) {
+        var el = document.getElementById('w' + wo.woche + '-' + f);
+        if (el) el.value = wo[f] || 0;
+      });
+      var notizEl = document.getElementById('w' + wo.woche + '-notiz');
+      if (notizEl) notizEl.value = wo.notiz || '';
+    });
+  } catch(e) {}
+
+  // Feedback laden
+  try {
+    var fbRes = await sb.from('probezeit_monats_feedback').select('*')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).limit(1);
+    var fbData = (fbRes.data && fbRes.data.length) ? fbRes.data[0] : null;
+    if (fbData) {
+      var fbEl = document.getElementById('fb-m' + monat);
+      if (fbEl) fbEl.value = fbData.notiz || '';
+      if (fbData.status) {
+        var map = {weiter:'fb-weiter-', gespraech:'fb-gep-', abbruch:'fb-abbruch-'};
+        var b = document.getElementById(map[fbData.status] + monat);
+        if (b) b.classList.add('sel');
+      }
+    }
+  } catch(e) {}
+}
+
 
 // ── ZIELE & ABZEICHEN TOGGLEN ─────────────────────────────────────────────────
 var ZIELE_CACHE = {}; // monat -> { erledigt: [], abzeichen: [] }
@@ -1815,6 +1894,120 @@ function kopiereLink() {
     msg.style.display = 'block';
     setTimeout(function(){ msg.style.display = 'none'; }, 2500);
   });
+}
+
+
+// ── LERNZIELE EDITOR ─────────────────────────────────────────────────────────
+var LZE_MONAT = 1;
+var LZE_HERKUNFT = 'home'; // 'home' oder 'probezeit'
+
+function oeffneLernzieleEditor(monat) {
+  MONAT_ZIELE = ladeMonatZiele();
+  LZE_MONAT = monat || 1;
+  LZE_HERKUNFT = 'probezeit';
+  document.getElementById('lze-sub').textContent = 'Aufgaben für alle Probezeiten anpassen';
+  zeige('lernziele-editor');
+  lzeTab(LZE_MONAT, document.querySelectorAll('#lze-tabs .tab-btn')[LZE_MONAT - 1]);
+}
+
+function lernzieleEditorZurueck() {
+  if (LZE_HERKUNFT === 'probezeit' && AKT_PROBEZEIT) {
+    zeige('probezeit-detail');
+    pzdTab(LZE_MONAT, document.querySelectorAll('#pzd-tabs .tab-btn')[LZE_MONAT - 1]);
+  } else {
+    zeige('home');
+  }
+}
+
+function lzeTab(monat, btn) {
+  LZE_MONAT = monat;
+  document.querySelectorAll('#lze-tabs .tab-btn').forEach(function(b){ b.classList.remove('ak'); });
+  if (btn) btn.classList.add('ak');
+  renderLzeInhalt(monat);
+}
+
+function renderLzeInhalt(monat) {
+  MONAT_ZIELE = ladeMonatZiele();
+  var mInfo = MONAT_ZIELE[monat];
+  var div = document.getElementById('lze-inhalt');
+  if (!div) return;
+
+  var html = '';
+  if (!mInfo.ziele.length) {
+    html += '<div class="laden" style="color:#9A9A90">Noch keine Aufgaben — unten hinzufügen.</div>';
+  }
+
+  mInfo.ziele.forEach(function(z, i) {
+    html += '<div class="frage-editor-card" id="lze-card-' + z.id + '">' +
+      '<div class="editor-row">' +
+        '<div style="flex:1;font-size:14px;color:#1C1C1A" id="lze-label-' + z.id + '">' + z.text + '</div>' +
+        '<div style="display:flex;gap:6px;margin-left:10px;flex-shrink:0">' +
+          '<button class="btn-sm" onclick="lzeEditToggle('' + z.id + '',' + monat + ')">✏️</button>' +
+          '<button class="btn-sm-danger" onclick="lzeLoeschen('' + z.id + '',' + monat + ')">🗑️</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="lze-edit-' + z.id + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #E2DDD5">' +
+        '<input type="text" id="lze-input-' + z.id + '" value="' + z.text.replace(/"/g, '&quot;') + '" style="margin-bottom:8px">' +
+        '<div style="display:flex;gap:8px">' +
+          '<button class="btn-sm" onclick="lzeSpeichern('' + z.id + '',' + monat + ')">✓ Speichern</button>' +
+          '<button class="btn-sm-ghost" onclick="lzeEditToggle('' + z.id + '',' + monat + ')">Abbrechen</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+
+  div.innerHTML = html;
+
+  // Neue Aufgabe Feld leeren
+  var neuEl = document.getElementById('lze-neue-text');
+  if (neuEl) neuEl.value = '';
+}
+
+function lzeEditToggle(id, monat) {
+  var editDiv = document.getElementById('lze-edit-' + id);
+  if (!editDiv) return;
+  editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
+}
+
+function lzeSpeichern(id, monat) {
+  var input = document.getElementById('lze-input-' + id);
+  if (!input) return;
+  var neuerText = input.value.trim();
+  if (!neuerText) return;
+
+  var mz = ladeMonatZiele();
+  var ziele = mz[monat].ziele;
+  var idx = ziele.findIndex(function(z){ return z.id === id; });
+  if (idx >= 0) {
+    ziele[idx].text = neuerText;
+    speichereMonatZiele(mz);
+    MONAT_ZIELE = mz;
+  }
+  renderLzeInhalt(monat);
+}
+
+function lzeLoeschen(id, monat) {
+  if (!confirm('Aufgabe wirklich löschen?')) return;
+  var mz = ladeMonatZiele();
+  mz[monat].ziele = mz[monat].ziele.filter(function(z){ return z.id !== id; });
+  speichereMonatZiele(mz);
+  MONAT_ZIELE = mz;
+  renderLzeInhalt(monat);
+}
+
+function lzeNeueAufgabe() {
+  var fehler = document.getElementById('lze-neue-fehler');
+  fehler.style.display = 'none';
+  var text = (document.getElementById('lze-neue-text')||{}).value || '';
+  text = text.trim();
+  if (!text) { fehler.textContent = 'Bitte Aufgabe beschreiben.'; fehler.style.display = 'block'; return; }
+
+  var mz = ladeMonatZiele();
+  var neuId = 'mz_' + Date.now();
+  mz[LZE_MONAT].ziele.push({ id: neuId, text: text });
+  speichereMonatZiele(mz);
+  MONAT_ZIELE = mz;
+  renderLzeInhalt(LZE_MONAT);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
