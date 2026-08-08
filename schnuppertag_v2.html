@@ -142,7 +142,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     </button>
   </div>
   <div class="grid2" style="margin-bottom:10px">
-    <button class="nav-card nur-meisterin" onclick="zeige('fragen-editor')">
+    <button class="nav-card" id="btn-fragen-editor" style="display:none" onclick="zeige('fragen-editor')">
       <div class="nav-icon">✏️</div>
       <div class="nav-title">Fragen bearbeiten</div>
       <div class="nav-desc">Testfragen anpassen</div>
@@ -919,6 +919,8 @@ async function loginMeisterin() {
   if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
   MEISTERIN_OK = true;
   document.body.classList.add('meisterin-ok');
+  var fb = document.getElementById('btn-fragen-editor');
+  if (fb) fb.style.display = 'block';
   document.getElementById('home-login-box').style.display = 'none';
   document.getElementById('home-logout-box').style.display = 'block';
   document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
@@ -1840,6 +1842,8 @@ window.addEventListener('DOMContentLoaded', function() {
     if (result.data && result.data.session) {
       MEISTERIN_OK = true;
       document.body.classList.add('meisterin-ok');
+      var fb = document.getElementById('btn-fragen-editor');
+      if (fb) fb.style.display = 'block';
       document.getElementById('home-login-box').style.display = 'none';
       document.getElementById('home-logout-box').style.display = 'block';
       document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
