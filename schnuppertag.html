@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schnuppertag · A Great Hair Day</title>
+  <meta name="theme-color" content="#1c1917">
+  <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;min-height:100dvh}
+body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+.wrap{max-width:580px;margin:0 auto}
+.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
+.card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
+.card-green{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px;margin-bottom:12px}
+.card-amber{background:#FDF6E3;border:1px solid #C4A830;border-radius:8px;padding:14px;margin-bottom:12px}
+.btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:4px}
+.btn-primary:disabled{background:#9A9A90;cursor:default}
+.btn-ghost{padding:10px 16px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
+.btn-danger{width:100%;padding:10px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:4px}
+.btn-sec{width:100%;padding:10px;background:#fff;color:#2C2C2C;border:1px solid #C8C4BC;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:6px}
+.btn-sm{padding:6px 12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui}
+.btn-sm-ghost{padding:6px 12px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui}
+.btn-sm-danger{padding:6px 12px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui}
+select,textarea,input[type=text],input[type=date],input[type=email],input[type=password]{width:100%;border:1px solid #E2DDD5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none}
+textarea{resize:vertical}
+input[type=range]{width:100%;accent-color:#5B7B6F}
+.page{display:none}.page.ak{display:block}
+.back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:14px;font-family:system-ui}
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
+h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
+.sub{color:#7A7A70;font-size:14px;margin-bottom:20px}
+.pts-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pts-btn{padding:6px 12px;border-radius:6px;border:1px solid #C8C4BC;background:#fff;cursor:pointer;font-size:13px;font-family:system-ui;color:#5A5550}
+.pts-btn.sel{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.reveal-btn{padding:6px 12px;border-radius:6px;border:1px solid #C8C4BC;background:transparent;cursor:pointer;font-size:12px;color:#7A7A70;font-family:system-ui;margin-top:8px}
+.answer-reveal{margin-top:8px;padding:10px 12px;background:#EAF0EE;border-radius:6px;font-size:13px;color:#2C2C2C;display:none}
+.answer-reveal.show{display:block}
+.q-text{font-size:14px;color:#1C1C1A;margin-bottom:8px;line-height:1.5;font-weight:600}
+.q-pts{font-size:11px;color:#5B7B6F;font-weight:700;background:#EAF0EE;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.section-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;margin:20px 0 10px;border-bottom:1px solid #E2DDD5;padding-bottom:6px}
+.slider-poles{display:flex;justify-content:space-between;font-size:11px;color:#B0A898;margin-top:3px}
+.slider-val{font-size:13px;font-weight:700;color:#5B7B6F;min-width:80px;text-align:right}
+.werte-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.tab-nav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{padding:7px 13px;border-radius:6px;border:1px solid #C8C4BC;background:#fff;cursor:pointer;font-size:12px;font-family:system-ui;color:#5A5550;font-weight:600}
+.tab-btn.ak{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.fehler-box{background:#FDECEA;border:1px solid #C44030;border-radius:6px;padding:10px 12px;color:#C44030;font-size:13px;margin-bottom:12px;display:none}
+.ok-box{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:6px;padding:10px 12px;color:#2C2C2C;font-size:13px;margin-bottom:12px;display:none}
+.note-bar{height:8px;background:#E2DDD5;border-radius:4px;overflow:hidden;margin-top:4px}
+.note-fill{height:100%;background:#5B7B6F;border-radius:4px;transition:width .4s}
+.probezeit-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:16px;margin-bottom:10px;cursor:pointer}
+.probezeit-card:hover{border-color:#5B7B6F}
+.woche-header{background:#EAF0EE;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:12px;font-weight:700;color:#5B7B6F}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.nav-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:18px 14px;text-align:left;cursor:pointer;width:100%}
+.nav-card:hover{border-color:#5B7B6F}
+.nav-icon{font-size:1.4rem;margin-bottom:6px}
+.nav-title{font-weight:600;color:#1C1C1A;font-size:14px}
+.nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
+.laden{text-align:center;padding:30px;color:#9A9A90;font-size:13px}
+.fuss{text-align:center;color:#C8C4BC;font-size:11px;margin-top:2rem;padding-bottom:1rem}
+/* Lehrlings-Modus */
+.lehrling-banner{background:#2C2C2C;color:#F7F5F0;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;display:none}
+.lehrling-banner strong{color:#8FAF7A}
+body.lehrling-modus .reveal-btn{display:none!important}
+body.lehrling-modus .pts-row{display:none!important}
+body.lehrling-modus #tab-auswertung .card:last-child{display:none!important}
+body.lehrling-modus .tab-btn[onclick*="auswertung"]{display:none!important}
+body.lehrling-modus .lehrling-banner{display:block}
+body.lehrling-modus #p-home .nav-card:nth-child(2){display:none}
+body.lehrling-modus #p-home .nav-card:last-of-type{display:none}
+body.lehrling-modus #home-login-box{display:none!important}
+body.lehrling-modus #home-logout-box{display:none!important}
+body.lehrling-modus .back-btn{display:none}
+.nur-meisterin{display:none!important}
+body.meisterin-ok .nur-meisterin{display:block!important}
+/* Quiz-Stil */
+.quiz-frage{border-left:3px solid #5B7B6F;padding-left:12px;margin-bottom:16px}
+.quiz-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #E2DDD5;border-radius:6px;margin-bottom:6px;cursor:pointer;font-size:14px;background:#fff}
+.quiz-option:hover{border-color:#5B7B6F;background:#EAF0EE}
+.quiz-option.richtig{background:#EAF0EE;border-color:#5B7B6F;color:#2C4A38}
+.quiz-option.falsch{background:#FDECEA;border-color:#C44030;color:#C44030}
+.quiz-option input{accent-color:#5B7B6F}
+/* Lernziele */
+.ziel-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0EDE8}
+.ziel-row:last-child{border-bottom:none}
+.ziel-check{width:20px;height:20px;border-radius:4px;border:2px solid #C8C4BC;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px}
+.ziel-check.ok{background:#5B7B6F;border-color:#5B7B6F;color:#fff}
+.ziel-text{font-size:13px;color:#1C1C1A;flex:1;line-height:1.4}
+.ziel-text.erledigt{text-decoration:line-through;color:#9A9A90}
+/* Abzeichen */
+.abzeichen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.abzeichen{text-align:center;padding:10px 6px;border-radius:8px;border:1px solid #E2DDD5;background:#fff}
+.abzeichen.erreicht{background:#EAF0EE;border-color:#5B7B6F}
+.abzeichen-icon{font-size:1.4rem;display:block;margin-bottom:3px}
+.abzeichen-label{font-size:10px;color:#7A7A70;line-height:1.3}
+.abzeichen.erreicht .abzeichen-label{color:#5B7B6F;font-weight:700}
+/* Fragen-Editor */
+.frage-editor-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:14px;margin-bottom:10px}
+.frage-editor-card:hover{border-color:#C8C4BC}
+.frage-nr{font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9A90;text-transform:uppercase;margin-bottom:6px}
+.editor-row{display:flex;gap:8px;align-items:flex-start}
+/* Quiz-Ergebnis */
+.ergebnis-kreis{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;font-weight:700;background:#EAF0EE;color:#5B7B6F;border:3px solid #5B7B6F}
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── HOME ── -->
+<div id="p-home" class="page ak">
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html" style="background:none;border:none;color:#7A7A70;font-size:13px;cursor:pointer;font-family:system-ui;padding:0;margin-bottom:14px;display:inline-block;text-decoration:none">← Zurück zum Lernquiz</a>
+  <div class="tag">A Great Hair Day · Wien</div>
+  <h1>Schnuppertag ✂</h1>
+  <p class="sub">Lehrlings-Auswahl & Probezeit</p>
+
+  <div id="home-login-hinweis" class="fehler-box" style="display:none">Bitte zuerst als Meisterin einloggen.</div>
+
+  <!-- Lehrlings-Link Box -->
+  <div id="lehrling-link-box" class="card-green" style="margin-bottom:16px">
+    <div class="label">Lehrlings-Modus</div>
+    <div style="font-size:13px;color:#2C2C2C;margin-bottom:10px;line-height:1.5">Öffne diesen Link auf einem zweiten Gerät und gib ihn dem Lehrling — ohne Lösungen und ohne Auswertung.</div>
+    <div style="background:#fff;border:1px solid #C8C4BC;border-radius:6px;padding:10px 12px;font-size:12px;color:#5B7B6F;word-break:break-all;margin-bottom:10px" id="lehrling-url"></div>
+    <button class="btn-sec" style="margin-top:0" onclick="kopiereLink()">📋 Link kopieren</button>
+    <div id="kopiert-msg" style="display:none;font-size:12px;color:#5B7B6F;margin-top:6px;text-align:center">✓ Link kopiert!</div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:10px">
+    <button class="nav-card" onclick="zeige('eignungstest')">
+      <div class="nav-icon">📋</div>
+      <div class="nav-title">Eignungstest</div>
+      <div class="nav-desc">Schnuppertag durchführen</div>
+    </button>
+    <button class="nav-card" onclick="zeige('probezeiten')">
+      <div class="nav-icon">📅</div>
+      <div class="nav-title">Probezeiten</div>
+      <div class="nav-desc">3-Monats-Pläne verwalten</div>
+    </button>
+  </div>
+  <div class="grid2" style="margin-bottom:10px">
+    <button class="nav-card" id="btn-fragen-editor" style="display:none" onclick="zeige('fragen-editor')">
+      <div class="nav-icon">✏️</div>
+      <div class="nav-title">Fragen bearbeiten</div>
+      <div class="nav-desc">Testfragen anpassen</div>
+    </button>
+    <button class="nav-card" onclick="zeige('archiv')">
+      <div class="nav-icon">📁</div>
+      <div class="nav-title">Archiv Bewerber</div>
+      <div class="nav-desc">Alle Schnuppertage ansehen</div>
+    </button>
+  </div>
+
+  <div id="home-login-box" class="card" style="margin-top:16px">
+    <div class="label">Meisterinnen-Login</div>
+    <div id="home-login-fehler" class="fehler-box"></div>
+    <input type="email" id="home-email" value="mirjam.walenta@gmail.com" style="margin-bottom:8px">
+    <input type="password" id="home-pw" placeholder="Passwort" style="margin-bottom:12px">
+    <button class="btn-primary" onclick="loginMeisterin()">Einloggen →</button>
+  </div>
+  <div id="home-logout-box" style="display:none;margin-top:16px;text-align:center">
+    <span style="font-size:13px;color:#5B7B6F;font-weight:600" id="home-user-name"></span>
+    <button onclick="logout()" style="background:none;border:none;color:#9A9A90;font-size:12px;cursor:pointer;font-family:system-ui;margin-left:12px;text-decoration:underline">Abmelden</button>
+  </div>
+  <div class="fuss">Mirjam Walenta · A Great Hair Day · Wien</div>
+</div>
+
+<!-- ── EIGNUNGSTEST ── -->
+<div id="p-eignungstest" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">Schnuppertag · Wissenstest</div>
+  <h1>Eignungstest</h1>
+  <p class="sub" id="test-sub">32 Punkte gesamt</p>
+
+  <div class="lehrling-banner">
+    <strong>✂ A Great Hair Day · Wien</strong><br>
+    Willkommen zu deinem Schnuppertag-Test!<br>
+    Beantworte alle Fragen so gut du kannst — schreib einfach was du weißt.
+  </div>
+
+  <div class="tab-nav">
+    <button class="tab-btn ak" onclick="testTab('wissen',this)">📚 Wissen</button>
+    <button class="tab-btn" onclick="testTab('werte',this)">❤ Werte</button>
+    <button class="tab-btn" onclick="testTab('auswertung',this)">📊 Auswertung</button>
+  </div>
+
+  <!-- WISSEN TAB -->
+  <div id="tab-wissen">
+    <div id="wissen-fragen-container"></div>
+    <button class="btn-primary" onclick="testTab('werte', document.querySelectorAll('.tab-btn')[1])">Weiter → Werte & Eignung</button>
+  </div>
+
+  <!-- WERTE TAB -->
+  <div id="tab-werte" style="display:none">
+    <div class="section-head">Selbsteinschätzung — Schieberegler (1–5)</div>
+    <div class="card">
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">😊 Freundlichkeit & Offenheit</span>
+          <span class="slider-val" id="sv1">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv1',this.value)">
+        <div class="slider-poles"><span>Eher still</span><span>Sehr offen</span></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">👥 Teamgeist & Teamarbeit</span>
+          <span class="slider-val" id="sv2">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv2',this.value)">
+        <div class="slider-poles"><span>Lieber alleine</span><span>Echte Teamplayerin</span></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">💡 Wissensdurst & Lernbereitschaft</span>
+          <span class="slider-val" id="sv3">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv3',this.value)">
+        <div class="slider-poles"><span>Lerne wenn nötig</span><span>Lerne immer gerne</span></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">❤ Freude an der Arbeit</span>
+          <span class="slider-val" id="sv4">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv4',this.value)">
+        <div class="slider-poles"><span>Arbeit ist Pflicht</span><span>Arbeit ist Leidenschaft</span></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">⏰ Pünktlichkeit & Zuverlässigkeit</span>
+          <span class="slider-val" id="sv5">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv5',this.value)">
+        <div class="slider-poles"><span>Manchmal zu spät</span><span>Immer pünktlich</span></div>
+      </div>
+      <div style="margin-bottom:4px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">🔄 Umgang mit Kritik</span>
+          <span class="slider-val" id="sv6">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv6',this.value)">
+        <div class="slider-poles"><span>Schwierig für mich</span><span>Lerne daraus</span></div>
+      </div>
+    </div>
+
+    <div class="section-head">Offene Fragen — eigene Worte</div>
+    <div class="card">
+      <div class="q-text">Warum möchtest du Friseurin / Friseur werden?</div>
+      <textarea rows="3" id="oq1" placeholder="Was zieht dich an diesem Beruf an?"></textarea>
+    </div>
+    <div class="card">
+      <div class="q-text">Was machst du, wenn eine Kundin mit dem Ergebnis nicht zufrieden ist?</div>
+      <textarea rows="3" id="oq2" placeholder="Kein Richtig oder Falsch — wir wollen wissen wie du denkst."></textarea>
+    </div>
+    <div class="card">
+      <div class="q-text">Beschreib dich in drei Wörtern.</div>
+      <input type="text" id="oq3" placeholder="z.B. freundlich, neugierig, zuverlässig…">
+    </div>
+    <div class="card">
+      <div class="q-text">Was machst du, wenn du merkst dass du eine Aufgabe noch nicht kannst?</div>
+      <textarea rows="3" id="oq4" placeholder="Wir suchen jemanden der fragen traut."></textarea>
+    </div>
+    <div class="card">
+      <div class="q-text">Was bedeutet für dich guter Kundenservice?</div>
+      <textarea rows="3" id="oq5" placeholder="In deinen eigenen Worten."></textarea>
+    </div>
+
+    <div class="section-head">Einschätzung Ausbilderin</div>
+    <div class="card">
+      <div class="label">Notizen zu Körpersprache, Auftreten & Gesamteindruck</div>
+      <textarea rows="4" id="notizen-ausbilderin" placeholder="Erster Eindruck, Spontanität, Auftreten…"></textarea>
+    </div>
+
+    <button class="btn-primary" onclick="testTab('auswertung', document.querySelectorAll('.tab-btn')[2])">Weiter → Auswertung</button>
+  </div>
+
+  <!-- AUSWERTUNG TAB -->
+  <div id="tab-auswertung" style="display:none">
+    <div id="auto-auswertung-box" class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;color:#7A7A70;margin-bottom:12px">Die Wissensfragen werden automatisch ausgewertet. Praktische Übungen (Geschicklichkeit & Rollenspiel) bewertest du selbst.</div>
+      <button class="btn-primary" onclick="autoAuswerten()" id="btn-auto-auswerten">🔍 Automatisch auswerten</button>
+    </div>
+
+    <div id="ergebnis-box" style="display:none">
+      <div class="card" style="background:#2C2C2C;border-color:#2C2C2C">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:13px;color:#9A9A90;font-weight:700;letter-spacing:1px;text-transform:uppercase">Gesamtergebnis</span>
+          <span id="erg-gesamt-zahl" style="font-size:28px;font-weight:700;color:#8FAF7A"></span>
+        </div>
+        <div style="background:#3C3C3C;border-radius:4px;height:10px;overflow:hidden;margin-bottom:10px">
+          <div id="erg-bar" style="height:100%;background:#8FAF7A;border-radius:4px;transition:width .6s"></div>
+        </div>
+        <div id="erg-note" style="font-size:18px;font-weight:700;color:#F7F5F0"></div>
+      </div>
+
+      <div class="card" style="padding:14px">
+        <div class="label" style="margin-bottom:10px">Aufschlüsselung</div>
+        <div id="erg-details"></div>
+      </div>
+
+      <div class="section-head">Praktische Übungen — deine Bewertung</div>
+      <div class="card">
+        <div class="q-text">Haarschnitt mit Papierschere — gerade Schnitte</div>
+        <span class="q-pts">4 Punkte</span>
+        <div class="pts-row" id="pts-gs1">
+          <button class="pts-btn" onclick="selectPts('gs1',4,this)">4 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('gs1',3,this)">3 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs1',2,this)">2 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs1',1,this)">1 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs1',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="gs1-label"></div>
+      </div>
+      <div class="card">
+        <div class="q-text">Knoten binden — einfach & doppelt</div>
+        <span class="q-pts">2 Punkte</span>
+        <div class="pts-row" id="pts-gs2">
+          <button class="pts-btn" onclick="selectPts('gs2',2,this)">2 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('gs2',1,this)">1 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs2',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="gs2-label"></div>
+      </div>
+      <div class="card">
+        <div class="q-text">Farbmischung mit Wasserfarben</div>
+        <span class="q-pts">5 Punkte</span>
+        <div class="pts-row" id="pts-gs3">
+          <button class="pts-btn" onclick="selectPts('gs3',5,this)">5 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('gs3',4,this)">4 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs3',3,this)">3 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs3',2,this)">2 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs3',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="gs3-label"></div>
+      </div>
+      <div class="card">
+        <div class="q-text">Rollenspiel Kundenberatung</div>
+        <span class="q-pts">6 Punkte</span>
+        <div class="pts-row" id="pts-rp">
+          <button class="pts-btn" onclick="selectPts('rp',6,this)">6 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('rp',4,this)">4 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('rp',2,this)">2 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('rp',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="rp-label"></div>
+      </div>
+      <button class="btn-sec" onclick="aktualisiereGesamt()">↻ Gesamt neu berechnen</button>
+
+      <div class="section-head">Notenskala</div>
+      <div class="card" style="padding:14px">
+        <table style="width:100%;font-size:13px;border-collapse:collapse">
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#C44030">5 — Ungenügend</td><td style="text-align:right;color:#9A9A90">≤ 11 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#C4A830">4 — Verbesserungswürdig</td><td style="text-align:right;color:#9A9A90">12–17 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#5B7B6F">3 — Befriedigend</td><td style="text-align:right;color:#9A9A90">18–23 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#3D6B50">2 — Gut</td><td style="text-align:right;color:#9A9A90">24–28 Pkt</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700;color:#2C4A38">1 — Sehr gut</td><td style="text-align:right;color:#9A9A90">ab 29 Pkt</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-head">Bewerber speichern</div>
+    <div class="card">
+      <div class="label">Name des Bewerbers</div>
+      <input type="text" id="bewerber-name" placeholder="z.B. Lisa Müller" style="margin-bottom:10px">
+      <div class="label">Datum des Schnuppertags</div>
+      <input type="date" id="bewerber-datum" style="margin-bottom:10px">
+      <div class="label">Entscheidung</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="pts-btn" id="ent-ja" onclick="setEntscheidung('ja')">✓ Probezeit</button>
+        <button class="pts-btn" id="ent-nein" onclick="setEntscheidung('nein')">✗ Nicht geeignet</button>
+        <button class="pts-btn" id="ent-offen" onclick="setEntscheidung('offen')">? Noch offen</button>
+      </div>
+      <div id="speichern-fehler" class="fehler-box"></div>
+      <div id="speichern-ok" class="ok-box"></div>
+      <button class="btn-primary" onclick="speichereSchnuppertag()">Ergebnis speichern →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── FRAGEN EDITOR ── -->
+<div id="p-fragen-editor" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">A Great Hair Day · Testfragen</div>
+  <h1>Fragen bearbeiten ✏️</h1>
+  <p class="sub">Eignungstest anpassen — Fragen, Antworten, Punkte</p>
+
+  <div class="card-green" style="font-size:13px;line-height:1.6">
+    <strong>So funktioniert's:</strong> Bearbeite die Fragen direkt hier. Klicke auf ✏️ um eine Frage zu bearbeiten, auf 🗑️ um sie zu löschen, oder füge neue Fragen hinzu. Die Änderungen werden sofort gespeichert und beim nächsten Eignungstest verwendet.
+  </div>
+
+  <div id="editor-kategorie-tabs" class="tab-nav" style="margin-top:16px"></div>
+  <div id="editor-fragen-liste"></div>
+
+  <div class="section-head">Neue Frage hinzufügen</div>
+  <div class="card">
+    <div class="label">Kategorie</div>
+    <select id="neue-frage-kat" style="margin-bottom:10px">
+      <option value="Mathematik">Mathematik</option>
+      <option value="Allgemeinwissen">Allgemeinwissen Österreich</option>
+      <option value="Geschichte">Geschichte</option>
+      <option value="Farblehre">Farblehre</option>
+      <option value="Friseurwissen">Friseurwissen</option>
+    </select>
+    <div class="label">Frage</div>
+    <textarea rows="2" id="neue-frage-text" placeholder="Die Frage …" style="margin-bottom:10px"></textarea>
+    <div class="label">Richtige Antwort (für Lösung anzeigen)</div>
+    <input type="text" id="neue-frage-antwort" placeholder="z.B. 20" style="margin-bottom:10px">
+    <div class="label">Schlüsselwörter für Auto-Auswertung (Komma-getrennt)</div>
+    <input type="text" id="neue-frage-keywords" placeholder="z.B. 20, zwanzig" style="margin-bottom:10px">
+    <div class="label">Punkte</div>
+    <select id="neue-frage-punkte" style="margin-bottom:14px">
+      <option value="1">1 Punkt</option>
+      <option value="2">2 Punkte</option>
+      <option value="3">3 Punkte</option>
+      <option value="4">4 Punkte</option>
+      <option value="5">5 Punkte</option>
+    </select>
+    <div id="neue-frage-fehler" class="fehler-box"></div>
+    <button class="btn-primary" onclick="neueFrageHinzufuegen()">+ Frage hinzufügen</button>
+  </div>
+</div>
+
+<!-- ── PROBEZEITEN ── -->
+<div id="p-probezeiten" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">Schnuppertag · Probezeit</div>
+  <h1>Probezeiten</h1>
+  <p class="sub">3-Monatsplan — wöchentliches Feedback & Lernziele</p>
+
+  <div class="card-green" style="margin-bottom:16px;font-size:13px;line-height:1.6">
+    <strong>Wichtiger Hinweis:</strong> Der Lehrvertrag wird nach dem Schnuppertag abgeschlossen. Innerhalb der ersten 3 Monate (Probezeit) kann er jederzeit von beiden Seiten aufgelöst werden — danach nur noch unter strengen gesetzlichen Voraussetzungen.
+  </div>
+
+  <button class="btn-primary nur-meisterin" onclick="zeige('neue-probezeit')" style="margin-bottom:16px">+ Neue Probezeit anlegen</button>
+
+  <div id="probezeiten-liste"><div class="laden">Wird geladen…</div></div>
+</div>
+
+<!-- ── NEUE PROBEZEIT ── -->
+<div id="p-neue-probezeit" class="page">
+  <button class="back-btn" onclick="zeige('probezeiten')">← Zurück</button>
+  <div class="tag">Schnuppertag · Neue Probezeit</div>
+  <h1>Probezeit anlegen</h1>
+
+  <div class="card">
+    <div class="label">Name des Lehrlings</div>
+    <input type="text" id="np-name" placeholder="z.B. Ronya Hoffmann" style="margin-bottom:10px">
+    <div class="label">Beginn Probezeit</div>
+    <input type="date" id="np-beginn" style="margin-bottom:10px">
+    <div class="label">Wöchentliches Feedbackgespräch</div>
+    <select id="np-wochentag" style="margin-bottom:10px">
+      <option value="Montag">Montag</option>
+      <option value="Dienstag">Dienstag</option>
+      <option value="Mittwoch">Mittwoch</option>
+      <option value="Donnerstag" selected>Donnerstag</option>
+      <option value="Freitag">Freitag</option>
+      <option value="Samstag">Samstag</option>
+    </select>
+    <div id="np-fehler" class="fehler-box"></div>
+    <button class="btn-primary" onclick="speichereProbezeit()">Probezeit starten →</button>
+    <button class="btn-sec" onclick="zeige('probezeiten')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- ── PROBEZEIT DETAIL ── -->
+<div id="p-probezeit-detail" class="page">
+  <button class="back-btn" onclick="zeige('probezeiten')">← Zurück</button>
+  <div class="tag">Schnuppertag · Probezeit</div>
+  <h1 id="pzd-name">Probezeit</h1>
+  <p class="sub" id="pzd-info"></p>
+
+  <div class="tab-nav" id="pzd-tabs">
+    <button class="tab-btn ak" onclick="pzdTab(1,this)">Monat 1</button>
+    <button class="tab-btn" onclick="pzdTab(2,this)">Monat 2</button>
+    <button class="tab-btn" onclick="pzdTab(3,this)">Monat 3</button>
+    <button class="tab-btn" onclick="pzdTab('quiz',this)">🎯 Wochenquiz</button>
+    <button class="tab-btn" onclick="pzdTab(0,this)">📊 Abschluss</button>
+  </div>
+
+  <div id="pzd-inhalt"></div>
+
+  <div id="pzd-abschluss-box" style="display:none;margin-top:16px">
+    <div class="section-head">Entscheidung nach 3 Monaten</div>
+    <div class="card">
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="pts-btn" id="pz-ent-ja" onclick="setPzEntscheidung('lehrvertrag')">✓ Lehrvertrag</button>
+        <button class="pts-btn" id="pz-ent-verl" onclick="setPzEntscheidung('verlaengern')">↻ Verlängern</button>
+        <button class="pts-btn" id="pz-ent-nein" onclick="setPzEntscheidung('abbruch')">✗ Abbruch</button>
+      </div>
+      <div class="label">Notizen Abschlussgespräch</div>
+      <textarea rows="4" id="pzd-abschluss-notizen" placeholder="Entwicklung, Entscheidung, nächste Schritte…"></textarea>
+      <button class="btn-primary" onclick="speichereAbschluss()" style="margin-top:10px">Abschluss speichern →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ARCHIV ── -->
+<div id="p-archiv" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">Schnuppertag · Archiv</div>
+  <h1>Archiv Bewerber</h1>
+  <p class="sub">Alle gespeicherten Schnuppertage</p>
+  <div id="archiv-liste"><div class="laden">Wird geladen…</div></div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+var MEISTERIN_OK = false;
+var AKT_PROBEZEIT = null;
+var AKT_PUNKTE = {gs1:null, gs2:null, gs3:null, rp:null};
+var AKT_ENTSCHEIDUNG = null;
+var PZ_ENTSCHEIDUNG = null;
+
+// ── STANDARD-FRAGEN ───────────────────────────────────────────────────────────
+var STANDARD_FRAGEN = [
+  { id:'m1', kat:'Mathematik', text:'Was ist 10 % von 200?', antwort:'20', keywords:['20','zwanzig'], punkte:1 },
+  { id:'m2', kat:'Mathematik', text:'Ein Artikel kostet 100 €, wird um 20 % reduziert. Was kostet er?', antwort:'80 Euro', keywords:['80'], punkte:1 },
+  { id:'o1', kat:'Allgemeinwissen', text:'Wie heißt der aktuelle Bundespräsident von Österreich?', antwort:'Alexander Van der Bellen', keywords:['van der bellen','alexander','bellen'], punkte:1 },
+  { id:'o2', kat:'Allgemeinwissen', text:'Nenne mindestens drei politische Parteien in Österreich.', antwort:'Mind. 3 von: ÖVP, SPÖ, FPÖ, Neos, die Grünen', keywords:['oevp','spoe','fpoe','neos','gruen','ovp','spo','fpo'], punkte:1, mindestTreffer:3 },
+  { id:'o3', kat:'Allgemeinwissen', text:'Wie viele Bundesländer hat Österreich?', antwort:'9', keywords:['9','neun'], punkte:1 },
+  { id:'o4', kat:'Allgemeinwissen', text:'Nenne alle 9 Bundesländer Österreichs.', antwort:'Burgenland, Kärnten, NÖ, OÖ, Salzburg, Steiermark, Tirol, Vorarlberg, Wien', keywords:['burgenland','kaernten','salzburg','steiermark','tirol','vorarlberg','wien'], punkte:4, bundeslaender:true },
+  { id:'o5', kat:'Allgemeinwissen', text:'Was ist die Hauptstadt von Österreich?', antwort:'Wien', keywords:['wien'], punkte:1 },
+  { id:'o6', kat:'Allgemeinwissen', text:'Welche Währung wird in Österreich verwendet?', antwort:'Euro', keywords:['euro'], punkte:1 },
+  { id:'g1', kat:'Geschichte', text:'In welchem Jahr wurde Österreich eine Republik?', antwort:'1918', keywords:['1918'], punkte:1 },
+  { id:'g2', kat:'Geschichte', text:'Wann endete der Zweite Weltkrieg?', antwort:'1945', keywords:['1945'], punkte:1 },
+  { id:'g3', kat:'Geschichte', text:'Wer war Wolfgang Amadeus Mozart — und wo wurde er geboren?', antwort:'Österreichischer Komponist, geboren in Salzburg', keywords:['mozart','salzburg','komponist'], punkte:1 },
+  { id:'g4', kat:'Geschichte', text:'Wie heißt das bekannteste Schloss in Wien?', antwort:'Schloss Schönbrunn', keywords:['schoenbrunn','schonbrunn','schloss'], punkte:1 },
+  { id:'f1', kat:'Farblehre', text:'Wie mischt man Orange?', antwort:'Rot + Gelb', keywords:['rot','gelb'], kombination:true, punkte:1 },
+  { id:'f2', kat:'Farblehre', text:'Wie mischt man Grün?', antwort:'Blau + Gelb', keywords:['blau','gelb'], kombination:true, punkte:1 },
+  { id:'f3', kat:'Farblehre', text:'Wie mischt man Violett?', antwort:'Rot + Blau', keywords:['rot','blau'], kombination:true, punkte:1 }
+];
+
+// Fragen aus localStorage laden (falls editiert)
+function ladeFragen() {
+  try {
+    var gespeichert = localStorage.getItem('ghd_fragen');
+    if (gespeichert) return JSON.parse(gespeichert);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(STANDARD_FRAGEN));
+}
+
+function speichereFragen(fragen) {
+  try { localStorage.setItem('ghd_fragen', JSON.stringify(fragen)); } catch(e) {}
+}
+
+var AKT_FRAGEN = ladeFragen();
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function zeige(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('ak'); });
+  var el = document.getElementById('p-' + id);
+  if (el) { el.classList.add('ak'); window.scrollTo(0,0); }
+  if (id === 'probezeiten') ladeProbezeiten();
+  if (id === 'archiv') ladeArchiv();
+  if (id === 'eignungstest') renderWissenFragen();
+  if (id === 'fragen-editor') renderFragenEditor();
+}
+
+function testTab(id, btn) {
+  ['wissen','werte','auswertung'].forEach(function(t){
+    var el = document.getElementById('tab-' + t);
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('ak'); });
+  var el = document.getElementById('tab-' + id);
+  if (el) el.style.display = 'block';
+  if (btn) btn.classList.add('ak');
+  window.scrollTo(0,0);
+}
+
+function pzdTab(monat, btn) {
+  document.querySelectorAll('#pzd-tabs .tab-btn').forEach(function(b){ b.classList.remove('ak'); });
+  if (btn) btn.classList.add('ak');
+  var box = document.getElementById('pzd-abschluss-box');
+  if (monat === 0) {
+    box.style.display = 'block';
+    document.getElementById('pzd-inhalt').innerHTML = '';
+    return;
+  }
+  box.style.display = 'none';
+  if (monat === 'quiz') {
+    renderWochenquizUebersicht();
+  } else {
+    renderMonat(monat);
+  }
+}
+
+// ── WISSENSFRAGEN RENDERN ─────────────────────────────────────────────────────
+function renderWissenFragen() {
+  var container = document.getElementById('wissen-fragen-container');
+  if (!container) return;
+  var fragen = ladeFragen();
+  AKT_FRAGEN = fragen;
+
+  // Kategorien gruppieren
+  var kats = {};
+  fragen.forEach(function(f) {
+    if (!kats[f.kat]) kats[f.kat] = [];
+    kats[f.kat].push(f);
+  });
+
+  // Punkte-Summe berechnen
+  var total = fragen.reduce(function(s,f){ return s + f.punkte; }, 0) + 17; // +17 für Praktik
+  document.getElementById('test-sub') && (document.getElementById('test-sub').textContent = (total) + ' Punkte gesamt');
+
+  var html = '';
+  var ridx = 0;
+  Object.keys(kats).forEach(function(kat) {
+    var katPunkte = kats[kat].reduce(function(s,f){ return s + f.punkte; }, 0);
+    html += '<div class="section-head">' + kat + ' — ' + katPunkte + ' Punkte</div>';
+    kats[kat].forEach(function(f) {
+      var inputType = f.punkte > 1 ? 'textarea rows="2"' : 'input type="text"';
+      var inputClose = f.punkte > 1 ? '</textarea>' : '';
+      html += '<div class="card">' +
+        '<div class="q-text">' + f.text + '</div>' +
+        '<span class="q-pts">' + f.punkte + ' Punkt' + (f.punkte > 1 ? 'e' : '') + '</span>' +
+        '<' + inputType + ' placeholder="Antwort…" class="ant-input" id="ant-' + f.id + '">' + inputClose +
+        '<button class="reveal-btn" onclick="reveal(\'rev-' + f.id + '\')">Lösung zeigen</button>' +
+        '<div class="answer-reveal" id="rev-' + f.id + '">✓ Richtige Antwort: <strong>' + f.antwort + '</strong></div>' +
+      '</div>';
+      ridx++;
+    });
+  });
+
+  // Praktik-Hinweis
+  html += '<div class="section-head">Geschicklichkeit & Rollenspiel — 17 Punkte (praktisch)</div>';
+  html += '<div class="card" style="background:#F7F5F0;border-style:dashed">' +
+    '<div style="font-size:13px;color:#7A7A70;line-height:1.6">' +
+    '🖐 <strong>Praktische Übungen</strong> — diese bewertest du als Ausbilderin im Tab <strong>Auswertung</strong> nach der Durchführung:<br><br>' +
+    '· Haarschnitt mit Papierschere (4 Pkt)<br>· Knoten binden (2 Pkt)<br>· Farbmischung Wasserfarben (5 Pkt)<br>· Rollenspiel Kundenberatung (6 Pkt)' +
+    '</div></div>';
+
+  container.innerHTML = html;
+}
+
+// ── SLIDER ────────────────────────────────────────────────────────────────────
+var SL_LABELS = ['', 'Selten', 'Manchmal', 'Oft', 'Meistens', 'Immer'];
+function updateSlider(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = SL_LABELS[parseInt(val)];
+}
+
+// ── QUIZ HILFS ────────────────────────────────────────────────────────────────
+function reveal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.add('show');
+}
+
+function selectPts(id, pts, btn) {
+  AKT_PUNKTE[id] = pts;
+  var container = document.getElementById('pts-' + id);
+  if (container) container.querySelectorAll('.pts-btn').forEach(function(b){ b.classList.remove('sel'); });
+  if (btn) btn.classList.add('sel');
+  var label = document.getElementById(id + '-label');
+  if (label) { label.classList.add('show'); label.textContent = '✓ Vergeben: ' + pts + ' Punkte'; }
+  aktualisiereGesamt();
+}
+
+function setEntscheidung(val) {
+  AKT_ENTSCHEIDUNG = val;
+  ['ent-ja','ent-nein','ent-offen'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) b.classList.remove('sel');
+  });
+  var map = {ja:'ent-ja', nein:'ent-nein', offen:'ent-offen'};
+  var b = document.getElementById(map[val]);
+  if (b) b.classList.add('sel');
+}
+
+function setPzEntscheidung(val) {
+  PZ_ENTSCHEIDUNG = val;
+  ['pz-ent-ja','pz-ent-verl','pz-ent-nein'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) b.classList.remove('sel');
+  });
+  var map = {lehrvertrag:'pz-ent-ja', verlaengern:'pz-ent-verl', abbruch:'pz-ent-nein'};
+  var b = document.getElementById(map[val]);
+  if (b) b.classList.add('sel');
+}
+
+// ── AUTO-AUSWERTUNG ───────────────────────────────────────────────────────────
+function norm(str) {
+  return (str||'').toLowerCase()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+}
+function enthaelt(antwort, begriffe) {
+  var a = norm(antwort);
+  return begriffe.some(function(b){ return a.indexOf(norm(b)) >= 0; });
+}
+
+var AUTO_PUNKTE = {};
+
+function autoAuswerten() {
+  AUTO_PUNKTE = {};
+  var katsErg = {};
+  var fragen = ladeFragen();
+
+  fragen.forEach(function(f) {
+    var el = document.getElementById('ant-' + f.id);
+    var val = el ? (el.value || '') : '';
+    var punkte = 0;
+
+    if (f.bundeslaender) {
+      var bl = ['burgenland','kaernten','niederoestereich','niederoesterreich','oberoesterreich','salzburg','steiermark','tirol','vorarlberg','wien'];
+      var a = norm(val);
+      var treffer = bl.filter(function(b){ return a.indexOf(norm(b)) >= 0; }).length;
+      if (a.indexOf('noe') >= 0 || a.indexOf('no') >= 0) treffer = Math.max(treffer, 1 + bl.filter(function(b,i){ return i > 0 && a.indexOf(norm(b)) >= 0; }).length);
+      if (a.indexOf('ooe') >= 0 || a.indexOf('oo') >= 0) treffer++;
+      treffer = Math.min(treffer, 9);
+      if (treffer >= 9) punkte = 4;
+      else if (treffer >= 7) punkte = 3;
+      else if (treffer >= 5) punkte = 2;
+      else if (treffer >= 3) punkte = 1;
+    } else if (f.mindestTreffer) {
+      var gefunden = (f.keywords || []).filter(function(kw){ return norm(val).indexOf(norm(kw)) >= 0; }).length;
+      punkte = gefunden >= f.mindestTreffer ? f.punkte : 0;
+    } else if (f.kombination) {
+      // alle keywords müssen vorkommen
+      punkte = (f.keywords || []).every(function(kw){ return enthaelt(val, [kw]); }) ? f.punkte : 0;
+    } else {
+      punkte = enthaelt(val, f.keywords || []) ? f.punkte : 0;
+    }
+
+    AUTO_PUNKTE[f.id] = { punkte: punkte, max: f.punkte, val: val };
+    if (!katsErg[f.kat]) katsErg[f.kat] = { p: 0, max: 0 };
+    katsErg[f.kat].p += punkte;
+    katsErg[f.kat].max += f.punkte;
+
+    // Farbgebung der Eingabefelder
+    var inputEl = document.getElementById('ant-' + f.id);
+    if (inputEl) {
+      inputEl.style.borderColor = punkte >= f.punkte ? '#5B7B6F' : punkte > 0 ? '#C4A830' : '#C44030';
+      inputEl.style.background = punkte >= f.punkte ? '#EAF0EE' : punkte > 0 ? '#FDF6E3' : '#FDECEA';
+    }
+  });
+
+  // Details rendern
+  var det = '';
+  Object.keys(katsErg).forEach(function(kat) {
+    var p = katsErg[kat].p, max = katsErg[kat].max;
+    var pct = max > 0 ? Math.round((p/max)*100) : 0;
+    var col = pct >= 75 ? '#5B7B6F' : pct >= 50 ? '#C4A830' : '#C44030';
+    det += '<div style="margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
+        '<span style="font-size:13px">' + kat + '</span>' +
+        '<span style="font-size:13px;font-weight:700;color:' + col + '">' + p + ' / ' + max + '</span>' +
+      '</div>' +
+      '<div style="background:#E2DDD5;border-radius:3px;height:6px"><div style="background:' + col + ';height:100%;width:' + pct + '%;border-radius:3px"></div></div>' +
+    '</div>';
+  });
+  det += '<div style="font-size:12px;color:#9A9A90;margin-top:6px">Geschicklichkeit & Rollenspiel → unten bewerten</div>';
+  document.getElementById('erg-details').innerHTML = det;
+
+  var wissenPkt = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
+  zeigeGesamt(wissenPkt);
+
+  document.getElementById('ergebnis-box').style.display = 'block';
+  document.getElementById('auto-auswertung-box').innerHTML =
+    '<div style="font-size:13px;color:#5B7B6F;font-weight:600">✓ Automatisch ausgewertet — Wissensfragen: ' + wissenPkt + ' Punkt(e)</div>' +
+    '<button class="btn-sec" style="margin-top:8px" onclick="autoAuswerten()">↻ Neu auswerten</button>';
+
+  window.scrollTo(0, document.getElementById('ergebnis-box').offsetTop - 20);
+}
+
+function aktualisiereGesamt() {
+  var wissenPkt = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
+  var praktik = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0) + (AKT_PUNKTE.rp||0);
+  zeigeGesamt(wissenPkt + praktik);
+}
+
+function zeigeGesamt(gesamt) {
+  var note, farbe, barColor;
+  if (gesamt >= 29) { note = '1 — Sehr gut ✦'; farbe = '#2C4A38'; barColor = '#5B7B6F'; }
+  else if (gesamt >= 24) { note = '2 — Gut'; farbe = '#3D6B50'; barColor = '#8FAF7A'; }
+  else if (gesamt >= 18) { note = '3 — Befriedigend'; farbe = '#5B7B6F'; barColor = '#C4B86A'; }
+  else if (gesamt >= 12) { note = '4 — Verbesserungswürdig'; farbe = '#C4A830'; barColor = '#C4A830'; }
+  else { note = '5 — Ungenügend'; farbe = '#C44030'; barColor = '#C44030'; }
+
+  var maxPunkte = ladeFragen().reduce(function(s,f){ return s + f.punkte; },0) + 17;
+  document.getElementById('erg-gesamt-zahl').textContent = gesamt + ' / ' + maxPunkte;
+  document.getElementById('erg-bar').style.width = Math.round((gesamt/maxPunkte)*100) + '%';
+  document.getElementById('erg-bar').style.background = barColor;
+  document.getElementById('erg-note').textContent = note;
+  document.getElementById('erg-note').style.color = farbe;
+}
+
+function berechneGesamt() { aktualisiereGesamt(); }
+
+// ── FRAGEN EDITOR ──────────────────────────────────────────────────────────────
+var EDITOR_KAT = null;
+
+function renderFragenEditor() {
+  var fragen = ladeFragen();
+  var kats = [...new Set(fragen.map(function(f){ return f.kat; }))];
+  if (!kats.includes('Friseurwissen')) kats.push('Friseurwissen');
+  if (!EDITOR_KAT) EDITOR_KAT = kats[0];
+
+  // Kategorie-Tabs
+  var tabHtml = kats.map(function(k) {
+    return '<button class="tab-btn' + (k === EDITOR_KAT ? ' ak' : '') + '" onclick="editorKat(\'' + k + '\')">' + k + '</button>';
+  }).join('');
+  document.getElementById('editor-kategorie-tabs').innerHTML = tabHtml;
+
+  // Fragen der aktiven Kategorie
+  var liste = fragen.filter(function(f){ return f.kat === EDITOR_KAT; });
+  var html = '';
+  if (!liste.length) {
+    html = '<div class="laden" style="color:#9A9A90">Noch keine Fragen in dieser Kategorie.</div>';
+  }
+  liste.forEach(function(f, i) {
+    html += '<div class="frage-editor-card" id="editor-card-' + f.id + '">' +
+      '<div class="frage-nr">Frage ' + (i+1) + ' · ' + f.punkte + ' Punkt' + (f.punkte > 1 ? 'e' : '') + '</div>' +
+      '<div class="editor-row">' +
+        '<div style="flex:1">' +
+          '<div style="font-size:14px;font-weight:600;color:#1C1C1A;margin-bottom:4px">' + f.text + '</div>' +
+          '<div style="font-size:12px;color:#5B7B6F">✓ ' + f.antwort + '</div>' +
+          '<div style="font-size:11px;color:#9A9A90;margin-top:2px">Keywords: ' + (f.keywords||[]).join(', ') + '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:6px;margin-left:10px">' +
+          '<button class="btn-sm" onclick="editiereFrageForm(\'' + f.id + '\')">✏️</button>' +
+          '<button class="btn-sm-danger" onclick="loescheFrage(\'' + f.id + '\')">🗑️</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="edit-form-' + f.id + '" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #E2DDD5">' +
+        '<div class="label">Frage</div>' +
+        '<textarea rows="2" id="ef-text-' + f.id + '" style="margin-bottom:8px">' + f.text + '</textarea>' +
+        '<div class="label">Richtige Antwort</div>' +
+        '<input type="text" id="ef-antwort-' + f.id + '" value="' + f.antwort + '" style="margin-bottom:8px">' +
+        '<div class="label">Keywords (Komma-getrennt)</div>' +
+        '<input type="text" id="ef-keywords-' + f.id + '" value="' + (f.keywords||[]).join(', ') + '" style="margin-bottom:8px">' +
+        '<div class="label">Punkte</div>' +
+        '<select id="ef-punkte-' + f.id + '" style="margin-bottom:10px">' +
+          [1,2,3,4,5].map(function(n){ return '<option value="' + n + '"' + (f.punkte === n ? ' selected' : '') + '>' + n + ' Punkt' + (n>1?'e':'') + '</option>'; }).join('') +
+        '</select>' +
+        '<div style="display:flex;gap:8px">' +
+          '<button class="btn-sm" onclick="speichereFrage(\'' + f.id + '\')">✓ Speichern</button>' +
+          '<button class="btn-sm-ghost" onclick="editiereFrageForm(\'' + f.id + '\',true)">Abbrechen</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  document.getElementById('editor-fragen-liste').innerHTML = html;
+}
+
+function editorKat(kat) {
+  EDITOR_KAT = kat;
+  renderFragenEditor();
+}
+
+function editiereFrageForm(id, schliessen) {
+  var form = document.getElementById('edit-form-' + id);
+  if (form) form.style.display = schliessen ? 'none' : (form.style.display === 'none' ? 'block' : 'none');
+}
+
+function speichereFrage(id) {
+  var fragen = ladeFragen();
+  var idx = fragen.findIndex(function(f){ return f.id === id; });
+  if (idx < 0) return;
+  var text = document.getElementById('ef-text-' + id).value.trim();
+  var antwort = document.getElementById('ef-antwort-' + id).value.trim();
+  var kwRaw = document.getElementById('ef-keywords-' + id).value;
+  var keywords = kwRaw.split(',').map(function(k){ return k.trim(); }).filter(Boolean);
+  var punkte = parseInt(document.getElementById('ef-punkte-' + id).value) || 1;
+  if (!text) return;
+  fragen[idx].text = text;
+  fragen[idx].antwort = antwort;
+  fragen[idx].keywords = keywords;
+  fragen[idx].punkte = punkte;
+  speichereFragen(fragen);
+  renderFragenEditor();
+}
+
+function loescheFrage(id) {
+  if (!confirm('Frage wirklich löschen?')) return;
+  var fragen = ladeFragen().filter(function(f){ return f.id !== id; });
+  speichereFragen(fragen);
+  renderFragenEditor();
+}
+
+function neueFrageHinzufuegen() {
+  var fehler = document.getElementById('neue-frage-fehler');
+  fehler.style.display = 'none';
+  var text = document.getElementById('neue-frage-text').value.trim();
+  var antwort = document.getElementById('neue-frage-antwort').value.trim();
+  var kwRaw = document.getElementById('neue-frage-keywords').value;
+  var keywords = kwRaw.split(',').map(function(k){ return k.trim(); }).filter(Boolean);
+  var punkte = parseInt(document.getElementById('neue-frage-punkte').value) || 1;
+  var kat = document.getElementById('neue-frage-kat').value;
+  if (!text) { fehler.textContent = 'Bitte Fragentext eingeben.'; fehler.style.display = 'block'; return; }
+  var fragen = ladeFragen();
+  var neuId = 'custom_' + Date.now();
+  fragen.push({ id: neuId, kat: kat, text: text, antwort: antwort, keywords: keywords, punkte: punkte });
+  speichereFragen(fragen);
+  document.getElementById('neue-frage-text').value = '';
+  document.getElementById('neue-frage-antwort').value = '';
+  document.getElementById('neue-frage-keywords').value = '';
+  EDITOR_KAT = kat;
+  renderFragenEditor();
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+async function loginMeisterin() {
+  var email = document.getElementById('home-email').value.trim();
+  var pw = document.getElementById('home-pw').value;
+  var fehlerEl = document.getElementById('home-login-fehler');
+  fehlerEl.style.display = 'none';
+  var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pw });
+  if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
+  MEISTERIN_OK = true;
+  document.body.classList.add('meisterin-ok');
+  var fb = document.getElementById('btn-fragen-editor');
+  if (fb) fb.style.display = 'block';
+  document.getElementById('home-login-box').style.display = 'none';
+  document.getElementById('home-logout-box').style.display = 'block';
+  document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  MEISTERIN_OK = false;
+  document.getElementById('home-login-box').style.display = 'block';
+  document.getElementById('home-logout-box').style.display = 'none';
+}
+
+// ── SCHNUPPERTAG SPEICHERN ────────────────────────────────────────────────────
+async function speichereSchnuppertag() {
+  var fehlerEl = document.getElementById('speichern-fehler');
+  var okEl = document.getElementById('speichern-ok');
+  fehlerEl.style.display = 'none'; okEl.style.display = 'none';
+  if (!MEISTERIN_OK) { fehlerEl.textContent = 'Bitte zuerst einloggen.'; fehlerEl.style.display = 'block'; return; }
+  var name = document.getElementById('bewerber-name').value.trim();
+  var datum = document.getElementById('bewerber-datum').value;
+  if (!name || !datum) { fehlerEl.textContent = 'Bitte Name und Datum eingeben.'; fehlerEl.style.display = 'block'; return; }
+
+  var wissen = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
+  var praktik = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0) + (AKT_PUNKTE.rp||0);
+  var gesamt = wissen + praktik;
+
+  var werte = {
+    freundlichkeit: document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]').value : 3,
+    team: document.querySelector('[oninput="updateSlider(\'sv2\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv2\',this.value)"]').value : 3,
+    wissensdurst: document.querySelector('[oninput="updateSlider(\'sv3\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv3\',this.value)"]').value : 3,
+    freude: document.querySelector('[oninput="updateSlider(\'sv4\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv4\',this.value)"]').value : 3,
+    puenktlichkeit: document.querySelector('[oninput="updateSlider(\'sv5\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv5\',this.value)"]').value : 3,
+    kritik: document.querySelector('[oninput="updateSlider(\'sv6\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv6\',this.value)"]').value : 3,
+    oq1: (document.getElementById('oq1')||{}).value || '',
+    oq2: (document.getElementById('oq2')||{}).value || '',
+    oq3: (document.getElementById('oq3')||{}).value || '',
+    oq4: (document.getElementById('oq4')||{}).value || '',
+    oq5: (document.getElementById('oq5')||{}).value || '',
+    notizen: (document.getElementById('notizen-ausbilderin')||{}).value || ''
+  };
+
+  var { error } = await sb.from('schnuppertage').insert({
+    name: name, datum: datum, punkte_gesamt: gesamt,
+    punkte_detail: { wissen: wissen, praktik: praktik, geschicklichkeit: (AKT_PUNKTE.gs1||0)+(AKT_PUNKTE.gs2||0)+(AKT_PUNKTE.gs3||0), rollenspiel: AKT_PUNKTE.rp||0 },
+    entscheidung: AKT_ENTSCHEIDUNG || 'offen', werte: werte
+  });
+
+  if (error) { fehlerEl.textContent = 'Fehler beim Speichern: ' + error.message; fehlerEl.style.display = 'block'; }
+  else { okEl.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; okEl.style.display = 'block'; }
+}
+
+// ── PROBEZEITEN LADEN ─────────────────────────────────────────────────────────
+async function ladeProbezeiten() {
+  var liste = document.getElementById('probezeiten-liste');
+  liste.innerHTML = '<div class="laden">Wird geladen…</div>';
+  if (!MEISTERIN_OK) { liste.innerHTML = '<div class="laden">Bitte zuerst einloggen.</div>'; return; }
+
+  var { data, error } = await sb.from('probezeiten').select('*').order('erstellt_am', { ascending: false });
+  if (error || !data || !data.length) {
+    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Probezeiten angelegt.</div>'; return;
+  }
+
+  var html = '';
+  data.forEach(function(pz) {
+    var statusFarbe = pz.status === 'bestanden' ? '#3D6B50' : pz.status === 'abgebrochen' ? '#C44030' : '#C4A830';
+    var statusText = pz.status === 'bestanden' ? '✓ Lehrvertrag' : pz.status === 'abgebrochen' ? '✗ Abgebrochen' : '● Läuft';
+    html += '<div class="probezeit-card" onclick="oeffneProbezeit(' + JSON.stringify(pz).replace(/"/g,'&quot;') + ')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center">' +
+        '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + pz.name + '</div>' +
+        '<div style="font-size:12px;font-weight:700;color:' + statusFarbe + '">' + statusText + '</div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:#9A9A90;margin-top:3px">Beginn: ' + formatDatum(pz.beginn) + ' · Feedback: ' + (pz.wochentag||'—') + '</div>' +
+    '</div>';
+  });
+  liste.innerHTML = html;
+}
+
+function oeffneProbezeit(pz) {
+  AKT_PROBEZEIT = pz;
+  document.getElementById('pzd-name').textContent = pz.name;
+  document.getElementById('pzd-info').textContent = 'Beginn: ' + formatDatum(pz.beginn) + ' · Feedbacktag: ' + (pz.wochentag||'—');
+  zeige('probezeit-detail');
+  pzdTab(1, document.querySelectorAll('#pzd-tabs .tab-btn')[0]);
+}
+
+// ── LERNZIELE PRO MONAT ───────────────────────────────────────────────────────
+var MONAT_ZIELE = {
+  1: {
+    titel: 'Monat 1 — Ankommen & Kundenkontakt',
+    farbe: '#5B7B6F',
+    ziele: [
+      { id:'m1z1', text:'Kunden herzlich begrüßen' },
+      { id:'m1z2', text:'Kaffee / Getränke anbieten' },
+      { id:'m1z3', text:'Haarwäsche selbstständig durchführen' },
+      { id:'m1z4', text:'Kopfmassage üben' },
+      { id:'m1z5', text:'Farbe auftragen üben (unter Aufsicht)' }
+    ],
+    abzeichen: [
+      { id:'m1a1', icon:'🎯', label:'Lernquiz\n1 Abzeichen' },
+      { id:'m1a2', icon:'🇬🇧', label:'Englisch Tool\n3 Abzeichen' }
+    ]
+  },
+  2: {
+    titel: 'Monat 2 — Einarbeitung & Technik',
+    farbe: '#C4A830',
+    ziele: [
+      { id:'m2z1', text:'Farbe auftragen in unter 20 Minuten' },
+      { id:'m2z2', text:'Technikkopf üben' },
+      { id:'m2z3', text:'Arbeitsabläufe selbstständiger gestalten' }
+    ],
+    abzeichen: [
+      { id:'m2a1', icon:'🎯', label:'Lernquiz\n2 Abzeichen' },
+      { id:'m2a2', icon:'🇬🇧', label:'Englisch Tool\n5 Abzeichen' }
+    ]
+  },
+  3: {
+    titel: 'Monat 3 — Selbstständigkeit & Strähnen',
+    farbe: '#3D6B50',
+    ziele: [
+      { id:'m3z1', text:'Farbe auftragen selbstständig' },
+      { id:'m3z2', text:'Kopfwäsche selbstständig' },
+      { id:'m3z3', text:'Kopfmassage selbstständig' },
+      { id:'m3z4', text:'Technikkopf selbstständig' },
+      { id:'m3z5', text:'Strähnen üben' }
+    ],
+    abzeichen: [
+      { id:'m3a1', icon:'🎯', label:'Lernquiz\n3 & 4 Abzeichen' },
+      { id:'m3a2', icon:'🇬🇧', label:'Englisch Tool\nAlle Abzeichen' }
+    ]
+  }
+};
+
+// ── MONAT RENDERN ──────────────────────────────────────────────────────────────
+async function renderMonat(monat) {
+  var div = document.getElementById('pzd-inhalt');
+  div.innerHTML = '<div class="laden">Wird geladen…</div>';
+
+  var { data: wochen } = await sb.from('probezeit_wochen')
+    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).order('woche');
+
+  var { data: zieleData } = await sb.from('probezeit_ziele')
+    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle().catch(function(){ return { data: null }; });
+
+  var mInfo = MONAT_ZIELE[monat];
+  var html = '<div class="card" style="background:' + mInfo.farbe + '1A;border-color:' + mInfo.farbe + ';padding:14px;margin-bottom:12px">' +
+    '<div style="font-weight:700;color:' + mInfo.farbe + ';font-size:14px">' + mInfo.titel + '</div>' +
+  '</div>';
+
+  // LERNZIELE
+  html += '<div class="section-head">Lernziele Monat ' + monat + '</div>';
+  html += '<div class="card" style="padding:14px">';
+  var erledigteZiele = zieleData && zieleData.erledigt ? zieleData.erledigt : [];
+  mInfo.ziele.forEach(function(z) {
+    var ok = erledigteZiele.indexOf(z.id) >= 0;
+    html += '<div class="ziel-row">' +
+      '<div class="ziel-check' + (ok ? ' ok' : '') + '" onclick="toggleZiel(\'' + z.id + '\',' + monat + ',this)">' + (ok ? '✓' : '') + '</div>' +
+      '<span class="ziel-text' + (ok ? ' erledigt' : '') + '" id="ziel-text-' + z.id + '">' + z.text + '</span>' +
+    '</div>';
+  });
+  html += '</div>';
+
+  // ABZEICHEN
+  html += '<div class="section-head">Abzeichen-Ziele</div>';
+  html += '<div class="card" style="padding:14px">';
+  var erledigteAbzeichen = zieleData && zieleData.abzeichen ? zieleData.abzeichen : [];
+  html += '<div class="abzeichen-grid">';
+  mInfo.abzeichen.forEach(function(a) {
+    var ok = erledigteAbzeichen.indexOf(a.id) >= 0;
+    html += '<div class="abzeichen' + (ok ? ' erreicht' : '') + '" onclick="toggleAbzeichen(\'' + a.id + '\',' + monat + ',this)" style="cursor:pointer">' +
+      '<span class="abzeichen-icon">' + a.icon + (ok ? '' : '') + '</span>' +
+      '<div class="abzeichen-label" style="white-space:pre-line">' + a.label + '</div>' +
+    '</div>';
+  });
+  html += '</div></div>';
+
+  // WOCHENBERICHTE
+  html += '<div class="section-head">Wochenberichte</div>';
+  var startWoche = (monat - 1) * 4 + 1;
+  for (var w = startWoche; w < startWoche + 4; w++) {
+    var wo = null;
+    if (wochen) wo = wochen.find(function(x){ return x.woche === w; }) || null;
+    html += renderWocheForm(w, monat, wo);
+  }
+
+  // MONATSFEEDBACK
+  html += '<div class="section-head">Feedbackgespräch Ende Monat ' + monat + '</div>';
+  var { data: fbData } = await sb.from('probezeit_monats_feedback')
+    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle().catch(function(){ return { data: null }; });
+  html += '<div class="card">' +
+    '<div class="label">Was läuft gut? Was muss besser werden?</div>' +
+    '<textarea rows="3" id="fb-m' + monat + '" placeholder="Notizen Feedbackgespräch…">' + (fbData ? fbData.notiz||'' : '') + '</textarea>' +
+    '<div style="display:flex;gap:8px;margin-top:10px">' +
+      '<button class="pts-btn" id="fb-weiter-' + monat + '" onclick="setFbStatus(' + monat + ',\'weiter\',this)">✓ Weiter</button>' +
+      '<button class="pts-btn" id="fb-gep-' + monat + '" onclick="setFbStatus(' + monat + ',\'gespraech\',this)">! Gespräch</button>' +
+      '<button class="pts-btn" id="fb-abbruch-' + monat + '" onclick="setFbStatus(' + monat + ',\'abbruch\',this)">✗ Abbruch</button>' +
+    '</div>' +
+    '<button class="btn-primary" style="margin-top:10px" onclick="speichereFeedback(' + monat + ')">Feedback speichern</button>' +
+  '</div>';
+
+  div.innerHTML = html;
+
+  if (fbData && fbData.status) {
+    var map = {weiter:'fb-weiter-',gespraech:'fb-gep-',abbruch:'fb-abbruch-'};
+    var b = document.getElementById(map[fbData.status] + monat);
+    if (b) b.classList.add('sel');
+  }
+}
+
+// ── ZIELE & ABZEICHEN TOGGLEN ─────────────────────────────────────────────────
+var ZIELE_CACHE = {}; // monat -> { erledigt: [], abzeichen: [] }
+
+async function ladeZieleCache(monat) {
+  if (ZIELE_CACHE[monat]) return ZIELE_CACHE[monat];
+  try {
+    var { data } = await sb.from('probezeit_ziele')
+      .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle();
+    ZIELE_CACHE[monat] = data || { erledigt: [], abzeichen: [] };
+  } catch(e) {
+    ZIELE_CACHE[monat] = { erledigt: [], abzeichen: [] };
+  }
+  return ZIELE_CACHE[monat];
+}
+
+async function toggleZiel(zielId, monat, el) {
+  var cache = await ladeZieleCache(monat);
+  var idx = cache.erledigt.indexOf(zielId);
+  var ok;
+  if (idx >= 0) { cache.erledigt.splice(idx, 1); ok = false; }
+  else { cache.erledigt.push(zielId); ok = true; }
+  el.classList.toggle('ok', ok);
+  el.textContent = ok ? '✓' : '';
+  var textEl = document.getElementById('ziel-text-' + zielId);
+  if (textEl) textEl.classList.toggle('erledigt', ok);
+  await speichereZiele(monat, cache);
+}
+
+async function toggleAbzeichen(abzId, monat, el) {
+  var cache = await ladeZieleCache(monat);
+  var idx = cache.abzeichen.indexOf(abzId);
+  var ok;
+  if (idx >= 0) { cache.abzeichen.splice(idx, 1); ok = false; }
+  else { cache.abzeichen.push(abzId); ok = true; }
+  el.classList.toggle('erreicht', ok);
+  await speichereZiele(monat, cache);
+}
+
+async function speichereZiele(monat, cache) {
+  var payload = { probezeit_id: AKT_PROBEZEIT.id, monat: monat, erledigt: cache.erledigt, abzeichen: cache.abzeichen };
+  try {
+    var { data: bestehend } = await sb.from('probezeit_ziele').select('id')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle();
+    if (bestehend && bestehend.id) {
+      await sb.from('probezeit_ziele').update(payload).eq('id', bestehend.id);
+    } else {
+      await sb.from('probezeit_ziele').insert(payload);
+    }
+  } catch(e) { console.log('Ziele-Speicherfehler:', e); }
+}
+
+// ── WOCHENQUIZ ────────────────────────────────────────────────────────────────
+// 12 Wochenquizfragen für die Probezeit (je eine pro Woche)
+var WOCHENQUIZ_FRAGEN = [
+  // Woche 1
+  [
+    { frage: 'Wie begrüßt du eine Kundin professionell?', optionen: ['Hallo!', 'Guten Tag, willkommen bei A Great Hair Day — womit darf ich Ihnen heute helfen?', 'Ja, bitte?', 'Hey, was möchtest du?'], richtig: 1 },
+    { frage: 'Was tust du, bevor du einer Kundin den Umhang anlegst?', optionen: ['Nichts besonderes', 'Kurz schauen ob sie bereit ist', 'Fragen ob sie eine Allergie auf Farbe hat', 'Den Umhang einfach umlegen'], richtig: 2 },
+    { frage: 'Wie hältst du deinen Arbeitsplatz?', optionen: ['Ordentlich — alles hat seinen Platz', 'Wie es kommt', 'Hauptsache schnell arbeiten', 'Aufräumen nur nach dem Schließen'], richtig: 0 }
+  ],
+  // Woche 2
+  [
+    { frage: 'Welche Temperatur sollte das Wasser für eine Haarwäsche haben?', optionen: ['Kalt (ca. 15°C)', 'Angenehm warm (ca. 38°C)', 'So heiß wie möglich', 'Lauwarm (ca. 25°C)'], richtig: 1 },
+    { frage: 'Was sagst du, wenn du bei der Kopfmassage zu viel Druck ausübst?', optionen: ['Nichts — weiter arbeiten', 'Ich bitte die Kundin mir Feedback zu geben', 'Aufhören', 'Schneller machen'], richtig: 1 },
+    { frage: 'Wofür steht H₂O₂ beim Haarefärben?', optionen: ['Haarspülung', 'Wasserstoffperoxid (Oxidationsmittel)', 'Shampoo', 'Haarlack'], richtig: 1 }
+  ],
+  // Woche 3
+  [
+    { frage: 'Was ist der Unterschied zwischen Tönung und Farbe?', optionen: ['Tönung enthält kein Peroxid und ist auswaschbar', 'Tönung ist dauerhafter', 'Es gibt keinen Unterschied', 'Farbe ist natürlicher'], richtig: 0 },
+    { frage: 'Wie schützt du deine Hände beim Auftragen von Haarfarbe?', optionen: ['Gar nicht', 'Mit Einweghandschuhen', 'Mit Creme', 'Mit Alufolie'], richtig: 1 },
+    { frage: 'Was bedeutet "Einwirkzeit" bei der Haarfarbe?', optionen: ['Die Zeit zum Mischen', 'Die Zeit bis die Farbe aus dem Haar genommen wird', 'Die Zeit, in der die Farbe im Haar verbleibt und wirkt', 'Die Zeit für das Auftragen'], richtig: 2 }
+  ],
+  // Woche 4
+  [
+    { frage: 'Was machst du, wenn eine Kundin mit dem Ergebnis nicht zufrieden ist?', optionen: ['Mir ist das egal', 'Ich entschuldige mich und frage nach, was sie stört — dann rufe ich die Meisterin', 'Ich diskutiere mit ihr', 'Ich sage das nächste Mal wird es besser'], richtig: 1 },
+    { frage: 'Wie oft solltest du im Salon Haare von Boden aufkehren?', optionen: ['Einmal am Tag', 'Nach jeder Kundin', 'Nur wenn jemand schaut', 'Einmal pro Woche'], richtig: 1 },
+    { frage: 'Was ist beim Mischen von Haarfarbe wichtig?', optionen: ['Immer gleich viel Farbe und Peroxid', 'Das richtige Mischverhältnis genau einhalten', 'Je mehr Peroxid desto heller', 'Am Gefühl orientieren'], richtig: 1 }
+  ],
+  // Woche 5
+  [
+    { frage: 'Was ist ein Technikkopf?', optionen: ['Ein Übungskopf für Frisurtechniken', 'Ein besonderer Kundentyp', 'Ein Werkzeug', 'Eine Maschine'], richtig: 0 },
+    { frage: 'Warum ist die Einwirkzeit bei Farbe wichtig einzuhalten?', optionen: ['Wegen der Kosten', 'Zu kurz = Farbe nimmt nicht richtig an, zu lang = Haarschaden', 'Wegen des Geruchs', 'Ist nicht so wichtig'], richtig: 1 },
+    { frage: 'Was bedeutet "Naturfarbtiefe" (NFS) beim Haarefärben?', optionen: ['Die natürliche Haarfarbe des Kunden', 'Die Farbtiefe der Naturhaarfarbe als Ausgangsbasis', 'Die Intensität der Kunstfarbe', 'Ein Produktname'], richtig: 1 }
+  ],
+  // Woche 6
+  [
+    { frage: 'Wie erkennst du ob Haare gefärbt oder naturblond sind?', optionen: ['Am Glanz', 'An der Länge', 'Gefärbte Haare haben oft einen Ansatz und die Längen sind gleichmäßiger', 'Das ist nicht erkennbar'], richtig: 2 },
+    { frage: 'Was sind Strähnen?', optionen: ['Einzelne Haarpartien, die aufgehellt oder gefärbt werden', 'Ein anderes Wort für Haarschnitt', 'Lange Haare', 'Eine Frisurform'], richtig: 0 },
+    { frage: 'Welches Werkzeug wird am häufigsten für Strähnen verwendet?', optionen: ['Schere', 'Folie oder Haube', 'Bürste', 'Kamm'], richtig: 1 }
+  ],
+  // Woche 7
+  [
+    { frage: 'Was ist ein Balayage?', optionen: ['Ein Haarschnitt', 'Eine Freihändige Aufhelltechnik für einen natürlichen Effekt', 'Ein Shampoo', 'Eine Kopfmassage-Technik'], richtig: 1 },
+    { frage: 'Warum wäscht man nach dem Färben das Haar aus?', optionen: ['Damit es duftet', 'Um überschüssige Farbe und Peroxid zu entfernen', 'Das ist nicht nötig', 'Wegen der Hitze'], richtig: 1 },
+    { frage: 'Was machst du, wenn du beim Auftragen von Farbe unsicher bist?', optionen: ['Einfach machen', 'Aufhören und weinen', 'Mirjam fragen bevor ich weitermache', 'Raten'], richtig: 2 }
+  ],
+  // Woche 8
+  [
+    { frage: 'Wie lang dauert eine typische Färbung ungefähr?', optionen: ['5 Minuten', '2–3 Stunden insgesamt (Beratung + Auftragen + Einwirken + Waschen)', 'Exakt 30 Minuten', 'Den ganzen Tag'], richtig: 1 },
+    { frage: 'Was bedeutet "Tönung auffrischen"?', optionen: ['Neue Tönung auf bereits getönte Haare auftragen', 'Tönung aus dem Haar waschen', 'Eine neue Farbe wählen', 'Das Haar schneiden'], richtig: 0 },
+    { frage: 'Was ist bei der Beratung der wichtigste Schritt?', optionen: ['Dem Kunden sagen was er will', 'Zuhören und die Wünsche des Kunden verstehen', 'Schnell zum Ergebnis kommen', 'Den teuersten Service empfehlen'], richtig: 1 }
+  ],
+  // Woche 9
+  [
+    { frage: 'Was ist ein Haardiagnose-Gespräch?', optionen: ['Ein Test für Allergien', 'Ein Gespräch bei dem man den Haarzustand, Wunsch und Pflegegewohnheiten bespricht', 'Eine Preisverhandlung', 'Ein Gespräch über Wetter'], richtig: 1 },
+    { frage: 'Wie pflegst du Schneidescheren?', optionen: ['Nie — sie sind robust', 'Regelmäßig ölen und schärfen lassen', 'Mit Wasser reinigen', 'In Farbe einlegen'], richtig: 1 },
+    { frage: 'Was bedeutet "Veredeln" beim Haare schneiden?', optionen: ['Das letzte Finish und Ausdünnen', 'Das Grob-Schneiden', 'Das Waschen', 'Das Eindrehen'], richtig: 0 }
+  ],
+  // Woche 10
+  [
+    { frage: 'Welche Schutzmaßnahme ist beim Bleichen besonders wichtig?', optionen: ['Schutzbrille', 'Handschuhe und Schutzumhang', 'Maske', 'Ohrstöpsel'], richtig: 1 },
+    { frage: 'Warum wird nach dem Bleichen oft eine Tönungsbehandlung gemacht?', optionen: ['Für den Geruch', 'Um Gelbstiche zu neutralisieren und die Farbe zu verfeinern', 'Zum Sparen', 'Es sieht schöner aus'], richtig: 1 },
+    { frage: 'Was ist ein "Silbershampoo"?', optionen: ['Ein teures Shampoo', 'Ein lila/blau pigmentiertes Shampoo gegen Gelbstiche bei blonden Haaren', 'Ein Shampoo mit Silber-Inhaltsstoffen', 'Ein Shampoo für Ältere'], richtig: 1 }
+  ],
+  // Woche 11
+  [
+    { frage: 'Was machst du wenn du krank bist und nicht zur Arbeit kommen kannst?', optionen: ['Einfach nicht erscheinen', 'Mirjam so früh wie möglich — am Abend davor oder morgens früh — anrufen', 'Eine SMS schicken um 9 Uhr', 'Gar nichts, Mirjam merkt es schon'], richtig: 1 },
+    { frage: 'Was ist "Farbabzug"?', optionen: ['Das Auftragen von Farbe', 'Das Entfernen von Haarfarbe aus dem Haar', 'Ein Buchführungsbegriff', 'Die Rechnung nach dem Färben'], richtig: 1 },
+    { frage: 'Welche Farbe entsteht, wenn man Rot + Gelb + Blau mischt?', optionen: ['Grün', 'Lila', 'Braun/Schwarz', 'Orange'], richtig: 2 }
+  ],
+  // Woche 12
+  [
+    { frage: 'Was war für dich in den letzten 3 Monaten am wichtigsten zu lernen?', optionen: ['Das Antwort ist offen — wähle aus, was für dich stimmt', 'Kundenkontakt und Freundlichkeit', 'Techniken wie Färben und Strähnen', 'Beide Bereiche gleich wichtig'], richtig: 3 },
+    { frage: 'Was bedeutet "Probezeit" rechtlich?', optionen: ['Man kann kündigen wann man will', 'In den ersten 3 Monaten kann der Lehrvertrag von beiden Seiten jederzeit aufgelöst werden', 'Man muss 1 Jahr bleiben', 'Es gibt keine rechtliche Bedeutung'], richtig: 1 },
+    { frage: 'Was ist für dich das Schönste an der Arbeit im Friseursalon?', optionen: ['Die Antwort ist persönlich — wähle deine', 'Kunden glücklich machen', 'Kreativ arbeiten', 'Im Team sein'], richtig: 0 }
+  ]
+];
+
+async function renderWochenquizUebersicht() {
+  var div = document.getElementById('pzd-inhalt');
+  div.innerHTML = '<div class="laden">Wird geladen…</div>';
+
+  // Ergebnisse + individuelle Fragen laden
+  var [ergRes, fragenRes] = await Promise.all([
+    sb.from('probezeit_quiz').select('*').eq('probezeit_id', AKT_PROBEZEIT.id).order('woche').catch(function(){ return { data: [] }; }),
+    sb.from('probezeit_quiz_fragen').select('woche').eq('probezeit_id', AKT_PROBEZEIT.id).catch(function(){ return { data: [] }; })
+  ]);
+  var ergMap = {};
+  (ergRes.data || []).forEach(function(e){ ergMap[e.woche] = e; });
+  var individuelleWochen = {};
+  (fragenRes.data || []).forEach(function(f){ individuelleWochen[f.woche] = true; });
+
+  var html = '<div class="card-amber" style="font-size:13px;line-height:1.6">' +
+    '<strong>🎯 Wöchentlicher Wissensquiz</strong><br>' +
+    'Jeden ' + (AKT_PROBEZEIT.wochentag||'Feedbacktag') + ' macht der Lehrling 3 Fragen. ' +
+    'Mit ✏️ kannst du die Fragen für jede Woche individuell anpassen.' +
+  '</div>';
+
+  html += '<div class="section-head">Wochenübersicht</div>';
+
+  for (var w = 1; w <= 12; w++) {
+    var erg = ergMap[w];
+    var monat = Math.ceil(w/4);
+    var status = erg ? (erg.richtig + '/' + erg.gesamt + ' richtig') : 'Offen';
+    var statusFarbe = !erg ? '#9A9A90' : erg.richtig >= 2 ? '#5B7B6F' : '#C44030';
+    var istIndividuell = individuelleWochen[w];
+    html += '<div class="card" style="padding:12px 14px;margin-bottom:8px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center">' +
+        '<div onclick="oeffneWochenquiz(' + w + ',' + (erg ? 'true' : 'false') + ')" style="flex:1;cursor:pointer">' +
+          '<div style="font-weight:600;font-size:14px;color:#1C1C1A">Woche ' + w +
+            (istIndividuell ? ' <span style="font-size:10px;background:#EAF0EE;color:#5B7B6F;padding:2px 6px;border-radius:10px;vertical-align:middle">Individuell</span>' : '') +
+          '</div>' +
+          '<div style="font-size:12px;color:#9A9A90">Monat ' + monat + '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div style="font-size:13px;font-weight:700;color:' + statusFarbe + '">' + status + '</div>' +
+          '<button class="btn-sm-ghost nur-meisterin" onclick="oeffneQuizEditor(' + w + ')" style="padding:5px 10px;font-size:11px">✏️</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  div.innerHTML = html;
+}
+
+// Lädt individuelle Fragen aus Supabase, fällt auf Standard zurück
+async function ladeFragenFuerWoche(woche) {
+  try {
+    var { data } = await sb.from('probezeit_quiz_fragen')
+      .select('fragen').eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle();
+    if (data && data.fragen && data.fragen.length) return data.fragen;
+  } catch(e) {}
+  return WOCHENQUIZ_FRAGEN[woche - 1] || [];
+}
+
+async function oeffneWochenquiz(woche, bereitsGemacht) {
+  var div = document.getElementById('pzd-inhalt');
+  div.innerHTML = '<div class="laden">Wird geladen…</div>';
+  var fragen = await ladeFragenFuerWoche(woche);
+  var istLehrling = document.body.classList.contains('lehrling-modus');
+
+  // Wenn Meisterin und bereits gemacht → Auswertung anzeigen
+  if (!istLehrling && bereitsGemacht) {
+    var { data: erg } = await sb.from('probezeit_quiz').select('*')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle().catch(function(){ return { data: null }; });
+    if (erg) {
+      var pct = Math.round((erg.richtig/erg.gesamt)*100);
+      var html = '<button class="btn-sec" style="margin-bottom:12px" onclick="renderWochenquizUebersicht()">← Zurück</button>' +
+        '<div style="text-align:center;margin-bottom:16px">' +
+          '<div class="ergebnis-kreis" style="border-color:' + (pct>=66?'#5B7B6F':'#C44030') + ';color:' + (pct>=66?'#5B7B6F':'#C44030') + '">' + erg.richtig + '/' + erg.gesamt + '</div>' +
+          '<div style="font-size:14px;font-weight:600;color:#1C1C1A">Woche ' + woche + ' — Ergebnis</div>' +
+          '<div style="font-size:13px;color:#7A7A70">' + (pct>=66 ? '✓ Gut gemacht!' : 'Noch Übung nötig') + '</div>' +
+        '</div>';
+      if (erg.antworten) {
+        fragen.forEach(function(fq, i) {
+          var gewaehlt = parseInt(erg.antworten[i]);
+          var ok = gewaehlt === fq.richtig;
+          html += '<div class="card" style="padding:14px;border-left:3px solid ' + (ok?'#5B7B6F':'#C44030') + '">' +
+            '<div style="font-size:13px;font-weight:600;margin-bottom:8px">' + fq.frage + '</div>' +
+            fq.optionen.map(function(o, oi) {
+              var col = oi === fq.richtig ? '#5B7B6F' : (oi === gewaehlt && !ok ? '#C44030' : '#9A9A90');
+              return '<div style="font-size:13px;color:' + col + ';padding:4px 0">' + (oi === fq.richtig ? '✓ ' : (oi === gewaehlt && !ok ? '✗ ' : '  ')) + o + '</div>';
+            }).join('') +
+          '</div>';
+        });
+      }
+      html += '<div style="display:flex;gap:8px;margin-top:10px">' +
+        '<button class="btn-sm-ghost" onclick="oeffneQuizEditor(' + woche + ')">✏️ Fragen anpassen</button>' +
+        '<button class="btn-sm-danger" onclick="loescheQuizErgebnis(' + woche + ')">Ergebnis zurücksetzen</button>' +
+        '</div>';
+      div.innerHTML = html;
+      return;
+    }
+  }
+
+  // Quiz rendern (Lehrling oder Meisterin Vorschau)
+  var html = '<button class="btn-sec" style="margin-bottom:12px" onclick="renderWochenquizUebersicht()">← Zurück</button>';
+  html += '<div class="card-amber" style="margin-bottom:12px;font-size:13px"><strong>Quiz Woche ' + woche + '</strong> — ' + fragen.length + ' Fragen</div>';
+
+  fragen.forEach(function(fq, i) {
+    html += '<div class="card" style="padding:14px;margin-bottom:10px">' +
+      '<div class="quiz-frage">' +
+        '<div style="font-size:13px;color:#9A9A90;margin-bottom:4px">Frage ' + (i+1) + '</div>' +
+        '<div style="font-size:14px;font-weight:600;margin-bottom:10px">' + fq.frage + '</div>' +
+        fq.optionen.map(function(o, oi) {
+          return '<label class="quiz-option" id="qo-' + i + '-' + oi + '">' +
+            '<input type="radio" name="quiz-' + i + '" value="' + oi + '" onchange="quizWahl(' + i + ',' + oi + ')">' +
+            '<span>' + o + '</span>' +
+          '</label>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  });
+
+  html += '<div id="quiz-ergebnis-box" style="display:none"></div>';
+  html += '<button class="btn-primary" id="quiz-abgabe-btn" onclick="quizAbgeben(' + woche + ')" style="display:none">Quiz abgeben →</button>';
+  if (!istLehrling) {
+    html += '<button class="btn-sm-ghost nur-meisterin" onclick="oeffneQuizEditor(' + woche + ')" style="margin-top:8px;width:100%">✏️ Fragen für Woche ' + woche + ' anpassen</button>';
+  }
+
+  div.innerHTML = html;
+  window.QUIZ_ANTWORTEN_AKT = {};
+}
+
+function quizWahl(frageIdx, optionIdx) {
+  if (!window.QUIZ_ANTWORTEN_AKT) window.QUIZ_ANTWORTEN_AKT = {};
+  window.QUIZ_ANTWORTEN_AKT[frageIdx] = optionIdx;
+  var fragen = WOCHENQUIZ_FRAGEN[0]; // wird nicht gebraucht
+  // Prüfen ob alle beantwortet
+  var div = document.getElementById('pzd-inhalt');
+  var total = div.querySelectorAll('[type=radio]').length / 4; // immer 4 Optionen... nein, dynamisch
+  // Anzahl Fragen der aktuellen Woche
+  var anzahl = document.querySelectorAll('#pzd-inhalt [name^="quiz-"]').length / 4;
+  // Einfacher: btn zeigen wenn alle Radio-Gruppen gewählt
+  var alle = true;
+  var radios = document.querySelectorAll('#pzd-inhalt input[type=radio]');
+  var gruppen = {};
+  radios.forEach(function(r){ gruppen[r.name] = true; });
+  var anzahlGruppen = Object.keys(gruppen).length;
+  for (var g = 0; g < anzahlGruppen; g++) {
+    if (typeof window.QUIZ_ANTWORTEN_AKT[g] === 'undefined') { alle = false; break; }
+  }
+  var btn = document.getElementById('quiz-abgabe-btn');
+  if (btn) btn.style.display = alle ? 'block' : 'none';
+}
+
+async function quizAbgeben(woche) {
+  var fragen = await ladeFragenFuerWoche(woche);
+  var antworten = window.QUIZ_ANTWORTEN_AKT || {};
+  var richtig = 0;
+  fragen.forEach(function(fq, i) {
+    if (antworten[i] === fq.richtig) richtig++;
+  });
+  var gesamt = fragen.length;
+  var pct = Math.round((richtig/gesamt)*100);
+
+  // Optionen einfärben
+  fragen.forEach(function(fq, i) {
+    fq.optionen.forEach(function(o, oi) {
+      var el = document.getElementById('qo-' + i + '-' + oi);
+      if (!el) return;
+      if (oi === fq.richtig) { el.classList.add('richtig'); }
+      else if (antworten[i] === oi) { el.classList.add('falsch'); }
+      var inp = el.querySelector('input');
+      if (inp) inp.disabled = true;
+    });
+  });
+
+  // Ergebnisbox
+  var ergBox = document.getElementById('quiz-ergebnis-box');
+  if (ergBox) {
+    ergBox.style.display = 'block';
+    ergBox.innerHTML = '<div class="card" style="margin-top:12px;text-align:center;padding:16px">' +
+      '<div class="ergebnis-kreis" style="border-color:' + (pct>=66?'#5B7B6F':'#C44030') + ';color:' + (pct>=66?'#5B7B6F':'#C44030') + '">' + richtig + '/' + gesamt + '</div>' +
+      '<div style="font-size:15px;font-weight:700;color:#1C1C1A">' + (pct>=66 ? '🎉 Super gemacht!' : '📚 Weiter üben!') + '</div>' +
+      '<div style="font-size:13px;color:#7A7A70;margin-top:4px">' + richtig + ' von ' + gesamt + ' richtig</div>' +
+    '</div>';
+  }
+  var btn = document.getElementById('quiz-abgabe-btn');
+  if (btn) btn.style.display = 'none';
+
+  // Speichern
+  try {
+    var payload = { probezeit_id: AKT_PROBEZEIT.id, woche: woche, richtig: richtig, gesamt: gesamt, antworten: antworten };
+    var { data: bestehend } = await sb.from('probezeit_quiz').select('id')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle();
+    if (bestehend && bestehend.id) {
+      await sb.from('probezeit_quiz').update(payload).eq('id', bestehend.id);
+    } else {
+      await sb.from('probezeit_quiz').insert(payload);
+    }
+  } catch(e) { console.log('Quiz-Speicherfehler:', e); }
+}
+
+async function loescheQuizErgebnis(woche) {
+  if (!confirm('Quiz Ergebnis für Woche ' + woche + ' wirklich löschen?')) return;
+  try {
+    await sb.from('probezeit_quiz').delete().eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche);
+  } catch(e) {}
+  renderWochenquizUebersicht();
+}
+
+// ── QUIZ-EDITOR PRO LEHRLING & WOCHE ─────────────────────────────────────────
+async function oeffneQuizEditor(woche) {
+  var div = document.getElementById('pzd-inhalt');
+  div.innerHTML = '<div class="laden">Wird geladen…</div>';
+
+  // Aktuelle Fragen laden (individuell oder Standard)
+  var fragen = await ladeFragenFuerWoche(woche);
+  // Tiefe Kopie damit wir sicher editieren
+  var editFragen = JSON.parse(JSON.stringify(fragen));
+
+  // Sicherstellen: immer 3 Fragen, mindestens
+  while (editFragen.length < 1) {
+    editFragen.push({ frage: '', optionen: ['', '', '', ''], richtig: 0 });
+  }
+
+  window.QUIZ_EDIT_FRAGEN = editFragen;
+  window.QUIZ_EDIT_WOCHE = woche;
+  renderQuizEditorUI();
+}
+
+function renderQuizEditorUI() {
+  var div = document.getElementById('pzd-inhalt');
+  var fragen = window.QUIZ_EDIT_FRAGEN;
+  var woche = window.QUIZ_EDIT_WOCHE;
+  var monat = Math.ceil(woche / 4);
+
+  var html = '<button class="btn-sec" style="margin-bottom:12px" onclick="renderWochenquizUebersicht()">← Zurück zur Übersicht</button>';
+  html += '<div class="card-green" style="font-size:13px;line-height:1.6">' +
+    '<strong>✏️ Quiz Woche ' + woche + ' — individuell anpassen</strong><br>' +
+    'Hier passt du die Fragen für diesen Lehrling an. Deine Änderungen gelten nur für <strong>' + AKT_PROBEZEIT.name + '</strong>. ' +
+    'Andere Probezeiten bleiben unberührt.' +
+  '</div>';
+
+  fragen.forEach(function(fq, i) {
+    html += '<div class="card" style="padding:14px;margin-bottom:10px" id="qe-card-' + i + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+        '<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70">Frage ' + (i+1) + '</div>' +
+        (fragen.length > 1 ? '<button class="btn-sm-danger" onclick="quizEditorFrageLoeschen(' + i + ')" style="font-size:11px;padding:4px 8px">− entfernen</button>' : '') +
+      '</div>' +
+
+      '<div class="label">Fragetext</div>' +
+      '<textarea rows="2" id="qe-frage-' + i + '" style="margin-bottom:10px" placeholder="Deine Frage für ' + AKT_PROBEZEIT.name + '…">' + (fq.frage||'') + '</textarea>' +
+
+      '<div class="label">Antwortoptionen (A–D)</div>' +
+      fq.optionen.map(function(o, oi) {
+        var istRichtig = oi === fq.richtig;
+        return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+          '<div style="width:22px;height:22px;border-radius:50%;border:2px solid ' + (istRichtig?'#5B7B6F':'#C8C4BC') + ';background:' + (istRichtig?'#5B7B6F':'#fff') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:' + (istRichtig?'#fff':'#C8C4BC') + ';flex-shrink:0" ' +
+            'onclick="quizEditorSetRichtig(' + i + ',' + oi + ')" title="Als richtige Antwort markieren">' + (istRichtig?'✓':'') + '</div>' +
+          '<input type="text" id="qe-opt-' + i + '-' + oi + '" value="' + (o||'').replace(/"/g,'&quot;') + '" placeholder="Option ' + String.fromCharCode(65+oi) + '" style="margin-bottom:0">' +
+        '</div>';
+      }).join('') +
+
+      '<div style="font-size:11px;color:#5B7B6F;margin-top:4px">● = richtige Antwort — tippe darauf um sie zu ändern</div>' +
+    '</div>';
+  });
+
+  html += '<button class="btn-sec" onclick="quizEditorFrageHinzufuegen()" style="margin-bottom:10px">+ Weitere Frage hinzufügen</button>';
+
+  html += '<div style="display:flex;gap:8px;margin-top:4px">' +
+    '<button class="btn-primary" onclick="speichereQuizEditor()" style="flex:1">✓ Fragen speichern</button>' +
+    '<button class="btn-sm-danger" onclick="quizEditorAufStandardZurueck()" style="padding:10px 14px;font-size:13px;border-radius:6px" title="Meine Änderungen löschen und Standard-Fragen verwenden">↩ Standard</button>' +
+  '</div>';
+  html += '<div id="qe-ok" class="ok-box" style="margin-top:10px"></div>';
+  html += '<div id="qe-fehler" class="fehler-box" style="margin-top:10px"></div>';
+
+  div.innerHTML = html;
+}
+
+function quizEditorSetRichtig(frageIdx, optionIdx) {
+  window.QUIZ_EDIT_FRAGEN[frageIdx].richtig = optionIdx;
+  renderQuizEditorUI();
+}
+
+function quizEditorFrageLoeschen(idx) {
+  window.QUIZ_EDIT_FRAGEN.splice(idx, 1);
+  renderQuizEditorUI();
+}
+
+function quizEditorFrageHinzufuegen() {
+  // Aktuelle Eingaben zuerst sichern
+  quizEditorSammelEingaben();
+  window.QUIZ_EDIT_FRAGEN.push({ frage: '', optionen: ['', '', '', ''], richtig: 0 });
+  renderQuizEditorUI();
+  // Zum neuen Element scrollen
+  setTimeout(function(){
+    var cards = document.querySelectorAll('#pzd-inhalt [id^="qe-card-"]');
+    var last = cards[cards.length - 1];
+    if (last) last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function quizEditorSammelEingaben() {
+  var fragen = window.QUIZ_EDIT_FRAGEN;
+  fragen.forEach(function(fq, i) {
+    var frageEl = document.getElementById('qe-frage-' + i);
+    if (frageEl) fq.frage = frageEl.value;
+    for (var oi = 0; oi < 4; oi++) {
+      var optEl = document.getElementById('qe-opt-' + i + '-' + oi);
+      if (optEl) fq.optionen[oi] = optEl.value;
+    }
+  });
+}
+
+async function speichereQuizEditor() {
+  quizEditorSammelEingaben();
+  var fragen = window.QUIZ_EDIT_FRAGEN;
+  var woche = window.QUIZ_EDIT_WOCHE;
+
+  // Validierung
+  var fehlerEl = document.getElementById('qe-fehler');
+  fehlerEl.style.display = 'none';
+  for (var i = 0; i < fragen.length; i++) {
+    var fq = fragen[i];
+    if (!fq.frage.trim()) {
+      fehlerEl.textContent = 'Frage ' + (i+1) + ' hat noch keinen Text.';
+      fehlerEl.style.display = 'block'; return;
+    }
+    var leereOptionen = fq.optionen.filter(function(o){ return !o.trim(); }).length;
+    if (leereOptionen > 1) {
+      fehlerEl.textContent = 'Frage ' + (i+1) + ': Bitte mindestens 2 Antwortoptionen ausfüllen.';
+      fehlerEl.style.display = 'block'; return;
+    }
+    // Leere Optionen filtern (falls weniger als 4 gewünscht)
+    fq.optionen = fq.optionen.filter(function(o){ return o.trim(); });
+    if (fq.richtig >= fq.optionen.length) fq.richtig = 0;
+  }
+
+  try {
+    var payload = { probezeit_id: AKT_PROBEZEIT.id, woche: woche, fragen: fragen };
+    var { data: bestehend } = await sb.from('probezeit_quiz_fragen').select('id')
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle();
+    if (bestehend && bestehend.id) {
+      await sb.from('probezeit_quiz_fragen').update(payload).eq('id', bestehend.id);
+    } else {
+      await sb.from('probezeit_quiz_fragen').insert(payload);
+    }
+    var okEl = document.getElementById('qe-ok');
+    if (okEl) { okEl.textContent = '✓ Gespeichert! Die Fragen gelten ab sofort für ' + AKT_PROBEZEIT.name + '.'; okEl.style.display = 'block'; }
+    setTimeout(function(){ renderWochenquizUebersicht(); }, 1800);
+  } catch(e) {
+    var fehlerEl = document.getElementById('qe-fehler');
+    if (fehlerEl) { fehlerEl.textContent = 'Fehler beim Speichern: ' + (e.message||e); fehlerEl.style.display = 'block'; }
+  }
+}
+
+async function quizEditorAufStandardZurueck() {
+  if (!confirm('Individuelle Fragen für Woche ' + window.QUIZ_EDIT_WOCHE + ' löschen und wieder Standard-Fragen verwenden?')) return;
+  try {
+    await sb.from('probezeit_quiz_fragen').delete()
+      .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', window.QUIZ_EDIT_WOCHE);
+  } catch(e) {}
+  renderWochenquizUebersicht();
+}
+
+var FB_STATUS = {};
+function setFbStatus(monat, val, btn) {
+  FB_STATUS[monat] = val;
+  ['fb-weiter-','fb-gep-','fb-abbruch-'].forEach(function(p){
+    var b = document.getElementById(p + monat);
+    if (b) b.classList.remove('sel');
+  });
+  if (btn) btn.classList.add('sel');
+}
+
+function renderWocheForm(woche, monat, data) {
+  var felder = ['fachliches','teamverhalten','kundenkontakt','puenktlichkeit','lernbereitschaft'];
+  var labels = ['Fachliches Können','Teamverhalten','Kundenkontakt','Pünktlichkeit','Lernbereitschaft'];
+  var html = '<div class="woche-header">Woche ' + woche + ' — Monat ' + monat + '</div>';
+  html += '<div class="card" style="padding:14px">';
+  felder.forEach(function(f, i) {
+    var val = data ? (data[f]||0) : 0;
+    html += '<div style="margin-bottom:12px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">' +
+        '<span style="font-size:13px">' + labels[i] + '</span>' +
+        '<span style="font-size:12px;color:#9A9A90">1–5</span>' +
+      '</div>' +
+      '<input type="range" min="0" max="5" value="' + val + '" id="w' + woche + '-' + f + '" style="accent-color:#5B7B6F">' +
+    '</div>';
+  });
+  html += '<div class="label" style="margin-top:4px">Notiz</div>' +
+    '<textarea rows="2" id="w' + woche + '-notiz" placeholder="Was ist diese Woche aufgefallen?">' + (data ? data.notiz||'' : '') + '</textarea>' +
+    '<button class="btn-sec" style="margin-top:8px" onclick="speichereWoche(' + woche + ',' + monat + ')">Woche ' + woche + ' speichern</button>' +
+  '</div>';
+  return html;
+}
+
+async function speichereWoche(woche, monat) {
+  if (!AKT_PROBEZEIT) return;
+  var felder = ['fachliches','teamverhalten','kundenkontakt','puenktlichkeit','lernbereitschaft'];
+  var payload = { probezeit_id: AKT_PROBEZEIT.id, woche: woche, monat: monat };
+  felder.forEach(function(f){
+    var el = document.getElementById('w' + woche + '-' + f);
+    payload[f] = el ? parseInt(el.value)||0 : 0;
+  });
+  var notizEl = document.getElementById('w' + woche + '-notiz');
+  payload.notiz = notizEl ? notizEl.value : '';
+
+  var { data: bestehend } = await sb.from('probezeit_wochen').select('id')
+    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).maybeSingle().catch(function(){ return { data: null }; });
+
+  var error;
+  if (bestehend && bestehend.id) {
+    var res = await sb.from('probezeit_wochen').update(payload).eq('id', bestehend.id);
+    error = res.error;
+  } else {
+    var res = await sb.from('probezeit_wochen').insert(payload);
+    error = res.error;
+  }
+  if (!error) {
+    var btn = document.querySelector('[onclick="speichereWoche(' + woche + ',' + monat + ')"]');
+    if (btn) { btn.textContent = '✓ Gespeichert'; btn.style.color = '#5B7B6F'; setTimeout(function(){ btn.textContent = 'Woche ' + woche + ' speichern'; btn.style.color = ''; }, 2000); }
+  }
+}
+
+async function speichereFeedback(monat) {
+  if (!AKT_PROBEZEIT) return;
+  var notiz = (document.getElementById('fb-m' + monat)||{}).value || '';
+  var status = FB_STATUS[monat] || null;
+  var payload = { probezeit_id: AKT_PROBEZEIT.id, monat: monat, notiz: notiz, status: status };
+  var { data: bestehend } = await sb.from('probezeit_monats_feedback').select('id')
+    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).maybeSingle().catch(function(){ return { data: null }; });
+  if (bestehend && bestehend.id) {
+    await sb.from('probezeit_monats_feedback').update(payload).eq('id', bestehend.id);
+  } else {
+    await sb.from('probezeit_monats_feedback').insert(payload);
+  }
+}
+
+async function speichereAbschluss() {
+  if (!AKT_PROBEZEIT) return;
+  var notizen = document.getElementById('pzd-abschluss-notizen').value;
+  var status = PZ_ENTSCHEIDUNG === 'lehrvertrag' ? 'bestanden' : PZ_ENTSCHEIDUNG === 'abbruch' ? 'abgebrochen' : 'laufend';
+  await sb.from('probezeiten').update({
+    status: status, entscheidung: PZ_ENTSCHEIDUNG, notizen_abschluss: notizen
+  }).eq('id', AKT_PROBEZEIT.id);
+  AKT_PROBEZEIT.status = status;
+  zeige('probezeiten');
+}
+
+// ── NEUE PROBEZEIT SPEICHERN ──────────────────────────────────────────────────
+async function speichereProbezeit() {
+  var fehlerEl = document.getElementById('np-fehler');
+  fehlerEl.style.display = 'none';
+  if (!MEISTERIN_OK) { fehlerEl.textContent = 'Bitte zuerst einloggen.'; fehlerEl.style.display = 'block'; return; }
+  var name = document.getElementById('np-name').value.trim();
+  var beginn = document.getElementById('np-beginn').value;
+  var wochentag = document.getElementById('np-wochentag').value;
+  if (!name || !beginn) { fehlerEl.textContent = 'Bitte Name und Beginn eingeben.'; fehlerEl.style.display = 'block'; return; }
+
+  var beginDate = new Date(beginn);
+  var endeDate = new Date(beginDate);
+  endeDate.setMonth(endeDate.getMonth() + 3);
+  var ende = endeDate.toISOString().slice(0,10);
+
+  var { error } = await sb.from('probezeiten').insert({ name: name, beginn: beginn, ende: ende, wochentag: wochentag, status: 'laufend' });
+  if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
+  document.getElementById('np-name').value = '';
+  document.getElementById('np-beginn').value = '';
+  zeige('probezeiten');
+}
+
+// ── ARCHIV ────────────────────────────────────────────────────────────────────
+async function ladeArchiv() {
+  var liste = document.getElementById('archiv-liste');
+  liste.innerHTML = '<div class="laden">Wird geladen…</div>';
+  if (!MEISTERIN_OK) { liste.innerHTML = '<div class="laden">Bitte zuerst einloggen.</div>'; return; }
+
+  var { data, error } = await sb.from('schnuppertage').select('*').order('datum', { ascending: false });
+  if (error || !data || !data.length) { liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Schnuppertage gespeichert.</div>'; return; }
+
+  var html = '';
+  data.forEach(function(s) {
+    var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
+    var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
+    var note = getNoteText(s.punkte_gesamt||0);
+    html += '<div class="card" style="margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center">' +
+        '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + s.name + '</div>' +
+        '<div style="font-size:12px;font-weight:700;color:' + entFarbe + '">' + entText + '</div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:#9A9A90;margin-top:2px">' + formatDatum(s.datum) + '</div>' +
+      '<div style="display:flex;gap:12px;margin-top:8px">' +
+        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + (s.punkte_gesamt||0) + ' Punkte</span>' +
+        '<span style="font-size:13px;color:#7A7A70">' + note + '</span>' +
+      '</div>' +
+    '</div>';
+  });
+  liste.innerHTML = html;
+}
+
+// ── HILFSFUNKTIONEN ───────────────────────────────────────────────────────────
+function getNoteText(punkte) {
+  if (punkte >= 29) return '1 — Sehr gut';
+  if (punkte >= 24) return '2 — Gut';
+  if (punkte >= 18) return '3 — Befriedigend';
+  if (punkte >= 12) return '4 — Verbesserungswürdig';
+  return '5 — Ungenügend';
+}
+
+function formatDatum(dateStr) {
+  if (!dateStr) return '—';
+  var d = new Date(dateStr);
+  return d.toLocaleDateString('de-AT', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+
+// ── LEHRLINGS-MODUS ───────────────────────────────────────────────────────────
+var LEHRLING_MODUS = false;
+
+function aktiviereLehrlingsModus() {
+  LEHRLING_MODUS = true;
+  document.body.classList.add('lehrling-modus');
+  zeige('eignungstest');
+  testTab('wissen', document.querySelectorAll('.tab-btn')[0]);
+  var sub = document.getElementById('test-sub');
+  if (sub) sub.textContent = 'Schreib einfach was du weißt — viel Erfolg!';
+  var weiterBtn = document.querySelector('#tab-wissen .btn-primary');
+  if (weiterBtn) weiterBtn.textContent = 'Weiter → Persönlichkeitsfragen';
+}
+
+function kopiereLink() {
+  var url = document.getElementById('lehrling-url').textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    var msg = document.getElementById('kopiert-msg');
+    msg.style.display = 'block';
+    setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+  }).catch(function() {
+    var el = document.createElement('textarea');
+    el.value = url;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    var msg = document.getElementById('kopiert-msg');
+    msg.style.display = 'block';
+    setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  var baseUrl = window.location.href.split('?')[0];
+  var lehrlingUrl = baseUrl + '?modus=lehrling';
+  var urlEl = document.getElementById('lehrling-url');
+  if (urlEl) urlEl.textContent = lehrlingUrl;
+
+  var params = new URLSearchParams(window.location.search);
+
+  // Lehrlings-Quiz-Modus
+  if (params.get('modus') === 'lehrling-quiz') {
+    var pzId = params.get('pz');
+    var woche = parseInt(params.get('w')) || 1;
+    // Minimal-UI für Quiz
+    document.body.innerHTML = '<div class="wrap" style="padding-top:2rem">' +
+      '<div class="tag">A Great Hair Day · Wien</div>' +
+      '<h1 style="margin-bottom:4px">Wochenquiz ✂</h1>' +
+      '<p class="sub">Woche ' + woche + ' — viel Erfolg!</p>' +
+      '<div id="pzd-inhalt"></div></div>';
+    AKT_PROBEZEIT = { id: pzId };
+    oeffneWochenquiz(woche, false);
+    return;
+  }
+
+  if (params.get('modus') === 'lehrling') {
+    aktiviereLehrlingsModus();
+    return;
+  }
+
+  var linkBox = document.getElementById('lehrling-link-box');
+  if (linkBox) linkBox.style.display = 'block';
+
+  var heute = new Date().toISOString().slice(0,10);
+  var datumEl = document.getElementById('bewerber-datum');
+  if (datumEl) datumEl.value = heute;
+  var npBeginn = document.getElementById('np-beginn');
+  if (npBeginn) npBeginn.value = heute;
+
+  sb.auth.getSession().then(function(result) {
+    if (result.data && result.data.session) {
+      MEISTERIN_OK = true;
+      document.body.classList.add('meisterin-ok');
+      var fb = document.getElementById('btn-fragen-editor');
+      if (fb) fb.style.display = 'block';
+      document.getElementById('home-login-box').style.display = 'none';
+      document.getElementById('home-logout-box').style.display = 'block';
+      document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
+    }
+  });
+});
+</script>
+</body>
+</html>
