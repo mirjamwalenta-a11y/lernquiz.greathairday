@@ -1120,7 +1120,7 @@ async function renderMonat(monat) {
   html += '<div class="card" style="padding:14px" id="ziele-box-' + monat + '">';
   mInfo.ziele.forEach(function(z) {
     html += '<div class="ziel-row">' +
-      '<div class="ziel-check" onclick="toggleZiel('' + z.id + '',' + monat + ',this)"></div>' +
+      '<div class="ziel-check" data-ziel="' + z.id + '" data-monat="' + monat + '" onclick="toggleZielBtn(this)"></div>' +
       '<span class="ziel-text" id="ziel-text-' + z.id + '">' + z.text + '</span>' +
     '</div>';
   });
@@ -1130,7 +1130,7 @@ async function renderMonat(monat) {
   html += '<div class="section-head">Abzeichen-Ziele</div>';
   html += '<div class="card" style="padding:14px"><div class="abzeichen-grid">';
   mInfo.abzeichen.forEach(function(a) {
-    html += '<div class="abzeichen" id="abz-' + a.id + '" onclick="toggleAbzeichen('' + a.id + '',' + monat + ',this)" style="cursor:pointer">' +
+    html += '<div class="abzeichen" id="abz-' + a.id + '" data-abz="' + a.id + '" data-monat="' + monat + '" onclick="toggleAbzBtn(this)" style="cursor:pointer">' +
       '<span class="abzeichen-icon">' + a.icon + '</span>' +
       '<div class="abzeichen-label" style="white-space:pre-line">' + a.label + '</div>' +
     '</div>';
@@ -1150,9 +1150,9 @@ async function renderMonat(monat) {
     '<div class="label">Was läuft gut? Was muss besser werden?</div>' +
     '<textarea rows="3" id="fb-m' + monat + '" placeholder="Notizen Feedbackgespräch…"></textarea>' +
     '<div style="display:flex;gap:8px;margin-top:10px">' +
-      '<button class="pts-btn" id="fb-weiter-' + monat + '" onclick="setFbStatus(' + monat + ','weiter',this)">✓ Weiter</button>' +
-      '<button class="pts-btn" id="fb-gep-' + monat + '" onclick="setFbStatus(' + monat + ','gespraech',this)">! Gespräch</button>' +
-      '<button class="pts-btn" id="fb-abbruch-' + monat + '" onclick="setFbStatus(' + monat + ','abbruch',this)">✗ Abbruch</button>' +
+      '<button class="pts-btn" id="fb-weiter-' + monat + '" onclick="setFbStatus(' + monat + ',\'weiter\',this)">✓ Weiter</button>' +
+      '<button class="pts-btn" id="fb-gep-' + monat + '" onclick="setFbStatus(' + monat + ',\'gespraech\',this)">! Gespräch</button>' +
+      '<button class="pts-btn" id="fb-abbruch-' + monat + '" onclick="setFbStatus(' + monat + ',\'abbruch\',this)">✗ Abbruch</button>' +
     '</div>' +
     '<button class="btn-primary" style="margin-top:10px" onclick="speichereFeedback(' + monat + ')">Feedback speichern</button>' +
   '</div>';
@@ -1174,7 +1174,7 @@ async function ladeMonatDaten(monat) {
       var mInfo = MONAT_ZIELE[monat];
       mInfo.ziele.forEach(function(z) {
         var ok = erledigteZiele.indexOf(z.id) >= 0;
-        var checkEl = document.querySelector('[onclick="toggleZiel('' + z.id + '',' + monat + ',this)"]');
+        var checkEl = document.querySelector('[data-ziel="' + z.id + '"]');
         var textEl = document.getElementById('ziel-text-' + z.id);
         if (checkEl && ok) { checkEl.classList.add('ok'); checkEl.textContent = '✓'; }
         if (textEl && ok) { textEl.classList.add('erledigt'); }
@@ -1240,6 +1240,12 @@ async function ladeZieleCache(monat) {
   return ZIELE_CACHE[monat];
 }
 
+function toggleZielBtn(btn) {
+  var zielId = btn.getAttribute('data-ziel');
+  var monat = parseInt(btn.getAttribute('data-monat'));
+  toggleZiel(zielId, monat, btn);
+}
+
 async function toggleZiel(zielId, monat, el) {
   var cache = await ladeZieleCache(monat);
   var idx = cache.erledigt.indexOf(zielId);
@@ -1251,6 +1257,12 @@ async function toggleZiel(zielId, monat, el) {
   var textEl = document.getElementById('ziel-text-' + zielId);
   if (textEl) textEl.classList.toggle('erledigt', ok);
   await speichereZiele(monat, cache);
+}
+
+function toggleAbzBtn(btn) {
+  var abzId = btn.getAttribute('data-abz');
+  var monat = parseInt(btn.getAttribute('data-monat'));
+  toggleAbzeichen(abzId, monat, btn);
 }
 
 async function toggleAbzeichen(abzId, monat, el) {
