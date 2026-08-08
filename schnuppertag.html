@@ -59,6 +59,19 @@ h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
 .laden{text-align:center;padding:30px;color:#9A9A90;font-size:13px}
 .fuss{text-align:center;color:#C8C4BC;font-size:11px;margin-top:2rem;padding-bottom:1rem}
+/* Lehrlings-Modus */
+.lehrling-banner{background:#2C2C2C;color:#F7F5F0;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;display:none}
+.lehrling-banner strong{color:#8FAF7A}
+body.lehrling-modus .reveal-btn{display:none!important}
+body.lehrling-modus .pts-row{display:none!important}
+body.lehrling-modus #tab-auswertung .card:last-child{display:none!important}
+body.lehrling-modus .tab-btn[onclick*="auswertung"]{display:none!important}
+body.lehrling-modus .lehrling-banner{display:block}
+body.lehrling-modus #p-home .nav-card:nth-child(2){display:none}
+body.lehrling-modus #p-home .nav-card:last-of-type{display:none}
+body.lehrling-modus #home-login-box{display:none!important}
+body.lehrling-modus #home-logout-box{display:none!important}
+body.lehrling-modus .back-btn{display:none}
   </style>
 </head>
 <body>
@@ -72,6 +85,15 @@ h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <p class="sub">Lehrlings-Auswahl & Probezeit</p>
 
   <div id="home-login-hinweis" class="fehler-box" style="display:none">Bitte zuerst als Meisterin einloggen.</div>
+
+  <!-- Lehrlings-Link Box (nur im normalen Modus sichtbar) -->
+  <div id="lehrling-link-box" class="card-green" style="margin-bottom:16px">
+    <div class="label">Lehrlings-Modus</div>
+    <div style="font-size:13px;color:#2C2C2C;margin-bottom:10px;line-height:1.5">Öffne diesen Link auf einem zweiten Gerät und gib ihn dem Lehrling — ohne Lösungen und ohne Auswertung.</div>
+    <div style="background:#fff;border:1px solid #C8C4BC;border-radius:6px;padding:10px 12px;font-size:12px;color:#5B7B6F;word-break:break-all;margin-bottom:10px" id="lehrling-url"></div>
+    <button class="btn-sec" style="margin-top:0" onclick="kopiereLink()">📋 Link kopieren</button>
+    <div id="kopiert-msg" style="display:none;font-size:12px;color:#5B7B6F;margin-top:6px;text-align:center">✓ Link kopiert!</div>
+  </div>
 
   <div class="grid2" style="margin-bottom:10px">
     <button class="nav-card" onclick="zeige('eignungstest')">
@@ -112,7 +134,14 @@ h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
   <div class="tag">Schnuppertag · Wissenstest</div>
   <h1>Eignungstest</h1>
-  <p class="sub">32 Punkte gesamt</p>
+  <p class="sub" id="test-sub">32 Punkte gesamt</p>
+
+  <!-- Lehrlings-Modus Banner -->
+  <div class="lehrling-banner">
+    <strong>✂ A Great Hair Day · Wien</strong><br>
+    Willkommen zu deinem Schnuppertag-Test!<br>
+    Beantworte alle Fragen so gut du kannst — schreib einfach was du weißt.
+  </div>
 
   <!-- TAB-NAV -->
   <div class="tab-nav">
@@ -252,57 +281,16 @@ h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="answer-reveal" id="rf3">✓ <strong>Rot + Blau</strong></div>
     </div>
 
-    <div class="section-head">Geschicklichkeit — 11 Punkte (praktisch)</div>
+    <div class="section-head">Geschicklichkeit & Rollenspiel — 17 Punkte (praktisch)</div>
 
-    <div class="card">
-      <div class="q-text">Haarschnitt mit Papierschere — gerade Schnitte</div>
-      <span class="q-pts">4 Punkte · Bewertung durch Ausbilderin</span>
-      <div class="pts-row" id="pts-gs1">
-        <button class="pts-btn" onclick="selectPts('gs1',4,this)">4 Pkt ✓</button>
-        <button class="pts-btn" onclick="selectPts('gs1',3,this)">3 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs1',2,this)">2 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs1',1,this)">1 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs1',0,this)">0 Pkt</button>
+    <div class="card" style="background:#F7F5F0;border-style:dashed">
+      <div style="font-size:13px;color:#7A7A70;line-height:1.6">
+        🖐 <strong>Praktische Übungen</strong> — diese bewertest du als Ausbilderin im Tab <strong>Auswertung</strong> nach der Durchführung:<br><br>
+        · Haarschnitt mit Papierschere (4 Pkt)<br>
+        · Knoten binden (2 Pkt)<br>
+        · Farbmischung Wasserfarben (5 Pkt)<br>
+        · Rollenspiel Kundenberatung (6 Pkt)
       </div>
-      <div class="answer-reveal" id="gs1-label"></div>
-    </div>
-
-    <div class="card">
-      <div class="q-text">Knoten binden — einfach & doppelt</div>
-      <span class="q-pts">2 Punkte · Bewertung durch Ausbilderin</span>
-      <div class="pts-row" id="pts-gs2">
-        <button class="pts-btn" onclick="selectPts('gs2',2,this)">2 Pkt ✓</button>
-        <button class="pts-btn" onclick="selectPts('gs2',1,this)">1 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs2',0,this)">0 Pkt</button>
-      </div>
-      <div class="answer-reveal" id="gs2-label"></div>
-    </div>
-
-    <div class="card">
-      <div class="q-text">Farbmischung mit Wasserfarben (Orange, Grün, Violett)</div>
-      <span class="q-pts">5 Punkte · Bewertung durch Ausbilderin</span>
-      <div class="pts-row" id="pts-gs3">
-        <button class="pts-btn" onclick="selectPts('gs3',5,this)">5 Pkt ✓</button>
-        <button class="pts-btn" onclick="selectPts('gs3',4,this)">4 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs3',3,this)">3 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs3',2,this)">2 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('gs3',0,this)">0 Pkt</button>
-      </div>
-      <div class="answer-reveal" id="gs3-label"></div>
-    </div>
-
-    <div class="section-head">Rollenspiel Kundenberatung — 6 Punkte</div>
-
-    <div class="card">
-      <div class="q-text">Kundenberatung — einer spielt Kunden, einer den Friseur</div>
-      <span class="q-pts">6 Punkte · Bewertung durch Ausbilderin</span>
-      <div class="pts-row" id="pts-rp">
-        <button class="pts-btn" onclick="selectPts('rp',6,this)">6 Pkt ✓</button>
-        <button class="pts-btn" onclick="selectPts('rp',4,this)">4 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('rp',2,this)">2 Pkt</button>
-        <button class="pts-btn" onclick="selectPts('rp',0,this)">0 Pkt</button>
-      </div>
-      <div class="answer-reveal" id="rp-label"></div>
     </div>
 
     <button class="btn-primary" onclick="testTab('werte', document.querySelectorAll('.tab-btn')[1])">Weiter → Werte & Eignung</button>
@@ -409,61 +397,97 @@ h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <!-- AUSWERTUNG TAB -->
   <div id="tab-auswertung" style="display:none">
 
-    <div class="section-head">Gesamtpunktestand — Wissenstest (32 Punkte)</div>
-
-    <div class="card">
-      <div style="margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-size:13px;color:#5A5550">Mathematik</span>
-          <input type="number" id="p-mathe" min="0" max="2" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
-          <span style="font-size:12px;color:#9A9A90">/ 2</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-size:13px;color:#5A5550">Österreich Allgemeinwissen</span>
-          <input type="number" id="p-aw" min="0" max="9" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
-          <span style="font-size:12px;color:#9A9A90">/ 9</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-size:13px;color:#5A5550">Geschichte</span>
-          <input type="number" id="p-gesch" min="0" max="4" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
-          <span style="font-size:12px;color:#9A9A90">/ 4</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-size:13px;color:#5A5550">Geschicklichkeit</span>
-          <input type="number" id="p-gesch2" min="0" max="11" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
-          <span style="font-size:12px;color:#9A9A90">/ 11</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span style="font-size:13px;color:#5A5550">Rollenspiel</span>
-          <input type="number" id="p-rolle" min="0" max="6" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
-          <span style="font-size:12px;color:#9A9A90">/ 6</span>
-        </div>
-        <button class="btn-sec" onclick="berechneGesamt()">Gesamt berechnen</button>
-        <div id="gesamt-anzeige" style="margin-top:12px;display:none">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:15px;font-weight:700">Gesamt</span>
-            <span id="gesamt-zahl" style="font-size:22px;font-weight:700;color:#5B7B6F"></span>
-          </div>
-          <div class="note-bar"><div class="note-fill" id="gesamt-bar" style="width:0%"></div></div>
-          <div id="gesamt-note" style="font-size:14px;font-weight:700;margin-top:6px"></div>
-        </div>
-      </div>
+    <!-- AUTO-AUSWERTUNG -->
+    <div id="auto-auswertung-box" class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;color:#7A7A70;margin-bottom:12px">Die Wissensfragen werden automatisch ausgewertet. Praktische Übungen (Geschicklichkeit & Rollenspiel) bewertest du selbst.</div>
+      <button class="btn-primary" onclick="autoAuswerten()" id="btn-auto-auswerten">🔍 Automatisch auswerten</button>
     </div>
 
-    <div class="section-head">Notenskala</div>
-    <div class="card" style="padding:14px">
-      <table style="width:100%;font-size:13px;border-collapse:collapse">
-        <tr style="border-bottom:1px solid #E2DDD5">
-          <td style="padding:6px 0;font-weight:700;color:#C44030">5 — Ungenügend</td><td style="text-align:right;color:#9A9A90">≤ 11 Pkt</td></tr>
-        <tr style="border-bottom:1px solid #E2DDD5">
-          <td style="padding:6px 0;font-weight:700;color:#C4A830">4 — Verbesserungswürdig</td><td style="text-align:right;color:#9A9A90">12–17 Pkt</td></tr>
-        <tr style="border-bottom:1px solid #E2DDD5">
-          <td style="padding:6px 0;font-weight:700;color:#5B7B6F">3 — Befriedigend</td><td style="text-align:right;color:#9A9A90">18–23 Pkt</td></tr>
-        <tr style="border-bottom:1px solid #E2DDD5">
-          <td style="padding:6px 0;font-weight:700;color:#3D6B50">2 — Gut</td><td style="text-align:right;color:#9A9A90">24–28 Pkt</td></tr>
-        <tr>
-          <td style="padding:6px 0;font-weight:700;color:#2C4A38">1 — Sehr gut</td><td style="text-align:right;color:#9A9A90">ab 29 Pkt</td></tr>
-      </table>
+    <!-- ERGEBNIS-ANZEIGE (wird nach Auswertung befüllt) -->
+    <div id="ergebnis-box" style="display:none">
+
+      <!-- Gesamtergebnis -->
+      <div class="card" style="background:#2C2C2C;border-color:#2C2C2C">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:13px;color:#9A9A90;font-weight:700;letter-spacing:1px;text-transform:uppercase">Gesamtergebnis</span>
+          <span id="erg-gesamt-zahl" style="font-size:28px;font-weight:700;color:#8FAF7A"></span>
+        </div>
+        <div style="background:#3C3C3C;border-radius:4px;height:10px;overflow:hidden;margin-bottom:10px">
+          <div id="erg-bar" style="height:100%;background:#8FAF7A;border-radius:4px;transition:width .6s"></div>
+        </div>
+        <div id="erg-note" style="font-size:18px;font-weight:700;color:#F7F5F0"></div>
+      </div>
+
+      <!-- Aufschlüsselung -->
+      <div class="card" style="padding:14px">
+        <div class="label" style="margin-bottom:10px">Aufschlüsselung</div>
+        <div id="erg-details"></div>
+      </div>
+
+      <!-- Praktische Bewertung -->
+      <div class="section-head">Praktische Übungen — deine Bewertung</div>
+
+      <div class="card">
+        <div class="q-text">Haarschnitt mit Papierschere — gerade Schnitte</div>
+        <span class="q-pts">4 Punkte</span>
+        <div class="pts-row" id="pts-gs1">
+          <button class="pts-btn" onclick="selectPts('gs1',4,this)">4 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('gs1',3,this)">3 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs1',2,this)">2 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs1',1,this)">1 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs1',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="gs1-label"></div>
+      </div>
+
+      <div class="card">
+        <div class="q-text">Knoten binden — einfach & doppelt</div>
+        <span class="q-pts">2 Punkte</span>
+        <div class="pts-row" id="pts-gs2">
+          <button class="pts-btn" onclick="selectPts('gs2',2,this)">2 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('gs2',1,this)">1 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs2',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="gs2-label"></div>
+      </div>
+
+      <div class="card">
+        <div class="q-text">Farbmischung mit Wasserfarben</div>
+        <span class="q-pts">5 Punkte</span>
+        <div class="pts-row" id="pts-gs3">
+          <button class="pts-btn" onclick="selectPts('gs3',5,this)">5 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('gs3',4,this)">4 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs3',3,this)">3 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs3',2,this)">2 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('gs3',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="gs3-label"></div>
+      </div>
+
+      <div class="card">
+        <div class="q-text">Rollenspiel Kundenberatung</div>
+        <span class="q-pts">6 Punkte</span>
+        <div class="pts-row" id="pts-rp">
+          <button class="pts-btn" onclick="selectPts('rp',6,this)">6 Pkt ✓</button>
+          <button class="pts-btn" onclick="selectPts('rp',4,this)">4 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('rp',2,this)">2 Pkt</button>
+          <button class="pts-btn" onclick="selectPts('rp',0,this)">0 Pkt</button>
+        </div>
+        <div class="answer-reveal" id="rp-label"></div>
+      </div>
+
+      <button class="btn-sec" onclick="aktualisiereGesamt()">↻ Gesamt neu berechnen</button>
+
+      <div class="section-head">Notenskala</div>
+      <div class="card" style="padding:14px">
+        <table style="width:100%;font-size:13px;border-collapse:collapse">
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#C44030">5 — Ungenügend</td><td style="text-align:right;color:#9A9A90">≤ 11 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#C4A830">4 — Verbesserungswürdig</td><td style="text-align:right;color:#9A9A90">12–17 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#5B7B6F">3 — Befriedigend</td><td style="text-align:right;color:#9A9A90">18–23 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#3D6B50">2 — Gut</td><td style="text-align:right;color:#9A9A90">24–28 Pkt</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700;color:#2C4A38">1 — Sehr gut</td><td style="text-align:right;color:#9A9A90">ab 29 Pkt</td></tr>
+        </table>
+      </div>
     </div>
 
     <div class="section-head">Bewerber speichern</div>
@@ -638,6 +662,8 @@ function selectPts(id, pts, btn) {
   if (btn) btn.classList.add('sel');
   var label = document.getElementById(id + '-label');
   if (label) { label.classList.add('show'); label.textContent = '✓ Vergeben: ' + pts + ' Punkte'; }
+  // Gesamt sofort neu berechnen
+  aktualisiereGesamt();
 }
 
 function setEntscheidung(val) {
@@ -662,25 +688,151 @@ function setPzEntscheidung(val) {
   if (b) b.classList.add('sel');
 }
 
-function berechneGesamt() {
-  var m = parseInt(document.getElementById('p-mathe').value)||0;
-  var a = parseInt(document.getElementById('p-aw').value)||0;
-  var g = parseInt(document.getElementById('p-gesch').value)||0;
-  var g2 = parseInt(document.getElementById('p-gesch2').value)||0;
-  var r = parseInt(document.getElementById('p-rolle').value)||0;
-  var gesamt = m + a + g + g2 + r;
-  document.getElementById('gesamt-anzeige').style.display = 'block';
-  document.getElementById('gesamt-zahl').textContent = gesamt + ' / 32';
-  document.getElementById('gesamt-bar').style.width = Math.round((gesamt/32)*100) + '%';
-  var note, farbe;
-  if (gesamt >= 29) { note = '1 — Sehr gut'; farbe = '#2C4A38'; }
-  else if (gesamt >= 24) { note = '2 — Gut'; farbe = '#3D6B50'; }
-  else if (gesamt >= 18) { note = '3 — Befriedigend'; farbe = '#5B7B6F'; }
-  else if (gesamt >= 12) { note = '4 — Verbesserungswürdig'; farbe = '#C4A830'; }
-  else { note = '5 — Ungenügend'; farbe = '#C44030'; }
-  var el = document.getElementById('gesamt-note');
-  el.textContent = note; el.style.color = farbe;
+// ── AUTO-AUSWERTUNG ───────────────────────────────────────────────────────────
+
+// Antwort-Normalisierung
+function norm(str) {
+  return (str||'').toLowerCase()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
 }
+function enthaelt(antwort, begriffe) {
+  var a = norm(antwort);
+  return begriffe.some(function(b){ return a.indexOf(norm(b)) >= 0; });
+}
+
+// Fragen-Definitionen mit automatischer Bewertung
+var FRAGEN_AUTO = [
+  // MATHEMATIK
+  { id:'m1', max:1, pruefe: function(v){ return enthaelt(v,['20']) ? 1 : 0; } },
+  { id:'m2', max:1, pruefe: function(v){ return enthaelt(v,['80']) ? 1 : 0; } },
+  // ÖSTERREICH
+  { id:'o1', max:1, pruefe: function(v){ return enthaelt(v,['van der bellen','alexander','bellen']) ? 1 : 0; } },
+  { id:'o2', max:1, pruefe: function(v){
+    var p = ['oevp','spoe','fpoe','neos','gruen','ovp','spo','fpo'];
+    var treffer = p.filter(function(x){ return norm(v).indexOf(x) >= 0; }).length;
+    return treffer >= 3 ? 1 : 0;
+  }},
+  { id:'o3', max:1, pruefe: function(v){ return enthaelt(v,['9','neun']) ? 1 : 0; } },
+  { id:'o4', max:4, pruefe: function(v){
+    var bl = ['burgenland','kaernten','niederoestereich','niederoesterreich','oberoesterreich','oberoesterreich','salzburg','steiermark','tirol','vorarlberg','wien'];
+    var a = norm(v);
+    var treffer = bl.filter(function(b){ return a.indexOf(norm(b)) >= 0; }).length;
+    // Sonderfall NÖ / OÖ
+    if (a.indexOf('noe') >= 0 || a.indexOf('no') >= 0) treffer = Math.max(treffer, bl.filter(function(b,i){ return i !== 3 && a.indexOf(norm(b)) >= 0; }).length + 1);
+    if (a.indexOf('ooe') >= 0 || a.indexOf('oo') >= 0) treffer++;
+    treffer = Math.min(treffer, 9);
+    if (treffer >= 9) return 4;
+    if (treffer >= 7) return 3;
+    if (treffer >= 5) return 2;
+    if (treffer >= 3) return 1;
+    return 0;
+  }},
+  { id:'o5', max:1, pruefe: function(v){ return enthaelt(v,['wien']) ? 1 : 0; } },
+  { id:'o6', max:1, pruefe: function(v){ return enthaelt(v,['euro']) ? 1 : 0; } },
+  // GESCHICHTE
+  { id:'g1', max:1, pruefe: function(v){ return enthaelt(v,['1918']) ? 1 : 0; } },
+  { id:'g2', max:1, pruefe: function(v){ return enthaelt(v,['1945']) ? 1 : 0; } },
+  { id:'g3', max:1, pruefe: function(v){ return enthaelt(v,['mozart','salzburg','komponist']) ? 1 : 0; } },
+  { id:'g4', max:1, pruefe: function(v){ return enthaelt(v,['schoenbrunn','schonbrunn','schloss']) ? 1 : 0; } },
+  // FARBLEHRE
+  { id:'f1', max:1, pruefe: function(v){ return enthaelt(v,['rot']) && enthaelt(v,['gelb']) ? 1 : 0; } },
+  { id:'f2', max:1, pruefe: function(v){ return enthaelt(v,['blau']) && enthaelt(v,['gelb']) ? 1 : 0; } },
+  { id:'f3', max:1, pruefe: function(v){ return enthaelt(v,['rot']) && enthaelt(v,['blau']) ? 1 : 0; } },
+];
+
+var AUTO_PUNKTE = {}; // gespeicherte Einzelergebnisse
+
+function autoAuswerten() {
+  AUTO_PUNKTE = {};
+  var mathe = 0, aw = 0, gesch = 0, farbe = 0;
+
+  FRAGEN_AUTO.forEach(function(fq) {
+    var el = document.getElementById(fq.id);
+    var val = el ? (el.value || el.textContent || '') : '';
+    var punkte = fq.pruefe(val);
+    AUTO_PUNKTE[fq.id] = { punkte: punkte, max: fq.max, val: val };
+
+    if (fq.id.startsWith('m')) mathe += punkte;
+    else if (fq.id.startsWith('o')) aw += punkte;
+    else if (fq.id.startsWith('g')) gesch += punkte;
+    else if (fq.id.startsWith('f')) farbe += punkte;
+  });
+
+  // Details rendern
+  var det = '';
+  function zeile(label, p, max, farbe) {
+    var pct = max > 0 ? Math.round((p/max)*100) : 0;
+    var col = pct >= 75 ? '#5B7B6F' : pct >= 50 ? '#C4A830' : '#C44030';
+    det += '<div style="margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
+        '<span style="font-size:13px">' + label + '</span>' +
+        '<span style="font-size:13px;font-weight:700;color:' + col + '">' + p + ' / ' + max + '</span>' +
+      '</div>' +
+      '<div style="background:#E2DDD5;border-radius:3px;height:6px"><div style="background:' + col + ';height:100%;width:' + pct + '%;border-radius:3px"></div></div>' +
+    '</div>';
+  }
+  zeile('Mathematik', mathe, 2);
+  zeile('Österreich Allgemeinwissen', aw, 9);
+  zeile('Geschichte', gesch, 4);
+  zeile('Farblehre', farbe, 3);
+  det += '<div style="font-size:12px;color:#9A9A90;margin-top:6px">Geschicklichkeit & Rollenspiel → unten bewerten</div>';
+  document.getElementById('erg-details').innerHTML = det;
+
+  // Einzelfragen einfärben
+  FRAGEN_AUTO.forEach(function(fq) {
+    var el = document.getElementById(fq.id);
+    if (!el) return;
+    var p = AUTO_PUNKTE[fq.id].punkte;
+    var max = AUTO_PUNKTE[fq.id].max;
+    el.style.borderColor = p >= max ? '#5B7B6F' : p > 0 ? '#C4A830' : '#C44030';
+    el.style.background = p >= max ? '#EAF0EE' : p > 0 ? '#FDF6E3' : '#FDECEA';
+  });
+
+  // Gesamt (ohne Praktik) berechnen und anzeigen
+  var wissenPkt = mathe + aw + gesch + farbe;
+  zeigeGesamt(wissenPkt);
+
+  document.getElementById('ergebnis-box').style.display = 'block';
+  document.getElementById('auto-auswertung-box').innerHTML =
+    '<div style="font-size:13px;color:#5B7B6F;font-weight:600">✓ Automatisch ausgewertet — Wissensfragen: ' + wissenPkt + ' / 17 Punkten</div>' +
+    '<button class="btn-sec" style="margin-top:8px" onclick="autoAuswerten()">↻ Neu auswerten</button>';
+
+  window.scrollTo(0, document.getElementById('ergebnis-box').offsetTop - 20);
+}
+
+function aktualisiereGesamt() {
+  var wissenPkt = 0;
+  FRAGEN_AUTO.forEach(function(fq) { wissenPkt += (AUTO_PUNKTE[fq.id] ? AUTO_PUNKTE[fq.id].punkte : 0); });
+  var praktik = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0) + (AKT_PUNKTE.rp||0);
+  zeigeGesamt(wissenPkt + praktik);
+}
+
+function zeigeGesamt(gesamt) {
+  var praktik = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0) + (AKT_PUNKTE.rp||0);
+  var total = gesamt + (Object.values(AKT_PUNKTE).some(function(v){ return v !== null; }) ? 0 : 0);
+  // Wenn Praktik schon bewertet
+  if (AKT_PUNKTE.gs1 !== null || AKT_PUNKTE.gs2 !== null) total = gesamt;
+
+  var note, farbe, barColor;
+  if (gesamt >= 29) { note = '1 — Sehr gut ✦'; farbe = '#2C4A38'; barColor = '#5B7B6F'; }
+  else if (gesamt >= 24) { note = '2 — Gut'; farbe = '#3D6B50'; barColor = '#8FAF7A'; }
+  else if (gesamt >= 18) { note = '3 — Befriedigend'; farbe = '#5B7B6F'; barColor = '#C4B86A'; }
+  else if (gesamt >= 12) { note = '4 — Verbesserungswürdig'; farbe = '#C4A830'; barColor = '#C4A830'; }
+  else { note = '5 — Ungenügend'; farbe = '#C44030'; barColor = '#C44030'; }
+
+  document.getElementById('erg-gesamt-zahl').textContent = gesamt + ' / 32';
+  document.getElementById('erg-bar').style.width = Math.round((gesamt/32)*100) + '%';
+  document.getElementById('erg-bar').style.background = barColor;
+  document.getElementById('erg-note').textContent = note;
+  document.getElementById('erg-note').style.color = farbe;
+
+  // Punkte-Felder für Speichern synchronisieren
+  document.getElementById('p-mathe') && (document.getElementById('p-mathe').value = gesamt);
+}
+
+// Alte Funktion — bleibt als Fallback
+function berechneGesamt() { aktualisiereGesamt(); }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
 async function loginMeisterin() {
@@ -720,12 +872,21 @@ async function speichereSchnuppertag() {
     fehlerEl.style.display = 'block'; return;
   }
 
-  var m = parseInt(document.getElementById('p-mathe').value)||0;
-  var a = parseInt(document.getElementById('p-aw').value)||0;
-  var g = parseInt(document.getElementById('p-gesch').value)||0;
-  var g2 = parseInt(document.getElementById('p-gesch2').value)||0;
-  var r = parseInt(document.getElementById('p-rolle').value)||0;
-  var gesamt = m + a + g + g2 + r;
+  // Punkte aus Auto-Auswertung + manuelle Praktik
+  var wissen = 0;
+  FRAGEN_AUTO.forEach(function(fq){ wissen += (AUTO_PUNKTE[fq.id] ? AUTO_PUNKTE[fq.id].punkte : 0); });
+  var praktik = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0) + (AKT_PUNKTE.rp||0);
+  var gesamt = wissen + praktik;
+  var m = 0, a = 0, g = 0, g2 = 0, r = 0;
+  FRAGEN_AUTO.forEach(function(fq){
+    var p = AUTO_PUNKTE[fq.id] ? AUTO_PUNKTE[fq.id].punkte : 0;
+    if (fq.id.startsWith('m')) m += p;
+    else if (fq.id.startsWith('o')) a += p;
+    else if (fq.id.startsWith('g') && !fq.id.startsWith('gs')) g += p;
+    else if (fq.id.startsWith('f')) g += p; // farbe zählt zur Gesamtpunktzahl
+  });
+  g2 = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0);
+  r = AKT_PUNKTE.rp||0;
 
   var werte = {
     freundlichkeit: document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]').value,
@@ -1001,8 +1162,62 @@ function formatDatum(dateStr) {
   return d.toLocaleDateString('de-AT', { day:'2-digit', month:'2-digit', year:'numeric' });
 }
 
+// ── LEHRLINGS-MODUS ───────────────────────────────────────────────────────────
+var LEHRLING_MODUS = false;
+
+function aktiviereLehrlingsModus() {
+  LEHRLING_MODUS = true;
+  document.body.classList.add('lehrling-modus');
+  // Direkt zum Test
+  zeige('eignungstest');
+  testTab('wissen', document.querySelectorAll('.tab-btn')[0]);
+  // Sub-Text anpassen
+  var sub = document.getElementById('test-sub');
+  if (sub) sub.textContent = 'Schreib einfach was du weißt — viel Erfolg!';
+  // Weiter-Button am Ende Wissen-Tab anpassen
+  var weiterBtn = document.querySelector('#tab-wissen .btn-primary');
+  if (weiterBtn) weiterBtn.textContent = 'Weiter → Persönlichkeitsfragen';
+}
+
+function kopiereLink() {
+  var url = document.getElementById('lehrling-url').textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    var msg = document.getElementById('kopiert-msg');
+    msg.style.display = 'block';
+    setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+  }).catch(function() {
+    // Fallback für ältere Browser
+    var el = document.createElement('textarea');
+    el.value = url;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    var msg = document.getElementById('kopiert-msg');
+    msg.style.display = 'block';
+    setTimeout(function(){ msg.style.display = 'none'; }, 2500);
+  });
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function() {
+  // Lehrlings-Link anzeigen
+  var baseUrl = window.location.href.split('?')[0];
+  var lehrlingUrl = baseUrl + '?modus=lehrling';
+  var urlEl = document.getElementById('lehrling-url');
+  if (urlEl) urlEl.textContent = lehrlingUrl;
+
+  // Modus aus URL lesen
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('modus') === 'lehrling') {
+    aktiviereLehrlingsModus();
+    return; // Kein Login nötig
+  }
+
+  // Lehrlings-Link-Box nur im normalen Modus zeigen
+  var linkBox = document.getElementById('lehrling-link-box');
+  if (linkBox) linkBox.style.display = 'block';
+
   // Heutiges Datum als Default
   var heute = new Date().toISOString().slice(0,10);
   var datumEl = document.getElementById('bewerber-datum');
