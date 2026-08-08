@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schnuppertag · A Great Hair Day</title>
+  <meta name="theme-color" content="#1c1917">
+  <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;min-height:100dvh}
+body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+.wrap{max-width:580px;margin:0 auto}
+.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
+.card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
+.card-green{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px;margin-bottom:12px}
+.btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:4px}
+.btn-primary:disabled{background:#9A9A90;cursor:default}
+.btn-ghost{padding:10px 16px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
+.btn-danger{width:100%;padding:10px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:4px}
+.btn-sec{width:100%;padding:10px;background:#fff;color:#2C2C2C;border:1px solid #C8C4BC;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:6px}
+select,textarea,input[type=text],input[type=date],input[type=email],input[type=password]{width:100%;border:1px solid #E2DDD5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none}
+textarea{resize:vertical}
+input[type=range]{width:100%;accent-color:#5B7B6F}
+.page{display:none}.page.ak{display:block}
+.back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:14px;font-family:system-ui}
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
+h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
+.sub{color:#7A7A70;font-size:14px;margin-bottom:20px}
+.pts-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pts-btn{padding:6px 12px;border-radius:6px;border:1px solid #C8C4BC;background:#fff;cursor:pointer;font-size:13px;font-family:system-ui;color:#5A5550}
+.pts-btn.sel{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.reveal-btn{padding:6px 12px;border-radius:6px;border:1px solid #C8C4BC;background:transparent;cursor:pointer;font-size:12px;color:#7A7A70;font-family:system-ui;margin-top:8px}
+.answer-reveal{margin-top:8px;padding:10px 12px;background:#EAF0EE;border-radius:6px;font-size:13px;color:#2C2C2C;display:none}
+.answer-reveal.show{display:block}
+.q-text{font-size:14px;color:#1C1C1A;margin-bottom:8px;line-height:1.5;font-weight:600}
+.q-meta{font-size:11px;color:#7A7A70;margin-bottom:6px}
+.q-pts{font-size:11px;color:#5B7B6F;font-weight:700;background:#EAF0EE;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.section-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;margin:20px 0 10px;border-bottom:1px solid #E2DDD5;padding-bottom:6px}
+.slider-poles{display:flex;justify-content:space-between;font-size:11px;color:#B0A898;margin-top:3px}
+.slider-val{font-size:13px;font-weight:700;color:#5B7B6F;min-width:80px;text-align:right}
+.werte-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.tab-nav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{padding:7px 13px;border-radius:6px;border:1px solid #C8C4BC;background:#fff;cursor:pointer;font-size:12px;font-family:system-ui;color:#5A5550;font-weight:600}
+.tab-btn.ak{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.fehler-box{background:#FDECEA;border:1px solid #C44030;border-radius:6px;padding:10px 12px;color:#C44030;font-size:13px;margin-bottom:12px;display:none}
+.ok-box{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:6px;padding:10px 12px;color:#2C2C2C;font-size:13px;margin-bottom:12px;display:none}
+.note-bar{height:8px;background:#E2DDD5;border-radius:4px;overflow:hidden;margin-top:4px}
+.note-fill{height:100%;background:#5B7B6F;border-radius:4px;transition:width .4s}
+.probezeit-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:16px;margin-bottom:10px;cursor:pointer}
+.probezeit-card:hover{border-color:#5B7B6F}
+.woche-header{background:#EAF0EE;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:12px;font-weight:700;color:#5B7B6F}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nav-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:18px 14px;text-align:left;cursor:pointer;width:100%}
+.nav-card:hover{border-color:#5B7B6F}
+.nav-icon{font-size:1.4rem;margin-bottom:6px}
+.nav-title{font-weight:600;color:#1C1C1A;font-size:14px}
+.nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
+.laden{text-align:center;padding:30px;color:#9A9A90;font-size:13px}
+.fuss{text-align:center;color:#C8C4BC;font-size:11px;margin-top:2rem;padding-bottom:1rem}
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── HOME ── -->
+<div id="p-home" class="page ak">
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html" style="background:none;border:none;color:#7A7A70;font-size:13px;cursor:pointer;font-family:system-ui;padding:0;margin-bottom:14px;display:inline-block;text-decoration:none">← Zurück zum Lernquiz</a>
+  <div class="tag">A Great Hair Day · Wien</div>
+  <h1>Schnuppertag ✂</h1>
+  <p class="sub">Lehrlings-Auswahl & Probezeit</p>
+
+  <div id="home-login-hinweis" class="fehler-box" style="display:none">Bitte zuerst als Meisterin einloggen.</div>
+
+  <div class="grid2" style="margin-bottom:10px">
+    <button class="nav-card" onclick="zeige('eignungstest')">
+      <div class="nav-icon">📋</div>
+      <div class="nav-title">Eignungstest</div>
+      <div class="nav-desc">Schnuppertag durchführen</div>
+    </button>
+    <button class="nav-card" onclick="zeige('probezeiten')">
+      <div class="nav-icon">📅</div>
+      <div class="nav-title">Probezeiten</div>
+      <div class="nav-desc">3-Monats-Pläne verwalten</div>
+    </button>
+  </div>
+  <button class="nav-card" onclick="zeige('archiv')" style="display:flex;align-items:center;gap:12px">
+    <div class="nav-icon" style="margin:0">📁</div>
+    <div>
+      <div class="nav-title">Archiv Bewerber</div>
+      <div class="nav-desc">Alle Schnuppertage ansehen</div>
+    </div>
+  </button>
+
+  <div id="home-login-box" class="card" style="margin-top:16px">
+    <div class="label">Meisterinnen-Login</div>
+    <div id="home-login-fehler" class="fehler-box"></div>
+    <input type="email" id="home-email" value="mirjam.walenta@gmail.com" style="margin-bottom:8px">
+    <input type="password" id="home-pw" placeholder="Passwort" style="margin-bottom:12px">
+    <button class="btn-primary" onclick="loginMeisterin()">Einloggen →</button>
+  </div>
+  <div id="home-logout-box" style="display:none;margin-top:16px;text-align:center">
+    <span style="font-size:13px;color:#5B7B6F;font-weight:600" id="home-user-name"></span>
+    <button onclick="logout()" style="background:none;border:none;color:#9A9A90;font-size:12px;cursor:pointer;font-family:system-ui;margin-left:12px;text-decoration:underline">Abmelden</button>
+  </div>
+  <div class="fuss">Mirjam Walenta · A Great Hair Day · Wien</div>
+</div>
+
+<!-- ── EIGNUNGSTEST ── -->
+<div id="p-eignungstest" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">Schnuppertag · Wissenstest</div>
+  <h1>Eignungstest</h1>
+  <p class="sub">32 Punkte gesamt</p>
+
+  <!-- TAB-NAV -->
+  <div class="tab-nav">
+    <button class="tab-btn ak" onclick="testTab('wissen',this)">📚 Wissen</button>
+    <button class="tab-btn" onclick="testTab('werte',this)">❤ Werte</button>
+    <button class="tab-btn" onclick="testTab('auswertung',this)">📊 Auswertung</button>
+  </div>
+
+  <!-- WISSEN TAB -->
+  <div id="tab-wissen">
+
+    <div class="section-head">Mathematik — 2 Punkte</div>
+
+    <div class="card">
+      <div class="q-text">Was ist 10 % von 200?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" class="ant-input" id="m1">
+      <button class="reveal-btn" onclick="reveal('r1')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r1">✓ Richtige Antwort: <strong>20</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Ein Artikel kostet 100 €, wird um 20 % reduziert. Was kostet er?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="m2">
+      <button class="reveal-btn" onclick="reveal('r2')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r2">✓ Richtige Antwort: <strong>80 Euro</strong></div>
+    </div>
+
+    <div class="section-head">Österreich Allgemeinwissen — 9 Punkte</div>
+
+    <div class="card">
+      <div class="q-text">Wie heißt der aktuelle Bundespräsident von Österreich?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="o1">
+      <button class="reveal-btn" onclick="reveal('r3')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r3">✓ <strong>Alexander Van der Bellen</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Nenne mindestens drei politische Parteien in Österreich.</div>
+      <span class="q-pts">1 Punkt</span>
+      <textarea rows="2" placeholder="Antwort…" id="o2"></textarea>
+      <button class="reveal-btn" onclick="reveal('r4')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r4">✓ Mind. 3 von: <strong>ÖVP, SPÖ, FPÖ, Neos, die Grünen</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Wie viele Bundesländer hat Österreich?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="o3">
+      <button class="reveal-btn" onclick="reveal('r5')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r5">✓ <strong>9</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Nenne alle 9 Bundesländer Österreichs.</div>
+      <span class="q-pts">4 Punkte</span>
+      <textarea rows="3" placeholder="Antwort…" id="o4"></textarea>
+      <button class="reveal-btn" onclick="reveal('r6')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r6">✓ <strong>Burgenland, Kärnten, NÖ, OÖ, Salzburg, Steiermark, Tirol, Vorarlberg, Wien</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Was ist die Hauptstadt von Österreich?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="o5">
+      <button class="reveal-btn" onclick="reveal('r7')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r7">✓ <strong>Wien</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Welche Währung wird in Österreich verwendet?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="o6">
+      <button class="reveal-btn" onclick="reveal('r8')">Lösung zeigen</button>
+      <div class="answer-reveal" id="r8">✓ <strong>Euro</strong></div>
+    </div>
+
+    <div class="section-head">Österreich Geschichte — 4 Punkte</div>
+
+    <div class="card">
+      <div class="q-text">In welchem Jahr wurde Österreich eine Republik?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="g1">
+      <button class="reveal-btn" onclick="reveal('rg1')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rg1">✓ <strong>1918</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Wann endete der Zweite Weltkrieg?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="g2">
+      <button class="reveal-btn" onclick="reveal('rg2')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rg2">✓ <strong>1945</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Wer war Wolfgang Amadeus Mozart — und wo wurde er geboren?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="g3">
+      <button class="reveal-btn" onclick="reveal('rg3')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rg3">✓ <strong>Österreichischer Komponist, geboren in Salzburg</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Wie heißt das bekannteste Schloss in Wien?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Antwort…" id="g4">
+      <button class="reveal-btn" onclick="reveal('rg4')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rg4">✓ <strong>Schloss Schönbrunn</strong></div>
+    </div>
+
+    <div class="section-head">Farblehre & Farbmischung — 3 Punkte</div>
+
+    <div class="card">
+      <div class="q-text">Wie mischt man Orange?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Farbe + Farbe" id="f1">
+      <button class="reveal-btn" onclick="reveal('rf1')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rf1">✓ <strong>Rot + Gelb</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Wie mischt man Grün?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Farbe + Farbe" id="f2">
+      <button class="reveal-btn" onclick="reveal('rf2')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rf2">✓ <strong>Blau + Gelb</strong></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Wie mischt man Violett?</div>
+      <span class="q-pts">1 Punkt</span>
+      <input type="text" placeholder="Farbe + Farbe" id="f3">
+      <button class="reveal-btn" onclick="reveal('rf3')">Lösung zeigen</button>
+      <div class="answer-reveal" id="rf3">✓ <strong>Rot + Blau</strong></div>
+    </div>
+
+    <div class="section-head">Geschicklichkeit — 11 Punkte (praktisch)</div>
+
+    <div class="card">
+      <div class="q-text">Haarschnitt mit Papierschere — gerade Schnitte</div>
+      <span class="q-pts">4 Punkte · Bewertung durch Ausbilderin</span>
+      <div class="pts-row" id="pts-gs1">
+        <button class="pts-btn" onclick="selectPts('gs1',4,this)">4 Pkt ✓</button>
+        <button class="pts-btn" onclick="selectPts('gs1',3,this)">3 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs1',2,this)">2 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs1',1,this)">1 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs1',0,this)">0 Pkt</button>
+      </div>
+      <div class="answer-reveal" id="gs1-label"></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Knoten binden — einfach & doppelt</div>
+      <span class="q-pts">2 Punkte · Bewertung durch Ausbilderin</span>
+      <div class="pts-row" id="pts-gs2">
+        <button class="pts-btn" onclick="selectPts('gs2',2,this)">2 Pkt ✓</button>
+        <button class="pts-btn" onclick="selectPts('gs2',1,this)">1 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs2',0,this)">0 Pkt</button>
+      </div>
+      <div class="answer-reveal" id="gs2-label"></div>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Farbmischung mit Wasserfarben (Orange, Grün, Violett)</div>
+      <span class="q-pts">5 Punkte · Bewertung durch Ausbilderin</span>
+      <div class="pts-row" id="pts-gs3">
+        <button class="pts-btn" onclick="selectPts('gs3',5,this)">5 Pkt ✓</button>
+        <button class="pts-btn" onclick="selectPts('gs3',4,this)">4 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs3',3,this)">3 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs3',2,this)">2 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('gs3',0,this)">0 Pkt</button>
+      </div>
+      <div class="answer-reveal" id="gs3-label"></div>
+    </div>
+
+    <div class="section-head">Rollenspiel Kundenberatung — 6 Punkte</div>
+
+    <div class="card">
+      <div class="q-text">Kundenberatung — einer spielt Kunden, einer den Friseur</div>
+      <span class="q-pts">6 Punkte · Bewertung durch Ausbilderin</span>
+      <div class="pts-row" id="pts-rp">
+        <button class="pts-btn" onclick="selectPts('rp',6,this)">6 Pkt ✓</button>
+        <button class="pts-btn" onclick="selectPts('rp',4,this)">4 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('rp',2,this)">2 Pkt</button>
+        <button class="pts-btn" onclick="selectPts('rp',0,this)">0 Pkt</button>
+      </div>
+      <div class="answer-reveal" id="rp-label"></div>
+    </div>
+
+    <button class="btn-primary" onclick="testTab('werte', document.querySelectorAll('.tab-btn')[1])">Weiter → Werte & Eignung</button>
+  </div>
+
+  <!-- WERTE TAB -->
+  <div id="tab-werte" style="display:none">
+
+    <div class="section-head">Selbsteinschätzung — Schieberegler (1–5)</div>
+    <div class="card">
+
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">😊 Freundlichkeit & Offenheit</span>
+          <span class="slider-val" id="sv1">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv1',this.value)">
+        <div class="slider-poles"><span>Eher still</span><span>Sehr offen</span></div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">👥 Teamgeist & Teamarbeit</span>
+          <span class="slider-val" id="sv2">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv2',this.value)">
+        <div class="slider-poles"><span>Lieber alleine</span><span>Echte Teamplayerin</span></div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">💡 Wissensdurst & Lernbereitschaft</span>
+          <span class="slider-val" id="sv3">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv3',this.value)">
+        <div class="slider-poles"><span>Lerne wenn nötig</span><span>Lerne immer gerne</span></div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">❤ Freude an der Arbeit</span>
+          <span class="slider-val" id="sv4">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv4',this.value)">
+        <div class="slider-poles"><span>Arbeit ist Pflicht</span><span>Arbeit ist Leidenschaft</span></div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">⏰ Pünktlichkeit & Zuverlässigkeit</span>
+          <span class="slider-val" id="sv5">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv5',this.value)">
+        <div class="slider-poles"><span>Manchmal zu spät</span><span>Immer pünktlich</span></div>
+      </div>
+
+      <div style="margin-bottom:4px">
+        <div class="werte-row">
+          <span style="font-size:14px;font-weight:600">🔄 Umgang mit Kritik</span>
+          <span class="slider-val" id="sv6">Manchmal</span>
+        </div>
+        <input type="range" min="1" max="5" value="3" oninput="updateSlider('sv6',this.value)">
+        <div class="slider-poles"><span>Schwierig für mich</span><span>Lerne daraus</span></div>
+      </div>
+    </div>
+
+    <div class="section-head">Offene Fragen — eigene Worte</div>
+
+    <div class="card">
+      <div class="q-text">Warum möchtest du Friseurin / Friseur werden?</div>
+      <textarea rows="3" id="oq1" placeholder="Was zieht dich an diesem Beruf an?"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Was machst du, wenn eine Kundin mit dem Ergebnis nicht zufrieden ist?</div>
+      <textarea rows="3" id="oq2" placeholder="Kein Richtig oder Falsch — wir wollen wissen wie du denkst."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Beschreib dich in drei Wörtern.</div>
+      <input type="text" id="oq3" placeholder="z.B. freundlich, neugierig, zuverlässig…">
+    </div>
+
+    <div class="card">
+      <div class="q-text">Was machst du, wenn du merkst dass du eine Aufgabe noch nicht kannst?</div>
+      <textarea rows="3" id="oq4" placeholder="Wir suchen jemanden der fragen traut."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="q-text">Was bedeutet für dich guter Kundenservice?</div>
+      <textarea rows="3" id="oq5" placeholder="In deinen eigenen Worten."></textarea>
+    </div>
+
+    <div class="section-head">Einschätzung Ausbilderin</div>
+
+    <div class="card">
+      <div class="label">Notizen zu Körpersprache, Auftreten & Gesamteindruck</div>
+      <textarea rows="4" id="notizen-ausbilderin" placeholder="Erster Eindruck, Spontanität, Auftreten…"></textarea>
+    </div>
+
+    <button class="btn-primary" onclick="testTab('auswertung', document.querySelectorAll('.tab-btn')[2])">Weiter → Auswertung</button>
+  </div>
+
+  <!-- AUSWERTUNG TAB -->
+  <div id="tab-auswertung" style="display:none">
+
+    <div class="section-head">Gesamtpunktestand — Wissenstest (32 Punkte)</div>
+
+    <div class="card">
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:13px;color:#5A5550">Mathematik</span>
+          <input type="number" id="p-mathe" min="0" max="2" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
+          <span style="font-size:12px;color:#9A9A90">/ 2</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:13px;color:#5A5550">Österreich Allgemeinwissen</span>
+          <input type="number" id="p-aw" min="0" max="9" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
+          <span style="font-size:12px;color:#9A9A90">/ 9</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:13px;color:#5A5550">Geschichte</span>
+          <input type="number" id="p-gesch" min="0" max="4" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
+          <span style="font-size:12px;color:#9A9A90">/ 4</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:13px;color:#5A5550">Geschicklichkeit</span>
+          <input type="number" id="p-gesch2" min="0" max="11" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
+          <span style="font-size:12px;color:#9A9A90">/ 11</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:13px;color:#5A5550">Rollenspiel</span>
+          <input type="number" id="p-rolle" min="0" max="6" value="0" style="width:60px;text-align:center;padding:4px 6px;font-size:14px">
+          <span style="font-size:12px;color:#9A9A90">/ 6</span>
+        </div>
+        <button class="btn-sec" onclick="berechneGesamt()">Gesamt berechnen</button>
+        <div id="gesamt-anzeige" style="margin-top:12px;display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:15px;font-weight:700">Gesamt</span>
+            <span id="gesamt-zahl" style="font-size:22px;font-weight:700;color:#5B7B6F"></span>
+          </div>
+          <div class="note-bar"><div class="note-fill" id="gesamt-bar" style="width:0%"></div></div>
+          <div id="gesamt-note" style="font-size:14px;font-weight:700;margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head">Notenskala</div>
+    <div class="card" style="padding:14px">
+      <table style="width:100%;font-size:13px;border-collapse:collapse">
+        <tr style="border-bottom:1px solid #E2DDD5">
+          <td style="padding:6px 0;font-weight:700;color:#C44030">5 — Ungenügend</td><td style="text-align:right;color:#9A9A90">≤ 11 Pkt</td></tr>
+        <tr style="border-bottom:1px solid #E2DDD5">
+          <td style="padding:6px 0;font-weight:700;color:#C4A830">4 — Verbesserungswürdig</td><td style="text-align:right;color:#9A9A90">12–17 Pkt</td></tr>
+        <tr style="border-bottom:1px solid #E2DDD5">
+          <td style="padding:6px 0;font-weight:700;color:#5B7B6F">3 — Befriedigend</td><td style="text-align:right;color:#9A9A90">18–23 Pkt</td></tr>
+        <tr style="border-bottom:1px solid #E2DDD5">
+          <td style="padding:6px 0;font-weight:700;color:#3D6B50">2 — Gut</td><td style="text-align:right;color:#9A9A90">24–28 Pkt</td></tr>
+        <tr>
+          <td style="padding:6px 0;font-weight:700;color:#2C4A38">1 — Sehr gut</td><td style="text-align:right;color:#9A9A90">ab 29 Pkt</td></tr>
+      </table>
+    </div>
+
+    <div class="section-head">Bewerber speichern</div>
+    <div class="card">
+      <div class="label">Name des Bewerbers</div>
+      <input type="text" id="bewerber-name" placeholder="z.B. Lisa Müller" style="margin-bottom:10px">
+      <div class="label">Datum des Schnuppertags</div>
+      <input type="date" id="bewerber-datum" style="margin-bottom:10px">
+      <div class="label">Entscheidung</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="pts-btn" id="ent-ja" onclick="setEntscheidung('ja')">✓ Probezeit</button>
+        <button class="pts-btn" id="ent-nein" onclick="setEntscheidung('nein')">✗ Nicht geeignet</button>
+        <button class="pts-btn" id="ent-offen" onclick="setEntscheidung('offen')">? Noch offen</button>
+      </div>
+      <div id="speichern-fehler" class="fehler-box"></div>
+      <div id="speichern-ok" class="ok-box"></div>
+      <button class="btn-primary" onclick="speichereSchnuppertag()">Ergebnis speichern →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROBEZEITEN ── -->
+<div id="p-probezeiten" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">Schnuppertag · Probezeit</div>
+  <h1>Probezeiten</h1>
+  <p class="sub">3-Monatsplan — wöchentliches Feedback</p>
+
+  <div class="card-green" style="margin-bottom:16px;font-size:13px;line-height:1.6">
+    <strong>Wichtiger Hinweis:</strong> Der Lehrvertrag wird nach dem Schnuppertag abgeschlossen. Innerhalb der ersten 3 Monate (Probezeit) kann er jederzeit von beiden Seiten aufgelöst werden — danach nur noch unter strengen gesetzlichen Voraussetzungen.
+  </div>
+
+  <button class="btn-primary" onclick="zeige('neue-probezeit')" style="margin-bottom:16px">+ Neue Probezeit anlegen</button>
+
+  <div id="probezeiten-liste"><div class="laden">Wird geladen…</div></div>
+</div>
+
+<!-- ── NEUE PROBEZEIT ── -->
+<div id="p-neue-probezeit" class="page">
+  <button class="back-btn" onclick="zeige('probezeiten')">← Zurück</button>
+  <div class="tag">Schnuppertag · Neue Probezeit</div>
+  <h1>Probezeit anlegen</h1>
+
+  <div class="card">
+    <div class="label">Name des Lehrlings</div>
+    <input type="text" id="np-name" placeholder="z.B. Ronya Hoffmann" style="margin-bottom:10px">
+    <div class="label">Beginn Probezeit</div>
+    <input type="date" id="np-beginn" style="margin-bottom:10px">
+    <div class="label">Wöchentliches Feedbackgespräch</div>
+    <select id="np-wochentag" style="margin-bottom:10px">
+      <option value="Montag">Montag</option>
+      <option value="Dienstag">Dienstag</option>
+      <option value="Mittwoch">Mittwoch</option>
+      <option value="Donnerstag" selected>Donnerstag</option>
+      <option value="Freitag">Freitag</option>
+      <option value="Samstag">Samstag</option>
+    </select>
+    <div id="np-fehler" class="fehler-box"></div>
+    <button class="btn-primary" onclick="speichereProbezeit()">Probezeit starten →</button>
+    <button class="btn-sec" onclick="zeige('probezeiten')">Abbrechen</button>
+  </div>
+</div>
+
+<!-- ── PROBEZEIT DETAIL ── -->
+<div id="p-probezeit-detail" class="page">
+  <button class="back-btn" onclick="zeige('probezeiten')">← Zurück</button>
+  <div class="tag">Schnuppertag · Probezeit</div>
+  <h1 id="pzd-name">Probezeit</h1>
+  <p class="sub" id="pzd-info"></p>
+
+  <!-- MONAT TABS -->
+  <div class="tab-nav" id="pzd-tabs">
+    <button class="tab-btn ak" onclick="pzdTab(1,this)">Monat 1</button>
+    <button class="tab-btn" onclick="pzdTab(2,this)">Monat 2</button>
+    <button class="tab-btn" onclick="pzdTab(3,this)">Monat 3</button>
+    <button class="tab-btn" onclick="pzdTab(0,this)">📊 Abschluss</button>
+  </div>
+
+  <div id="pzd-inhalt"></div>
+
+  <div id="pzd-abschluss-box" style="display:none;margin-top:16px">
+    <div class="section-head">Entscheidung nach 3 Monaten</div>
+    <div class="card">
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="pts-btn" id="pz-ent-ja" onclick="setPzEntscheidung('lehrvertrag')">✓ Lehrvertrag</button>
+        <button class="pts-btn" id="pz-ent-verl" onclick="setPzEntscheidung('verlaengern')">↻ Verlängern</button>
+        <button class="pts-btn" id="pz-ent-nein" onclick="setPzEntscheidung('abbruch')">✗ Abbruch</button>
+      </div>
+      <div class="label">Notizen Abschlussgespräch</div>
+      <textarea rows="4" id="pzd-abschluss-notizen" placeholder="Entwicklung, Entscheidung, nächste Schritte…"></textarea>
+      <button class="btn-primary" onclick="speichereAbschluss()" style="margin-top:10px">Abschluss speichern →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ARCHIV ── -->
+<div id="p-archiv" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">Schnuppertag · Archiv</div>
+  <h1>Archiv Bewerber</h1>
+  <p class="sub">Alle gespeicherten Schnuppertage</p>
+  <div id="archiv-liste"><div class="laden">Wird geladen…</div></div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+var MEISTERIN_OK = false;
+var AKT_PROBEZEIT = null;
+var AKT_PUNKTE = {gs1:null, gs2:null, gs3:null, rp:null};
+var AKT_ENTSCHEIDUNG = null;
+var PZ_ENTSCHEIDUNG = null;
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function zeige(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('ak'); });
+  var el = document.getElementById('p-' + id);
+  if (el) { el.classList.add('ak'); window.scrollTo(0,0); }
+  if (id === 'probezeiten') ladeProbezeiten();
+  if (id === 'archiv') ladeArchiv();
+}
+
+function testTab(id, btn) {
+  ['wissen','werte','auswertung'].forEach(function(t){
+    var el = document.getElementById('tab-' + t);
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('ak'); });
+  var el = document.getElementById('tab-' + id);
+  if (el) el.style.display = 'block';
+  if (btn) btn.classList.add('ak');
+  window.scrollTo(0,0);
+}
+
+function pzdTab(monat, btn) {
+  document.querySelectorAll('#pzd-tabs .tab-btn').forEach(function(b){ b.classList.remove('ak'); });
+  if (btn) btn.classList.add('ak');
+  var box = document.getElementById('pzd-abschluss-box');
+  if (monat === 0) {
+    box.style.display = 'block';
+    document.getElementById('pzd-inhalt').innerHTML = '';
+    return;
+  }
+  box.style.display = 'none';
+  renderMonat(monat);
+}
+
+// ── SLIDER ────────────────────────────────────────────────────────────────────
+var SL_LABELS = ['', 'Selten', 'Manchmal', 'Oft', 'Meistens', 'Immer'];
+function updateSlider(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = SL_LABELS[parseInt(val)];
+}
+
+// ── QUIZ HILFS ────────────────────────────────────────────────────────────────
+function reveal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.add('show');
+}
+
+function selectPts(id, pts, btn) {
+  AKT_PUNKTE[id] = pts;
+  var container = document.getElementById('pts-' + id);
+  if (container) {
+    container.querySelectorAll('.pts-btn').forEach(function(b){ b.classList.remove('sel'); });
+  }
+  if (btn) btn.classList.add('sel');
+  var label = document.getElementById(id + '-label');
+  if (label) { label.classList.add('show'); label.textContent = '✓ Vergeben: ' + pts + ' Punkte'; }
+}
+
+function setEntscheidung(val) {
+  AKT_ENTSCHEIDUNG = val;
+  ['ent-ja','ent-nein','ent-offen'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) b.classList.remove('sel');
+  });
+  var map = {ja:'ent-ja', nein:'ent-nein', offen:'ent-offen'};
+  var b = document.getElementById(map[val]);
+  if (b) b.classList.add('sel');
+}
+
+function setPzEntscheidung(val) {
+  PZ_ENTSCHEIDUNG = val;
+  ['pz-ent-ja','pz-ent-verl','pz-ent-nein'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) b.classList.remove('sel');
+  });
+  var map = {lehrvertrag:'pz-ent-ja', verlaengern:'pz-ent-verl', abbruch:'pz-ent-nein'};
+  var b = document.getElementById(map[val]);
+  if (b) b.classList.add('sel');
+}
+
+function berechneGesamt() {
+  var m = parseInt(document.getElementById('p-mathe').value)||0;
+  var a = parseInt(document.getElementById('p-aw').value)||0;
+  var g = parseInt(document.getElementById('p-gesch').value)||0;
+  var g2 = parseInt(document.getElementById('p-gesch2').value)||0;
+  var r = parseInt(document.getElementById('p-rolle').value)||0;
+  var gesamt = m + a + g + g2 + r;
+  document.getElementById('gesamt-anzeige').style.display = 'block';
+  document.getElementById('gesamt-zahl').textContent = gesamt + ' / 32';
+  document.getElementById('gesamt-bar').style.width = Math.round((gesamt/32)*100) + '%';
+  var note, farbe;
+  if (gesamt >= 29) { note = '1 — Sehr gut'; farbe = '#2C4A38'; }
+  else if (gesamt >= 24) { note = '2 — Gut'; farbe = '#3D6B50'; }
+  else if (gesamt >= 18) { note = '3 — Befriedigend'; farbe = '#5B7B6F'; }
+  else if (gesamt >= 12) { note = '4 — Verbesserungswürdig'; farbe = '#C4A830'; }
+  else { note = '5 — Ungenügend'; farbe = '#C44030'; }
+  var el = document.getElementById('gesamt-note');
+  el.textContent = note; el.style.color = farbe;
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+async function loginMeisterin() {
+  var email = document.getElementById('home-email').value.trim();
+  var pw = document.getElementById('home-pw').value;
+  var fehlerEl = document.getElementById('home-login-fehler');
+  fehlerEl.style.display = 'none';
+  var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pw });
+  if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
+  MEISTERIN_OK = true;
+  document.getElementById('home-login-box').style.display = 'none';
+  document.getElementById('home-logout-box').style.display = 'block';
+  document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  MEISTERIN_OK = false;
+  document.getElementById('home-login-box').style.display = 'block';
+  document.getElementById('home-logout-box').style.display = 'none';
+}
+
+// ── SCHNUPPERTAG SPEICHERN ────────────────────────────────────────────────────
+async function speichereSchnuppertag() {
+  var fehlerEl = document.getElementById('speichern-fehler');
+  var okEl = document.getElementById('speichern-ok');
+  fehlerEl.style.display = 'none'; okEl.style.display = 'none';
+
+  if (!MEISTERIN_OK) {
+    fehlerEl.textContent = 'Bitte zuerst einloggen.';
+    fehlerEl.style.display = 'block'; return;
+  }
+  var name = document.getElementById('bewerber-name').value.trim();
+  var datum = document.getElementById('bewerber-datum').value;
+  if (!name || !datum) {
+    fehlerEl.textContent = 'Bitte Name und Datum eingeben.';
+    fehlerEl.style.display = 'block'; return;
+  }
+
+  var m = parseInt(document.getElementById('p-mathe').value)||0;
+  var a = parseInt(document.getElementById('p-aw').value)||0;
+  var g = parseInt(document.getElementById('p-gesch').value)||0;
+  var g2 = parseInt(document.getElementById('p-gesch2').value)||0;
+  var r = parseInt(document.getElementById('p-rolle').value)||0;
+  var gesamt = m + a + g + g2 + r;
+
+  var werte = {
+    freundlichkeit: document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]').value,
+    team: document.querySelector('[oninput="updateSlider(\'sv2\',this.value)"]').value,
+    wissensdurst: document.querySelector('[oninput="updateSlider(\'sv3\',this.value)"]').value,
+    freude: document.querySelector('[oninput="updateSlider(\'sv4\',this.value)"]').value,
+    puenktlichkeit: document.querySelector('[oninput="updateSlider(\'sv5\',this.value)"]').value,
+    kritik: document.querySelector('[oninput="updateSlider(\'sv6\',this.value)"]').value,
+    oq1: document.getElementById('oq1').value,
+    oq2: document.getElementById('oq2').value,
+    oq3: document.getElementById('oq3').value,
+    oq4: document.getElementById('oq4').value,
+    oq5: document.getElementById('oq5').value,
+    notizen: document.getElementById('notizen-ausbilderin').value
+  };
+
+  var { error } = await sb.from('schnuppertage').insert({
+    name: name,
+    datum: datum,
+    punkte_gesamt: gesamt,
+    punkte_detail: { mathe: m, aw: a, geschichte: g, geschicklichkeit: g2, rollenspiel: r },
+    entscheidung: AKT_ENTSCHEIDUNG || 'offen',
+    werte: werte
+  });
+
+  if (error) {
+    fehlerEl.textContent = 'Fehler beim Speichern: ' + error.message;
+    fehlerEl.style.display = 'block';
+  } else {
+    okEl.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!';
+    okEl.style.display = 'block';
+  }
+}
+
+// ── PROBEZEITEN LADEN ─────────────────────────────────────────────────────────
+async function ladeProbezeiten() {
+  var liste = document.getElementById('probezeiten-liste');
+  liste.innerHTML = '<div class="laden">Wird geladen…</div>';
+
+  if (!MEISTERIN_OK) {
+    liste.innerHTML = '<div class="laden">Bitte zuerst einloggen.</div>'; return;
+  }
+
+  var { data, error } = await sb.from('probezeiten').select('*').order('erstellt_am', { ascending: false });
+  if (error || !data || !data.length) {
+    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Probezeiten angelegt.</div>'; return;
+  }
+
+  var html = '';
+  data.forEach(function(pz) {
+    var statusFarbe = pz.status === 'bestanden' ? '#3D6B50' : pz.status === 'abgebrochen' ? '#C44030' : '#C4A830';
+    var statusText = pz.status === 'bestanden' ? '✓ Lehrvertrag' : pz.status === 'abgebrochen' ? '✗ Abgebrochen' : '● Läuft';
+    html += '<div class="probezeit-card" onclick="oeffneProbezeit(' + JSON.stringify(pz).replace(/"/g,'&quot;') + ')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center">' +
+        '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + pz.name + '</div>' +
+        '<div style="font-size:12px;font-weight:700;color:' + statusFarbe + '">' + statusText + '</div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:#9A9A90;margin-top:3px">Beginn: ' + formatDatum(pz.beginn) + ' · Feedback: ' + (pz.wochentag||'—') + '</div>' +
+    '</div>';
+  });
+  liste.innerHTML = html;
+}
+
+function oeffneProbezeit(pz) {
+  AKT_PROBEZEIT = pz;
+  document.getElementById('pzd-name').textContent = pz.name;
+  document.getElementById('pzd-info').textContent = 'Beginn: ' + formatDatum(pz.beginn) + ' · Feedbacktag: ' + (pz.wochentag||'—');
+  zeige('probezeit-detail');
+  pzdTab(1, document.querySelectorAll('#pzd-tabs .tab-btn')[0]);
+}
+
+// ── MONAT RENDERN ─────────────────────────────────────────────────────────────
+async function renderMonat(monat) {
+  var div = document.getElementById('pzd-inhalt');
+  div.innerHTML = '<div class="laden">Wird geladen…</div>';
+
+  var { data: wochen } = await sb.from('probezeit_wochen')
+    .select('*')
+    .eq('probezeit_id', AKT_PROBEZEIT.id)
+    .eq('monat', monat)
+    .order('woche');
+
+  var ziele = ['Monat 1 — Ankommen & Kennenlernen','Monat 2 — Einarbeitung & Wachsen','Monat 3 — Bewährung & Entscheidung'];
+  var html = '<div class="card-green" style="font-size:13px;margin-bottom:12px"><strong>' + ziele[monat-1] + '</strong></div>';
+
+  var startWoche = (monat - 1) * 4 + 1;
+  for (var w = startWoche; w < startWoche + 4; w++) {
+    var wo = null;
+    if (wochen) wo = wochen.find(function(x){ return x.woche === w; }) || null;
+    html += renderWocheForm(w, monat, wo);
+  }
+
+  // Monats-Feedback
+  html += '<div class="section-head">Feedbackgespräch Ende Monat ' + monat + '</div>';
+  var fbId = 'fb-m' + monat;
+  var { data: fbData } = await sb.from('probezeit_monats_feedback')
+    .select('*')
+    .eq('probezeit_id', AKT_PROBEZEIT.id)
+    .eq('monat', monat)
+    .single();
+  html += '<div class="card">' +
+    '<div class="label">Was läuft gut? Was muss besser werden?</div>' +
+    '<textarea rows="3" id="' + fbId + '" placeholder="Notizen Feedbackgespräch…">' + (fbData ? fbData.notiz||'' : '') + '</textarea>' +
+    '<div style="display:flex;gap:8px;margin-top:10px">' +
+      '<button class="pts-btn" id="fb-weiter-' + monat + '" onclick="setFbStatus(' + monat + ',\'weiter\',this)">✓ Weiter</button>' +
+      '<button class="pts-btn" id="fb-gep-' + monat + '" onclick="setFbStatus(' + monat + ',\'gespraech\',this)">! Gespräch</button>' +
+      '<button class="pts-btn" id="fb-abbruch-' + monat + '" onclick="setFbStatus(' + monat + ',\'abbruch\',this)">✗ Abbruch</button>' +
+    '</div>' +
+    '<button class="btn-primary" style="margin-top:10px" onclick="speichereFeedback(' + monat + ')">Feedback speichern</button>' +
+  '</div>';
+
+  div.innerHTML = html;
+
+  if (fbData && fbData.status) {
+    var map = {weiter:'fb-weiter-',gespraech:'fb-gep-',abbruch:'fb-abbruch-'};
+    var b = document.getElementById(map[fbData.status] + monat);
+    if (b) b.classList.add('sel');
+  }
+}
+
+var FB_STATUS = {};
+function setFbStatus(monat, val, btn) {
+  FB_STATUS[monat] = val;
+  ['fb-weiter-','fb-gep-','fb-abbruch-'].forEach(function(p){
+    var b = document.getElementById(p + monat);
+    if (b) b.classList.remove('sel');
+  });
+  if (btn) btn.classList.add('sel');
+}
+
+function renderWocheForm(woche, monat, data) {
+  var felder = ['fachliches','teamverhalten','kundenkontakt','puenktlichkeit','lernbereitschaft'];
+  var labels = ['Fachliches Können','Teamverhalten','Kundenkontakt','Pünktlichkeit','Lernbereitschaft'];
+  var html = '<div class="woche-header">Woche ' + woche + ' — Monat ' + monat + '</div>';
+  html += '<div class="card" style="padding:14px">';
+  felder.forEach(function(f, i) {
+    var val = data ? (data[f]||0) : 0;
+    html += '<div style="margin-bottom:12px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">' +
+        '<span style="font-size:13px">' + labels[i] + '</span>' +
+        '<span style="font-size:12px;color:#9A9A90">1–5</span>' +
+      '</div>' +
+      '<input type="range" min="0" max="5" value="' + val + '" id="w' + woche + '-' + f + '" style="accent-color:#5B7B6F">' +
+    '</div>';
+  });
+  html += '<div class="label" style="margin-top:4px">Notiz</div>' +
+    '<textarea rows="2" id="w' + woche + '-notiz" placeholder="Was ist diese Woche aufgefallen?">' + (data ? data.notiz||'' : '') + '</textarea>' +
+    '<button class="btn-sec" style="margin-top:8px" onclick="speichereWoche(' + woche + ',' + monat + ')">Woche ' + woche + ' speichern</button>' +
+  '</div>';
+  return html;
+}
+
+async function speichereWoche(woche, monat) {
+  if (!AKT_PROBEZEIT) return;
+  var felder = ['fachliches','teamverhalten','kundenkontakt','puenktlichkeit','lernbereitschaft'];
+  var payload = { probezeit_id: AKT_PROBEZEIT.id, woche: woche, monat: monat };
+  felder.forEach(function(f){
+    var el = document.getElementById('w' + woche + '-' + f);
+    payload[f] = el ? parseInt(el.value)||0 : 0;
+  });
+  var notizEl = document.getElementById('w' + woche + '-notiz');
+  payload.notiz = notizEl ? notizEl.value : '';
+
+  var { data: bestehend } = await sb.from('probezeit_wochen').select('id')
+    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('woche', woche).single();
+
+  var error;
+  if (bestehend) {
+    var res = await sb.from('probezeit_wochen').update(payload).eq('id', bestehend.id);
+    error = res.error;
+  } else {
+    var res = await sb.from('probezeit_wochen').insert(payload);
+    error = res.error;
+  }
+  if (!error) {
+    var btn = document.querySelector('[onclick="speichereWoche(' + woche + ',' + monat + ')"]');
+    if (btn) { btn.textContent = '✓ Gespeichert'; btn.style.color = '#5B7B6F'; setTimeout(function(){ btn.textContent = 'Woche ' + woche + ' speichern'; btn.style.color = ''; }, 2000); }
+  }
+}
+
+async function speichereFeedback(monat) {
+  if (!AKT_PROBEZEIT) return;
+  var notiz = (document.getElementById('fb-m' + monat)||{}).value || '';
+  var status = FB_STATUS[monat] || null;
+
+  var { data: bestehend } = await sb.from('probezeit_monats_feedback').select('id')
+    .eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).single();
+
+  var payload = { probezeit_id: AKT_PROBEZEIT.id, monat: monat, notiz: notiz, status: status };
+  if (bestehend) {
+    await sb.from('probezeit_monats_feedback').update(payload).eq('id', bestehend.id);
+  } else {
+    await sb.from('probezeit_monats_feedback').insert(payload);
+  }
+}
+
+async function speichereAbschluss() {
+  if (!AKT_PROBEZEIT) return;
+  var notizen = document.getElementById('pzd-abschluss-notizen').value;
+  var status = PZ_ENTSCHEIDUNG === 'lehrvertrag' ? 'bestanden' : PZ_ENTSCHEIDUNG === 'abbruch' ? 'abgebrochen' : 'laufend';
+  await sb.from('probezeiten').update({
+    status: status,
+    entscheidung: PZ_ENTSCHEIDUNG,
+    notizen_abschluss: notizen
+  }).eq('id', AKT_PROBEZEIT.id);
+  AKT_PROBEZEIT.status = status;
+  zeige('probezeiten');
+}
+
+// ── NEUE PROBEZEIT SPEICHERN ──────────────────────────────────────────────────
+async function speichereProbezeit() {
+  var fehlerEl = document.getElementById('np-fehler');
+  fehlerEl.style.display = 'none';
+  if (!MEISTERIN_OK) { fehlerEl.textContent = 'Bitte zuerst einloggen.'; fehlerEl.style.display = 'block'; return; }
+  var name = document.getElementById('np-name').value.trim();
+  var beginn = document.getElementById('np-beginn').value;
+  var wochentag = document.getElementById('np-wochentag').value;
+  if (!name || !beginn) { fehlerEl.textContent = 'Bitte Name und Beginn eingeben.'; fehlerEl.style.display = 'block'; return; }
+
+  var beginDate = new Date(beginn);
+  var endeDate = new Date(beginDate);
+  endeDate.setMonth(endeDate.getMonth() + 3);
+  var ende = endeDate.toISOString().slice(0,10);
+
+  var { error } = await sb.from('probezeiten').insert({ name: name, beginn: beginn, ende: ende, wochentag: wochentag, status: 'laufend' });
+  if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
+  document.getElementById('np-name').value = '';
+  document.getElementById('np-beginn').value = '';
+  zeige('probezeiten');
+}
+
+// ── ARCHIV ────────────────────────────────────────────────────────────────────
+async function ladeArchiv() {
+  var liste = document.getElementById('archiv-liste');
+  liste.innerHTML = '<div class="laden">Wird geladen…</div>';
+  if (!MEISTERIN_OK) { liste.innerHTML = '<div class="laden">Bitte zuerst einloggen.</div>'; return; }
+
+  var { data, error } = await sb.from('schnuppertage').select('*').order('datum', { ascending: false });
+  if (error || !data || !data.length) { liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Schnuppertage gespeichert.</div>'; return; }
+
+  var html = '';
+  data.forEach(function(s) {
+    var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
+    var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
+    var note = getNoteText(s.punkte_gesamt||0);
+    html += '<div class="card" style="margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center">' +
+        '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + s.name + '</div>' +
+        '<div style="font-size:12px;font-weight:700;color:' + entFarbe + '">' + entText + '</div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:#9A9A90;margin-top:2px">' + formatDatum(s.datum) + '</div>' +
+      '<div style="display:flex;gap:12px;margin-top:8px">' +
+        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + (s.punkte_gesamt||0) + ' / 32 Punkte</span>' +
+        '<span style="font-size:13px;color:#7A7A70">' + note + '</span>' +
+      '</div>' +
+    '</div>';
+  });
+  liste.innerHTML = html;
+}
+
+// ── HILFSFUNKTIONEN ───────────────────────────────────────────────────────────
+function getNoteText(punkte) {
+  if (punkte >= 29) return '1 — Sehr gut';
+  if (punkte >= 24) return '2 — Gut';
+  if (punkte >= 18) return '3 — Befriedigend';
+  if (punkte >= 12) return '4 — Verbesserungswürdig';
+  return '5 — Ungenügend';
+}
+
+function formatDatum(dateStr) {
+  if (!dateStr) return '—';
+  var d = new Date(dateStr);
+  return d.toLocaleDateString('de-AT', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  // Heutiges Datum als Default
+  var heute = new Date().toISOString().slice(0,10);
+  var datumEl = document.getElementById('bewerber-datum');
+  if (datumEl) datumEl.value = heute;
+  var npBeginn = document.getElementById('np-beginn');
+  if (npBeginn) npBeginn.value = heute;
+
+  // Session prüfen
+  sb.auth.getSession().then(function(result) {
+    if (result.data && result.data.session) {
+      MEISTERIN_OK = true;
+      document.getElementById('home-login-box').style.display = 'none';
+      document.getElementById('home-logout-box').style.display = 'block';
+      document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
+    }
+  });
+});
+</script>
+</body>
+</html>
