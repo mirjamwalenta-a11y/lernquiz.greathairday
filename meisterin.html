@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meisterin · A Great Hair Day</title>
 <meta name="theme-color" content="#1c1917">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;min-height:100dvh}
@@ -185,7 +186,31 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     </button>
   </div>
 
+  <button class="nav-card" onclick="ladeEnVerlauf()" style="border-color:#C4A830;display:flex;align-items:center;gap:14px">
+    <div class="nav-icon">📊</div>
+    <div>
+      <div class="nav-title">Englisch-Verlauf</div>
+      <div class="nav-desc">Fortschritt aller Lehrlinge</div>
+    </div>
+  </button>
+
   <button class="back-btn" style="text-align:center;width:100%;margin-top:16px;color:#C8C4BC" onclick="pinAbmelden()">Abmelden</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- ENGLISCH VERLAUF DASHBOARD                        -->
+<!-- ══════════════════════════════════════════════════ -->
+<div id="p-en-verlauf" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Englisch-Verlauf</div>
+  <h1>📊 Englisch-Verlauf</h1>
+  <p class="sub" style="margin-bottom:16px">Fortschritt aller Lehrlinge</p>
+
+  <div id="env-lehrling-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+
+  <div id="env-inhalt">
+    <div style="text-align:center;padding:40px 0;color:#9A9A90;font-size:13px">Wird geladen…</div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════ -->
@@ -382,6 +407,121 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 </div>
 
 <script>
+// ════════════════════════════════════════════════════════
+// SUPABASE
+// ════════════════════════════════════════════════════════
+const SB_URL='https://wrxlaltgtgkdomklgrlj.supabase.co';
+const SB_KEY='sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+var sb_m=null;
+try{sb_m=supabase.createClient(SB_URL,SB_KEY);}catch(e){}
+
+var EnVerlaufAktLehrling=null;
+
+async function ladeEnVerlauf(){
+  zeige('en-verlauf');
+  document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:40px 0;color:#9A9A90;font-size:13px">Wird geladen…</div>';
+  document.getElementById('env-lehrling-tabs').innerHTML='';
+  if(!sb_m){
+    document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:20px;color:#C44030;font-size:13px">Keine Verbindung zu Supabase.</div>';
+    return;
+  }
+  try{
+    // Alle Lehrlinge laden
+    var {data:lehrlinge}=await sb_m.from('lehrlinge').select('id,name,lehrjahr').order('name');
+    if(!lehrlinge||!lehrlinge.length){
+      document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:20px;color:#9A9A90;font-size:13px">Noch keine Daten vorhanden.</div>';
+      return;
+    }
+    // Tabs erstellen
+    var tabs=document.getElementById('env-lehrling-tabs');
+    lehrlinge.forEach(function(l,i){
+      var btn=document.createElement('button');
+      btn.className='chip'+(i===0?' ak':'');
+      btn.textContent=l.name;
+      btn.addEventListener('click',function(){
+        document.querySelectorAll('#env-lehrling-tabs .chip').forEach(function(b){b.classList.remove('ak');});
+        btn.classList.add('ak');
+        zeigeEnVerlaufFuer(l);
+      });
+      tabs.appendChild(btn);
+    });
+    // Ersten Lehrling anzeigen
+    zeigeEnVerlaufFuer(lehrlinge[0]);
+  }catch(e){
+    document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:20px;color:#C44030;font-size:13px">Fehler beim Laden: '+e.message+'</div>';
+  }
+}
+
+async function zeigeEnVerlaufFuer(lehrling){
+  var inhalt=document.getElementById('env-inhalt');
+  inhalt.innerHTML='<div style="text-align:center;padding:20px;color:#9A9A90;font-size:13px">Lade '+lehrling.name+'…</div>';
+  try{
+    var {data:sessions}=await sb_m.from('en_verlauf')
+      .select('*')
+      .eq('lehrling_id',lehrling.id)
+      .order('erstellt_am',{ascending:false})
+      .limit(20);
+
+    if(!sessions||!sessions.length){
+      inhalt.innerHTML='<div class="card"><p style="font-size:13px;color:#9A9A90;text-align:center">'+lehrling.name+' hat noch keine Englisch-Sessions.</p></div>';
+      return;
+    }
+
+    // Statistik berechnen
+    var gesamt=sessions.length;
+    var avgPct=Math.round(sessions.reduce(function(s,r){return s+(r.prozent||0);},0)/gesamt);
+    var besteSession=sessions.reduce(function(best,r){return (r.prozent||0)>(best.prozent||0)?r:best;},sessions[0]);
+    var katStats={};
+    sessions.forEach(function(s){
+      var k=s.kategorie||'Alle';
+      if(!katStats[k]){katStats[k]={sessions:0,pct:0};}
+      katStats[k].sessions++;
+      katStats[k].pct+=s.prozent||0;
+    });
+
+    var html='';
+    // Übersicht
+    html+='<div class="card">';
+    html+='<div class="label" style="margin-bottom:10px">'+lehrling.name+' · '+lehrling.lehrjahr+'. Lehrjahr</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px">';
+    html+='<div style="text-align:center;background:#EAF0EE;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#5B7B6F">'+gesamt+'</div><div style="font-size:10px;color:#7A7A70;margin-top:2px">Sessions</div></div>';
+    html+='<div style="text-align:center;background:#EAF0EE;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#5B7B6F">'+avgPct+'%</div><div style="font-size:10px;color:#7A7A70;margin-top:2px">Ø Richtig</div></div>';
+    html+='<div style="text-align:center;background:#EAF0EE;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#5B7B6F">'+(besteSession.prozent||0)+'%</div><div style="font-size:10px;color:#7A7A70;margin-top:2px">Beste</div></div>';
+    html+='</div></div>';
+
+    // Kategorien
+    var katKeys=Object.keys(katStats);
+    if(katKeys.length>1){
+      html+='<div class="card"><div class="label" style="margin-bottom:10px">Nach Kategorie</div>';
+      katKeys.forEach(function(k){
+        var avg=Math.round(katStats[k].pct/katStats[k].sessions);
+        var balken=Math.max(4,avg);
+        html+='<div style="margin-bottom:10px">';
+        html+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#2C2C2C;margin-bottom:4px"><span>'+k+'</span><span style="color:#5B7B6F;font-weight:600">'+avg+'% · '+katStats[k].sessions+' Sessions</span></div>';
+        html+='<div style="height:6px;background:#E2DDD5;border-radius:3px"><div style="height:6px;background:#5B7B6F;border-radius:3px;width:'+balken+'%"></div></div>';
+        html+='</div>';
+      });
+      html+='</div>';
+    }
+
+    // Letzte Sessions
+    html+='<div class="card"><div class="label" style="margin-bottom:10px">Letzte Sessions</div>';
+    sessions.forEach(function(s){
+      var farbe=s.prozent>=80?'#5B7B6F':s.prozent>=60?'#C4A830':'#C44030';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #E2DDD5;">';
+      html+='<div><div style="font-size:12px;font-weight:600;color:#2C2C2C">'+( s.kategorie||'Alle')+' · '+(s.modus||'Quiz')+'</div>';
+      html+='<div style="font-size:11px;color:#9A9A90;margin-top:2px">'+s.datum+' · '+s.richtig+'/'+s.gesamt+' richtig</div></div>';
+      html+='<div style="font-size:18px;font-weight:700;color:'+farbe+'">'+s.prozent+'%</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+
+    inhalt.innerHTML=html;
+  }catch(e){
+    inhalt.innerHTML='<div class="card"><p style="font-size:13px;color:#C44030">Fehler: '+e.message+'</p></div>';
+  }
+}
+
 // ════════════════════════════════════════════════════════
 // PIN
 // ════════════════════════════════════════════════════════

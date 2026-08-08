@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Englisch im Salon · A Great Hair Day</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;min-height:100dvh}
@@ -366,6 +367,41 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 </div>
 
 <script>
+// ════════════════════════════════════════════════════════
+// SUPABASE — Lehrling-Verlauf speichern
+// ════════════════════════════════════════════════════════
+const SB_URL='https://wrxlaltgtgkdomklgrlj.supabase.co';
+const SB_KEY='sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+var sb_client=null;
+try{sb_client=supabase.createClient(SB_URL,SB_KEY);}catch(e){}
+
+// Aktuell laufende Quiz-Info für Verlauf
+var AktKategorie='Alle';
+var AktModusLabel='Quiz';
+
+async function speichereEnVerlauf(richtig,gesamt,kategorie,modus){
+  if(!sb_client)return;
+  try{
+    var session=await sb_client.auth.getSession();
+    if(!session.data||!session.data.session)return;
+    var userId=session.data.session.user.id;
+    var {data:lehrling}=await sb_client.from('lehrlinge').select('id,name').eq('user_id',userId).single();
+    if(!lehrling)return;
+    var pct=gesamt>0?Math.round((richtig/gesamt)*100):0;
+    await sb_client.from('en_verlauf').insert({
+      lehrling_id:lehrling.id,
+      lehrling_name:lehrling.name,
+      datum:new Date().toLocaleDateString('de-AT'),
+      richtig:richtig,
+      falsch:gesamt-richtig,
+      gesamt:gesamt,
+      prozent:pct,
+      kategorie:kategorie||'Alle',
+      modus:modus||'Quiz'
+    });
+  }catch(e){console.log('Verlauf:',e);}
+}
+
 // ════════════════════════════════════════════════════════
 // FRAGENBANK
 // ════════════════════════════════════════════════════════
@@ -935,6 +971,9 @@ function falscheOptionen(richtig,pool,feld){
 function starteLernen(){
   var pool=getPool();
   if(pool.length<4){alert('Diese Kategorie hat zu wenige Fragen. Bitte wähle "Alle Kategorien".');return;}
+  var katN={alle:'Alle',begruessung:'Begrüßung',beratung:'Beratung',schnitt:'Während des Schnitts',farbe:'Farbe & Behandlung',termin:'Termine',verabschiedung:'Verabschiedung',vokabular:'Fachvokabular',beschwerden:'Beschwerden'};
+  AktKategorie=katN[AktKat]||AktKat;
+  AktModusLabel=AktModus==='de-en'?'Deutsch→Englisch':AktModus==='en-de'?'Englisch→Deutsch':'Karteikarten';
   if(AktModus==='karte'){starteKarteikarten(pool);return;}
   QuizFragen=shuffle(pool);
   QuizIdx=0;QuizRichtig=0;
@@ -1001,6 +1040,8 @@ function pruefeAntwort(gewaehlt,richtig,geklickt){
 // ERGEBNIS
 // ════════════════════════════════════════════════════════
 function zeigeErgebnis(){
+  // Verlauf in Supabase speichern
+  speichereEnVerlauf(QuizRichtig, QuizFragen.length, AktKategorie, AktModusLabel);
   // Session speichern & Streak berechnen
   var ergebnis=sessionAbgeschlossen();
   zeige('ergebnis');
@@ -1056,6 +1097,7 @@ function karteKannte(){KarteIdx++;zeigeKarte();}
 function karteNochmal(){KarteWiederholung.push(AktFrage);KarteIdx++;zeigeKarte();}
 
 function zeigeKartenEnde(){
+  speichereEnVerlauf(0, KarteWiederholung.length, AktKategorie, 'Karteikarten');
   var ergebnis=sessionAbgeschlossen();
   zeige('ergebnis');
   document.getElementById('erg-zahl').textContent='🃏';
