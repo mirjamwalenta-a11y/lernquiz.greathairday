@@ -1066,9 +1066,14 @@ var MONAT_ZIELE = {
 async function renderMonat(monat) {
   var div = document.getElementById('pzd-inhalt');
   div.innerHTML = '<div class="laden">Wird geladen…</div>';
+  try {
 
-  var { data: wochen } = await sb.from('probezeit_wochen')
-    .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).order('woche');
+  var wochen = [];
+  try {
+    var wRes = await sb.from('probezeit_wochen')
+      .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat).order('woche');
+    wochen = wRes.data || [];
+  } catch(e) { wochen = []; }
 
   var zieleData = await eineLaden(sb.from('probezeit_ziele')
     .select('*').eq('probezeit_id', AKT_PROBEZEIT.id).eq('monat', monat));
@@ -1135,6 +1140,9 @@ async function renderMonat(monat) {
     var map = {weiter:'fb-weiter-',gespraech:'fb-gep-',abbruch:'fb-abbruch-'};
     var b = document.getElementById(map[fbData.status] + monat);
     if (b) b.classList.add('sel');
+  }
+  } catch(err) {
+    div.innerHTML = '<div class="laden" style="color:#C44030">Fehler beim Laden: ' + (err.message||err) + '</div>';
   }
 }
 
