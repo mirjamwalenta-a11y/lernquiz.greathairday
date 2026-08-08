@@ -1899,21 +1899,22 @@ function kopiereLink() {
 
 // ── LERNZIELE EDITOR ─────────────────────────────────────────────────────────
 var LZE_MONAT = 1;
-var LZE_HERKUNFT = 'home'; // 'home' oder 'probezeit'
+var LZE_HERKUNFT = 'home';
 
 function oeffneLernzieleEditor(monat) {
   MONAT_ZIELE = ladeMonatZiele();
   LZE_MONAT = monat || 1;
   LZE_HERKUNFT = 'probezeit';
-  document.getElementById('lze-sub').textContent = 'Aufgaben für alle Probezeiten anpassen';
   zeige('lernziele-editor');
-  lzeTab(LZE_MONAT, document.querySelectorAll('#lze-tabs .tab-btn')[LZE_MONAT - 1]);
+  var tabBtn = document.querySelectorAll('#lze-tabs .tab-btn')[LZE_MONAT - 1];
+  lzeTab(LZE_MONAT, tabBtn);
 }
 
 function lernzieleEditorZurueck() {
   if (LZE_HERKUNFT === 'probezeit' && AKT_PROBEZEIT) {
     zeige('probezeit-detail');
-    pzdTab(LZE_MONAT, document.querySelectorAll('#pzd-tabs .tab-btn')[LZE_MONAT - 1]);
+    var tabBtn = document.querySelectorAll('#pzd-tabs .tab-btn')[LZE_MONAT - 1];
+    pzdTab(LZE_MONAT, tabBtn);
   } else {
     zeige('home');
   }
@@ -1932,81 +1933,75 @@ function renderLzeInhalt(monat) {
   var div = document.getElementById('lze-inhalt');
   if (!div) return;
 
-  var html = '';
-  if (!mInfo.ziele.length) {
-    html += '<div class="laden" style="color:#9A9A90">Noch keine Aufgaben — unten hinzufügen.</div>';
+  if (!mInfo || !mInfo.ziele.length) {
+    div.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Aufgaben — unten hinzufügen.</div>';
+    return;
   }
 
-  mInfo.ziele.forEach(function(z, i) {
-    html += '<div class="frage-editor-card" id="lze-card-' + z.id + '">' +
+  var html = '';
+  mInfo.ziele.forEach(function(z) {
+    html += '<div class="frage-editor-card">' +
       '<div class="editor-row">' +
-        '<div style="flex:1;font-size:14px;color:#1C1C1A" id="lze-label-' + z.id + '">' + z.text + '</div>' +
+        '<div style="flex:1;font-size:14px;color:#1C1C1A">' + z.text + '</div>' +
         '<div style="display:flex;gap:6px;margin-left:10px;flex-shrink:0">' +
-          '<button class="btn-sm" onclick="lzeEditToggle('' + z.id + '',' + monat + ')">✏️</button>' +
-          '<button class="btn-sm-danger" onclick="lzeLoeschen('' + z.id + '',' + monat + ')">🗑️</button>' +
+          '<button class="btn-sm" data-edit="' + z.id + '" data-monat="' + monat + '" onclick="lzeEditToggle(this)">✏️</button>' +
+          '<button class="btn-sm-danger" data-del="' + z.id + '" data-monat="' + monat + '" onclick="lzeLoeschen(this)">🗑️</button>' +
         '</div>' +
       '</div>' +
       '<div id="lze-edit-' + z.id + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #E2DDD5">' +
         '<input type="text" id="lze-input-' + z.id + '" value="' + z.text.replace(/"/g, '&quot;') + '" style="margin-bottom:8px">' +
         '<div style="display:flex;gap:8px">' +
-          '<button class="btn-sm" onclick="lzeSpeichern('' + z.id + '',' + monat + ')">✓ Speichern</button>' +
-          '<button class="btn-sm-ghost" onclick="lzeEditToggle('' + z.id + '',' + monat + ')">Abbrechen</button>' +
+          '<button class="btn-sm" data-save="' + z.id + '" data-monat="' + monat + '" onclick="lzeSpeichern(this)">✓ Speichern</button>' +
+          '<button class="btn-sm-ghost" data-edit="' + z.id + '" data-monat="' + monat + '" onclick="lzeEditToggle(this)">Abbrechen</button>' +
         '</div>' +
       '</div>' +
     '</div>';
   });
 
   div.innerHTML = html;
-
-  // Neue Aufgabe Feld leeren
   var neuEl = document.getElementById('lze-neue-text');
   if (neuEl) neuEl.value = '';
 }
 
-function lzeEditToggle(id, monat) {
+function lzeEditToggle(btn) {
+  var id = btn.getAttribute('data-edit');
   var editDiv = document.getElementById('lze-edit-' + id);
   if (!editDiv) return;
   editDiv.style.display = editDiv.style.display === 'none' ? 'block' : 'none';
 }
 
-function lzeSpeichern(id, monat) {
+function lzeSpeichern(btn) {
+  var id = btn.getAttribute('data-save');
+  var monat = parseInt(btn.getAttribute('data-monat'));
   var input = document.getElementById('lze-input-' + id);
   if (!input) return;
   var neuerText = input.value.trim();
   if (!neuerText) return;
-
   var mz = ladeMonatZiele();
-  var ziele = mz[monat].ziele;
-  var idx = ziele.findIndex(function(z){ return z.id === id; });
-  if (idx >= 0) {
-    ziele[idx].text = neuerText;
-    speichereMonatZiele(mz);
-    MONAT_ZIELE = mz;
-  }
+  var idx = mz[monat].ziele.findIndex(function(z){ return z.id === id; });
+  if (idx >= 0) { mz[monat].ziele[idx].text = neuerText; speichereMonatZiele(mz); MONAT_ZIELE = mz; }
   renderLzeInhalt(monat);
 }
 
-function lzeLoeschen(id, monat) {
+function lzeLoeschen(btn) {
   if (!confirm('Aufgabe wirklich löschen?')) return;
+  var id = btn.getAttribute('data-del');
+  var monat = parseInt(btn.getAttribute('data-monat'));
   var mz = ladeMonatZiele();
   mz[monat].ziele = mz[monat].ziele.filter(function(z){ return z.id !== id; });
-  speichereMonatZiele(mz);
-  MONAT_ZIELE = mz;
+  speichereMonatZiele(mz); MONAT_ZIELE = mz;
   renderLzeInhalt(monat);
 }
 
 function lzeNeueAufgabe() {
   var fehler = document.getElementById('lze-neue-fehler');
   fehler.style.display = 'none';
-  var text = (document.getElementById('lze-neue-text')||{}).value || '';
-  text = text.trim();
+  var el = document.getElementById('lze-neue-text');
+  var text = el ? el.value.trim() : '';
   if (!text) { fehler.textContent = 'Bitte Aufgabe beschreiben.'; fehler.style.display = 'block'; return; }
-
   var mz = ladeMonatZiele();
-  var neuId = 'mz_' + Date.now();
-  mz[LZE_MONAT].ziele.push({ id: neuId, text: text });
-  speichereMonatZiele(mz);
-  MONAT_ZIELE = mz;
+  mz[LZE_MONAT].ziele.push({ id: 'mz_' + Date.now(), text: text });
+  speichereMonatZiele(mz); MONAT_ZIELE = mz;
   renderLzeInhalt(LZE_MONAT);
 }
 
