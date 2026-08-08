@@ -76,7 +76,8 @@ body.lehrling-modus #p-home .nav-card:last-of-type{display:none}
 body.lehrling-modus #home-login-box{display:none!important}
 body.lehrling-modus #home-logout-box{display:none!important}
 body.lehrling-modus .back-btn{display:none}
-body.lehrling-modus .nur-meisterin{display:none!important}
+.nur-meisterin{display:none!important}
+body.meisterin-ok .nur-meisterin{display:block!important}
 /* Quiz-Stil */
 .quiz-frage{border-left:3px solid #5B7B6F;padding-left:12px;margin-bottom:16px}
 .quiz-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #E2DDD5;border-radius:6px;margin-bottom:6px;cursor:pointer;font-size:14px;background:#fff}
@@ -917,6 +918,7 @@ async function loginMeisterin() {
   var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pw });
   if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
   MEISTERIN_OK = true;
+  document.body.classList.add('meisterin-ok');
   document.getElementById('home-login-box').style.display = 'none';
   document.getElementById('home-logout-box').style.display = 'block';
   document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
@@ -1837,6 +1839,7 @@ window.addEventListener('DOMContentLoaded', function() {
   sb.auth.getSession().then(function(result) {
     if (result.data && result.data.session) {
       MEISTERIN_OK = true;
+      document.body.classList.add('meisterin-ok');
       document.getElementById('home-login-box').style.display = 'none';
       document.getElementById('home-logout-box').style.display = 'block';
       document.getElementById('home-user-name').textContent = '✓ Mirjam Walenta eingeloggt';
