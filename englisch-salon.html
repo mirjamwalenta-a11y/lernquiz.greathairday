@@ -85,10 +85,43 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .sp-btn{padding:11px 28px;background:#5B7B6F;color:#fff;border:none;border-radius:8px;font-family:system-ui;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.05em}
 .sp-konf{position:absolute;border-radius:2px;pointer-events:none}
 @keyframes spkf{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(110px) rotate(400deg)}}
+
+/* ── MEISTERIN PIN ── */
+.pin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:8888;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px)}
+.pin-overlay.an{opacity:1;pointer-events:all}
+.pin-box{background:#FDFCFA;border-radius:14px;width:min(88vw,320px);padding:28px 22px;text-align:center}
+.pin-titel{font-size:18px;font-weight:700;color:#2C2C2C;margin-bottom:6px}
+.pin-sub{font-size:12px;color:#7A7A70;margin-bottom:18px}
+.pin-input{width:100%;border:1.5px solid #E2DDD5;border-radius:8px;padding:12px;font-size:20px;text-align:center;letter-spacing:6px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none;margin-bottom:12px}
+.pin-input:focus{border-color:#5B7B6F}
+.pin-fehler{font-size:12px;color:#C44030;margin-bottom:10px;min-height:16px}
+.pin-btn{width:100%;padding:11px;background:#5B7B6F;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:system-ui;margin-bottom:8px}
+.pin-abbruch{background:none;border:none;color:#9A9A90;font-size:12px;cursor:pointer;font-family:system-ui}
+
+/* ── MEISTERIN MODUS BANNER ── */
+.meisterin-banner{background:linear-gradient(135deg,#2C2C2C,#3d5249);border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.meisterin-banner-icon{font-size:24px}
+.meisterin-banner-info{flex:1}
+.meisterin-banner-titel{font-size:13px;font-weight:700;color:#F7F5F0}
+.meisterin-banner-sub{font-size:11px;color:#5B7B6F;margin-top:2px}
+.meisterin-abmelden{background:none;border:1px solid #5B7B6F;color:#5B7B6F;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:system-ui}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+<!-- ── PIN OVERLAY ── -->
+<div class="pin-overlay" id="pin-overlay">
+  <div class="pin-box">
+    <div style="font-size:32px;margin-bottom:8px">✂️</div>
+    <div class="pin-titel">Meisterinnen-Zugang</div>
+    <div class="pin-sub">Bitte PIN eingeben</div>
+    <input class="pin-input" type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="• • • • • •">
+    <div class="pin-fehler" id="pin-fehler"></div>
+    <button class="pin-btn" onclick="pinPruefen()">Einloggen →</button>
+    <button class="pin-abbruch" onclick="pinSchliessen()">Abbrechen</button>
+  </div>
+</div>
 
 <!-- ── STREAK POPUP ── -->
 <div class="sp-overlay" id="sp-overlay">
@@ -106,6 +139,27 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div class="tag">greathairday · Wien</div>
   <h1>🇬🇧 Englisch im Salon</h1>
   <p class="sub">Fachvokabular für Friseur-Kommunikation</p>
+
+  <!-- Meisterin Banner (nur wenn eingeloggt) -->
+  <div id="meisterin-banner" style="display:none" class="meisterin-banner">
+    <div class="meisterin-banner-icon">✂️</div>
+    <div class="meisterin-banner-info">
+      <div class="meisterin-banner-titel">Meisterinnen-Modus · Mirjam</div>
+      <div class="meisterin-banner-sub">Dein eigener Lernfortschritt</div>
+    </div>
+    <button class="meisterin-abmelden" onclick="meisterinAbmelden()">Abmelden</button>
+  </div>
+
+  <!-- Fachfragen-Button (nur für Meisterin) -->
+  <div id="fach-btn-wrap" style="display:none;margin-bottom:12px">
+    <button class="nav-card" onclick="zeige('fach')" style="border-color:#2C2C2C;background:#2C2C2C;display:flex;align-items:center;gap:12px">
+      <div style="font-size:22px">📚</div>
+      <div>
+        <div class="nav-title" style="color:#F7F5F0">Fachfragen üben</div>
+        <div class="nav-desc" style="color:#7A9A90">Alle Themen · nur für Meisterin</div>
+      </div>
+    </button>
+  </div>
 
   <!-- Streak Leiste -->
   <div class="streak-bar">
@@ -167,6 +221,11 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     </div>
     <div id="modus-info" style="font-size:12px;color:#7A7A70;margin-bottom:14px">Deutsch lesen → Englisch auswählen</div>
     <button class="btn-primary" onclick="starteLernen()">Jetzt starten →</button>
+  </div>
+
+  <!-- Versteckter Meisterin-Zugang -->
+  <div style="text-align:center;margin-top:24px;margin-bottom:8px">
+    <button id="meisterin-login-btn" onclick="pinOeffnen()" style="background:none;border:none;color:#E2DDD5;font-size:11px;cursor:pointer;font-family:system-ui;padding:8px">✂</button>
   </div>
 </div>
 
@@ -235,6 +294,75 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div id="erg-detail"></div>
   <button class="btn-primary" onclick="starteLernen()" style="margin-top:8px">Nochmal versuchen →</button>
   <button class="btn-ghost" onclick="zeige('home')" style="margin-top:8px">Andere Kategorie wählen</button>
+</div>
+
+<!-- ── FACHFRAGEN (NUR MEISTERIN) ── -->
+<div id="p-fach" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Nur für Meisterin</div>
+  <h1>📚 Fachfragen</h1>
+  <p class="sub" style="margin-bottom:16px">Alle Themen aus dem Lernquiz</p>
+
+  <div class="card">
+    <div class="label">Thema wählen</div>
+    <select id="fach-thema-sel" style="margin-bottom:14px">
+      <option value="alle">🗂 Alle Themen gemischt</option>
+      <option value="Hygiene & Schutzmaßnahmen">🧼 Hygiene & Schutzmaßnahmen</option>
+      <option value="Unfallverhütung & Arbeitssicherheit">⚠️ Unfallverhütung & Arbeitssicherheit</option>
+      <option value="Werkzeugkunde">✂️ Werkzeugkunde</option>
+      <option value="Haarkunde & Haarstruktur">💇 Haarkunde & Haarstruktur</option>
+      <option value="Hautkunde">🧴 Hautkunde</option>
+      <option value="Farbenlehre & Coloration">🎨 Farbenlehre & Coloration</option>
+      <option value="Colorationsgrundlagen">🎨 Colorationsgrundlagen</option>
+      <option value="Dauerwelle & Umformung">🌀 Dauerwelle & Umformung</option>
+      <option value="Kopfhautpflege">🌿 Kopfhautpflege</option>
+      <option value="Fachkunde Chemie">⚗️ Fachkunde Chemie</option>
+      <option value="Beratungsgespräch & Kundenkommunikation">💬 Beratungsgespräch & Kundenkommunikation</option>
+      <option value="Kundenberatung">💬 Kundenberatung</option>
+      <option value="Kundenkommunikation Fortgeschritten">💬 Kundenkommunikation Fortgeschritten</option>
+      <option value="Haarschnitt Techniken">✂️ Haarschnitt Techniken</option>
+      <option value="Balayage & Strähnen">✨ Balayage & Strähnen</option>
+      <option value="Pflegeprodukte & Wirkstoffe">🧴 Pflegeprodukte & Wirkstoffe</option>
+      <option value="Herrenservice">👔 Herrenservice</option>
+      <option value="Umformungen Fortgeschritten">🌀 Umformungen Fortgeschritten</option>
+      <option value="Salon-Organisation">📋 Salon-Organisation</option>
+      <option value="Betriebskunde & Recht">⚖️ Betriebskunde & Recht</option>
+      <option value="LAP-Vorbereitung">🎓 LAP-Vorbereitung</option>
+    </select>
+    <button class="btn-primary" onclick="starteFachquiz()">Quiz starten →</button>
+  </div>
+</div>
+
+<!-- ── FACHQUIZ ── -->
+<div id="p-fachquiz" class="page">
+  <button class="back-btn" onclick="zeige('fach')">← Zurück zur Auswahl</button>
+  <div class="prog-wrap"><div class="prog-fill" id="fq-prog" style="width:0%"></div></div>
+  <div style="font-size:12px;color:#9A9A90;margin-bottom:6px;display:flex;justify-content:space-between">
+    <span id="fq-nr">Frage 1</span>
+    <span id="fq-thema-label" style="color:#5B7B6F;font-weight:600"></span>
+    <span id="fq-score-live">✓ 0</span>
+  </div>
+  <div class="frage-box">
+    <div class="frage-txt" id="fq-txt"></div>
+  </div>
+  <div id="fq-optionen"></div>
+  <div id="fq-feedback" style="display:none"></div>
+  <div id="fq-btns"></div>
+</div>
+
+<!-- ── FACHQUIZ ERGEBNIS ── -->
+<div id="p-facherg" class="page">
+  <button class="back-btn" onclick="zeige('fach')">← Zurück zur Auswahl</button>
+  <div class="tag">greathairday · Ergebnis</div>
+  <h1>Fertig! 🎉</h1>
+  <div style="margin-bottom:16px"></div>
+  <div class="score-box">
+    <div class="score-zahl" id="fq-erg-zahl"></div>
+    <div class="score-sub" id="fq-erg-sub"></div>
+  </div>
+  <div id="fq-erg-detail"></div>
+  <button class="btn-primary" onclick="starteFachquiz()" style="margin-top:8px">Nochmal →</button>
+  <button class="btn-ghost" onclick="zeige('fach')" style="margin-top:8px">Anderes Thema</button>
 </div>
 
 <script>
@@ -366,15 +494,251 @@ var BADGES = [
 ];
 
 // ════════════════════════════════════════════════════════
-// STREAK LOGIK (localStorage)
+// FACHFRAGEN-BANK (alle Themen aus dem Lerntool)
 // ════════════════════════════════════════════════════════
+var FACHFRAGEN = [
+// HYGIENE
+{th:'Hygiene & Schutzmaßnahmen',f:'Welche drei Hygieneebenen gibt es im Friseursalon?',o:['Reinigen, Desinfizieren, Sterilisieren','Waschen, Spülen, Trocknen','Putzen, Einsprühen, Abdecken','Wischen, Sprühen, Lagern'],r:0,e:'Reinigen → Desinfizieren → Sterilisieren. Im Salon wird meist bis zur Desinfektion gearbeitet.'},
+{th:'Hygiene & Schutzmaßnahmen',f:'Wie lange muss ein Desinfektionsmittel mindestens einwirken?',o:['Sofort abwischen','Mindestens 30 Sekunden','5 Minuten','Über Nacht'],r:1,e:'Mindestens 30 Sekunden. Sofortiges Abwischen macht die Desinfektion wirkungslos.'},
+{th:'Hygiene & Schutzmaßnahmen',f:'Was gehört zur persönlichen Hygiene im Salon?',o:['Nur Händewaschen','Saubere Kleidung, gepflegte Hände, kurze Nägel, tägliche Körperpflege','Nur saubere Kleidung','Parfüm verwenden'],r:1,e:'Persönliche Hygiene: saubere Arbeitskleidung, gepflegte Hände, kurze Fingernägel, tägliche Körperpflege.'},
+{th:'Hygiene & Schutzmaßnahmen',f:'Was ist der Unterschied zwischen Desinfektion und Sterilisation?',o:['Kein Unterschied','Desinfektion tötet Krankheitserreger, Sterilisation tötet ALLE Keime inkl. Sporen','Sterilisation ist schwächer','Desinfektion ist nur für Metall'],r:1,e:'Desinfektion reduziert Krankheitserreger. Sterilisation vernichtet alle Keime inkl. Sporen.'},
+{th:'Hygiene & Schutzmaßnahmen',f:'Wie oft müssen Kämme und Bürsten desinfiziert werden?',o:['Einmal pro Woche','Nach jedem Kunden','Einmal täglich','Nur wenn sichtbar verschmutzt'],r:1,e:'Nach jedem Kunden — so verhindert man die Übertragung von Bakterien, Pilzen und Parasiten.'},
+{th:'Hygiene & Schutzmaßnahmen',f:'Was versteht man unter Kontakthygiene?',o:['Händewaschen','Vermeidung direkter Übertragung von Erregern durch Berührung','Desinfektion von Geräten','Lüften des Salons'],r:1,e:'Kontakthygiene verhindert die direkte Übertragung von Krankheitserregern — z.B. durch Handschuhe.'},
+{th:'Hygiene & Schutzmaßnahmen',f:'Welche Mittel werden zur Desinfektion im Salon verwendet?',o:['Nur Wasser','Alkohol, Aldehyde oder quaternäre Ammoniumverbindungen','Seife und Wasser','Nur Hitze'],r:1,e:'Desinfektionsmittel enthalten Alkohol, Aldehyde oder quaternäre Ammoniumverbindungen — je nach Anwendung.'},
+// ARBEITSSICHERHEIT
+{th:'Unfallverhütung & Arbeitssicherheit',f:'Was tust du sofort wenn du dich beim Schneiden schneidest?',o:['Weiterarbeiten','Wunde reinigen, Pflaster, Einmalhandschuh','Nur Pflaster','Kunden nach Hause schicken'],r:1,e:'Wunde reinigen, Pflaster, Einmalhandschuh — so schützt du dich und den Kunden.'},
+{th:'Unfallverhütung & Arbeitssicherheit',f:'Welchen Schutz trägst du beim Auftragen von Haarfarbe?',o:['Keinen','Einmalhandschuhe und Schürze','Nur Schürze','Nur Handschuhe wenn gewünscht'],r:1,e:'Einmalhandschuhe schützen die Haut vor Chemikalien. Schürze schützt die Kleidung.'},
+{th:'Unfallverhütung & Arbeitssicherheit',f:'Wo wird ein Arbeitsunfall dokumentiert?',o:['Gar nicht','Im Verbandbuch','Im Kassenbuch','In der Kundenkartei'],r:1,e:'Jeder Unfall wird im Verbandbuch eingetragen — Datum, Art der Verletzung, Erstmaßnahmen.'},
+{th:'Unfallverhütung & Arbeitssicherheit',f:'Was tust du wenn Haarfarbe in die Augen gelangt?',o:['Abwarten','Sofort mit viel Wasser spülen und Arzt aufsuchen','Eincremen','Sonnenbrille aufsetzen'],r:1,e:'Sofort und gründlich mit Wasser spülen — mindestens 10 Minuten. Danach Arzt aufsuchen.'},
+{th:'Unfallverhütung & Arbeitssicherheit',f:'Was ist ein Sicherheitsdatenblatt?',o:['Monatliche Salondienstanweisung','Informationsblatt über Gefahren, Zusammensetzung und Handhabung eines Produkts','Mitarbeiter-Sozialversicherung','Mindeststandard der Schönheitspflege'],r:1,e:'Sicherheitsdatenblätter informieren über Gefahren, Inhaltsstoffe und sichere Handhabung von Produkten.'},
+{th:'Unfallverhütung & Arbeitssicherheit',f:'Welche Schutzausrüstung ist beim Blondieren Pflicht?',o:['Keine','Handschuhe, Schürze, ggf. Mundschutz bei schlechter Lüftung','Nur Handschuhe','Nur Schürze'],r:1,e:'Handschuhe und Schürze sind Pflicht. Bei schlechter Belüftung auch Mundschutz — Bleichpulver reizt die Atemwege.'},
+// WERKZEUGKUNDE
+{th:'Werkzeugkunde',f:'Was ist der Unterschied zwischen Modellierschere und Effilierer?',o:['Kein Unterschied','Modellierschere glatt, Effilierer hat Zähne und dünnt aus','Effilierer ist größer','Nur für Damen'],r:1,e:'Modellierschere: glatte Klingen. Effilierer: gezahnte Klinge — entfernt Volumen ohne Länge zu nehmen.'},
+{th:'Werkzeugkunde',f:'Wie pflegst du eine Haarschere richtig?',o:['Gar nicht','Regelmäßig ölen, reinigen, fachgerecht schleifen lassen','Nur waschen','In Wasser einlegen'],r:1,e:'Scheren regelmäßig ölen, reinigen und beim Fachmann schleifen lassen — so bleiben sie scharf und langlebig.'},
+{th:'Werkzeugkunde',f:'Wofür verwendet man ein Nassrasiermesser?',o:['Haare schneiden','Konturenschnitt und Rasur','Haare färben','Dauerwelle wickeln'],r:1,e:'Das Nassrasiermesser wird für präzise Konturen und Rasur verwendet — typisch im Herrenbereich.'},
+{th:'Werkzeugkunde',f:'Was ist eine Rundbürste?',o:['Eine Bürste zum Entknoten','Eine Bürste zum Föhnen mit Volumen und Wellen','Eine Reinigungsbürste','Eine Massagebürste'],r:1,e:'Rundbürsten werden beim Föhnen verwendet — sie erzeugen Volumen, Wellen und glätten das Haar.'},
+{th:'Werkzeugkunde',f:'Was ist ein Stielkamm?',o:['Ein Kamm ohne Stiel','Ein Kamm mit Stiel zum Scheiteln und Einteilen der Haare','Ein Massagekamm','Ein Dauerwellkamm'],r:1,e:'Der Stielkamm hat einen langen Stiel — ideal zum Scheiteln, Einteilen und Kräuseln.'},
+{th:'Werkzeugkunde',f:'Wie erkennt man eine stumpfe Schere?',o:['Sie ist schwerer','Das Haar wird gequetscht statt sauber geschnitten','Sie ist kälter','Sie glänzt nicht mehr'],r:1,e:'Eine stumpfe Schere quetscht das Haar statt es sauber zu schneiden — das Haar splittert oder biegt sich.'},
+// HAARKUNDE
+{th:'Haarkunde & Haarstruktur',f:'Aus welchen drei Schichten besteht ein Haar?',o:['Wurzel, Schaft, Spitze','Cuticula, Cortex, Medulla','Keratin, Melanin, Lipide','Schuppenschicht, Farbschicht, Kern'],r:1,e:'Cuticula (Schuppenschicht) → Cortex (Melanin) → Medulla (Markkern).'},
+{th:'Haarkunde & Haarstruktur',f:'Aus welchem Stoff bestehen Haare hauptsächlich?',o:['Kollagen','Melanin','Keratin','Elastin'],r:2,e:'Haare bestehen zu ca. 90% aus Keratin — einem Strukturprotein.'},
+{th:'Haarkunde & Haarstruktur',f:'Welche vier Haarstrukturen gibt es?',o:['Glatt, wellig, lockig, kraus','Fein, normal, grob, dick','Kurz, mittel, lang, sehr lang','Trocken, normal, fettig, gemischt'],r:0,e:'Die vier Haarstrukturen: glatt, wellig, lockig, kraus — bestimmt durch den Haarfollikel.'},
+{th:'Haarkunde & Haarstruktur',f:'Was bedeutet es wenn Haar porös ist?',o:['Haar ist sehr stark','Die Schuppenschicht ist aufgeraut, Feuchtigkeit entweicht leicht','Haar ist sehr glatt','Haar hat viel Melanin'],r:1,e:'Poröses Haar hat eine beschädigte Cuticula — Feuchtigkeit entweicht schnell, das Haar ist spröde.'},
+{th:'Haarkunde & Haarstruktur',f:'Was ist Melanin im Haar?',o:['Ein Protein','Das natürliche Farbpigment des Haares','Ein Fett','Ein Mineral'],r:1,e:'Melanin ist das natürliche Pigment im Cortex — es bestimmt die Haarfarbe. Eumelanin=dunkel, Phäomelanin=rot/gelb.'},
+{th:'Haarkunde & Haarstruktur',f:'Was passiert beim Ergrauen des Haares?',o:['Das Haar wird dicker','Die Melanozyten produzieren weniger oder kein Melanin mehr','Das Haar wird trockener','Die Cuticula verschwindet'],r:1,e:'Mit dem Alter produzieren die Melanozyten immer weniger Melanin — das Haar wird grau/weiß.'},
+{th:'Haarkunde & Haarstruktur',f:'Was ist der Haarfollikel?',o:['Die Haarspitze','Die Haarwurzel-Tasche in der Haut aus der das Haar wächst','Das Haar selbst','Die Kopfhaut'],r:1,e:'Der Haarfollikel ist die Tasche in der Haut — hier wächst das Haar. Er bestimmt auch die Haarstruktur.'},
+{th:'Haarkunde & Haarstruktur',f:'Wie viele Haare verliert ein Mensch durchschnittlich täglich?',o:['10–20','50–100','200–300','500'],r:1,e:'50–100 Haare täglich ist normal. Mehr kann auf Haarausfall hindeuten.'},
+// HAUTKUNDE
+{th:'Hautkunde',f:'Aus welchen Schichten besteht die Haut?',o:['Cuticula, Cortex, Medulla','Oberhaut, Lederhaut, Unterhaut','Hornschicht, Keimschicht, Unterhaut','Schutz-, Fett-, Muskelschicht'],r:1,e:'Oberhaut (Epidermis), Lederhaut (Dermis), Unterhaut (Subcutis).'},
+{th:'Hautkunde',f:'Was ist der Säureschutzmantel der Haut?',o:['Eine Creme','Ein natürlicher Schutzfilm mit pH 4,5–5,5 der Krankheitserreger abwehrt','Eine Behandlung','Ein Medikament'],r:1,e:'Natürlicher Schutzfilm mit leicht saurem pH — schützt vor Bakterien und Pilzen.'},
+{th:'Hautkunde',f:'Welche Funktion hat die Talgdrüse?',o:['Temperatur regulieren','Talg produzieren der Haut und Haare schützt','Hautzellen bilden','Schadstoffe filtern'],r:1,e:'Talgdrüsen produzieren Talg — schützt vor dem Austrocknen.'},
+{th:'Hautkunde',f:'Was ist Seborrhoe?',o:['Trockene Kopfhaut','Übermäßige Talgproduktion','Haarausfall','Eine Pilzerkrankung'],r:1,e:'Seborrhoe = übermäßige Talgproduktion — Kopfhaut und Haare wirken fettig.'},
+{th:'Hautkunde',f:'Was versteht man unter Akne?',o:['Trockene Haut','Entzündliche Erkrankung der Talgdrüsen mit Mitessern und Pickeln','Eine Pilzerkrankung','Übermäßige Behaarung'],r:1,e:'Akne entsteht durch verstopfte Talgdrüsen und Bakterien — führt zu Mitessern, Pickeln und Entzündungen.'},
+{th:'Hautkunde',f:'Welche Schicht der Haut erneuert sich ständig?',o:['Lederhaut','Unterhaut','Oberhaut (Epidermis)','Alle gleich'],r:2,e:'Die Oberhaut erneuert sich alle 28 Tage komplett — alte Hornzellen werden abgestoßen.'},
+{th:'Hautkunde',f:'Was sind Schweißdrüsen und wozu dienen sie?',o:['Drüsen die Talg produzieren','Drüsen die Schweiß absondern zur Temperaturregulierung und Ausscheidung','Drüsen die Melanin bilden','Drüsen für die Haarproduktion'],r:1,e:'Schweißdrüsen regeln die Körpertemperatur und scheiden Stoffwechselprodukte aus.'},
+// FARBENLEHRE
+{th:'Farbenlehre & Coloration',f:'Welche drei Grundfarben gibt es?',o:['Rot, Grün, Blau','Rot, Gelb, Blau','Orange, Violett, Grün','Schwarz, Weiß, Grau'],r:1,e:'Rot, Gelb und Blau sind die drei Grundfarben — aus ihnen entstehen alle anderen Farben.'},
+{th:'Farbenlehre & Coloration',f:'Was neutralisiert einen orangefarbenen Untergrundton?',o:['Rot','Gelb','Blau','Grün'],r:2,e:'Blau neutralisiert Orange — Komplementärfarben heben sich gegenseitig auf.'},
+{th:'Farbenlehre & Coloration',f:'Was neutralisiert einen gelben Untergrundton?',o:['Blau','Orange','Violett/Lila','Grün'],r:2,e:'Violett neutralisiert Gelb — daher werden Silber-Shampoos (lila Pigmente) gegen Gelbstich verwendet.'},
+{th:'Farbenlehre & Coloration',f:'Was sind Sekundärfarben?',o:['Rot, Gelb, Blau','Orange, Grün, Violett — entstehen durch Mischen je zweier Grundfarben','Schwarz und Weiß','Alle hellen Farben'],r:1,e:'Sekundärfarben: Rot+Gelb=Orange, Gelb+Blau=Grün, Rot+Blau=Violett.'},
+{th:'Farbenlehre & Coloration',f:'Welche Untergrundtöne entstehen beim Aufhellen dunkler Haare?',o:['Sofort Weiß','Rot → Orange → Gelb → Hellgelb','Sofort Blond','Grün dann Gelb'],r:1,e:'Beim Aufhellen durchläuft dunkles Haar: Rot → Orange → Gelb → Hellgelb.'},
+{th:'Farbenlehre & Coloration',f:'Was ist der pH-Wert von gesundem Haar?',o:['1–2','4,5–5,5','7–8','10–12'],r:1,e:'Gesundes Haar hat pH 4,5–5,5 — leicht sauer, wie der Säureschutzmantel der Haut.'},
+// COLORATIONSGRUNDLAGEN
+{th:'Colorationsgrundlagen',f:'Was ist der Unterschied zwischen Tönung und Dauerhaftfarbe?',o:['Kein Unterschied','Tönung hält 4–8 Wäschen, Dauerhaftfarbe verändert das Haar dauerhaft','Tönung ist heller','Dauerhaftfarbe ist natürlich'],r:1,e:'Tönung: lagert Farbe außen an, wäscht sich aus. Dauerhaftfarbe: dringt ins Haar ein, hält dauerhaft.'},
+{th:'Colorationsgrundlagen',f:'Wofür wird Wasserstoffperoxid bei der Coloration verwendet?',o:['Für den Duft','Zum Aufhellen des Naturpigments und Entwickeln der Haarfarbe','Für die Pflege','Gegen Schuppen'],r:1,e:'H₂O₂ öffnet die Cuticula, hellt Naturpigment auf und entwickelt die Farbmoleküle.'},
+{th:'Colorationsgrundlagen',f:'Was bedeutet das Volumen bei Wasserstoffperoxid (z.B. 6%, 9%, 12%)?',o:['Den Preis','Die Stärke des Aufhellens — höheres Volumen = stärkere Aufhellung','Den Geruch','Die Haltbarkeit'],r:1,e:'Höheres Volumen = stärkere Aufhellung: 3% kaum, 6% 1 Stufe, 9% 2 Stufen, 12% 3 Stufen.'},
+{th:'Colorationsgrundlagen',f:'Was ist ein Allergietest und wann wird er durchgeführt?',o:['Ein Haartest nach der Färbung','Ein Hauttest 48 Stunden vor der Coloration um Allergien auszuschließen','Ein Test während der Behandlung','Nur bei Neukunden'],r:1,e:'48h vor jeder Coloration: wenig Farbe hinter dem Ohr oder Innenseite Ellbogen auftragen. Bei Reaktion: nicht färben!'},
+{th:'Colorationsgrundlagen',f:'Was ist der Unterschied zwischen oxidativer und direktziehender Farbe?',o:['Kein Unterschied','Oxidativ verändert das Haar dauerhaft mit H₂O₂, direktziehend lagert Pigmente außen an','Oxidativ ist natürlicher','Direktziehend ist teurer'],r:1,e:'Oxidativ: mit H₂O₂, dauerhaft, kann aufhellen. Direktziehend: ohne H₂O₂, lagert außen an, wäscht sich aus.'},
+// DAUERWELLE
+{th:'Dauerwelle & Umformung',f:'Was macht das Wellemittel bei einer Dauerwelle?',o:['Färbt das Haar','Bricht die Disulfidbrücken auf damit das Haar die Form annimmt','Klebt Haare zusammen','Macht Haar fester'],r:1,e:'Das Wellemittel löst die Schwefelbrücken im Cortex — das Haar nimmt die Form der Wickler an.'},
+{th:'Dauerwelle & Umformung',f:'Was macht der Fixierer bei der Dauerwelle?',o:['Löst die Form wieder','Schließt die Disulfidbrücken in neuer Form','Fügt Farbe hinzu','Trocknet das Haar'],r:1,e:'Der Fixierer schließt die Schwefelbrücken wieder — jetzt in der neuen gewellten Form.'},
+{th:'Dauerwelle & Umformung',f:'Was ist der Unterschied zwischen saurer und alkalischer Dauerwelle?',o:['Kein Unterschied','Saure DW schonender für sensitives Haar, alkalische stärker für normales Haar','Alkalisch ist immer besser','Sauer ist für Männer'],r:1,e:'Saure DW: schonend, für sensitives/gefärbtes Haar. Alkalische DW: stärker, für gesundes/resistentes Haar.'},
+{th:'Dauerwelle & Umformung',f:'Wie beeinflusst der Wicklerdurchmesser das Ergebnis?',o:['Gar nicht','Kleiner Wickler = engere Welle, großer Wickler = lockerere Welle','Größer = mehr Wellen','Kleiner = weniger Wellen'],r:1,e:'Kleiner Wickler = enge Locken. Großer Wickler = lockere Wellen.'},
+{th:'Dauerwelle & Umformung',f:'Warum darf Haar vor der Dauerwelle nicht mit Conditioner behandelt werden?',o:['Ist egal','Conditioner legt sich als Film ums Haar und verhindert das Eindringen des Wellemittels','Conditioner verfärbt das Haar','Conditioner macht die Welle zu stark'],r:1,e:'Conditioner versiegelt die Cuticula — das Wellemittel kann nicht eindringen und die Welle hält nicht.'},
+// KOPFHAUTPFLEGE
+{th:'Kopfhautpflege',f:'Was verursacht Schuppen?',o:['Zu häufiges Waschen','Zu schnelle Zellerneuerung der Kopfhaut, oft mit Pilz (Malassezia) verbunden','Zu seltenes Waschen','Falsches Shampoo'],r:1,e:'Schuppen entstehen durch zu schnelle Zellteilung der Kopfhaut — oft mit dem Pilz Malassezia verbunden.'},
+{th:'Kopfhautpflege',f:'Wie behandelt man eine trockene, empfindliche Kopfhaut?',o:['Mit fettigem Shampoo täglich','Mit mildem Shampoo, feuchtigkeitsspendenden Produkten, sanfte Massage','Mit heißem Wasser','Mit starkem Peeling'],r:1,e:'Trockene Kopfhaut: mildes Shampoo, Feuchtigkeit, sanfte Massage zur Durchblutungsförderung, keine Hitze.'},
+{th:'Kopfhautpflege',f:'Was ist diffuser Haarausfall?',o:['Haarausfall an einer Stelle','Gleichmäßiger Haarausfall über die gesamte Kopfhaut','Kein Haarausfall','Haarausfall nur am Scheitel'],r:1,e:'Diffuser Haarausfall: gleichmäßig über die ganze Kopfhaut — oft durch Stress, Mangelernährung oder Hormone.'},
+// CHEMIE
+{th:'Fachkunde Chemie',f:'Was bedeutet pH-Wert?',o:['Protein-Haushalt','Maß für den Säure- oder Basengehalt einer Lösung (Skala 0–14)','Haardicke','Feuchtigkeit'],r:1,e:'pH misst ob eine Lösung sauer (0–6), neutral (7) oder basisch (8–14) ist. Haar: pH 4,5–5,5.'},
+{th:'Fachkunde Chemie',f:'Was passiert wenn ein Produkt mit hohem pH-Wert auf das Haar aufgetragen wird?',o:['Nichts','Die Cuticula öffnet sich — Haar wird aufgequollen und empfindlicher','Das Haar wird stärker','Die Farbe hält besser'],r:1,e:'Hoher pH (alkalisch) öffnet die Cuticula — das Haar quillt auf, wird empfindlicher und verliert Feuchtigkeit.'},
+{th:'Fachkunde Chemie',f:'Was ist Oxidation?',o:['Eine Säure','Eine chemische Reaktion mit Sauerstoff — z.B. Aufhellen durch Wasserstoffperoxid','Ein Reinigungsmittel','Eine Pflegebehandlung'],r:1,e:'Oxidation = Reaktion mit Sauerstoff. Bei der Coloration oxidiert H₂O₂ das Melanin und entwickelt die Farbe.'},
+{th:'Fachkunde Chemie',f:'Was sind Disulfidbrücken?',o:['Verbindungen zwischen Haaren','Schwefelbrücken im Cortex die die Haarstruktur und Form bestimmen','Brücken zwischen Kopfhaut und Haar','Lipidverbindungen'],r:1,e:'Disulfidbrücken = Schwefelbrücken im Cortex. Sie bestimmen die Haarform. Dauerwelle löst und fixiert sie neu.'},
+// BERATUNG
+{th:'Beratungsgespräch & Kundenkommunikation',f:'Was ist der erste Schritt bei einem Neukunden-Beratungsgespräch?',o:['Sofort mit dem Schnitt beginnen','Freundlich begrüßen und nach Wunsch, Vorbehandlungen und Pflegegewohnheiten fragen','Preis nennen','Termin kürzen'],r:1,e:'Freundlich begrüßen, dann aktiv zuhören: Wunsch, Vorbehandlungen und Pflegegewohnheiten erfragen.'},
+{th:'Beratungsgespräch & Kundenkommunikation',f:'Was ist eine offene Frage?',o:['Eine Frage die man mit Ja/Nein beantwortet','Eine Frage die ausführliche Antworten erfordert (Wie, Was, Warum)','Eine unhöfliche Frage','Eine Frage über Öffnungszeiten'],r:1,e:'Offene Fragen beginnen mit W-Wörtern — sie fördern Gespräch und liefern mehr Information.'},
+{th:'Beratungsgespräch & Kundenkommunikation',f:'Was ist eine geschlossene Frage?',o:['Eine unhöfliche Frage','Eine Frage die mit Ja oder Nein beantwortet werden kann','Eine lange Frage','Eine Frage über Preise'],r:1,e:'Geschlossene Fragen = Ja/Nein-Antworten. Nützlich zur Bestätigung: "Möchten Sie es kürzer?"'},
+{th:'Beratungsgespräch & Kundenkommunikation',f:'Warum ist aktives Zuhören im Kundengespräch wichtig?',o:['Ist nicht wichtig','Verhindert Missverständnisse, schafft Vertrauen und ermöglicht individuellen Service','Spart Zeit','Wirkt professioneller'],r:1,e:'Aktives Zuhören: Nachfragen, zusammenfassen, Verständnis zeigen — so entstehen keine Fehler.'},
+{th:'Beratungsgespräch & Kundenkommunikation',f:'Warum ist ein Allergietest vor der Coloration wichtig?',o:['Ist nicht nötig','Um allergische Reaktionen auf Haarfarbe zu verhindern — 48 Stunden vorher','Um die Haarfarbe zu testen','Nur bei Neukunden nötig'],r:1,e:'Allergietest 48h vor der Behandlung — Haarfarben können Kontaktallergien auslösen. Pflicht!'},
+// KUNDENBERATUNG
+{th:'Kundenberatung',f:'Was ist eine Kontraindikation bei der Coloration?',o:['Graue Haare','Allergie gegen Farbstoffe, stark beschädigtes Haar oder offene Kopfhautwunden','Kurze Haare','Dunkle Haare'],r:1,e:'Kontraindikationen: bekannte Allergie, stark beschädigtes Haar, offene Wunden, Schwangerschaft.'},
+{th:'Kundenberatung',f:'Was bedeutet Haaranalyse?',o:['Das Haar färben','Beurteilung von Haarstruktur, Zustand, Porosität und Kopfhaut vor der Behandlung','Das Haar waschen','Das Haar stylen'],r:1,e:'Haaranalyse: vor jeder Behandlung Struktur, Zustand, Porosität und Kopfhaut beurteilen — verhindert Schäden.'},
+{th:'Kundenberatung',f:'Welche Informationen gehören in eine Kundenkartei?',o:['Nur der Name','Name, Kontakt, Haartyp, Behandlungen, Produkte, Allergien, Besonderheiten','Nur die Telefonnummer','Nur die Adresse'],r:1,e:'Kundenkartei: Name, Kontakt, Haartyp, bisherige Behandlungen, verwendete Produkte, Allergien und Besonderheiten.'},
+// KUNDENKOMMUNIKATION FORTGESCHRITTEN
+{th:'Kundenkommunikation Fortgeschritten',f:'Wie gehst du mit einem unzufriedenen Kunden professionell um?',o:['Ignorieren','Ruhig bleiben, aktiv zuhören, Verständnis zeigen, Lösung anbieten, nachfassen','Preis reduzieren','Zum Chef schicken'],r:1,e:'Professionell: zuhören, verstehen, Verantwortung übernehmen, Lösung anbieten, Ergebnis nachfassen.'},
+{th:'Kundenkommunikation Fortgeschritten',f:'Was ist Empathie im Kundengespräch?',o:['Mitleid haben','Die Fähigkeit sich in den Kunden hineinzuversetzen und seine Gefühle zu verstehen','Immer zustimmen','Sehr viel reden'],r:1,e:'Empathie: aktiv versuchen den Kunden zu verstehen — seine Wünsche und Sorgen ernst nehmen.'},
+// HAARSCHNITT
+{th:'Haarschnitt Techniken',f:'Was ist der Unterschied zwischen stumpfem und gestuftem Schnitt?',o:['Kein Unterschied','Stumpf = gleiche Länge, gestuft = verschiedene Längen für Bewegung','Gestuft ist kürzer','Stumpf ist moderner'],r:1,e:'Stumpf: alle Haare gleich lang — voluminöser. Gestuft: verschiedene Längen — gibt Bewegung.'},
+{th:'Haarschnitt Techniken',f:'Was ist Pointcut (Spitzenschnitt)?',o:['Ein stumpfer Schnitt','Die Schere wird schräg/in die Spitzen gestellt — für weichere Übergänge','Ein Schnitt nur an den Spitzen','Ein Schnitt für Kinder'],r:1,e:'Pointcut: Schere schräg in die Haare stechen — gibt weichere, natürlichere Übergänge.'},
+{th:'Haarschnitt Techniken',f:'Was ist Graduation (Graduation Cut)?',o:['Ein sehr kurzer Schnitt','Ein Schnitt bei dem das Haar von innen nach außen länger wird','Ein Schnitt nur für Männer','Ein Schnitt ohne Stufen'],r:1,e:'Graduation: Haare werden von innen nach außen länger — erzeugt eine abgerundete Form mit Volumen.'},
+{th:'Haarschnitt Techniken',f:'Was ist der Unterschied zwischen Nassschnitt und Trockenschnitt?',o:['Kein Unterschied','Nassschnitt für präzise Linien, Trockenschnitt zeigt die natürliche Bewegung des Haares','Nassschnitt ist schneller','Trockenschnitt ist für Männer'],r:1,e:'Nassschnitt: präzise, kontrolliert. Trockenschnitt: zeigt natürliche Bewegung — gut für lockiges Haar.'},
+// BALAYAGE
+{th:'Balayage & Strähnen',f:'Was ist der Unterschied zwischen Balayage und klassischen Strähnen?',o:['Kein Unterschied','Balayage = manuell aufgemalt für natürlichen Effekt, Strähnen = mit Folie für gleichmäßigeres Ergebnis','Balayage ist dunkler','Strähnen sind moderner'],r:1,e:'Balayage: frei Hand aufgemalt — natürlicher Sonnenlicht-Effekt. Folientechnik: gleichmäßiger, kontrastreicher.'},
+{th:'Balayage & Strähnen',f:'Was ist Babylights?',o:['Eine Kinderfrisur','Sehr feine, helle Strähnen die natürliches Kinderhaar imitieren','Eine dunkle Technik','Eine Dauerwelle für Babys'],r:1,e:'Babylights: extrem feine Strähnen — imitieren das natürliche helle Haar von Kindern. Sehr dezenter Effekt.'},
+{th:'Balayage & Strähnen',f:'Was ist ein Root Smudge?',o:['Ein Fleck an der Wurzel','Technik zum Verschmelzen des Ansatzes mit den Strähnen für natürlicheren Übergang','Eine Fehler-Korrektur','Ein Produkt'],r:1,e:'Root Smudge: Ansatz und Strähnen werden sanft ineinander verwischt — für einen natürlicheren, softeren Übergang.'},
+// PFLEGEPRODUKTE
+{th:'Pflegeprodukte & Wirkstoffe',f:'Was macht Keratin in Haarpflegeprodukten?',o:['Färbt das Haar','Füllt Lücken in der Haarstruktur und stärkt das Haar','Macht Haare schwerer','Verändert die Farbe'],r:1,e:'Keratin dringt ins Haar ein, füllt beschädigte Stellen und stärkt die Haarstruktur.'},
+{th:'Pflegeprodukte & Wirkstoffe',f:'Was ist der Unterschied zwischen Shampoo und Conditioner?',o:['Kein Unterschied','Shampoo reinigt, Conditioner pflegt und glättet die Cuticula','Shampoo ist teurer','Conditioner wird zuerst verwendet'],r:1,e:'Shampoo: reinigt mit Tensiden. Conditioner: pflegt, glättet Cuticula, macht Haare kämmbar.'},
+{th:'Pflegeprodukte & Wirkstoffe',f:'Was sind Silikone in Haarpflegeprodukten?',o:['Natürliche Öle','Synthetische Stoffe die Haare glätten und glänzen lassen — aber aufgebaut werden können','Vitamine','Proteine'],r:1,e:'Silikone legen sich als Film ums Haar — sofort glatt und glänzend, aber Aufbau bei regelmäßiger Verwendung möglich.'},
+// HERRENSERVICE
+{th:'Herrenservice',f:'Was gehört zu einem vollständigen Herrenservice?',o:['Nur Haarschnitt','Haarschnitt, Konturenschnitt/Rasur, ggf. Bartpflege und Styling','Nur Rasur','Nur Styling'],r:1,e:'Vollständiger Herrenservice: Haarschnitt, Konturenschnitt, Bartpflege und Styling.'},
+{th:'Herrenservice',f:'Was ist ein Fade beim Herrenhaarschnitt?',o:['Ein Fehler','Ein weicher Übergang von sehr kurz zu länger — typisch für moderne Herrenschnitte','Ein sehr langer Schnitt','Ein Schnitt nur für Kinder'],r:1,e:'Fade: der Übergang von kurz (oft Null) zu länger wird weich und nahtlos geblendet — moderner Look.'},
+{th:'Herrenservice',f:'Wie pflegt man einen Bart professionell?',o:['Gar nicht','Formen, trimmen, ggf. rasieren, mit Bartöl oder Balsam pflegen','Nur waschen','Nur kürzen'],r:1,e:'Bartpflege: formen, trimmen, scharfe Konturen mit Rasierer, Bartöl oder Balsam für Pflege und Form.'},
+// UMFORMUNGEN
+{th:'Umformungen Fortgeschritten',f:'Was ist eine Keratinbehandlung?',o:['Eine Dauerwelle','Eine Glättungsbehandlung die Keratin ins Haar einschleust für glattes geschmeidiges Haar','Eine Färbetechnik','Eine Kopfhautbehandlung'],r:1,e:'Keratinbehandlung: Keratin dringt ins Haar ein, füllt Schäden, macht es glatt und pflegeleicht — hält 3–6 Monate.'},
+// SALON-ORGANISATION
+{th:'Salon-Organisation',f:'Was gehört zu einem professionellen Terminmanagement?',o:['Termine nur telefonisch','Pünktlichkeit, realistische Zeitplanung, Erinnerungen, Pufferzeiten','Keine Planung nötig','Nur Online-Buchung'],r:1,e:'Gutes Terminmanagement: realistische Zeitplanung, Pufferzeiten, Erinnerungen und Pünktlichkeit.'},
+{th:'Salon-Organisation',f:'Was ist Warenwirtschaft im Salon?',o:['Das Verkaufen von Produkten','Verwaltung von Lagerbeständen, Bestellung und Kontrolle der Salon-Produkte','Nur das Bestellen','Nur das Lagern'],r:1,e:'Warenwirtschaft: Lagerbestand kontrollieren, rechtzeitig bestellen, Mindestbestand einhalten, Ablaufdaten prüfen.'},
+// BETRIEBSKUNDE
+{th:'Betriebskunde & Recht',f:'Was regelt das Arbeitszeitgesetz für Lehrlinge?',o:['Keine Regeln','Max. 8 Std./Tag, 40 Std./Woche, Ruhepausen und Wochenruhe','Unbegrenzte Arbeitszeit','Nur 4 Stunden täglich'],r:1,e:'Das Arbeitszeitgesetz schützt Lehrlinge: max. 8h täglich, 40h wöchentlich, Pflichtpausen.'},
+{th:'Betriebskunde & Recht',f:'Was ist ein Lehrvertrag?',o:['Ein Arbeitsvertrag','Ein schriftlicher Vertrag zwischen Lehrling und Ausbildungsbetrieb der Rechte und Pflichten regelt','Ein Schulvertrag','Ein Kaufvertrag'],r:1,e:'Lehrvertrag: regelt Ausbildungsdauer, Lehrlingsentschädigung, Rechte und Pflichten beider Seiten.'},
+{th:'Betriebskunde & Recht',f:'Was ist die Berufsschule und wie oft besucht man sie?',o:['Eine Zusatzausbildung','Pflichtschule für Lehrlinge — in Österreich meist 1–2 Tage pro Woche oder in Blöcken','Eine freiwillige Schule','Nur am Wochenende'],r:1,e:'Berufsschule ist Pflicht für alle Lehrlinge — vermittelt fachliche und allgemeinbildende Inhalte.'},
+// LAP
+{th:'LAP-Vorbereitung',f:'Aus welchen Teilen besteht die LAP?',o:['Nur Theorie','Theoretische Prüfung und praktische Prüfung','Nur Praktisch','Nur eine schriftliche Arbeit'],r:1,e:'Die LAP besteht aus einem theoretischen und einem praktischen Teil. Beide müssen bestanden werden.'},
+{th:'LAP-Vorbereitung',f:'Was wird in der theoretischen LAP geprüft?',o:['Nur Mathematik','Fachkunde, Hygiene, Werkzeugkunde, Haarstruktur, Betriebskunde','Nur Styling','Nur Kundenkommunikation'],r:1,e:'Theorie-LAP: Fachkunde (Haare, Haut, Chemie), Hygiene, Werkzeugkunde, Betriebskunde, Kundenkommunikation.'},
+{th:'LAP-Vorbereitung',f:'Was wird in der praktischen LAP geprüft?',o:['Nur Haarschnitt','Haarschnitt, Coloration oder Strähnen, Dauerwelle oder Styling','Nur Styling','Nur Waschen'],r:1,e:'Praxis-LAP: Haarschnitt, Coloration/Strähnen, evtl. Dauerwelle und Styling — typisch 3–4 Stunden.'},
+];
+
+// ════════════════════════════════════════════════════════
+// FACHQUIZ LOGIK
+// ════════════════════════════════════════════════════════
+var FQ_Fragen=[], FQ_Idx=0, FQ_Richtig=0, FQ_AktFrage=null;
+
+function starteFachquiz(){
+  if(!IstMeisterin){zeige('home');return;}
+  var thema=document.getElementById('fach-thema-sel').value;
+  var pool = thema==='alle' ? FACHFRAGEN.slice() : FACHFRAGEN.filter(function(f){return f.th===thema;});
+  if(!pool.length){alert('Keine Fragen für dieses Thema gefunden.');return;}
+  FQ_Fragen=shuffle(pool);
+  FQ_Idx=0; FQ_Richtig=0;
+  zeige('fachquiz');
+  zeigeFachFrage();
+}
+
+function zeigeFachFrage(){
+  var q=FQ_Fragen[FQ_Idx]; FQ_AktFrage=q;
+  document.getElementById('fq-prog').style.width=Math.round((FQ_Idx/FQ_Fragen.length)*100)+'%';
+  document.getElementById('fq-nr').textContent='Frage '+(FQ_Idx+1)+' von '+FQ_Fragen.length;
+  document.getElementById('fq-thema-label').textContent=q.th;
+  document.getElementById('fq-score-live').textContent='✓ '+FQ_Richtig;
+  document.getElementById('fq-txt').textContent=q.f;
+  var alle=shuffle(q.o.slice());
+  var richtig=q.o[q.r];
+  var optDiv=document.getElementById('fq-optionen');
+  optDiv.innerHTML='';
+  alle.forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){pruefeFachAntwort(opt,richtig,btn,alle);});
+    optDiv.appendChild(btn);
+  });
+  document.getElementById('fq-feedback').style.display='none';
+  document.getElementById('fq-feedback').innerHTML='';
+  document.getElementById('fq-btns').innerHTML='';
+}
+
+function pruefeFachAntwort(gewaehlt,richtig,geklickt,alle){
+  var kor=gewaehlt===richtig;
+  if(kor) FQ_Richtig++;
+  document.getElementById('fq-score-live').textContent='✓ '+FQ_Richtig;
+  document.querySelectorAll('#fq-optionen .opt-btn').forEach(function(b){
+    b.disabled=true;
+    if(b.textContent===richtig) b.className='opt-btn ric';
+    else if(b===geklickt&&!kor) b.className='opt-btn fal';
+  });
+  var fb=document.getElementById('fq-feedback');
+  fb.className=kor?'fb-g':'fb-r';
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#5B7B6F':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
+    '<div class="muster-lab">Erklärung</div>'+
+    '<div class="muster">'+FQ_AktFrage.e+'</div>';
+  fb.style.display='block';
+  var btns=document.getElementById('fq-btns');
+  var nb=document.createElement('button');
+  nb.className='btn-primary'; nb.style.marginTop='10px';
+  nb.textContent=FQ_Idx+1<FQ_Fragen.length?'Nächste Frage →':'Auswertung →';
+  nb.addEventListener('click',function(){
+    FQ_Idx++;
+    if(FQ_Idx<FQ_Fragen.length) zeigeFachFrage();
+    else zeigeFachErgebnis();
+  });
+  btns.innerHTML=''; btns.appendChild(nb);
+}
+
+function zeigeFachErgebnis(){
+  zeige('facherg');
+  var g=FQ_Fragen.length;
+  var pct=Math.round((FQ_Richtig/g)*100);
+  document.getElementById('fq-erg-zahl').textContent=FQ_Richtig+' / '+g;
+  var note=pct>=90?'Ausgezeichnet! 🌟':pct>=70?'Sehr gut! 👏':pct>=50?'Gut — weiter üben! 💪':'Noch Luft nach oben! 🍀';
+  document.getElementById('fq-erg-sub').textContent=pct+'% richtig · '+note;
+  // Thema-Auswertung
+  var thStats={};
+  FQ_Fragen.forEach(function(q,i){
+    if(!thStats[q.th]) thStats[q.th]={richtig:0,gesamt:0};
+    thStats[q.th].gesamt++;
+  });
+  var html='<div class="card" style="margin-top:12px"><div class="label" style="margin-bottom:10px">Aufschlüsselung nach Thema</div>';
+  Object.keys(thStats).forEach(function(k){
+    html+='<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E2DDD5;font-size:13px;color:#2C2C2C"><span>'+k+'</span><span style="color:#9A9A90">'+thStats[k].gesamt+' Fragen</span></div>';
+  });
+  html+='</div>';
+  document.getElementById('fq-erg-detail').innerHTML=html;
+}
+var MEISTERIN_PIN = '191299'; // ← hier deine geheime PIN
+var IstMeisterin = false;
+
+function pinOeffnen(){
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-fehler').textContent='';
+  document.getElementById('pin-overlay').classList.add('an');
+  setTimeout(function(){document.getElementById('pin-input').focus();},200);
+}
+function pinSchliessen(){
+  document.getElementById('pin-overlay').classList.remove('an');
+}
+function pinPruefen(){
+  var eingabe=document.getElementById('pin-input').value.trim();
+  if(eingabe===MEISTERIN_PIN){
+    IstMeisterin=true;
+    try{localStorage.setItem('en_meisterin','1');}catch(e){}
+    pinSchliessen();
+    renderStreakHome();
+  } else {
+    document.getElementById('pin-fehler').textContent='Falsche PIN — bitte nochmal versuchen.';
+    document.getElementById('pin-input').value='';
+    document.getElementById('pin-input').focus();
+  }
+}
+function meisterinAbmelden(){
+  IstMeisterin=false;
+  try{localStorage.removeItem('en_meisterin');}catch(e){}
+  renderStreakHome();
+}
+
+
+// ════════════════════════════════════════════════════════
+// STREAK LOGIK (localStorage) — getrennt für Lehrling & Meisterin
+// ════════════════════════════════════════════════════════
+function streakKey(){return IstMeisterin?'en_streak_m':'en_streak';}
+
 function getStreak(){
   try{
-    var d=localStorage.getItem('en_streak');
+    var d=localStorage.getItem(streakKey());
     return d?JSON.parse(d):{sessions:0,streak:0,letzterTag:'',erhalteneBadges:[]};
   }catch(e){return {sessions:0,streak:0,letzterTag:'',erhalteneBadges:[]};}
 }
-function saveStreak(s){try{localStorage.setItem('en_streak',JSON.stringify(s));}catch(e){}}
+function saveStreak(s){try{localStorage.setItem(streakKey(),JSON.stringify(s));}catch(e){}}
 
 function heuteDatum(){
   var d=new Date();
@@ -411,6 +775,13 @@ function sessionAbgeschlossen(){
 }
 
 function renderStreakHome(){
+  // Meisterin-Banner ein/ausblenden
+  var banner=document.getElementById('meisterin-banner');
+  var loginBtn=document.getElementById('meisterin-login-btn');
+  var fachBtn=document.getElementById('fach-btn-wrap');
+  if(banner) banner.style.display=IstMeisterin?'flex':'none';
+  if(loginBtn) loginBtn.style.display=IstMeisterin?'none':'inline';
+  if(fachBtn) fachBtn.style.display=IstMeisterin?'block':'none';
   var s=getStreak();
   var streakEl=document.getElementById('home-streak');
   var textEl=document.getElementById('home-streak-text');
@@ -702,6 +1073,11 @@ function zeigeKartenEnde(){
 // INIT
 // ════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded',function(){
+  // Gespeicherten Meisterin-Login wiederherstellen
+  try{if(localStorage.getItem('en_meisterin')==='1') IstMeisterin=true;}catch(e){}
+  // PIN-Eingabe mit Enter
+  var inp=document.getElementById('pin-input');
+  if(inp) inp.addEventListener('keydown',function(e){if(e.key==='Enter') pinPruefen();});
   renderStreakHome();
   var cnt=document.createElement('div');
   cnt.style.cssText='text-align:center;font-size:11px;color:#C8C4BC;margin-top:2rem;padding-bottom:2rem';
