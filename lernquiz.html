@@ -234,8 +234,7 @@ textarea{resize:vertical;margin-bottom:0}
       <button class="btn btn-h" id="btn-lehrling-neu" style="margin:0">+ Lehrling anlegen</button>
       <button class="btn btn-h" id="btn-fragen-verw" style="margin:0">✎ Fragen</button>
     </div>
-    <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?admin=1" style="display:block;margin-bottom:12px;padding:13px;background:#5B7B6F;color:#fff;border-radius:10px;text-align:center;font-size:14px;font-weight:600;text-decoration:none;font-family:system-ui">✂ Lern-Tool Admin öffnen</a>
-    <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnuppertag.html" style="display:block;margin-bottom:20px;padding:13px;background:#3D6B50;color:#fff;border-radius:10px;text-align:center;font-size:14px;font-weight:600;text-decoration:none;font-family:system-ui">📋 Schnuppertag & Probezeit</a>
+    <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?admin=1" style="display:block;margin-bottom:20px;padding:13px;background:#5B7B6F;color:#fff;border-radius:10px;text-align:center;font-size:14px;font-weight:600;text-decoration:none;font-family:system-ui">✂ Lern-Tool Admin öffnen</a>
     <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
@@ -256,6 +255,25 @@ textarea{resize:vertical;margin-bottom:0}
     <input type="text" id="neu-pin" placeholder="z.B. 123456" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
     <button class="btn btn-g" id="btn-neu-speichern">Lehrling anlegen</button>
     <button class="btn btn-h" id="btn-neu-back">← Zurück</button>
+  </div>
+</div>
+
+<div id="s-edit-lehrling" class="seite">
+  <div style="padding-top:20px">
+    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Lehrling bearbeiten</h2>
+    <div id="edit-fehler" class="fehler-box" style="display:none"></div>
+    <div class="lab">Name</div>
+    <input type="text" id="edit-name" placeholder="z.B. Ronya">
+    <div class="lab">Lehrjahr</div>
+    <select id="edit-lj" style="margin-bottom:10px">
+      <option value="1">1. Lehrjahr</option>
+      <option value="2">2. Lehrjahr</option>
+      <option value="3">3. Lehrjahr</option>
+    </select>
+    <div class="lab">Neue PIN (6 Stellen, leer lassen = unverändert)</div>
+    <input type="text" id="edit-pin" placeholder="Leer lassen für keine Änderung" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <button class="btn btn-g" id="btn-edit-speichern">Änderungen speichern</button>
+    <button class="btn btn-h" id="btn-edit-back">← Zurück</button>
   </div>
 </div>
 
@@ -1416,11 +1434,15 @@ async function zeigeDetailLehrling(lehrling){
       '</div>';
     });
   }
-  html+='<div style="display:flex;gap:10px;margin-top:16px">'+
-    '<button class="btn btn-h" id="btn-reset-verlauf" style="flex:1">↺ Verlauf zurückstellen</button>'+
-    '<button class="btn btn-r" id="btn-del-lehrling" style="flex:1">✕ Lehrling löschen</button>'+
+  html+='<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">'+
+    '<button class="btn btn-h" id="btn-edit-lehrling" style="flex:1;min-width:120px">✎ Bearbeiten</button>'+
+    '<button class="btn btn-h" id="btn-reset-verlauf" style="flex:1;min-width:120px">↺ Verlauf zurückstellen</button>'+
+    '<button class="btn btn-r" id="btn-del-lehrling" style="flex:1;min-width:120px">✕ Löschen</button>'+
   '</div>';
   document.getElementById('detail-inhalt').innerHTML=html;
+  document.getElementById('btn-edit-lehrling').addEventListener('click',function(){
+    zeigeEditLehrling(lehrling);
+  });
   document.getElementById('btn-reset-verlauf').addEventListener('click',async function(){
     if(!confirm('Verlauf von '+lehrling.name+' wirklich zurückstellen?')) return;
     await sb.from('verlauf').delete().eq('lehrling_id',lehrling.id);
@@ -1451,6 +1473,50 @@ async function speichereNeuenLehrling(){
   if(dbErr){zeigeFehler('neu-fehler','Datenbankfehler: '+dbErr.message);return;}
   document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
   await ladeDashboard();zeige('s-dashboard');
+}
+
+var EDIT_LEHRLING = null;
+
+function zeigeEditLehrling(lehrling){
+  EDIT_LEHRLING = lehrling;
+  document.getElementById('edit-name').value = lehrling.name;
+  document.getElementById('edit-lj').value = lehrling.lehrjahr;
+  document.getElementById('edit-pin').value = '';
+  versteckeFehler('edit-fehler');
+  zeige('s-edit-lehrling');
+}
+
+async function speichereEditLehrling(){
+  if(!EDIT_LEHRLING) return;
+  var name = document.getElementById('edit-name').value.trim();
+  var lj = parseInt(document.getElementById('edit-lj').value);
+  var pin = document.getElementById('edit-pin').value.trim();
+  versteckeFehler('edit-fehler');
+  if(!name){ zeigeFehler('edit-fehler','Bitte einen Namen eingeben.'); return; }
+  if(pin && (pin.length !== 6 || !/^\d{6}$/.test(pin))){
+    zeigeFehler('edit-fehler','PIN muss genau 6 Ziffern sein (oder leer lassen).');
+    return;
+  }
+  var btn = document.getElementById('btn-edit-speichern');
+  btn.disabled = true; btn.textContent = 'Wird gespeichert…';
+  // Datenbankupdate
+  var {error:dbErr} = await sb.from('lehrlinge').update({name:name, lehrjahr:lj}).eq('id', EDIT_LEHRLING.id);
+  if(dbErr){ zeigeFehler('edit-fehler','Fehler: '+dbErr.message); btn.disabled=false; btn.textContent='Änderungen speichern'; return; }
+  // PIN-Änderung über eigene RPC (falls PIN angegeben)
+  if(pin){
+    var newEmail = name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
+    var {error:pwErr} = await sb.rpc('update_user_password',{target_user_id: EDIT_LEHRLING.user_id, new_password: pin}).catch(function(e){return {error:e};});
+    if(pwErr){
+      zeigeFehler('edit-fehler','Name/Lehrjahr gespeichert, aber PIN-Änderung fehlgeschlagen: '+pwErr.message);
+      btn.disabled=false; btn.textContent='Änderungen speichern';
+      return;
+    }
+  }
+  btn.disabled=false; btn.textContent='Änderungen speichern';
+  EDIT_LEHRLING.name = name;
+  EDIT_LEHRLING.lehrjahr = lj;
+  await ladeDashboard();
+  zeigeDetailLehrling(EDIT_LEHRLING);
 }
 
 function zeigeVerw(){updateVerwListe();zeige('s-verw');}
@@ -1545,6 +1611,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-detail-back').addEventListener('click',function(){zeige('s-dashboard');});
   document.getElementById('btn-neu-speichern').addEventListener('click',speichereNeuenLehrling);
   document.getElementById('btn-neu-back').addEventListener('click',function(){zeige('s-dashboard');});
+  document.getElementById('btn-edit-speichern').addEventListener('click',speichereEditLehrling);
+  document.getElementById('btn-edit-back').addEventListener('click',function(){if(EDIT_LEHRLING) zeigeDetailLehrling(EDIT_LEHRLING); else zeige('s-dashboard');});
   document.getElementById('btn-verw-back').addEventListener('click',function(){zeige('s-dashboard');});
   [1,2,3].forEach(function(l){document.getElementById('vlj'+l).addEventListener('click',function(){VLEHRJAHR=l;updateVerwListe();});});
   document.getElementById('btn-verw-neu').addEventListener('click',function(){
