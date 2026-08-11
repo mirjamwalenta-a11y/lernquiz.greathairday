@@ -270,8 +270,16 @@ textarea{resize:vertical;margin-bottom:0}
       <option value="2">2. Lehrjahr</option>
       <option value="3">3. Lehrjahr</option>
     </select>
+
     <div class="lab">Neue PIN (6 Stellen, leer lassen = unverändert)</div>
     <input type="text" id="edit-pin" placeholder="Leer lassen für keine Änderung" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:#F3EFE8;border-radius:10px;padding:12px 14px">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:#2C2C2C">Quiz aktiv</div>
+        <div style="font-size:11px;color:#9A9188;margin-top:2px">Deaktiviert = Lehrling kann sich nicht einloggen</div>
+      </div>
+      <button id="edit-aktiv-toggle" style="width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;font-size:11px;font-weight:700;transition:background .2s"></button>
+    </div>
     <button class="btn btn-g" id="btn-edit-speichern">Änderungen speichern</button>
     <button class="btn btn-h" id="btn-edit-back">← Zurück</button>
   </div>
@@ -1076,6 +1084,7 @@ async function loginLehrling(){
   if(error){zeigeFehler('login-fehler','Fehler: '+error.message);return;}
   var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
   if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
+  if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Quiz-Zugang wurde vorübergehend deaktiviert. Bitte wende dich an deine Meisterin.');await sb.auth.signOut();return;}
   AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');setTimeout(function(){if(typeof streakSync==='function')streakSync(ldat.id,LJ);},800);
 }
 
@@ -1398,8 +1407,8 @@ async function ladeDashboard(){
     var l=lehrlinge[i];
     var {data:vl}=await sb.from('verlauf').select('punkte,gesamt').eq('lehrling_id',l.id).order('erstellt_am',{ascending:false}).limit(1);
     var letztes=vl&&vl.length?'Letztes: '+Math.round(vl[0].punkte/vl[0].gesamt)+'/10':'Noch kein Quiz';
-    html+='<div class="karte" style="cursor:pointer;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center" id="dl-'+l.id+'">'+
-      '<div><div style="font-family:Georgia,serif;font-size:18px;color:#2C2C2C">'+l.name+'</div>'+
+    html+='<div class="karte" style="cursor:pointer;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center'+(l.aktiv===false?';opacity:.5':'')+'\" id="dl-'+l.id+'">'+
+      '<div><div style="font-family:Georgia,serif;font-size:18px;color:#2C2C2C">'+l.name+(l.aktiv===false?' <span style="font-size:11px;color:#C44030;font-family:system-ui">● pausiert</span>':'')+'</div>'+
       '<div style="font-size:11px;color:#9A9188;margin-top:2px">'+l.lehrjahr+'. Lehrjahr · '+letztes+'</div></div>'+
       '<div style="font-size:20px;color:#9A9188">›</div></div>';
   }
@@ -1476,6 +1485,16 @@ async function speichereNeuenLehrling(){
 }
 
 var EDIT_LEHRLING = null;
+var EDIT_AKTIV = true;
+
+function aktualisiereToggle(aktiv){
+  EDIT_AKTIV = aktiv;
+  var btn = document.getElementById('edit-aktiv-toggle');
+  if(!btn) return;
+  btn.textContent = aktiv ? 'EIN' : 'AUS';
+  btn.style.background = aktiv ? '#6B8F71' : '#C44030';
+  btn.style.color = '#fff';
+}
 
 function zeigeEditLehrling(lehrling){
   EDIT_LEHRLING = lehrling;
@@ -1484,6 +1503,10 @@ function zeigeEditLehrling(lehrling){
   document.getElementById('edit-pin').value = '';
   versteckeFehler('edit-fehler');
   zeige('s-edit-lehrling');
+  aktualisiereToggle(lehrling.aktiv !== false);
+  document.getElementById('edit-aktiv-toggle').onclick = function(){
+    aktualisiereToggle(!EDIT_AKTIV);
+  };
 }
 
 async function speichereEditLehrling(){
@@ -1499,22 +1522,18 @@ async function speichereEditLehrling(){
   }
   var btn = document.getElementById('btn-edit-speichern');
   btn.disabled = true; btn.textContent = 'Wird gespeichert…';
-  // Datenbankupdate
-  var {error:dbErr} = await sb.from('lehrlinge').update({name:name, lehrjahr:lj}).eq('id', EDIT_LEHRLING.id);
+  // Name, Lehrjahr, aktiv speichern
+  var {error:dbErr} = await sb.from('lehrlinge').update({name:name, lehrjahr:lj, aktiv:EDIT_AKTIV}).eq('id', EDIT_LEHRLING.id);
   if(dbErr){ zeigeFehler('edit-fehler','Fehler: '+dbErr.message); btn.disabled=false; btn.textContent='Änderungen speichern'; return; }
-  // PIN-Änderung über eigene RPC (falls PIN angegeben)
+  // PIN ändern falls angegeben
   if(pin){
-    var newEmail = name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
-    var {error:pwErr} = await sb.rpc('update_user_password',{target_user_id: EDIT_LEHRLING.user_id, new_password: pin}).catch(function(e){return {error:e};});
-    if(pwErr){
-      zeigeFehler('edit-fehler','Name/Lehrjahr gespeichert, aber PIN-Änderung fehlgeschlagen: '+pwErr.message);
-      btn.disabled=false; btn.textContent='Änderungen speichern';
-      return;
-    }
+    var {error:pwErr} = await sb.rpc('update_user_password',{target_user_id: EDIT_LEHRLING.user_id, new_password: pin});
+    if(pwErr){ zeigeFehler('edit-fehler','Gespeichert, aber PIN-Änderung fehlgeschlagen: '+pwErr.message); btn.disabled=false; btn.textContent='Änderungen speichern'; return; }
   }
   btn.disabled=false; btn.textContent='Änderungen speichern';
   EDIT_LEHRLING.name = name;
   EDIT_LEHRLING.lehrjahr = lj;
+  EDIT_LEHRLING.aktiv = EDIT_AKTIV;
   await ladeDashboard();
   zeigeDetailLehrling(EDIT_LEHRLING);
 }
