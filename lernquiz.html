@@ -236,6 +236,7 @@ textarea{resize:vertical;margin-bottom:0}
       <button class="btn btn-h" id="btn-lehrling-neu" style="margin:0">+ Lehrling anlegen</button>
       <button class="btn btn-h" id="btn-fragen-verw" style="margin:0">✎ Fragen</button>
     </div>
+    <button class="btn" id="btn-betrieb-test" style="margin-bottom:12px;background:linear-gradient(135deg,#FFFDF0,#F5EDD6);border:1.5px solid #C9A84C;color:#8B7535;font-weight:700;text-align:center">✂ Betriebssystem testen</button>
     <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?admin=1" style="display:block;margin-bottom:20px;padding:13px;background:#5B7B6F;color:#fff;border-radius:10px;text-align:center;font-size:14px;font-weight:600;text-decoration:none;font-family:system-ui">✂ Lern-Tool Admin öffnen</a>
     <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
   </div>
@@ -307,6 +308,7 @@ textarea{resize:vertical;margin-bottom:0}
       <button class="lj-b" id="vlj1">1. LJ</button>
       <button class="lj-b" id="vlj2">2. LJ</button>
       <button class="lj-b" id="vlj3">3. LJ</button>
+      <button class="lj-b" id="vljb">✂ Betrieb</button>
     </div>
     <div id="verw-liste"></div>
     <button class="btn btn-h" id="btn-verw-neu" style="border:2px dashed #DDD8D0;background:none;color:#9A9188">+ Neue Frage</button>
@@ -1580,7 +1582,9 @@ function zeigeVerw(){updateVerwListe();zeige('s-verw');}
 
 function updateVerwListe(){
   [1,2,3].forEach(function(l){var b=document.getElementById('vlj'+l);if(b)b.className='lj-b'+(VLEHRJAHR===l?' a'+l:'');});
-  var fragen=FB[VLEHRJAHR];
+  var vb=document.getElementById('vljb');
+  if(vb){vb.className='lj-b'+(VLEHRJAHR==='b'?' ab':'');}
+  var fragen=FB[VLEHRJAHR]||[];
   var el=document.getElementById('verw-liste');
   el.innerHTML='';
   fragen.forEach(function(q,i){
@@ -1597,7 +1601,9 @@ function editiere(idx){
   VIDX=idx;
   var q=FB[VLEHRJAHR][idx];
   document.getElementById('ed-titel').textContent='Frage bearbeiten';
-  var THEMEN=['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Dauerwelle & Umformung','Beratungsgespräch & Kundenkommunikation','Englisch im Salon'];
+  var THEMEN_LJ=['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Dauerwelle & Umformung','Beratungsgespräch & Kundenkommunikation','Englisch im Salon'];
+  var THEMEN_B=['Salonkultur & Mantra','Kundenempfang','Einstiegsgespräch','Beratungsgespräch','Haarwäsche','Service & Wohlbefinden','Styling & Finish','Farbbehandlung','Telefonieren','Terminverwaltung','Kassenabwicklung','Gäste-Verabschiedung','Reklamationen & Beschwerden','Äußeres Erscheinungsbild','Teamkodex'];
+  var THEMEN=(VLEHRJAHR==='b')?THEMEN_B:THEMEN_LJ;
   var html='<div style="margin-bottom:12px"><div class="lab">Thema</div><select id="e-th">'+THEMEN.map(function(t){return '<option'+(q.th===t?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>';
   html+='<div style="margin-bottom:12px"><div class="lab">Frage</div><textarea id="e-f" rows="3">'+q.f+'</textarea></div>';
   if(q.t==='mc'){
@@ -1662,8 +1668,14 @@ window.addEventListener('DOMContentLoaded',function(){
   ['schnell','tief','lap'].forEach(function(m){document.getElementById('mod-'+m).addEventListener('click',function(){MODUS=m;updateStart();});});
   document.getElementById('btn-quiz-los').addEventListener('click',starteQuiz);
   document.getElementById('btn-verlauf-zeigen').addEventListener('click',zeigeVerlauf);
-  document.getElementById('btn-neu-quiz').addEventListener('click',function(){updateStart();zeige('s-start');});
-  document.getElementById('btn-v-zurueck').addEventListener('click',function(){zeige('s-start');});
+  document.getElementById('btn-neu-quiz').addEventListener('click',function(){
+    if(AKTLEHRLING&&AKTLEHRLING.id==='meisterin-test'){ISTMEISTERIN=true;AKTLEHRLING=null;ladeDashboard();zeige('s-dashboard');}
+    else{updateStart();zeige('s-start');}
+  });
+  document.getElementById('btn-v-zurueck').addEventListener('click',function(){
+    if(AKTLEHRLING&&AKTLEHRLING.id==='meisterin-test'){ISTMEISTERIN=true;AKTLEHRLING=null;ladeDashboard();zeige('s-dashboard');}
+    else zeige('s-start');
+  });
   document.getElementById('btn-lehrling-neu').addEventListener('click',function(){zeige('s-neu-lehrling');});
   document.getElementById('btn-fragen-verw').addEventListener('click',zeigeVerw);
   document.getElementById('btn-detail-back').addEventListener('click',function(){zeige('s-dashboard');});
@@ -1673,13 +1685,25 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-edit-back').addEventListener('click',function(){if(EDIT_LEHRLING) zeigeDetailLehrling(EDIT_LEHRLING); else zeige('s-dashboard');});
   document.getElementById('btn-verw-back').addEventListener('click',function(){zeige('s-dashboard');});
   [1,2,3].forEach(function(l){document.getElementById('vlj'+l).addEventListener('click',function(){VLEHRJAHR=l;updateVerwListe();});});
+  document.getElementById('vljb').addEventListener('click',function(){VLEHRJAHR='b';updateVerwListe();});
+  // Betriebssystem testen – Meisterin kann direkt testen
+  document.getElementById('btn-betrieb-test').addEventListener('click',function(){
+    ISTMEISTERIN=false;
+    AKTLEHRLING={id:'meisterin-test',name:'Mirjam (Test)',lehrjahr:1};
+    LJ='b'; MODUS='lap';
+    updateStart(); zeige('s-quiz');
+    var pool=(FB['b']||[]).slice().sort(function(){return Math.random()-.5;});
+    QFRAGEN=pool; QIDX=0; QANT=[]; WIEDERHOLUNG=false;
+    zeigeFrage();
+  });
   document.getElementById('btn-verw-neu').addEventListener('click',function(){
     // Neue Frage anlegen
     var neueId = VLEHRJAHR + '-neu-' + Date.now();
+    var defaultThema=(VLEHRJAHR==='b')?'Salonkultur & Mantra':'Hygiene & Schutzmaßnahmen';
     var neueFrage = {
       id: neueId,
       t: 'mc',
-      th: 'Hygiene & Schutzmaßnahmen',
+      th: defaultThema,
       f: 'Neue Frage',
       o: ['Antwort A','Antwort B','Antwort C','Antwort D'],
       r: 0,
