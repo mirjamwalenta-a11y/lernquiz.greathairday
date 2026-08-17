@@ -1777,16 +1777,54 @@ var SP_ST=[
 var SP_Q=[];
 function spN(lj){return parseInt(localStorage.getItem('sp'+lj+'n')||'0');}
 function spS(lj,n){localStorage.setItem('sp'+lj+'n',n);}
+
+// Abzeichen lesen — aus lokalem Cache (wird beim Login aus Supabase befüllt)
 function spG(lj){return JSON.parse(localStorage.getItem('sp'+lj+'g')||'[]');}
-function spMG(lj,id){var a=spG(lj);if(a.indexOf(id)<0){a.push(id);localStorage.setItem('sp'+lj+'g',JSON.stringify(a));}}
+
+// Abzeichen speichern — lokal UND in Supabase
+function spMG(lj,id){
+  var a=spG(lj);
+  if(a.indexOf(id)<0){
+    a.push(id);
+    localStorage.setItem('sp'+lj+'g',JSON.stringify(a));
+    // In Supabase speichern (fire-and-forget)
+    if(AKTLEHRLING&&AKTLEHRLING.id){
+      sb.from('lernquiz_abzeichen').insert({
+        lehrling_id:AKTLEHRLING.id,
+        lehrjahr:String(lj),
+        abzeichen_id:id
+      }).then(function(){}).catch(function(){});
+    }
+  }
+}
 
 function streakNachQuiz(lj){
   var n=spN(lj)+1; spS(lj,n); spCheck(lj,n);
 }
+
+// Beim Login: Anzahl UND Abzeichen aus Supabase laden → in localStorage schreiben
 async function streakSync(lid,lj){
   try{
+    // Anzahl absolvierter Quizze aus Verlauf
     var r=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lid);
-    var n=r.count||0; if(n>spN(lj)) spS(lj,n);
+    var n=r.count||0;
+    if(n>spN(lj)) spS(lj,n);
+
+    // Abzeichen aus Supabase laden und lokal cachen
+    var ab=await sb.from('lernquiz_abzeichen').select('lehrjahr,abzeichen_id').eq('lehrling_id',lid);
+    if(ab.data&&ab.data.length>0){
+      // Pro Lehrjahr gruppieren und in localStorage schreiben
+      var gruppen={};
+      ab.data.forEach(function(row){
+        var k=row.lehrjahr;
+        if(!gruppen[k])gruppen[k]=[];
+        if(gruppen[k].indexOf(row.abzeichen_id)<0)gruppen[k].push(row.abzeichen_id);
+      });
+      Object.keys(gruppen).forEach(function(k){
+        localStorage.setItem('sp'+k+'g',JSON.stringify(gruppen[k]));
+      });
+    }
+
     spCheck(lj,Math.max(n,spN(lj)));
   }catch(e){spCheck(lj,spN(lj));}
 }
