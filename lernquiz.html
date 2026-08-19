@@ -1393,6 +1393,53 @@ async function zeigeErgebnis(){
     komp=await speichereKompetenz(AKTLEHRLING.id,QANT);
     await sb.from('verlauf').insert({lehrling_id:AKTLEHRLING.id,datum:new Date().toLocaleDateString('de-AT'),lehrjahr:LJ,richtig:ok,falsch:g-ok,gesamt:g,punkte:p,schwach:schwach});
     if(typeof streakNachQuiz==='function') streakNachQuiz(LJ);
+
+    // ── GHD OS V1: Signal-Logik Quiz unter Schwellenwert ──────────────────
+    try {
+      const GHD_URL = 'https://lpuxvvfrrcnbuzafscyk.supabase.co';
+      const GHD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwdXh2dmZycmNuYnV6YWZzY3lrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2ODIxNDcsImV4cCI6MjEwMDI1ODE0N30.6VZUmmXj_x3Q8J55s_tbOHcW5-U5OXllGoEBhypaVfI';
+      const gh = { "apikey": GHD_KEY, "Authorization": `Bearer ${GHD_KEY}`, "Content-Type": "application/json" };
+      const SCHWELLENWERT = 5; // unter 5/10 → Lernaufgabe
+
+      if (s < SCHWELLENWERT && AKTLEHRLING && schwach.length > 0) {
+        const lehrlingName = AKTLEHRLING.name || 'Lehrling';
+        const themenText = schwach.slice(0,3).join(', ');
+        const SIGNAL_KEY = `quiz-unter-schwellenwert-${AKTLEHRLING.id}`;
+        const titel = `Lernschritt für ${lehrlingName} vorbereiten – ${themenText}`;
+        const naechster_schritt = `Lernquiz öffnen → Verlauf prüfen → Übung zu "${schwach[0]}" einplanen`;
+
+        // Prüfen ob Aufgabe schon offen
+        const check = await fetch(`${GHD_URL}/rest/v1/ghd_aufgaben?signal_key=eq.${SIGNAL_KEY}&status=neq.erledigt&select=id`, { headers: gh });
+        const existing = await check.json();
+
+        if (Array.isArray(existing) && existing.length > 0) {
+          // Aktualisieren
+          await fetch(`${GHD_URL}/rest/v1/ghd_aufgaben?signal_key=eq.${SIGNAL_KEY}&status=neq.erledigt`, {
+            method: 'PATCH',
+            headers: { ...gh, "Prefer": "return=minimal" },
+            body: JSON.stringify({ titel, naechster_schritt, geaendert_am: new Date().toISOString() })
+          });
+        } else {
+          // Neu anlegen
+          await fetch(`${GHD_URL}/rest/v1/ghd_aufgaben`, {
+            method: 'POST',
+            headers: { ...gh, "Prefer": "return=minimal" },
+            body: JSON.stringify({
+              typ: 'lernschritt',
+              titel,
+              naechster_schritt,
+              verantwortlich: 'Mirjam',
+              faellig_am: null,
+              prioritaet: 'diese-woche',
+              status: 'neu',
+              app_kontext: 'quiz',
+              signal_key: SIGNAL_KEY,
+              erstellt_von: 'system'
+            })
+          });
+        }
+      }
+    } catch(e) { console.warn('GHD OS Quiz-Signal fehlgeschlagen:', e.message); }
   }
   var themen=[];
   QANT.forEach(function(a){if(themen.indexOf(a.q.th)<0)themen.push(a.q.th);});
