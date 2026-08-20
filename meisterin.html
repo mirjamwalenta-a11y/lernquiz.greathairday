@@ -532,6 +532,8 @@ function pinPruefen(){
   if(val === PIN){
     try{ localStorage.setItem('m_eingeloggt','1'); }catch(e){}
     zeige('home');
+    // Streak von Supabase laden sobald eingeloggt
+    ladeStreakVonSupabase();
   } else {
     document.getElementById('pin-fehler').textContent = 'Falsche PIN — bitte nochmal versuchen.';
     document.getElementById('pin-input').value = '';
@@ -573,11 +575,49 @@ var BADGES = [
 // ════════════════════════════════════════════════════════
 // STREAK
 // ════════════════════════════════════════════════════════
+// ── Streak: Supabase-Speicherung ──────────────────────────────────────────────
+var STREAK_USER_KEY = 'meisterin_mirjam';
+var _streakCache = null;
+
 function getStreak(){
+  if(_streakCache) return _streakCache;
   try{ var d=localStorage.getItem('m_streak'); return d?JSON.parse(d):{sessions:0,streak:0,letzterTag:'',erhalteneBadges:[]}; }
   catch(e){ return {sessions:0,streak:0,letzterTag:'',erhalteneBadges:[]}; }
 }
-function saveStreak(s){ try{ localStorage.setItem('m_streak',JSON.stringify(s)); }catch(e){} }
+
+function saveStreak(s){
+  _streakCache = s;
+  try{ localStorage.setItem('m_streak',JSON.stringify(s)); }catch(e){}
+  // Async in Supabase speichern
+  if(sb_m){
+    sb_m.from('ghd_streaks').upsert({
+      user_key: STREAK_USER_KEY,
+      sessions: s.sessions||0,
+      streak: s.streak||0,
+      letzter_tag: s.letzterTag||'',
+      badges: s.erhalteneBadges||[],
+      updated_at: new Date().toISOString()
+    }, {onConflict:'user_key'}).then(function(){}).catch(function(e){ console.warn('Streak save:', e); });
+  }
+}
+
+async function ladeStreakVonSupabase(){
+  if(!sb_m) return;
+  try{
+    var res = await sb_m.from('ghd_streaks').select('*').eq('user_key', STREAK_USER_KEY).single();
+    if(res.data){
+      var s = {
+        sessions: res.data.sessions||0,
+        streak: res.data.streak||0,
+        letzterTag: res.data.letzter_tag||'',
+        erhalteneBadges: res.data.badges||[]
+      };
+      _streakCache = s;
+      try{ localStorage.setItem('m_streak', JSON.stringify(s)); }catch(e){}
+      renderStreakHome();
+    }
+  }catch(e){ console.warn('Streak laden:', e); }
+}
 function heuteDatum(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 
 function sessionAbgeschlossen(){

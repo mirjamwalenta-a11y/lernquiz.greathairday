@@ -1822,8 +1822,35 @@ var SP_ST=[
 ];
 
 var SP_Q=[];
+// Streak-Zähler: Supabase-gesichert
+async function spLadeVonSupabase(lid, lj){
+  try{
+    var key = 'lehrling_'+lid+'_lj'+lj;
+    var res = await sb.from('ghd_streaks').select('*').eq('user_key', key).single();
+    if(res.data && res.data.sessions > spN(lj)){
+      localStorage.setItem('sp'+lj+'n', res.data.sessions);
+    }
+  }catch(e){}
+}
+async function spSpeichereSupabase(lid, lj, n){
+  if(!lid) return;
+  try{
+    var key = 'lehrling_'+lid+'_lj'+lj;
+    await sb.from('ghd_streaks').upsert({
+      user_key: key,
+      sessions: n,
+      streak: n,
+      letzter_tag: new Date().toISOString().slice(0,10),
+      updated_at: new Date().toISOString()
+    },{onConflict:'user_key'});
+  }catch(e){ console.warn('spSpeichern:', e); }
+}
 function spN(lj){return parseInt(localStorage.getItem('sp'+lj+'n')||'0');}
-function spS(lj,n){localStorage.setItem('sp'+lj+'n',n);}
+function spS(lj,n){
+  localStorage.setItem('sp'+lj+'n',n);
+  // Auch in Supabase speichern
+  if(AKTLEHRLING&&AKTLEHRLING.id) spSpeichereSupabase(AKTLEHRLING.id, lj, n);
+}
 
 // Abzeichen lesen — aus lokalem Cache (wird beim Login aus Supabase befüllt)
 function spG(lj){return JSON.parse(localStorage.getItem('sp'+lj+'g')||'[]');}
@@ -1852,6 +1879,8 @@ function streakNachQuiz(lj){
 // Beim Login: Anzahl UND Abzeichen aus Supabase laden → in localStorage schreiben
 async function streakSync(lid,lj){
   try{
+    // Streak auch von ghd_streaks laden
+    await spLadeVonSupabase(lid, lj);
     // Anzahl absolvierter Quizze aus Verlauf
     var r=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lid);
     var n=r.count||0;
