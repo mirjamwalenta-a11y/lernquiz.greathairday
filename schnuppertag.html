@@ -540,8 +540,22 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 <script>
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
-const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
 const sb = supabase.createClient(SB_URL, SB_KEY);
+async function ghd_upsertEreignis(app, typ, titel, prioritaet) {
+  try {
+    const _h = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
+    const _r = await fetch(`${SB_URL}/rest/v1/ghd_ereignisse?app=eq.${encodeURIComponent(app)}&typ=eq.${encodeURIComponent(typ)}&gelesen=eq.false&select=id`, { headers: _h });
+    const _ex = await _r.json();
+    if (Array.isArray(_ex) && _ex.length > 0) {
+      await fetch(`${SB_URL}/rest/v1/ghd_ereignisse?app=eq.${encodeURIComponent(app)}&typ=eq.${encodeURIComponent(typ)}&gelesen=eq.false`,
+        { method: 'PATCH', headers: { ..._h, 'Prefer': 'return=minimal' }, body: JSON.stringify({ titel, prioritaet, erstellt_am: new Date().toISOString() }) });
+    } else {
+      await fetch(`${SB_URL}/rest/v1/ghd_ereignisse`,
+        { method: 'POST', headers: { ..._h, 'Prefer': 'return=minimal' }, body: JSON.stringify({ app, typ, titel, prioritaet, gelesen: false }) });
+    }
+  } catch(e) { console.warn('ghd_upsertEreignis:', e); }
+}
 
 var MEISTERIN_OK = false;
 var AKT_PROBEZEIT = null;
@@ -1847,15 +1861,7 @@ async function speichereProbezeit() {
   document.getElementById('np-name').value = '';
   document.getElementById('np-beginn').value = '';
   // ── GHD-EREIGNIS ────────────────────────────────────────────────
-  sb.from('ghd_ereignisse').insert({
-    app: 'Schnuppertag',
-    typ: 'probezeit_gestartet',
-    titel: 'Neue Probezeit: ' + name + ' — Start ' + new Date(beginn).toLocaleDateString('de-AT', {day:'2-digit',month:'2-digit',year:'numeric'}),
-    prioritaet: 'diese-woche',
-    gelesen: false,
-  }).then(function(r){
-    if (r.error) console.log('Ereignis-Fehler:', r.error.message);
-  });
+  ghd_upsertEreignis('Schnuppertag', 'probezeit_gestartet', 'Neue Probezeit: ' + name + ' — Start ' + new Date(beginn).toLocaleDateString('de-AT', {day:'2-digit',month:'2-digit',year:'numeric'}), 'diese-woche');
   zeige('probezeiten');
 }
 

@@ -328,7 +328,7 @@ textarea{resize:vertical;margin-bottom:0}
 <script>
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
-const SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
 const sb = supabase.createClient(SB_URL, SB_KEY);
 
 // ── FRAGEN AUS SUPABASE LADEN ────────────────────────────────────────────────
@@ -1393,53 +1393,6 @@ async function zeigeErgebnis(){
     komp=await speichereKompetenz(AKTLEHRLING.id,QANT);
     await sb.from('verlauf').insert({lehrling_id:AKTLEHRLING.id,datum:new Date().toLocaleDateString('de-AT'),lehrjahr:LJ,richtig:ok,falsch:g-ok,gesamt:g,punkte:p,schwach:schwach});
     if(typeof streakNachQuiz==='function') streakNachQuiz(LJ);
-
-    // ── GHD OS V1: Signal-Logik Quiz unter Schwellenwert ──────────────────
-    try {
-      const GHD_URL = 'https://lpuxvvfrrcnbuzafscyk.supabase.co';
-      const GHD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwdXh2dmZycmNuYnV6YWZzY3lrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2ODIxNDcsImV4cCI6MjEwMDI1ODE0N30.6VZUmmXj_x3Q8J55s_tbOHcW5-U5OXllGoEBhypaVfI';
-      const gh = { "apikey": GHD_KEY, "Authorization": `Bearer ${GHD_KEY}`, "Content-Type": "application/json" };
-      const SCHWELLENWERT = 5; // unter 5/10 → Lernaufgabe
-
-      if (s < SCHWELLENWERT && AKTLEHRLING && schwach.length > 0) {
-        const lehrlingName = AKTLEHRLING.name || 'Lehrling';
-        const themenText = schwach.slice(0,3).join(', ');
-        const SIGNAL_KEY = `quiz-unter-schwellenwert-${AKTLEHRLING.id}`;
-        const titel = `Lernschritt für ${lehrlingName} vorbereiten – ${themenText}`;
-        const naechster_schritt = `Lernquiz öffnen → Verlauf prüfen → Übung zu "${schwach[0]}" einplanen`;
-
-        // Prüfen ob Aufgabe schon offen
-        const check = await fetch(`${GHD_URL}/rest/v1/ghd_aufgaben?signal_key=eq.${SIGNAL_KEY}&status=neq.erledigt&select=id`, { headers: gh });
-        const existing = await check.json();
-
-        if (Array.isArray(existing) && existing.length > 0) {
-          // Aktualisieren
-          await fetch(`${GHD_URL}/rest/v1/ghd_aufgaben?signal_key=eq.${SIGNAL_KEY}&status=neq.erledigt`, {
-            method: 'PATCH',
-            headers: { ...gh, "Prefer": "return=minimal" },
-            body: JSON.stringify({ titel, naechster_schritt, geaendert_am: new Date().toISOString() })
-          });
-        } else {
-          // Neu anlegen
-          await fetch(`${GHD_URL}/rest/v1/ghd_aufgaben`, {
-            method: 'POST',
-            headers: { ...gh, "Prefer": "return=minimal" },
-            body: JSON.stringify({
-              typ: 'lernschritt',
-              titel,
-              naechster_schritt,
-              verantwortlich: 'Mirjam',
-              faellig_am: null,
-              prioritaet: 'diese-woche',
-              status: 'neu',
-              app_kontext: 'quiz',
-              signal_key: SIGNAL_KEY,
-              erstellt_von: 'system'
-            })
-          });
-        }
-      }
-    } catch(e) { console.warn('GHD OS Quiz-Signal fehlgeschlagen:', e.message); }
   }
   var themen=[];
   QANT.forEach(function(a){if(themen.indexOf(a.q.th)<0)themen.push(a.q.th);});
@@ -1822,35 +1775,8 @@ var SP_ST=[
 ];
 
 var SP_Q=[];
-// Streak-Zähler: Supabase-gesichert
-async function spLadeVonSupabase(lid, lj){
-  try{
-    var key = 'lehrling_'+lid+'_lj'+lj;
-    var res = await sb.from('ghd_streaks').select('*').eq('user_key', key).single();
-    if(res.data && res.data.sessions > spN(lj)){
-      localStorage.setItem('sp'+lj+'n', res.data.sessions);
-    }
-  }catch(e){}
-}
-async function spSpeichereSupabase(lid, lj, n){
-  if(!lid) return;
-  try{
-    var key = 'lehrling_'+lid+'_lj'+lj;
-    await sb.from('ghd_streaks').upsert({
-      user_key: key,
-      sessions: n,
-      streak: n,
-      letzter_tag: new Date().toISOString().slice(0,10),
-      updated_at: new Date().toISOString()
-    },{onConflict:'user_key'});
-  }catch(e){ console.warn('spSpeichern:', e); }
-}
 function spN(lj){return parseInt(localStorage.getItem('sp'+lj+'n')||'0');}
-function spS(lj,n){
-  localStorage.setItem('sp'+lj+'n',n);
-  // Auch in Supabase speichern
-  if(AKTLEHRLING&&AKTLEHRLING.id) spSpeichereSupabase(AKTLEHRLING.id, lj, n);
-}
+function spS(lj,n){localStorage.setItem('sp'+lj+'n',n);}
 
 // Abzeichen lesen — aus lokalem Cache (wird beim Login aus Supabase befüllt)
 function spG(lj){return JSON.parse(localStorage.getItem('sp'+lj+'g')||'[]');}
@@ -1879,8 +1805,6 @@ function streakNachQuiz(lj){
 // Beim Login: Anzahl UND Abzeichen aus Supabase laden → in localStorage schreiben
 async function streakSync(lid,lj){
   try{
-    // Streak auch von ghd_streaks laden
-    await spLadeVonSupabase(lid, lj);
     // Anzahl absolvierter Quizze aus Verlauf
     var r=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lid);
     var n=r.count||0;
