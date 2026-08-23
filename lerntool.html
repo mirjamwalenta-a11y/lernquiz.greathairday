@@ -813,15 +813,7 @@ function quizPruefe(btn, gewaehlt, richtig, erklaerung) {
     var themaAkt = document.getElementById('quiz-thema').value || 'Unbekannt';
     var titel = 'Lernquiz: ' + QUIZ_GESAMT + ' Fragen zu „' + themaAkt + '" — ' + prozent + '% richtig';
     var prio = prozent >= 80 ? 'wann-moeglich' : prozent >= 50 ? 'diese-woche' : 'heute';
-    sb2.from('ghd_ereignisse').insert({
-      app: 'Lerntool',
-      typ: 'lernstand',
-      titel: titel,
-      prioritaet: prio,
-      gelesen: false,
-    }).then(function(r){
-      if (r.error) console.log('Ereignis-Fehler:', r.error.message);
-    });
+    ghd_upsertEreignis('Lerntool', 'lernstand', titel, prio);
   }
 }
 
@@ -1051,6 +1043,23 @@ var SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
 var SB_KEY = 'sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
 var sb2 = supabase.createClient(SB_URL, SB_KEY);
 var TABELLE = 'lerntool_daten';
+async function ghd_upsertEreignis(app, typ, titel, prioritaet) {
+  try {
+    var _url = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+    var _key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
+    var _h = { 'apikey': _key, 'Authorization': 'Bearer ' + _key, 'Content-Type': 'application/json' };
+    var _r = await fetch(_url + '/rest/v1/ghd_ereignisse?app=eq.' + encodeURIComponent(app) + '&typ=eq.' + encodeURIComponent(typ) + '&gelesen=eq.false&select=id', { headers: _h });
+    var _ex = await _r.json();
+    if (Array.isArray(_ex) && _ex.length > 0) {
+      await fetch(_url + '/rest/v1/ghd_ereignisse?app=eq.' + encodeURIComponent(app) + '&typ=eq.' + encodeURIComponent(typ) + '&gelesen=eq.false',
+        { method: 'PATCH', headers: Object.assign({}, _h, { 'Prefer': 'return=minimal' }), body: JSON.stringify({ titel: titel, prioritaet: prioritaet, erstellt_am: new Date().toISOString() }) });
+    } else {
+      await fetch(_url + '/rest/v1/ghd_ereignisse',
+        { method: 'POST', headers: Object.assign({}, _h, { 'Prefer': 'return=minimal' }), body: JSON.stringify({ app: app, typ: typ, titel: titel, prioritaet: prioritaet, gelesen: false }) });
+    }
+  } catch(e) { console.warn('ghd_upsertEreignis:', e); }
+}
+
 
 // Beim Start: Daten aus Supabase laden und in lokale Variablen einspielen
 async function ladeAllesDatenAusSupabase() {
