@@ -806,6 +806,23 @@ function quizPruefe(btn, gewaehlt, richtig, erklaerung) {
   sc.style.display = 'block';
   sc.textContent = QUIZ_RICHTIG+' von '+QUIZ_GESAMT+' richtig — '+Math.round(QUIZ_RICHTIG/QUIZ_GESAMT*100)+'%';
   window.scrollTo(0, document.getElementById('quiz-bereich').offsetTop - 20);
+
+  // ── GHD-EREIGNIS nach je 5 Fragen ──────────────────────────────
+  if (QUIZ_GESAMT > 0 && QUIZ_GESAMT % 5 === 0) {
+    var prozent = Math.round(QUIZ_RICHTIG / QUIZ_GESAMT * 100);
+    var themaAkt = document.getElementById('quiz-thema').value || 'Unbekannt';
+    var titel = 'Lernquiz: ' + QUIZ_GESAMT + ' Fragen zu „' + themaAkt + '" — ' + prozent + '% richtig';
+    var prio = prozent >= 80 ? 'wann-moeglich' : prozent >= 50 ? 'diese-woche' : 'heute';
+    sb2.from('ghd_ereignisse').insert({
+      app: 'Lerntool',
+      typ: 'lernstand',
+      titel: titel,
+      prioritaet: prio,
+      gelesen: false,
+    }).then(function(r){
+      if (r.error) console.log('Ereignis-Fehler:', r.error.message);
+    });
+  }
 }
 
 // ── LERNPLAN ────────────────────────────────────────────────────

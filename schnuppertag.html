@@ -1006,7 +1006,21 @@ async function speichereSchnuppertag() {
   });
 
   if (error) { fehlerEl.textContent = 'Fehler beim Speichern: ' + error.message; fehlerEl.style.display = 'block'; }
-  else { okEl.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; okEl.style.display = 'block'; }
+  else {
+    okEl.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; okEl.style.display = 'block';
+    // ── GHD-EREIGNIS ──────────────────────────────────────────────
+    var entText = AKT_ENTSCHEIDUNG === 'ja' ? '→ Probezeit' : AKT_ENTSCHEIDUNG === 'nein' ? '→ Nicht geeignet' : '→ Entscheidung offen';
+    var prio = AKT_ENTSCHEIDUNG === 'ja' ? 'diese-woche' : AKT_ENTSCHEIDUNG === 'nein' ? 'wann-moeglich' : 'heute';
+    sb.from('ghd_ereignisse').insert({
+      app: 'Schnuppertag',
+      typ: 'schnuppertag_abgeschlossen',
+      titel: 'Schnuppertag ' + name + ' — ' + gesamt + ' Punkte ' + entText,
+      prioritaet: prio,
+      gelesen: false,
+    }).then(function(r){
+      if (r.error) console.log('Ereignis-Fehler:', r.error.message);
+    });
+  }
 }
 
 // ── PROBEZEITEN LADEN ─────────────────────────────────────────────────────────
@@ -1832,6 +1846,16 @@ async function speichereProbezeit() {
   if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
   document.getElementById('np-name').value = '';
   document.getElementById('np-beginn').value = '';
+  // ── GHD-EREIGNIS ────────────────────────────────────────────────
+  sb.from('ghd_ereignisse').insert({
+    app: 'Schnuppertag',
+    typ: 'probezeit_gestartet',
+    titel: 'Neue Probezeit: ' + name + ' — Start ' + new Date(beginn).toLocaleDateString('de-AT', {day:'2-digit',month:'2-digit',year:'numeric'}),
+    prioritaet: 'diese-woche',
+    gelesen: false,
+  }).then(function(r){
+    if (r.error) console.log('Ereignis-Fehler:', r.error.message);
+  });
   zeige('probezeiten');
 }
 
