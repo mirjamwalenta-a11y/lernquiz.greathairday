@@ -1719,7 +1719,7 @@ window.addEventListener('DOMContentLoaded',function(){
     sb.auth.getSession().then(function(result){
       if(result.data&&result.data.session){
         sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
-          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');heuteInit();setTimeout(function(){if(typeof streakSync==='function')streakSync(res.data.id,LJ);},800);}
+          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');if(typeof heuteInit==="function")heuteInit();setTimeout(function(){if(typeof streakSync==='function')streakSync(res.data.id,LJ);},800);}
         });
       } else {
         // Kein eingeloggter User → Login zeigen, Verlauf bereinigen
