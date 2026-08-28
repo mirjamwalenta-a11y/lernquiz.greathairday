@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#1c1917">
   <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;min-height:100dvh}
@@ -128,10 +129,29 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <!-- Lehrlings-Link Box -->
   <div id="lehrling-link-box" class="card-green" style="margin-bottom:16px">
     <div class="label">Lehrlings-Modus</div>
-    <div style="font-size:13px;color:#2C2C2C;margin-bottom:10px;line-height:1.5">Öffne diesen Link auf einem zweiten Gerät und gib ihn dem Lehrling — ohne Lösungen und ohne Auswertung.</div>
-    <div style="background:#fff;border:1px solid #C8C4BC;border-radius:6px;padding:10px 12px;font-size:12px;color:#5B7B6F;word-break:break-all;margin-bottom:10px" id="lehrling-url"></div>
-    <button class="btn-sec" style="margin-top:0" onclick="kopiereLink()">📋 Link kopieren</button>
+    <div style="font-size:13px;color:#2C2C2C;margin-bottom:10px;line-height:1.5">Halte dem Lehrling den QR-Code hin — er scannt ihn mit seinem Handy und startet den Test direkt.</div>
+
+    <!-- QR-Code Box -->
+    <div style="background:#fff;border-radius:10px;padding:16px;text-align:center;margin-bottom:12px">
+      <div id="qr-code-container" style="display:inline-block"></div>
+      <div style="font-size:11px;color:#9A9A90;margin-top:8px">Mit Kamera oder QR-Scanner scannen</div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-sec" style="margin-top:0;flex:1" onclick="kopiereLink()">📋 Link kopieren</button>
+      <button class="btn-sec" style="margin-top:0;flex:1" onclick="zeigeQRVollbild()">🔍 QR vergrößern</button>
+    </div>
     <div id="kopiert-msg" style="display:none;font-size:12px;color:#5B7B6F;margin-top:6px;text-align:center">✓ Link kopiert!</div>
+  </div>
+
+  <!-- QR Vollbild Overlay -->
+  <div id="qr-vollbild" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;justify-content:center;align-items:center;flex-direction:column" onclick="document.getElementById('qr-vollbild').style.display='none'">
+    <div style="background:#fff;border-radius:16px;padding:24px;text-align:center;max-width:320px;margin:20px">
+      <div style="font-size:13px;font-weight:700;color:#1C1C1A;margin-bottom:16px">✂ Schnuppertag-Test</div>
+      <div id="qr-code-vollbild"></div>
+      <div style="font-size:12px;color:#7A7A70;margin-top:14px;line-height:1.5">Scannen zum Starten<br>des Eignungstests</div>
+    </div>
+    <div style="color:#fff;font-size:13px;margin-top:16px;opacity:0.7">Tippen zum Schließen</div>
   </div>
 
   <div class="grid2" style="margin-bottom:10px">
@@ -287,47 +307,6 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <div class="card">
       <div class="label">Notizen zu Körpersprache, Auftreten & Gesamteindruck</div>
       <textarea rows="4" id="notizen-ausbilderin" placeholder="Erster Eindruck, Spontanität, Auftreten…"></textarea>
-    </div>
-
-    <div class="section-head">Chefin-Beurteilung der Werte</div>
-    <div class="card">
-      <div style="font-size:13px;color:#7A7A70;margin-bottom:14px">Deine eigene Einschätzung — unabhängig von der Selbsteinschätzung des Lehrlings.</div>
-      <div style="margin-bottom:16px">
-        <div class="werte-row"><span style="font-size:14px;font-weight:600">😊 Freundlichkeit & Offenheit</span><span class="slider-val" id="cv1">Manchmal</span></div>
-        <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv1',this.value)">
-        <div class="slider-poles"><span>Eher still</span><span>Sehr offen</span></div>
-      </div>
-      <div style="margin-bottom:16px">
-        <div class="werte-row"><span style="font-size:14px;font-weight:600">👥 Teamgeist & Teamarbeit</span><span class="slider-val" id="cv2">Manchmal</span></div>
-        <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv2',this.value)">
-        <div class="slider-poles"><span>Lieber alleine</span><span>Echte Teamplayerin</span></div>
-      </div>
-      <div style="margin-bottom:16px">
-        <div class="werte-row"><span style="font-size:14px;font-weight:600">💡 Wissensdurst & Lernbereitschaft</span><span class="slider-val" id="cv3">Manchmal</span></div>
-        <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv3',this.value)">
-        <div class="slider-poles"><span>Lerne wenn nötig</span><span>Lerne immer gerne</span></div>
-      </div>
-      <div style="margin-bottom:16px">
-        <div class="werte-row"><span style="font-size:14px;font-weight:600">❤ Freude an der Arbeit</span><span class="slider-val" id="cv4">Manchmal</span></div>
-        <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv4',this.value)">
-        <div class="slider-poles"><span>Arbeit ist Pflicht</span><span>Arbeit ist Leidenschaft</span></div>
-      </div>
-      <div style="margin-bottom:16px">
-        <div class="werte-row"><span style="font-size:14px;font-weight:600">⏰ Pünktlichkeit & Zuverlässigkeit</span><span class="slider-val" id="cv5">Manchmal</span></div>
-        <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv5',this.value)">
-        <div class="slider-poles"><span>Manchmal zu spät</span><span>Immer pünktlich</span></div>
-      </div>
-      <div style="margin-bottom:4px">
-        <div class="werte-row"><span style="font-size:14px;font-weight:600">🔄 Umgang mit Kritik</span><span class="slider-val" id="cv6">Manchmal</span></div>
-        <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv6',this.value)">
-        <div class="slider-poles"><span>Schwierig für mich</span><span>Lerne daraus</span></div>
-      </div>
-    </div>
-
-    <div class="section-head">Notiz Chefin</div>
-    <div class="card">
-      <div class="label">Persönliche Notizen & Gesamteindruck</div>
-      <textarea rows="5" id="notiz-chefin" placeholder="Deine persönlichen Gedanken — Bauchgefühl, besondere Beobachtungen, offene Fragen…"></textarea>
     </div>
 
     <!-- Lehrlings-Abschicken Button (nur im Lehrlings-Modus) -->
@@ -1149,7 +1128,7 @@ async function schnellSpeichern() {
 
   var { error } = await sb.from('schnuppertage').insert({
     name: name, datum: datum, punkte_gesamt: gesamt,
-    punkte_detail: { wissen: wissen, praktik: praktik, geschicklichkeit: (AKT_PUNKTE.gs1||0)+(AKT_PUNKTE.gs2||0)+(AKT_PUNKTE.gs3||0), rollenspiel: AKT_PUNKTE.rp||0, gs1: AKT_PUNKTE.gs1||0, gs2: AKT_PUNKTE.gs2||0, gs3: AKT_PUNKTE.gs3||0, rp: AKT_PUNKTE.rp||0 },
+    punkte_detail: { wissen: wissen, praktik: praktik, geschicklichkeit: (AKT_PUNKTE.gs1||0)+(AKT_PUNKTE.gs2||0)+(AKT_PUNKTE.gs3||0), rollenspiel: AKT_PUNKTE.rp||0 },
     entscheidung: AKT_ENTSCHEIDUNG || 'offen', werte: werte
   });
 
@@ -1201,7 +1180,7 @@ async function speichereSchnuppertag() {
 
   var { error } = await sb.from('schnuppertage').insert({
     name: name, datum: datum, punkte_gesamt: gesamt,
-    punkte_detail: { wissen: wissen, praktik: praktik, geschicklichkeit: (AKT_PUNKTE.gs1||0)+(AKT_PUNKTE.gs2||0)+(AKT_PUNKTE.gs3||0), rollenspiel: AKT_PUNKTE.rp||0, gs1: AKT_PUNKTE.gs1||0, gs2: AKT_PUNKTE.gs2||0, gs3: AKT_PUNKTE.gs3||0, rp: AKT_PUNKTE.rp||0 },
+    punkte_detail: { wissen: wissen, praktik: praktik, geschicklichkeit: (AKT_PUNKTE.gs1||0)+(AKT_PUNKTE.gs2||0)+(AKT_PUNKTE.gs3||0), rollenspiel: AKT_PUNKTE.rp||0 },
     entscheidung: AKT_ENTSCHEIDUNG || 'offen', werte: werte
   });
 
@@ -2139,62 +2118,11 @@ function zeigeBewerberDetail(id) {
     '<div class="card" style="padding:14px;margin-bottom:12px">' +
       '<table style="width:100%;font-size:13px;border-collapse:collapse">' +
         '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">📚 Wissen</td><td style="text-align:right;font-weight:700;color:#5B7B6F">' + (pd.wissen||0) + ' Pkt</td></tr>' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">🖐 Praktik gesamt</td><td style="text-align:right;font-weight:700;color:#5B7B6F" id="arch-praktik-total">' + (pd.praktik||0) + ' Pkt</td></tr>' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Geschicklichkeit</td><td style="text-align:right;color:#7A7A70" id="arch-gesch-total">' + (pd.geschicklichkeit||0) + ' Pkt</td></tr>' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Rollenspiel</td><td style="text-align:right;color:#7A7A70" id="arch-rp-total">' + (pd.rollenspiel||0) + ' Pkt</td></tr>' +
-        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#5B7B6F" id="arch-gesamt-total">' + (s.punkte_gesamt||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">🖐 Praktik gesamt</td><td style="text-align:right;font-weight:700;color:#5B7B6F">' + (pd.praktik||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Geschicklichkeit</td><td style="text-align:right;color:#7A7A70">' + (pd.geschicklichkeit||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Rollenspiel</td><td style="text-align:right;color:#7A7A70">' + (pd.rollenspiel||0) + ' Pkt</td></tr>' +
+        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#5B7B6F">' + (s.punkte_gesamt||0) + ' Pkt</td></tr>' +
       '</table>' +
-    '</div>' +
-
-    // Praktische Übungen nachbewerten
-    '<div class="section-head">Praktische Übungen — Bewertung nachtragen</div>' +
-    '<div class="card" style="margin-bottom:12px">' +
-      '<div style="font-size:13px;color:#7A7A70;margin-bottom:14px">Hier kannst du die Punktzahl für die praktischen Übungen eintragen oder korrigieren.</div>' +
-
-      '<div style="margin-bottom:14px">' +
-        '<div style="font-size:13px;font-weight:600;margin-bottom:6px">✂ Haarschnitt mit Papierschere (max. 4 Pkt)</div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap" id="arch-pts-gs1">' +
-          archPtsBtn('gs1', 4, 4, pd.gs1||0) +
-          archPtsBtn('gs1', 3, 4, pd.gs1||0) +
-          archPtsBtn('gs1', 2, 4, pd.gs1||0) +
-          archPtsBtn('gs1', 1, 4, pd.gs1||0) +
-          archPtsBtn('gs1', 0, 4, pd.gs1||0) +
-        '</div>' +
-      '</div>' +
-
-      '<div style="margin-bottom:14px">' +
-        '<div style="font-size:13px;font-weight:600;margin-bottom:6px">🪢 Knoten binden (max. 2 Pkt)</div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap" id="arch-pts-gs2">' +
-          archPtsBtn('gs2', 2, 2, pd.gs2||0) +
-          archPtsBtn('gs2', 1, 2, pd.gs2||0) +
-          archPtsBtn('gs2', 0, 2, pd.gs2||0) +
-        '</div>' +
-      '</div>' +
-
-      '<div style="margin-bottom:14px">' +
-        '<div style="font-size:13px;font-weight:600;margin-bottom:6px">🎨 Farbmischung Wasserfarben (max. 5 Pkt)</div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap" id="arch-pts-gs3">' +
-          archPtsBtn('gs3', 5, 5, pd.gs3||0) +
-          archPtsBtn('gs3', 4, 5, pd.gs3||0) +
-          archPtsBtn('gs3', 3, 5, pd.gs3||0) +
-          archPtsBtn('gs3', 2, 5, pd.gs3||0) +
-          archPtsBtn('gs3', 0, 5, pd.gs3||0) +
-        '</div>' +
-      '</div>' +
-
-      '<div style="margin-bottom:14px">' +
-        '<div style="font-size:13px;font-weight:600;margin-bottom:6px">🎭 Rollenspiel Kundenberatung (max. 6 Pkt)</div>' +
-        '<div style="display:flex;gap:6px;flex-wrap:wrap" id="arch-pts-rp">' +
-          archPtsBtn('rp', 6, 6, pd.rp||0) +
-          archPtsBtn('rp', 4, 6, pd.rp||0) +
-          archPtsBtn('rp', 2, 6, pd.rp||0) +
-          archPtsBtn('rp', 0, 6, pd.rp||0) +
-        '</div>' +
-      '</div>' +
-
-      '<button class="btn-primary" onclick="speicherePraktikPunkte(\'' + s.id + '\',' + (pd.wissen||0) + ')">💾 Praktik-Punkte speichern</button>' +
-      '<div id="arch-praktik-ok" class="ok-box" style="margin-top:8px"></div>' +
-      '<div id="arch-praktik-err" class="fehler-box" style="margin-top:8px"></div>' +
     '</div>';
 
   // Werte-Einschätzung
@@ -2262,66 +2190,8 @@ function zeigeBewerberDetail(id) {
   var detailEl = document.getElementById('archiv-detail');
   var listeEl = document.getElementById('archiv-liste');
   document.getElementById('archiv-detail-inhalt').innerHTML = html;
-  // ARCH_PTS mit gespeicherten Werten vorbelegen
-  window.ARCH_PTS = { gs1: pd.gs1||0, gs2: pd.gs2||0, gs3: pd.gs3||0, rp: pd.rp||0 };
-  // wissen in data-attribut speichern fuer Neuberechnung
-  var gesamtEl = document.getElementById('arch-gesamt-total');
-  if (gesamtEl) gesamtEl.dataset.wissen = pd.wissen||0;
   listeEl.style.display = 'none';
   detailEl.style.display = 'block';
-}
-
-function archPtsBtn(key, val, max, current) {
-  var sel = (current === val) ? ' sel' : '';
-  return '<button class="pts-btn' + sel + '" onclick="archSelectPts(\'' + key + '\',' + val + ',this,' + max + ')">' + val + ' Pkt' + (val === max ? ' ✓' : '') + '</button>';
-}
-
-function archSelectPts(key, val, btn, max) {
-  var row = document.getElementById('arch-pts-' + key);
-  if (!row) return;
-  row.querySelectorAll('.pts-btn').forEach(function(b){ b.classList.remove('sel'); });
-  btn.classList.add('sel');
-  window['ARCH_PTS'] = window['ARCH_PTS'] || {};
-  window['ARCH_PTS'][key] = val;
-  // Totals neu berechnen
-  var gesch = (window.ARCH_PTS.gs1||0) + (window.ARCH_PTS.gs2||0) + (window.ARCH_PTS.gs3||0);
-  var rp = window.ARCH_PTS.rp||0;
-  var praktik = gesch + rp;
-  var wissen = parseInt(document.getElementById('arch-gesamt-total').dataset.wissen||0);
-  var el1 = document.getElementById('arch-praktik-total');
-  var el2 = document.getElementById('arch-gesch-total');
-  var el3 = document.getElementById('arch-rp-total');
-  var el4 = document.getElementById('arch-gesamt-total');
-  if(el1) el1.textContent = praktik + ' Pkt';
-  if(el2) el2.textContent = gesch + ' Pkt';
-  if(el3) el3.textContent = rp + ' Pkt';
-  if(el4) el4.textContent = (parseInt(el4.dataset.wissen||0) + praktik) + ' Pkt';
-}
-
-async function speicherePraktikPunkte(id, wissen) {
-  var pts = window.ARCH_PTS || {};
-  var gs1 = pts.gs1||0, gs2 = pts.gs2||0, gs3 = pts.gs3||0, rp = pts.rp||0;
-  var gesch = gs1 + gs2 + gs3;
-  var praktik = gesch + rp;
-  var gesamt = wissen + praktik;
-  var okEl = document.getElementById('arch-praktik-ok');
-  var errEl = document.getElementById('arch-praktik-err');
-  okEl.textContent = ''; errEl.textContent = '';
-  // punkte_detail aus Supabase lesen, dann mergen
-  var fetchRes = await supabase.from('schnuppertage').select('punkte_detail').eq('id', id).single();
-  var pd_alt = (fetchRes.data && fetchRes.data.punkte_detail) || {};
-  var pd_neu = Object.assign({}, pd_alt, { praktik: praktik, geschicklichkeit: gesch, rollenspiel: rp, gs1: gs1, gs2: gs2, gs3: gs3, rp: rp });
-  var res = await supabase.from('schnuppertage').update({
-    punkte_detail: pd_neu,
-    punkte_gesamt: gesamt
-  }).eq('id', id);
-  if (res.error) {
-    errEl.textContent = 'Fehler: ' + res.error.message;
-  } else {
-    okEl.textContent = '✓ Gespeichert! Gesamt: ' + gesamt + ' Punkte';
-    document.getElementById('arch-gesamt-total').textContent = gesamt + ' Pkt';
-    document.getElementById('arch-praktik-total').textContent = praktik + ' Pkt';
-  }
 }
 
 async function aendereEntscheidung(id, entscheidung, btn) {
@@ -2351,6 +2221,38 @@ async function loescheBewerber(id, name) {
 }
 
 // ── LEHRLING: NAME SYNC ──────────────────────────────────────────────────────
+// ── QR-CODE ────────────────────────────────────────────────────────────────────
+function generiereQR(url) {
+  var container = document.getElementById('qr-code-container');
+  var containerVoll = document.getElementById('qr-code-vollbild');
+  if (!container || typeof QRCode === 'undefined') return;
+  container.innerHTML = '';
+  new QRCode(container, {
+    text: url,
+    width: 180,
+    height: 180,
+    colorDark: '#1C1C1A',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  if (containerVoll) {
+    containerVoll.innerHTML = '';
+    new QRCode(containerVoll, {
+      text: url,
+      width: 240,
+      height: 240,
+      colorDark: '#1C1C1A',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  }
+}
+
+function zeigeQRVollbild() {
+  var overlay = document.getElementById('qr-vollbild');
+  if (overlay) overlay.style.display = 'flex';
+}
+
 function syncLehrlingName(val) {
   var n1 = document.getElementById('bewerber-name');
   var n2 = document.getElementById('bewerber-name-schnell');
@@ -2594,6 +2496,9 @@ window.addEventListener('DOMContentLoaded', function() {
   var lehrlingUrl = baseUrl + '?modus=lehrling';
   var urlEl = document.getElementById('lehrling-url');
   if (urlEl) urlEl.textContent = lehrlingUrl;
+
+  // QR-Code generieren
+  generiereQR(lehrlingUrl);
 
   var params = new URLSearchParams(window.location.search);
 
