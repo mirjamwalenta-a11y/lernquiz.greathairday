@@ -1520,19 +1520,22 @@ async function speichereNeuenLehrling(){
   // Das passiert z.B. wenn ein Lehrling geloescht wurde (DB-Eintrag weg, Auth-User bleibt).
   // Loesung: Auth-Login mit gleicher E-Mail versuchen, DB-Eintrag pruefen und ggf. neu anlegen.
   if(authErr && authErr.message && authErr.message.toLowerCase().includes('already registered')){
+    // Auth-User existiert noch (z.B. nach Loeschen eines Lehrlings).
+    // user_id per signIn holen, sofort wieder ausloggen, dann als Admin inserieren.
     var {data:signInData,error:signInErr}=await sb.auth.signInWithPassword({email:email,password:pin});
     if(signInErr){
       zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen existiert bereits. Bitte einen anderen Namen oder andere PIN verwenden.');
       return;
     }
-    var {data:vorhandene}=await sb.from('lehrlinge').select('id').eq('user_id',signInData.user.id).maybeSingle();
+    var recoveredUserId = signInData.user.id;
+    // Sofort ausloggen – danach laeuft alles wieder unter Admin-Session
+    await sb.auth.signOut();
+    var {data:vorhandene}=await sb.from('lehrlinge').select('id').eq('user_id',recoveredUserId).maybeSingle();
     if(vorhandene){
       zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.');
-      await sb.auth.signOut();
       return;
     }
-    var {error:dbErr2}=await sb.from('lehrlinge').insert({user_id:signInData.user.id,name:name,lehrjahr:lj});
-    await sb.auth.signOut();
+    var {error:dbErr2}=await sb.from('lehrlinge').insert({user_id:recoveredUserId,name:name,lehrjahr:lj});
     if(dbErr2){zeigeFehler('neu-fehler','Datenbankfehler: '+dbErr2.message);return;}
     document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
     await ladeDashboard();zeige('s-dashboard');
