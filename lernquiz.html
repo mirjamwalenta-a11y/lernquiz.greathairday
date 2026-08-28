@@ -1535,8 +1535,9 @@ async function speichereNeuenLehrling(){
       zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.');
       return;
     }
-    var {error:dbErr2}=await sb.from('lehrlinge').insert({user_id:recoveredUserId,name:name,lehrjahr:lj});
-    if(dbErr2){zeigeFehler('neu-fehler','Datenbankfehler: '+dbErr2.message);return;}
+    var insertRes2 = await fetch("https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"insert_lehrling",user_id:recoveredUserId,name:name,lehrjahr:lj})});
+    var insertJson2 = await insertRes2.json();
+    if(insertJson2 && insertJson2.error){zeigeFehler("neu-fehler","Datenbankfehler: "+insertJson2.error.message);return;}
     document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
     await ladeDashboard();zeige('s-dashboard');
     return;
