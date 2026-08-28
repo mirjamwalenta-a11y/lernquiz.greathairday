@@ -76,6 +76,11 @@ body.lehrling-modus #p-home .nav-card:last-of-type{display:none}
 body.lehrling-modus #home-login-box{display:none!important}
 body.lehrling-modus #home-logout-box{display:none!important}
 body.lehrling-modus .back-btn{display:none}
+body.lehrling-modus #lehrling-name-box{display:block!important}
+body.lehrling-modus #lehrling-abschicken-box{display:block!important}
+body.lehrling-modus #tab-auswertung{display:none!important}
+body.lehrling-modus .tab-btn[onclick*="auswertung"]{display:none!important}
+body.lehrling-modus #schnell-speichern-box{display:none!important}
 .nur-meisterin{display:none!important}
 body.meisterin-ok .nur-meisterin{display:block!important}
 /* Quiz-Stil */
@@ -181,6 +186,15 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     Beantworte alle Fragen so gut du kannst — schreib einfach was du weißt.
   </div>
 
+  <!-- Lehrling: Name eingeben -->
+  <div id="lehrling-name-box" style="display:none;margin-bottom:16px">
+    <div class="card" style="border-color:#5B7B6F;border-width:2px">
+      <div class="label">Dein Name</div>
+      <input type="text" id="lehrling-name-input" placeholder="Vor- und Nachname" oninput="syncLehrlingName(this.value)">
+      <div style="font-size:11px;color:#9A9A90;margin-top:6px">Wird nur für die Auswertung verwendet.</div>
+    </div>
+  </div>
+
   <div class="tab-nav">
     <button class="tab-btn ak" onclick="testTab('wissen',this)">📚 Wissen</button>
     <button class="tab-btn" onclick="testTab('werte',this)">❤ Werte</button>
@@ -275,6 +289,19 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <textarea rows="4" id="notizen-ausbilderin" placeholder="Erster Eindruck, Spontanität, Auftreten…"></textarea>
     </div>
 
+    <!-- Lehrlings-Abschicken Button (nur im Lehrlings-Modus) -->
+    <div id="lehrling-abschicken-box" style="display:none;margin-top:12px">
+      <div class="card" style="border-color:#5B7B6F;border-width:2px">
+        <div class="label" style="margin-bottom:8px">Test abschicken</div>
+        <div style="font-size:13px;color:#2C2C2C;margin-bottom:12px;line-height:1.5">
+          Wenn du alle Fragen beantwortet hast, schick deinen Test ab. Mirjam sieht das Ergebnis dann in ihrem System.
+        </div>
+        <div id="lehrling-send-fehler" class="fehler-box"></div>
+        <div id="lehrling-send-ok" class="ok-box"></div>
+        <button class="btn-primary" id="lehrling-send-btn" onclick="lehrlingAbschicken()">✓ Test abschicken →</button>
+      </div>
+    </div>
+
     <button class="btn-primary" onclick="testTab('auswertung', document.querySelectorAll('.tab-btn')[2])">Weiter → Auswertung</button>
   </div>
 
@@ -283,6 +310,29 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <div id="auto-auswertung-box" class="card" style="margin-bottom:12px">
       <div style="font-size:13px;color:#7A7A70;margin-bottom:12px">Die Wissensfragen werden automatisch ausgewertet. Praktische Übungen (Geschicklichkeit & Rollenspiel) bewertest du selbst.</div>
       <button class="btn-primary" onclick="autoAuswerten()" id="btn-auto-auswerten">🔍 Automatisch auswerten</button>
+    </div>
+
+    <!-- Schnell-Speichern Bewerber (oben sichtbar) -->
+    <div class="card-amber" id="schnell-speichern-box" style="margin-bottom:14px">
+      <div class="label">Bewerber speichern</div>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+        <div style="flex:1;min-width:140px">
+          <div style="font-size:11px;color:#7A7A70;margin-bottom:4px">Name</div>
+          <input type="text" id="bewerber-name-schnell" placeholder="z.B. Lisa Müller" oninput="document.getElementById('bewerber-name').value=this.value">
+        </div>
+        <div style="flex:1;min-width:130px">
+          <div style="font-size:11px;color:#7A7A70;margin-bottom:4px">Datum</div>
+          <input type="date" id="bewerber-datum-schnell" oninput="document.getElementById('bewerber-datum').value=this.value">
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+        <button class="pts-btn" id="sent-ja" onclick="setEntscheidung('ja');highlightSchnellEnt('ja')">✓ Probezeit</button>
+        <button class="pts-btn" id="sent-nein" onclick="setEntscheidung('nein');highlightSchnellEnt('nein')">✗ Nicht geeignet</button>
+        <button class="pts-btn" id="sent-offen" onclick="setEntscheidung('offen');highlightSchnellEnt('offen')">? Offen</button>
+      </div>
+      <div id="schnell-ok" class="ok-box" style="margin-top:8px"></div>
+      <div id="schnell-err" class="fehler-box" style="margin-top:8px"></div>
+      <button class="btn-primary" style="margin-top:10px" onclick="schnellSpeichern()">💾 Bewerber speichern →</button>
     </div>
 
     <div id="ergebnis-box" style="display:none">
@@ -504,7 +554,22 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <div class="tag">Schnuppertag · Archiv</div>
   <h1>Archiv Bewerber</h1>
   <p class="sub">Alle gespeicherten Schnuppertage</p>
+
+  <!-- Filter-Leiste -->
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+    <button class="tab-btn ak" onclick="archivFilter('alle',this)" id="af-alle">Alle</button>
+    <button class="tab-btn" onclick="archivFilter('ja',this)" id="af-ja">✓ Probezeit</button>
+    <button class="tab-btn" onclick="archivFilter('offen',this)" id="af-offen">? Offen</button>
+    <button class="tab-btn" onclick="archivFilter('nein',this)" id="af-nein">✗ Nicht geeignet</button>
+  </div>
+
   <div id="archiv-liste"><div class="laden">Wird geladen…</div></div>
+
+  <!-- Detail-Panel (eingeblendet per JS) -->
+  <div id="archiv-detail" style="display:none">
+    <button class="back-btn" onclick="document.getElementById('archiv-detail').style.display='none';document.getElementById('archiv-liste-wrap').style.display='block'">← Zurück zur Liste</button>
+    <div id="archiv-detail-inhalt"></div>
+  </div>
 </div>
 
 
@@ -982,6 +1047,86 @@ async function logout() {
   MEISTERIN_OK = false;
   document.getElementById('home-login-box').style.display = 'block';
   document.getElementById('home-logout-box').style.display = 'none';
+}
+
+// ── SCHNELL-ENTSCHEIDUNG HIGHLIGHT ───────────────────────────────────────────
+function highlightSchnellEnt(val) {
+  ['sent-ja','sent-nein','sent-offen'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) b.classList.remove('sel');
+  });
+  var map = {ja:'sent-ja', nein:'sent-nein', offen:'sent-offen'};
+  var b = document.getElementById(map[val]);
+  if (b) b.classList.add('sel');
+}
+
+// ── SCHNELL-SPEICHERN ────────────────────────────────────────────────────────
+async function schnellSpeichern() {
+  // Sync Felder zum Haupt-Formular
+  var nameSchnell = document.getElementById('bewerber-name-schnell');
+  var datumSchnell = document.getElementById('bewerber-datum-schnell');
+  if (nameSchnell && nameSchnell.value.trim()) {
+    document.getElementById('bewerber-name').value = nameSchnell.value.trim();
+  }
+  if (datumSchnell && datumSchnell.value) {
+    document.getElementById('bewerber-datum').value = datumSchnell.value;
+  }
+  var okEl = document.getElementById('schnell-ok');
+  var errEl = document.getElementById('schnell-err');
+  if (okEl) okEl.style.display = 'none';
+  if (errEl) errEl.style.display = 'none';
+
+  var name = document.getElementById('bewerber-name').value.trim();
+  var datum = document.getElementById('bewerber-datum').value;
+  if (!name || !datum) {
+    if (errEl) { errEl.textContent = 'Bitte Name und Datum eingeben.'; errEl.style.display = 'block'; }
+    return;
+  }
+  if (!MEISTERIN_OK) {
+    if (errEl) { errEl.textContent = 'Bitte zuerst einloggen (Home-Seite).'; errEl.style.display = 'block'; }
+    return;
+  }
+
+  var wissen = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
+  var praktik = (AKT_PUNKTE.gs1||0) + (AKT_PUNKTE.gs2||0) + (AKT_PUNKTE.gs3||0) + (AKT_PUNKTE.rp||0);
+  var gesamt = wissen + praktik;
+
+  var werte = {
+    freundlichkeit: document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]').value : 3,
+    team: document.querySelector('[oninput="updateSlider(\'sv2\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv2\',this.value)"]').value : 3,
+    wissensdurst: document.querySelector('[oninput="updateSlider(\'sv3\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv3\',this.value)"]').value : 3,
+    freude: document.querySelector('[oninput="updateSlider(\'sv4\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv4\',this.value)"]').value : 3,
+    puenktlichkeit: document.querySelector('[oninput="updateSlider(\'sv5\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv5\',this.value)"]').value : 3,
+    kritik: document.querySelector('[oninput="updateSlider(\'sv6\',this.value)"]') ? document.querySelector('[oninput="updateSlider(\'sv6\',this.value)"]').value : 3,
+    oq1: (document.getElementById('oq1')||{}).value || '',
+    oq2: (document.getElementById('oq2')||{}).value || '',
+    oq3: (document.getElementById('oq3')||{}).value || '',
+    oq4: (document.getElementById('oq4')||{}).value || '',
+    oq5: (document.getElementById('oq5')||{}).value || '',
+    notizen: (document.getElementById('notizen-ausbilderin')||{}).value || ''
+  };
+
+  var { error } = await sb.from('schnuppertage').insert({
+    name: name, datum: datum, punkte_gesamt: gesamt,
+    punkte_detail: { wissen: wissen, praktik: praktik, geschicklichkeit: (AKT_PUNKTE.gs1||0)+(AKT_PUNKTE.gs2||0)+(AKT_PUNKTE.gs3||0), rollenspiel: AKT_PUNKTE.rp||0 },
+    entscheidung: AKT_ENTSCHEIDUNG || 'offen', werte: werte
+  });
+
+  if (error) {
+    if (errEl) { errEl.textContent = 'Fehler: ' + error.message; errEl.style.display = 'block'; }
+  } else {
+    if (okEl) { okEl.textContent = '✓ ' + name + ' gespeichert! (' + gesamt + ' Punkte — ' + getNoteText(gesamt) + ')'; okEl.style.display = 'block'; }
+    // Sync auch im Haupt-Speichern-Bereich
+    var ok2 = document.getElementById('speichern-ok');
+    if (ok2) { ok2.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; ok2.style.display = 'block'; }
+    var entText = AKT_ENTSCHEIDUNG === 'ja' ? '→ Probezeit' : AKT_ENTSCHEIDUNG === 'nein' ? '→ Nicht geeignet' : '→ Entscheidung offen';
+    var prio = AKT_ENTSCHEIDUNG === 'ja' ? 'diese-woche' : AKT_ENTSCHEIDUNG === 'nein' ? 'wann-moeglich' : 'heute';
+    sb.from('ghd_ereignisse').insert({
+      app: 'Schnuppertag', typ: 'schnuppertag_abgeschlossen',
+      titel: 'Schnuppertag ' + name + ' — ' + gesamt + ' Punkte ' + entText,
+      prioritaet: prio, gelesen: false,
+    }).then(function(r){ if (r.error) console.log('Ereignis-Fehler:', r.error.message); });
+  }
 }
 
 // ── SCHNUPPERTAG SPEICHERN ────────────────────────────────────────────────────
@@ -1866,32 +2011,274 @@ async function speichereProbezeit() {
 }
 
 // ── ARCHIV ────────────────────────────────────────────────────────────────────
+var ARCHIV_DATA = [];
+var ARCHIV_FILTER = 'alle';
+
 async function ladeArchiv() {
   var liste = document.getElementById('archiv-liste');
   liste.innerHTML = '<div class="laden">Wird geladen…</div>';
   if (!MEISTERIN_OK) { liste.innerHTML = '<div class="laden">Bitte zuerst einloggen.</div>'; return; }
 
   var { data, error } = await sb.from('schnuppertage').select('*').order('datum', { ascending: false });
-  if (error || !data || !data.length) { liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Schnuppertage gespeichert.</div>'; return; }
+  if (error || !data || !data.length) {
+    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Schnuppertage gespeichert.</div>';
+    return;
+  }
+  ARCHIV_DATA = data;
+  renderArchivListe();
+}
 
-  var html = '';
-  data.forEach(function(s) {
+function archivFilter(filter, btn) {
+  ARCHIV_FILTER = filter;
+  document.querySelectorAll('#p-archiv .tab-btn').forEach(function(b){ b.classList.remove('ak'); });
+  if (btn) btn.classList.add('ak');
+  renderArchivListe();
+}
+
+function renderArchivListe() {
+  var liste = document.getElementById('archiv-liste');
+  var daten = ARCHIV_DATA.filter(function(s){
+    if (ARCHIV_FILTER === 'alle') return true;
+    return s.entscheidung === ARCHIV_FILTER;
+  });
+  if (!daten.length) {
+    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Keine Bewerber in dieser Kategorie.</div>';
+    return;
+  }
+  var html = '<div id="archiv-liste-wrap">';
+  daten.forEach(function(s) {
     var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
     var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
     var note = getNoteText(s.punkte_gesamt||0);
-    html += '<div class="card" style="margin-bottom:10px">' +
+    var pd = s.punkte_detail || {};
+    html += '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="zeigeBewerberDetail(\'' + s.id + '\')">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
         '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + s.name + '</div>' +
         '<div style="font-size:12px;font-weight:700;color:' + entFarbe + '">' + entText + '</div>' +
       '</div>' +
       '<div style="font-size:12px;color:#9A9A90;margin-top:2px">' + formatDatum(s.datum) + '</div>' +
-      '<div style="display:flex;gap:12px;margin-top:8px">' +
-        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + (s.punkte_gesamt||0) + ' Punkte</span>' +
-        '<span style="font-size:13px;color:#7A7A70">' + note + '</span>' +
+      '<div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">' +
+        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + (s.punkte_gesamt||0) + ' Punkte gesamt</span>' +
+        '<span style="font-size:12px;color:#7A7A70">Wissen: ' + (pd.wissen||0) + ' · Praktik: ' + (pd.praktik||0) + '</span>' +
+        '<span style="font-size:12px;color:#9A9A90">' + note + '</span>' +
       '</div>' +
+      '<div style="font-size:11px;color:#C8C4BC;margin-top:6px;text-align:right">Tippen für Details →</div>' +
     '</div>';
   });
+  html += '</div>';
   liste.innerHTML = html;
+}
+
+function zeigeBewerberDetail(id) {
+  var s = ARCHIV_DATA.find(function(x){ return x.id == id; });
+  if (!s) return;
+  var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
+  var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
+  var note = getNoteText(s.punkte_gesamt||0);
+  var pd = s.punkte_detail || {};
+  var werte = s.werte || {};
+  var sl = ['','Selten','Manchmal','Oft','Meistens','Immer'];
+
+  var html = '<div class="tag">Schnuppertag · Bewerber-Detail</div>' +
+    '<h1 style="margin-bottom:4px">' + s.name + '</h1>' +
+    '<p class="sub">' + formatDatum(s.datum) + '</p>' +
+
+    // Entscheidung + Gesamtergebnis
+    '<div class="card-green" style="margin-bottom:12px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+        '<span style="font-size:13px;font-weight:700;color:#5B7B6F">Entscheidung</span>' +
+        '<span style="font-weight:700;color:' + entFarbe + '">' + entText + '</span>' +
+      '</div>' +
+      '<div style="font-size:28px;font-weight:700;color:#5B7B6F;text-align:center;margin:4px 0">' + (s.punkte_gesamt||0) + ' Punkte</div>' +
+      '<div style="text-align:center;font-size:14px;color:#2C2C2C;font-weight:600">' + note + '</div>' +
+    '</div>' +
+
+    // Punkte-Aufschlüsselung
+    '<div class="section-head">Punkte-Aufschlüsselung</div>' +
+    '<div class="card" style="padding:14px;margin-bottom:12px">' +
+      '<table style="width:100%;font-size:13px;border-collapse:collapse">' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">📚 Wissen</td><td style="text-align:right;font-weight:700;color:#5B7B6F">' + (pd.wissen||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">🖐 Praktik gesamt</td><td style="text-align:right;font-weight:700;color:#5B7B6F">' + (pd.praktik||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Geschicklichkeit</td><td style="text-align:right;color:#7A7A70">' + (pd.geschicklichkeit||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Rollenspiel</td><td style="text-align:right;color:#7A7A70">' + (pd.rollenspiel||0) + ' Pkt</td></tr>' +
+        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#5B7B6F">' + (s.punkte_gesamt||0) + ' Pkt</td></tr>' +
+      '</table>' +
+    '</div>';
+
+  // Werte-Einschätzung
+  if (werte.freundlichkeit || werte.team) {
+    html += '<div class="section-head">Werte & Eignung</div>' +
+      '<div class="card" style="padding:14px;margin-bottom:12px">' +
+        '<table style="width:100%;font-size:13px;border-collapse:collapse">';
+    var werteMap = [
+      ['freundlichkeit','😊 Freundlichkeit'],['team','🤝 Teamgeist'],
+      ['wissensdurst','💡 Wissensdurst'],['freude','✂ Freude am Beruf'],
+      ['puenktlichkeit','⏰ Pünktlichkeit'],['kritik','🔄 Kritikfähigkeit']
+    ];
+    werteMap.forEach(function(w,i){
+      var val = parseInt(werte[w[0]])||0;
+      var label = sl[val] || val;
+      var farbe = val >= 4 ? '#3D6B50' : val >= 3 ? '#5B7B6F' : val <= 1 ? '#C44030' : '#C4A830';
+      html += '<tr style="border-bottom:1px solid #F0EDE8"><td style="padding:6px 0">' + w[1] + '</td>' +
+        '<td style="text-align:right;font-weight:700;color:' + farbe + '">' + label + '</td></tr>';
+    });
+    html += '</table></div>';
+  }
+
+  // Offene Fragen
+  var oqLabels = ['Warum Friseurin?','Was weißt du über Haare/Farbe?','Stärken','Schwächen','Frage von dir'];
+  var oqKeys = ['oq1','oq2','oq3','oq4','oq5'];
+  var hasOQ = oqKeys.some(function(k){ return werte[k] && werte[k].trim(); });
+  if (hasOQ) {
+    html += '<div class="section-head">Antworten Interviewfragen</div>' +
+      '<div class="card" style="padding:14px;margin-bottom:12px">';
+    oqKeys.forEach(function(k, i){
+      if (werte[k] && werte[k].trim()) {
+        html += '<div style="margin-bottom:10px">' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;margin-bottom:3px">' + oqLabels[i] + '</div>' +
+          '<div style="font-size:13px;color:#1C1C1A;line-height:1.5;background:#F7F5F0;padding:8px 10px;border-radius:6px">' + (werte[k]||'—') + '</div>' +
+        '</div>';
+      }
+    });
+    html += '</div>';
+  }
+
+  // Notizen
+  if (werte.notizen && werte.notizen.trim()) {
+    html += '<div class="section-head">Notizen der Ausbilderin</div>' +
+      '<div class="card" style="padding:14px;margin-bottom:12px">' +
+        '<div style="font-size:13px;color:#1C1C1A;line-height:1.6;white-space:pre-wrap">' + werte.notizen + '</div>' +
+      '</div>';
+  }
+
+  // Entscheidung ändern
+  html += '<div class="section-head">Entscheidung ändern</div>' +
+    '<div class="card" style="margin-bottom:12px">' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+        '<button class="pts-btn' + (s.entscheidung==='ja'?' sel':'') + '" onclick="aendereEntscheidung(\'' + s.id + '\',\'ja\',this)">✓ Probezeit</button>' +
+        '<button class="pts-btn' + (s.entscheidung==='offen'?' sel':'') + '" onclick="aendereEntscheidung(\'' + s.id + '\',\'offen\',this)">? Offen</button>' +
+        '<button class="pts-btn' + (s.entscheidung==='nein'?' sel':'') + '" onclick="aendereEntscheidung(\'' + s.id + '\',\'nein\',this)">✗ Nicht geeignet</button>' +
+      '</div>' +
+      '<div id="ent-aend-ok" class="ok-box"></div>' +
+      '<div id="ent-aend-err" class="fehler-box"></div>' +
+    '</div>' +
+
+    // Löschen
+    '<button class="btn-danger" onclick="loescheBewerber(\'' + s.id + '\',\'' + s.name.replace(/'/g,"\\'") + '\')">🗑️ Bewerber löschen</button>' +
+    '<div style="font-size:11px;color:#9A9A90;text-align:center;margin-top:6px">Löschen kann nicht rückgängig gemacht werden.</div>';
+
+  var detailEl = document.getElementById('archiv-detail');
+  var listeEl = document.getElementById('archiv-liste');
+  document.getElementById('archiv-detail-inhalt').innerHTML = html;
+  listeEl.style.display = 'none';
+  detailEl.style.display = 'block';
+}
+
+async function aendereEntscheidung(id, entscheidung, btn) {
+  var okEl = document.getElementById('ent-aend-ok');
+  var errEl = document.getElementById('ent-aend-err');
+  if (okEl) { okEl.style.display='none'; } if (errEl) { errEl.style.display='none'; }
+  var { error } = await sb.from('schnuppertage').update({ entscheidung: entscheidung }).eq('id', id);
+  if (error) {
+    if (errEl) { errEl.textContent = 'Fehler: ' + error.message; errEl.style.display = 'block'; }
+  } else {
+    var s = ARCHIV_DATA.find(function(x){ return x.id == id; });
+    if (s) s.entscheidung = entscheidung;
+    document.querySelectorAll('#archiv-detail-inhalt .pts-btn').forEach(function(b){ b.classList.remove('sel'); });
+    if (btn) btn.classList.add('sel');
+    if (okEl) { okEl.textContent = '✓ Entscheidung gespeichert!'; okEl.style.display = 'block'; }
+  }
+}
+
+async function loescheBewerber(id, name) {
+  if (!confirm('Bewerber "' + name + '" wirklich löschen?')) return;
+  var { error } = await sb.from('schnuppertage').delete().eq('id', id);
+  if (error) { alert('Fehler beim Löschen: ' + error.message); return; }
+  ARCHIV_DATA = ARCHIV_DATA.filter(function(x){ return x.id != id; });
+  document.getElementById('archiv-detail').style.display = 'none';
+  document.getElementById('archiv-liste').style.display = 'block';
+  renderArchivListe();
+}
+
+// ── LEHRLING: NAME SYNC ──────────────────────────────────────────────────────
+function syncLehrlingName(val) {
+  var n1 = document.getElementById('bewerber-name');
+  var n2 = document.getElementById('bewerber-name-schnell');
+  if (n1) n1.value = val;
+  if (n2) n2.value = val;
+}
+
+// ── LEHRLING: TEST ABSCHICKEN ────────────────────────────────────────────────
+async function lehrlingAbschicken() {
+  var fehlerEl = document.getElementById('lehrling-send-fehler');
+  var okEl = document.getElementById('lehrling-send-ok');
+  var btn = document.getElementById('lehrling-send-btn');
+  fehlerEl.style.display = 'none'; okEl.style.display = 'none';
+
+  var name = (document.getElementById('lehrling-name-input') || {}).value;
+  if (!name || !name.trim()) {
+    fehlerEl.textContent = 'Bitte zuerst deinen Namen eingeben (ganz oben).';
+    fehlerEl.style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    return;
+  }
+  name = name.trim();
+
+  // Auto-Auswertung der Wissensfragen
+  autoAuswerten();
+  var wissen = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
+  var gesamt = wissen; // praktik = 0 weil Lehrling das nicht bewertet
+
+  var datum = new Date().toISOString().slice(0,10);
+
+  // Werte sammeln
+  var werte = {
+    freundlichkeit: (document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]')||{}).value || 3,
+    team: (document.querySelector('[oninput="updateSlider(\'sv2\',this.value)"]')||{}).value || 3,
+    wissensdurst: (document.querySelector('[oninput="updateSlider(\'sv3\',this.value)"]')||{}).value || 3,
+    freude: (document.querySelector('[oninput="updateSlider(\'sv4\',this.value)"]')||{}).value || 3,
+    puenktlichkeit: (document.querySelector('[oninput="updateSlider(\'sv5\',this.value)"]')||{}).value || 3,
+    kritik: (document.querySelector('[oninput="updateSlider(\'sv6\',this.value)"]')||{}).value || 3,
+    oq1: (document.getElementById('oq1')||{}).value || '',
+    oq2: (document.getElementById('oq2')||{}).value || '',
+    oq3: (document.getElementById('oq3')||{}).value || '',
+    oq4: (document.getElementById('oq4')||{}).value || '',
+    oq5: (document.getElementById('oq5')||{}).value || '',
+    notizen: '',
+    abgeschickt_von_lehrling: true
+  };
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Wird übermittelt…'; }
+
+  var { error } = await sb.from('schnuppertage').insert({
+    name: name,
+    datum: datum,
+    punkte_gesamt: gesamt,
+    punkte_detail: { wissen: wissen, praktik: 0, geschicklichkeit: 0, rollenspiel: 0, hinweis: 'Praktik noch nicht bewertet' },
+    entscheidung: 'offen',
+    werte: werte
+  });
+
+  if (error) {
+    fehlerEl.textContent = 'Fehler beim Übermitteln: ' + error.message;
+    fehlerEl.style.display = 'block';
+    if (btn) { btn.disabled = false; btn.textContent = '✓ Test abschicken →'; }
+  } else {
+    // Wörni-Ereignis
+    await sb.from('ghd_ereignisse').insert({
+      app: 'Schnuppertag',
+      typ: 'lehrling_test_abgeschickt',
+      titel: '📋 Neuer Bewerber: ' + name + ' hat den Schnuppertag-Test abgeschlossen (' + wissen + ' Wissen-Punkte)',
+      prioritaet: 'heute',
+      gelesen: false,
+    });
+
+    // Erfolgs-Anzeige
+    okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#5B7B6F">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>';
+    okEl.style.display = 'block';
+    if (btn) { btn.disabled = true; btn.textContent = '✓ Übermittelt'; btn.style.background = '#9A9A90'; }
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+  }
 }
 
 // ── HILFSFUNKTIONEN ───────────────────────────────────────────────────────────
@@ -2086,6 +2473,8 @@ window.addEventListener('DOMContentLoaded', function() {
   var heute = new Date().toISOString().slice(0,10);
   var datumEl = document.getElementById('bewerber-datum');
   if (datumEl) datumEl.value = heute;
+  var datumSchnellEl = document.getElementById('bewerber-datum-schnell');
+  if (datumSchnellEl) datumSchnellEl.value = heute;
   var npBeginn = document.getElementById('np-beginn');
   if (npBeginn) npBeginn.value = heute;
 
