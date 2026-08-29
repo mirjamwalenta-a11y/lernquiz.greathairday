@@ -1515,6 +1515,11 @@ async function speichereNeuenLehrling(){
   if(!name||!pin){zeigeFehler('neu-fehler','Bitte alle Felder ausfüllen.');return;}
   if(pin.length!==6||!/^\d{6}$/.test(pin)){zeigeFehler('neu-fehler','PIN muss genau 6 Ziffern sein.');return;}
   var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
+  // Meisterin-Token VOR dem signUp/signIn-Tanz sichern, damit rapid-function
+  // auch dann noch autorisiert aufgerufen werden kann, wenn die Session zwischendurch
+  // zum neuen/wiederhergestellten Lehrling wechselt oder ausgeloggt wird.
+  var {data:sessionVorher}=await sb.auth.getSession();
+  var meisterinToken=sessionVorher&&sessionVorher.session?sessionVorher.session.access_token:null;
   var {data:authData,error:authErr}=await sb.auth.signUp({email:email,password:pin,options:{data:{name:name},emailRedirectTo:null}});
   // Supabase gibt "User already registered" wenn die generierte E-Mail schon existiert.
   // Das passiert z.B. wenn ein Lehrling geloescht wurde (DB-Eintrag weg, Auth-User bleibt).
@@ -1535,7 +1540,7 @@ async function speichereNeuenLehrling(){
       zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.');
       return;
     }
-    var insertRes2 = await fetch("https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"insert_lehrling",user_id:recoveredUserId,name:name,lehrjahr:lj})});
+    var insertRes2 = await fetch("https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function", {method:"POST",headers:{"Content-Type":"application/json",...(meisterinToken?{"Authorization":"Bearer "+meisterinToken}:{})},body:JSON.stringify({action:"insert_lehrling",user_id:recoveredUserId,name:name,lehrjahr:lj})});
     var insertJson2 = await insertRes2.json();
     if(insertJson2 && insertJson2.error){zeigeFehler("neu-fehler","Datenbankfehler: "+insertJson2.error.message);return;}
     document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
@@ -1547,7 +1552,7 @@ async function speichereNeuenLehrling(){
   // Insert über Edge Function mit Service-Role → umgeht RLS
   var insertRes = await fetch('https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function', {
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'application/json', ...(meisterinToken?{'Authorization':'Bearer '+meisterinToken}:{})},
     body:JSON.stringify({action:'insert_lehrling', user_id:authData.user.id, name:name, lehrjahr:lj})
   });
   var insertJson = await insertRes.json();
@@ -1963,9 +1968,14 @@ function ftZeige(lj){
 // ── Wörni / Claude – sicherer Proxy ──
 async function claudeAnfrage(system, userText, maxTokens) {
   maxTokens = maxTokens || 400;
+  const { data: sessionData } = await sb.auth.getSession();
+  const token = sessionData?.session?.access_token;
   const res = await fetch('https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-service', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+    },
     body: JSON.stringify({
       model: 'claude-sonnet-4-6',
       max_tokens: maxTokens,
