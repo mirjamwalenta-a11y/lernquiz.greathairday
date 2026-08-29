@@ -1047,7 +1047,11 @@ async function ghd_upsertEreignis(app, typ, titel, prioritaet) {
   try {
     var _url = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
     var _key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
-    var _h = { 'apikey': _key, 'Authorization': 'Bearer ' + _key, 'Content-Type': 'application/json' };
+    // Echtes Nutzer-Token verwenden statt des anonymen Keys, damit RLS
+    // (auth.role() = 'authenticated') auf ghd_ereignisse den Zugriff erlaubt.
+    var _sessionRes = await sb2.auth.getSession();
+    var _userToken = _sessionRes.data && _sessionRes.data.session ? _sessionRes.data.session.access_token : _key;
+    var _h = { 'apikey': _key, 'Authorization': 'Bearer ' + _userToken, 'Content-Type': 'application/json' };
     var _r = await fetch(_url + '/rest/v1/ghd_ereignisse?app=eq.' + encodeURIComponent(app) + '&typ=eq.' + encodeURIComponent(typ) + '&gelesen=eq.false&select=id', { headers: _h });
     var _ex = await _r.json();
     if (Array.isArray(_ex) && _ex.length > 0) {
