@@ -1970,7 +1970,7 @@ async function claudeAnfrage(system, userText, maxTokens) {
   maxTokens = maxTokens || 400;
   const { data: sessionData } = await sb.auth.getSession();
   const token = sessionData?.session?.access_token;
-  const res = await fetch('https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-service', {
+  const res = await fetch('https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
