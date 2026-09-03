@@ -358,6 +358,7 @@ async function ladeFragenAusSupabase(){
 
 // Frage in Supabase speichern
 async function speichereFrage(lj, frage){
+  if(!ISTMEISTERIN) throw new Error('Nur die Meisterin darf Fragen bearbeiten.');
   try {
     var inhalt = JSON.stringify(frage);
     // Prüfen ob schon vorhanden
@@ -389,6 +390,7 @@ async function speichereFrage(lj, frage){
 
 // Frage aus Supabase löschen
 async function loescheFrage(frageId){
+  if(!ISTMEISTERIN) return;
   try {
     await sb.from('fragen').delete().eq('frage_id', frageId);
     console.log('Frage gelöscht:', frageId);
@@ -1083,6 +1085,7 @@ function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.te
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
 
 async function ladeKompetenz(lehrlingId){
+  if(!ISTMEISTERIN && !(AKTLEHRLING && AKTLEHRLING.id===lehrlingId)) return {};
   var {data}=await sb.from('kompetenz').select('*').eq('lehrling_id',lehrlingId);
   var komp={};
   if(data) data.forEach(function(r){komp[r.thema]=r;});
@@ -1090,6 +1093,7 @@ async function ladeKompetenz(lehrlingId){
 }
 
 async function speichereKompetenz(lehrlingId,antworten){
+  if(!ISTMEISTERIN && !(AKTLEHRLING && AKTLEHRLING.id===lehrlingId)) return {};
   var runde={};
   antworten.forEach(function(a){
     var th=a.q.th;
@@ -1439,6 +1443,7 @@ async function zeigeVerlauf(){
 }
 
 async function ladeDashboard(){
+  if(!ISTMEISTERIN) return;
   document.getElementById('dashboard-liste').innerHTML='<div class="laden">Wird geladen…</div>';
   var {data:lehrlinge}=await sb.from('lehrlinge').select('*').order('name');
   if(!lehrlinge||!lehrlinge.length){document.getElementById('dashboard-liste').innerHTML='<p style="color:#9A9188;font-size:13px">Noch keine Lehrlinge angelegt.</p>';return;}
@@ -1460,6 +1465,7 @@ async function ladeDashboard(){
 }
 
 async function zeigeDetailLehrling(lehrling){
+  if(!ISTMEISTERIN) return;
   document.getElementById('detail-name').textContent=lehrling.name;
   zeige('s-lehrling-detail');
   document.getElementById('detail-inhalt').innerHTML='<div class="laden">Wird geladen…</div>';
@@ -1508,6 +1514,7 @@ async function zeigeDetailLehrling(lehrling){
 }
 
 async function speichereNeuenLehrling(){
+  if(!ISTMEISTERIN) return;
   var name=document.getElementById('neu-name').value.trim();
   var lj=parseInt(document.getElementById('neu-lj').value);
   var pin=document.getElementById('neu-pin').value.trim();
@@ -1574,6 +1581,7 @@ function aktualisiereToggle(aktiv){
 }
 
 function zeigeEditLehrling(lehrling){
+  if(!ISTMEISTERIN) return;
   EDIT_LEHRLING = lehrling;
   document.getElementById('edit-name').value = lehrling.name;
   document.getElementById('edit-lj').value = lehrling.lehrjahr;
@@ -1587,6 +1595,7 @@ function zeigeEditLehrling(lehrling){
 }
 
 async function speichereEditLehrling(){
+  if(!ISTMEISTERIN) return;
   if(!EDIT_LEHRLING) return;
   var name = document.getElementById('edit-name').value.trim();
   var lj = parseInt(document.getElementById('edit-lj').value);
@@ -1615,7 +1624,7 @@ async function speichereEditLehrling(){
   zeigeDetailLehrling(EDIT_LEHRLING);
 }
 
-function zeigeVerw(){updateVerwListe();zeige('s-verw');}
+function zeigeVerw(){if(!ISTMEISTERIN) return;updateVerwListe();zeige('s-verw');}
 
 function updateVerwListe(){
   [1,2,3].forEach(function(l){var b=document.getElementById('vlj'+l);if(b)b.className='lj-b'+(VLEHRJAHR===l?' a'+l:'');});
@@ -1635,6 +1644,7 @@ function updateVerwListe(){
 }
 
 function editiere(idx){
+  if(!ISTMEISTERIN) return;
   VIDX=idx;
   var q=FB[VLEHRJAHR][idx];
   document.getElementById('ed-titel').textContent='Frage bearbeiten';
