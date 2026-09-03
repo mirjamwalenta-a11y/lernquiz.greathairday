@@ -1070,6 +1070,7 @@ function neueFrageHinzufuegen() {
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
+var MEISTERIN_EMAIL = 'mirjam.walenta@gmail.com';
 async function loginMeisterin() {
   var email = document.getElementById('home-email').value.trim();
   var pw = document.getElementById('home-pw').value;
@@ -1077,6 +1078,14 @@ async function loginMeisterin() {
   fehlerEl.style.display = 'none';
   var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pw });
   if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
+  // Login kann mit jedem gültigen Supabase-Konto gelingen (z.B. einem Lehrling-Login) —
+  // Meisterin-Zugriff nur gewähren, wenn es wirklich ihr Konto ist.
+  if (!data.user || (data.user.email||'').toLowerCase() !== MEISTERIN_EMAIL.toLowerCase()) {
+    await sb.auth.signOut();
+    fehlerEl.textContent = 'Nur die Meisterin hat hier Zugriff.';
+    fehlerEl.style.display = 'block';
+    return;
+  }
   MEISTERIN_OK = true;
   document.body.classList.add('meisterin-ok');
   var fb = document.getElementById('btn-fragen-editor');
@@ -2650,7 +2659,11 @@ window.addEventListener('DOMContentLoaded', function() {
   if (npBeginn) npBeginn.value = heute;
 
   sb.auth.getSession().then(function(result) {
-    if (result.data && result.data.session) {
+    // Jede gültige Supabase-Session (z.B. ein noch aktiver Lehrling-Login aus dem Lernquiz,
+    // gleicher Browser/gleiches Projekt) darf hier NICHT automatisch als Meisterin gelten —
+    // nur die eigene E-Mail zählt.
+    var email = result.data && result.data.session && result.data.session.user && result.data.session.user.email;
+    if (email && email.toLowerCase() === MEISTERIN_EMAIL.toLowerCase()) {
       MEISTERIN_OK = true;
       document.body.classList.add('meisterin-ok');
       var fb = document.getElementById('btn-fragen-editor');
