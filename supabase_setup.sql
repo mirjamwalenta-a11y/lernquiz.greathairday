@@ -62,8 +62,27 @@ ALTER TABLE probezeiten ENABLE ROW LEVEL SECURITY;
 ALTER TABLE probezeit_wochen ENABLE ROW LEVEL SECURITY;
 ALTER TABLE probezeit_monats_feedback ENABLE ROW LEVEL SECURITY;
 
--- Einfachste Lösung: nur eingeloggte User (= Meisterin)
-CREATE POLICY "nur_auth" ON schnuppertage FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "nur_auth" ON probezeiten FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "nur_auth" ON probezeit_wochen FOR ALL TO authenticated USING (true) WITH CHECK (true);
-CREATE POLICY "nur_auth" ON probezeit_monats_feedback FOR ALL TO authenticated USING (true) WITH CHECK (true);
+-- WICHTIG: "authenticated" heißt bei uns nicht nur die Meisterin — auch jeder eingeloggte
+-- Lehrling (Lernquiz-Login) ist ein "authenticated" User im selben Supabase-Projekt. Die
+-- Policy muss deshalb explizit auf die Meisterin einschränken, sonst könnten Lehrlinge über
+-- die REST-API fremde Schnuppertag-/Probezeit-Daten lesen und ändern.
+DROP POLICY IF EXISTS "nur_auth" ON schnuppertage;
+DROP POLICY IF EXISTS "nur_auth" ON probezeiten;
+DROP POLICY IF EXISTS "nur_auth" ON probezeit_wochen;
+DROP POLICY IF EXISTS "nur_auth" ON probezeit_monats_feedback;
+DROP POLICY IF EXISTS "nur_meisterin" ON schnuppertage;
+DROP POLICY IF EXISTS "nur_meisterin" ON probezeiten;
+DROP POLICY IF EXISTS "nur_meisterin" ON probezeit_wochen;
+DROP POLICY IF EXISTS "nur_meisterin" ON probezeit_monats_feedback;
+CREATE POLICY "nur_meisterin" ON schnuppertage FOR ALL TO authenticated
+  USING (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com')
+  WITH CHECK (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com');
+CREATE POLICY "nur_meisterin" ON probezeiten FOR ALL TO authenticated
+  USING (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com')
+  WITH CHECK (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com');
+CREATE POLICY "nur_meisterin" ON probezeit_wochen FOR ALL TO authenticated
+  USING (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com')
+  WITH CHECK (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com');
+CREATE POLICY "nur_meisterin" ON probezeit_monats_feedback FOR ALL TO authenticated
+  USING (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com')
+  WITH CHECK (auth.jwt() ->> 'email' = 'mirjam.walenta@gmail.com');

@@ -1130,12 +1130,20 @@ async function loginLehrling(){
   AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');setTimeout(function(){if(typeof streakSync==='function')streakSync(ldat.id,LJ);},800);
 }
 
+var MEISTERIN_EMAIL='mirjam.walenta@gmail.com';
 async function loginMeisterin(){
   var email=document.getElementById('mlogin-email').value.trim();
   var pw=document.getElementById('mlogin-pw').value;
   versteckeFehler('mlogin-fehler');
   var {data,error}=await sb.auth.signInWithPassword({email:email,password:pw});
   if(error){zeigeFehler('mlogin-fehler','E-Mail oder Passwort nicht korrekt.');return;}
+  // Login kann mit jedem gültigen Supabase-Konto gelingen (z.B. dem PIN-Login eines Lehrlings) —
+  // Meisterin-Zugriff (alle Lehrlinge, Fragen-Verwaltung) nur für ihr eigenes Konto gewähren.
+  if(!data.user || (data.user.email||'').toLowerCase()!==MEISTERIN_EMAIL.toLowerCase()){
+    await sb.auth.signOut();
+    zeigeFehler('mlogin-fehler','Nur die Meisterin hat hier Zugriff.');
+    return;
+  }
   ISTMEISTERIN=true;AKTLEHRLING=null;await ladeDashboard();zeige('s-dashboard');
 }
 
