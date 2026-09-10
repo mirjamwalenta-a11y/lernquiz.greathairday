@@ -1852,10 +1852,20 @@ function streakNachQuiz(lj){
 // Beim Login: Anzahl UND Abzeichen aus Supabase laden → in localStorage schreiben
 async function streakSync(lid,lj){
   try{
-    // Anzahl absolvierter Quizze aus Verlauf
-    var r=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lid);
-    var n=r.count||0;
-    if(n>spN(lj)) spS(lj,n);
+    // Anzahl absolvierter Quizze aus Verlauf — pro Lehrjahr getrennt zählen.
+    // Vorher wurde nur die Gesamtzahl geladen und ausschließlich dem aktuell
+    // gewählten Lehrjahr zugeschrieben: bereits erarbeitete Abzeichen anderer
+    // Lehrjahre (oder Betrieb) hatten dann lokal einen Zähler von 0 und
+    // wirkten nach dem Abmelden/Neuanmelden fälschlich gesperrt statt erhalten.
+    var rv=await sb.from('verlauf').select('lehrjahr').eq('lehrling_id',lid);
+    var zaehler={};
+    (rv.data||[]).forEach(function(row){
+      var k=String(row.lehrjahr);
+      zaehler[k]=(zaehler[k]||0)+1;
+    });
+    Object.keys(zaehler).forEach(function(k){
+      if(zaehler[k]>spN(k)) spS(k,zaehler[k]);
+    });
 
     // Abzeichen aus Supabase laden und lokal cachen
     var ab=await sb.from('lernquiz_abzeichen').select('lehrjahr,abzeichen_id').eq('lehrling_id',lid);
@@ -1872,7 +1882,9 @@ async function streakSync(lid,lj){
       });
     }
 
-    spCheck(lj,Math.max(n,spN(lj)));
+    // Für alle synchronisierten Lehrjahre auf neu freigeschaltete Abzeichen prüfen
+    Object.keys(zaehler).forEach(function(k){spCheck(k,spN(k));});
+    if(!(String(lj) in zaehler)) spCheck(lj,spN(lj));
   }catch(e){spCheck(lj,spN(lj));}
 }
 function spCheck(lj,n){
