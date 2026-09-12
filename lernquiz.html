@@ -132,27 +132,13 @@ textarea{resize:vertical;margin-bottom:0}
 
 <div id="s-login" class="seite aktiv">
   <div style="padding-top:32px">
-    <div class="lab" style="margin-bottom:16px;font-size:13px;color:#2C2C2C;text-transform:none;letter-spacing:0">Bitte einloggen</div>
+    <div class="lab" style="margin-bottom:16px;font-size:13px;color:#2C2C2C;text-transform:none;letter-spacing:0">Mit deinem Team-Login anmelden</div>
     <div id="login-fehler" class="fehler-box" style="display:none"></div>
-    <div class="lab">Name</div>
-    <input type="text" id="login-name" placeholder="Dein Name (z.B. Ronya)" autocomplete="off">
-    <div class="lab">PIN</div>
-    <input type="password" id="login-pin" placeholder="6-stellige PIN" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
-    <button class="btn btn-d" id="btn-login">Einloggen →</button>
-    <button class="link-k" id="btn-zu-meisterin">Meisterinnen-Login</button>
-  </div>
-</div>
-
-<div id="s-mlogin" class="seite">
-  <div style="padding-top:32px">
-    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Meisterinnen-Login</h2>
-    <div id="mlogin-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">E-Mail</div>
-    <input type="email" id="mlogin-email" value="mirjam.walenta@gmail.com">
+    <input type="email" id="login-email" placeholder="deine@email.at" autocomplete="username">
     <div class="lab">Passwort</div>
-    <input type="password" id="mlogin-pw" placeholder="Passwort" style="margin-bottom:16px">
-    <button class="btn btn-d" id="btn-mlogin">Einloggen →</button>
-    <button class="btn btn-h" id="btn-mlogin-back">← Zurück</button>
+    <input type="password" id="login-pw" placeholder="Passwort" style="margin-bottom:16px" autocomplete="current-password">
+    <button class="btn btn-d" id="btn-login">Einloggen →</button>
   </div>
 </div>
 
@@ -1116,32 +1102,42 @@ async function speichereKompetenz(lehrlingId,antworten){
   return await ladeKompetenz(lehrlingId);
 }
 
-async function loginLehrling(){
-  var name=document.getElementById('login-name').value.trim();
-  var pin=document.getElementById('login-pin').value.trim();
-  versteckeFehler('login-fehler');
-  if(!name||!pin){zeigeFehler('login-fehler','Bitte Name und PIN eingeben.');return;}
-  var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
-  var {data,error}=await sb.auth.signInWithPassword({email:email,password:pin});
-  if(error){zeigeFehler('login-fehler','Fehler: '+error.message);return;}
-  var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
-  if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
-  if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Quiz-Zugang wurde vorübergehend deaktiviert. Bitte wende dich an deine Meisterin.');await sb.auth.signOut();return;}
-  AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');setTimeout(function(){if(typeof streakSync==='function')streakSync(ldat.id,LJ);},800);
+// Gemeinsamer Team-Login (dieselbe teamapp_persons-Tabelle wie team.html /
+// Mitarbeiterhandbuch_App.html / salon-checklist.html / abwesenheiten.html)
+// statt eigenem Name+PIN-Login bzw. separatem Meisterinnen-Login. Die Rolle
+// entscheidet automatisch, ob die Meisterin-Ansicht oder ein Lehrling-Profil
+// geöffnet wird — kein zweites Login-Formular mehr nötig.
+async function nachAnmeldung(email){
+  try {
+    var {data:rows}=await sb.from('teamapp_persons').select('name,rolle').eq('email',email).eq('aktiv',true).limit(1);
+    var person=rows&&rows[0];
+    if(!person){zeigeFehler('login-fehler','Für diese E-Mail gibt es keinen aktiven Team-Zugang.');return false;}
+    if(person.rolle==='inhaberin'){
+      ISTMEISTERIN=true;AKTLEHRLING=null;await ladeDashboard();zeige('s-dashboard');
+      return true;
+    }
+    var {data:alle}=await sb.from('lehrlinge').select('*');
+    var ldat=(alle||[]).find(function(l){return l.name&&l.name.trim().toLowerCase()===person.name.trim().toLowerCase();});
+    if(!ldat){zeigeFehler('login-fehler',person.name+' ist im Lernquiz noch nicht angelegt. Bitte die Inhaberin bitten, dich hinzuzufügen.');return false;}
+    if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Quiz-Zugang wurde vorübergehend deaktiviert. Bitte wende dich an deine Meisterin.');return false;}
+    AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');setTimeout(function(){if(typeof streakSync==='function')streakSync(ldat.id,LJ);},800);
+    return true;
+  } catch(e){zeigeFehler('login-fehler','Fehler: '+e.message);return false;}
 }
 
-async function loginMeisterin(){
-  var email=document.getElementById('mlogin-email').value.trim();
-  var pw=document.getElementById('mlogin-pw').value;
-  versteckeFehler('mlogin-fehler');
-  var {data,error}=await sb.auth.signInWithPassword({email:email,password:pw});
-  if(error){zeigeFehler('mlogin-fehler','E-Mail oder Passwort nicht korrekt.');return;}
-  ISTMEISTERIN=true;AKTLEHRLING=null;await ladeDashboard();zeige('s-dashboard');
+async function loginTeam(){
+  var email=document.getElementById('login-email').value.trim();
+  var pw=document.getElementById('login-pw').value;
+  versteckeFehler('login-fehler');
+  if(!email||!pw){zeigeFehler('login-fehler','Bitte E-Mail und Passwort eingeben.');return;}
+  var {error}=await sb.auth.signInWithPassword({email:email,password:pw});
+  if(error){zeigeFehler('login-fehler','E-Mail oder Passwort nicht korrekt.');return;}
+  await nachAnmeldung(email);
 }
 
 async function logout(){
   await sb.auth.signOut();AKTLEHRLING=null;ISTMEISTERIN=false;
-  document.getElementById('login-pin').value='';zeige('s-login');
+  document.getElementById('login-pw').value='';zeige('s-login');
 }
 
 function updateStart(){
@@ -1703,11 +1699,8 @@ function editiere(idx){
 }
 
 window.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('btn-login').addEventListener('click',loginLehrling);
-  document.getElementById('login-pin').addEventListener('keydown',function(e){if(e.key==='Enter')loginLehrling();});
-  document.getElementById('btn-zu-meisterin').addEventListener('click',function(){zeige('s-mlogin');});
-  document.getElementById('btn-mlogin').addEventListener('click',loginMeisterin);
-  document.getElementById('btn-mlogin-back').addEventListener('click',function(){zeige('s-login');});
+  document.getElementById('btn-login').addEventListener('click',loginTeam);
+  document.getElementById('login-pw').addEventListener('keydown',function(e){if(e.key==='Enter')loginTeam();});
   document.getElementById('btn-logout').addEventListener('click',logout);
   document.getElementById('btn-m-logout').addEventListener('click',logout);
   [1,2,3].forEach(function(l){document.getElementById('lj'+l).addEventListener('click',function(){LJ=l;updateStart();});});
@@ -1761,18 +1754,19 @@ window.addEventListener('DOMContentLoaded',function(){
     editiere(VIDX);
   });
   document.getElementById('btn-ed-back').addEventListener('click',function(){zeige('s-verw');updateVerwListe();});
-  // Beim Start: zuerst geänderte Fragen aus Supabase laden
+  // Beim Start: zuerst geänderte Fragen aus Supabase laden, dann prüfen, ob im
+  // selben Browser bereits eine Team-Sitzung besteht (Team/Handbuch/Checkliste/
+  // Abwesenheit teilen sich dieselbe Supabase-Anmeldung) — falls ja, automatisch
+  // anmelden statt erneut nach E-Mail/Passwort zu fragen.
   ladeFragenAusSupabase().then(function(){
-    sb.auth.getSession().then(function(result){
-      if(result.data&&result.data.session){
-        sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
-          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');if(typeof heuteInit==="function")heuteInit();setTimeout(function(){if(typeof streakSync==='function')streakSync(res.data.id,LJ);},800);}
-        });
-      } else {
-        // Kein eingeloggter User → Login zeigen, Verlauf bereinigen
-        history.replaceState(null,'',window.location.pathname);
-        zeige('s-login');
+    sb.auth.getSession().then(async function(result){
+      if(result.data&&result.data.session&&result.data.session.user&&result.data.session.user.email){
+        var ok=await nachAnmeldung(result.data.session.user.email);
+        if(ok){ if(typeof heuteInit==="function")heuteInit(); return; }
       }
+      // Keine gültige Sitzung oder keine passende Person gefunden → Login zeigen
+      history.replaceState(null,'',window.location.pathname);
+      zeige('s-login');
     });
   });
 });
