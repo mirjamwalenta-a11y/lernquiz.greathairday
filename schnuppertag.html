@@ -587,6 +587,9 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <button class="btn-primary" onclick="speichereAbschluss()" style="margin-top:10px">Abschluss speichern →</button>
     </div>
   </div>
+
+  <button class="btn-danger" onclick="loescheProbezeit()" style="margin-top:16px">🗑️ Probezeit löschen</button>
+  <div style="font-size:11px;color:#9A9A90;text-align:center;margin-top:6px">Löschen kann nicht rückgängig gemacht werden.</div>
 </div>
 
 <!-- ── ARCHIV ── -->
@@ -2355,6 +2358,15 @@ async function aendereEntscheidung(id, entscheidung, btn) {
     if (btn) btn.classList.add('sel');
     if (okEl) { okEl.textContent = '✓ Entscheidung gespeichert!'; okEl.style.display = 'block'; }
   }
+}
+
+async function loescheProbezeit() {
+  if (!MEISTERIN_OK || !AKT_PROBEZEIT) return;
+  if (!confirm('Probezeit für "' + AKT_PROBEZEIT.name + '" wirklich löschen? Wochen- und Monatsfeedbacks werden mitgelöscht.')) return;
+  var { error } = await sb.from('probezeiten').delete().eq('id', AKT_PROBEZEIT.id);
+  if (error) { alert('Fehler beim Löschen: ' + error.message); return; }
+  AKT_PROBEZEIT = null;
+  zeige('probezeiten');
 }
 
 async function loescheBewerber(id, name) {
