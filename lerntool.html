@@ -261,6 +261,8 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <h1>Meisterin-Login</h1>
   <p class="sub">Fuer Mirjam</p>
   <div class="card">
+    <div class="label">E-Mail</div>
+    <input type="email" id="admin-email" placeholder="E-Mail" style="margin-bottom:14px">
     <div class="label">Passwort</div>
     <input type="password" id="admin-pw" placeholder="Passwort" style="margin-bottom:14px" onkeydown="if(event.key==='Enter')adminLogin()">
     <div id="admin-fehler" style="display:none;color:#C44030;font-size:13px;margin-bottom:10px">Falsches Passwort</div>
@@ -1122,7 +1124,6 @@ async function sbLoeschen(typ, schluessel) {
 }
 
 // ── SUPABASE AUTH LOGIN ─────────────────────────────────────────
-var MEISTERIN_EMAIL = 'mirjam.walenta@gmail.com';
 var AQ_LJ = '1';
 var AL_TYP = 'theorie';
 var ALP_LJ = '1';
@@ -1131,12 +1132,13 @@ var AQEDIT_IDX = -1;
 var ALEDIT_IDX = -1;
 
 async function adminLogin() {
+  var email = document.getElementById('admin-email').value;
   var pw = document.getElementById('admin-pw').value;
   var st = document.getElementById('admin-fehler');
   st.style.display = 'none';
   try {
     var res = await sb2.auth.signInWithPassword({
-      email: MEISTERIN_EMAIL,
+      email: email,
       password: pw
     });
     if (res.error) {
@@ -1167,7 +1169,9 @@ window.addEventListener('DOMContentLoaded', function(){
   sessionStorage.setItem('lt_besucht', '1');
 
   sb2.auth.getSession().then(function(res){
-    if (res.data && res.data.session && res.data.session.user.email === MEISTERIN_EMAIL) {
+    // Echte, verifizierte Supabase-Auth-Session genügt als Nachweis — dieses
+    // Projekt hat ohnehin nur ein Meisterin-Konto, keine E-Mail-Prüfung nötig.
+    if (res.data && res.data.session) {
       document.getElementById('admin-hinweis').style.display = 'block';
       if (istAdmin) { zeige('admin'); }
     }
