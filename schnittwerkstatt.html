@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1c1917">
-<title>Schnittwerkstatt 3D · A Great Hair Day</title>
+<title>Schnittwerkstatt · A Great Hair Day</title>
 <style>
 :root{
   --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#1C1C1A; --muted:#7A7A70; --line:#E2DDD5;
@@ -55,15 +55,6 @@ section.block > header{display:grid;gap:6px}
 .chip:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .viewbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 
-#viewer{position:relative;width:100%;aspect-ratio:1/1;max-height:600px;min-height:320px;background:radial-gradient(circle at 50% 38%,#FFFFFF 0%,#EDE8DF 100%);border:1px solid var(--line);border-radius:8px;overflow:hidden;touch-action:none}
-#viewer canvas{display:block;width:100%!important;height:100%!important}
-.viewer-ui{position:absolute;left:10px;right:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;pointer-events:none}
-.viewer-ui > *{pointer-events:auto}
-.mini{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.92);color:var(--ink);font:600 12px system-ui;padding:7px 10px;border-radius:6px;cursor:pointer}
-.mini:hover{border-color:var(--accent)}
-.mini[aria-pressed="true"]{border-color:var(--angle);color:var(--angle)}
-.hint{position:absolute;top:10px;left:12px;font:500 11px var(--mono);color:var(--muted)}
-.fail{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)}
 
 dl.facts{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;margin:0;font-size:14px}
 dl.facts dt{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
@@ -96,6 +87,19 @@ svg .lbl-g{fill:var(--accent);font-weight:600}
 .guide-line{stroke:var(--accent);stroke-width:4;fill:none;stroke-linecap:round}
 .cut-line{stroke:var(--accent);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .hair-line{stroke:var(--hair);stroke-width:2.1;fill:none;stroke-linecap:round;opacity:.8}
+.hair-soft{stroke:var(--hair);stroke-width:5;fill:none;stroke-linecap:round;opacity:.3}
+.tex-d{stroke:#2e1a0e;stroke-width:1.1;fill:none;opacity:.32}
+.tex-l2{stroke:#e0ad74;stroke-width:1.1;fill:none;opacity:.45}
+.tex-l{stroke:#f0c890;stroke-width:5;fill:none;stroke-linecap:round;opacity:.4}
+[hidden]{display:none!important}
+.drawbox{display:grid;gap:12px}
+.bgroup{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.bgroup.locked{opacity:.4}
+.bgroup .chip:disabled{cursor:default}
+.fb{margin:0;font-size:14px}
+.fb.ok{color:var(--accent);font-weight:600}
+.fb.no{color:#C44030}
+.bdone{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:12px 14px;display:grid;gap:8px;font-size:14px}
 .hair-thin{stroke:var(--hair);stroke-width:1.5;fill:none;stroke-linecap:round;opacity:.55}
 .finger{stroke:#B9A28C;stroke-width:9;stroke-linecap:round;opacity:.7;fill:none}
 .dot{fill:var(--ink)}
@@ -152,8 +156,8 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
   <header class="top">
     <a class="back-link" href="lerntool.html">← Zurück zum Lern-Tool</a>
     <span class="tag">greathairday · Lern-Tool</span>
-    <h1>Schnittwerkstatt 3D ✂</h1>
-    <p>Die vier Grundformen am drehbaren Übungskopf, der Erhebungswinkel zum Ausprobieren und die Schnittzeichnung Schritt für Schritt: im Profil, von hinten und von oben.</p>
+    <h1>Schnittwerkstatt ✂</h1>
+    <p>Die vier Grundformen im Profil, von hinten und von oben, der Erhebungswinkel zum Ausprobieren und die Schnittzeichnung Schritt für Schritt. Am Übungsblatt baust du sie dann selbst.</p>
     <div class="angle-strip" aria-label="Winkel-Überblick">
       <span><b>0°</b> kompakt</span><span><b>1–89°</b> graduiert</span><span><b>90°</b> gleichmäßig stufig</span><span><b>91–180°</b> zunehmend stufig</span>
     </div>
@@ -162,7 +166,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
 
 <nav class="tabs" aria-label="Bereiche">
   <div class="wrap">
-    <a href="#formen">3D-Formen</a>
+    <a href="#formen">Grundformen</a>
     <a href="#winkel">Winkel-Labor</a>
     <a href="#zeichnung">Schnittzeichnung</a>
     <a href="#ueben">Übungsblatt</a>
@@ -175,24 +179,17 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
   <section class="block" id="formen">
     <header>
       <span class="tag">Teil 1</span>
-      <h2>Die vier Grundformen in 3D</h2>
-      <p class="muted">Dreh den Übungskopf mit dem Finger oder der Maus, zoome mit zwei Fingern oder dem Mausrad. „Winkel zeigen“ blendet ein, wie eine Strähne am Hinterkopf zum Schneiden gehalten wird.</p>
+      <h2>Die vier Grundformen</h2>
+      <p class="muted">Wähle eine Form und schau sie dir im Profil, von hinten und von oben an. Rechts stehen Winkel, Leitsträhne, Abteilungen und was die Form ausmacht.</p>
     </header>
     <div class="chips" role="group" aria-label="Grundform wählen" id="formChips"></div>
+    <div class="seg" role="group" aria-label="Ansicht der Frisur" id="formViews">
+      <button data-fview="side" aria-pressed="true">Profil</button>
+      <button data-fview="back" aria-pressed="false">Von hinten</button>
+      <button data-fview="top" aria-pressed="false">Von oben</button>
+    </div>
     <div class="grid2">
-      <div id="viewer">
-        <span class="hint">ziehen = drehen</span>
-        <div class="viewer-ui">
-          <div class="chips" role="group" aria-label="Ansicht">
-            <button class="mini" data-view="front">Vorne</button>
-            <button class="mini" data-view="side">Seite</button>
-            <button class="mini" data-view="back">Hinten</button>
-            <button class="mini" data-view="top">Oben</button>
-            <button class="mini" data-view="q">¾</button>
-          </div>
-          <button class="mini" id="toggleDemo" aria-pressed="true">Winkel zeigen</button>
-        </div>
-      </div>
+      <div class="svgbox"><svg id="formSvg" viewBox="-40 30 470 400" role="img" aria-label="Frisur der gewählten Grundform"></svg></div>
       <article class="panel" id="formInfo" aria-live="polite"></article>
     </div>
   </section>
@@ -274,43 +271,52 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     <header>
       <span class="tag">Teil 4</span>
       <h2>Übungsblatt</h2>
-      <p class="muted">Zeichne direkt auf die Kopfform. Mit dem Winkelmesser ziehst du eine Linie und siehst sofort den Winkel zum natürlichen Fall. Deine Zeichnung bleibt auf diesem Gerät gespeichert, für jede Ansicht getrennt.</p>
+      <p class="muted">Im Baukasten tippst du Schritt für Schritt die richtigen Bausteine an, die Zeichnung entsteht von selbst. Bei „Selbst zeichnen“ ziehst du gerade Linien. Sie rasten an den Referenzpunkten und in 5°-Schritten ein.</p>
     </header>
     <div class="grid2">
       <div class="pad-wrap" id="padWrap">
         <svg id="padSvg" viewBox="-40 30 470 400" aria-hidden="true"></svg>
-        <canvas id="pad" aria-label="Zeichenfläche"></canvas>
+        <canvas id="pad" aria-label="Zeichenfläche" hidden></canvas>
       </div>
       <div class="panel">
         <div class="task">
           <label for="taskSel" style="font-weight:600">Aufgabe</label>
           <select id="taskSel">
-            <option value="kompakt">Kompakte Form (0°) zeichnen</option>
-            <option value="graduiert" selected>Graduierte Form (45°) zeichnen</option>
-            <option value="gleich">Gleichmäßig stufige Form (90°) zeichnen</option>
-            <option value="zunehmend">Zunehmend stufige Form (180°) zeichnen</option>
+            <option value="kompakt">Kompakte Form (0°)</option>
+            <option value="graduiert" selected>Graduierte Form (45°)</option>
+            <option value="gleich">Gleichmäßig stufige Form (90°)</option>
+            <option value="zunehmend">Zunehmend stufige Form (180°)</option>
           </select>
           <div class="seg" role="group" aria-label="Ansicht des Übungsblatts" id="padViews">
             <button data-pview="side" aria-pressed="true">Profil</button>
             <button data-pview="back" aria-pressed="false">Hinten</button>
             <button data-pview="top" aria-pressed="false">Oben</button>
           </div>
+        </div>
+        <div class="seg" role="group" aria-label="Übungsart" id="padMode">
+          <button data-mode="build" aria-pressed="true">Baukasten (leicht)</button>
+          <button data-mode="draw" aria-pressed="false">Selbst zeichnen</button>
+        </div>
+        <div id="buildBox"></div>
+        <div id="drawBox" class="drawbox" hidden>
           <p id="taskText" style="font-size:14px"></p>
+          <div class="toolbar" role="group" aria-label="Werkzeuge">
+            <button class="tool" data-tool="section" aria-pressed="true"><i style="background:var(--section)"></i>Abteilung</button>
+            <button class="tool" data-tool="angle" aria-pressed="false"><i style="background:var(--angle)"></i>Winkelpfeil</button>
+            <button class="tool" data-tool="guide" aria-pressed="false"><i style="background:var(--accent)"></i>Leitsträhne</button>
+            <button class="tool" data-tool="cut" aria-pressed="false"><i style="background:transparent;border:2px dashed var(--accent)"></i>Schnittlinie</button>
+            <button class="tool" data-tool="ink" aria-pressed="false"><i style="background:var(--ink)"></i>Freihand</button>
+            <button class="tool" data-tool="del" aria-pressed="false">Linie löschen</button>
+          </div>
+          <p class="muted" style="font-size:13px">Ziehen = gerade Linie. Der Winkelpfeil zeigt dir sofort seinen Winkel zum natürlichen Fall. „Linie löschen“: auf eine Linie tippen.</p>
+          <div class="toolbar">
+            <button class="tool" id="undo">Rückgängig</button>
+            <button class="tool" id="clearPad">Ansicht löschen</button>
+          </div>
+          <label class="check"><input type="checkbox" id="snapAngle" checked> Winkel in 5°-Schritten einrasten</label>
+          <label class="check"><input type="checkbox" id="showLines" checked> Hilfslinien (Referenzpunkte)</label>
+          <label class="check"><input type="checkbox" id="showSolution"> Lösung einblenden</label>
         </div>
-        <div class="toolbar" role="group" aria-label="Werkzeuge">
-          <button class="tool" data-tool="ink" aria-pressed="false"><i style="background:var(--ink)"></i>Kontur</button>
-          <button class="tool" data-tool="section" aria-pressed="true"><i style="background:var(--section)"></i>Abteilung</button>
-          <button class="tool" data-tool="angle" aria-pressed="false"><i style="background:var(--angle)"></i>Winkelpfeil</button>
-          <button class="tool" data-tool="guide" aria-pressed="false"><i style="background:var(--accent)"></i>Leitsträhne</button>
-          <button class="tool" data-tool="measure" aria-pressed="false">∠ Winkelmesser</button>
-          <button class="tool" data-tool="erase" aria-pressed="false">Radierer</button>
-        </div>
-        <div class="toolbar">
-          <button class="tool" id="undo">Rückgängig</button>
-          <button class="tool" id="clearPad">Ansicht löschen</button>
-        </div>
-        <label class="check"><input type="checkbox" id="showLines" checked> Hilfslinien (Referenzpunkte)</label>
-        <label class="check"><input type="checkbox" id="showSolution"> Lösung einblenden</label>
       </div>
     </div>
   </section>
@@ -325,11 +331,9 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     <div class="quiz" id="quizBox"></div>
   </section>
 
-  <footer>Schnittwerkstatt 3D · greathairday Lern-Tool · Vereinfachtes Lernmodell der vier Grundformen, ersetzt nicht das Üben am Übungskopf.</footer>
+  <footer>Schnittwerkstatt · greathairday Lern-Tool · Vereinfachtes Lernmodell der vier Grundformen, ersetzt nicht das Üben am Übungskopf.</footer>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function(){
 'use strict';
@@ -404,7 +408,9 @@ function drawFall(g,lenFn,cls){
 function arrow(g,from,d,len,marker){const e=add(from,d,len);line(g,from,e,'ang-line',{'marker-end':'url(#'+marker+')'});return e;}
 function defs(svg,id,clip){const df=S('defs',null,svg);
   const m=S('marker',{id:id+'A',viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},df);S('path',{d:'M0,0 L10,5 L0,10 z',fill:'var(--angle)'},m);
-  const cp=S('clipPath',{id:id+'Clip'},df);S('path',{d:clip},cp);}
+  const cp=S('clipPath',{id:id+'Clip'},df);S('path',{d:clip},cp);
+  const lg=S('linearGradient',{id:id+'Hair',x1:0,y1:0,x2:0,y2:1},df);[['0','#4a2b18'],['.45','#7b4a2a'],['1','#b07843']].forEach(([o,c])=>S('stop',{offset:o,'stop-color':c},lg));
+  const rg=S('radialGradient',{id:id+'HairR',cx:.55,cy:.62,r:.62},df);[['0','#3f2414'],['1','#a26b3c']].forEach(([o,c])=>S('stop',{offset:o,'stop-color':c},rg));}
 function angleArc(g,O,ref,d,th,r){
   const a1=add(O,ref,r),a2=add(O,d,r),cr=ref.x*d.y-ref.y*d.x;
   S('path',{d:'M'+f(a1.x)+','+f(a1.y)+' A'+r+','+r+' 0 0,'+(cr>0?1:0)+' '+f(a2.x)+','+f(a2.y),class:'ang-line','stroke-width':1.5},g);
@@ -457,7 +463,6 @@ const VIEWS={
     else if(k==='gleich'){const r=R+40,s=P(118,r),e=P(330,r);S('path',{d:'M'+f(s.x)+','+f(s.y)+' A'+r+','+r+' 0 1,1 '+f(e.x)+','+f(e.y),class:'cut-line'},g);[150,215,280].forEach(a=>line(g,P(a),P(a,R+40),'guide-line',{'stroke-width':3,opacity:.8}));const l=P(205,R+48);T('wandernde Leitsträhne',{x:f(l.x),y:f(l.y),'text-anchor':'end',class:'lbl-g'},g);}
     else{const t=P(TOP);line(g,t,{x:t.x,y:t.y-14},'guide-line');line(g,{x:40,y:t.y-14},{x:320,y:t.y-14},'cut-line');T('stationäre Leitsträhne',{x:f(t.x+10),y:f(t.y-22),class:'lbl-g'},g);}
   },
-  hair(g,k){drawFall(g,formLen(k));}
  },
  back:{
   clip:BACK_PATH+' Z',
@@ -487,11 +492,6 @@ const VIEWS={
     else if(k==='gleich'){S('path',{d:'M'+(BC.x-BRX-38)+','+(BC.y+60)+' L'+(BC.x-BRX-38)+','+BC.y+' A'+(BRX+38)+','+(BRY+38)+' 0 0,1 '+(BC.x+BRX+38)+','+BC.y+' L'+(BC.x+BRX+38)+','+(BC.y+60),class:'cut-line'},g);[[195,70,195,32],[118,120,90,95],[272,120,300,95]].forEach(([a,b,c,d])=>line(g,{x:a,y:b},{x:c,y:d},'guide-line',{'stroke-width':3}));T('wandernde Leitsträhne',{x:300,y:80,class:'lbl-g'},g);}
     else{line(g,{x:195,y:70},{x:195,y:54},'guide-line');line(g,{x:80,y:54},{x:310,y:54},'cut-line');T('stationäre Leitsträhne am Oberkopf',{x:205,y:46,class:'lbl-g'},g);}
   },
-  hair(g,k){const lf=formLen(k);
-    for(let x=-96;x<=96;x+=4){const ax=Math.min(1,Math.abs(x)/BRX),yTop=Math.abs(x)<BRX?BC.y-BRY*Math.sqrt(1-ax*ax):BC.y,hl=272-92*ax*ax;
-      for(let y=hl;y>=yTop-0.1;y-=12){const a=alphaForY(y+5);if(a<NAPE)continue;const e=profileEndY(a,lf(a))-5;const xo=BC.x+x*(1+0.08*Math.min(1,(e-y)/150));
-        S('path',{d:'M'+f(BC.x+x)+','+f(y)+' Q'+f(BC.x+x)+','+f((y+e)/2)+' '+f(xo)+','+f(e),class:'hair-thin'},g);}}
-  }
  },
  top:{
   clip:TOP_PATH,
@@ -522,30 +522,67 @@ const VIEWS={
     else if(k==='graduiert'){line(g,{x:195,y:302},{x:195,y:318},'guide-line');ring(TRX+18,TRY+22,6);T('Leitsträhne Nacken',{x:205,y:348,class:'lbl-g'},g);}
     else if(k==='gleich'){ring(TRX+38,TRY+38);[60,160,300].forEach(t=>line(g,TP(t),{x:TC.x+(TRX+38)*Math.cos(rad(t)),y:TC.y+(TRY+38)*Math.sin(rad(t))},'guide-line',{'stroke-width':3}));T('wandernde Leitsträhne',{x:320,y:90,class:'lbl-g'},g);}
     else{S('circle',{cx:195,cy:168,r:14,class:'cut-line'},g);S('circle',{cx:195,cy:168,r:5,fill:'var(--accent)'},g);T('stationäre Leitsträhne',{x:214,y:160,class:'lbl-g'},g);}
-  },
-  hair(g,k){const off={kompakt:()=>12,graduiert:s=>14+14*Math.max(0,s),gleich:()=>38,zunehmend:()=>10}[k];
-    for(let t=0;t<360;t+=2.5){const c=Math.cos(rad(t)),s=Math.sin(rad(t)),o=off(s),e={x:TC.x+(TRX+o)*c,y:TC.y+(TRY+o)*s};
-      const m={x:(TPIV.x+e.x)/2-s*10,y:(TPIV.y+e.y)/2+c*10};S('path',{d:'M'+TPIV.x+','+TPIV.y+' Q'+f(m.x)+','+f(m.y)+' '+f(e.x)+','+f(e.y),class:'hair-thin','stroke-width':1.8},g);}}
+  }
  }
 };
 
 /* layers: 0 Kopf · 1 Referenzpunkte · 2 Zonen · 3 Abteilungen · 4 Winkel · 5 Leitsträhne/Schnittlinie · 6 Haar */
 function drawSketch(svg,k,view,layers,opts){
   opts=opts||{};svg.innerHTML='';const id=svg.id,V=VIEWS[view];defs(svg,id,V.clip);
-  const has=i=>layers.includes(i);
+  const has=i=>layers.includes(i),kk=i=>(opts.forms&&opts.forms[i])||k;
   const L=i=>S('g',{class:opts.fresh===i?'fresh':'',opacity:(opts.fade||[]).includes(i)?.45:1},svg);
   if(has(0))V.head(L(0),opts.softHead);
-  const hairG=L(6);if(has(6))V.hair(hairG,k);
+  const hairG=L(6);if(has(6))hairArt(hairG,view,k,id);
   if(has(1))V.refs(L(1));
   if(has(2))V.zones(L(2));
-  if(has(3)){const g=L(3);V.sections(g,k,S('g',{'clip-path':'url(#'+id+'Clip)'},g));}
-  if(has(4))V.angles(L(4),k,id);
-  if(has(5))V.guide(L(5),k);
+  if(has(3)){const g=L(3);V.sections(g,kk(3),S('g',{'clip-path':'url(#'+id+'Clip)'},g));}
+  if(has(4))V.angles(L(4),kk(4),id);
+  if(has(5))V.guide(L(5),kk(5));
 }
 const upTo=n=>[...Array(n+1).keys()];
 
-/* ================= 1 · 3D ================= */
-let current='graduiert', setForm3D=()=>{}, setDemo3D=()=>{};
+/* ================= Frisuren-Illustration (gefüllte Haarform + Struktur) ================= */
+const SIL={
+  side:{
+    kompakt:'M287,119 A112,112 0 0,0 78,175 L79,286 Q80,304 98,304 L258,304 Q266,303 265,291 L263,215 C264,180 272,150 287,119 Z',
+    graduiert:'M287,119 A112,112 0 0,0 82,150 C70,175 66,205 74,228 C84,246 110,256 138,272 C146,278 150,284 156,288 L256,318 Q266,319 266,306 L263,215 C264,180 272,150 287,119 Z',
+    gleich:'M292,118 A122,122 0 0,0 70,190 C72,232 110,262 150,288 C170,280 184,250 192,222 C200,206 222,204 240,202 C255,200 262,185 266,170 C272,150 288,142 292,118 Z',
+    zunehmend:'M288,119 A112,112 0 0,0 80,160 C74,220 76,300 86,360 C92,392 110,410 140,412 C170,412 205,400 225,380 C240,360 250,330 256,300 C262,260 262,220 262,200 C264,175 272,150 288,119 Z'
+  },
+  back:{
+    kompakt:'M195,58 C258,58 297,110 298,175 L300,297 Q300,305 292,305 L98,305 Q90,305 90,297 L92,175 C93,110 132,58 195,58 Z',
+    graduiert:'M195,58 C262,58 302,112 304,180 C305,210 300,232 288,248 C276,262 262,272 250,282 L195,294 L140,282 C128,272 114,262 102,248 C90,232 85,210 86,180 C88,112 128,58 195,58 Z M288,245 C298,265 302,295 300,318 L284,300 C282,282 280,266 276,258 Z M102,245 C92,265 88,295 90,318 L106,300 C108,282 110,266 114,258 Z',
+    gleich:'M195,52 C272,52 312,110 312,180 C312,225 292,250 262,268 C240,280 222,285 195,287 C168,285 150,280 128,268 C98,250 78,225 78,180 C78,110 118,52 195,52 Z',
+    zunehmend:'M195,58 C262,58 300,110 302,180 C305,260 312,340 300,395 C285,410 240,414 195,405 C150,414 105,410 90,395 C78,340 85,260 88,180 C90,110 128,58 195,58 Z'
+  }
+};
+const TOP_OFF={kompakt:[12,12,0],graduiert:[16,22,6],gleich:[34,34,0],zunehmend:[10,10,0]};
+function topSil(k){const [ox,oy,dy]=TOP_OFF[k],rx=TRX+ox,ry=TRY+oy,cy=TC.y+dy;return 'M'+TC.x+','+(cy-ry)+' A'+rx+','+ry+' 0 1,1 '+TC.x+','+(cy+ry)+' A'+rx+','+ry+' 0 1,1 '+TC.x+','+(cy-ry)+' Z';}
+const TEX={
+  side(t,k){
+    drawFall(t,formLen(k),'tex-d');
+    for(let r=104;r<=134;r+=6){const a=P(-35,r),b=P(185,r);S('path',{d:'M'+f(a.x)+','+f(a.y)+' A'+r+','+r+' 0 0,0 '+f(b.x)+','+f(b.y)+' L'+f(b.x)+',430',class:'tex-d'},t);}
+    for(let x=156;x<=264;x+=8)S('path',{d:'M'+x+',140 C'+(x+4)+',220 '+(x-4)+',300 '+x+',430',class:x%16?'tex-d':'tex-l2'},t);
+    const h1=P(-62,114),h2=P(-138,114);S('path',{d:'M'+f(h1.x)+','+f(h1.y)+' A114,114 0 0,0 '+f(h2.x)+','+f(h2.y),class:'tex-l'},t);
+  },
+  back(t){
+    for(let x=72;x<=318;x+=6){const cx=195+(x-195)*1.15;S('path',{d:'M195,92 Q'+f(cx)+',118 '+x+',200 L'+x+',430',class:x%12?'tex-d':'tex-l2'},t);}
+    S('path',{d:'M138,80 Q195,62 252,80',class:'tex-l'},t);
+  },
+  top(t){
+    for(let a=0;a<360;a+=3.5){const e={x:TPIV.x+230*Math.cos(rad(a)),y:TPIV.y+230*Math.sin(rad(a))},m={x:TPIV.x+90*Math.cos(rad(a+8)),y:TPIV.y+90*Math.sin(rad(a+8))};S('path',{d:'M'+TPIV.x+','+TPIV.y+' Q'+f(m.x)+','+f(m.y)+' '+f(e.x)+','+f(e.y),class:(Math.round(a/3.5)%3)?'tex-d':'tex-l2'},t);}
+    S('path',{d:'M150,150 Q175,125 215,122',class:'tex-l'},t);
+  }
+};
+function hairArt(g,view,k,id){
+  const df=g.ownerSVGElement.querySelector('defs'),d=view==='top'?topSil(k):SIL[view][k];
+  const cp=S('clipPath',{id:id+'HC'},df);S('path',{d},cp);
+  S('path',{d,fill:'url(#'+id+(view==='top'?'HairR':'Hair')+')',stroke:'#3d2414','stroke-width':1.4,'stroke-linejoin':'round'},g);
+  TEX[view](S('g',{'clip-path':'url(#'+id+'HC)'},g),k);
+  if(view==='top')S('path',{d:'M184,101 L195,84 L206,101',class:'head-fill'},g);
+}
+/* ================= 1 · Grundformen ================= */
+let current='graduiert',fview='side';
 function buildChips(box,onPick,getSel){
   box.innerHTML='';
   ORDER.forEach(k=>{const b=document.createElement('button');b.className='chip';b.dataset.form=k;b.innerHTML=FORMS[k].name+'<small>'+FORMS[k].angle+'</small>';b.setAttribute('aria-pressed',k===getSel());b.onclick=()=>onPick(k);box.appendChild(b);});
@@ -555,160 +592,37 @@ function renderInfo(){
   const F=FORMS[current];
   $('#formInfo').innerHTML='<div class="formhead"><div><span class="tag">'+F.en+'</span><h3 style="font-size:1.35rem;margin-top:4px">'+F.name+'</h3></div><span class="bigangle">'+F.angle+'</span></div><p>'+F.text+'</p><dl class="facts">'+F.facts.map(x=>'<dt>'+x[0]+'</dt><dd>'+x[1]+'</dd>').join('')+'</dl>';
 }
-function pickForm(k){current=k;refreshChips($('#formChips'),k);renderInfo();setForm3D(k);}
-buildChips($('#formChips'),pickForm,()=>current);renderInfo();
-
-function init3D(){
-  const wrap=$('#viewer');
-  const fail=msg=>{const d=document.createElement('div');d.className='fail';d.textContent=msg;wrap.appendChild(d);};
-  if(!window.THREE||!THREE.OrbitControls){fail('Die 3D-Ansicht konnte nicht geladen werden. Prüfe die Internetverbindung und lade die Seite neu.');return;}
-  let renderer;
-  try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});}catch(e){fail('Dieses Gerät unterstützt kein WebGL. Die übrigen Teile funktionieren trotzdem.');return;}
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
-  wrap.insertBefore(renderer.domElement,wrap.firstChild);
-  const V=THREE.Vector3, scene=new THREE.Scene();
-  const cam=new THREE.PerspectiveCamera(32,1,0.1,60);cam.position.set(3.9,0.5,4.9);
-  const ctl=new THREE.OrbitControls(cam,renderer.domElement);
-  ctl.target.set(0,-0.45,0);ctl.enableDamping=true;ctl.enablePan=false;ctl.minDistance=2.6;ctl.maxDistance=9;
-  ctl.autoRotate=!reduced;ctl.autoRotateSpeed=0.7;ctl.addEventListener('start',()=>{ctl.autoRotate=false;});
-  scene.add(new THREE.HemisphereLight(0xfff4ea,0x4a4640,0.75));
-  const key=new THREE.DirectionalLight(0xffffff,0.95);key.position.set(2.5,4,4);scene.add(key);
-  const rim=new THREE.DirectionalLight(0xfff0e0,0.6);rim.position.set(-3,2.5,-3.5);scene.add(rim);
-  const fill=new THREE.DirectionalLight(0xe8eef5,0.3);fill.position.set(-4,-1,2);scene.add(fill);
-
-  /* --- Übungskopf: eine verformte Kugel mit Gesicht --- */
-  const g=(x,s)=>Math.exp(-(x*x)/s);
-  function shape(u){
-    const x=u.x,y=u.y,z=u.z,low=ss(0.05,-0.95,y);
-    let sx=0.8*(1-0.3*low),sy=1.02,sz=0.95*(z<0?1-0.36*low:1-0.1*low);
-    let X=x*sx,Y=y*sy,Z=z*sz;
-    const fr=ss(0.35,0.85,z);
-    if(fr>0){
-      Z+=fr*(0.14*g(x,0.004)*g(y+0.24,0.018)       /* Nase */
-        -0.045*g(Math.abs(x)-0.3,0.008)*g(y-0.02,0.006) /* Augenhöhlen */
-        +0.025*g(y-0.13,0.004)*g(x,0.12)              /* Brauen */
-        +0.03*g(x,0.02)*g(y+0.52,0.002)               /* Lippen */
-        +0.05*g(x,0.03)*g(y+0.8,0.012));              /* Kinn */
-      Z+=0.08*low*fr;
-    }
-    return new V(X,Y,Z);
+const FORM_NOTES={
+  side:{
+    kompakt:[[{x:170,y:304},{x:170,y:350},'alle Enden auf einer Linie','middle']],
+    graduiert:[[{x:72,y:222},{x:-34,y:262},'Gewichtslinie','start'],[{x:150,y:286},{x:150,y:345},'kurzer Nacken','middle'],[{x:260,y:316},{x:300,y:350},'vorne länger','start']],
+    gleich:[[{x:74,y:150},{x:-34,y:112},'folgt der Kopfrundung','start'],[{x:150,y:288},{x:150,y:340},'überall gleich lang','middle']],
+    zunehmend:[[{x:200,y:72},{x:250,y:50},'innen kurz','start'],[{x:84,y:350},{x:-34,y:392},'außen lang','start']]
+  },
+  back:{
+    kompakt:[[{x:195,y:305},{x:195,y:350},'waagrechte Kontur','middle']],
+    graduiert:[[{x:195,y:294},{x:195,y:350},'Λ-Kontur, Mitte am kürzesten','middle']],
+    gleich:[[{x:195,y:287},{x:195,y:345},'runde Form ohne Gewicht','middle']],
+    zunehmend:[[{x:195,y:405},{x:195,y:425},'lange, weiche Kontur','middle']]
+  },
+  top:{
+    kompakt:[[{x:195,y:314},{x:195,y:350},'Haar liegt eng am Kopf','middle']],
+    graduiert:[[{x:195,y:330},{x:195,y:360},'Volumen am Hinterkopf','middle']],
+    gleich:[[{x:195,y:336},{x:195,y:365},'gleichmäßig rund','middle']],
+    zunehmend:[[{x:195,y:312},{x:195,y:350},'liegt flach, Länge fällt nach unten','middle']]
   }
-  const skin=new THREE.MeshStandardMaterial({color:0xe9d3bf,roughness:0.62,metalness:0});
-  const hg=new THREE.SphereGeometry(1,128,96),hp=hg.attributes.position,tu=new V();
-  for(let i=0;i<hp.count;i++){tu.set(hp.getX(i),hp.getY(i),hp.getZ(i)).normalize();const p=shape(tu);hp.setXYZ(i,p.x,p.y,p.z);}
-  hg.computeVertexNormals();scene.add(new THREE.Mesh(hg,skin));
-  const ear=s=>{const m=new THREE.Mesh(new THREE.SphereGeometry(1,32,24),skin);m.position.set(0.735*s,-0.2,-0.02);m.scale.set(0.06,0.17,0.1);m.rotation.y=0.35*s;scene.add(m);};ear(1);ear(-1);
-  const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.34,0.42,1.3,48,1,true),skin);neck.position.set(0,-1.25,-0.12);scene.add(neck);
-  const bust=new THREE.Mesh(new THREE.SphereGeometry(1,64,32,0,Math.PI*2,0,Math.PI/2),skin);bust.position.set(0,-1.85,-0.08);bust.scale.set(1.25,0.42,0.62);scene.add(bust);
-  const baseGeo=new THREE.CylinderGeometry(1.25,1.25,0.05,64);const base=new THREE.Mesh(baseGeo,new THREE.MeshStandardMaterial({color:0x5B7B6F,roughness:.7}));base.position.set(0,-1.87,-0.08);base.scale.set(1,1,0.62/1.25);scene.add(base);
-
-  /* --- Haaransatz --- */
-  const hairline=u=>{const front=(Math.cos(Math.atan2(u.x,u.z))+1)/2;return {front,thr:-0.72+0.6*ss(0,0.5,front)+0.54*ss(0.55,1,front)};};
-  const outerR=u=>shape(u).length();
-  /* Haarbasis (Kopfhaut mit Haarfarbe) */
-  (function cap(){const PH=128,TH=48,pos=[],idx=[];
-    for(let i=0;i<=PH;i++){const ph=i/PH*Math.PI*2,sx=Math.sin(ph),cz=Math.cos(ph);
-      const front=(cz+1)/2,thr=-0.72+0.6*ss(0,0.5,front)+0.54*ss(0.55,1,front),tMax=Math.acos(thr);
-      for(let j=0;j<=TH;j++){const t=j/TH*tMax,u=new V(Math.sin(t)*sx,Math.cos(t),Math.sin(t)*cz);const p=shape(u).multiplyScalar(1.008);pos.push(p.x,p.y,p.z);}}
-    for(let i=0;i<PH;i++)for(let j=0;j<TH;j++){const a=i*(TH+1)+j,b=a+TH+1;idx.push(a,b,a+1,b,b+1,a+1);}
-    const cg=new THREE.BufferGeometry();cg.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));cg.setIndex(idx);cg.computeVertexNormals();
-    scene.add(new THREE.Mesh(cg,new THREE.MeshStandardMaterial({color:0x3a2416,roughness:0.75,side:THREE.DoubleSide})));})();
-
-  /* --- Strähnen --- */
-  function collide(p,d){
-    const l=p.length(),u=p.clone().multiplyScalar(1/l),rh=outerR(u)*1.03;
-    if(l<rh){p.copy(u).multiplyScalar(rh);const k=d.dot(u);if(k<0)d.addScaledVector(u,-k);}
-    if(p.y<-0.45&&p.y>-1.85){const dx=p.x,dz=p.z+0.12,r=Math.hypot(dx,dz),nr=0.46;if(r<nr){const s=nr/(r||1e-4);p.x=dx*s;p.z=dz*s-0.12;const n=new V(dx,0,dz).normalize(),k=d.dot(n);if(k<0)d.addScaledVector(n,-k);}}
-    if(p.y<-1.4){const q=new V(p.x/1.3,(p.y+1.85)/0.47,(p.z+0.08)/0.67),ql=q.length();if(ql<1){q.multiplyScalar(1/ql);p.set(q.x*1.3,q.y*0.47-1.85,q.z*0.67-0.08);const n=new V(q.x/1.3,q.y/0.47,q.z/0.67).normalize(),k=d.dot(n);if(k<0)d.addScaledVector(n,-k);}}
-  }
-  const STEPS=40,STEP=0.07,MAX=STEPS*STEP,N=5200,strands=[];
-  let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
-  for(let i=0;i<N;i++){
-    const y=1-2*(i+0.5)/N,rr=Math.sqrt(1-y*y),ph=i*2.399963;
-    const u=new V(Math.cos(ph)*rr,y,Math.sin(ph)*rr),{front,thr}=hairline(u);
-    if(u.y<thr)continue;
-    if(front>0.8&&Math.abs(u.x)<0.03&&u.y>0.2)continue;
-    const p=shape(u),n=p.clone().normalize();
-    const side=Math.sign(p.x)||1,pts=new Float32Array((STEPS+1)*3),sides=new Float32Array((STEPS+1)*3),nrms=new Float32Array((STEPS+1)*3);
-    const pos=p.clone().addScaledVector(n,0.012),d=n.clone().multiplyScalar(0.4).add(new V(0,-0.6,0)).add(new V(rnd()-.5,rnd()-.5,rnd()-.5).multiplyScalar(0.12)).normalize();
-    const put=(s,dir)=>{pts[s*3]=pos.x;pts[s*3+1]=pos.y;pts[s*3+2]=pos.z;const r=pos.clone().normalize(),sd=new V().crossVectors(dir,r).normalize();sides[s*3]=sd.x;sides[s*3+1]=sd.y;sides[s*3+2]=sd.z;const nn=new V().crossVectors(sd,dir).normalize();nrms[s*3]=nn.x;nrms[s*3+1]=nn.y;nrms[s*3+2]=nn.z;};
-    put(0,d);
-    for(let s=1;s<=STEPS;s++){
-      d.y-=0.6;if(s<10){d.x+=side*0.24*front*front;d.z-=0.04*front;}d.normalize();
-      pos.addScaledVector(d,STEP);collide(pos,d);put(s,d);
-    }
-    strands.push({u,front,pts,sides,nrms,w:0.026+rnd()*0.014,tone:0.82+rnd()*0.3});
-  }
-  const lenToY=(st,yEnd)=>{const p=st.pts;for(let s=1;s<=STEPS;s++){const y0=p[(s-1)*3+1],y1=p[s*3+1];if(y1<yEnd){const t=(y0-yEnd)/((y0-y1)||1e-4);return (s-1+Math.min(1,Math.max(0,t)))*STEP;}}return MAX;};
-  const LEN={
-    kompakt:st=>lenToY(st,-0.98),
-    graduiert:st=>lenToY(st,-0.98+0.4*ss(-0.72,0.15,st.u.y)-0.24*st.front*ss(-0.3,0.3,st.u.y)),
-    gleich:()=>0.6,
-    zunehmend:st=>Math.min(MAX,0.3+Math.acos(Math.max(-1,Math.min(1,st.u.y)))*1.1)
-  };
-  const M=strands.length,VPS=(STEPS+1)*2;
-  const posArr=new Float32Array(M*VPS*3),colArr=new Float32Array(M*VPS*3),nrmArr=new Float32Array(M*VPS*3),idx=new Uint32Array(M*STEPS*6);
-  const root=new THREE.Color(0x2a180e),tip=new THREE.Color(0xa06c3c),tmp=new THREE.Color();
-  for(let i=0;i<M;i++){const st=strands[i];
-    for(let s=0;s<=STEPS;s++){tmp.copy(root).lerp(tip,Math.min(1,s/24)).multiplyScalar(st.tone);
-      for(let k=0;k<2;k++){const o=((i*VPS)+s*2+k)*3;colArr[o]=tmp.r;colArr[o+1]=tmp.g;colArr[o+2]=tmp.b;nrmArr[o]=st.nrms[s*3];nrmArr[o+1]=st.nrms[s*3+1];nrmArr[o+2]=st.nrms[s*3+2];}}
-    for(let s=0;s<STEPS;s++){const a=i*VPS+s*2,o=(i*STEPS+s)*6;idx[o]=a;idx[o+1]=a+1;idx[o+2]=a+2;idx[o+3]=a+1;idx[o+4]=a+3;idx[o+5]=a+2;}}
-  const geo=new THREE.BufferGeometry();
-  geo.setAttribute('position',new THREE.BufferAttribute(posArr,3));geo.setAttribute('color',new THREE.BufferAttribute(colArr,3));geo.setAttribute('normal',new THREE.BufferAttribute(nrmArr,3));geo.setIndex(new THREE.BufferAttribute(idx,1));
-  const hairMesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,side:THREE.DoubleSide,roughness:0.5,metalness:0.05}));hairMesh.frustumCulled=false;scene.add(hairMesh);
-  const cur=new Float32Array(M),from=new Float32Array(M),to=new Float32Array(M);
-  function writeGeo(){
-    for(let i=0;i<M;i++){const st=strands[i],p=st.pts,sd=st.sides,L=Math.max(0.02,cur[i]);
-      const sE=Math.min(STEPS-1,Math.floor(L/STEP)),tE=Math.min(1,L/STEP-sE),o3=sE*3;
-      const ex=p[o3]+(p[o3+3]-p[o3])*tE,ey=p[o3+1]+(p[o3+4]-p[o3+1])*tE,ez=p[o3+2]+(p[o3+5]-p[o3+2])*tE;
-      for(let s=0;s<=STEPS;s++){const t=s*STEP,beyond=t>L,rel=Math.min(1,t/L),w=beyond?0:st.w*(1-0.8*rel)*0.5;
-        const px=beyond?ex:p[s*3],py=beyond?ey:p[s*3+1],pz=beyond?ez:p[s*3+2],o=(i*VPS+s*2)*3;
-        posArr[o]=px-sd[s*3]*w;posArr[o+1]=py-sd[s*3+1]*w;posArr[o+2]=pz-sd[s*3+2]*w;
-        posArr[o+3]=px+sd[s*3]*w;posArr[o+4]=py+sd[s*3+1]*w;posArr[o+5]=pz+sd[s*3+2]*w;}}
-    geo.attributes.position.needsUpdate=true;
-  }
-  let morph=null;
-  setForm3D=k=>{for(let i=0;i<M;i++){from[i]=cur[i];to[i]=LEN[k](strands[i]);}morph={t0:performance.now(),dur:reduced?1:750};buildDemo(k);};
-
-  /* --- Winkel-Demo am Hinterkopf --- */
-  const demo=new THREE.Group();scene.add(demo);let demoOn=true;
-  function sprite(txt,color){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');
-    x.font='700 60px ui-monospace, Menlo, monospace';x.textAlign='center';x.textBaseline='middle';x.lineWidth=12;x.strokeStyle='rgba(255,255,255,.95)';x.strokeText(txt,128,64);x.fillStyle=color;x.fillText(txt,128,64);
-    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));s.scale.set(0.5,0.25,1);s.renderOrder=10;return s;}
-  function buildDemo(k){
-    while(demo.children.length){const c=demo.children.pop();c.geometry&&c.geometry.dispose();}
-    const F=FORMS[k],u=new V(0,-0.18,-0.98).normalize(),p=shape(u),n=p.clone().normalize();
-    const down=new V(0,-1,0),out=new V(0,0,-1);let ref,d;
-    if(F.ref==='head'){ref=down.clone().addScaledVector(n,-down.dot(n)).normalize();d=n.clone();}
-    else{ref=down.clone();const th=rad(F.theta);d=down.clone().multiplyScalar(Math.cos(th)).addScaledVector(out,Math.sin(th)).normalize();}
-    const o=p.clone().addScaledVector(n,0.12),col=new THREE.Color(0xB8336A);
-    const mat=new THREE.MeshBasicMaterial({color:col,depthTest:false,transparent:true});
-    const end=o.clone().addScaledVector(d,1.0);const tube=new THREE.Mesh(new THREE.TubeGeometry(new THREE.LineCurve3(o,end),1,0.02,8,false),mat);tube.renderOrder=9;demo.add(tube);
-    const dash=new THREE.Line(new THREE.BufferGeometry().setFromPoints([o,o.clone().addScaledVector(ref,0.7)]),new THREE.LineDashedMaterial({color:0x7A7A70,dashSize:0.06,gapSize:0.05,depthTest:false,transparent:true}));dash.computeLineDistances();dash.renderOrder=9;demo.add(dash);
-    const arcPts=[],ang=ref.angleTo(d),axis=new V().crossVectors(ref,d);if(axis.lengthSq()<1e-6)axis.set(1,0,0);axis.normalize();
-    for(let i=0;i<=40;i++)arcPts.push(o.clone().addScaledVector(ref.clone().applyAxisAngle(axis,ang*i/40),0.36));
-    const arc=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(arcPts),40,0.008,6,false),mat);arc.renderOrder=9;demo.add(arc);
-    const mid=ref.clone().applyAxisAngle(axis,ang/2);const lab=sprite(F.theta+'°','#B8336A');lab.position.copy(o).addScaledVector(mid,0.62);demo.add(lab);
-    const fg=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.05,0.09),new THREE.MeshStandardMaterial({color:0xdcc0a5,roughness:.6}));
-    fg.position.copy(end).addScaledVector(d,-0.12);demo.add(fg);
-    demo.visible=demoOn;
-  }
-  setDemo3D=on=>{demoOn=on;demo.visible=on;};
-
-  const views={front:new V(0,-0.1,6.2),side:new V(6.2,-0.1,0),back:new V(0,-0.1,-6.2),top:new V(0,5.8,0.4),q:new V(3.9,0.5,4.9)};
-  let camTw=null;
-  $$('[data-view]').forEach(b=>b.onclick=()=>{ctl.autoRotate=false;camTw={a:cam.position.clone(),b:views[b.dataset.view].clone(),t0:performance.now()};});
-  function resize(){const w=wrap.clientWidth,h=wrap.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();}
-  new ResizeObserver(resize).observe(wrap);resize();
-  for(let i=0;i<M;i++)cur[i]=LEN[current](strands[i]);writeGeo();buildDemo(current);
-  (function loop(now){
-    if(morph){const t=Math.min(1,(now-morph.t0)/morph.dur),k=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;for(let i=0;i<M;i++)cur[i]=from[i]+(to[i]-from[i])*k;writeGeo();if(t>=1)morph=null;}
-    if(camTw){const t=Math.min(1,(now-camTw.t0)/(reduced?1:650)),k=1-Math.pow(1-t,3);cam.position.lerpVectors(camTw.a,camTw.b,k);if(t>=1)camTw=null;}
-    ctl.update();renderer.render(scene,cam);requestAnimationFrame(loop);
-  })(performance.now());
+};
+function renderForm(fresh){
+  const svg=$('#formSvg');svg.innerHTML='';defs(svg,'formSvg',VIEWS[fview].clip);
+  VIEWS[fview].head(S('g',null,svg));
+  hairArt(S('g',{class:fresh?'fresh':''},svg),fview,current,'formSvg');
+  const g=S('g',{class:fresh?'fresh':''},svg);
+  (FORM_NOTES[fview][current]||[]).forEach(([p,l,txt,an])=>{line(g,p,{x:l.x,y:l.y-10},'ref-line',{'stroke-dasharray':'3 3'});S('circle',{cx:p.x,cy:p.y,r:3.5,fill:'var(--accent)'},g);T(txt,{x:l.x,y:l.y+4,'text-anchor':an,class:'lbl-g','font-size':12},g);});
+  T(FORMS[current].angle,{x:-28,y:62,class:'lbl-a','font-size':22},svg);
 }
-init3D();
-$('#toggleDemo').onclick=e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);setDemo3D(on);};
+function pickForm(k){current=k;refreshChips($('#formChips'),k);renderInfo();renderForm(true);}
+buildChips($('#formChips'),pickForm,()=>current);renderInfo();renderForm(false);
+$$('[data-fview]').forEach(b=>b.onclick=()=>{fview=b.dataset.fview;$$('[data-fview]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderForm(true);});
 
 /* ================= 2 · Winkel-Labor ================= */
 const lab={th:45,pos:185,ref:'floor'};
@@ -728,8 +642,8 @@ function verdict(th,ref){
 function drawLab(){
   const svg=$('#labSvg');svg.innerHTML='';defs(svg,'lab',SIDE_PATH+' Z');
   const {th,pos,ref}=lab;
-  VIEWS.side.head(svg);const hair=S('g',{opacity:.55},svg);
-  drawFall(hair,(ref==='head'&&th===90)?lengthFn(90,'head'):lengthFn(th,'floor'));
+  VIEWS.side.head(svg);const hair=S('g',null,svg);
+  drawFall(hair,(ref==='head'&&th===90)?lengthFn(90,'head'):lengthFn(th,'floor'),'hair-soft');
   const g=S('g',null,svg);
   let O,d,refDir,path;
   if(ref==='floor'){
@@ -817,52 +731,104 @@ renderSteps(-1);
 /* ================= 4 · Übungsblatt ================= */
 const TASKS={
   kompakt:'Zeichne horizontale Abteilungen, Winkel mit 0° und eine waagrechte Schnittlinie unter dem Nackenhaaransatz.',
-  graduiert:'Zeichne diagonal-vorwärts verlaufende Abteilungen, Winkelpfeile mit 45° und die Leitsträhne im Nacken. Prüf den Winkel im Profil mit dem Winkelmesser.',
+  graduiert:'Zeichne diagonal-vorwärts verlaufende Abteilungen, Winkelpfeile mit 45° und die Leitsträhne im Nacken.',
   gleich:'Zeichne radiale Abteilungen vom Wirbel aus, Pfeile senkrecht zur Kopfrundung und eine Schnittlinie parallel zum Kopf.',
   zunehmend:'Zeichne horizontale Abteilungen, Pfeile zum Oberkopf (180°) und die stationäre Leitsträhne am Oberkopf.'
 };
+const BUILD=[
+  {key:'sections',layer:3,title:'1 · Welche Abteilungen?',
+   opts:[['kompakt','horizontal'],['graduiert','diagonal-vorwärts'],['gleich','radial vom Wirbel'],['zunehmend','horizontal + Mittelscheitel']],
+   ok:{kompakt:['kompakt','zunehmend'],zunehmend:['zunehmend','kompakt']},
+   tip:{kompakt:'Die Enden sollen auf einer waagrechten Linie liegen.',graduiert:'Die Form soll nach vorne länger werden.',gleich:'Jede Strähne soll sich senkrecht zur Kopfrundung halten lassen.',zunehmend:'Später wird alles nach oben geführt.'}},
+  {key:'angles',layer:4,title:'2 · Welcher Erhebungswinkel?',
+   opts:[['kompakt','0°'],['graduiert','45° zum Boden'],['gleich','90° zur Kopfrundung'],['zunehmend','180° zum Oberkopf']],
+   tip:{kompakt:'Bei dieser Form wird nichts angehoben.',graduiert:'Die Strähnen werden angehoben, aber nicht bis zur Waagrechten.',gleich:'Der Winkel wird hier zur Kopfrundung gemessen.',zunehmend:'Die Strähnen werden ganz nach oben geführt.'}},
+  {key:'guide',layer:5,title:'3 · Welche Leitsträhne und Schnittlinie?',
+   opts:[['kompakt','stationär im Nacken, waagrecht'],['graduiert','stationär im Nacken, 45°'],['gleich','wandernd, parallel zum Kopf'],['zunehmend','stationär am Oberkopf']],
+   tip:{kompakt:'Die Länge wird im Nacken festgelegt, das Haar bleibt im natürlichen Fall.',graduiert:'Die Länge wird im Nacken festgelegt, aber angehoben geschnitten.',gleich:'Jede Abteilung übernimmt die Länge der vorherigen.',zunehmend:'Alles wird zu einem Punkt ganz oben geführt.'}}
+];
+const REFPTS={side:[P(336),P(270),P(225),P(170),P(NAPE)],back:[{x:195,y:70},{x:195,y:112},{x:195,y:205},{x:195,y:272}],top:[{x:195,y:122},{x:195,y:168},TPIV,{x:195,y:294}]};
 const pad=$('#pad'),pctx=pad.getContext('2d'),VB={x:-40,y:30,w:470,h:400};
-let tool='section',padView='side',store={side:[],back:[],top:[]},curStroke=null;
-try{const s=JSON.parse(localStorage.getItem('schnittwerkstatt-pad-v2')||'null');if(s&&typeof s==='object')store=Object.assign(store,s);}catch(e){}
+let padMode='build',tool='section',padView='side',store={side:[],back:[],top:[]},curStroke=null,build={},buildFresh=-1;
+try{const s=JSON.parse(localStorage.getItem('schnittwerkstatt-pad-v3')||'null');if(s&&typeof s==='object')store=Object.assign(store,s);}catch(e){}
 const strokes=()=>store[padView];
-const saveStrokes=()=>{try{localStorage.setItem('schnittwerkstatt-pad-v2',JSON.stringify(store));}catch(e){}};
+const saveStrokes=()=>{try{localStorage.setItem('schnittwerkstatt-pad-v3',JSON.stringify(store));}catch(e){}};
+const buildOk=(b,k,v)=>((b.ok&&b.ok[k])||[k]).includes(v);
+const buildDone=k=>BUILD.every(b=>build[b.key]&&buildOk(b,k,build[b.key]));
+
+function renderBuild(){
+  const k=$('#taskSel').value,box=$('#buildBox');box.innerHTML='';let open=true;
+  BUILD.forEach(b=>{
+    const grp=document.createElement('div');grp.className='bgroup'+(open?'':' locked');
+    grp.innerHTML='<h3>'+b.title+'</h3>';
+    const ch=document.createElement('div');ch.className='chips';
+    b.opts.forEach(([v,label])=>{const btn=document.createElement('button');btn.className='chip';btn.textContent=label;btn.disabled=!open;btn.setAttribute('aria-pressed',build[b.key]===v);
+      btn.onclick=()=>{build[b.key]=v;buildFresh=b.layer;renderBuild();drawPadSvg();};ch.appendChild(btn);});
+    grp.appendChild(ch);
+    const v=build[b.key];let ok=false;
+    if(v&&open){ok=buildOk(b,k,v);const p=document.createElement('p');p.className='fb '+(ok?'ok':'no');p.textContent=ok?'Richtig!':'Noch nicht. Tipp: '+b.tip[k];grp.appendChild(p);}
+    open=open&&ok;box.appendChild(grp);
+  });
+  if(buildDone(k)){const d=document.createElement('div');d.className='bdone';d.innerHTML='<strong>Geschafft!</strong><span>Die Zeichnung für die '+FORMS[k].name+' ist komplett. Links siehst du das fertige Haar. Probier auch die anderen Ansichten.</span>';
+    const again=document.createElement('button');again.className='btn ghost';again.textContent='Nochmal üben';again.onclick=()=>{build={};buildFresh=-1;renderBuild();drawPadSvg();};d.appendChild(again);box.appendChild(d);}
+}
 function drawPadSvg(){
-  const k=$('#taskSel').value,layers=[0],fade=[];
-  if($('#showLines').checked)layers.push(1,2);
-  if($('#showSolution').checked){layers.push(3,4,5);fade.push(3,4,5);}
-  drawSketch($('#padSvg'),k,padView,layers,{fade});
+  const k=$('#taskSel').value,svg=$('#padSvg');
+  if(padMode==='build'){
+    const layers=[0,1,2],forms={};
+    BUILD.forEach(b=>{if(build[b.key]){layers.push(b.layer);forms[b.layer]=build[b.key];}});
+    const done=buildDone(k);if(done)layers.push(6);
+    drawSketch(svg,k,padView,layers,{forms,fresh:done&&buildFresh===5?6:buildFresh,fade:done?[1,2]:[]});
+  } else {
+    const layers=[0],fade=[];
+    if($('#showLines').checked)layers.push(1,2);
+    if($('#showSolution').checked){layers.push(3,4,5);fade.push(3,4,5);}
+    drawSketch(svg,k,padView,layers,{fade});
+  }
   $('#taskText').textContent=TASKS[k];
 }
 function sizePad(){const w=pad.clientWidth,h=pad.clientHeight,dpr=Math.min(devicePixelRatio||1,2);if(!w)return;pad.width=Math.round(w*dpr);pad.height=Math.round(h*dpr);redraw();}
-const COL={ink:'--ink',section:'--section',angle:'--angle',guide:'--accent',measure:'--angle'};
+const COL={ink:'--ink',section:'--section',angle:'--angle',guide:'--accent',cut:'--accent'};
 function strokeDraw(s){
   const sc=pad.width/VB.w,X=p=>(p[0]-VB.x)*sc,Y=p=>(p[1]-VB.y)*sc;
-  pctx.save();pctx.lineCap='round';pctx.lineJoin='round';
-  if(s.tool==='erase'){pctx.globalCompositeOperation='destination-out';pctx.lineWidth=16*sc;}
-  else{pctx.strokeStyle=css(COL[s.tool]);pctx.lineWidth=(s.tool==='guide'?4:s.tool==='ink'?2.2:2)*sc;}
-  if(s.tool==='measure'&&s.pts.length>1){
-    const a=s.pts[0],b=s.pts[s.pts.length-1],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy);if(len<3){pctx.restore();return;}
-    const th=deg(Math.acos(Math.max(-1,Math.min(1,dy/len))));
-    pctx.setLineDash([5*sc,4*sc]);pctx.strokeStyle=css('--muted');pctx.lineWidth=1.2*sc;pctx.beginPath();pctx.moveTo(X(a),Y(a));pctx.lineTo(X(a),Y([0,a[1]+Math.min(60,len)]));pctx.stroke();
-    pctx.setLineDash([]);pctx.strokeStyle=css('--angle');pctx.lineWidth=2.4*sc;pctx.beginPath();pctx.moveTo(X(a),Y(a));pctx.lineTo(X(b),Y(b));pctx.stroke();
-    const en=Math.atan2(dy,dx);pctx.lineWidth=1.5*sc;pctx.beginPath();pctx.arc(X(a),Y(a),22*sc,Math.PI/2,en,dx>0);pctx.stroke();
-    pctx.fillStyle=css('--angle');pctx.font='700 '+(13*sc)+'px ui-monospace, Menlo, monospace';pctx.fillText(Math.round(th)+'°',X(b)+6*sc,Y(b)-6*sc);
-  } else {pctx.beginPath();s.pts.forEach((p,i)=>i?pctx.lineTo(X(p),Y(p)):pctx.moveTo(X(p),Y(p)));if(s.pts.length===1)pctx.lineTo(X(s.pts[0])+.1,Y(s.pts[0]));pctx.stroke();}
+  pctx.save();pctx.lineCap='round';pctx.lineJoin='round';pctx.strokeStyle=css(COL[s.tool]);pctx.lineWidth=({guide:5,ink:2.2}[s.tool]||2.2)*sc;
+  if(s.tool==='cut')pctx.setLineDash([7*sc,5*sc]);
+  pctx.beginPath();s.pts.forEach((p,i)=>i?pctx.lineTo(X(p),Y(p)):pctx.moveTo(X(p),Y(p)));if(s.pts.length===1)pctx.lineTo(X(s.pts[0])+.1,Y(s.pts[0]));pctx.stroke();
+  if(s.tool==='angle'&&s.pts.length>1){
+    const a=s.pts[0],b=s.pts[1],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy);
+    if(len>3){const an=Math.atan2(dy,dx),h=9;
+      pctx.fillStyle=css('--angle');pctx.beginPath();pctx.moveTo(X(b),Y(b));pctx.lineTo(X([b[0]-h*Math.cos(an-0.4),0]),Y([0,b[1]-h*Math.sin(an-0.4)]));pctx.lineTo(X([b[0]-h*Math.cos(an+0.4),0]),Y([0,b[1]-h*Math.sin(an+0.4)]));pctx.closePath();pctx.fill();
+      pctx.setLineDash([4*sc,4*sc]);pctx.strokeStyle=css('--muted');pctx.lineWidth=1.2*sc;pctx.beginPath();pctx.moveTo(X(a),Y(a));pctx.lineTo(X(a),Y([0,a[1]+30]));pctx.stroke();
+      pctx.setLineDash([]);pctx.strokeStyle=css('--angle');pctx.lineWidth=1.4*sc;pctx.beginPath();pctx.arc(X(a),Y(a),16*sc,Math.PI/2,an,dx>0);pctx.stroke();
+      const th=Math.round(deg(Math.acos(Math.max(-1,Math.min(1,dy/len)))));
+      pctx.font='700 '+(13*sc)+'px ui-monospace, Menlo, monospace';pctx.lineWidth=4*sc;pctx.strokeStyle='#fff';pctx.strokeText(th+'°',X(b)+6*sc,Y(b)-6*sc);pctx.fillText(th+'°',X(b)+6*sc,Y(b)-6*sc);}
+  }
   pctx.restore();
 }
-function redraw(){pctx.clearRect(0,0,pad.width,pad.height);strokes().forEach(strokeDraw);if(curStroke)strokeDraw(curStroke);}
+function redraw(){if(!pad.width)return;pctx.clearRect(0,0,pad.width,pad.height);strokes().forEach(strokeDraw);if(curStroke)strokeDraw(curStroke);}
 function toVB(e){const r=pad.getBoundingClientRect();return [VB.x+(e.clientX-r.left)/r.width*VB.w,VB.y+(e.clientY-r.top)/r.height*VB.h];}
-pad.addEventListener('pointerdown',e=>{pad.setPointerCapture(e.pointerId);curStroke={tool,pts:[toVB(e)]};redraw();});
-pad.addEventListener('pointermove',e=>{if(!curStroke)return;const p=toVB(e);if(curStroke.tool==='measure')curStroke.pts=[curStroke.pts[0],p];else curStroke.pts.push(p);redraw();});
-const endStroke=()=>{if(!curStroke)return;curStroke.pts=curStroke.pts.map(p=>[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]);strokes().push(curStroke);curStroke=null;saveStrokes();redraw();};
+function snapRef(p){for(const r of REFPTS[padView])if(Math.hypot(r.x-p[0],r.y-p[1])<12)return [r.x,r.y];return null;}
+function snapEnd(a,p){const r=snapRef(p);if(r)return r;if(!$('#snapAngle').checked)return p;const dx=p[0]-a[0],dy=p[1]-a[1],L=Math.hypot(dx,dy),st=Math.PI/36,an=Math.round(Math.atan2(dy,dx)/st)*st;return [a[0]+L*Math.cos(an),a[1]+L*Math.sin(an)];}
+function segDist(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],l2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2));return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy);}
+pad.addEventListener('pointerdown',e=>{
+  const p=toVB(e);
+  if(tool==='del'){let best=-1,bd=10;strokes().forEach((s,i)=>{for(let j=0;j<Math.max(1,s.pts.length-1);j++){const d=segDist(p,s.pts[j],s.pts[j+1]||s.pts[j]);if(d<bd){bd=d;best=i;}}});if(best>=0){strokes().splice(best,1);saveStrokes();redraw();}return;}
+  pad.setPointerCapture(e.pointerId);const st=tool==='ink'?p:(snapRef(p)||p);curStroke={tool,pts:tool==='ink'?[st]:[st,st]};redraw();});
+pad.addEventListener('pointermove',e=>{if(!curStroke)return;const p=toVB(e);if(curStroke.tool==='ink')curStroke.pts.push(p);else curStroke.pts[1]=snapEnd(curStroke.pts[0],p);redraw();});
+const endStroke=()=>{if(!curStroke)return;const s=curStroke;curStroke=null;
+  if(s.tool!=='ink'&&Math.hypot(s.pts[1][0]-s.pts[0][0],s.pts[1][1]-s.pts[0][1])<4){redraw();return;}
+  s.pts=s.pts.map(p=>[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]);strokes().push(s);saveStrokes();redraw();};
 pad.addEventListener('pointerup',endStroke);pad.addEventListener('pointercancel',endStroke);
-$$('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;$$('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
-$$('[data-pview]').forEach(b=>b.onclick=()=>{padView=b.dataset.pview;$$('[data-pview]').forEach(x=>x.setAttribute('aria-pressed',x===b));drawPadSvg();redraw();});
+$$('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;$$('[data-tool]').forEach(x=>x.setAttribute('aria-pressed',x===b));pad.style.cursor=tool==='del'?'pointer':'crosshair';});
+$$('[data-pview]').forEach(b=>b.onclick=()=>{padView=b.dataset.pview;$$('[data-pview]').forEach(x=>x.setAttribute('aria-pressed',x===b));buildFresh=-1;drawPadSvg();redraw();});
+$$('[data-mode]').forEach(b=>b.onclick=()=>{padMode=b.dataset.mode;$$('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  const draw=padMode==='draw';pad.hidden=!draw;$('#drawBox').hidden=!draw;$('#buildBox').hidden=draw;drawPadSvg();if(draw)sizePad();});
 $('#undo').onclick=()=>{strokes().pop();saveStrokes();redraw();};
 let clearArm=null;
 $('#clearPad').onclick=e=>{const b=e.currentTarget;if(clearArm){clearTimeout(clearArm);clearArm=null;store[padView]=[];saveStrokes();redraw();b.textContent='Ansicht löschen';return;}b.textContent='Wirklich löschen?';clearArm=setTimeout(()=>{clearArm=null;b.textContent='Ansicht löschen';},3000);};
-['taskSel','showLines','showSolution'].forEach(i=>$('#'+i).addEventListener('change',drawPadSvg));
-drawPadSvg();new ResizeObserver(sizePad).observe($('#padWrap'));
+$('#taskSel').addEventListener('change',()=>{build={};buildFresh=-1;renderBuild();drawPadSvg();});
+['showLines','showSolution'].forEach(i=>$('#'+i).addEventListener('change',drawPadSvg));
+renderBuild();drawPadSvg();new ResizeObserver(sizePad).observe($('#padWrap'));
 
 /* ================= 5 · Quiz ================= */
 const QUIZ=[
