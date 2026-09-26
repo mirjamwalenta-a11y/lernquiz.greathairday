@@ -157,7 +157,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     <h1>Schnittwerkstatt ✂</h1>
     <p>Die vier Grundformen im Profil, von hinten und von oben, der Erhebungswinkel mit Kopfhaltung zum Ausprobieren, sechs Pony-Varianten und die Schnittzeichnung Schritt für Schritt. Am Übungsblatt baust du sie dann selbst.</p>
     <div class="angle-strip" aria-label="Winkel-Überblick">
-      <span><b>0°</b> kompakt</span><span><b>1–89°</b> graduiert</span><span><b>90°</b> gleichmäßig stufig</span><span><b>91–180°</b> zunehmend stufig</span>
+      <span><b>0°</b> kompakt</span><span><b>1–89°</b> graduiert</span><span><b>90°</b> gleichmäßig stufig</span><span><b>über 90°</b> zunehmend stufig</span>
     </div>
   </header>
 </div>
@@ -234,7 +234,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
           <button class="chip" data-preset="45,floor">45°</button>
           <button class="chip" data-preset="75,floor">75°</button>
           <button class="chip" data-preset="90,head">90° Kopf</button>
-          <button class="chip" data-preset="180,floor">180°</button>
+          <button class="chip" data-preset="180,floor">über 90°, ganz nach oben</button>
         </div>
         <div class="verdict"><strong id="labTitle">Mittlere Graduierung</strong><p id="labText" style="font-size:14px"></p></div>
         <p id="labViewNote" style="font-size:14px"></p>
@@ -323,7 +323,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
             <option value="kompakt">Kompakte Form (0°)</option>
             <option value="graduiert" selected>Graduierte Form (1–89°)</option>
             <option value="gleich">Gleichmäßig stufige Form (90°)</option>
-            <option value="zunehmend">Zunehmend stufige Form (91–180°)</option>
+            <option value="zunehmend">Zunehmend stufige Form (über 90°)</option>
           </select>
           <div class="seg" role="group" aria-label="Ansicht des Übungsblatts" id="padViews">
             <button data-pview="side" aria-pressed="true">Profil</button>
@@ -391,8 +391,8 @@ const FORMS={
   gleich:{name:'Gleichmäßig stufige Form',en:'Uniform layers',angle:'90°',theta:90,ref:'head',
     facts:[['Winkel','90° zur Kopfrundung'],['Leitsträhne','wandernd, läuft von Abteilung zu Abteilung mit'],['Abteilungen','vertikal oder radial (Pivot vom Wirbel)'],['Fingerstellung','parallel zur Kopfrundung'],['Längen','überall gleich lang'],['Struktur','vollständig aktiviert'],['Gewicht','kein Gewicht, gleichmäßig verteilt']],
     text:'Jede Strähne wird senkrecht von der Kopfrundung weg gehalten und auf die gleiche Länge geschnitten. Die Form folgt der Kopfform und wirkt rund und locker.'},
-  zunehmend:{name:'Zunehmend stufige Form',en:'Increase layers',angle:'91–180°',theta:180,ref:'floor',
-    facts:[['Winkel','Oberkopf über 90° bis 180°, Seiten und Nacken im natürlichen Fall'],['Leitsträhne','stationär, am Oberkopf'],['Abteilungen','gebogen am Oberkopf, V-förmig im Nacken'],['Fingerstellung','über dem Oberkopf, Kontur vorne kürzer'],['Längen','innen kurz, nach außen immer länger'],['Struktur','aktiviert'],['Gewicht','wenig Gewicht, Länge bleibt an der Kontur']],
+  zunehmend:{name:'Zunehmend stufige Form',en:'Increase layers',angle:'über 90°',theta:180,ref:'floor',
+    facts:[['Winkel','Oberkopf über 90°, zur Leitsträhne nach oben überdirigiert; Seiten und Nacken im natürlichen Fall'],['Leitsträhne','stationär, am Oberkopf'],['Abteilungen','gebogen am Oberkopf, V-förmig im Nacken'],['Fingerstellung','über dem Oberkopf, Kontur vorne kürzer'],['Längen','innen kurz, nach außen immer länger'],['Struktur','aktiviert'],['Gewicht','wenig Gewicht, Länge bleibt an der Kontur']],
     text:'Alle Strähnen werden zum Oberkopf geführt und dort auf einer Linie geschnitten. Je weiter eine Strähne vom Oberkopf entfernt wächst, desto länger bleibt sie. Das ist der klassische Stufenschnitt für langes Haar.'}
 };
 const ORDER=['kompakt','graduiert','gleich','zunehmend'];
@@ -450,13 +450,13 @@ function arrow(g,from,d,len,marker){const e=add(from,d,len);line(g,from,e,'ang-l
 function defs(svg,id,clip){const df=S('defs',null,svg);
   const m=S('marker',{id:id+'A',viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},df);S('path',{d:'M0,0 L10,5 L0,10 z',fill:'var(--angle)'},m);
   const cp=S('clipPath',{id:id+'Clip'},df);S('path',{d:clip},cp);}
-function angleArc(g,O,ref,d,th,r){
+function angleArc(g,O,ref,d,th,r,lbl){
   const a1=add(O,ref,r),a2=add(O,d,r),cr=ref.x*d.y-ref.y*d.x;
   S('path',{d:'M'+f(a1.x)+','+f(a1.y)+' A'+r+','+r+' 0 0,'+(cr>0?1:0)+' '+f(a2.x)+','+f(a2.y),class:'ang-line','stroke-width':1.5},g);
   let b={x:ref.x+d.x,y:ref.y+d.y},bl=Math.hypot(b.x,b.y);
   if(bl<0.05){b={x:-ref.y,y:ref.x};if(dot(b,{x:-1,y:0})<0)b={x:ref.y,y:-ref.x};bl=1;}
   const L=add(O,{x:b.x/bl,y:b.y/bl},r+16);
-  T(Math.round(th)+'°',{x:f(L.x),y:f(L.y+4),'text-anchor':'middle',class:'lbl-a'},g);
+  T(lbl||(Math.round(th)+'°'),{x:f(L.x),y:f(L.y+4),'text-anchor':'middle',class:'lbl-a'},g);
 }
 
 /* ================= Ansichten: Profil / Hinten / Oben ================= */
@@ -531,7 +531,7 @@ const VIEWS={
     if(k==='kompakt'){[[150,160],[195,190],[240,160]].forEach(([x,y])=>arrow(g,{x,y},{x:0,y:1},30,id+'A'));T('0° · Strähnen fallen gerade',{x:195,y:370,'text-anchor':'middle',class:'lbl-a'},g);}
     else if(k==='graduiert'){[[150,175],[195,205],[240,175]].forEach(([x,y])=>arrow(g,{x,y},{x:0,y:1},26,id+'A'));T('45° · zum Betrachter hin angehoben',{x:195,y:370,'text-anchor':'middle',class:'lbl-a'},g);}
     else if(k==='gleich'){[195,220,250,270,290,320,345].forEach((t,i)=>{const p={x:BC.x+BRX*Math.cos(rad(t)),y:BC.y+BRY*Math.sin(rad(t))};const n=norm({x:Math.cos(rad(t))/BRX,y:Math.sin(rad(t))/BRY});arrow(g,p,n,30,id+'A');if(i===4)T('90°',{x:f(p.x+n.x*44),y:f(p.y+n.y*44),class:'lbl-a'},g);});}
-    else{const tgt={x:195,y:60};[[130,200],[160,160],[230,160],[260,200],[195,230]].forEach(([x,y])=>{const d=norm({x:tgt.x-x,y:tgt.y-y});arrow(g,{x,y},d,34,id+'A');});T('180° · alles nach oben geführt',{x:195,y:370,'text-anchor':'middle',class:'lbl-a'},g);}
+    else{const tgt={x:195,y:60};[[130,200],[160,160],[230,160],[260,200],[195,230]].forEach(([x,y])=>{const d=norm({x:tgt.x-x,y:tgt.y-y});arrow(g,{x,y},d,34,id+'A');});T('über 90° · alles nach oben geführt',{x:195,y:370,'text-anchor':'middle',class:'lbl-a'},g);}
   },
   guide(g,k){
     if(k==='kompakt'){line(g,{x:195,y:272},{x:195,y:302},'guide-line');line(g,{x:110,y:302},{x:280,y:302},'cut-line');T('Schnittlinie waagrecht',{x:195,y:320,'text-anchor':'middle',class:'lbl-g'},g);}
@@ -561,7 +561,7 @@ const VIEWS={
     if(k==='kompakt'){[0,45,90,135,180].forEach(t=>{const p={x:TC.x+TRX*0.9*Math.cos(rad(t)),y:TC.y+TRY*0.9*Math.sin(rad(t))};S('circle',{cx:f(p.x),cy:f(p.y),r:6,fill:'none',stroke:'var(--angle)','stroke-width':1.8},g);S('circle',{cx:f(p.x),cy:f(p.y),r:1.8,fill:'var(--angle)'},g);});T('0° · fällt senkrecht nach unten',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
     else if(k==='graduiert'){[20,55,90,125,160].forEach(t=>{const p={x:TC.x+TRX*0.85*Math.cos(rad(t)),y:TC.y+TRY*0.85*Math.sin(rad(t))};arrow(g,p,nrm(t),22,id+'A');});T('45° · nach außen angehoben',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
     else if(k==='gleich'){for(let t=0;t<360;t+=45){const p=TP(t),n=norm({x:Math.cos(rad(t))/TRX,y:Math.sin(rad(t))/TRY});arrow(g,p,n,26,id+'A');}T('90° zur Kopfrundung',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
-    else{const tg={x:195,y:168};[0,40,90,140,180,220,320].forEach(t=>{const p={x:TC.x+TRX*0.85*Math.cos(rad(t)),y:TC.y+TRY*0.85*Math.sin(rad(t))};arrow(g,p,norm({x:tg.x-p.x,y:tg.y-p.y}),30,id+'A');});T('180° · alles zum Oberkopf',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
+    else{const tg={x:195,y:168};[0,40,90,140,180,220,320].forEach(t=>{const p={x:TC.x+TRX*0.85*Math.cos(rad(t)),y:TC.y+TRY*0.85*Math.sin(rad(t))};arrow(g,p,norm({x:tg.x-p.x,y:tg.y-p.y}),30,id+'A');});T('über 90° · alles zum Oberkopf',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
   },
   guide(g,k){
     const ring=(rx,ry,dy)=>S('ellipse',{cx:TC.x,cy:TC.y+(dy||0),rx,ry,class:'cut-line'},g);
@@ -641,7 +641,7 @@ const REFD={
       [112,138,164].forEach(y=>[140,168,195,222,250].forEach(x=>{const yy=y-15*(1-Math.pow((x-195)/85,2));line(g,{x,y:yy},A,'ang-line',{'stroke-width':1.3});}));
       const cy=x=>312+48*(1-Math.abs(x-195)/95);
       for(let x=100;x<=290;x+=14)thin(g,{x,y:190},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.75});
-      T('180° · Oberkopf zu einem Punkt',{x:212,y:22,class:'lbl-a'},g);T('Nacken: natürlicher Fall',{x:195,y:392,'text-anchor':'middle',class:'lbl-a'},g);
+      T('Oberkopf überdirigiert',{x:212,y:22,class:'lbl-a'},g);T('Nacken: natürlicher Fall',{x:195,y:392,'text-anchor':'middle',class:'lbl-a'},g);
     },
     guide(g){S('circle',{cx:195,cy:2,r:5,fill:'var(--accent)'},g);S('polyline',{points:'100,312 195,360 290,312',class:'cut-line'},g);
       T('stationäre Leitsträhne',{x:186,y:6,'text-anchor':'end',class:'lbl-g'},g);T('V-Kontur, Mitte am längsten',{x:195,y:410,'text-anchor':'middle',class:'lbl-g'},g);}
@@ -687,7 +687,7 @@ $$('[data-fview]').forEach(b=>b.onclick=()=>{fview=b.dataset.fview;$$('[data-fvi
 const lab={th:45,pos:185,ref:'floor',view:'side',tilt:0};
 function zoneName(a){if(a<150)return 'Nacken';if(a<205)return 'Hinterkopf';if(a<245)return 'Wirbel / Krone';if(a<285)return 'Oberkopf';return 'Vorderkopf';}
 function verdict(th,ref){
-  if(ref==='head'&&th>90)return ['Zunehmend stufig','Über 90° misst man zum Boden: Die Strähne wird Richtung Oberkopf geführt, bei 180° senkrecht nach oben. Innen kurz, außen lang.'];
+  if(ref==='head'&&th>90)return ['Zunehmend stufig','Über 90° misst man zum Boden: Die Strähne wird zur Leitsträhne am Oberkopf nach oben überdirigiert. Innen kurz, außen lang.'];
   if(ref==='head'){
     if(th===90)return ['Gleichmäßig stufig','90° zur Kopfrundung mit wandernder Leitsträhne: jede Strähne wird gleich lang, die Form folgt der Kopfrundung.'];
     return ['Winkel zur Kopfrundung','Zur Kopfrundung gemessen ist vor allem 90° wichtig (gleichmäßig stufig). Für kompakte und graduierte Formen misst man meist zum Boden.'];
@@ -699,6 +699,7 @@ function verdict(th,ref){
   if(th===90)return ['90° zum Boden','Mit stationärer Leitsträhne im Nacken entsteht eine sehr hohe Graduierung. Die gleichmäßig stufige Form entsteht bei 90° zur Kopfrundung.'];
   return ['Zunehmend stufig','Die Strähnen werden über die Waagrechte Richtung Oberkopf geführt. Innen kurz, außen lang, die Länge an der Kontur bleibt erhalten.'];
 }
+const degLbl=th=>th>90?'über 90°':th+'°';
 const LABV={
   side:{min:118,max:300,val:185,zone:zoneName},
   back:{min:175,max:365,val:200,zone:t=>{t=((t%360)+360)%360;return t>245&&t<295?'Oberkopf':t<=245&&t>90?'Seite (links im Bild)':'Seite (rechts im Bild)';}},
@@ -709,7 +710,7 @@ const LAB_NOTE={
   side:'Im Profil siehst du den Winkel am besten. Hier misst du ihn.',
   back:'Von hinten siehst du den Winkel an den Seiten: Die Strähne wird zur Seite hin angehoben. In der Mitte hinten wird sie zu dir hin angehoben, das sieht man von hinten kaum.',
   front:'Von vorne siehst du, wie die Strähnen an den Seiten und über den Ohren angehoben werden. So kontrollierst du, ob beide Seiten gleich sind.',
-  top:'Von oben siehst du nur die Richtung, nicht den Winkel. Je weiter die Strähne absteht, desto länger der Pfeil: 0° und 180° erscheinen als Punkt, 90° steht am weitesten ab.'
+  top:'Von oben siehst du nur die Richtung, nicht den Winkel. Je weiter die Strähne absteht, desto länger der Pfeil: 0° und ganz nach oben geführte Strähnen erscheinen als Punkt, 90° steht am weitesten ab.'
 };
 const FRONT_PATH='M105,170 A90,100 0 0,1 285,170 C286,215 276,262 242,290 Q195,318 148,290 C114,262 104,215 105,170 Z';
 const FRONT_HL='M105,205 C109,170 116,140 140,122 Q195,104 250,122 C274,140 281,170 285,205';
@@ -774,7 +775,7 @@ function drawLab(){
     if(len<6){S('circle',{cx:f(root.x),cy:f(root.y),r:9,fill:'var(--surface)',stroke:'var(--angle)','stroke-width':2.2},g);S('circle',{cx:f(root.x),cy:f(root.y),r:2.6,fill:'var(--angle)'},g);
       const lp=add(root,n,24);T(th<90?'fällt senkrecht nach unten':'steht senkrecht nach oben',{x:f(lp.x),y:f(lp.y+4),'text-anchor':n.x<-.3?'end':n.x>.3?'start':'middle',class:'lbl-a'},g);}
     else{const E=add(root,n,len);S('path',{d:'M'+f(root.x)+','+f(root.y)+' L'+f(E.x)+','+f(E.y),class:'ang-line','stroke-width':3.2,'stroke-linecap':'round','marker-end':'url(#labA)'},g);
-      const lp=add(E,n,16);T(th+'°',{x:f(lp.x),y:f(lp.y+4),'text-anchor':n.x<-.3?'end':n.x>.3?'start':'middle',class:'lbl-a'},g);
+      const lp=add(E,n,16);T(degLbl(th),{x:f(lp.x),y:f(lp.y+4),'text-anchor':n.x<-.3?'end':n.x>.3?'start':'middle',class:'lbl-a'},g);
       const full=add(root,n,92);S('path',{d:'M'+f(root.x)+','+f(root.y)+' L'+f(full.x)+','+f(full.y),class:'ref-line'},g);
       if(Math.abs(th-90)>4)T('90°',{x:f(full.x+n.x*12),y:f(full.y+n.y*12+4),'text-anchor':'middle',class:'lbl-m'},g);}
     dotAt(g,root,4.5);
@@ -787,9 +788,9 @@ function drawLab(){
     const pp={x:-d.y,y:d.x};
     line(g,add(add(O,d,82),pp,-26),add(add(O,d,82),pp,26),'finger');
     line(g,add(add(O,d,92),pp,-30),add(add(O,d,92),pp,30),'cut-line');
-    angleArc(g,O,refDir,d,th,28);dotAt(g,root,4.5);
+    angleArc(g,O,refDir,d,th,28,degLbl(th));dotAt(g,root,4.5);
   }
-  $('#angleOut').textContent=th+'°';$('#posOut').textContent=LABV[view].zone(pos);$('#tiltOut').textContent=tiltLabel(view,tilt);
+  $('#angleOut').textContent=degLbl(th);$('#posOut').textContent=LABV[view].zone(pos);$('#tiltOut').textContent=tiltLabel(view,tilt);
   const v=verdict(th,ref);$('#labTitle').textContent=v[0];$('#labText').textContent=v[1];$('#labViewNote').textContent=LAB_NOTE[view];
   const tn=tiltNote(view,tilt);$('#labTiltNote').textContent=tn;$('#labTiltNote').hidden=!tn;
   $('#refFloor').setAttribute('aria-pressed',ref==='floor');$('#refHead').setAttribute('aria-pressed',ref==='head');
@@ -932,7 +933,7 @@ const SPEC={
     result:['Rund, ohne Gewicht','Alle Haare sind gleich lang. Die Form folgt der Kopfform, die Oberfläche ist vollständig aktiviert.']},
   zunehmend:{
     sections:['Gebogen oben, V im Nacken','Am Oberkopf folgen die Abteilungen der Kopfkurve (gebogen). Seiten und Nacken werden horizontal bzw. V-förmig abgeteilt.'],
-    angles:['Oberkopf nach oben, Seiten 0°','Der Oberkopf wird nach oben zu einem Punkt geführt (bis 180°). Seiten und Nacken fallen natürlich.'],
+    angles:['Oberkopf nach oben, Seiten 0°','Der Oberkopf wird über 90° nach oben zu einem Punkt überdirigiert. Seiten und Nacken fallen natürlich.'],
     guide:['Stationäre Leitsträhne am Oberkopf','Die kürzeste Länge liegt am Oberkopf. Die Kontur ist vorne kürzer (gesichtsumrahmend) und hinten V-förmig länger.'],
     result:['Innen kurz, außen lang','Je weiter weg vom Oberkopf, desto länger das Haar. Die Kontur behält ihre Länge, die Form wirkt leicht und beweglich.']}
 };
@@ -1056,18 +1057,18 @@ renderBuild();drawPadSvg();new ResizeObserver(sizePad).observe($('#padWrap'));
 
 /* ================= 5 · Quiz ================= */
 const QUIZ=[
-  ['Welcher Erhebungswinkel ergibt eine kompakte Form?',['0°','45°','90°','180°'],0,'Kompakt heißt: natürlicher Fall, nichts wird angehoben.'],
-  ['Wie wird bei der gleichmäßig stufigen Form gehalten?',['90° zum Boden','90° zur Kopfrundung','180° zum Oberkopf','45° zum Boden'],1,'Nur senkrecht zur Kopfrundung werden alle Längen gleich.'],
+  ['Welcher Erhebungswinkel ergibt eine kompakte Form?',['0°','45°','90°','über 90°'],0,'Kompakt heißt: natürlicher Fall, nichts wird angehoben.'],
+  ['Wie wird bei der gleichmäßig stufigen Form gehalten?',['90° zum Boden','90° zur Kopfrundung','über 90° zum Oberkopf','45° zum Boden'],1,'Nur senkrecht zur Kopfrundung werden alle Längen gleich.'],
   ['Wo sitzt bei der graduierten Form das Gewicht?',['Gleichmäßig verteilt','In einer Gewichtslinie oberhalb der Kontur','Nur am Oberkopf','Es gibt kein Gewicht'],1,'Die gestapelten Enden bilden eine Gewichtslinie über der Kontur.'],
   ['Welche Leitsträhne gehört zur zunehmend stufigen Form?',['Wandernd','Stationär im Nacken','Stationär am Oberkopf','Keine'],2,'Alles wird zum Oberkopf geführt und dort auf einer Linie geschnitten.'],
-  ['In welchem Bereich liegt eine mittlere Graduierung?',['1–30°','31–60°','61–89°','91–180°'],1,'Niedrig 1–30°, mittel 31–60°, hoch 61–89°.'],
+  ['In welchem Bereich liegt eine mittlere Graduierung?',['1–30°','31–60°','61–89°','über 90°'],1,'Niedrig 1–30°, mittel 31–60°, hoch 61–89°.'],
   ['Was bedeutet „wandernde Leitsträhne“?',['Alle Strähnen werden zu einem Punkt geführt','Ein Teil der vorherigen Strähne ist die Leitsträhne der nächsten','Die Leitsträhne liegt immer im Nacken','Es wird ohne Leitsträhne geschnitten'],1,'Die Leitsträhne wandert mit, jede Abteilung übernimmt die Länge der vorigen.'],
   ['Welche Oberflächenstruktur hat die kompakte Form?',['Unaktiviert (glatt)','Aktiviert','Außen aktiviert, innen glatt','Stark strukturiert'],0,'Weil alle Enden auf einer Linie liegen, sieht man keine Spitzen.'],
   ['Was zeigen die Pfeile in einer Schnittzeichnung?',['Die Föhnrichtung','Die Wuchsrichtung','Richtung und Erhebungswinkel der Strähnen','Die Scheitelposition'],2,'Pfeile stehen für die Richtung, in die die Strähne gehalten wird, samt Winkel.'],
   ['Warum sind bei der kompakten Form die inneren Haare länger?',['Sie wachsen schneller','Sie brauchen einen längeren Weg bis zur gemeinsamen Kontur','Sie werden mit 90° geschnitten','Das ist ein Schnittfehler'],1,'Vom Oberkopf aus ist der Weg über die Kopfrundung bis zur Linie länger.'],
   ['Welche Abteilungen passen gut zur gleichmäßig stufigen Form?',['Nur horizontale','Radial (Pivot) oder vertikal','Nur diagonal-vorwärts','Gar keine'],1,'Radiale und vertikale Abteilungen lassen sich gut senkrecht zur Kopfrundung halten.'],
   ['In welcher Ansicht misst du den Erhebungswinkel am besten?',['Im Profil (Seitenansicht)','Von hinten','Von oben','Von vorne'],0,'Im Profil siehst du, wie weit die Strähne aus dem natürlichen Fall angehoben wird.'],
-  ['Wie wird ein stumpfer Pony geschnitten?',['Mit 0°, natürlicher Fall, gerade Schnittlinie','Mit 90° nach vorne gezogen','Mit 180° zum Oberkopf','Mit wandernder Leitsträhne, radial'],0,'Der stumpfe Pony fällt natürlich und wird auf einer geraden Linie geschnitten.'],
+  ['Wie wird ein stumpfer Pony geschnitten?',['Mit 0°, natürlicher Fall, gerade Schnittlinie','Mit 90° nach vorne gezogen','Über 90° zum Oberkopf überdirigiert','Mit wandernder Leitsträhne, radial'],0,'Der stumpfe Pony fällt natürlich und wird auf einer geraden Linie geschnitten.'],
   ['Wo ist ein Curtain-Pony am kürzesten?',['In der Mitte','An den Seiten','Überall gleich','Am Wirbel'],0,'Er teilt sich in der Mitte wie ein Vorhang und wird zu den Wangenknochen hin länger.'],
   ['Was passiert, wenn der Kopf beim Schneiden seitlich geneigt ist?',['Die Seite, zu der der Kopf geneigt ist, wird kürzer','Nichts, die Linie bleibt gleich','Beide Seiten werden länger','Die Form wird gleichmäßig stufig'],0,'Deshalb beim Schneiden auf eine gerade Kopfhaltung achten.'],
   ['Wie wird bei der graduierten Form im Nacken abgeteilt?',['Waagrecht über den ganzen Kopf','Radial (Pivot) von einem Punkt am Hinterhauptbein','Nur senkrecht','Gar nicht'],1,'Im Nacken strahlen die Abteilungen von einem Punkt aus, so lässt sich die Graduierung sauber aufbauen.']
