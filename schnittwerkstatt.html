@@ -78,9 +78,9 @@ svg .lbl-m{fill:var(--muted)}
 svg .lbl-a{fill:var(--angle);font-family:var(--mono);font-size:12px;font-weight:600}
 svg .lbl-s{fill:var(--section);font-weight:600}
 svg .lbl-g{fill:var(--accent);font-weight:600}
-.head-fill{fill:var(--head);stroke:var(--head-line);stroke-width:2;stroke-linejoin:round}
+.hairline{fill:none;stroke:var(--head-line);stroke-width:1.3;stroke-dasharray:4 4;opacity:.75}
+.head-fill{fill:var(--surface);stroke:var(--head-line);stroke-width:2;stroke-linejoin:round}
 .head-soft{fill:none;stroke:var(--head-line);stroke-width:1.2;opacity:.35}
-.hair-cap{fill:var(--hair);opacity:.16}
 .ref-line{stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 4;fill:none}
 .sec-line{stroke:var(--section);stroke-width:1.8;fill:none}
 .ang-line{stroke:var(--angle);stroke-width:2.2;fill:none}
@@ -88,9 +88,6 @@ svg .lbl-g{fill:var(--accent);font-weight:600}
 .cut-line{stroke:var(--accent);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .hair-line{stroke:var(--hair);stroke-width:2.1;fill:none;stroke-linecap:round;opacity:.8}
 .hair-soft{stroke:var(--hair);stroke-width:5;fill:none;stroke-linecap:round;opacity:.3}
-.tex-d{stroke:#2e1a0e;stroke-width:1.1;fill:none;opacity:.32}
-.tex-l2{stroke:#e0ad74;stroke-width:1.1;fill:none;opacity:.45}
-.tex-l{stroke:#f0c890;stroke-width:5;fill:none;stroke-linecap:round;opacity:.4}
 [hidden]{display:none!important}
 .drawbox{display:grid;gap:12px}
 .bgroup{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
@@ -180,7 +177,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     <header>
       <span class="tag">Teil 1</span>
       <h2>Die vier Grundformen</h2>
-      <p class="muted">Wähle eine Form und schau sie dir im Profil, von hinten und von oben an. Rechts stehen Winkel, Leitsträhne, Abteilungen und was die Form ausmacht.</p>
+      <p class="muted">Wähle eine Form und schau dir ihre Schnittzeichnung im Profil, von hinten und von oben an: Abteilungen (blau), Erhebungswinkel (rot) und Leitsträhne mit Schnittlinie (grün). Rechts stehen die wichtigsten Merkmale der Form.</p>
     </header>
     <div class="chips" role="group" aria-label="Grundform wählen" id="formChips"></div>
     <div class="seg" role="group" aria-label="Ansicht der Frisur" id="formViews">
@@ -189,7 +186,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
       <button data-fview="top" aria-pressed="false">Von oben</button>
     </div>
     <div class="grid2">
-      <div class="svgbox"><svg id="formSvg" viewBox="-40 30 470 400" role="img" aria-label="Frisur der gewählten Grundform"></svg></div>
+      <div class="svgbox"><svg id="formSvg" viewBox="-40 30 470 400" role="img" aria-label="Schnittzeichnung der gewählten Grundform"></svg></div>
       <article class="panel" id="formInfo" aria-live="polite"></article>
     </div>
   </section>
@@ -203,6 +200,12 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     <div class="grid2">
       <div class="svgbox"><svg id="labSvg" viewBox="-40 30 470 400" role="img" aria-label="Kopfprofil mit angehobener Strähne und Ergebnis-Vorschau"></svg></div>
       <div class="panel lab-controls">
+        <div class="seg" role="group" aria-label="Ansicht im Winkel-Labor">
+          <button data-lview="side" aria-pressed="true">Profil</button>
+          <button data-lview="back" aria-pressed="false">Von hinten</button>
+          <button data-lview="front" aria-pressed="false">Von vorne</button>
+          <button data-lview="top" aria-pressed="false">Von oben</button>
+        </div>
         <div>
           <label for="angle">Erhebungswinkel <span class="num" id="angleOut">45°</span></label>
           <input type="range" id="angle" min="0" max="180" step="1" value="45">
@@ -227,7 +230,8 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
           <button class="chip" data-preset="180,floor">180°</button>
         </div>
         <div class="verdict"><strong id="labTitle">Mittlere Graduierung</strong><p id="labText" style="font-size:14px"></p></div>
-        <p class="muted" style="font-size:13px">Die braune Vorschau zeigt das Ergebnis mit stationärer Leitsträhne und Winkel zum Boden. 90° zur Kopfrundung schneidest du mit wandernder Leitsträhne, daraus wird die gleichmäßig stufige Form.</p>
+        <p id="labViewNote" style="font-size:14px"></p>
+        <p class="muted" style="font-size:13px" id="labPreviewNote">Die braune Vorschau zeigt das Ergebnis mit stationärer Leitsträhne und Winkel zum Boden. 90° zur Kopfrundung schneidest du mit wandernder Leitsträhne, daraus wird die gleichmäßig stufige Form.</p>
       </div>
     </div>
   </section>
@@ -408,9 +412,7 @@ function drawFall(g,lenFn,cls){
 function arrow(g,from,d,len,marker){const e=add(from,d,len);line(g,from,e,'ang-line',{'marker-end':'url(#'+marker+')'});return e;}
 function defs(svg,id,clip){const df=S('defs',null,svg);
   const m=S('marker',{id:id+'A',viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},df);S('path',{d:'M0,0 L10,5 L0,10 z',fill:'var(--angle)'},m);
-  const cp=S('clipPath',{id:id+'Clip'},df);S('path',{d:clip},cp);
-  const lg=S('linearGradient',{id:id+'Hair',x1:0,y1:0,x2:0,y2:1},df);[['0','#4a2b18'],['.45','#7b4a2a'],['1','#b07843']].forEach(([o,c])=>S('stop',{offset:o,'stop-color':c},lg));
-  const rg=S('radialGradient',{id:id+'HairR',cx:.55,cy:.62,r:.62},df);[['0','#3f2414'],['1','#a26b3c']].forEach(([o,c])=>S('stop',{offset:o,'stop-color':c},rg));}
+  const cp=S('clipPath',{id:id+'Clip'},df);S('path',{d:clip},cp);}
 function angleArc(g,O,ref,d,th,r){
   const a1=add(O,ref,r),a2=add(O,d,r),cr=ref.x*d.y-ref.y*d.x;
   S('path',{d:'M'+f(a1.x)+','+f(a1.y)+' A'+r+','+r+' 0 0,'+(cr>0?1:0)+' '+f(a2.x)+','+f(a2.y),class:'ang-line','stroke-width':1.5},g);
@@ -429,15 +431,18 @@ const TP=t=>({x:TC.x+TRX*Math.cos(rad(t)),y:TC.y+TRY*Math.sin(rad(t))});
 const TOP_PATH='M'+TC.x+','+(TC.y-TRY)+' A'+TRX+','+TRY+' 0 1,1 '+TC.x+','+(TC.y+TRY)+' A'+TRX+','+TRY+' 0 1,1 '+TC.x+','+(TC.y-TRY)+' Z';
 const TOP_CAP=(()=>{const a=TP(300),b=TP(240);return 'M'+f(a.x)+','+f(a.y)+' A'+TRX+','+TRY+' 0 1,1 '+f(b.x)+','+f(b.y)+' Q'+TC.x+','+(TC.y-TRY+34)+' '+f(a.x)+','+f(a.y)+' Z';})();
 const TPIV={x:202,y:232};
+const SIDE_HL='M281,134 C272,150 263,160 258,172 C248,176 232,171 222,175 C212,170 198,172 193,188 C188,212 190,236 182,254 C174,264 162,268 151,267';
+const BACK_HL='M110,224 C122,236 133,252 146,268 Q195,286 244,268 C257,252 268,236 280,224';
+const TOP_HL=(()=>{const a=TP(300),b=TP(240);return 'M'+f(a.x)+','+f(a.y)+' Q'+TC.x+','+(TC.y-TRY+34)+' '+f(b.x)+','+f(b.y);})();
 const backX=y=>C.x-Math.sqrt(Math.max(0,R*R-(y-C.y)*(y-C.y)));
 const ringPath=(k,dy)=>{const rx=TRX*k,ry=TRY*k,cy=TC.y+(dy||0);return 'M'+f(TC.x-rx)+','+cy+' A'+f(rx)+','+f(ry)+' 0 1,0 '+f(TC.x+rx)+','+cy+' A'+f(rx)+','+f(ry)+' 0 1,0 '+f(TC.x-rx)+','+cy;};
 
 const VIEWS={
  side:{
-  clip:SIDE_PATH+' Z',
+  clip:SIDE_CAP,
   head(g,soft){
     if(soft){S('path',{d:SIDE_PATH,class:'head-soft'},g);S('ellipse',{cx:205,cy:195,rx:11,ry:19,class:'head-soft'},g);return;}
-    S('path',{d:SIDE_PATH,class:'head-fill'},g);S('path',{d:SIDE_CAP,class:'hair-cap'},g);
+    S('path',{d:SIDE_PATH,class:'head-fill'},g);S('path',{d:SIDE_HL,class:'hairline'},g);S('path',{d:'M209,183 q-7,5 -3,12 q4,7 -2,13',fill:'none',stroke:'var(--head-line)','stroke-width':1.3},g);
     S('ellipse',{cx:205,cy:195,rx:11,ry:19,class:'head-fill'},g);
     S('path',{d:'M266,178 q6,-3 12,0',fill:'none',stroke:'var(--head-line)','stroke-width':1.5},g);
   },
@@ -450,10 +455,11 @@ const VIEWS={
     else if(k==='graduiert'){for(let y=250;y>=80;y-=28)line(cl,{x:60,y:y-30},{x:300,y:y+55},'sec-line');}
     else{const pv=P(232);[118,135,152,170,190,300,320].forEach(a=>line(cl,pv,P(a,R+5),'sec-line'));S('circle',{cx:f(pv.x),cy:f(pv.y),r:3.5,fill:'var(--section)'},g);T('Pivot',{x:f(pv.x-8),y:f(pv.y-8),'text-anchor':'end',class:'lbl-s'},g);}
   },
-  angles(g,k,id){const F=FORMS[k];const pts={kompakt:[140,165,190,215,240],graduiert:[122,150,180,215,250],gleich:[125,150,180,212,245,280],zunehmend:[185,205,228,250,272]}[k];
+  angles(g,k,id){const F=FORMS[k];
+    if(k==='kompakt'){for(let x=100;x<=260;x+=32){const y=C.y-Math.sqrt(R*R-(x-C.x)*(x-C.x));line(g,{x,y},{x,y:296},'ang-line',{'stroke-width':1.6,'marker-end':'url(#'+id+'A)'});}line(g,{x:84,y:300},{x:276,y:300},'ang-line',{'stroke-width':1.6});T('0° · natürlicher Fall',{x:-30,y:250,class:'lbl-a'},g);return;}
+    const pts={graduiert:[122,150,180,215,250],gleich:[125,150,180,212,245,280],zunehmend:[185,205,228,250,272]}[k];
     pts.forEach((a,i)=>{let O,d;
-      if(k==='kompakt'){O={x:backX(a)-12,y:a};d={x:0,y:1};}
-      else if(F.ref==='head'){O=P(a);d=nrm(a);}else{d=dirFloor(F.theta);O=P(leave(a,d).a);}
+      if(F.ref==='head'){O=P(a);d=nrm(a);}else{d=dirFloor(F.theta);O=P(leave(a,d).a);}
       arrow(g,O,d,k==='zunehmend'?30:36,id+'A');
       if(i===2){const ref=F.ref==='head'?tanNape(a):{x:0,y:1};line(g,O,add(O,ref,34),'ref-line');if(F.theta>0)angleArc(g,O,ref,d,F.theta,18);else T('0°',{x:f(O.x-10),y:f(O.y+30),'text-anchor':'end',class:'lbl-a'},g);}
     });},
@@ -465,11 +471,11 @@ const VIEWS={
   },
  },
  back:{
-  clip:BACK_PATH+' Z',
+  clip:BACK_CAP,
   head(g,soft){
     const cls=soft?'head-soft':'head-fill';
     S('ellipse',{cx:103,cy:205,rx:9,ry:22,class:cls},g);S('ellipse',{cx:287,cy:205,rx:9,ry:22,class:cls},g);
-    S('path',{d:BACK_PATH,class:cls},g);if(!soft)S('path',{d:BACK_CAP,class:'hair-cap'},g);
+    S('path',{d:BACK_PATH,class:cls},g);if(!soft)S('path',{d:BACK_HL,class:'hairline'},g);
   },
   refs(g){[[{x:195,y:70},'Oberkopf',0,-10,'middle'],[{x:195,y:112},'Wirbel',10,-4,'start'],[{x:195,y:205},'Hinterhauptbein',10,-4,'start'],[{x:195,y:272},'Nackenhaaransatz',10,14,'start']].forEach(([p,t,dx,dy,an])=>{dotAt(g,p);T(t,{x:p.x+dx,y:p.y+dy,'text-anchor':an},g);});
     T('Ohr',{x:86,y:209,'text-anchor':'end'},g);T('Ohr',{x:304,y:209},g);line(g,{x:195,y:70},{x:195,y:272},'ref-line');},
@@ -494,12 +500,12 @@ const VIEWS={
   },
  },
  top:{
-  clip:TOP_PATH,
+  clip:TOP_CAP,
   head(g,soft){
     const cls=soft?'head-soft':'head-fill';
     S('ellipse',{cx:111,cy:205,rx:7,ry:18,class:cls},g);S('ellipse',{cx:279,cy:205,rx:7,ry:18,class:cls},g);
     S('path',{d:'M184,101 L195,84 L206,101',class:cls},g);
-    S('path',{d:TOP_PATH,class:cls},g);if(!soft)S('path',{d:TOP_CAP,class:'hair-cap'},g);
+    S('path',{d:TOP_PATH,class:cls},g);if(!soft)S('path',{d:TOP_HL,class:'hairline'},g);
     if(!soft)T('vorne (Gesicht)',{x:195,y:72,'text-anchor':'middle',class:'lbl-m'},g);
   },
   refs(g){[[{x:195,y:122},'Stirnhaaransatz',10,4,'start'],[{x:195,y:168},'Oberkopf',10,4,'start'],[TPIV,'Wirbel',10,4,'start'],[{x:195,y:294},'Hinterhauptbein',10,4,'start']].forEach(([p,t,dx,dy,an])=>{dotAt(g,p);T(t,{x:p.x+dx,y:p.y+dy,'text-anchor':an},g);});
@@ -513,14 +519,14 @@ const VIEWS={
   angles(g,k,id){
     if(k==='kompakt'){[0,45,90,135,180].forEach(t=>{const p={x:TC.x+TRX*0.9*Math.cos(rad(t)),y:TC.y+TRY*0.9*Math.sin(rad(t))};S('circle',{cx:f(p.x),cy:f(p.y),r:6,fill:'none',stroke:'var(--angle)','stroke-width':1.8},g);S('circle',{cx:f(p.x),cy:f(p.y),r:1.8,fill:'var(--angle)'},g);});T('0° · fällt senkrecht nach unten',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
     else if(k==='graduiert'){[20,55,90,125,160].forEach(t=>{const p={x:TC.x+TRX*0.85*Math.cos(rad(t)),y:TC.y+TRY*0.85*Math.sin(rad(t))};arrow(g,p,nrm(t),22,id+'A');});T('45° · nach außen angehoben',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
-    else if(k==='gleich'){for(let t=0;t<360;t+=45){const p=TP(t),n=norm({x:Math.cos(rad(t))/TRX,y:Math.sin(rad(t))/TRY});arrow(g,p,n,26,id+'A');}T('90° zur Kopfrundung',{x:300,y:112,class:'lbl-a'},g);}
+    else if(k==='gleich'){for(let t=0;t<360;t+=45){const p=TP(t),n=norm({x:Math.cos(rad(t))/TRX,y:Math.sin(rad(t))/TRY});arrow(g,p,n,26,id+'A');}T('90° zur Kopfrundung',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
     else{const tg={x:195,y:168};[0,40,90,140,180,220,320].forEach(t=>{const p={x:TC.x+TRX*0.85*Math.cos(rad(t)),y:TC.y+TRY*0.85*Math.sin(rad(t))};arrow(g,p,norm({x:tg.x-p.x,y:tg.y-p.y}),30,id+'A');});T('180° · alles zum Oberkopf',{x:195,y:374,'text-anchor':'middle',class:'lbl-a'},g);}
   },
   guide(g,k){
     const ring=(rx,ry,dy)=>S('ellipse',{cx:TC.x,cy:TC.y+(dy||0),rx,ry,class:'cut-line'},g);
     if(k==='kompakt'){line(g,{x:195,y:302},{x:195,y:316},'guide-line');ring(TRX+12,TRY+12);T('Leitsträhne Nacken',{x:205,y:340,class:'lbl-g'},g);}
     else if(k==='graduiert'){line(g,{x:195,y:302},{x:195,y:318},'guide-line');ring(TRX+18,TRY+22,6);T('Leitsträhne Nacken',{x:205,y:348,class:'lbl-g'},g);}
-    else if(k==='gleich'){ring(TRX+38,TRY+38);[60,160,300].forEach(t=>line(g,TP(t),{x:TC.x+(TRX+38)*Math.cos(rad(t)),y:TC.y+(TRY+38)*Math.sin(rad(t))},'guide-line',{'stroke-width':3}));T('wandernde Leitsträhne',{x:320,y:90,class:'lbl-g'},g);}
+    else if(k==='gleich'){ring(TRX+38,TRY+38);[60,160,300].forEach(t=>line(g,TP(t),{x:TC.x+(TRX+38)*Math.cos(rad(t)),y:TC.y+(TRY+38)*Math.sin(rad(t))},'guide-line',{'stroke-width':3}));T('wandernde Leitsträhne',{x:195,y:392,'text-anchor':'middle',class:'lbl-g'},g);}
     else{S('circle',{cx:195,cy:168,r:14,class:'cut-line'},g);S('circle',{cx:195,cy:168,r:5,fill:'var(--accent)'},g);T('stationäre Leitsträhne',{x:214,y:160,class:'lbl-g'},g);}
   }
  }
@@ -532,7 +538,6 @@ function drawSketch(svg,k,view,layers,opts){
   const has=i=>layers.includes(i),kk=i=>(opts.forms&&opts.forms[i])||k;
   const L=i=>S('g',{class:opts.fresh===i?'fresh':'',opacity:(opts.fade||[]).includes(i)?.45:1},svg);
   if(has(0))V.head(L(0),opts.softHead);
-  const hairG=L(6);if(has(6))hairArt(hairG,view,k,id);
   if(has(1))V.refs(L(1));
   if(has(2))V.zones(L(2));
   if(has(3)){const g=L(3);V.sections(g,kk(3),S('g',{'clip-path':'url(#'+id+'Clip)'},g));}
@@ -541,46 +546,6 @@ function drawSketch(svg,k,view,layers,opts){
 }
 const upTo=n=>[...Array(n+1).keys()];
 
-/* ================= Frisuren-Illustration (gefüllte Haarform + Struktur) ================= */
-const SIL={
-  side:{
-    kompakt:'M287,119 A112,112 0 0,0 78,175 L79,286 Q80,304 98,304 L258,304 Q266,303 265,291 L263,215 C264,180 272,150 287,119 Z',
-    graduiert:'M287,119 A112,112 0 0,0 82,150 C70,175 66,205 74,228 C84,246 110,256 138,272 C146,278 150,284 156,288 L256,318 Q266,319 266,306 L263,215 C264,180 272,150 287,119 Z',
-    gleich:'M292,118 A122,122 0 0,0 70,190 C72,232 110,262 150,288 C170,280 184,250 192,222 C200,206 222,204 240,202 C255,200 262,185 266,170 C272,150 288,142 292,118 Z',
-    zunehmend:'M288,119 A112,112 0 0,0 80,160 C74,220 76,300 86,360 C92,392 110,410 140,412 C170,412 205,400 225,380 C240,360 250,330 256,300 C262,260 262,220 262,200 C264,175 272,150 288,119 Z'
-  },
-  back:{
-    kompakt:'M195,58 C258,58 297,110 298,175 L300,297 Q300,305 292,305 L98,305 Q90,305 90,297 L92,175 C93,110 132,58 195,58 Z',
-    graduiert:'M195,58 C262,58 302,112 304,180 C305,210 300,232 288,248 C276,262 262,272 250,282 L195,294 L140,282 C128,272 114,262 102,248 C90,232 85,210 86,180 C88,112 128,58 195,58 Z M288,245 C298,265 302,295 300,318 L284,300 C282,282 280,266 276,258 Z M102,245 C92,265 88,295 90,318 L106,300 C108,282 110,266 114,258 Z',
-    gleich:'M195,52 C272,52 312,110 312,180 C312,225 292,250 262,268 C240,280 222,285 195,287 C168,285 150,280 128,268 C98,250 78,225 78,180 C78,110 118,52 195,52 Z',
-    zunehmend:'M195,58 C262,58 300,110 302,180 C305,260 312,340 300,395 C285,410 240,414 195,405 C150,414 105,410 90,395 C78,340 85,260 88,180 C90,110 128,58 195,58 Z'
-  }
-};
-const TOP_OFF={kompakt:[12,12,0],graduiert:[16,22,6],gleich:[34,34,0],zunehmend:[10,10,0]};
-function topSil(k){const [ox,oy,dy]=TOP_OFF[k],rx=TRX+ox,ry=TRY+oy,cy=TC.y+dy;return 'M'+TC.x+','+(cy-ry)+' A'+rx+','+ry+' 0 1,1 '+TC.x+','+(cy+ry)+' A'+rx+','+ry+' 0 1,1 '+TC.x+','+(cy-ry)+' Z';}
-const TEX={
-  side(t,k){
-    drawFall(t,formLen(k),'tex-d');
-    for(let r=104;r<=134;r+=6){const a=P(-35,r),b=P(185,r);S('path',{d:'M'+f(a.x)+','+f(a.y)+' A'+r+','+r+' 0 0,0 '+f(b.x)+','+f(b.y)+' L'+f(b.x)+',430',class:'tex-d'},t);}
-    for(let x=156;x<=264;x+=8)S('path',{d:'M'+x+',140 C'+(x+4)+',220 '+(x-4)+',300 '+x+',430',class:x%16?'tex-d':'tex-l2'},t);
-    const h1=P(-62,114),h2=P(-138,114);S('path',{d:'M'+f(h1.x)+','+f(h1.y)+' A114,114 0 0,0 '+f(h2.x)+','+f(h2.y),class:'tex-l'},t);
-  },
-  back(t){
-    for(let x=72;x<=318;x+=6){const cx=195+(x-195)*1.15;S('path',{d:'M195,92 Q'+f(cx)+',118 '+x+',200 L'+x+',430',class:x%12?'tex-d':'tex-l2'},t);}
-    S('path',{d:'M138,80 Q195,62 252,80',class:'tex-l'},t);
-  },
-  top(t){
-    for(let a=0;a<360;a+=3.5){const e={x:TPIV.x+230*Math.cos(rad(a)),y:TPIV.y+230*Math.sin(rad(a))},m={x:TPIV.x+90*Math.cos(rad(a+8)),y:TPIV.y+90*Math.sin(rad(a+8))};S('path',{d:'M'+TPIV.x+','+TPIV.y+' Q'+f(m.x)+','+f(m.y)+' '+f(e.x)+','+f(e.y),class:(Math.round(a/3.5)%3)?'tex-d':'tex-l2'},t);}
-    S('path',{d:'M150,150 Q175,125 215,122',class:'tex-l'},t);
-  }
-};
-function hairArt(g,view,k,id){
-  const df=g.ownerSVGElement.querySelector('defs'),d=view==='top'?topSil(k):SIL[view][k];
-  const cp=S('clipPath',{id:id+'HC'},df);S('path',{d},cp);
-  S('path',{d,fill:'url(#'+id+(view==='top'?'HairR':'Hair')+')',stroke:'#3d2414','stroke-width':1.4,'stroke-linejoin':'round'},g);
-  TEX[view](S('g',{'clip-path':'url(#'+id+'HC)'},g),k);
-  if(view==='top')S('path',{d:'M184,101 L195,84 L206,101',class:'head-fill'},g);
-}
 /* ================= 1 · Grundformen ================= */
 let current='graduiert',fview='side';
 function buildChips(box,onPick,getSel){
@@ -592,40 +557,16 @@ function renderInfo(){
   const F=FORMS[current];
   $('#formInfo').innerHTML='<div class="formhead"><div><span class="tag">'+F.en+'</span><h3 style="font-size:1.35rem;margin-top:4px">'+F.name+'</h3></div><span class="bigangle">'+F.angle+'</span></div><p>'+F.text+'</p><dl class="facts">'+F.facts.map(x=>'<dt>'+x[0]+'</dt><dd>'+x[1]+'</dd>').join('')+'</dl>';
 }
-const FORM_NOTES={
-  side:{
-    kompakt:[[{x:170,y:304},{x:170,y:350},'alle Enden auf einer Linie','middle']],
-    graduiert:[[{x:72,y:222},{x:-34,y:262},'Gewichtslinie','start'],[{x:150,y:286},{x:150,y:345},'kurzer Nacken','middle'],[{x:260,y:316},{x:300,y:350},'vorne länger','start']],
-    gleich:[[{x:74,y:150},{x:-34,y:112},'folgt der Kopfrundung','start'],[{x:150,y:288},{x:150,y:340},'überall gleich lang','middle']],
-    zunehmend:[[{x:200,y:72},{x:250,y:50},'innen kurz','start'],[{x:84,y:350},{x:-34,y:392},'außen lang','start']]
-  },
-  back:{
-    kompakt:[[{x:195,y:305},{x:195,y:350},'waagrechte Kontur','middle']],
-    graduiert:[[{x:195,y:294},{x:195,y:350},'Λ-Kontur, Mitte am kürzesten','middle']],
-    gleich:[[{x:195,y:287},{x:195,y:345},'runde Form ohne Gewicht','middle']],
-    zunehmend:[[{x:195,y:405},{x:195,y:425},'lange, weiche Kontur','middle']]
-  },
-  top:{
-    kompakt:[[{x:195,y:314},{x:195,y:350},'Haar liegt eng am Kopf','middle']],
-    graduiert:[[{x:195,y:330},{x:195,y:360},'Volumen am Hinterkopf','middle']],
-    gleich:[[{x:195,y:336},{x:195,y:365},'gleichmäßig rund','middle']],
-    zunehmend:[[{x:195,y:312},{x:195,y:350},'liegt flach, Länge fällt nach unten','middle']]
-  }
-};
-function renderForm(fresh){
-  const svg=$('#formSvg');svg.innerHTML='';defs(svg,'formSvg',VIEWS[fview].clip);
-  VIEWS[fview].head(S('g',null,svg));
-  hairArt(S('g',{class:fresh?'fresh':''},svg),fview,current,'formSvg');
-  const g=S('g',{class:fresh?'fresh':''},svg);
-  (FORM_NOTES[fview][current]||[]).forEach(([p,l,txt,an])=>{line(g,p,{x:l.x,y:l.y-10},'ref-line',{'stroke-dasharray':'3 3'});S('circle',{cx:p.x,cy:p.y,r:3.5,fill:'var(--accent)'},g);T(txt,{x:l.x,y:l.y+4,'text-anchor':an,class:'lbl-g','font-size':12},g);});
+function renderForm(){
+  const svg=$('#formSvg');drawSketch(svg,current,fview,[0,3,4,5]);
   T(FORMS[current].angle,{x:-28,y:62,class:'lbl-a','font-size':22},svg);
 }
-function pickForm(k){current=k;refreshChips($('#formChips'),k);renderInfo();renderForm(true);}
-buildChips($('#formChips'),pickForm,()=>current);renderInfo();renderForm(false);
-$$('[data-fview]').forEach(b=>b.onclick=()=>{fview=b.dataset.fview;$$('[data-fview]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderForm(true);});
+function pickForm(k){current=k;refreshChips($('#formChips'),k);renderInfo();renderForm();}
+buildChips($('#formChips'),pickForm,()=>current);renderInfo();renderForm();
+$$('[data-fview]').forEach(b=>b.onclick=()=>{fview=b.dataset.fview;$$('[data-fview]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderForm();});
 
 /* ================= 2 · Winkel-Labor ================= */
-const lab={th:45,pos:185,ref:'floor'};
+const lab={th:45,pos:185,ref:'floor',view:'side'};
 function zoneName(a){if(a<150)return 'Nacken';if(a<205)return 'Hinterkopf';if(a<245)return 'Wirbel / Krone';if(a<285)return 'Oberkopf';return 'Vorderkopf';}
 function verdict(th,ref){
   if(ref==='head'){
@@ -639,39 +580,87 @@ function verdict(th,ref){
   if(th===90)return ['90° zum Boden','Mit stationärer Leitsträhne im Nacken entsteht eine sehr hohe Graduierung. Die gleichmäßig stufige Form entsteht bei 90° zur Kopfrundung.'];
   return ['Zunehmend stufig','Die Strähnen werden über die Waagrechte Richtung Oberkopf geführt. Innen kurz, außen lang, die Länge an der Kontur bleibt erhalten.'];
 }
+const LABV={
+  side:{min:118,max:300,val:185,zone:zoneName},
+  back:{min:175,max:365,val:200,zone:t=>{t=((t%360)+360)%360;return t>245&&t<295?'Oberkopf':t<=245&&t>90?'Seite (links im Bild)':'Seite (rechts im Bild)';}},
+  front:{min:175,max:365,val:330,zone:t=>{t=((t%360)+360)%360;return t>245&&t<295?'Oberkopf':t<=245&&t>90?'Seite (links im Bild)':'Seite (rechts im Bild)';}},
+  top:{min:0,max:359,val:120,zone:t=>t>=45&&t<=135?'Hinterkopf':t>=225&&t<=315?'Vorderkopf':'Seite'}
+};
+const LAB_NOTE={
+  side:'Im Profil siehst du den Winkel am besten. Hier misst du ihn.',
+  back:'Von hinten siehst du den Winkel an den Seiten: Die Strähne wird zur Seite hin angehoben. In der Mitte hinten wird sie zu dir hin angehoben, das sieht man von hinten kaum.',
+  front:'Von vorne siehst du, wie die Strähnen an den Seiten und über den Ohren angehoben werden. So kontrollierst du, ob beide Seiten gleich sind.',
+  top:'Von oben siehst du nur die Richtung, nicht den Winkel. Je weiter die Strähne absteht, desto länger der Pfeil: 0° und 180° erscheinen als Punkt, 90° steht am weitesten ab.'
+};
+const FRONT_PATH='M105,170 A90,100 0 0,1 285,170 C286,215 276,262 242,290 Q195,318 148,290 C114,262 104,215 105,170 Z';
+const FRONT_HL='M105,205 C109,170 116,140 140,122 Q195,104 250,122 C274,140 281,170 285,205';
+function frontHead(g){
+  S('path',{d:'M160,300 L158,345 M230,300 L232,345',fill:'none',stroke:'var(--head-line)','stroke-width':2},g);
+  S('ellipse',{cx:101,cy:205,rx:9,ry:22,class:'head-fill'},g);S('ellipse',{cx:289,cy:205,rx:9,ry:22,class:'head-fill'},g);
+  S('path',{d:FRONT_PATH,class:'head-fill'},g);S('path',{d:FRONT_HL,class:'hairline'},g);
+  S('path',{d:'M160,190 q10,-6 20,0 M210,190 q10,-6 20,0 M195,200 L189,236 Q195,241 201,236 M180,264 Q195,272 210,264',fill:'none',stroke:'var(--head-line)','stroke-width':1.6,'stroke-linecap':'round'},g);
+}
+const EP=t=>({x:BC.x+BRX*Math.cos(rad(t)),y:BC.y+BRY*Math.sin(rad(t))});
+const EN=t=>norm({x:Math.cos(rad(t))/BRX,y:Math.sin(rad(t))/BRY});
 function drawLab(){
   const svg=$('#labSvg');svg.innerHTML='';defs(svg,'lab',SIDE_PATH+' Z');
-  const {th,pos,ref}=lab;
-  VIEWS.side.head(svg);const hair=S('g',null,svg);
-  drawFall(hair,(ref==='head'&&th===90)?lengthFn(90,'head'):lengthFn(th,'floor'),'hair-soft');
-  const g=S('g',null,svg);
-  let O,d,refDir,path;
-  if(ref==='floor'){
-    d=dirFloor(th);refDir={x:0,y:1};const l=leave(pos,d);O=P(l.a);const s=P(pos);
-    path='M'+f(s.x)+','+f(s.y)+(l.arc>0?' A'+R+','+R+' 0 0,'+(l.a<pos?0:1)+' '+f(O.x)+','+f(O.y):'');
-  } else {d=dirHead(pos,th);refDir=tanNape(pos);O=P(pos);path='M'+f(O.x)+','+f(O.y);}
-  const E=add(O,d,92);path+=' L'+f(E.x)+','+f(E.y);
-  const rl=add(O,refDir,62);line(g,O,rl,'ref-line');
-  T(ref==='floor'?'natürlicher Fall':'Kopfrundung',{x:f(rl.x+(refDir.x<0?-4:4)),y:f(rl.y+12),'text-anchor':refDir.x<-.3?'end':'middle',class:'lbl-m'},g);
-  S('path',{d:path,class:'ang-line','stroke-width':3.2,'stroke-linecap':'round'},g);
-  const pp={x:-d.y,y:d.x};
-  line(g,add(add(O,d,82),pp,-26),add(add(O,d,82),pp,26),'finger');
-  line(g,add(add(O,d,92),pp,-30),add(add(O,d,92),pp,30),'cut-line');
-  angleArc(g,O,refDir,d,th,28);
-  dotAt(g,P(pos),4.5);
-  $('#angleOut').textContent=th+'°';$('#posOut').textContent=zoneName(pos);
-  const v=verdict(th,ref);$('#labTitle').textContent=v[0];$('#labText').textContent=v[1];
+  const {th,pos,ref,view}=lab,g0=S('g',null,svg);
+  let O,d,refDir,path,root;
+  if(view==='side'){
+    VIEWS.side.head(g0);
+    drawFall(S('g',null,svg),(ref==='head'&&th===90)?lengthFn(90,'head'):lengthFn(th,'floor'),'hair-soft');
+    root=P(pos);
+    if(ref==='floor'){d=dirFloor(th);refDir={x:0,y:1};const l=leave(pos,d);O=P(l.a);path='M'+f(root.x)+','+f(root.y)+(l.arc>0?' A'+R+','+R+' 0 0,'+(l.a<pos?0:1)+' '+f(O.x)+','+f(O.y):'');}
+    else{d=dirHead(pos,th);refDir=tanNape(pos);O=root;path='M'+f(O.x)+','+f(O.y);}
+  } else if(view==='back'||view==='front'){
+    if(view==='back')VIEWS.back.head(g0);else frontHead(g0);
+    const t=pos,n=EN(t),hx=Math.cos(rad(t))>=-1e-6?1:-1;root=EP(t);
+    if(ref==='floor'){
+      refDir={x:0,y:1};d={x:hx*Math.sin(rad(th)),y:Math.cos(rad(th))};
+      let u=t;const st=hx>0?1:-1;path='M'+f(root.x)+','+f(root.y);
+      for(let i=0;i<200&&dot(EN(u),d)<-1e-6;i++){u+=st;const q=EP(u);path+=' L'+f(q.x)+','+f(q.y);}
+      O=EP(u);
+    } else {
+      let tg=norm({x:-BRX*Math.sin(rad(t)),y:BRY*Math.cos(rad(t))});if(tg.y<0||(Math.abs(tg.y)<1e-3&&tg.x*hx<0))tg={x:-tg.x,y:-tg.y};
+      refDir=tg;d=norm({x:tg.x*Math.cos(rad(th))+n.x*Math.sin(rad(th)),y:tg.y*Math.cos(rad(th))+n.y*Math.sin(rad(th))});O=root;path='M'+f(O.x)+','+f(O.y);
+    }
+  } else {
+    VIEWS.top.head(g0);
+    const t=pos,n=nrm(t);root=TP(t);const g=S('g',null,svg),len=92*Math.abs(Math.sin(rad(th)));
+    if(len<6){S('circle',{cx:f(root.x),cy:f(root.y),r:9,fill:'var(--surface)',stroke:'var(--angle)','stroke-width':2.2},g);S('circle',{cx:f(root.x),cy:f(root.y),r:2.6,fill:'var(--angle)'},g);
+      const lp=add(root,n,24);T(th<90?'fällt senkrecht nach unten':'steht senkrecht nach oben',{x:f(lp.x),y:f(lp.y+4),'text-anchor':n.x<-.3?'end':n.x>.3?'start':'middle',class:'lbl-a'},g);}
+    else{const E=add(root,n,len);S('path',{d:'M'+f(root.x)+','+f(root.y)+' L'+f(E.x)+','+f(E.y),class:'ang-line','stroke-width':3.2,'stroke-linecap':'round','marker-end':'url(#labA)'},g);
+      const lp=add(E,n,16);T(th+'°',{x:f(lp.x),y:f(lp.y+4),'text-anchor':n.x<-.3?'end':n.x>.3?'start':'middle',class:'lbl-a'},g);
+      const full=add(root,n,92);S('path',{d:'M'+f(root.x)+','+f(root.y)+' L'+f(full.x)+','+f(full.y),class:'ref-line'},g);
+      if(Math.abs(th-90)>4)T('90°',{x:f(full.x+n.x*12),y:f(full.y+n.y*12+4),'text-anchor':'middle',class:'lbl-m'},g);}
+    dotAt(g,root,4.5);
+  }
+  if(view!=='top'){
+    const g=S('g',null,svg),E=add(O,d,92);path+=' L'+f(E.x)+','+f(E.y);
+    const rl=add(O,refDir,62);line(g,O,rl,'ref-line');
+    T(ref==='floor'?'natürlicher Fall':'Kopfrundung',{x:f(rl.x+(refDir.x<0?-4:4)),y:f(rl.y+12),'text-anchor':refDir.x<-.3?'end':refDir.x>.3?'start':'middle',class:'lbl-m'},g);
+    S('path',{d:path,class:'ang-line','stroke-width':3.2,'stroke-linecap':'round','stroke-linejoin':'round',fill:'none'},g);
+    const pp={x:-d.y,y:d.x};
+    line(g,add(add(O,d,82),pp,-26),add(add(O,d,82),pp,26),'finger');
+    line(g,add(add(O,d,92),pp,-30),add(add(O,d,92),pp,30),'cut-line');
+    angleArc(g,O,refDir,d,th,28);dotAt(g,root,4.5);
+  }
+  $('#angleOut').textContent=th+'°';$('#posOut').textContent=LABV[view].zone(pos);
+  const v=verdict(th,ref);$('#labTitle').textContent=v[0];$('#labText').textContent=v[1];$('#labViewNote').textContent=LAB_NOTE[view];
   $('#refFloor').setAttribute('aria-pressed',ref==='floor');$('#refHead').setAttribute('aria-pressed',ref==='head');
+  $('#labPreviewNote').hidden=view!=='side';
 }
 $('#angle').oninput=e=>{lab.th=+e.target.value;drawLab();};
 $('#pos').oninput=e=>{lab.pos=+e.target.value;drawLab();};
 $('#refFloor').onclick=()=>{lab.ref='floor';drawLab();};
 $('#refHead').onclick=()=>{lab.ref='head';drawLab();};
+$$('[data-lview]').forEach(b=>b.onclick=()=>{lab.view=b.dataset.lview;$$('[data-lview]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  const c=LABV[lab.view],inp=$('#pos');inp.min=c.min;inp.max=c.max;inp.value=c.val;lab.pos=c.val;drawLab();});
 $$('[data-preset]').forEach(b=>b.onclick=()=>{const [t,r]=b.dataset.preset.split(',');lab.th=+t;lab.ref=r;$('#angle').value=t;drawLab();});
 drawLab();
 
 /* ================= 3 · Schnittzeichnung ================= */
-const STEP_TITLES=['Kopfform zeichnen','Referenzpunkte setzen','Kopfzonen einteilen','Abteilungen einzeichnen','Erhebungswinkel eintragen','Leitsträhne & Schnittlinie','Ergebnis im natürlichen Fall'];
+const STEP_TITLES=['Kopfform zeichnen','Referenzpunkte setzen','Kopfzonen einteilen','Abteilungen einzeichnen','Erhebungswinkel eintragen','Leitsträhne & Schnittlinie'];
 const GENERIC={
   side:['Zeichne den Kopf im Profil, das Gesicht schaut nach rechts. Der Schädel ist fast ein Kreis, das Ohr sitzt etwa in der Mitte. Der Hals setzt hinten unter dem Hinterkopf an. Die leicht braune Fläche ist der Haarwuchsbereich.',
     'Markiere die Punkte, an denen du dich orientierst: Stirnhaaransatz, Oberkopf (höchster Punkt), Wirbel, Hinterhauptbein (stärkste Wölbung hinten), Nackenhaaransatz und Ohr.',
@@ -718,14 +707,14 @@ function renderSteps(fresh){
   $('#stepList').innerHTML='';
   STEP_TITLES.forEach((t,j)=>{const li=document.createElement('li'),b=document.createElement('button');b.textContent=t;if(j<i)b.className='done';if(j===i)b.setAttribute('aria-current','step');b.onclick=()=>{sk.step=j;renderSteps(j);};li.appendChild(b);$('#stepList').appendChild(li);});
   let h,p;
-  if(i<3){h=STEP_TITLES[i];p=GENERIC[sk.view][i];}else{const x=[sp.sections,sp.angles,sp.guide,sp.result][i-3];h=x[0];p=x[1];}
-  $('#stepText').innerHTML='<span class="tag">Schritt '+(i+1)+' von 7 · '+FORMS[sk.form].name+' · '+VIEW_NAMES[sk.view]+'</span><h3>'+h+'</h3><p style="font-size:14px">'+p+'</p>'+(i>=3?'<p class="note">'+VIEW_NOTE[sk.view]+'</p>':'');
-  $('#prevStep').disabled=i===0;$('#nextStep').textContent=i===6?'Von vorn':'Nächster Schritt';
+  if(i<3){h=STEP_TITLES[i];p=GENERIC[sk.view][i];}else{const x=[sp.sections,sp.angles,sp.guide][i-3];h=x[0];p=x[1];}
+  $('#stepText').innerHTML='<span class="tag">Schritt '+(i+1)+' von 6 · '+FORMS[sk.form].name+' · '+VIEW_NAMES[sk.view]+'</span><h3>'+h+'</h3><p style="font-size:14px">'+p+'</p>'+(i>=3?'<p class="note">'+VIEW_NOTE[sk.view]+'</p>':'');
+  $('#prevStep').disabled=i===0;$('#nextStep').textContent=i===5?'Von vorn':'Nächster Schritt';
 }
 buildChips($('#sketchChips'),k=>{sk.form=k;refreshChips($('#sketchChips'),k);renderSteps(sk.step);},()=>sk.form);
 $$('[data-sview]').forEach(b=>b.onclick=()=>{sk.view=b.dataset.sview;$$('[data-sview]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderSteps(-1);});
 $('#prevStep').onclick=()=>{if(sk.step>0){sk.step--;renderSteps(-1);}};
-$('#nextStep').onclick=()=>{sk.step=sk.step===6?0:sk.step+1;renderSteps(sk.step);};
+$('#nextStep').onclick=()=>{sk.step=sk.step===5?0:sk.step+1;renderSteps(sk.step);};
 renderSteps(-1);
 
 /* ================= 4 · Übungsblatt ================= */
@@ -769,7 +758,7 @@ function renderBuild(){
     if(v&&open){ok=buildOk(b,k,v);const p=document.createElement('p');p.className='fb '+(ok?'ok':'no');p.textContent=ok?'Richtig!':'Noch nicht. Tipp: '+b.tip[k];grp.appendChild(p);}
     open=open&&ok;box.appendChild(grp);
   });
-  if(buildDone(k)){const d=document.createElement('div');d.className='bdone';d.innerHTML='<strong>Geschafft!</strong><span>Die Zeichnung für die '+FORMS[k].name+' ist komplett. Links siehst du das fertige Haar. Probier auch die anderen Ansichten.</span>';
+  if(buildDone(k)){const d=document.createElement('div');d.className='bdone';d.innerHTML='<strong>Geschafft!</strong><span>Die Zeichnung für die '+FORMS[k].name+' ist komplett. Probier auch die Ansichten von hinten und von oben.</span>';
     const again=document.createElement('button');again.className='btn ghost';again.textContent='Nochmal üben';again.onclick=()=>{build={};buildFresh=-1;renderBuild();drawPadSvg();};d.appendChild(again);box.appendChild(d);}
 }
 function drawPadSvg(){
@@ -777,8 +766,7 @@ function drawPadSvg(){
   if(padMode==='build'){
     const layers=[0,1,2],forms={};
     BUILD.forEach(b=>{if(build[b.key]){layers.push(b.layer);forms[b.layer]=build[b.key];}});
-    const done=buildDone(k);if(done)layers.push(6);
-    drawSketch(svg,k,padView,layers,{forms,fresh:done&&buildFresh===5?6:buildFresh,fade:done?[1,2]:[]});
+    drawSketch(svg,k,padView,layers,{forms,fresh:buildFresh});
   } else {
     const layers=[0],fade=[];
     if($('#showLines').checked)layers.push(1,2);
