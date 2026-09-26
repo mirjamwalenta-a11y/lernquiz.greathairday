@@ -585,17 +585,14 @@ const REFD={
       T('45°',{x:52,y:318,class:'lbl-a'},g);
       [158,172,186,200,214].forEach(a=>{const p=P(a);thin(g,p,{x:36,y:p.y},id);});
       T('90°',{x:-2,y:112,class:'lbl-a'},g);
-      const topY=x=>24-(x-100)*0.1;
-      [234,249,264,279,294,309].forEach(a=>{const p=P(a);thin(g,p,{x:p.x,y:topY(p.x)+3},id);});
-      T('180°',{x:292,y:28,class:'lbl-a'},g);
       const cy=x=>300+(x-150)*0.24;
-      for(let x=160;x<=284;x+=12)thin(g,{x,y:150},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.75});
-      T('0° · Seiten',{x:300,y:250,class:'lbl-a'},g);
+      for(let x=152;x<=284;x+=12){const q=R*R-(x-C.x)*(x-C.x),y0=q>0?C.y-Math.sqrt(q)+4:150;thin(g,{x,y:Math.min(y0,150)},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.75});}
+      T('0° · Oberkopf',{x:300,y:250,class:'lbl-a'},g);T('und Seiten',{x:300,y:266,class:'lbl-a'},g);
     },
     guide(g){
       const d45=dirFloor(45),n=P(116),G=add(n,d45,40),pp={x:-d45.y,y:d45.x};
       line(g,n,G,'guide-line');line(g,add(G,pp,-26),add(G,pp,50),'cut-line');
-      line(g,{x:36,y:118},{x:36,y:236},'cut-line');line(g,{x:100,y:24},{x:300,y:4},'cut-line');
+      line(g,{x:36,y:118},{x:36,y:236},'cut-line');
       line(g,{x:150,y:300},{x:292,y:334},'cut-line');
       T('Leitsträhne Nacken',{x:96,y:340,'text-anchor':'end',class:'lbl-g'},g);T('Kontur vorne länger',{x:296,y:352,'text-anchor':'middle',class:'lbl-g'},g);
     }
@@ -925,7 +922,7 @@ const SPEC={
     result:['Kontur = Gewichtslinie','Alle Enden treffen sich auf einer Linie. Das Gewicht sitzt voll an der Kontur, die Oberfläche ist glatt und unaktiviert.']},
   graduiert:{
     sections:['Horizontal, Pivot im Nacken','Am Hinterkopf horizontale Abteilungen, im Nacken strahlen die Abteilungen von einem Punkt am Hinterhauptbein aus (Pivot). Oben wird vertikal abgeteilt.'],
-    angles:['45° · 90° · nach oben','Im Nacken 45°, am Hinterkopf 90° waagrecht, am Oberkopf senkrecht nach oben. Die Seiten bleiben im natürlichen Fall. Von hinten werden die oberen Partien zur Mitte verschoben.'],
+    angles:['45° im Nacken · 90° am Hinterkopf','Graduierung geht höchstens bis 90°: im Nacken 45°, am Hinterkopf 90° waagrecht. Oberkopf und Seiten bleiben im natürlichen Fall (0°). Von hinten werden die oberen Partien zur Mitte verschoben.'],
     guide:['Stationäre Leitsträhne im Nacken','Die Nackenlänge wird in der Mitte festgelegt. Die Kontur wird zu den Seiten und nach vorne länger (A-Linie).'],
     result:['Gewichtslinie über der Kontur','Die Enden stufen sich im Nacken übereinander, darüber liegt die Gewichtslinie. Unten aktiviert, oben glatt.']},
   gleich:{
@@ -970,7 +967,7 @@ const BUILD=[
    tip:{kompakt:'Die Enden sollen auf einer waagrechten Linie liegen.',graduiert:'Im Nacken strahlen die Abteilungen von einem Punkt aus.',gleich:'Jede Strähne soll sich senkrecht zur Kopfrundung halten lassen.',zunehmend:'Oben folgen die Abteilungen der Kopfkurve.'}},
   {key:'angles',layer:4,title:'2 · Welcher Erhebungswinkel?',
    opts:[['kompakt','0°'],['graduiert','Nacken 45°, Hinterkopf 90°'],['gleich','90° zur Kopfrundung'],['zunehmend','Oberkopf nach oben, Seiten 0°']],
-   tip:{kompakt:'Bei dieser Form wird nichts angehoben.',graduiert:'Von unten nach oben wird der Winkel immer größer.',gleich:'Der Winkel wird hier zur Kopfrundung gemessen.',zunehmend:'Die Strähnen werden ganz nach oben geführt.'}},
+   tip:{kompakt:'Bei dieser Form wird nichts angehoben.',graduiert:'Von unten nach oben wird der Winkel größer, aber nie über 90°.',gleich:'Der Winkel wird hier zur Kopfrundung gemessen.',zunehmend:'Die Strähnen werden ganz nach oben geführt.'}},
   {key:'guide',layer:5,title:'3 · Welche Leitsträhne und Schnittlinie?',
    opts:[['kompakt','stationär im Nacken, waagrecht'],['graduiert','stationär im Nacken, Kontur vorne länger'],['gleich','wandernd, parallel zum Kopf'],['zunehmend','stationär am Oberkopf']],
    tip:{kompakt:'Die Länge wird im Nacken festgelegt, das Haar bleibt im natürlichen Fall.',graduiert:'Die Länge wird im Nacken festgelegt, aber angehoben geschnitten.',gleich:'Jede Abteilung übernimmt die Länge der vorherigen.',zunehmend:'Alles wird zu einem Punkt ganz oben geführt.'}}
