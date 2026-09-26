@@ -188,7 +188,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
       <button data-fview="top" aria-pressed="false">Von oben</button>
     </div>
     <div class="grid2">
-      <div class="svgbox"><svg id="formSvg" viewBox="-40 30 470 400" role="img" aria-label="Schnittzeichnung der gewählten Grundform"></svg></div>
+      <div class="svgbox"><svg id="formSvg" viewBox="-60 -10 510 450" role="img" aria-label="Schnittzeichnung der gewählten Grundform"></svg></div>
       <article class="panel" id="formInfo" aria-live="polite"></article>
     </div>
   </section>
@@ -200,7 +200,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
       <p class="muted">Der Erhebungswinkel sagt, wie weit eine Strähne aus ihrem natürlichen Fall angehoben wird. Stell den Winkel ein und schau, welche Form im natürlichen Fall daraus entsteht.</p>
     </header>
     <div class="grid2">
-      <div class="svgbox"><svg id="labSvg" viewBox="-40 30 470 400" role="img" aria-label="Kopfprofil mit angehobener Strähne und Ergebnis-Vorschau"></svg></div>
+      <div class="svgbox"><svg id="labSvg" viewBox="-60 -50 510 480" role="img" aria-label="Kopfprofil mit angehobener Strähne und Ergebnis-Vorschau"></svg></div>
       <div class="panel lab-controls">
         <div class="seg" role="group" aria-label="Ansicht im Winkel-Labor">
           <button data-lview="side" aria-pressed="true">Profil</button>
@@ -284,7 +284,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     </div>
     <div class="grid2">
       <div class="svgbox">
-        <svg id="sketchSvg" viewBox="-40 30 470 400" role="img" aria-label="Schnittzeichnung"></svg>
+        <svg id="sketchSvg" viewBox="-60 -10 510 450" role="img" aria-label="Schnittzeichnung"></svg>
         <div class="legend">
           <span><i style="border-color:var(--head-line)"></i>Kopfform</span>
           <span><i style="border-color:var(--section)"></i>Abteilung</span>
@@ -313,7 +313,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
     </header>
     <div class="grid2">
       <div class="pad-wrap" id="padWrap">
-        <svg id="padSvg" viewBox="-40 30 470 400" aria-hidden="true"></svg>
+        <svg id="padSvg" viewBox="-60 -10 510 450" aria-hidden="true"></svg>
         <canvas id="pad" aria-label="Zeichenfläche" hidden></canvas>
       </div>
       <div class="panel">
@@ -494,7 +494,11 @@ const VIEWS={
   },
   angles(g,k,id){const F=FORMS[k];
     if(k==='kompakt'){for(let x=100;x<=260;x+=32){const y=C.y-Math.sqrt(R*R-(x-C.x)*(x-C.x));line(g,{x,y},{x,y:296},'ang-line',{'stroke-width':1.6,'marker-end':'url(#'+id+'A)'});}line(g,{x:84,y:300},{x:276,y:300},'ang-line',{'stroke-width':1.6});T('0° · natürlicher Fall',{x:-30,y:250,class:'lbl-a'},g);return;}
-    const pts={graduiert:[122,150,180,215,250],gleich:[125,150,180,212,245,280],zunehmend:[185,205,228,250,272]}[k];
+    if(k==='gleich'){[120,143,166,189,212,235,258,281,304,326].forEach((a,i)=>{arrow(g,P(a),nrm(a),37,id+'A');if(i===3){line(g,P(a),add(P(a),tanNape(a),34),'ref-line');angleArc(g,P(a),tanNape(a),nrm(a),90,18);}});
+      T('alle Strähnen gleich lang',{x:-30,y:330,class:'lbl-a'},g);return;}
+    if(k==='zunehmend'){const G={x:190,y:66};[118,140,162,184,206,228,250].forEach((a,i)=>{const p=P(a);line(g,p,G,'ang-line',{'stroke-width':1.8,'marker-end':'url(#'+id+'A)'});if(i===3){line(g,p,add(p,{x:0,y:1},30),'ref-line');angleArc(g,p,{x:0,y:1},norm({x:G.x-p.x,y:G.y-p.y}),180,16);}});
+      T('außen lang',{x:-50,y:250,class:'lbl-a'},g);T('innen kurz',{x:252,y:84,class:'lbl-a'},g);return;}
+    const pts={graduiert:[122,150,180,215,250]}[k];
     pts.forEach((a,i)=>{let O,d;
       if(F.ref==='head'){O=P(a);d=nrm(a);}else{d=dirFloor(F.theta);O=P(leave(a,d).a);}
       arrow(g,O,d,k==='zunehmend'?30:36,id+'A');
@@ -503,7 +507,7 @@ const VIEWS={
   guide(g,k){
     if(k==='kompakt'){const n=P(NAPE);line(g,n,{x:n.x,y:302},'guide-line');line(g,{x:40,y:302},{x:300,y:302},'cut-line');T('Schnittlinie waagrecht',{x:300,y:318,'text-anchor':'end',class:'lbl-g'},g);T('Leitsträhne',{x:f(n.x-8),y:292,'text-anchor':'end',class:'lbl-g'},g);}
     else if(k==='graduiert'){const d=dirFloor(45),n=P(NAPE),G=add(n,d,34),pp={x:-d.y,y:d.x};line(g,n,G,'guide-line');const a1=add(G,pp,-150),a2=add(G,pp,60);line(g,a1,a2,'cut-line');T('Leitsträhne 45°',{x:f(G.x+8),y:f(G.y+22),class:'lbl-g'},g);T('Schnittlinie',{x:f(a1.x+6),y:f(a1.y+4),class:'lbl-g'},g);}
-    else if(k==='gleich'){const r=R+40,s=P(118,r),e=P(330,r);S('path',{d:'M'+f(s.x)+','+f(s.y)+' A'+r+','+r+' 0 1,1 '+f(e.x)+','+f(e.y),class:'cut-line'},g);[150,215,280].forEach(a=>line(g,P(a),P(a,R+40),'guide-line',{'stroke-width':3,opacity:.8}));const l=P(205,R+48);T('wandernde Leitsträhne',{x:f(l.x),y:f(l.y),'text-anchor':'end',class:'lbl-g'},g);}
+    else if(k==='gleich'){const r=R+40,s=P(118,r),e=P(330,r);S('path',{d:'M'+f(s.x)+','+f(s.y)+' A'+r+','+r+' 0 1,1 '+f(e.x)+','+f(e.y),class:'cut-line'},g);[150,215,280].forEach(a=>line(g,P(a),P(a,R+40),'guide-line',{'stroke-width':3,opacity:.8}));T('wandernde Leitsträhne',{x:-55,y:40,class:'lbl-g'},g);}
     else{const t=P(TOP);line(g,t,{x:t.x,y:t.y-14},'guide-line');line(g,{x:40,y:t.y-14},{x:320,y:t.y-14},'cut-line');T('stationäre Leitsträhne',{x:f(t.x+10),y:f(t.y-22),class:'lbl-g'},g);}
   },
  },
@@ -596,7 +600,7 @@ function renderInfo(){
 }
 function renderForm(){
   const svg=$('#formSvg');drawSketch(svg,current,fview,[0,3,4,5]);
-  T(FORMS[current].angle,{x:-28,y:62,class:'lbl-a','font-size':22},svg);
+  T(FORMS[current].angle,{x:-50,y:18,class:'lbl-a','font-size':22},svg);
 }
 function pickForm(k){current=k;refreshChips($('#formChips'),k);renderInfo();renderForm();}
 buildChips($('#formChips'),pickForm,()=>current);renderInfo();renderForm();
@@ -606,6 +610,7 @@ $$('[data-fview]').forEach(b=>b.onclick=()=>{fview=b.dataset.fview;$$('[data-fvi
 const lab={th:45,pos:185,ref:'floor',view:'side',tilt:0};
 function zoneName(a){if(a<150)return 'Nacken';if(a<205)return 'Hinterkopf';if(a<245)return 'Wirbel / Krone';if(a<285)return 'Oberkopf';return 'Vorderkopf';}
 function verdict(th,ref){
+  if(ref==='head'&&th>90)return ['Zunehmend stufig','Über 90° misst man zum Boden: Die Strähne wird Richtung Oberkopf geführt, bei 180° senkrecht nach oben. Innen kurz, außen lang.'];
   if(ref==='head'){
     if(th===90)return ['Gleichmäßig stufig','90° zur Kopfrundung mit wandernder Leitsträhne: jede Strähne wird gleich lang, die Form folgt der Kopfrundung.'];
     return ['Winkel zur Kopfrundung','Zur Kopfrundung gemessen ist vor allem 90° wichtig (gleichmäßig stufig). Für kompakte und graduierte Formen misst man meist zum Boden.'];
@@ -655,7 +660,7 @@ function tiltNote(view,t){
 }
 function drawLab(){
   const svg=$('#labSvg');svg.innerHTML='';defs(svg,'lab',SIDE_PATH+' Z');
-  const {th,pos,ref,view}=lab,tilt=view==='top'?0:lab.tilt,pv=PIV[view];
+  const {th,pos,ref,view}=lab,tilt=view==='top'?0:lab.tilt,pv=PIV[view],useFloor=ref==='floor'||th>90;
   const hg=S('g',tilt?{transform:'rotate('+tilt+' '+pv.x+' '+pv.y+')'}:null,svg);
   const W=p=>tilt?rotP(p,tilt,pv):p, WV=v=>tilt?rotV(v,tilt):v;
   let O,d,refDir,root;
@@ -663,7 +668,7 @@ function drawLab(){
     VIEWS.side.head(hg);
     if(!tilt)drawFall(S('g',null,svg),(ref==='head'&&th===90)?lengthFn(90,'head'):lengthFn(th,'floor'),'hair-soft');
     root=W(P(pos));
-    if(ref==='floor'){d=dirFloor(th);refDir={x:0,y:1};const dL=rotV(d,-tilt),l=leave(pos,dL);
+    if(useFloor){d=dirFloor(th);refDir={x:0,y:1};const dL=rotV(d,-tilt),l=leave(pos,dL);
       if(l.arc>0){const a=P(pos),b=P(l.a);S('path',{d:'M'+f(a.x)+','+f(a.y)+' A'+R+','+R+' 0 0,'+(l.a<pos?0:1)+' '+f(b.x)+','+f(b.y),class:'ang-line','stroke-width':3.2,'stroke-linecap':'round'},hg);}
       O=W(P(l.a));}
     else{d=WV(dirHead(pos,th));refDir=WV(tanNape(pos));O=root;}
@@ -676,7 +681,7 @@ function drawLab(){
   } else if(view==='back'||view==='front'){
     if(view==='back')VIEWS.back.head(hg);else frontHead(hg);
     const t=pos,hx=Math.cos(rad(t))>=-1e-6?1:-1;root=W(EP(t));
-    if(ref==='floor'){
+    if(useFloor){
       refDir={x:0,y:1};d={x:hx*Math.sin(rad(th)),y:Math.cos(rad(th))};
       const dL=rotV(d,-tilt);let u=t;const st=hx>0?1:-1;let pl='M'+f(EP(t).x)+','+f(EP(t).y);
       for(let i=0;i<200&&dot(EN(u),dL)<-1e-6;i++){u+=st;const q=EP(u);pl+=' L'+f(q.x)+','+f(q.y);}
@@ -700,7 +705,7 @@ function drawLab(){
   if(view!=='top'){
     const g=S('g',null,svg),E=add(O,d,92);
     const rl=add(O,refDir,62);line(g,O,rl,'ref-line');
-    T(ref==='floor'?'natürlicher Fall':'Kopfrundung',{x:f(rl.x+(refDir.x<0?-4:4)),y:f(rl.y+12),'text-anchor':refDir.x<-.3?'end':refDir.x>.3?'start':'middle',class:'lbl-m'},g);
+    T(useFloor?'natürlicher Fall':'Kopfrundung',{x:f(rl.x+(refDir.x<0?-4:4)),y:f(rl.y+12),'text-anchor':refDir.x<-.3?'end':refDir.x>.3?'start':'middle',class:'lbl-m'},g);
     line(g,O,E,'ang-line',{'stroke-width':3.2,'stroke-linecap':'round'});
     const pp={x:-d.y,y:d.x};
     line(g,add(add(O,d,82),pp,-26),add(add(O,d,82),pp,26),'finger');
@@ -892,7 +897,7 @@ const BUILD=[
    tip:{kompakt:'Die Länge wird im Nacken festgelegt, das Haar bleibt im natürlichen Fall.',graduiert:'Die Länge wird im Nacken festgelegt, aber angehoben geschnitten.',gleich:'Jede Abteilung übernimmt die Länge der vorherigen.',zunehmend:'Alles wird zu einem Punkt ganz oben geführt.'}}
 ];
 const REFPTS={side:[P(336),P(270),P(225),P(170),P(NAPE)],back:[{x:195,y:70},{x:195,y:112},{x:195,y:205},{x:195,y:272}],top:[{x:195,y:122},{x:195,y:168},TPIV,{x:195,y:294}]};
-const pad=$('#pad'),pctx=pad.getContext('2d'),VB={x:-40,y:30,w:470,h:400};
+const pad=$('#pad'),pctx=pad.getContext('2d'),VB={x:-60,y:-10,w:510,h:450};
 let padMode='build',tool='section',padView='side',store={side:[],back:[],top:[]},curStroke=null,build={},buildFresh=-1;
 try{const s=JSON.parse(localStorage.getItem('schnittwerkstatt-pad-v3')||'null');if(s&&typeof s==='object')store=Object.assign(store,s);}catch(e){}
 const strokes=()=>store[padView];
