@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c1917">
+<title>Werkzeugkunde · A Great Hair Day</title>
+<style>
+:root{
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#1C1C1A; --muted:#7A7A70; --line:#E2DDD5;
+  --accent:#5B7B6F; --accent-soft:#EAF0EE; --accent-ink:#FFFFFF; --warn:#B8336A; --warn-soft:#FBEFF4;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+h1,h2,h3{line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:600}
+h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:600}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0;max-width:65ch}
+.tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+header.top{padding-block:20px 18px;display:grid;gap:8px}
+.back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+header.top p{color:var(--muted)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(247,245,240,.93);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.tabs a{flex:none;color:var(--ink);text-decoration:none;font-weight:600;font-size:13px;padding:7px 11px;border-radius:6px}
+nav.tabs a:hover{background:var(--accent-soft);color:var(--accent)}
+section.block{padding-block:36px 4px;display:grid;gap:16px;scroll-margin-top:56px}
+section.block > header{display:grid;gap:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid #C8C4BC;background:transparent;color:var(--muted);font:600 13px system-ui;padding:8px 13px;border-radius:6px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tool{appearance:none;hyphens:auto;overflow-wrap:anywhere;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:10px 8px 12px;display:grid;justify-items:center;gap:6px;cursor:pointer;font:600 13px system-ui;color:var(--ink);text-align:center}
+.tool:hover{border-color:var(--accent)}
+.tool[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tool svg{width:64px;height:64px}
+.ico{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ico .acc{stroke:var(--accent)}
+.ico .fillacc{fill:var(--accent-soft);stroke:var(--accent)}
+.detail-head{display:flex;gap:14px;align-items:center}
+.detail-head svg{width:84px;height:84px;flex:none;background:var(--accent-soft);border-radius:10px;padding:6px}
+dl.facts{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font-size:14px}
+dl.facts dt{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
+dl.facts dd{margin:0}
+dd.safe{color:var(--warn)}
+.tip{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px}
+.svgbox{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.svgbox svg{display:block;width:100%;height:auto}
+.part{cursor:pointer}
+.part circle{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+.part text{font:700 13px system-ui;fill:var(--accent);text-anchor:middle;dominant-baseline:central}
+.part.on circle{fill:var(--accent)}
+.part.on text{fill:#fff}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.plist button{appearance:none;width:100%;text-align:left;border:1px solid transparent;background:none;font:600 14px system-ui;color:var(--ink);padding:7px 10px;border-radius:6px;cursor:pointer;display:flex;gap:10px;align-items:center}
+.plist button span{width:1.8em;height:1.8em;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-size:12px;flex:none}
+.plist button[aria-current="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.plist button[aria-current="true"] span{background:var(--accent);color:#fff}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.checks label{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+.checks input{accent-color:var(--accent);width:18px;height:18px;margin-top:2px;flex:none}
+.checks label.done{color:var(--muted);text-decoration:line-through}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 14px system-ui;padding:10px 16px;border-radius:6px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.game-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:600px){.game-opts{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.game-opts .tool:disabled{cursor:default}
+.tool.right{border-color:var(--accent);background:var(--accent-soft)}
+.tool.wrong{border-color:#C44030;background:#FDECEA}
+.scen{font-size:17px;font-weight:600}
+.fb{margin:0;font-size:14px}
+.fb.ok{color:var(--accent);font-weight:600}
+.fb.no{color:#C44030}
+.quiz{display:grid;gap:12px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:10px}
+.q h3{font-size:15px}
+.q .opts{display:grid;gap:6px}
+.q button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:14px system-ui;padding:10px 13px;border-radius:8px;cursor:pointer}
+.q button:hover:not(:disabled){border-color:var(--accent)}
+.q button:disabled{cursor:default}
+.q button.right{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.q button.wrong{border-color:#C44030;background:#FDECEA;color:#C44030}
+.q .why{font-size:13px;color:var(--muted)}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score .num{font:600 1.5rem var(--mono);color:var(--accent)}
+footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="back-link" href="lerntool.html">← Zurück zum Lern-Tool</a>
+    <span class="tag">greathairday · Lern-Tool</span>
+    <h1>Werkzeugkunde 🧰</h1>
+    <p>Alle wichtigen Werkzeuge im Salon: wofür du sie brauchst, wie du sie richtig hältst, wie du sie pflegst und worauf du bei Sicherheit und Hygiene achten musst.</p>
+  </header>
+</div>
+
+<nav class="tabs" aria-label="Bereiche">
+  <div class="wrap">
+    <a href="#werkzeuge">Werkzeuge</a>
+    <a href="#schere">Aufbau der Schere</a>
+    <a href="#hygiene">Pflege &amp; Hygiene</a>
+    <a href="#spiel">Welches Werkzeug?</a>
+    <a href="#quiz">Wissens-Check</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="block" id="werkzeuge">
+    <header>
+      <span class="tag">Teil 1</span>
+      <h2>Werkzeuge im Überblick</h2>
+      <p class="muted">Wähle einen Bereich und tippe ein Werkzeug an. Rechts steht alles Wichtige dazu.</p>
+    </header>
+    <div class="chips" role="group" aria-label="Bereich wählen" id="catChips"></div>
+    <div class="grid2">
+      <div class="tools" id="toolGrid"></div>
+      <article class="panel" id="toolInfo" aria-live="polite"></article>
+    </div>
+  </section>
+
+  <section class="block" id="schere">
+    <header>
+      <span class="tag">Teil 2</span>
+      <h2>Aufbau der Schere</h2>
+      <p class="muted">Die Schere ist dein wichtigstes Werkzeug. Tippe auf die Nummern und lerne die Teile und die richtige Haltung kennen.</p>
+    </header>
+    <div class="grid2">
+      <div class="svgbox"><svg id="scissorSvg" viewBox="0 30 530 320" role="img" aria-label="Aufbau einer Haarschneideschere"></svg></div>
+      <div class="panel">
+        <ul class="plist" id="partList"></ul>
+        <div id="partInfo" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="hygiene">
+    <header>
+      <span class="tag">Teil 3</span>
+      <h2>Pflege &amp; Hygiene</h2>
+      <p class="muted">Sauberes Werkzeug schützt die Kundin, dich und dein Werkzeug. Die Reihenfolge ist immer gleich: <strong>reinigen → desinfizieren → trocknen → sauber aufbewahren</strong>. Hake ab, was du erledigt hast.</p>
+    </header>
+    <div class="panel">
+      <div class="bar" aria-hidden="true"><i id="hygBar" style="width:0"></i></div>
+      <p id="hygOut" class="muted" style="font-size:13px"></p>
+      <div class="checks" id="hygChecks"></div>
+      <button class="btn ghost" id="hygReset" style="justify-self:start">Alle Haken entfernen</button>
+    </div>
+  </section>
+
+  <section class="block" id="spiel">
+    <header>
+      <span class="tag">Teil 4</span>
+      <h2>Welches Werkzeug?</h2>
+      <p class="muted">Eine Situation aus dem Salon: Tippe das Werkzeug an, das du dafür nimmst.</p>
+    </header>
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span class="tag" id="gameStep"></span><span class="tag" id="gameScore"></span></div>
+      <p class="scen" id="gameScen"></p>
+      <div class="game-opts" id="gameOpts"></div>
+      <p class="fb" id="gameFb"></p>
+      <button class="btn" id="gameNext" hidden>Nächste Situation</button>
+    </div>
+  </section>
+
+  <section class="block" id="quiz">
+    <header>
+      <span class="tag">Teil 5</span>
+      <h2>Wissens-Check</h2>
+      <p class="muted">Fragen zu Werkzeugen, Pflege und Hygiene. Tipp eine Antwort an, die Erklärung erscheint sofort.</p>
+    </header>
+    <div class="score panel"><span class="num" id="scoreOut">0 / 0</span><span class="muted" id="scoreText">Noch keine Antwort.</span><button class="btn ghost" id="quizReset">Neu starten</button></div>
+    <div class="quiz" id="quizBox"></div>
+  </section>
+
+  <footer>Werkzeugkunde · greathairday Lern-Tool · Herstellerangaben und die Hygieneregeln im Salon gehen immer vor.</footer>
+</main>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+
+/* ---------- Strichzeichnungen (viewBox 0 0 80 80) ---------- */
+const teeth=(x0,x1,y0,y1,st)=>{let d='';for(let x=x0;x<=x1;x+=st)d+='M'+x+' '+y0+' L'+x+' '+y1+' ';return '<path d="'+d+'"/>';};
+const SCIS='<circle cx="16" cy="62" r="8"/><circle cx="32" cy="70" r="7"/><path d="M22 56 L40 44 L74 12"/><path d="M36 64 L44 48 L70 8"/><circle cx="42" cy="46" r="2" class="acc"/><path d="M9 66 L4 72" class="acc"/>';
+const ICON={
+  schere:SCIS,
+  modellier:SCIS+'<path class="acc" d="M50 34 l3 3 M55 29 l3 3 M60 24 l3 3 M65 19 l3 3"/>',
+  messer:'<rect x="6" y="46" width="38" height="11" rx="5"/><path d="M44 48 L74 30 L76 38 L46 55 Z" class="fillacc"/><path d="M50 47 L70 36"/>',
+  kamm:'<rect x="6" y="28" width="68" height="9" rx="2"/>'+teeth(10,38,37,54,4)+teeth(44,70,37,50,3),
+  stielkamm:'<rect x="4" y="30" width="40" height="8" rx="2"/>'+teeth(8,40,38,52,3.2)+'<path d="M44 34 L76 34" class="acc"/>',
+  grobkamm:'<rect x="6" y="24" width="68" height="10" rx="3"/>'+teeth(12,68,34,58,8),
+  rundbuerste:'<rect x="4" y="36" width="30" height="9" rx="4"/><rect x="34" y="30" width="38" height="21" rx="6" class="fillacc"/>'+teeth(38,68,24,30,5)+teeth(38,68,51,57,5),
+  paddle:'<rect x="30" y="16" width="40" height="46" rx="18" class="fillacc"/><path d="M30 44 L6 64"/><path d="M40 28 h20 M38 36 h24 M38 44 h24 M40 52 h20"/>',
+  skelett:'<path d="M28 30 L72 30 L72 50 L28 50 Z"/><path d="M28 40 L6 40"/><circle cx="40" cy="40" r="3" class="acc"/><circle cx="52" cy="40" r="3" class="acc"/><circle cx="64" cy="40" r="3" class="acc"/>'+teeth(34,68,22,30,6),
+  maschine:'<path d="M26 14 h28 l4 10 v42 a8 8 0 0 1 -8 8 h-20 a8 8 0 0 1 -8 -8 v-42 z"/><path d="M26 14 L54 14"/>'+teeth(28,52,8,14,4)+'<circle cx="40" cy="40" r="4" class="acc"/>',
+  trimmer:'<rect x="32" y="16" width="16" height="56" rx="7"/>'+teeth(34,46,10,16,3)+'<path d="M36 34 h8" class="acc"/>',
+  foehn:'<circle cx="30" cy="30" r="18"/><circle cx="30" cy="30" r="7" class="acc"/><path d="M48 24 L72 22 L72 38 L48 36"/><path d="M26 48 L22 74 L34 74 L36 47"/>',
+  diffusor:'<path d="M14 24 Q40 8 66 24 L60 40 Q40 50 20 40 Z" class="fillacc"/><path d="M26 42 v14 M34 45 v16 M42 46 v16 M50 45 v16 M58 42 v14"/><path d="M34 22 L34 6 L46 6 L46 22"/>',
+  glaetteisen:'<path d="M10 64 L66 12"/><path d="M18 68 L72 20"/><path d="M50 26 L64 14 M58 32 L70 22" class="acc"/><circle cx="12" cy="68" r="4"/>',
+  lockenstab:'<rect x="8" y="34" width="26" height="12" rx="5"/><rect x="34" y="36" width="38" height="8" rx="4" class="fillacc"/><path d="M36 32 L68 30"/>',
+  klammer:'<path d="M8 36 L70 30 L72 36 L10 44 Z"/><path d="M14 42 L66 34" class="acc"/><path d="M58 20 q10 4 6 14"/>',
+  krokodil:'<path d="M8 40 L44 26 L72 34 L44 42 Z"/><path d="M8 40 L44 50 L72 44"/>'+teeth(50,66,34,40,4),
+  pinsel:'<path d="M6 60 L40 30"/><path d="M40 30 L54 18 L62 26 L50 38 Z" class="fillacc"/><path d="M50 60 q12 12 24 0 v-14 h-24 z"/>',
+  spray:'<rect x="26" y="34" width="28" height="38" rx="6" class="fillacc"/><path d="M32 34 v-10 h16 v10"/><path d="M48 24 L62 20 L62 28 L48 28"/><path d="M68 18 l6 -3 M68 24 h7 M68 30 l6 3" class="acc"/>',
+  nackenpinsel:'<path d="M40 70 L40 40"/><path d="M28 40 Q40 6 52 40 Z" class="fillacc"/><path d="M34 38 L38 18 M40 38 V14 M46 38 L42 18" class="acc"/>',
+  wickler:'<rect x="12" y="28" width="56" height="20" rx="10" class="fillacc"/><path d="M20 28 v20 M30 28 v20 M40 28 v20 M50 28 v20 M60 28 v20"/><path d="M8 56 L72 56"/>',
+  handschuh:'<path d="M26 72 V38 q0 -6 6 -6 v-14 q0 -5 5 -5 q5 0 5 5 v12 V14 q0 -5 5 -5 q5 0 5 5 v18 V20 q0 -5 5 -5 q5 0 5 5 v26 q0 26 -26 26 z" class="fillacc"/>'
+};
+const svg=(k,cls)=>'<svg viewBox="0 0 80 80" class="ico '+(cls||'')+'" aria-hidden="true">'+ICON[k]+'</svg>';
+
+/* ---------- Fachinhalt ---------- */
+const CATS=[['schneiden','Schneiden'],['kaemmen','Kämmen & Bürsten'],['styling','Föhnen & Styling'],['maschinen','Maschinen'],['chemie','Farbe & Wellen'],['zubehoer','Zubehör']];
+const TOOLS={
+ schere:{cat:'schneiden',name:'Haarschneideschere',use:'Stumpfschnitt, Konturen, Point-Cut und Slice-Cut. Übliche Größen: 5 bis 6,5 Zoll.',how:'Ringfinger ins Fingerauge, kleiner Finger auf die Fingerstütze, Daumen ins Daumenauge. Nur der Daumen bewegt das bewegliche Blatt, das feste Blatt bleibt ruhig.',care:'Nach jeder Kundin Haare abwischen und desinfizieren. Täglich einen Tropfen Öl ans Gelenk. Spannung der Schraube prüfen. Schleifen nur beim Fachbetrieb.',safe:'Nie mit offener Schere gehen oder sie offen ablegen. Nicht fallen lassen, schon ein Sturz kann die Schneide beschädigen.',tip:'Die Schere ist ein persönliches Werkzeug. Jede Person hält sie etwas anders, deshalb nicht ständig verleihen.'},
+ modellier:{cat:'schneiden',name:'Modellierschere',use:'Ausdünnen (Effilieren), Übergänge weicher machen, Volumen herausnehmen. Ein oder beide Blätter sind gezahnt.',how:'Nicht zu nah am Ansatz ansetzen, sonst stehen kurze Haare ab. Je mehr Zähne, desto weniger Haar wird pro Schnitt abgetragen.',care:'Zwischen den Zähnen gründlich reinigen, dann desinfizieren und ölen wie die Haarschneideschere.',safe:'Nicht als normale Schere verwenden. Gezahnte Blätter nicht auf harte Flächen fallen lassen.',tip:'Lieber zweimal wenig als einmal zu viel ausdünnen. Weggeschnittenes Volumen kommt nicht zurück.'},
+ messer:{cat:'schneiden',name:'Rasiermesser / Effiliermesser',use:'Messerformschnitt für weiche, fransige Spitzen, Auslichten und Konturen.',how:'Nur an nassem Haar arbeiten, flach und mit leichtem Druck ziehen.',care:'Einwegklinge nach jeder Kundin wechseln. Griff reinigen und desinfizieren.',safe:'Gebrauchte Klingen sofort in einen stichfesten Abwurfbehälter, nie in den normalen Müll. Klingenschutz verwenden.',tip:'Trockenes Haar reißt am Messer und wird strohig, darum immer gut anfeuchten.'},
+ kamm:{cat:'kaemmen',name:'Haarschneidekamm',use:'Abteilen, Kämmen und Spannung halten beim Schneiden. Die grobe Seite zum Entwirren, die feine Seite für genaue Kontrolle.',how:'Beim Schneiden das Haar mit der feinen Seite gleichmäßig kämmen und mit wenig Spannung zwischen die Finger nehmen.',care:'Haare entfernen, waschen, desinfizieren. Carbon-Kämme sind antistatisch und hitzebeständig.',safe:'Beschädigte Kämme mit scharfen Zähnen aussortieren, sie verletzen die Kopfhaut.',tip:'Die Kammhaltung wechselt ständig mit der Schere. Übe, den Kamm in der Schneidehand zu parken.'},
+ stielkamm:{cat:'kaemmen',name:'Stielkamm',use:'Genaue Abteilungen ziehen, zum Beispiel bei Farbe, Strähnen und Wicklern.',how:'Mit der Stielspitze die Abteilung ziehen, mit den Zähnen glätten.',care:'Reinigen und desinfizieren. Farbreste sofort abwaschen.',safe:'Die Stielspitze nicht zu fest auf die Kopfhaut drücken.',tip:'Saubere, gerade Abteilungen sind die halbe Arbeit, egal ob beim Schnitt oder bei der Farbe.'},
+ grobkamm:{cat:'kaemmen',name:'Grobzahnkamm (Entwirrkamm)',use:'Nasses Haar entwirren, Pflege einarbeiten, Locken schonend durchkämmen.',how:'Immer zuerst an den Spitzen beginnen und dich zum Ansatz hocharbeiten.',care:'Nach jeder Kundin reinigen und desinfizieren.',safe:'Nicht ruckartig durch Knoten ziehen, nasses Haar reißt leichter.',tip:'Bei Locken nur nass und mit Pflege kämmen, trocken zerstört es das Lockenbild.'},
+ rundbuerste:{cat:'kaemmen',name:'Rundbürste',use:'Beim Föhnen glätten, Volumen und Schwung formen.',how:'Der Durchmesser bestimmt die Welle: klein = kräftiger Schwung, groß = glatt mit leichter Rundung. Föhn immer von oben auf die Bürste richten.',care:'Haare nach jeder Kundin entfernen, Bürste waschen und desinfizieren.',safe:'Keramik- oder Metallkörper werden heiß. Nicht direkt auf die Kopfhaut halten.',tip:'Wildschweinborsten geben Glanz, Nylon- und Mischborsten greifen besser in dichtem Haar.'},
+ paddle:{cat:'kaemmen',name:'Flachbürste (Paddle)',use:'Langes Haar glätten und entwirren, schnelles Vorföhnen.',how:'In langen Zügen vom Ansatz zu den Spitzen bürsten.',care:'Haare entfernen, Kissen trocknen lassen, desinfizieren.',safe:'Bei nassem Haar sanft arbeiten, Knoten erst mit dem Grobzahnkamm lösen.',tip:'Gut für glattes, langes Haar. Für Volumen lieber die Rundbürste nehmen.'},
+ skelett:{cat:'kaemmen',name:'Skelettbürste',use:'Schnelles Vorföhnen und Volumen am Ansatz, die Luft geht durch die Bürste.',how:'Unter die Partie greifen und das Haar beim Föhnen am Ansatz anheben.',care:'Reinigen und desinfizieren.',safe:'Die Zähne können an der Kopfhaut kratzen, mit wenig Druck arbeiten.',tip:'Ideal für Kurzhaarschnitte und Herrenfrisuren.'},
+ foehn:{cat:'styling',name:'Föhn mit Düse',use:'Trocknen und Frisieren. Die Düse bündelt die Luft für gezieltes Glätten.',how:'Luft immer vom Ansatz Richtung Spitzen, das schließt die Schuppenschicht und gibt Glanz. Abstand halten und in Bewegung bleiben.',care:'Luftfilter regelmäßig reinigen. Kabel und Stecker prüfen.',safe:'Nie mit nassen Händen an Stecker oder Schalter. Nicht lange auf eine Stelle halten, Verbrennungsgefahr.',tip:'Zum Schluss kurz kalt föhnen, das fixiert die Form.'},
+ diffusor:{cat:'styling',name:'Diffusor',use:'Locken und Wellen trocknen, ohne sie auseinanderzublasen. Weniger Frizz.',how:'Locken in die Schale legen und mit niedriger Stufe von unten Richtung Kopf trocknen.',care:'Aufsatz reinigen und desinfizieren.',safe:'Niedrige Hitze wählen, der Aufsatz sitzt nah an der Kopfhaut.',tip:'Nicht zwischendurch mit den Fingern durch die Locken, sonst entsteht Frizz.'},
+ glaetteisen:{cat:'styling',name:'Glätteisen',use:'Glätten, Wellen und Beach Waves.',how:'Nur trockenes Haar mit Hitzeschutz. Feines oder blondiertes Haar mit niedriger Temperatur, kräftiges Haar etwas höher. Gleichmäßig durchziehen, nicht stehen bleiben.',care:'Abgekühlt die Platten reinigen (Stylingreste). Kabel prüfen.',safe:'Hautkontakt vermeiden. Heiß nur auf der hitzefesten Matte ablegen und nach Gebrauch ausschalten.',tip:'Lieber einmal langsam als fünfmal schnell, jeder Zug belastet das Haar.'},
+ lockenstab:{cat:'styling',name:'Lockenstab',use:'Locken und Wellen formen.',how:'Der Durchmesser bestimmt die Lockengröße. Strähne vom Ansatz weg aufwickeln, wenige Sekunden halten, abkühlen lassen.',care:'Abgekühlt reinigen, Kabel prüfen.',safe:'Mit einem Kamm zwischen Stab und Kopfhaut schützen. Den kühlen Griff bzw. einen Handschuh verwenden.',tip:'Die Locke erst anfassen, wenn sie abgekühlt ist, dann hält sie länger.'},
+ maschine:{cat:'maschinen',name:'Haarschneidemaschine',use:'Kurzhaarschnitte, Fade und gleichmäßige Längen mit Aufsteckkämmen (z. B. 3, 6, 9, 12 mm).',how:'Meist gegen die Wuchsrichtung führen. Übergänge mit wechselnden Aufsteckkämmen und kleinen Bögen aus dem Handgelenk.',care:'Nach jeder Kundin Haare aus dem Scherkopf bürsten, desinfizieren (Spray). Scherkopf regelmäßig ölen. Aufsteckkämme reinigen.',safe:'Scherkopf auf Beschädigungen prüfen. Nie ohne Aufsteckkamm „nur kurz“ ansetzen, wenn es nicht geplant ist.',tip:'Aufsteckkamm vor dem Einschalten kontrollieren. Ein vergessener Kamm ist der häufigste Fehler.'},
+ trimmer:{cat:'maschinen',name:'Konturentrimmer',use:'Konturen im Nacken, um die Ohren, Koteletten und Bart.',how:'Mit ruhiger Hand und gestraffter Haut arbeiten, zuerst die Linie festlegen.',care:'Wie die Haarschneidemaschine: reinigen, desinfizieren, ölen.',safe:'Die Haut straffen, damit nichts einklemmt oder schneidet.',tip:'Konturen vor dem Spiegel mit der Kundin absprechen, vor allem im Nacken.'},
+ pinsel:{cat:'chemie',name:'Färbepinsel & Schale',use:'Farbe, Blondierung und Pflegemasken anmischen und auftragen.',how:'Farbe nach Rezept abwiegen (Waage), in der Schale anmischen und in sauberen Abteilungen auftragen.',care:'Sofort nach Gebrauch gründlich auswaschen, damit keine Farbe antrocknet.',safe:'Schale und Pinsel aus Kunststoff, kein Metall. Metall kann mit der Farbe reagieren. Immer Handschuhe tragen.',tip:'Pro Farbe eine eigene Schale nehmen, sonst vermischen sich die Nuancen.'},
+ wickler:{cat:'chemie',name:'Dauerwellwickler',use:'Dauerwelle und Wasserwelle: das Haar wird um den Wickler gelegt.',how:'Die Wicklerstärke bestimmt die Locke. Spitzen glatt mit Papier einlegen und gleichmäßig ohne Zug aufwickeln.',care:'Nach der Anwendung waschen und desinfizieren. Gummis auf Risse prüfen.',safe:'Nicht zu stramm wickeln, sonst drückt es auf die Kopfhaut und das Haar kann brechen.',tip:'Abteilungen nicht breiter als der Wickler, sonst werden die Locken ungleich.'},
+ handschuh:{cat:'chemie',name:'Schutzhandschuhe',use:'Schutz der Hände bei Farbe, Blondierung, Dauerwelle und beim Haarewaschen mit Chemie.',how:'Passende Größe, bei jeder Kundin neue Einweghandschuhe.',care:'Einweghandschuhe nicht wiederverwenden. Hände danach waschen und eincremen.',safe:'Friseurinnen haben ein hohes Risiko für Hautekzeme. Handschuhe und Hautschutz sind deshalb Pflicht.',tip:'Hautschutz vor der Arbeit, Hautpflege nach der Arbeit, das beugt Ekzemen vor.'},
+ klammer:{cat:'zubehoer',name:'Abteilklammern',use:'Abgeteilte Partien sauber aus dem Weg halten.',how:'Die Klammer flach an den Kopf setzen, damit keine Knicke entstehen.',care:'Reinigen und desinfizieren, verbogene Klammern aussortieren.',safe:'Nicht zu fest einklemmen, das ziept.',tip:'Genug Klammern bereitlegen, bevor du anfängst.'},
+ krokodil:{cat:'zubehoer',name:'Krokodilklammern',use:'Größere Partien halten, z. B. beim Föhnen oder Glätten.',how:'Die Partie eindrehen und mit der Klammer fixieren.',care:'Reinigen und desinfizieren.',safe:'Die Zähne können an feinem Haar ziehen.',tip:'Beim Föhnen halten sie die obere Partie gut weg.'},
+ spray:{cat:'zubehoer',name:'Sprühflasche',use:'Haar beim Schneiden gleichmäßig feucht halten.',how:'Immer wieder nachsprühen, damit das Haar gleichmäßig nass ist.',care:'Täglich frisches Wasser einfüllen, Flasche regelmäßig reinigen.',safe:'Nicht ins Gesicht sprühen, eine Hand schützt Augen und Stirn.',tip:'Ungleich feuchtes Haar fällt nach dem Trocknen ungleich lang.'},
+ nackenpinsel:{cat:'zubehoer',name:'Nackenpinsel',use:'Abgeschnittene Haare von Gesicht, Nacken und Kleidung entfernen.',how:'Mit sanften Strichen vom Gesicht weg abstreichen.',care:'Nach jeder Kundin ausschütteln, regelmäßig waschen und desinfizieren.',safe:'Nicht für mehrere Kundinnen ohne Reinigung verwenden.',tip:'Vor dem Abnehmen des Umhangs gründlich abpinseln, sonst landen die Haare im Kragen.'}
+};
+let cat='schneiden',tool='schere';
+function renderCats(){const b=$('#catChips');b.innerHTML='';CATS.forEach(([k,l])=>{const x=document.createElement('button');x.className='chip';x.textContent=l;x.setAttribute('aria-pressed',k===cat);x.onclick=()=>{cat=k;tool=Object.keys(TOOLS).find(t=>TOOLS[t].cat===k);renderCats();renderTools();};b.appendChild(x);});}
+function renderTools(){
+  const g=$('#toolGrid');g.innerHTML='';
+  Object.keys(TOOLS).filter(k=>TOOLS[k].cat===cat).forEach(k=>{const b=document.createElement('button');b.className='tool';b.innerHTML=svg(k)+'<span>'+TOOLS[k].name+'</span>';b.setAttribute('aria-pressed',k===tool);b.onclick=()=>{tool=k;renderTools();};g.appendChild(b);});
+  const T=TOOLS[tool];
+  $('#toolInfo').innerHTML='<div class="detail-head">'+svg(tool)+'<div><span class="tag">'+CATS.find(c=>c[0]===T.cat)[1]+'</span><h3 style="font-size:1.3rem;margin-top:4px">'+T.name+'</h3></div></div>'+
+    '<dl class="facts"><dt>Verwendung</dt><dd>'+T.use+'</dd><dt>So geht’s</dt><dd>'+T.how+'</dd><dt>Pflege</dt><dd>'+T.care+'</dd><dt>Sicherheit</dt><dd class="safe">'+T.safe+'</dd></dl><p class="tip"><strong>Praxis-Tipp:</strong> '+T.tip+'</p>';
+}
+renderCats();renderTools();
+
+/* ---------- Aufbau der Schere ---------- */
+const PARTS=[
+  ['Spitze','Das vordere Ende der Blätter. Mit der Spitze arbeitest du beim Point-Cut und bei feinen Konturen.',[504,98]],
+  ['Schneiden','Die scharfen Innenkanten der Blätter. Sie treffen sich beim Schließen und schneiden das Haar. Nie auf Metall oder Glas schlagen lassen.',[392,180]],
+  ['Bewegliches Blatt','Das Blatt mit dem Daumenauge. Nur dieses Blatt bewegst du mit dem Daumen.',[350,118]],
+  ['Festes Blatt','Das Blatt mit dem Fingerauge. Es bleibt beim Schneiden ruhig, das ergibt eine gerade Schnittlinie.',[350,246]],
+  ['Schraube (Gelenk)','Hält beide Blätter zusammen und bestimmt die Spannung. Zu locker: die Schere knickt Haare. Zu fest: sie geht schwer und nutzt sich ab. Täglich einen Tropfen Öl.',[248,146]],
+  ['Daumenauge','Hier liegt nur die Daumenspitze drin, nicht der ganze Daumen. So bleibt die Bewegung locker.',[120,70]],
+  ['Fingerauge','Hier liegt der Ringfinger. Mittel- und Zeigefinger liegen außen am Blatt und führen.',[122,298]],
+  ['Fingerstütze','Die kleine Stütze (Haken) für den kleinen Finger. Sie gibt der Schere Halt und entlastet die Hand.',[40,312]]
+];
+function drawScissor(on){
+  const s=$('#scissorSvg');
+  s.innerHTML='<g stroke="#1C1C1A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">'+
+   '<path d="M150,128 C185,140 215,158 240,172" fill="none" stroke-width="12"/>'+
+   '<path d="M150,236 C185,222 215,204 240,190" fill="none" stroke-width="12"/>'+
+   '<path d="M104,262 C84,278 72,292 66,306" fill="none" stroke-width="9"/>'+
+   '<ellipse cx="120" cy="118" rx="40" ry="27" fill="#fff" stroke-width="9"/>'+
+   '<ellipse cx="122" cy="246" rx="44" ry="29" fill="#fff" stroke-width="9"/>'+
+   '<path d="M232,190 L484,244 L492,238 L262,168 Z" fill="#E7E3DB"/>'+
+   '<path d="M232,172 L484,114 L492,120 L262,194 Z" fill="#F4F2EE"/>'+
+   '<path d="M262,194 L492,120" stroke="#5B7B6F" stroke-width="3"/><path d="M262,168 L492,238" stroke="#5B7B6F" stroke-width="3"/>'+
+   '<circle cx="248" cy="181" r="11" fill="#EAF0EE" stroke="#5B7B6F"/><circle cx="248" cy="181" r="3" fill="#5B7B6F" stroke="none"/></g>'+
+   '<text x="260" y="332" font-family="system-ui" font-size="13" fill="#7A7A70" text-anchor="middle">Haarschneideschere, leicht geöffnet</text>';
+  PARTS.forEach(([n,,[x,y]],i)=>{const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','part'+(i===on?' on':''));g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',n);
+    g.innerHTML='<circle cx="'+x+'" cy="'+y+'" r="14"/><text x="'+x+'" y="'+y+'">'+(i+1)+'</text>';
+    g.onclick=()=>pickPart(i);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pickPart(i);}};s.appendChild(g);});
+}
+function pickPart(i){
+  drawScissor(i);
+  $('#partList').innerHTML='';PARTS.forEach(([n],j)=>{const li=document.createElement('li'),b=document.createElement('button');b.innerHTML='<span>'+(j+1)+'</span>'+n;b.setAttribute('aria-current',i===j);b.onclick=()=>pickPart(j);li.appendChild(b);$('#partList').appendChild(li);});
+  $('#partInfo').innerHTML='<h3>'+PARTS[i][0]+'</h3><p style="margin-top:6px">'+PARTS[i][1]+'</p><p class="tip" style="margin-top:10px"><strong>Richtige Haltung:</strong> Ringfinger ins Fingerauge, kleiner Finger auf die Stütze, Daumenspitze ins Daumenauge. Nur der Daumen bewegt sich.</p>';
+}
+pickPart(0);
+
+/* ---------- Pflege & Hygiene ---------- */
+const HYG=[
+  ['Nach jeder Kundin',['Haare von Schere, Kamm und Maschine entfernen','Kamm, Bürsten und Klammern reinigen','Werkzeug desinfizieren, Einwirkzeit laut Hersteller einhalten','Einwegklinge wechseln und in den Abwurfbehälter','Nackenpinsel ausschütteln, frischen Umhang bzw. Handtuch nehmen']],
+  ['Täglich',['Scheren am Gelenk ölen','Scherkopf der Maschine reinigen und ölen','Glätteisen und Lockenstab abgekühlt reinigen, Kabel prüfen','Sprühflasche mit frischem Wasser füllen','Arbeitsplatz und Ablagen desinfizieren']],
+  ['Wöchentlich',['Bürsten und Kämme gründlich waschen','Föhn-Luftfilter reinigen','Scherenspannung prüfen','Werkzeug auf Schäden prüfen und aussortieren']]
+];
+const HKEY='werkzeugkunde-hygiene';let hs={};try{hs=JSON.parse(localStorage.getItem(HKEY)||'{}')||{};}catch(e){hs={};}
+function renderHyg(){
+  const box=$('#hygChecks');box.innerHTML='';let n=0,d=0;
+  HYG.forEach(([t,items],i)=>{const col=document.createElement('div');col.innerHTML='<h3 style="margin-bottom:6px">'+t+'</h3>';
+    items.forEach((it,j)=>{const id='h'+i+'_'+j;n++;if(hs[id])d++;const l=document.createElement('label');l.className=hs[id]?'done':'';l.innerHTML='<input type="checkbox" id="'+id+'"'+(hs[id]?' checked':'')+'><span>'+it+'</span>';
+      l.querySelector('input').onchange=e=>{hs[id]=e.target.checked;try{localStorage.setItem(HKEY,JSON.stringify(hs));}catch(err){}renderHyg();};col.appendChild(l);});
+    box.appendChild(col);});
+  $('#hygBar').style.width=(n?d/n*100:0)+'%';$('#hygOut').textContent=d+' von '+n+' erledigt';
+}
+$('#hygReset').onclick=()=>{hs={};try{localStorage.removeItem(HKEY);}catch(e){}renderHyg();};
+renderHyg();
+
+/* ---------- Welches Werkzeug? ---------- */
+const GAME=[
+  ['Du willst einer Kundin mit dickem Haar Volumen herausnehmen, ohne die Länge zu ändern.','modellier',['schere','modellier','messer','kamm'],'Die Modellierschere dünnt aus, die Länge bleibt.'],
+  ['Du ziehst für eine Strähnenfarbe feine, genaue Abteilungen.','stielkamm',['grobkamm','paddle','stielkamm','klammer'],'Mit der Stielspitze ziehst du saubere Abteilungen.'],
+  ['Eine Kundin mit Locken möchte sie trocknen, ohne dass Frizz entsteht.','diffusor',['foehn','diffusor','glaetteisen','rundbuerste'],'Der Diffusor verteilt die Luft und hält das Lockenbild.'],
+  ['Du mischst eine Blondierung an.','pinsel',['pinsel','spray','wickler','klammer'],'Kunststoffschale und Pinsel, dazu Handschuhe.'],
+  ['Du schneidest einen Herren-Fade mit 3 mm im Nacken.','maschine',['schere','trimmer','maschine','messer'],'Die Maschine mit Aufsteckkamm macht gleichmäßige Längen und Übergänge.'],
+  ['Nach dem Schnitt liegen Haare auf Hals und Gesicht der Kundin.','nackenpinsel',['paddle','nackenpinsel','skelett','spray'],'Mit dem Nackenpinsel sanft vom Gesicht weg abstreichen.'],
+  ['Du willst beim Föhnen Volumen und Schwung in einen Bob bringen.','rundbuerste',['rundbuerste','grobkamm','paddle','krokodil'],'Die Rundbürste formt Volumen und Schwung.'],
+  ['Du entwirrst nasses, langes Haar nach der Pflege.','grobkamm',['kamm','stielkamm','grobkamm','skelett'],'Der Grobzahnkamm schont nasses Haar, von den Spitzen zum Ansatz.'],
+  ['Du schneidest weiche, fransige Spitzen an nassem Haar.','messer',['messer','modellier','maschine','glaetteisen'],'Das Messer macht weiche Spitzen, aber nur an nassem Haar.'],
+  ['Das Haar trocknet beim Schneiden immer wieder an.','spray',['foehn','spray','handschuh','diffusor'],'Mit der Sprühflasche hältst du das Haar gleichmäßig feucht.']
+];
+let gi=0,gs=0;
+function renderGame(){
+  const G=GAME[gi];$('#gameStep').textContent='Situation '+(gi+1)+' von '+GAME.length;$('#gameScore').textContent=gs+' richtig';
+  $('#gameScen').textContent=G[0];$('#gameFb').textContent='';$('#gameFb').className='fb';$('#gameNext').hidden=true;
+  const box=$('#gameOpts');box.innerHTML='';
+  G[2].forEach(k=>{const b=document.createElement('button');b.className='tool';b.innerHTML=svg(k)+'<span>'+TOOLS[k].name+'</span>';
+    b.onclick=()=>{const ok=k===G[1];if(ok)gs++;box.querySelectorAll('button').forEach(x=>{x.disabled=true;});b.classList.add(ok?'right':'wrong');if(!ok)box.children[G[2].indexOf(G[1])].classList.add('right');
+      $('#gameFb').textContent=(ok?'Richtig! ':'Nicht ganz. ')+G[3];$('#gameFb').className='fb '+(ok?'ok':'no');$('#gameScore').textContent=gs+' richtig';
+      $('#gameNext').hidden=false;$('#gameNext').textContent=gi===GAME.length-1?'Nochmal spielen':'Nächste Situation';};box.appendChild(b);});
+}
+$('#gameNext').onclick=()=>{if(gi===GAME.length-1){gi=0;gs=0;}else gi++;renderGame();};
+renderGame();
+
+/* ---------- Quiz ---------- */
+const QUIZ=[
+  ['Welcher Finger gehört ins Fingerauge der Schere?',['Zeigefinger','Mittelfinger','Ringfinger','Daumen'],2,'Der Ringfinger liegt im Fingerauge, der kleine Finger auf der Stütze.'],
+  ['Welches Blatt bewegst du beim Schneiden?',['Beide gleich','Nur das bewegliche Blatt mit dem Daumen','Nur das feste Blatt','Keines, die Hand dreht sich'],1,'Das feste Blatt bleibt ruhig, so wird die Schnittlinie gerade.'],
+  ['Wofür nimmst du eine Modellierschere?',['Für die Grundlinie','Zum Ausdünnen und für weiche Übergänge','Für Konturen im Nacken','Zum Abteilen'],1,'Die gezahnten Blätter nehmen nur einen Teil der Haare weg.'],
+  ['Wie arbeitest du mit dem Rasiermesser?',['An trockenem Haar','Nur an nassem Haar','Nur mit Hitze','Gar nicht mehr üblich'],1,'Trockenes Haar reißt am Messer.'],
+  ['Wohin kommt eine gebrauchte Klinge?',['In den Restmüll','In einen stichfesten Abwurfbehälter','Zurück in die Packung','In die Desinfektionslösung'],1,'So verletzt sich niemand beim Entsorgen.'],
+  ['Warum keine Metallschale beim Färben?',['Sie ist zu schwer','Metall kann mit der Farbe reagieren','Sie wird zu heiß','Sie ist schwer zu reinigen'],1,'Deshalb Schale und Pinsel aus Kunststoff.'],
+  ['In welche Richtung föhnst du für Glanz?',['Von den Spitzen zum Ansatz','Vom Ansatz Richtung Spitzen','Kreisend','Egal'],1,'So schließt sich die Schuppenschicht und das Haar glänzt.'],
+  ['Was bestimmt beim Lockenstab die Lockengröße?',['Die Temperatur','Der Durchmesser','Die Kabellänge','Die Marke'],1,'Dünner Stab = kleine Locke, dicker Stab = große Welle.'],
+  ['Welche Reihenfolge stimmt bei der Werkzeughygiene?',['Desinfizieren, reinigen, trocknen','Reinigen, desinfizieren, trocknen, aufbewahren','Trocknen, reinigen, desinfizieren','Nur desinfizieren reicht'],1,'Erst Haare und Schmutz weg, sonst wirkt das Desinfektionsmittel nicht richtig.'],
+  ['Was machst du täglich mit der Schere?',['Schleifen','Einen Tropfen Öl ans Gelenk','In Wasser einlegen','Nichts'],1,'Öl hält das Gelenk leichtgängig. Schleifen nur beim Fachbetrieb.'],
+  ['Womit entwirrst du nasses, langes Haar?',['Stielkamm','Grobzahnkamm, von den Spitzen zum Ansatz','Skelettbürste','Rundbürste'],1,'Nasses Haar ist empfindlich, der Grobzahnkamm schont es.'],
+  ['Warum sind Handschuhe bei Farbe Pflicht?',['Damit die Farbe besser hält','Zum Schutz vor Hautekzemen und Allergien','Wegen der Optik','Sind sie nicht'],1,'Friseurinnen haben ein hohes Risiko für Hauterkrankungen.']
+];
+let answers={};
+function renderQuiz(){
+  const box=$('#quizBox');box.innerHTML='';
+  QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';d.innerHTML='<h3>'+(i+1)+'. '+q[0]+'</h3><div class="opts"></div><p class="why" hidden></p>';
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why');
+    q[1].forEach((o,j)=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{answers[i]=j;opts.querySelectorAll('button').forEach((x,m)=>{x.disabled=true;if(m===q[2])x.classList.add('right');});if(j!==q[2])b.classList.add('wrong');why.hidden=false;why.textContent=(j===q[2]?'Richtig. ':'Nicht ganz. ')+q[3];score();};opts.appendChild(b);});
+    box.appendChild(d);});
+  score();
+}
+function score(){const n=Object.keys(answers).length,r=Object.entries(answers).filter(([i,a])=>QUIZ[i][2]===a).length;
+  $('#scoreOut').textContent=r+' / '+QUIZ.length;
+  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du kennst dein Werkzeug.':r>=QUIZ.length*.5?'Gute Basis. Schau dir Pflege & Hygiene noch einmal an.':'Geh die Werkzeuge in Teil 1 durch und versuch es noch einmal.');}
+$('#quizReset').onclick=()=>{answers={};renderQuiz();};
+renderQuiz();
+})();
+</script>
+</body>
+</html>
