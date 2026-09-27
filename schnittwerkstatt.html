@@ -575,6 +575,7 @@ const VIEWS={
 
 /* Graduiert und zunehmend stufig nach klassischer Schnittzeichnungs-Vorlage */
 const zCut=x=>x>=281?110:Math.max(-6,110-2*(281-x));
+const zFront=x=>{let t=0;for(let i=0;i<=200;i++){t=i/200;const xx=(1-t)*(1-t)*302+2*t*(1-t)*296+t*t*212;if(xx<=x)break;}return (1-t)*(1-t)*296+2*t*(1-t)*382+t*t*392;};
 const thin=(g,a,b,id,extra)=>line(g,a,b,'ang-line',Object.assign({'stroke-width':1.5,'marker-end':'url(#'+id+'A)'},extra||{}));
 const REFD={
  side:{
@@ -604,19 +605,18 @@ const REFD={
       for(let y=176;y<=262;y+=16)line(cl,{x:40,y},{x:200,y},'sec-line');},
     angles(g,id){
       [336,330,324,318,312,306,300,294,288,282,276,270,264,258].forEach(a=>{const p=P(a);thin(g,p,{x:p.x,y:zCut(p.x)+3},id,{'stroke-width':1.5});});
-      const cy=x=>168+2.583*(294-x);
-      for(let x=212;x<=286;x+=12)thin(g,{x,y:150},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.75});
-      for(let x=64;x<=200;x+=14)thin(g,{x,y:190},{x,y:382},id,{'stroke-width':1.1,opacity:.75});
+      for(let x=214;x<=298;x+=12)thin(g,{x,y:150},{x,y:zFront(x)-3},id,{'stroke-width':1.1,opacity:.75});
+      for(let x=64;x<=200;x+=14)thin(g,{x,y:190},{x,y:389},id,{'stroke-width':1.1,opacity:.75});
       T('über 90° · Oberkopf',{x:-54,y:60,class:'lbl-a'},g);T('senkrecht nach oben gezogen',{x:-54,y:76,class:'lbl-a'},g);
       T('Seiten und Nacken: natürlicher Fall',{x:130,y:410,'text-anchor':'middle',class:'lbl-a'},g);
     },
     guide(g){
       S('polyline',{points:'304,110 281,110 223,-6 150,-6',class:'cut-line'},g);
-      S('polyline',{points:'294,168 210,385 60,385',class:'cut-line'},g);
+      S('path',{d:'M302,296 Q296,382 212,392 L60,392',class:'cut-line'},g);
       line(g,P(336),{x:P(336).x,y:112},'guide-line');
       T('kürzester Punkt:',{x:318,y:128,class:'lbl-g'},g);T('Stirnmitte,',{x:318,y:144,class:'lbl-g'},g);T('waagrecht',{x:318,y:160,class:'lbl-g'},g);T('dann diagonal',{x:330,y:84,class:'lbl-g'},g);T('ansteigend',{x:330,y:100,class:'lbl-g'},g);
       T('längster Punkt:',{x:330,y:12,class:'lbl-g'},g);T('höchster Punkt',{x:330,y:28,class:'lbl-g'},g);T('des Kopfes',{x:330,y:44,class:'lbl-g'},g);
-      T('vorne kürzer,',{x:300,y:300,class:'lbl-g'},g);T('nach hinten länger',{x:300,y:316,class:'lbl-g'},g);
+      T('Bogen läuft vorne',{x:306,y:330,class:'lbl-g'},g);T('nach innen aus',{x:306,y:346,class:'lbl-g'},g);
     }
   }
  },
@@ -636,14 +636,18 @@ const REFD={
       T('Kontur: Mitte kurz, außen länger',{x:195,y:378,'text-anchor':'middle',class:'lbl-g'},g);}
   },
   zunehmend:{
-    sections(g,cl){for(let x=120;x<=270;x+=25)line(cl,{x,y:56},{x,y:285},'sec-line');for(let y=92;y<=272;y+=26)line(cl,{x:60,y},{x:330,y},'sec-line');},
+    sections(g,cl){S('polyline',{points:'104,156 195,178 286,156',class:'sec-line','stroke-width':2.4},g);
+      [[128,90],[150,74],[172,66],[195,63],[218,66],[240,74],[262,90]].forEach(([x,y])=>line(cl,{x,y},{x:195+(x-195)*0.55,y:172-Math.abs(x-195)*0.12},'sec-line',{'stroke-dasharray':'6 5'}));
+      T('Clip',{x:195,y:236,'text-anchor':'middle',class:'lbl-m'},g);},
     angles(g,id){
+      const A={x:195,y:0};
+      [[104,156],[132,100],[160,74],[195,64],[230,74],[258,100],[286,156],[195,178]].forEach(([x,y])=>line(g,{x,y},A,'ang-line',{'stroke-width':1.4}));
       const cy=x=>312+40*(1-Math.pow((x-195)/95,2));
-      for(let x=100;x<=290;x+=16)thin(g,{x,y:150},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.75});
-      T('Länge steigt von vorne zum Oberkopf an (siehe Profil)',{x:195,y:40,'text-anchor':'middle',class:'lbl-a'},g);
+      for(let x=100;x<=290;x+=16)thin(g,{x,y:196},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.6});
+      T('Oberkopf-Partie zu einem',{x:212,y:18,class:'lbl-a'},g);T('Punkt über der Kopfmitte',{x:212,y:34,class:'lbl-a'},g);
       T('Seiten und Nacken: natürlicher Fall',{x:195,y:392,'text-anchor':'middle',class:'lbl-a'},g);
     },
-    guide(g){S('path',{d:'M100,312 Q195,392 290,312',class:'cut-line'},g);
+    guide(g){S('circle',{cx:195,cy:0,r:5,fill:'var(--accent)'},g);S('path',{d:'M100,312 Q195,392 290,312',class:'cut-line'},g);
       T('runde Kontur, Mitte am längsten',{x:195,y:410,'text-anchor':'middle',class:'lbl-g'},g);}
   }
  }
@@ -932,9 +936,9 @@ const SPEC={
     guide:['Wandernde Leitsträhne','Ein Teil der zuletzt geschnittenen Strähne wird zur Leitsträhne der nächsten. Die Schnittlinie verläuft überall im gleichen Abstand parallel zur Kopfrundung.'],
     result:['Rund, ohne Gewicht','Alle Haare sind gleich lang. Die Form folgt der Kopfform, die Oberfläche ist vollständig aktiviert.']},
   zunehmend:{
-    sections:['Vertikal oben, diagonal vorne','Am Oberkopf vertikale Abteilungen, im Gesichtsbereich diagonale, im Nacken horizontale. Von hinten entsteht ein Raster.'],
-    angles:['Oberkopf senkrecht nach oben, Seiten 0°','Alle Strähnen am Oberkopf werden parallel senkrecht nach oben gezogen, nicht der Kopfrundung nach. Seiten und Nacken fallen natürlich.'],
-    guide:['Stirnmitte kürzester Punkt','Die Schnittlinie ist an der Stirnmitte (kürzester Punkt) waagrecht und steigt dann diagonal bis zum höchsten Punkt des Kopfes (längster Punkt) an. Vorne ist die Kontur kürzer und wird nach hinten länger.'],
+    sections:['Vertikal oben, diagonal vorne','Die Oberkopf-Partie wird als Dreieck abgeteilt (von hinten gesehen), der Rest wird weggeklammert. Im Gesichtsbereich diagonal, im Nacken horizontal.'],
+    angles:['Oberkopf senkrecht nach oben, Seiten 0°','Alle Strähnen am Oberkopf werden senkrecht nach oben gezogen, nicht der Kopfrundung nach. Von hinten gesehen laufen sie zu einem Punkt über der Kopfmitte. Seiten und Nacken fallen natürlich.'],
+    guide:['Stirnmitte kürzester Punkt','Die Schnittlinie ist an der Stirnmitte (kürzester Punkt) waagrecht und steigt dann diagonal bis zum höchsten Punkt des Kopfes (längster Punkt) an. Vorne läuft die Kontur als Bogen nach innen aus.'],
     result:['Innen kurz, außen lang','Je weiter weg vom Oberkopf, desto länger das Haar. Die Kontur behält ihre Länge, die Form wirkt leicht und beweglich.']}
 };
 const VIEW_NAMES={side:'Profil',back:'von hinten',top:'von oben'};
