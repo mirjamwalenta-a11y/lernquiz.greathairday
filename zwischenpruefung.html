@@ -194,9 +194,6 @@ table.hist.wrap td:first-child{width:36%}
 figure{margin:0}
 .dia{display:block;width:100%;height:auto}
 .dia.face{max-width:230px;margin-inline:auto}
-.figs3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.dia.kopf{max-width:240px;margin-inline:auto}
-@media (max-width:560px){.figs3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .figs{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 figure.panel figcaption{font-size:.875rem;color:var(--muted)}
 .zug{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);gap:14px;align-items:start}
@@ -959,36 +956,10 @@ function wicklerSVG(){const u=++_uid;
   return s;};
  h+=`${TX(10,134,'Spitzen','font-weight="700"')}${fig(80,true)}${fig(240,false)}`;
  h+=`${TX(80,248,'✓ gerade im','text-anchor="middle" fill="'+C_ACC+'" font-weight="700"')}${TX(80,263,'Spitzenpapier','text-anchor="middle"')}${TX(240,248,'✗ Spitze','text-anchor="middle" fill="'+C_RED+'" font-weight="700"')}${TX(240,263,'umgebogen','text-anchor="middle"')}</svg>`;return h;}
-/* Aufteilung am Technikkopf nach der Mustervorlage (Schema) */
-const C_HAIR='#EDE3CF',C_WICK='#DCE7E3';
-function pap(x,y,r){return `<circle cx="${x}" cy="${y}" r="${r}" fill="${C_HAIR}" stroke="${C_INK}" stroke-width="1.3"/><circle cx="${x}" cy="${y}" r="${r*.45}" fill="none" stroke="${C_INK}" stroke-width="1.1"/><rect x="${x-2}" y="${y+r-3}" width="4" height="7" rx="1" fill="${C_INK}"/>`;}
-function kopfHintenSVG(){let h=`<svg class="dia kopf" viewBox="0 0 220 250" role="img" aria-label="Hinterkopf: Knoten oben, 10 Dauerwellwickler im Nacken, 4 liegend in der Mitte, je 3 stehend an den Seiten">`;
- h+=`<rect x="72" y="196" width="76" height="48" fill="#fff" stroke="${C_INK}" stroke-width="1.5"/>`;
- h+=`<path d="M34 112 A76 88 0 0 1 186 112 L184 200 Q110 212 36 200 Z" fill="${C_HAIR}" stroke="${C_INK}" stroke-width="1.8"/>`;
- h+=`<circle cx="110" cy="62" r="18" fill="${C_HAIR}" stroke="${C_INK}" stroke-width="1.4"/><path d="M110 62 m-9 0 a9 9 0 1 1 9 9" fill="none" stroke="${C_INK}" stroke-width="1.2"/>`;
- [44,57,70].forEach(x=>h+=`<rect x="${x}" y="136" width="11" height="58" rx="5" fill="${C_WICK}" stroke="${C_ACC}" stroke-width="1.4"/>`);
- [141,154,167].forEach(x=>h+=`<rect x="${x}" y="136" width="11" height="58" rx="5" fill="${C_WICK}" stroke="${C_ACC}" stroke-width="1.4"/>`);
- [138,152,166,180].forEach(y=>h+=`<rect x="84" y="${y}" width="54" height="12" rx="6" fill="${C_WICK}" stroke="${C_ACC}" stroke-width="1.4"/>`);
-  [pap(40,100,8),pap(182,100,8)].forEach(p=>h+=p);
- h+=`<text x="110" y="24" text-anchor="middle" font-size="12" font-family="system-ui,sans-serif" fill="${C_INK}" font-weight="700">Hinterkopf</text></svg>`;return h;}
-function kopfSeiteSVG(links){const u=++_uid;let g=`<defs><clipPath id="kc${u}"><circle cx="118" cy="100" r="74"/></clipPath></defs>`;
- g+=`<rect x="98" y="160" width="54" height="72" fill="#fff" stroke="${C_INK}" stroke-width="1.5"/>`;
- g+=`<circle cx="118" cy="100" r="74" fill="${C_HAIR}" stroke="${C_INK}" stroke-width="1.8"/>`;
- g+=`<path d="M40 40 L84 40 Q76 90 90 120 Q98 150 120 190 L40 190 Z" fill="#fff" clip-path="url(#kc${u})"/><path d="M84 40 Q76 90 90 120 Q98 150 120 190" fill="none" stroke="${C_MUT}" stroke-width="1" clip-path="url(#kc${u})"/><path d="M45 96 L34 118 L48 121" fill="#fff" stroke="${C_INK}" stroke-width="1.5" stroke-linejoin="round"/><circle cx="118" cy="100" r="74" fill="none" stroke="${C_INK}" stroke-width="1.8"/>`;
- g+=`<path d="M58 112 q6 -3 12 0" stroke="${C_INK}" stroke-width="1.5" fill="none"/>`;
- g+=`<ellipse cx="124" cy="126" rx="8" ry="13" fill="#fff" stroke="${C_INK}" stroke-width="1.3"/>`;
- g+=`<circle cx="176" cy="46" r="14" fill="${C_HAIR}" stroke="${C_INK}" stroke-width="1.3"/>`;
- [150,163].forEach(x=>g+=`<rect x="${x}" y="122" width="11" height="44" rx="5" fill="${C_WICK}" stroke="${C_ACC}" stroke-width="1.4"/>`);
- if(!links){[[96,58],[120,54],[144,58],[166,70],[102,84],[126,80],[150,86],[172,98],[148,112],[168,124]].forEach(([x,y])=>g+=pap(x,y,9));}
- else{for(let k=0;k<4;k++){const y=52+k*24;g+=`<path d="M86 ${y} q18 -10 36 0 t36 0 t30 4" fill="none" stroke="${C_ACC}" stroke-width="3" stroke-linecap="round"/><path d="M88 ${y+12} q18 -10 36 0 t36 0 t28 4" fill="none" stroke="${C_MUT}" stroke-width="1"/>`;}
-  [[150,114],[172,104]].forEach(([x,y])=>g+=pap(x,y,8));}
- return `<svg class="dia kopf" viewBox="0 0 230 250" role="img" aria-label="${links?'Linke Kopfseite: handgelegte Wasserwellen, Enden mit Papilloten':'Rechte Kopfseite: zehn Papilloten in Reihen'}"><g ${links?'transform="translate(230 0) scale(-1 1)"':''}>${g}</g><text x="115" y="246" text-anchor="middle" font-size="12" font-family="system-ui,sans-serif" fill="${C_INK}" font-weight="700">${links?'linke Seite':'rechte Seite'}</text></svg>`;}
-function kopfHTML(){return `<figure class="panel stack"><h3>Aufteilung am Technikkopf (Mustervorlage, verbindlich)</h3>
- <div class="figs3">${kopfSeiteSVG(false)}${kopfHintenSVG()}${kopfSeiteSVG(true)}</div>
- <div class="legend small"><span><i style="background:${C_ACC}"></i>Dauerwellwickler im Nacken</span><span><i class="dot" style="background:${C_INK}"></i>Papilloten mit Clip</span><span><i style="background:${C_ACC};height:3px"></i>Wellenkanten</span></div>
- <figcaption><strong>Papilloten</strong> auf der rechten Kopfseite in Reihen, <strong>handgelegte Wellen</strong> über den Oberkopf und die linke Seite (Enden in Papilloten), <strong>10 Dauerwellwickler</strong> im Nacken: 4 liegend in der Mitte, je 3 stehend an den Seiten. Restliches Haar am Oberkopf als Knoten. <strong>Genau so muss es bei der Prüfung aussehen, Abweichungen sind nicht erlaubt.</strong> Rechts und links von der Puppe aus gesehen.</figcaption></figure>`;}
-function bilderHTML(){return `<p class="muted small">Selbst gezeichnete Schemas zur Technik. Das fertige Ergebnis soll der Mustervorlage der Landesinnung (Bild in der Broschüre) möglichst genau entsprechen.</p>
- ${kopfHTML()}
+function bilderHTML(){return `<p class="muted small">Die Schemas unten zeigen einzelne Techniken im Detail. Das fertige Ergebnis muss genau der Mustervorlage der Landesinnung entsprechen.</p>
+ <section class="panel stack"><h3>Aufteilung am Technikkopf (verbindlich)</h3><p>Der Technikkopf muss genau so aussehen wie die Mustervorlage (Foto in der Broschüre der Landesinnung). Nichts anders machen!</p>
+ <ul class="clean weak"><li><span><strong>Rechte Kopfseite</strong></span><span class="muted small" style="text-align:right">10 Papilloten in Reihen, in Wellenform</span></li><li><span><strong>Oberkopf und linke Seite</strong></span><span class="muted small" style="text-align:right">Handgelegte Wellen, Enden in Papilloten</span></li><li><span><strong>Nacken</strong></span><span class="muted small" style="text-align:right">10 Wickler: 4 liegend in der Mitte, je 3 stehend an den Seiten</span></li><li><span><strong>Oberkopf hinten</strong></span><span class="muted small" style="text-align:right">Restliches Haar als Knoten</span></li></ul>
+ <p class="small muted">Rechts und links von der Puppe aus gesehen. Vergleiche dein Ergebnis immer mit dem Foto der Mustervorlage.</p></section>
  <section class="figs"><figure class="panel"><h3>Handgelegte Wasserwellen</h3>${wasserwelleSVG()}<figcaption>Die Wellenkanten sind gleichmäßig, die Wellen gleich breit und bis zum Grund durchgearbeitet.</figcaption></figure>
  <figure class="panel"><h3>Papilloten</h3>${papilloteSVG()}<figcaption>Die Spitzen liegen innen. Der Clip sitzt am Papillotenhals und darf die Rundung nicht verändern.</figcaption></figure>
  <figure class="panel"><h3>Dauerwellwickler</h3>${wicklerSVG()}<figcaption>Der Wickler sitzt auf der eigenen Basis. Die Spitzen liegen gerade im Spitzenpapier und sind nie umgebogen.</figcaption></figure></section>`;}
