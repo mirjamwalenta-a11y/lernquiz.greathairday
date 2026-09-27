@@ -152,7 +152,7 @@ footer{padding-block:40px 36px;color:#A9A59C;font-size:12px;text-align:center}
 
 <div class="wrap">
   <header class="top">
-    <a class="back-link" href="lerntool.html?v=20260927">← Zurück zum Lern-Tool</a>
+    <a class="back-link" href="lerntool.html?v=20260927d">← Zurück zum Lern-Tool</a>
     <span class="tag">greathairday · Lern-Tool</span>
     <h1>Schnittwerkstatt ✂</h1>
     <p>Die vier Grundformen im Profil, von hinten und von oben, der Erhebungswinkel mit Kopfhaltung zum Ausprobieren, sechs Pony-Varianten und die Schnittzeichnung Schritt für Schritt. Am Übungsblatt baust du sie dann selbst.</p>
@@ -392,7 +392,7 @@ const FORMS={
     facts:[['Winkel','90° zur Kopfrundung'],['Leitsträhne','wandernd, läuft von Abteilung zu Abteilung mit'],['Abteilungen','vertikal oder radial (Pivot vom Wirbel)'],['Fingerstellung','parallel zur Kopfrundung'],['Längen','überall gleich lang'],['Struktur','vollständig aktiviert'],['Gewicht','kein Gewicht, gleichmäßig verteilt']],
     text:'Jede Strähne wird senkrecht von der Kopfrundung weg gehalten und auf die gleiche Länge geschnitten. Die Form folgt der Kopfform und wirkt rund und locker.'},
   zunehmend:{name:'Zunehmend stufige Form',en:'Increase layers',angle:'über 90°',theta:180,ref:'floor',
-    facts:[['Winkel','Oberkopf über 90°: alle Strähnen senkrecht nach oben gezogen; Seiten und Nacken im natürlichen Fall'],['Leitsträhne','an der Stirnmitte, dem kürzesten Punkt'],['Abteilungen','vertikal am Oberkopf, diagonal vorne, horizontal im Nacken'],['Fingerstellung','an der Stirn waagrecht, dann diagonal ansteigend zum höchsten Punkt'],['Längen','von der Stirnmitte (kürzester Punkt) zum höchsten Punkt des Kopfes (längster Punkt) ansteigend'],['Struktur','aktiviert'],['Gewicht','wenig Gewicht, Länge bleibt an der Kontur']],
+    facts:[['Winkel','Oberkopf über 90°: alle Strähnen senkrecht nach oben gezogen; Seiten und Nacken im natürlichen Fall'],['Leitsträhne','an der Stirnmitte, dem kürzesten Punkt'],['Abteilungen','Oberkopf-Partie als Dreieck von der Stirn bis zum Hinterkopf, Rest wird geklammert'],['Fingerstellung','diagonal: vorne an der Stirn kurz, nach hinten ansteigend'],['Längen','von der Stirnmitte (kürzester Punkt) zum höchsten Punkt des Kopfes (längster Punkt) ansteigend'],['Struktur','aktiviert'],['Gewicht','wenig Gewicht, Länge bleibt an der Kontur']],
     text:'Die Längen steigen von der Stirnmitte, dem kürzesten Punkt, bis zum höchsten Punkt des Kopfes, dem längsten Punkt, an. Vorne entsteht eine gesichtsumrahmende Stufung, Seiten und Nacken fallen natürlich.'}
 };
 const ORDER=['kompakt','graduiert','gleich','zunehmend'];
@@ -574,7 +574,7 @@ const VIEWS={
 };
 
 /* Graduiert und zunehmend stufig nach klassischer Schnittzeichnungs-Vorlage */
-const zCut=x=>x>=281?110:Math.max(-6,110-2*(281-x));
+const zCut=x=>96-(281-x)*0.689;
 const zFront=x=>{let t=0;for(let i=0;i<=200;i++){t=i/200;const xx=(1-t)*(1-t)*302+2*t*(1-t)*296+t*t*212;if(xx<=x)break;}return (1-t)*(1-t)*296+2*t*(1-t)*382+t*t*392;};
 const thin=(g,a,b,id,extra)=>line(g,a,b,'ang-line',Object.assign({'stroke-width':1.5,'marker-end':'url(#'+id+'A)'},extra||{}));
 const REFD={
@@ -600,23 +600,27 @@ const REFD={
     }
   },
   zunehmend:{
-    sections(g,cl){for(let x=118;x<=268;x+=15)line(cl,{x,y:50},{x,y:150},'sec-line');
-      for(let k=0;k<5;k++)line(cl,{x:222+k*14,y:100},{x:300+k*14,y:230},'sec-line');
-      for(let y=176;y<=262;y+=16)line(cl,{x:40,y},{x:200,y},'sec-line');},
+    sections(g,cl){
+      const svg=g.ownerSVGElement,df=svg.querySelector('defs'),cid=svg.id+'ZSec';
+      let d='M226,166';for(let a=235;a<=336;a+=4){const p=P(a);d+=' L'+f(p.x)+','+f(p.y);}d+=' Z';
+      const cp=S('clipPath',{id:cid},df);S('path',{d},cp);
+      const h=S('g',{'clip-path':'url(#'+cid+')'},g);
+      for(let k=-6;k<=10;k++)line(h,{x:120+k*16,y:170},{x:190+k*16,y:40},'sec-line',{'stroke-dasharray':'7 5'});
+      S('path',{d,class:'sec-line','stroke-width':2.4,fill:'none'},g);
+    },
     angles(g,id){
-      [336,330,324,318,312,306,300,294,288,282,276,270,264,258].forEach(a=>{const p=P(a);thin(g,p,{x:p.x,y:zCut(p.x)+3},id,{'stroke-width':1.5});});
-      for(let x=214;x<=298;x+=12)thin(g,{x,y:150},{x,y:zFront(x)-3},id,{'stroke-width':1.1,opacity:.75});
-      for(let x=64;x<=200;x+=14)thin(g,{x,y:190},{x,y:389},id,{'stroke-width':1.1,opacity:.75});
-      T('über 90° · Oberkopf',{x:-54,y:60,class:'lbl-a'},g);T('senkrecht nach oben gezogen',{x:-54,y:76,class:'lbl-a'},g);
-      T('Seiten und Nacken: natürlicher Fall',{x:130,y:410,'text-anchor':'middle',class:'lbl-a'},g);
+      [336,322,308,294,280,266,252,235].forEach(a=>{const p=P(a);thin(g,p,{x:p.x,y:zCut(p.x)+3},id,{'stroke-width':1.5});});
+      [[283,140,0],[276,152,.2],[268,164,.4],[258,172,.6],[248,176,.8]].forEach(([x,y,t])=>{const e={x:(1-t)*(1-t)*314+2*t*(1-t)*306+t*t*212,y:(1-t)*(1-t)*236+2*t*(1-t)*362+t*t*392};thin(g,{x,y},{x:e.x,y:e.y-3},id,{'stroke-width':1.3});});
+      T('über 90° · Oberkopf-Partie',{x:-54,y:60,class:'lbl-a'},g);T('senkrecht nach oben gezogen',{x:-54,y:76,class:'lbl-a'},g);
+      T('vorne: nach',{x:326,y:250,class:'lbl-a'},g);T('vorne gekämmt',{x:326,y:266,class:'lbl-a'},g);
     },
     guide(g){
-      S('polyline',{points:'304,110 281,110 223,-6 150,-6',class:'cut-line'},g);
-      S('path',{d:'M302,296 Q296,382 212,392 L60,392',class:'cut-line'},g);
-      line(g,P(336),{x:P(336).x,y:112},'guide-line');
-      T('kürzester Punkt:',{x:318,y:128,class:'lbl-g'},g);T('Stirnmitte,',{x:318,y:144,class:'lbl-g'},g);T('waagrecht',{x:318,y:160,class:'lbl-g'},g);T('dann diagonal',{x:330,y:84,class:'lbl-g'},g);T('ansteigend',{x:330,y:100,class:'lbl-g'},g);
-      T('längster Punkt:',{x:330,y:12,class:'lbl-g'},g);T('höchster Punkt',{x:330,y:28,class:'lbl-g'},g);T('des Kopfes',{x:330,y:44,class:'lbl-g'},g);
-      T('Bogen läuft vorne',{x:306,y:330,class:'lbl-g'},g);T('nach innen aus',{x:306,y:346,class:'lbl-g'},g);
+      line(g,{x:300,y:zCut(300)},{x:118,y:zCut(118)},'cut-line');
+      line(g,P(336),{x:P(336).x,y:zCut(P(336).x)},'guide-line');
+      S('path',{d:'M314,236 Q306,362 212,392',class:'cut-line'},g);
+      T('kürzester Punkt:',{x:318,y:92,class:'lbl-g'},g);T('Stirnmitte',{x:318,y:108,class:'lbl-g'},g);
+      T('längster Punkt:',{x:-54,y:120,class:'lbl-g'},g);T('höchster Punkt des Kopfes',{x:-54,y:136,class:'lbl-g'},g);
+      T('kurz an Nase/Mund,',{x:300,y:392,class:'lbl-g'},g);T('nach innen länger',{x:300,y:408,class:'lbl-g'},g);
     }
   }
  },
@@ -642,13 +646,12 @@ const REFD={
     angles(g,id){
       const A={x:195,y:0};
       [[104,156],[132,100],[160,74],[195,64],[230,74],[258,100],[286,156],[195,178]].forEach(([x,y])=>line(g,{x,y},A,'ang-line',{'stroke-width':1.4}));
-      const cy=x=>312+40*(1-Math.pow((x-195)/95,2));
-      for(let x=100;x<=290;x+=16)thin(g,{x,y:196},{x,y:cy(x)-3},id,{'stroke-width':1.1,opacity:.6});
+      for(let x=100;x<=290;x+=16)thin(g,{x,y:196},{x,y:327},id,{'stroke-width':1.1,opacity:.6});
       T('Oberkopf-Partie zu einem',{x:212,y:18,class:'lbl-a'},g);T('Punkt über der Kopfmitte',{x:212,y:34,class:'lbl-a'},g);
       T('Seiten und Nacken: natürlicher Fall',{x:195,y:392,'text-anchor':'middle',class:'lbl-a'},g);
     },
-    guide(g){S('circle',{cx:195,cy:0,r:5,fill:'var(--accent)'},g);S('path',{d:'M100,312 Q195,392 290,312',class:'cut-line'},g);
-      T('runde Kontur, Mitte am längsten',{x:195,y:410,'text-anchor':'middle',class:'lbl-g'},g);}
+    guide(g){S('circle',{cx:195,cy:0,r:5,fill:'var(--accent)'},g);line(g,{x:92,y:330},{x:298,y:330},'cut-line');
+      T('gerade Kontur',{x:195,y:410,'text-anchor':'middle',class:'lbl-g'},g);}
   }
  }
 };
@@ -936,9 +939,9 @@ const SPEC={
     guide:['Wandernde Leitsträhne','Ein Teil der zuletzt geschnittenen Strähne wird zur Leitsträhne der nächsten. Die Schnittlinie verläuft überall im gleichen Abstand parallel zur Kopfrundung.'],
     result:['Rund, ohne Gewicht','Alle Haare sind gleich lang. Die Form folgt der Kopfform, die Oberfläche ist vollständig aktiviert.']},
   zunehmend:{
-    sections:['Vertikal oben, diagonal vorne','Die Oberkopf-Partie wird als Dreieck abgeteilt (von hinten gesehen), der Rest wird weggeklammert. Im Gesichtsbereich diagonal, im Nacken horizontal.'],
+    sections:['Vertikal oben, diagonal vorne','Die Oberkopf-Partie wird als Dreieck von der Stirn bis zum Hinterkopf abgeteilt, der Rest wird weggeklammert.'],
     angles:['Oberkopf senkrecht nach oben, Seiten 0°','Alle Strähnen am Oberkopf werden senkrecht nach oben gezogen, nicht der Kopfrundung nach. Von hinten gesehen laufen sie zu einem Punkt über der Kopfmitte. Seiten und Nacken fallen natürlich.'],
-    guide:['Stirnmitte kürzester Punkt','Die Schnittlinie ist an der Stirnmitte (kürzester Punkt) waagrecht und steigt dann diagonal bis zum höchsten Punkt des Kopfes (längster Punkt) an. Vorne läuft die Kontur als Bogen nach innen aus.'],
+    guide:['Stirnmitte kürzester Punkt','Die Schnittlinie verläuft diagonal: an der Stirnmitte (kürzester Punkt) beginnend, nach hinten ansteigend bis zum höchsten Punkt des Kopfes (längster Punkt). Vorne wird das Haar nach vorne gekämmt: an Nase und Mund am kürzesten, im Bogen nach innen länger. Von hinten ist die Kontur gerade.'],
     result:['Innen kurz, außen lang','Je weiter weg vom Oberkopf, desto länger das Haar. Die Kontur behält ihre Länge, die Form wirkt leicht und beweglich.']}
 };
 const VIEW_NAMES={side:'Profil',back:'von hinten',top:'von oben'};
@@ -964,12 +967,12 @@ const TASKS={
   kompakt:'Zeichne horizontale Abteilungen, Winkel mit 0° und eine waagrechte Schnittlinie unter dem Nackenhaaransatz.',
   graduiert:'Zeichne horizontale Abteilungen am Hinterkopf, Pfeile mit 45° im Nacken und 90° am Hinterkopf, die Leitsträhne im Nacken und eine Kontur, die vorne länger wird.',
   gleich:'Zeichne radiale Abteilungen vom Wirbel aus, Pfeile senkrecht zur Kopfrundung und eine Schnittlinie parallel zum Kopf.',
-  zunehmend:'Zeichne im Profil eine Schnittlinie, die von der Stirnmitte (kürzester Punkt) bis zum höchsten Punkt des Kopfes (längster Punkt) ansteigt, und eine Kontur, die vorne kürzer ist.'
+  zunehmend:'Zeichne im Profil die Oberkopf-Partie als Dreieck, die Strähnen senkrecht nach oben und eine diagonale Schnittlinie von der Stirnmitte (kurz) nach hinten ansteigend. Vorne ein Bogen: an Nase/Mund kurz, nach innen länger. Von hinten eine gerade Kontur.'
 };
 const BUILD=[
   {key:'sections',layer:3,title:'1 · Welche Abteilungen?',
-   opts:[['kompakt','horizontal'],['graduiert','horizontal + Pivot im Nacken'],['gleich','radial vom Wirbel'],['zunehmend','vertikal oben + diagonal vorne']],
-   tip:{kompakt:'Die Enden sollen auf einer waagrechten Linie liegen.',graduiert:'Im Nacken strahlen die Abteilungen von einem Punkt aus.',gleich:'Jede Strähne soll sich senkrecht zur Kopfrundung halten lassen.',zunehmend:'Oben vertikal, im Gesichtsbereich diagonal.'}},
+   opts:[['kompakt','horizontal'],['graduiert','horizontal + Pivot im Nacken'],['gleich','radial vom Wirbel'],['zunehmend','Dreieck am Oberkopf, Rest geklammert']],
+   tip:{kompakt:'Die Enden sollen auf einer waagrechten Linie liegen.',graduiert:'Im Nacken strahlen die Abteilungen von einem Punkt aus.',gleich:'Jede Strähne soll sich senkrecht zur Kopfrundung halten lassen.',zunehmend:'Nur die Oberkopf-Partie wird abgeteilt, der Rest geklammert.'}},
   {key:'angles',layer:4,title:'2 · Welcher Erhebungswinkel?',
    opts:[['kompakt','0°'],['graduiert','Nacken 45°, Hinterkopf 90°'],['gleich','90° zur Kopfrundung'],['zunehmend','Oberkopf über 90°, Seiten 0°']],
    tip:{kompakt:'Bei dieser Form wird nichts angehoben.',graduiert:'Von unten nach oben wird der Winkel größer, aber nie über 90°.',gleich:'Der Winkel wird hier zur Kopfrundung gemessen.',zunehmend:'Die Strähnen am Oberkopf werden senkrecht nach oben gezogen.'}},
