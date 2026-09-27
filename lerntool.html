@@ -1066,24 +1066,19 @@ var SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
 var sb2 = supabase.createClient(SB_URL, SB_KEY);
 var TABELLE = 'lerntool_daten';
+// Wörni-Meldung über Serverfunktion (Team-Repo, Migration 20260927100000):
+// mit dem Login-Token; die App liest ghd_ereignisse nicht mehr selbst.
 async function ghd_upsertEreignis(app, typ, titel, prioritaet) {
   try {
-    var _url = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
-    var _key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
-    // Echtes Nutzer-Token verwenden statt des anonymen Keys, damit RLS
-    // (auth.role() = 'authenticated') auf ghd_ereignisse den Zugriff erlaubt.
     var _sessionRes = await sb2.auth.getSession();
-    var _userToken = _sessionRes.data && _sessionRes.data.session ? _sessionRes.data.session.access_token : _key;
-    var _h = { 'apikey': _key, 'Authorization': 'Bearer ' + _userToken, 'Content-Type': 'application/json' };
-    var _r = await fetch(_url + '/rest/v1/ghd_ereignisse?app=eq.' + encodeURIComponent(app) + '&typ=eq.' + encodeURIComponent(typ) + '&gelesen=eq.false&select=id', { headers: _h });
-    var _ex = await _r.json();
-    if (Array.isArray(_ex) && _ex.length > 0) {
-      await fetch(_url + '/rest/v1/ghd_ereignisse?app=eq.' + encodeURIComponent(app) + '&typ=eq.' + encodeURIComponent(typ) + '&gelesen=eq.false',
-        { method: 'PATCH', headers: Object.assign({}, _h, { 'Prefer': 'return=minimal' }), body: JSON.stringify({ titel: titel, prioritaet: prioritaet, erstellt_am: new Date().toISOString() }) });
-    } else {
-      await fetch(_url + '/rest/v1/ghd_ereignisse',
-        { method: 'POST', headers: Object.assign({}, _h, { 'Prefer': 'return=minimal' }), body: JSON.stringify({ app: app, typ: typ, titel: titel, prioritaet: prioritaet, gelesen: false }) });
-    }
+    var _token = _sessionRes.data && _sessionRes.data.session ? _sessionRes.data.session.access_token : null;
+    if (!_token) throw new Error('Nicht angemeldet');
+    var _r = await fetch(SB_URL + '/rest/v1/rpc/ghd_ereignis_melden', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + _token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_app: app, p_typ: typ, p_titel: titel, p_prioritaet: prioritaet })
+    });
+    if (!_r.ok) throw new Error(await _r.text());
   } catch(e) { console.warn('ghd_upsertEreignis:', e); }
 }
 

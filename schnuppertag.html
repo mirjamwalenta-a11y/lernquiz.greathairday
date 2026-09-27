@@ -651,19 +651,22 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
 const sb = supabase.createClient(SB_URL, SB_KEY);
+// Wörni-Meldungen über Serverfunktion (Team-Repo, Migration 20260927100000):
+// mit dem Login-Token der Meisterin; die App liest ghd_ereignisse nicht mehr selbst.
+async function ghd_rpcEreignis(app, typ, titel, prioritaet, zusammenfassen) {
+  const { data } = await sb.auth.getSession();
+  const token = data && data.session ? data.session.access_token : null;
+  if (!token) throw new Error('Nicht angemeldet');
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/ghd_ereignis_melden`, {
+    method: 'POST',
+    headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_app: app, p_typ: typ, p_titel: titel, p_prioritaet: prioritaet, p_zusammenfassen: zusammenfassen !== false })
+  });
+  if (!r.ok) throw new Error(await r.text());
+}
 async function ghd_upsertEreignis(app, typ, titel, prioritaet) {
-  try {
-    const _h = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
-    const _r = await fetch(`${SB_URL}/rest/v1/ghd_ereignisse?app=eq.${encodeURIComponent(app)}&typ=eq.${encodeURIComponent(typ)}&gelesen=eq.false&select=id`, { headers: _h });
-    const _ex = await _r.json();
-    if (Array.isArray(_ex) && _ex.length > 0) {
-      await fetch(`${SB_URL}/rest/v1/ghd_ereignisse?app=eq.${encodeURIComponent(app)}&typ=eq.${encodeURIComponent(typ)}&gelesen=eq.false`,
-        { method: 'PATCH', headers: { ..._h, 'Prefer': 'return=minimal' }, body: JSON.stringify({ titel, prioritaet, erstellt_am: new Date().toISOString() }) });
-    } else {
-      await fetch(`${SB_URL}/rest/v1/ghd_ereignisse`,
-        { method: 'POST', headers: { ..._h, 'Prefer': 'return=minimal' }, body: JSON.stringify({ app, typ, titel, prioritaet, gelesen: false }) });
-    }
-  } catch(e) { console.warn('ghd_upsertEreignis:', e); }
+  try { await ghd_rpcEreignis(app, typ, titel, prioritaet, true); }
+  catch(e) { console.warn('ghd_upsertEreignis:', e); }
 }
 
 var MEISTERIN_OK = false;
@@ -1168,11 +1171,9 @@ async function schnellSpeichern() {
     if (ok2) { ok2.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; ok2.style.display = 'block'; }
     var entText = AKT_ENTSCHEIDUNG === 'ja' ? '→ Probezeit' : AKT_ENTSCHEIDUNG === 'nein' ? '→ Nicht geeignet' : '→ Entscheidung offen';
     var prio = AKT_ENTSCHEIDUNG === 'ja' ? 'diese-woche' : AKT_ENTSCHEIDUNG === 'nein' ? 'wann-moeglich' : 'heute';
-    sb.from('ghd_ereignisse').insert({
-      app: 'Schnuppertag', typ: 'schnuppertag_abgeschlossen',
-      titel: 'Schnuppertag ' + name + ' — ' + gesamt + ' Punkte ' + entText,
-      prioritaet: prio, gelesen: false,
-    }).then(function(r){ if (r.error) console.log('Ereignis-Fehler:', r.error.message); });
+    ghd_rpcEreignis('Schnuppertag', 'schnuppertag_abgeschlossen',
+      'Schnuppertag ' + name + ' — ' + gesamt + ' Punkte ' + entText, prio, false
+    ).catch(function(e){ console.log('Ereignis-Fehler:', e.message); });
   }
 }
 
@@ -1217,15 +1218,9 @@ async function speichereSchnuppertag() {
     // ── GHD-EREIGNIS ──────────────────────────────────────────────
     var entText = AKT_ENTSCHEIDUNG === 'ja' ? '→ Probezeit' : AKT_ENTSCHEIDUNG === 'nein' ? '→ Nicht geeignet' : '→ Entscheidung offen';
     var prio = AKT_ENTSCHEIDUNG === 'ja' ? 'diese-woche' : AKT_ENTSCHEIDUNG === 'nein' ? 'wann-moeglich' : 'heute';
-    sb.from('ghd_ereignisse').insert({
-      app: 'Schnuppertag',
-      typ: 'schnuppertag_abgeschlossen',
-      titel: 'Schnuppertag ' + name + ' — ' + gesamt + ' Punkte ' + entText,
-      prioritaet: prio,
-      gelesen: false,
-    }).then(function(r){
-      if (r.error) console.log('Ereignis-Fehler:', r.error.message);
-    });
+    ghd_rpcEreignis('Schnuppertag', 'schnuppertag_abgeschlossen',
+      'Schnuppertag ' + name + ' — ' + gesamt + ' Punkte ' + entText, prio, false
+    ).catch(function(e){ console.log('Ereignis-Fehler:', e.message); });
   }
 }
 
@@ -2445,13 +2440,20 @@ async function lehrlingAbschicken() {
     if (btn) { btn.disabled = false; btn.textContent = '✓ Test abschicken →'; }
   } else {
     // Wörni-Ereignis
-    await sb.from('ghd_ereignisse').insert({
-      app: 'Schnuppertag',
-      typ: 'lehrling_test_abgeschickt',
-      titel: '📋 Neuer Bewerber: ' + name + ' hat den Schnuppertag-Test abgeschlossen (' + wissen + ' Wissen-Punkte)',
-      prioritaet: 'heute',
-      gelesen: false,
-    });
+    // Bewerber:innen haben keinen Login: eng begrenzte öffentliche Meldefunktion
+    // (nur diese Meldungsart, kann nichts lesen; Team-Repo, Migration 20260927100000)
+    try {
+      await fetch(`${SB_URL}/rest/v1/rpc/ghd_ereignis_melden_oeffentlich`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          p_app: 'Schnuppertag',
+          p_typ: 'lehrling_test_abgeschickt',
+          p_titel: '📋 Neuer Bewerber: ' + name + ' hat den Schnuppertag-Test abgeschlossen (' + wissen + ' Wissen-Punkte)',
+          p_prioritaet: 'heute'
+        })
+      });
+    } catch(e) { console.warn('Wörni-Ereignis Bewerber:', e); }
 
     // Erfolgs-Anzeige
     okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#5B7B6F">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>';
