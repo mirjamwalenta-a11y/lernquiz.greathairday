@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c1917">
+<title>Schnittzeichnungs-Designer · A Great Hair Day</title>
+<style>
+:root{
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#1C1C1A; --muted:#7A7A70; --line:#E2DDD5;
+  --accent:#5B7B6F; --accent-soft:#EAF0EE; --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px}
+h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600;margin:0;text-wrap:balance}
+h3{font-size:13px;margin:0;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+p{margin:0;max-width:65ch}
+.tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+header.top{padding-block:20px 14px;display:grid;gap:6px}
+.back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start;padding-bottom:40px}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+.stage{position:sticky;top:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;touch-action:none}
+@media (max-width:900px){.stage{position:relative;top:0}}
+#board{display:block;width:100%;height:auto;cursor:crosshair;user-select:none;-webkit-user-select:none}
+.hint{font-size:12px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line);min-height:36px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:14px}
+.group{display:grid;gap:8px}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
+.tb{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 4px 7px;display:grid;justify-items:center;gap:3px;cursor:pointer;font:600 11.5px system-ui;color:var(--ink);text-align:center;line-height:1.2}
+.tb svg{width:40px;height:28px}
+.tb:hover{border-color:var(--accent)}
+.tb[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid #C8C4BC;background:transparent;color:var(--muted);font:600 12.5px system-ui;padding:7px 11px;border-radius:6px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.sw{appearance:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px 5px 6px;font:600 12px system-ui;cursor:pointer;color:var(--ink)}
+.sw i{width:16px;height:16px;border-radius:50%;display:inline-block}
+.sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 13px system-ui;padding:9px 13px;border-radius:6px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.warn{border-color:#C44030;color:#C44030;background:transparent}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+input[type=text]{font:14px system-ui;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0;flex:1}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600}
+.check input{accent-color:var(--accent);width:17px;height:17px}
+.saved{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.saved li{display:flex;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:6px;font-size:13px}
+.saved li span{flex:1;min-width:0;overflow-wrap:anywhere}
+.saved small{color:var(--muted)}
+.mini{appearance:none;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 8px;font:600 12px system-ui;cursor:pointer;color:var(--ink)}
+#exportBox{display:grid;gap:8px}
+#exportBox img{width:100%;border:1px solid var(--line);border-radius:6px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="back-link" href="lerntool.html?v=20260927d">← Zurück zum Lern-Tool</a>
+    <span class="tag">greathairday · Lern-Tool</span>
+    <h1>Schnittzeichnungs-Designer ✎</h1>
+    <p class="muted">Gestalte eigene Schnittzeichnungen für moderne Haarschnitte: Linien, Bögen, Pointen, Slicen, Pfeile, Schere und Text. Speichere deine Entwürfe oder als Bild zum Verschicken.</p>
+  </header>
+
+  <div class="layout">
+    <div class="stage">
+      <svg id="board" viewBox="-60 -10 510 450" role="img" aria-label="Zeichenblatt"></svg>
+      <div class="hint" id="hint"></div>
+    </div>
+
+    <div class="panel">
+      <div class="group">
+        <h3>Ansicht</h3>
+        <div class="seg" id="views"></div>
+        <label class="check"><input type="checkbox" id="guides" checked> Hilfslinien (Haaransatz, Mittellinie)</label>
+      </div>
+
+      <div class="group">
+        <h3>Linien</h3>
+        <div class="tools" id="toolsLines"></div>
+      </div>
+      <div class="group">
+        <h3>Schnitttechnik</h3>
+        <div class="tools" id="toolsCut"></div>
+      </div>
+      <div class="group">
+        <h3>Beschriften</h3>
+        <div class="tools" id="toolsText"></div>
+        <div class="row" id="textRow" hidden><input type="text" id="textIn" placeholder="Text eingeben, dann aufs Blatt tippen" maxlength="40"></div>
+      </div>
+
+      <div class="group">
+        <h3>Farbe</h3>
+        <div class="seg" id="colors"></div>
+        <h3>Linie</h3>
+        <div class="seg" id="dash"></div>
+        <div class="seg" id="width"></div>
+        <label class="check"><input type="checkbox" id="snap" checked> Winkel einrasten (15°-Schritte)</label>
+      </div>
+
+      <div class="group">
+        <h3>Bearbeiten</h3>
+        <div class="row">
+          <button class="tb" data-tool="erase" style="grid-auto-flow:column;padding:8px 10px"><svg viewBox="0 0 40 28"><path d="M8 20 L20 8 L30 18 L22 26 L12 26 Z" fill="#fff" stroke="#1C1C1A" stroke-width="2"/><path d="M14 14 L24 24" stroke="#C44030" stroke-width="2"/></svg>Linie löschen</button>
+          <button class="btn ghost" id="undo">Rückgängig</button>
+          <button class="btn warn" id="clear">Ansicht leeren</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h3>Entwurf</h3>
+        <div class="row"><input type="text" id="name" placeholder="Name, z. B. Shag mit Curtain Bangs" maxlength="60"><button class="btn" id="save">Speichern</button></div>
+        <p id="saveMsg" class="muted" style="font-size:12px"></p>
+        <ul class="saved" id="savedList"></ul>
+        <div class="row"><button class="btn ghost" id="newDesign">Neuer Entwurf</button><button class="btn" id="export">Als Bild speichern</button></div>
+        <div id="exportBox" hidden>
+          <p style="font-size:13px">Fertig! Falls der Download nicht startet: Bild lange antippen und „Bild speichern“ wählen, dann kannst du es verschicken.</p>
+          <img id="exportImg" alt="Deine Schnittzeichnung als Bild">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const NS='http://www.w3.org/2000/svg';
+const f=n=>Math.round(n*10)/10;
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- Kopfvorlagen ---------- */
+const INK='#2C2C2C',SOFT='#9A9A90';
+const SIDE_PATH='M150,345 L150,267 A100,100 0 1,1 280,135 C288,158 286,178 291,194 L309,222 L293,229 C297,240 295,250 289,257 C293,268 287,285 271,292 C257,298 243,296 233,290 L233,345';
+const SIDE_HL='M281,134 C272,150 263,160 258,172 C248,176 232,171 222,175 C212,170 198,172 193,188 C188,212 190,236 182,254 C174,264 162,268 151,267';
+const BACK_PATH='M150,345 L150,280 C130,270 116,252 110,228 C105,208 105,188 105,170 A90,100 0 0,1 285,170 C285,188 285,208 280,228 C274,252 260,270 240,280 L240,345';
+const BACK_HL='M110,224 C122,236 133,252 146,268 Q195,286 244,268 C257,252 268,236 280,224';
+const FRONT_PATH='M105,170 A90,100 0 0,1 285,170 C286,215 276,262 242,290 Q195,318 148,290 C114,262 104,215 105,170 Z';
+const FRONT_HL='M105,205 C109,170 116,140 140,122 Q195,104 250,122 C274,140 281,170 285,205';
+const TOP_PATH='M195,98 A82,102 0 1,1 195,302 A82,102 0 1,1 195,98 Z';
+const TOP_HL='M236,111.7 Q195,132 154,111.7';
+const hp=(d,extra)=>'<path d="'+d+'" fill="#fff" stroke="'+INK+'" stroke-width="2" stroke-linejoin="round" '+(extra||'')+'/>';
+const hl=d=>'<path d="'+d+'" fill="none" stroke="'+SOFT+'" stroke-width="1.3" stroke-dasharray="4 4"/>';
+const ell=(cx,cy,rx,ry)=>'<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#fff" stroke="'+INK+'" stroke-width="2"/>';
+const HEADS={
+  side:g=>hp(SIDE_PATH)+ell(205,195,11,19)+'<path d="M266,178 q6,-3 12,0 M209,183 q-7,5 -3,12 q4,7 -2,13" fill="none" stroke="'+INK+'" stroke-width="1.5"/>'+(g?hl(SIDE_HL)+hl('M190,75 L190,40'):''),
+  back:g=>ell(103,205,9,22)+ell(287,205,9,22)+hp(BACK_PATH)+(g?hl(BACK_HL)+hl('M195,70 L195,272'):''),
+  front:g=>'<path d="M160,300 L158,345 M230,300 L232,345" stroke="'+INK+'" stroke-width="2" fill="none"/>'+ell(101,205,9,22)+ell(289,205,9,22)+hp(FRONT_PATH)+'<path d="M160,192 q10,-6 20,0 M210,192 q10,-6 20,0 M155,180 q13,-7 27,-1 M208,179 q14,-6 27,1 M195,202 L189,238 Q195,243 201,238 M180,266 Q195,274 210,266" fill="none" stroke="'+INK+'" stroke-width="1.6" stroke-linecap="round"/>'+(g?hl(FRONT_HL)+hl('M195,70 L195,300'):''),
+  top:g=>ell(111,205,7,18)+ell(279,205,7,18)+'<path d="M184,101 L195,84 L206,101" fill="#fff" stroke="'+INK+'" stroke-width="2"/>'+hp(TOP_PATH)+(g?hl(TOP_HL)+hl('M195,100 L195,300'):'')+'<text x="195" y="72" text-anchor="middle" font-family="system-ui" font-size="11" fill="'+SOFT+'">vorne (Gesicht)</text>'
+};
+const VIEWS=[
+  ['side','Profil rechts','-60 -10 510 450',g=>HEADS.side(g)],
+  ['sideL','Profil links','-60 -10 510 450',g=>'<g transform="translate(390,0) scale(-1,1)">'+HEADS.side(g)+'</g>'],
+  ['back','Hinten','-60 -10 510 450',g=>HEADS.back(g)],
+  ['front','Vorne','-60 -10 510 450',g=>HEADS.front(g)],
+  ['top','Oben','-60 -10 510 450',g=>HEADS.top(g)],
+  ['sheet','Blatt: 4 Ansichten','0 0 1020 900',g=>{
+    const cell=(x,y,inner,label)=>'<g transform="translate('+x+','+y+') scale(0.92)">'+inner+'</g><text x="'+(x+220)+'" y="'+(y+436)+'" text-anchor="middle" font-family="system-ui" font-size="13" fill="'+SOFT+'">'+label+'</text>';
+    return '<rect x="0" y="0" width="1020" height="900" fill="#fff"/>'+cell(60,10,HEADS.side(g),'Profil')+cell(560,10,HEADS.back(g),'Hinten')+cell(60,455,HEADS.front(g),'Vorne')+cell(560,455,HEADS.top(g),'Oben')+'<path d="M510 10 V890 M10 450 H1010" stroke="#E2DDD5" stroke-width="1.5"/>';}]
+];
+
+/* ---------- Werkzeuge ---------- */
+const TI=(d)=>'<svg viewBox="0 0 40 28" fill="none" stroke="#1C1C1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+const TOOLS_LINES=[
+  ['line','Gerade',TI('<path d="M6 22 L34 8"/>')],
+  ['horiz','Waagrecht',TI('<path d="M5 14 H35"/>')],
+  ['vert','Senkrecht',TI('<path d="M20 3 V25"/>')],
+  ['diagUp','Diagonal nach oben',TI('<path d="M8 24 L32 4"/><path d="M26 4 H32 V10"/>')],
+  ['diagDown','Diagonal nach unten',TI('<path d="M8 4 L32 24"/><path d="M26 24 H32 V18"/>')],
+  ['curve','Gebogen',TI('<path d="M5 22 Q20 -2 35 22"/>')],
+  ['free','Freihand',TI('<path d="M4 18 C10 6 14 24 20 14 S30 6 36 16"/>')]
+];
+const TOOLS_CUT=[
+  ['zigzag','Pointen (Zickzack)',TI('<path d="M3 16 L7 10 L11 18 L15 10 L19 18 L23 10 L27 18 L31 10 L35 16"/>')],
+  ['slice','Slicen',TI('<path d="M4 18 Q20 10 36 16"/><path d="M9 20 L13 12 M17 18 L21 10 M25 18 L29 10" stroke-width="1.6"/>')],
+  ['scissors','Schere',TI('<circle cx="9" cy="20" r="4"/><circle cx="17" cy="23" r="3.5"/><path d="M12 17 L34 5 M20 21 L32 8"/>')]
+];
+const TOOLS_TEXT=[
+  ['arrow','Pfeil mit Winkel',TI('<path d="M6 22 L30 8"/><path d="M22 7 L30 8 L27 15"/>')],
+  ['text','Text',TI('<path d="M10 7 H30 M20 7 V23"/>')]
+];
+const COLORS=[['#3D64A8','Abteilung'],['#B8336A','Winkel'],['#5B7B6F','Schnittlinie'],['#1C1C1A','Kontur'],['#8A5A33','Haar']];
+const WIDTHS=[[1.5,'dünn'],[2.5,'mittel'],[4.5,'dick']];
+const HINTS={
+  line:'Ziehen: gerade Linie in beliebiger Richtung.',horiz:'Ziehen: waagrechte Linie.',vert:'Ziehen: senkrechte Linie.',
+  diagUp:'Ziehen: Diagonale nach oben (45°).',diagDown:'Ziehen: Diagonale nach unten (45°).',
+  curve:'Ziehen für Anfang und Ende, dann den runden Griff verschieben, um den Bogen zu formen.',free:'Frei zeichnen.',
+  zigzag:'Ziehen: Zickzack-Schnittlinie fürs Pointen.',slice:'Ziehen: Slice-Linie (gleitender Schnitt).',
+  scissors:'Tippen setzt eine Schere, ziehen dreht sie in Schnittrichtung.',
+  arrow:'Ziehen: Pfeil. Der Winkel zum natürlichen Fall wird automatisch angezeigt.',
+  text:'Text oben eingeben, dann aufs Blatt tippen.',erase:'Auf eine Linie tippen, um sie zu löschen.'
+};
+let tool='line',color=COLORS[2][0],dashed=false,width=2.5,view='side',editCurve=-1,drag=null;
+
+/* ---------- Speicher ---------- */
+const KEY='schnittdesigner-v1';
+let store={cur:{name:'',views:{}},saved:[]};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.cur)store=s;}catch(e){}
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}};
+const strokes=()=>(store.cur.views[view]=store.cur.views[view]||[]);
+
+/* ---------- Zeichnen ---------- */
+const SCIS='<circle cx="-12" cy="6" r="5"/><circle cx="-4" cy="11" r="4.5"/><path d="M-8 3 L16 -4 M0 8 L14 -1"/><circle cx="2" cy="1" r="1.2"/>';
+function geom(s){
+  const [a,b]=s.p;const dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,nx=-uy,ny=ux;
+  return {a,b,dx,dy,L,ux,uy,nx,ny};
+}
+function renderStroke(s,i){
+  const st='stroke="'+s.c+'" stroke-width="'+s.w+'" fill="none" stroke-linecap="round" stroke-linejoin="round"'+(s.d?' stroke-dasharray="'+(s.w*3)+' '+(s.w*2.4)+'"':'');
+  if(s.t==='free')return '<path d="M'+s.p.map(q=>f(q[0])+','+f(q[1])).join(' L')+'" '+st+'/>';
+  if(s.t==='text')return '<text x="'+f(s.p[0][0])+'" y="'+f(s.p[0][1])+'" font-family="system-ui" font-weight="600" font-size="'+(12+s.w*2)+'" fill="'+s.c+'">'+esc(s.txt)+'</text>';
+  if(s.t==='scissors'){const [a,b]=s.p;const ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;return '<g transform="translate('+f(a[0])+','+f(a[1])+') rotate('+f(ang)+') scale(1.4)" stroke="'+s.c+'" stroke-width="1.8" fill="none" stroke-linecap="round">'+SCIS+'</g>';}
+  const G=geom(s),{a,b}=G;
+  if(s.t==='curve'){const c=s.cp||[(a[0]+b[0])/2,(a[1]+b[1])/2];return '<path d="M'+f(a[0])+','+f(a[1])+' Q'+f(c[0])+','+f(c[1])+' '+f(b[0])+','+f(b[1])+'" '+st+'/>';}
+  if(s.t==='zigzag'){const n=Math.max(2,Math.round(G.L/9)),amp=5+s.w;let d='M'+f(a[0])+','+f(a[1]);for(let k=1;k<n;k++){const t=k/n,sg=k%2?1:-1;d+=' L'+f(a[0]+G.dx*t+G.nx*amp*sg)+','+f(a[1]+G.dy*t+G.ny*amp*sg);}d+=' L'+f(b[0])+','+f(b[1]);return '<path d="'+d+'" '+st+'/>';}
+  if(s.t==='slice'){let d='<path d="M'+f(a[0])+','+f(a[1])+' L'+f(b[0])+','+f(b[1])+'" '+st+'/>';const n=Math.max(1,Math.floor(G.L/14));for(let k=1;k<=n;k++){const t=k/(n+1),cx=a[0]+G.dx*t,cy=a[1]+G.dy*t,ex=G.ux*6+G.nx*8,ey=G.uy*6+G.ny*8;d+='<path d="M'+f(cx-ex)+','+f(cy-ey)+' L'+f(cx+ex)+','+f(cy+ey)+'" stroke="'+s.c+'" stroke-width="'+Math.max(1.2,s.w*0.6)+'" stroke-linecap="round"/>';}return d;}
+  let out='<path d="M'+f(a[0])+','+f(a[1])+' L'+f(b[0])+','+f(b[1])+'" '+st+'/>';
+  if(s.t==='arrow'){const h=8+s.w*1.5,an=Math.atan2(G.dy,G.dx);out+='<path d="M'+f(b[0])+','+f(b[1])+' L'+f(b[0]-h*Math.cos(an-0.45))+','+f(b[1]-h*Math.sin(an-0.45))+' L'+f(b[0]-h*Math.cos(an+0.45))+','+f(b[1]-h*Math.sin(an+0.45))+' Z" fill="'+s.c+'" stroke="none"/>';
+    const deg=Math.round(Math.acos(Math.max(-1,Math.min(1,G.dy/G.L)))*180/Math.PI);
+    out+='<text x="'+f(b[0]+G.ux*10+4)+'" y="'+f(b[1]+G.uy*10+4)+'" font-family="ui-monospace,Menlo,monospace" font-weight="700" font-size="13" fill="'+s.c+'" stroke="#fff" stroke-width="3" paint-order="stroke">'+deg+'°</text>';}
+  return out;
+}
+function boardSVG(withUI){
+  const V=VIEWS.find(v=>v[0]===view);
+  let h='<rect x="-1000" y="-1000" width="3000" height="3000" fill="#fff"/>'+V[3]($('#guides').checked);
+  strokes().forEach((s,i)=>{h+=renderStroke(s,i);});
+  if(drag&&drag.s)h+=renderStroke(drag.s,-1);
+  if(withUI&&editCurve>=0&&strokes()[editCurve]){const s=strokes()[editCurve],c=s.cp||[(s.p[0][0]+s.p[1][0])/2,(s.p[0][1]+s.p[1][1])/2];
+    h+='<path d="M'+f(s.p[0][0])+','+f(s.p[0][1])+' L'+f(c[0])+','+f(c[1])+' L'+f(s.p[1][0])+','+f(s.p[1][1])+'" stroke="#9A9A90" stroke-dasharray="3 3" fill="none"/><circle cx="'+f(c[0])+'" cy="'+f(c[1])+'" r="10" fill="#EAF0EE" stroke="#5B7B6F" stroke-width="2"/>';}
+  return {vb:V[2],inner:h};
+}
+function redraw(){const b=boardSVG(true),svg=$('#board');svg.setAttribute('viewBox',b.vb);svg.innerHTML=b.inner;}
+
+/* ---------- Eingabe ---------- */
+const svgEl=$('#board');
+function pt(e){const m=svgEl.getScreenCTM().inverse(),p=svgEl.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(m);return [q.x,q.y];}
+function constrain(t,a,p){
+  let dx=p[0]-a[0],dy=p[1]-a[1];const L=Math.hypot(dx,dy);
+  if(t==='horiz')return [p[0],a[1]];
+  if(t==='vert')return [a[0],p[1]];
+  if(t==='diagUp'){const m=(Math.abs(dx)+Math.abs(dy))/2;return [a[0]+Math.sign(dx||1)*m,a[1]-m];}
+  if(t==='diagDown'){const m=(Math.abs(dx)+Math.abs(dy))/2;return [a[0]+Math.sign(dx||1)*m,a[1]+m];}
+  if($('#snap').checked&&(t==='line'||t==='arrow'||t==='zigzag'||t==='slice'||t==='curve')){const st=Math.PI/12,an=Math.round(Math.atan2(dy,dx)/st)*st;return [a[0]+L*Math.cos(an),a[1]+L*Math.sin(an)];}
+  return p;
+}
+function segDist(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],l2=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2));return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy);}
+function hit(p){
+  let best=-1,bd=12;
+  strokes().forEach((s,i)=>{let d;
+    if(s.t==='text'||s.t==='scissors')d=Math.hypot(p[0]-s.p[0][0],p[1]-s.p[0][1])-6;
+    else if(s.t==='free'){d=1e9;for(let k=0;k<s.p.length-1;k++)d=Math.min(d,segDist(p,s.p[k],s.p[k+1]));}
+    else if(s.t==='curve'){const c=s.cp||s.p[0];d=1e9;let prev=s.p[0];for(let k=1;k<=20;k++){const t=k/20,q=[(1-t)*(1-t)*s.p[0][0]+2*t*(1-t)*c[0]+t*t*s.p[1][0],(1-t)*(1-t)*s.p[0][1]+2*t*(1-t)*c[1]+t*t*s.p[1][1]];d=Math.min(d,segDist(p,prev,q));prev=q;}}
+    else d=segDist(p,s.p[0],s.p[1]);
+    if(d<bd){bd=d;best=i;}});
+  return best;
+}
+svgEl.addEventListener('pointerdown',e=>{
+  e.preventDefault();const p=pt(e);
+  if(editCurve>=0&&strokes()[editCurve]){const s=strokes()[editCurve],c=s.cp||[(s.p[0][0]+s.p[1][0])/2,(s.p[0][1]+s.p[1][1])/2];if(Math.hypot(p[0]-c[0],p[1]-c[1])<18){drag={handle:true};svgEl.setPointerCapture(e.pointerId);return;}}
+  if(tool==='erase'){const i=hit(p);if(i>=0){strokes().splice(i,1);editCurve=-1;persist();redraw();}return;}
+  if(tool==='text'){const t=$('#textIn').value.trim();if(!t){$('#hint').textContent='Bitte zuerst oben einen Text eingeben.';$('#textIn').focus();return;}strokes().push({t:'text',p:[p],c:color,w:width,txt:t});editCurve=-1;persist();redraw();return;}
+  editCurve=-1;svgEl.setPointerCapture(e.pointerId);
+  drag={s:{t:tool,p:tool==='free'?[p]:[p,p],c:color,w:width,d:dashed}};redraw();
+});
+svgEl.addEventListener('pointermove',e=>{
+  if(!drag)return;const p=pt(e);
+  if(drag.handle){strokes()[editCurve].cp=p;redraw();return;}
+  const s=drag.s;if(s.t==='free')s.p.push(p);else s.p[1]=constrain(s.t,s.p[0],p);redraw();
+});
+function endDrag(){
+  if(!drag)return;const d=drag;drag=null;
+  if(d.handle){persist();redraw();return;}
+  const s=d.s;
+  if(s.t!=='free'&&s.t!=='scissors'&&Math.hypot(s.p[1][0]-s.p[0][0],s.p[1][1]-s.p[0][1])<4){redraw();return;}
+  if(s.t==='scissors'&&Math.hypot(s.p[1][0]-s.p[0][0],s.p[1][1]-s.p[0][1])<4)s.p[1]=[s.p[0][0]+10,s.p[0][1]];
+  s.p=s.p.map(q=>[f(q[0]),f(q[1])]);
+  strokes().push(s);if(s.t==='curve'){editCurve=strokes().length-1;const a=s.p[0],b=s.p[1];s.cp=[f((a[0]+b[0])/2-(b[1]-a[1])*0.25),f((a[1]+b[1])/2+(b[0]-a[0])*0.25)];}
+  persist();redraw();
+}
+svgEl.addEventListener('pointerup',endDrag);svgEl.addEventListener('pointercancel',endDrag);
+
+/* ---------- Bedienfeld ---------- */
+function toolButtons(box,list){list.forEach(([k,l,ic])=>{const b=document.createElement('button');b.className='tb';b.dataset.tool=k;b.innerHTML=ic+'<span>'+l+'</span>';box.appendChild(b);});}
+toolButtons($('#toolsLines'),TOOLS_LINES);toolButtons($('#toolsCut'),TOOLS_CUT);toolButtons($('#toolsText'),TOOLS_TEXT);
+function setTool(k){tool=k;editCurve=k==='curve'?editCurve:-1;$$('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tool===k));$('#textRow').hidden=k!=='text';$('#hint').textContent=HINTS[k]||'';redraw();}
+$$('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+VIEWS.forEach(([k,l])=>{const b=document.createElement('button');b.className='chip';b.textContent=l;b.dataset.view=k;b.onclick=()=>{view=k;editCurve=-1;$$('[data-view]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.view===k));redraw();};$('#views').appendChild(b);});
+COLORS.forEach(([c,l])=>{const b=document.createElement('button');b.className='sw';b.innerHTML='<i style="background:'+c+'"></i>'+l;b.dataset.color=c;b.onclick=()=>{color=c;$$('[data-color]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.color===c));};$('#colors').appendChild(b);});
+[[false,'durchgezogen'],[true,'gestrichelt']].forEach(([v,l])=>{const b=document.createElement('button');b.className='chip';b.textContent=l;b.dataset.dash=v;b.onclick=()=>{dashed=v;$$('[data-dash]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.dash===String(v)));};$('#dash').appendChild(b);});
+WIDTHS.forEach(([w,l])=>{const b=document.createElement('button');b.className='chip';b.textContent=l;b.dataset.w=w;b.onclick=()=>{width=w;$$('[data-w]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.w===w));};$('#width').appendChild(b);});
+$$('[data-view]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.view===view));
+$$('[data-color]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.color===color));
+$$('[data-dash]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.dash==='false'));
+$$('[data-w]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.w===width));
+$('#guides').onchange=redraw;
+$('#undo').onclick=()=>{strokes().pop();editCurve=-1;persist();redraw();};
+let clearArm=null;
+$('#clear').onclick=e=>{const b=e.currentTarget;if(clearArm){clearTimeout(clearArm);clearArm=null;store.cur.views[view]=[];editCurve=-1;persist();redraw();b.textContent='Ansicht leeren';return;}b.textContent='Wirklich leeren?';clearArm=setTimeout(()=>{clearArm=null;b.textContent='Ansicht leeren';},3000);};
+
+/* ---------- Entwürfe ---------- */
+function renderSaved(){
+  const ul=$('#savedList');ul.innerHTML='';
+  store.saved.forEach((d,i)=>{const li=document.createElement('li');li.innerHTML='<span>'+esc(d.name)+' <small>'+esc(d.date)+'</small></span>';
+    const lo=document.createElement('button');lo.className='mini';lo.textContent='Laden';lo.onclick=()=>{store.cur={name:d.name,views:JSON.parse(JSON.stringify(d.views))};$('#name').value=d.name;editCurve=-1;persist();redraw();$('#saveMsg').textContent='„'+d.name+'“ geladen.';};
+    const del=document.createElement('button');del.className='mini';del.textContent='Löschen';let arm=false;del.onclick=()=>{if(!arm){arm=true;del.textContent='Sicher?';setTimeout(()=>{arm=false;del.textContent='Löschen';},3000);return;}store.saved.splice(i,1);persist();renderSaved();};
+    li.append(lo,del);ul.appendChild(li);});
+}
+$('#save').onclick=()=>{
+  const n=$('#name').value.trim()||'Entwurf '+(store.saved.length+1);store.cur.name=n;
+  const d=new Date(),date=d.toLocaleDateString('de-AT')+' '+d.toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'});
+  const ex=store.saved.findIndex(x=>x.name===n),entry={name:n,date,views:JSON.parse(JSON.stringify(store.cur.views))};
+  if(ex>=0)store.saved[ex]=entry;else store.saved.unshift(entry);
+  persist();renderSaved();$('#name').value=n;$('#saveMsg').textContent='Gespeichert: „'+n+'“ (auf diesem Gerät).';
+};
+$('#newDesign').onclick=()=>{store.cur={name:'',views:{}};$('#name').value='';editCurve=-1;persist();redraw();$('#saveMsg').textContent='Neuer, leerer Entwurf.';};
+$('#name').value=store.cur.name||'';
+
+/* ---------- Als Bild ---------- */
+$('#export').onclick=()=>{
+  const b=boardSVG(false),[x,y,w,h]=b.vb.split(' ').map(Number),scale=2;
+  const title=$('#name').value.trim();
+  const svgStr='<svg xmlns="'+NS+'" viewBox="'+b.vb+'" width="'+w*scale+'" height="'+h*scale+'">'+b.inner+(title?'<text x="'+(x+12)+'" y="'+(y+h-10)+'" font-family="system-ui" font-size="15" font-weight="600" fill="#1C1C1A">'+esc(title)+'</text>':'')+'</svg>';
+  const img=new Image();
+  img.onload=()=>{const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
+    const url=c.toDataURL('image/png');$('#exportImg').src=url;$('#exportBox').hidden=false;
+    try{const a=document.createElement('a');a.href=url;a.download=(title||'schnittzeichnung').replace(/[^\wäöüÄÖÜß -]/g,'')+'.png';document.body.appendChild(a);a.click();a.remove();}catch(e){}
+    $('#exportBox').scrollIntoView({behavior:'smooth',block:'nearest'});};
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgStr);
+};
+
+setTool('line');renderSaved();redraw();
+})();
+</script>
+</body>
+</html>
