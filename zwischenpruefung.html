@@ -604,6 +604,14 @@ const ZUEGE = [
  ['Ausrasieren der Mundwinkel','','Beschließt die Rasur. Rechter Mundwinkel im Rückhandgriff, linker Mundwinkel im Vorhandgriff.']
 ];
 
+const MGRIFFE=[
+ ['Effleurage','Streichungen zur Vorbereitung','Lange, ruhige Streichungen von der Gesichtsmitte nach außen: Stirn, Wangen, Kinnpartie.'],
+ ['Petrissage','Knetungen zur Durchblutungsförderung','Die Haut wird mit den Fingern sanft angehoben und geknetet, entlang von Wangen und Kinnpartie.'],
+ ['Friktion','Kreise zur Lösung von Spannungen','Kleine kreisende Bewegungen mit den Fingerkuppen, z. B. auf der Stirn, an den Wangen und am Kinn.'],
+ ['Vibration','Feine Vibrationen zur Beruhigung','Die aufgelegten Finger zittern ganz fein, ohne über die Haut zu rutschen.'],
+ ['Tapotement','Sanftes Klopfen zur Anregung','Leichtes, lockeres Klopfen mit den Fingerkuppen, z. B. an Wangen und Stirn.']
+];
+
 /* Fragenkatalog Friseurgewerbe 1. und 2. Lehrjahr (Frage, Antwort) */
 const KATALOG = {
  komm:[
@@ -770,6 +778,10 @@ CATS.forEach(c=>{
   c.open.forEach(o=>QUESTIONS.push({id:c.id+'-o'+hash(o[0]),cat:c.id,type:'open',q:o[0],pts:o[1]}));
 });
 Object.entries(KATALOG).forEach(([cid,list])=>list.forEach(([q,a])=>QUESTIONS.push({id:cid+'-k'+hash(q),cat:cid,type:'open',src:'katalog',q,pts:[a]})));
+/* Massagegriff-Fragen mit Bild */
+MGRIFFE.forEach(([n,w],i)=>{QUESTIONS.push({id:'haut-mg'+i,cat:'haut',tag:'massage',type:'mc',q:'Welcher Massagegriff ist hier gezeigt?',a:n,w:shuffle(MGRIFFE.filter((x,j)=>j!==i).map(x=>x[0])).slice(0,3),e:`${n}: ${w}.`,mg:i});
+ QUESTIONS.push({id:'haut-mw'+i,cat:'haut',tag:'massage',type:'mc',q:`Welche Wirkung hat ${n}?`,a:w,w:shuffle(MGRIFFE.filter((x,j)=>j!==i).map(x=>x[1])).slice(0,3),e:'',mg:i});
+ if(i<4)QUESTIONS.push({id:'haut-mn'+i,cat:'haut',tag:'massage',type:'mc',q:`Welcher Griff folgt auf ${n}?`,a:MGRIFFE[i+1][0],w:shuffle(MGRIFFE.filter((x,j)=>j!==i+1&&j!==i).map(x=>x[0])).slice(0,3),e:'Reihenfolge: Effleurage, Petrissage, Friktion, Vibration, Tapotement.'});});
 /* Rasierzüge-Fragen aus den 15 Zügen erzeugen */
 ZUEGE.forEach(([name,griff],i)=>{const n=i+1;
   const others=shuffle(ZUEGE.filter((z,j)=>j!==i&&z[0]!==name).map(z=>z[0])).slice(0,3);
@@ -886,18 +898,20 @@ const griffKey=g=>g==='Vorhandgriff'?'a':g==='Rückhandgriff'?'w':'k';
 function faceSVG(o){const u=++_uid;const P=pts=>pts.map(p=>p.join(',')).join(' ');
  let h=`<svg class="dia face" viewBox="0 0 240 310" role="img" aria-label="${esc(o.label||'')}">${mdefs(u)}
  <ellipse cx="51" cy="118" rx="8" ry="16" fill="#fff" stroke="${C_INK}" stroke-width="1.5"/><ellipse cx="189" cy="118" rx="8" ry="16" fill="#fff" stroke="${C_INK}" stroke-width="1.5"/>
- <polygon points="86,180 154,180 164,300 76,300" fill="${C_BEARD}" stroke="${C_INK}" stroke-width="1.5"/>
+ <polygon points="86,180 154,180 164,300 76,300" fill="${o.plain?'#fff':C_BEARD}" stroke="${C_INK}" stroke-width="1.5"/>
  <path d="M112 244 q8 7 16 0" fill="none" stroke="${C_MUT}" stroke-width="1.5"/>
  <ellipse cx="120" cy="112" rx="68" ry="90" fill="#fff" stroke="${C_INK}" stroke-width="2"/>
- <rect x="40" y="114" width="160" height="100" fill="${C_BEARD}" clip-path="url(#hc${u})"/>
- <path d="M54 96 C50 36 190 36 186 96 C170 54 70 54 54 96Z" fill="${C_MUT}" opacity=".45"/>
- <path d="M84 100 q11 -6 22 0M134 100 q11 -6 22 0" fill="none" stroke="${C_INK}" stroke-width="2" stroke-linecap="round"/>
+ ${o.plain?`<path d="M56 66 C54 28 186 28 184 66 C160 48 80 48 56 66Z" fill="${C_MUT}" opacity=".45"/><path d="M56 66 C80 48 160 48 184 66 L186 80 C160 62 80 62 54 80 Z" fill="#fff" stroke="${C_MUT}" stroke-width="1.5"/>`:`<rect x="40" y="114" width="160" height="100" fill="${C_BEARD}" clip-path="url(#hc${u})"/>
+ <path d="M54 96 C50 36 190 36 186 96 C170 54 70 54 54 96Z" fill="${C_MUT}" opacity=".45"/>`}
+ <path d="${o.plain?'M84 102 q11 6 22 0M134 102 q11 6 22 0':'M84 100 q11 -6 22 0M134 100 q11 -6 22 0'}" fill="none" stroke="${C_INK}" stroke-width="2" stroke-linecap="round"/>
  <path d="M120 104 L111 142 Q120 149 129 142" fill="none" stroke="${C_INK}" stroke-width="1.5" stroke-linejoin="round"/>
  <path d="M104 170 Q120 177 136 170" fill="none" stroke="${C_INK}" stroke-width="2" stroke-linecap="round"/>`;
  (o.zones||[]).forEach(z=>{[z.z,z.z2].filter(Boolean).forEach(pp=>h+=`<polygon points="${P(pp)}" fill="${C_ACC}" fill-opacity=".28" stroke="${C_ACC}" stroke-width="1.5" stroke-linejoin="round"/>`);});
  (o.arrows||[]).forEach(([l,c])=>{const col={a:C_ACC,w:C_WARN,k:C_INK}[c];h+=`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}" stroke="${col}" stroke-width="3.5" stroke-linecap="round" marker-end="url(#m${c}${u})"/>`;});
  (o.spann||[]).forEach(([x,y,dx,dy])=>{h+=`<line x1="${x}" y1="${y}" x2="${x+dx*15}" y2="${y+dy*15}" stroke="${C_RED}" stroke-width="2.5" marker-end="url(#mr${u})"/><circle cx="${x}" cy="${y}" r="5" fill="${C_RED}"/>`;});
  (o.nums||[]).forEach(([x,y,n])=>{h+=`<circle cx="${x}" cy="${y}" r="8" fill="${C_ACC}"/><text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">${n}</text>`;});
+ if(o.extra)h+=o.extra(u);
+ if(o.plain)return h+'</svg>';
  h+=`<text x="8" y="306" font-size="11" fill="${C_MUT}" font-family="system-ui,sans-serif">rechte Seite</text><text x="232" y="306" text-anchor="end" font-size="11" fill="${C_MUT}" font-family="system-ui,sans-serif">linke Seite</text></svg>`;
  return h;}
 function zugSVG(i,neutral){const d=ZD[i],g=ZUEGE[i][1];const c=neutral?'k':griffKey(g);
@@ -1039,16 +1053,33 @@ function partHTML(p){const hist=D.praxis.filter(s=>s.part===p.id).slice().revers
  <section class="stack"><div class="row"><span class="pill time">${p.min} Min.</span><span class="muted small">${esc(p.model)}</span></div><h1>${p.name}</h1><p class="lead">${esc(p.intro)}</p>
   <div class="row"><button class="btn primary" data-a="session" data-id="${p.id}">Übung mit Timer starten</button><button class="btn" data-a="rateonly" data-id="${p.id}">Nur bewerten (ohne Timer)</button></div></section>
  ${weak.length?`<section class="card stack"><div class="eyebrow">Deine Schwachstellen hier</div><ul class="clean weak">${weak.map(w=>`<li><span>${esc(w.t)}</span><span class="pill ${w.bad?'bad':'warn'}">${w.bad?'noch nicht':'fast'}</span></li>`).join('')}</ul></section>`:''}
- <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),...(p.id==='technik'?[['bilder','Bilder']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
+ <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),...(p.id==='technik'?[['bilder','Bilder']]:[]),...(p.id==='schoen'?[['massage','Massagegriffe']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
  ${sub==='krit'?`<section class="grid-2">${p.sections.map(s=>`<div class="panel stack"><h3>${esc(s.name)}</h3><ul class="crit">${s.crit.map(c=>`<li>${esc(c.t)}</li>`).join('')}</ul></div>`).join('')}</section>
    <section class="warnbox"><h3>Achtung, hier gibt es Punkteabzug</h3><ul>${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>
    ${p.fehler?`<section class="panel stack"><h3>Fehlerquellen und ihre Folgen</h3><ul class="clean weak">${p.fehler.map(([f,g])=>`<li><span>${esc(f)}</span>${g?`<span class="muted small" style="text-align:right">→ ${esc(g)}</span>`:''}</li>`).join('')}</ul></section>`:''}`:''}
  ${sub==='zuege'?zuegeHTML():''}
  ${sub==='bilder'?bilderHTML():''}
+ ${sub==='massage'?massageHTML():''}
  ${sub==='ablauf'?`<section class="grid-2">${p.ablauf.map(a=>`<div class="panel stack"><h3>${esc(a.t)}</h3><ol class="steps">${a.s.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ol></div>`).join('')}</section>`:''}
  ${sub==='zeit'?`<section class="panel stack"><h3>So könntest du deine ${p.min} Minuten einteilen</h3><p class="muted small">Ein Vorschlag, den ihr im Salon an dein Tempo anpassen könnt.</p><ul class="clean weak">${p.plan.map(([a,b])=>`<li><span>${esc(a)}</span><span class="pill time">${esc(b)}</span></li>`).join('')}</ul></section>`:''}
  ${sub==='hist'?(hist.length?`<section class="panel scroll-x"><table class="hist"><thead><tr><th>Datum</th><th>Bewertet von</th><th>Zeit</th><th>Ergebnis</th><th>Notiz</th></tr></thead><tbody>${hist.map(s=>`<tr><td class="num">${fmtDate(s.date)}</td><td>${s.who==='ausb'?'Ausbilderin':'Selbst'}</td><td class="num">${s.sec!=null?mmss(s.sec):'–'}</td><td><span class="pill ${level(sessionScore(s))}">${pct(sessionScore(s))} %</span></td><td style="white-space:normal;min-width:160px">${esc(s.note||'')}</td></tr>`).join('')}</tbody></table></section>`:`<p class="muted">Noch keine Übungen gespeichert.</p>`):''}`;}
 
+/* Massagegriffe der Gesichtsmassage (Schema) */
+function mMarks(i,u){const A=C_ACC,mk=`marker-end="url(#ma${u})"`;const both=f=>f(false)+f(true);const X=(x,m)=>m?240-x:x;let h='';
+ if(i===0){[[`M120 88 Q100 82 72 94`],[`M112 132 Q92 124 62 120`],[`M116 196 Q88 190 66 162`]].forEach(([d])=>{h+=`<path d="${d}" fill="none" stroke="${A}" stroke-width="3.2" stroke-linecap="round" ${mk}/><path d="${d}" transform="translate(240 0) scale(-1 1)" fill="none" stroke="${A}" stroke-width="3.2" stroke-linecap="round" ${mk}/>`;});}
+ if(i===1){h+=both(m=>[[74,126],[80,140],[88,153],[98,166],[92,188],[78,176]].map(([x,y])=>`<ellipse cx="${X(x,m)}" cy="${y}" rx="6" ry="4" fill="none" stroke="${A}" stroke-width="2.2" transform="rotate(${m?-35:35} ${X(x,m)} ${y})"/>`).join(''));}
+ if(i===2){const sp=(x,y)=>`<circle cx="${x}" cy="${y}" r="5" fill="none" stroke="${A}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="1.8" fill="${A}"/>`;
+  [96,108,120,132,144].forEach(x=>h+=sp(x,88));h+=both(m=>[[76,132],[82,146],[90,160]].map(([x,y])=>sp(X(x,m),y)).join(''));[108,120,132].forEach(x=>h+=sp(x,190));}
+ if(i===3){const zz=(x0,y,w)=>{let d=`M${x0} ${y}`;for(let x=x0+3,k=0;x<=x0+w;x+=3,k++)d+=` L${x} ${y+(k%2?-3:3)}`;return `<path d="${d}" fill="none" stroke="${A}" stroke-width="1.8" stroke-linejoin="round"/>`;};
+  h+=zz(94,88,52);h+=zz(66,136,30)+zz(144,136,30);h+=zz(104,190,32);}
+ if(i===4){const tp=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.5" fill="${A}"/><path d="M${x-8} ${y-6}l3 2M${x} ${y-10}v4M${x+8} ${y-6}l-3 2" stroke="${A}" stroke-width="1.6" stroke-linecap="round"/>`;
+  [100,120,140].forEach(x=>h+=tp(x,92));h+=both(m=>[[74,134],[88,146],[78,158]].map(([x,y])=>tp(X(x,m),y)).join(''));}
+ return h;}
+function massageSVG(i){return faceSVG({plain:true,label:`Massagegriff ${MGRIFFE[i][0]}: ${MGRIFFE[i][1]}`,extra:u=>mMarks(i,u)});}
+function massageHTML(){return `<p class="lead">Die fünf Standard-Massagegriffe in dieser Reihenfolge, Dauer 8–10 Minuten. Vorher Massagecreme typgerecht auswählen und auftragen, danach Reste mit Kosmetiktuch oder Kompresse abnehmen und Tonikum.</p>
+ <div class="row"><button class="btn primary" data-a="quiz" data-cat="" data-type="massage">Massagegriffe abfragen</button></div>
+ <ol class="steps">${MGRIFFE.map(([n,w,t],i)=>`<li><div class="panel zug">${massageSVG(i)}<div class="stack"><h3>${n}</h3><p><strong>${esc(w)}</strong></p><p class="muted">${esc(t)}</p></div></div></li>`).join('')}</ol>
+ <p class="small muted">Selbst gezeichnete Schemas. Die Zeichen zeigen die Art des Griffs: Pfeile = Streichen, Schlaufen = Kneten, Kreise = Friktion, Zickzack = Vibration, Punkte = Klopfen.</p>`;}
 function zuegeHTML(){return `<section class="stack"><p class="lead">Die Rasur wird in 15 festen Rasierzügen ausgeführt (Skript der Landesinnung Wien). Beschrieben für Rechtshänder, <strong>für Linkshänder gilt alles seitenverkehrt</strong>.</p>
  <div class="row"><button class="btn primary" data-a="quiz" data-cat="rasur" data-type="zug">Rasierzüge abfragen</button></div>
  <div class="panel stack"><h3>Die drei Spannkegel</h3><p class="muted small">Spitzer, stumpfer und doppelter Spannkegel. Beim ersten Rasierzug setzt du den Daumen der linken Hand an der rechten Schläfenpartie an: das ist der spitze Spannkegel, die Haut wird straff nach oben gespannt.</p></div>
@@ -1080,7 +1111,7 @@ function theorieHTML(){if(QZ)return quizHTML();
  <section class="stack"><h2>Nach Themen</h2><div class="grid">${CATS.map(c=>{const pr=catProgress(c.id);return `<button class="cat" data-a="quiz" data-cat="${c.id}" data-type="any"><strong>${esc(c.name)}</strong><span class="small muted num">${pr.mastered}/${pr.total}</span><div class="bar"><i style="width:${pct(pr.p)}%"></i></div></button>`;}).join('')}</div>
  <p class="muted small">Eine Frage gilt als gelernt, wenn du sie an drei verschiedenen Tagen richtig beantwortet hast.</p></section>`;}
 
-function matchType(q,type){return type==='any'?true:type==='zug'?q.tag==='zug':type==='katalog'?q.src==='katalog':type==='open'?(q.type==='open'&&!q.src):q.type===type;}
+function matchType(q,type){return type==='any'?true:type==='zug'?q.tag==='zug':type==='massage'?q.tag==='massage':type==='katalog'?q.src==='katalog':type==='open'?(q.type==='open'&&!q.src):q.type===type;}
 function pickQuestions(cat,n,type){const now=Date.now();const pool=QUESTIONS.filter(q=>matchType(q,type)&&(!cat||q.cat===cat));
  const due=shuffle(pool.filter(q=>qs(q.id)&&qs(q.id).d<=now)).sort((a,b)=>qs(a.id).b-qs(b.id).b);
  const fresh=shuffle(pool.filter(q=>!qs(q.id)));
@@ -1095,7 +1126,7 @@ function startQuiz(cat,type){const kind=type;let items;
 
 function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  const dots=`<div class="progress-dots" aria-hidden="true">${QZ.items.map((x,i)=>`<i class="${x.res==='yes'?'ok':x.res==='no'?'no':x.res==='part'?'part':i===QZ.i?'cur':''}"></i>`).join('')}</div>`;
- const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Fragenkatalog':QZ.kind==='zug'?'Rasierzüge':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
+ const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Fragenkatalog':QZ.kind==='zug'?'Rasierzüge':QZ.kind==='massage'?'Massagegriffe':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
  if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
   return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.items.every(x=>x.q.type==='mc')?'richtig':'gewusst'}</h1>
   <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
@@ -1108,7 +1139,7 @@ function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
   :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
  return `<div class="quiz"><div class="row" style="justify-content:space-between"><span class="eyebrow">${esc(title)} · ${esc(CAT[q.cat].name)}</span><span class="small muted num">Frage ${QZ.i+1} von ${n}</span></div>${dots}
   ${QZ.kind==='sim'?`<div class="card">${timerHTML()}</div>`:''}
-  <div class="q">${esc(q.q)}</div>${q.zi!=null?`<div class="qfig">${zugSVG(q.zi,q.neutral)}</div>`:''}${body}<button class="btn ghost back" data-a="quizend">Runde beenden</button></div>`;}
+  <div class="q">${esc(q.q)}</div>${q.zi!=null?`<div class="qfig">${zugSVG(q.zi,q.neutral)}</div>`:q.mg!=null&&q.q.startsWith('Welcher Massagegriff')?`<div class="qfig">${massageSVG(q.mg)}</div>`:''}${body}<button class="btn ghost back" data-a="quizend">Runde beenden</button></div>`;}
 
 /* ---------- Diagnose ---------- */
 const SURF=['fein/ebenmäßig','uneben/trocken','fett/glänzend','neigt zu Faltenbildung','gerötet/empfindlich'];
