@@ -278,10 +278,6 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   </div>
 </div>
 
-<div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
-<button onclick="zeige('mlogin')" style="background:none;border:none;color:#C8C4BC;font-size:11px;cursor:pointer;text-decoration:underline;margin-top:6px;font-family:system-ui">Meisterin-Login</button>
-</div>
-</div>
 
 <div id="p-mlogin" class="page">
   <button class="back-btn" onclick="zeige('home')">&#8592; Zurueck</button>
@@ -408,6 +404,11 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <div id="tipp-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
     <button class="btn-primary" onclick="adminTippSpeichern()">Speichern</button>
   </div>
+</div>
+
+<div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
+<button onclick="zeige('mlogin')" style="background:none;border:none;color:#C8C4BC;font-size:11px;cursor:pointer;text-decoration:underline;margin-top:6px;font-family:system-ui">Meisterin-Login</button>
+</div>
 </div>
 
 <script>
@@ -1196,7 +1197,8 @@ window.addEventListener('DOMContentLoaded', function(){
     // Projekt hat ohnehin nur ein Meisterin-Konto, keine E-Mail-Prüfung nötig.
     if (res.data && res.data.session) {
       document.getElementById('admin-hinweis').style.display = 'block';
-      if (istAdmin) { zeige('admin'); }
+      // Meisterin landet in derselben Übersicht wie die Lehrlinge;
+      // der Admin-Bereich ist über den Hinweis oben erreichbar.
     }
   });
   ladeAllesDatenAusSupabase();
