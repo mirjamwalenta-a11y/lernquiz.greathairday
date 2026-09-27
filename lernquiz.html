@@ -1139,7 +1139,13 @@ async function loginMeisterin(){
   versteckeFehler('mlogin-fehler');
   var {data,error}=await sb.auth.signInWithPassword({email:email,password:pw});
   if(error){zeigeFehler('mlogin-fehler','E-Mail oder Passwort nicht korrekt.');return;}
+  // Rolle serverseitig prüfen (Tabelle app_rollen, Funktion ist_meisterin) –
+  // ein gültiges Lehrlings-Login reicht nicht mehr für den Meisterin-Bereich.
+  if(!(await istMeisterinServer())){await sb.auth.signOut();zeigeFehler('mlogin-fehler','Dieses Konto hat keinen Meisterinnen-Zugang.');return;}
   ISTMEISTERIN=true;AKTLEHRLING=null;await ladeDashboard();zeige('s-dashboard');
+}
+async function istMeisterinServer(){
+  try{var r=await sb.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
 }
 
 async function logout(){

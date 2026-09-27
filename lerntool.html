@@ -1155,6 +1155,10 @@ var AQEDIT_THEMA = '';
 var AQEDIT_IDX = -1;
 var ALEDIT_IDX = -1;
 
+async function istMeisterinServer() {
+  try { var r = await sb2.rpc('ist_meisterin'); return !r.error && r.data === true; } catch (e) { return false; }
+}
+
 async function adminLogin() {
   var email = document.getElementById('admin-email').value;
   var pw = document.getElementById('admin-pw').value;
@@ -1171,6 +1175,13 @@ async function adminLogin() {
       return;
     }
     document.getElementById('admin-pw').value = '';
+    // Rolle serverseitig prüfen – ein Lehrlings-Login öffnet den Admin-Bereich nicht.
+    if (!(await istMeisterinServer())) {
+      await sb2.auth.signOut();
+      st.style.display = 'block';
+      st.textContent = 'Dieses Konto hat keinen Meisterinnen-Zugang.';
+      return;
+    }
     zeige('admin');
   } catch(e) {
     st.style.display = 'block';
@@ -1193,10 +1204,10 @@ window.addEventListener('DOMContentLoaded', function(){
   // Setze Marker dass wir vom Lerntool kommen
   sessionStorage.setItem('lt_besucht', '1');
 
-  sb2.auth.getSession().then(function(res){
-    // Echte, verifizierte Supabase-Auth-Session genügt als Nachweis — dieses
-    // Projekt hat ohnehin nur ein Meisterin-Konto, keine E-Mail-Prüfung nötig.
-    if (res.data && res.data.session) {
+  sb2.auth.getSession().then(async function(res){
+    // Lehrlinge haben ebenfalls Supabase-Konten: nur eine Session mit
+    // Meisterin-Rolle (serverseitig, ist_meisterin) zeigt den Admin-Hinweis.
+    if (res.data && res.data.session && await istMeisterinServer()) {
       document.getElementById('admin-hinweis').style.display = 'block';
       // Meisterin landet in derselben Übersicht wie die Lehrlinge;
       // der Admin-Bereich ist über den Hinweis oben erreichbar.

@@ -1076,6 +1076,10 @@ function neueFrageHinzufuegen() {
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
+async function istMeisterinServer() {
+  try { var r = await sb.rpc('ist_meisterin'); return !r.error && r.data === true; } catch (e) { return false; }
+}
+
 async function loginMeisterin() {
   var email = document.getElementById('home-email').value.trim();
   var pw = document.getElementById('home-pw').value;
@@ -1083,6 +1087,11 @@ async function loginMeisterin() {
   fehlerEl.style.display = 'none';
   var { data, error } = await sb.auth.signInWithPassword({ email: email, password: pw });
   if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
+  // Rolle serverseitig prüfen – ein beliebiges gültiges Login reicht nicht.
+  if (!(await istMeisterinServer())) {
+    await sb.auth.signOut();
+    fehlerEl.textContent = 'Dieses Konto hat keinen Meisterinnen-Zugang.'; fehlerEl.style.display = 'block'; return;
+  }
   MEISTERIN_OK = true;
   document.body.classList.add('meisterin-ok');
   var fb = document.getElementById('btn-fragen-editor');
@@ -2663,8 +2672,10 @@ window.addEventListener('DOMContentLoaded', function() {
   var npBeginn = document.getElementById('np-beginn');
   if (npBeginn) npBeginn.value = heute;
 
-  sb.auth.getSession().then(function(result) {
-    if (result.data && result.data.session) {
+  sb.auth.getSession().then(async function(result) {
+    // Nur eine Session mit Meisterin-Rolle (serverseitig geprüft) schaltet frei,
+    // nicht jede bestehende Session (z. B. eines Lehrlings aus dem Lernquiz).
+    if (result.data && result.data.session && await istMeisterinServer()) {
       MEISTERIN_OK = true;
       document.body.classList.add('meisterin-ok');
       var fb = document.getElementById('btn-fragen-editor');
