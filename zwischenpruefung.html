@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/manifest-lerntool.json">
+<link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
+<meta name="theme-color" content="#1c1917">
+<title>Zwischenprüfung · A Great Hair Day</title>
+<style>
+:root{
+  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#1C1C1A; --muted:#7A7A70; --line:#E2DDD5;
+  --accent:#5B7B6F; --accent-ink:#FFFFFF; --accent-soft:#EAF0EE; --copper:#5B7B6F;
+  --good:#5B7B6F; --good-soft:#EAF0EE; --warn:#8A6D12; --warn-soft:#FDF6E3; --bad:#C44030; --bad-soft:#FDECEA;
+  --shadow:none;
+  --f-display:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:600}
+h2{font-size:1.35rem;font-weight:600}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(247,245,240,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:60px}
+.back-link{color:var(--muted);font-size:13px;text-decoration:none;white-space:nowrap}
+.back-link:hover{color:var(--accent)}
+.brand{display:flex;align-items:baseline;gap:8px;font-family:var(--f-display);font-weight:800;font-size:1.2rem;letter-spacing:-.01em;white-space:nowrap}
+.brand small{font-family:var(--f-body);font-weight:400;font-size:.8rem;color:var(--muted);letter-spacing:0}
+.brand .dot{color:var(--copper)}
+nav.tabs{display:flex;gap:4px;margin-left:auto}
+nav.tabs button{border:0;background:none;padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
+nav.tabs button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+nav.tabs svg{width:20px;height:20px;flex:none}
+.profile-chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:700;display:flex;gap:6px;align-items:center;max-width:180px}
+.profile-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-chip .av{width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.75rem;flex:none}
+
+main{padding-block:24px 40px;display:flex;flex-direction:column;gap:28px}
+.eyebrow{text-transform:uppercase;letter-spacing:1.5px;font-size:10px;font-weight:700;color:var(--accent)}
+.lead{color:var(--muted);max-width:62ch}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.grid-2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:var(--shadow)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.num{font-variant-numeric:tabular-nums}
+
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:10px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:44px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:none;border-color:transparent;color:var(--accent);padding-inline:8px}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.back{align-self:flex-start}
+
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:700;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.accent{background:var(--accent-soft);color:var(--accent)}
+.pill.time{font-family:var(--f-mono);font-weight:500}
+
+.bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+
+/* Start */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.ring{width:132px;height:132px;position:relative;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .v b{font-family:var(--f-display);font-size:2rem;font-weight:600;line-height:1}
+.ring .v small{display:block;font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-top:2px}
+.countdown{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.countdown b{font-family:var(--f-display);font-size:1.6rem;font-weight:700;color:var(--copper)}
+.exam-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.exam-strip button{border:0;border-right:1px solid var(--line);background:none;text-align:left;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0}
+.exam-strip button:last-child{border-right:0}
+.exam-strip button:hover{background:var(--surface-2)}
+.exam-strip .t{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.exam-strip .n{font-weight:700;font-family:var(--f-display);font-size:1rem;line-height:1.2}
+.exam-strip .bar{margin-top:auto}
+.weak li{display:flex;gap:10px;justify-content:space-between;align-items:baseline;padding-block:8px;border-bottom:1px solid var(--line)}
+.weak li:last-child{border-bottom:0}
+ul.clean{list-style:none;margin:0;padding:0}
+
+/* Praxis */
+.part-card{display:flex;flex-direction:column;gap:10px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.part-card:hover{border-color:var(--accent)}
+.part-card .head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.crit{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.crit li::marker{color:var(--accent)}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+ol.steps li::before{content:counter(s);font-family:var(--f-mono);font-weight:700;font-size:.85rem;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.warnbox{background:var(--bad-soft);border-radius:8px;padding:16px 18px;color:var(--ink)}
+.warnbox h3{color:var(--bad)}
+.warnbox ul{margin:8px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap}
+.subtabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:700;color:var(--muted)}
+.subtabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.timer{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.timer .dial{width:150px;height:150px;position:relative;flex:none}
+.timer .dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.timer .digits{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:1.9rem;font-variant-numeric:tabular-nums}
+.timer .ctrl{display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px}
+.timer.alert .digits{color:var(--bad)}
+.alertline{font-weight:700;color:var(--warn);min-height:1.5em}
+
+.rate-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding-block:10px;border-bottom:1px solid var(--line)}
+.rate-row:last-child{border-bottom:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:8px 10px;cursor:pointer;font-weight:700;font-size:.85rem;color:var(--muted);min-height:40px;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"].g{background:var(--good);color:#fff}
+.seg button[aria-pressed="true"].m{background:var(--warn);color:#fff}
+.seg button[aria-pressed="true"].b{background:var(--bad);color:#fff}
+.seg button[aria-pressed="true"].n{background:var(--accent);color:var(--accent-ink)}
+textarea,input[type=text],input[type=date]{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:10px 12px}
+textarea{min-height:80px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.9rem}
+
+table.hist{width:100%;border-collapse:collapse;font-size:.92rem}
+table.hist th,table.hist td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.hist th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.scroll-x{overflow-x:auto}
+
+/* Theorie */
+.cat{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer;text-align:left}
+.cat:hover{border-color:var(--accent)}
+.cat .bar{grid-column:1/-1}
+.quiz{max-width:680px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.quiz .q{font-family:var(--f-display);font-size:1.35rem;font-weight:700;line-height:1.25}
+.answers{display:flex;flex-direction:column;gap:10px}
+.answers button{text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:14px 16px;cursor:pointer;line-height:1.4;min-height:52px}
+.answers button:hover:not(:disabled){border-color:var(--accent)}
+.answers button.right{border-color:var(--good);background:var(--good-soft)}
+.answers button.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.answers button:disabled{cursor:default}
+.explain{background:var(--accent-soft);border-radius:8px;padding:14px 16px}
+.progress-dots{display:flex;gap:4px}
+.progress-dots i{flex:1;height:5px;border-radius:9px;background:var(--surface-2)}
+.progress-dots i.ok{background:var(--good)}
+.progress-dots i.no{background:var(--bad)}
+.progress-dots i.part{background:var(--warn)}
+.progress-dots i.cur{background:var(--accent)}
+.model{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.model ul{margin:8px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+
+/* Diagnose */
+.diag table{border-collapse:collapse;width:100%}
+.diag th,.diag td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+.diag td.c{text-align:center;width:80px}
+.diag th.c{text-align:center}
+.diag input[type=checkbox],.diag input[type=radio],.pack input{width:20px;height:20px;accent-color:var(--accent)}
+.chk{display:flex;gap:8px;align-items:center;padding:6px 0;cursor:pointer}
+.chkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:2px 16px}
+.hint{border-left:4px solid var(--copper);background:var(--surface-2);padding:12px 14px;border-radius:0 10px 10px 0}
+
+/* Prüfungstag */
+.schedule{display:flex;flex-direction:column}
+.schedule li{display:grid;grid-template-columns:120px 1fr auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.schedule li.pause{color:var(--muted);font-size:.9rem}
+.schedule li.now{background:var(--accent-soft);margin-inline:-10px;padding-inline:10px;border-radius:8px}
+.schedule li.done{color:var(--muted);text-decoration:line-through}
+.schedule .tm{font-family:var(--f-mono);font-size:.85rem;font-variant-numeric:tabular-nums}
+.pack h3{margin-top:6px}
+.pack label{display:flex;gap:10px;align-items:flex-start;padding:7px 0;cursor:pointer;border-bottom:1px solid var(--line)}
+.pack label.done span{color:var(--muted);text-decoration:line-through}
+
+.profiles{display:flex;flex-direction:column;gap:10px}
+.profiles .p{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.profiles .p input{flex:1;min-width:140px}
+.toast{font-size:14px;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;z-index:50;box-shadow:var(--shadow);white-space:nowrap}
+footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
+
+@media (max-width:760px){
+  header.top{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;margin:0;background:var(--surface);border-top:1px solid var(--line);justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
+  nav.tabs button{flex-direction:column;gap:2px;font-size:.7rem;padding:6px 4px;border-radius:6px;flex:1}
+  .profile-chip{margin-left:auto}
+  main{padding-bottom:110px}
+  .exam-strip{grid-template-columns:1fr 1fr}
+  .exam-strip button{border-bottom:1px solid var(--line)}
+  .exam-strip button:nth-child(2n){border-right:0}
+  .exam-strip button:last-child{grid-column:1/-1;border-bottom:0}
+  .hero{grid-template-columns:1fr;justify-items:start}
+  .rate-row{grid-template-columns:1fr}
+  .schedule li{grid-template-columns:96px 1fr;}
+  .schedule li > :last-child{grid-column:2}
+  .brand small{display:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  .bar i,.ring circle{transition:all .5s ease}
+  .answers button{transition:border-color .15s,background .15s}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="back-link" href="lerntool.html?v=20260927e">← Lern-Tool</a>
+    <nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
+    <button class="profile-chip" id="profileChip" data-a="profiles" aria-label="Lernprofil wechseln"></button>
+  </div>
+</header>
+<main class="wrap" id="main"></main>
+<footer class="wrap">Inhalte nach der Broschüre „Karriere mit Schere: Die Zwischenprüfung“ der Landesinnung Wien der Friseure. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   INHALTE: Prüfungsteile (aus der Broschüre der Landesinnung Wien)
+   ============================================================ */
+const PARTS = [
+ { id:'technik', name:'Technikkopf', min:35, model:'am Technikkopf',
+   intro:'Handgelegte Wasserwellen, zehn Papilloten in Wellenform und zehn Dauerwellwickler. Das Ergebnis soll den Mustervorlagen möglichst genau entsprechen.',
+   sections:[
+    { id:'ww', name:'Handgelegte Wasserwellen', crit:[
+      'Sauberkeit und Reinheit der Wellen','Gut sichtbares Wellental','Gleichmäßige Wellenkanten','Gleiche Wellenbreite (von Kante zu Kante)',
+      'Wellen bis zum Grund durchgearbeitet, nicht nur an der Oberfläche','Haare in der Welle nicht verzogen','Mindestens 3 Wellen (Ende darf mit Papilloten abschließen)'] },
+    { id:'pap', name:'Papillotieren (10 Stück)', crit:[
+      'Exaktes, gleichmäßiges Abteilen der Passees','Sauberst gekämmte Passees','Gleichmäßig in Rundung und Größe','Gleichmäßige Anordnung der Papilloten',
+      'Reihenweise nach links bzw. rechts (oder umgekehrt) angeordnet','Gleichmäßige Spannung','Haarspitzen liegen innen','Clips am Papillotenhals, Form nicht verändert'] },
+    { id:'dw', name:'Dauerwelltechnik (10 Wickler)', crit:[
+      'Saubere, gleichmäßige Abteilungen','Gleichmäßige Spannung (keine Schlaufen)','Stärke der Passees passt','Im richtigen Winkel aufgedreht','Wicklerbreite, Wicklerstärke und Abteilung passen zusammen',
+      'Ordnung bei der Platzierung der Wickler','Spitzen nicht umgebogen','Spitzen gerade über dem Wickler','Spitzenpapier sauber eingearbeitet','Gummis gleichmäßig gesetzt',
+      'Richtig abgesteckt','Mittlere Wicklerstärken verwendet','Gestellte Anforderung erfüllt'] }
+   ],
+   ablauf:[
+    { t:'Handgelegte Wasserwellen', s:['Haar gut anfeuchten, Wellengel oder Frisiercreme sparsam einarbeiten und glatt durchkämmen.','Scheitel sauber ziehen und die Kämmrichtung für die erste Welle festlegen.','Erste Kante: Zeigefinger flach auflegen, Kamm direkt darunter einsetzen und das Haar ca. 2 cm in die Gegenrichtung schieben.','Kamm flach andrücken, Kante mit Fingern fixieren (Wellenkamm oder Clip erlaubt).','Nächste Kante in die Gegenrichtung formen, gleiche Wellenbreite halten.','Jede Welle bis zum Grund durcharbeiten, nicht nur oben drüberkämmen.','Mindestens 3 Wellen legen, das Ende darf mit Papilloten abschließen.','Wellenkämme und Clipse vor der Benotung entfernen! Finish nur in kleinen Mengen.'] },
+    { t:'Papillotieren', s:['Gleich große, exakt abgeteilte Passees machen und sauber durchkämmen.','Von den Spitzen her in gleichmäßiger Rundung eindrehen, die Spitzen liegen innen.','Papillote flach an den Kopf legen, alle gleich groß.','Clip am Papillotenhals ansetzen, er darf die Form nicht verändern.','Reihenweise nach links bzw. rechts anordnen, gleichmäßige Spannung.'] },
+    { t:'Dauerwellwickler', s:['Abteilung genau so breit wie der Wickler und so tief wie sein Durchmesser.','Passee im richtigen Winkel zum Kopf abheben und sauber durchkämmen.','Spitzenpapier sauber einarbeiten, die Spitzen liegen gerade über dem Wickler.','Mit gleichmäßiger Spannung eindrehen, ohne Schlaufen und ohne umgebogene Spitzen.','Wickler auf der eigenen Basis ablegen, Gummi gleichmäßig und ohne Druck auf den Ansatz setzen.','Ordentlich platzieren und richtig abstecken, mittlere Wicklerstärken verwenden.'] }
+   ],
+   plan:[['Wasserwellen','ca. 13 Min.'],['10 Papilloten','ca. 8 Min.'],['10 Dauerwellwickler','ca. 11 Min.'],['Kontrolle, Clips und Kämme entfernen','ca. 3 Min.']],
+   achtung:['Wellenkämme und Clipse nicht entfernt → müssen vor der Benotung weg','Zu viel Finishprodukt (nur kleine Mengen erlaubt)','Umgebogene Spitzen oder Schlaufen bei den Wicklern','Weniger als 3 Wellen']
+ },
+ { id:'nagel', name:'Nagelpflege', min:35, model:'am Damenmodell (eine Hand)',
+   intro:'Komplette Maniküre an einer von der Kommission bestimmten Hand, Nagelhaut entfernen, Unterlack und gut sichtbarer farbiger Decklack, Nageldesign an 2 Fingern passend zum Themenschwerpunkt.',
+   sections:[
+    { id:'ma', name:'Maniküre', crit:['Vorherige Handmassage an der nicht zu manikürenden Hand','Einwandfreies, sauberes Werkzeug und Wäsche, Wasserbad','Gleichmäßige, formschöne Feilarbeit','Nagelhaut zurückgeschoben und gelöst','Nagelhaut fachgerecht entfernt','Eventuelle Wundversorgung richtig'] },
+    { id:'la', name:'Lack & Design', crit:['Sauberes und formschönes Lackieren (Unterlack + farbiger Decklack)','Decklack gut sichtbar','Nageldesign an 2 Fingernägeln passend zum Thema'] }
+   ],
+   ablauf:[
+    { t:'Ablauf Nagelpflege', s:['Arbeitsplatz hygienisch vorbereiten: desinfiziertes Werkzeug, frische Handtücher, Wasserbad.','Hände waschen bzw. desinfizieren (du und das Modell).','Handmassage an der Hand, die NICHT manikürt wird.','Alten Lack entfernen, Nägel beurteilen (Erkrankungen? → nicht behandeln).','Nägel in Form feilen: von außen zur Mitte, in eine Richtung.','Finger im warmen Wasserbad einweichen.','Nagelhaut mit Rosenholzstäbchen oder Schieber zurückschieben und lösen.','Überschüssige Nagelhaut fachgerecht entfernen, bei Verletzung sofort Wundversorgung.','Nägel entfetten.','Unterlack, dann 2 Schichten farbiger Lack (3 Striche: Mitte, links, rechts).','Nageldesign an 2 Nägeln passend zum Thema, dann Überlack.'] }
+   ],
+   plan:[['Vorbereitung und Handmassage','ca. 5 Min.'],['Feilen, Wasserbad, Nagelhaut','ca. 13 Min.'],['Lackieren','ca. 9 Min.'],['Nageldesign 2 Finger + Überlack','ca. 8 Min.']],
+   achtung:['Vorarbeiten am Modell werden mit Punkteabzug bewertet','Welche Hand manikürt wird, bestimmt die Kommission, also beide Hände üben','Unsauberes Werkzeug oder ungewechselte Wäsche']
+ },
+ { id:'schoen', name:'Schönheitspflege', min:40, model:'am mitgebrachten Damenmodell',
+   intro:'Reinigungsmassage, Augenbrauen formen, Brauen und Wimpern färben und ein professionelles Tages-Make-up. Das Diagnoseblatt muss ausgefüllt mitgebracht werden.',
+   sections:[
+    { id:'rm', name:'Reinigungsmassage', crit:['Absolute Sauberkeit, Ordnung und Hygiene am Arbeitsplatz','Persönliche Vorbereitung (Hände waschen, kein Handschmuck)','Vorbereitung: saubere Handtücher, Stirnband, Kompressentücher','Richtige Hautdiagnose','Unterschiede fette, trockene, normale und unreine Haut gekannt','Gesichtsreinigung mit hauttypgerechten Produkten','Reinigungsmilch fachgerecht mit Kompressen abgenommen','Massagetechnik passend zum Hautzustand (belebend oder beruhigend)'] },
+    { id:'ab', name:'Augenbrauen formen', crit:['Gefühlvolle Technik','Formschön gezupft oder rasiert','Ausgemessen, gleichmäßig, Breite und Form passen'] },
+    { id:'fa', name:'Brauen- und Wimpernfärben', crit:['Brauen: Farbe fachgerecht aufgetragen','Brauen: Farbe sauber und richtig abgenommen','Wimpern: Hautschutz aufgetragen, Wimpernblätter angelegt','Wimpern: Farbe fachgerecht aufgetragen','Wimpern: exakt bis zum Ansatz durchgefärbt','Wimpern: gefühlvoll abgenommen, keine Farbreste auf der Haut'] },
+    { id:'mu', name:'Tages-Make-up', crit:['Typgerecht und gut sichtbar','Grundierung passend zum Hautton, Konturen exakt ausgestrichen','Augen: z. B. Kajal, Eyeliner, Mascara, Lidschatten','Rouge und Puder','Lipliner, Lippenstift mit Pinsel, eventuell Gloss','Ausdruck nicht zu blass, harmonisch zu Haar, Augen, Outfit'] }
+   ],
+   ablauf:[
+    { t:'Reinigungsmassage', s:['Arbeitsplatz ordnen, Hände waschen, Handschmuck ab.','Stirnband anlegen, Handtücher und Kompressen bereitlegen.','Hautdiagnose stellen (Diagnoseblatt!).','Augen-Make-up entfernen, Reinigungsmilch passend zum Hauttyp einmassieren.','Reinigungsmilch mit feuchten Kompressen von der Gesichtsmitte nach außen abnehmen.','Gesichtswasser auftragen.','Massage passend zum Hautzustand: belebend bei fahler, trockener Haut, beruhigend bei empfindlicher, geröteter Haut.'] },
+    { t:'Brauen formen und färben', s:['Brauen ausmessen: Anfang über dem Nasenflügel, höchster Punkt über der Pupille, Ende am äußeren Augenwinkel.','Haut spannen und in Wuchsrichtung zupfen, beide Seiten gleichmäßig.','Brauen entfetten, Farbe nach Anleitung anmischen und fachgerecht auftragen.','Hautschutz unter dem Auge auftragen, Wimpernblättchen anlegen.','Wimpern bis zum Ansatz einfärben, Einwirkzeit einhalten.','Farbe gefühlvoll abnehmen, keine Farbreste auf der Haut lassen.'] },
+    { t:'Tages-Make-up', s:['Tagespflege auftragen.','Grundierung am Kiefer testen, passend zum Hautton auftragen, Übergänge zu Haaransatz und Hals exakt ausstreichen.','Korrigieren (Concealer), mit Puder fixieren.','Augen: Lidschatten, Kajal oder Eyeliner, Mascara.','Rouge auf die Wangenknochen, zur Schläfe hin verblenden.','Lippen: Lipliner, Lippenstift mit Pinsel, eventuell Gloss.','Kontrolle: typgerecht, gut sichtbar, nicht zu blass?'] }
+   ],
+   plan:[['Reinigungsmassage','ca. 12 Min.'],['Brauen formen','ca. 5 Min.'],['Brauen und Wimpern färben (Einwirkzeit nutzen!)','ca. 10 Min.'],['Tages-Make-up','ca. 13 Min.']],
+   achtung:['Vorarbeiten an Brauen und Wimpern führen zu Punkteabzug','Piercing und Permanent Make-up sind verboten','Diagnoseblatt nicht ausgefüllt mitgebracht','Farbreste auf der Haut nach dem Wimpernfärben']
+ },
+ { id:'rasur', name:'Rasieren', min:30, model:'am mitgebrachten Modell',
+   intro:'Komplette Rasur mit Rasier- oder Klingenmesser inklusive Kompressen, danach Nachbehandlung mit Gesichtsmassage. Keine Bartformen.',
+   sections:[
+    { id:'vo', name:'Vorbereitung', crit:['Absolute Sauberkeit und Hygiene bei Werkzeug, Material, Wäsche','Richtige Vorbehandlung','Heiße Kompresse fachgerecht angelegt (Nase und Mund frei)','Fachgerecht eingeseift'] },
+    { id:'ra', name:'Rasur', crit:['Schulmäßige Rasierzüge','Richtige Spannkegeltechnik (Haut spannen)','Fachgerechte Führung und Handhabung des Messers','Vorhand- und Rückhandgriff sicher'] },
+    { id:'na', name:'Nachbehandlung', crit:['Seife abgewaschen','Desinfiziert, eventuell Wundversorgung','Kalte Kompresse','After-Shave und Eincremen','Gesichtsmassage','Keine Bartstoppel- oder Seifenreste','Kotelettenansätze gleichmäßig und gerade'] }
+   ],
+   ablauf:[
+    { t:'Ablauf Rasur', s:['Werkzeug desinfizieren, neue Klinge einsetzen, frische Wäsche und Umhang.','Haut beurteilen: Entzündungen oder Wunden? Dann nicht rasieren.','Heiße Kompresse auflegen, Nase und Mund bleiben frei.','Mit Rasierseife und Pinsel kreisend einseifen, der Bart richtet sich auf.','Haut spannen und mit dem Strich (in Wuchsrichtung) rasieren, flacher Winkel.','Vorhandgriff und Rückhandgriff je nach Gesichtspartie wechseln.','Kotelettenansätze auf beiden Seiten gerade und gleich hoch.','Bei Bedarf nachrasieren (gegen den Strich ist nicht nötig).','Seife abwaschen, desinfizieren, eventuell Wundversorgung.','Kalte Kompresse, After-Shave, eincremen, Gesichtsmassage.'] },
+    { t:'Rasierzüge – so führst du das Messer', s:['Die Rasur wird Gesichtspartie für Gesichtspartie in festen Rasierzügen ausgeführt (Reihenfolge wie in der Berufsschule gelernt).','Die freie Hand spannt die Haut gegen die Zugrichtung (Spannkegel), das Messer arbeitet in der gespannten Fläche.','Messer flach (ca. 30°) ansetzen und leicht schräg ziehen: ziehender Schnitt, nie seitlich schieben.','Kurze, gleichmäßige Züge in Wuchsrichtung, jede Partie nur so weit, wie du sie gerade spannst.','Vorhandgriff und Rückhandgriff je nach Gesichtsseite und Wuchsrichtung wechseln, dabei umgreifen statt verdrehen.','Nach jedem Zug Seife und Haare am Zellstoff abstreifen, nicht am Handtuch und nicht an der Hand.','Heikle Stellen (Kinn, Oberlippe, Kehlkopf, Kieferwinkel) mit kleinen Zügen und besonders guter Spannung rasieren.','Nachrasur bei Bedarf quer zur Wuchsrichtung, gegen den Strich ist bei der Prüfung nicht nötig.'] }
+   ],
+   plan:[['Vorbereitung, heiße Kompresse, Einseifen','ca. 7 Min.'],['Rasur mit Nachrasur','ca. 13 Min.'],['Nachbehandlung und Gesichtsmassage','ca. 10 Min.']],
+   achtung:['Rasierschaum aus der Dose ist verboten','Rasiermesser mit kurzer Klinge ist verboten','Oberlippenbart und jegliche Bartformen sind verboten','Seifen- oder Stoppelreste, schiefe Koteletten']
+ }
+];
+
+/* ============================================================
+   INHALTE: Fachkunde 1.–2. Lehrjahr
+   mc: [Frage, richtige Antwort, falsch, falsch, falsch, Erklärung]
+   open: [Prüferfrage, [Punkte der Musterantwort]]
+   ============================================================ */
+const CATS = [
+ { id:'hyg', name:'Hygiene', mc:[
+  ['Was bewirkt eine Desinfektion?','Krankheitserreger werden so stark reduziert, dass keine Ansteckung mehr möglich ist','Alle Mikroorganismen inklusive Sporen werden abgetötet','Sichtbarer Schmutz wird entfernt','Das Werkzeug wird vor Rost geschützt','Alle Keime inklusive Sporen tötet erst die Sterilisation ab. Reinigen entfernt nur den Schmutz.'],
+  ['Was unterscheidet die Sterilisation von der Desinfektion?','Sie tötet alle Mikroorganismen inklusive Sporen ab','Sie wirkt nur auf Viren','Sie ist nur für Handtücher gedacht','Es gibt keinen Unterschied','Sporen sind sehr widerstandsfähig und werden erst bei der Sterilisation (z. B. im Heißluft- oder Dampfsterilisator) sicher abgetötet.'],
+  ['Warum musst du die Einwirkzeit eines Desinfektionsmittels einhalten?','Nur dann werden die Erreger sicher abgetötet','Damit das Werkzeug besser riecht','Damit das Mittel verdunstet','Das ist nur eine Empfehlung','Wird zu früh abgespült oder abgewischt, überleben Keime.'],
+  ['Wie bereitest du einen Kamm nach dem Kunden richtig auf?','Haare entfernen, reinigen, desinfizieren, trocknen, sauber verschlossen lagern','Kurz unter Wasser halten und zurück in die Lade','In die Jackentasche stecken und am Abend waschen','Nur mit einem Handtuch abwischen','Reinigen vor dem Desinfizieren ist wichtig, weil Schmutz und Haare das Desinfektionsmittel unwirksam machen können.'],
+  ['Welche Krankheiten können über Blut übertragen werden?','Hepatitis B, Hepatitis C und HIV','Schuppen und Spliss','Heuschnupfen','Sonnenbrand','Deshalb bei Blutkontakt immer Handschuhe tragen und das Werkzeug sofort desinfizieren.'],
+  ['Du verletzt ein Modell beim Rasieren leicht. Was ist richtig?','Einmalhandschuhe an, Wunde desinfizieren und blutstillend versorgen, Werkzeug desinfizieren','Mit dem Handtuch abtupfen und weitermachen','Alaunstein für alle Kunden verwenden','Mit Rasierseife abdecken','Blutstillende Mittel nur einmal pro Person verwenden, niemals denselben Stift oder Stein für mehrere Kunden.'],
+  ['Du entdeckst bei einer Kundin Kopfläuse. Was tust du?','Diskret abbrechen, Kundin informieren, an Apotheke oder Arzt verweisen, Werkzeug und Wäsche desinfizieren','Einfach weiterschneiden','Die Läuse mit Haarspray behandeln','Nichts sagen, aber danach lüften','Läuse sind ansteckend. Freundlich und diskret bleiben, danach gründlich reinigen.'],
+  ['Bei einer Kundin siehst du Nagelpilz. Was machst du?','Nicht behandeln und freundlich an Ärztin oder Arzt verweisen','Den Nagel extra kurz feilen','Mit Nagellack abdecken','Die Nagelhaut besonders gründlich entfernen','Pilzerkrankungen sind ansteckend und gehören in ärztliche Behandlung.'],
+  ['Wie oft werden Handtücher und Kompressentücher gewechselt?','Nach jeder Kundin, gewaschen bei mindestens 60 °C','Einmal täglich','Nur wenn sie sichtbar schmutzig sind','Einmal pro Woche','Frische Wäsche für jede Person ist Pflicht und wird auch bei der Prüfung bewertet.'],
+  ['Was ist ein Hygieneplan?','Ein schriftlicher Plan: wer reinigt oder desinfiziert was, wann und womit','Ein Plan für die Mittagspause','Die Preisliste des Salons','Eine Liste der Stammkunden','Der Hygieneplan sorgt dafür, dass niemand etwas vergisst.'],
+  ['Warum trägst du beim Färben und bei Nassarbeiten Handschuhe?','Zum Schutz vor Hautschäden und Allergien (Kontaktekzem)','Damit die Farbe schneller wirkt','Weil es besser aussieht','Nur damit die Nägel sauber bleiben','Das Kontaktekzem an den Händen ist eine der häufigsten Berufskrankheiten bei Friseurinnen und Friseuren.'],
+  ['Was gehört zum Hautschutz für Friseurinnen und Friseure?','Hautschutzcreme vor der Arbeit, Handschuhe bei Nassarbeiten und Chemie, Pflegecreme danach','Hände möglichst oft mit heißem Wasser waschen','Handschuhe nur im Winter','Nur am Wochenende eincremen','Schützen, reinigen, pflegen: So bleibt die Haut gesund.'],
+  ['Was sind Sporen?','Sehr widerstandsfähige Dauerformen von Bakterien','Kleine Haarschuppen','Reste von Desinfektionsmittel','Pflegeöle für die Kopfhaut','Sporen überleben Hitze und viele Desinfektionsmittel und werden nur durch Sterilisation sicher abgetötet.'],
+  ['Was bedeutet „Infektion“?','Krankheitserreger dringen in den Körper ein und vermehren sich','Eine allergische Reaktion auf Haarfarbe','Das Desinfizieren von Werkzeug','Ein Pflegeschritt bei der Maniküre','Erreger können über Hände, Werkzeug, Wäsche oder Blut übertragen werden.'],
+  ['Einwegartikel wie Rosenholzstäbchen oder Wimpernblättchen …','werden nach jeder Kundin entsorgt','werden abgewaschen und wiederverwendet','dürfen dreimal verwendet werden','werden nur desinfiziert','Holz und Papier lassen sich nicht sicher desinfizieren.']
+ ], open:[
+  ['Erkläre den Unterschied zwischen Reinigen, Desinfizieren und Sterilisieren.',['Reinigen: sichtbaren Schmutz, Haare und Fett entfernen','Desinfizieren: Krankheitserreger so weit reduzieren, dass keine Ansteckung mehr möglich ist, Einwirkzeit einhalten','Sterilisieren: alle Mikroorganismen inklusive Sporen abtöten','Reihenfolge im Salon: zuerst reinigen, dann desinfizieren']],
+  ['Wie bereitest du deinen Arbeitsplatz hygienisch vor?',['Arbeitsfläche reinigen und desinfizieren','Desinfiziertes Werkzeug bereitlegen','Frische Handtücher, Kompressen, Stirnband','Hände waschen und desinfizieren, kein Handschmuck','Einwegartikel und Abfallbehälter bereitstellen']],
+  ['Was tust du, wenn du ein Modell verletzt?',['Ruhig bleiben, Einmalhandschuhe anziehen','Wunde desinfizieren und blutstillend versorgen (Einmalprodukt)','Pflaster falls nötig','Werkzeug sofort desinfizieren oder Klinge entsorgen','Blutkontakt: Gefahr von Hepatitis B/C und HIV']]
+ ]},
+ { id:'haut', name:'Haut', mc:[
+  ['Aus welchen drei Schichten besteht die Haut?','Oberhaut, Lederhaut, Unterhaut','Hornhaut, Fetthaut, Muskelhaut','Schuppenschicht, Faserschicht, Markschicht','Keimschicht, Talgschicht, Schweißschicht','Schuppen-, Faser- und Markschicht sind die Schichten des Haares, nicht der Haut.'],
+  ['Wie heißt die oberste Schicht der Oberhaut?','Hornschicht','Keimschicht','Lederhaut','Unterhaut','Die Hornschicht besteht aus abgestorbenen, verhornten Zellen, die ständig abschilfern.'],
+  ['Wo entstehen neue Hautzellen?','In der Keimschicht (Basalschicht) der Oberhaut','In der Hornschicht','In der Unterhaut','In den Schweißdrüsen','Von der Keimschicht wandern die Zellen nach oben und verhornen dabei.'],
+  ['Wie lange dauert es etwa, bis sich die Oberhaut erneuert hat?','Etwa 4 Wochen (28 Tage)','Einen Tag','Ein Jahr','Sie erneuert sich nie','Deshalb sieht man Ergebnisse einer Pflege oft erst nach einigen Wochen.'],
+  ['Wo liegen die Talgdrüsen?','In der Lederhaut, sie münden in den Haarfollikel','In der Hornschicht','In der Unterhaut, ohne Verbindung zum Haar','Nur an den Handflächen','Der Talg fettet Haut und Haar und ist Teil des Säureschutzmantels.'],
+  ['Was ist der Säureschutzmantel?','Ein Film aus Schweiß und Talg auf der Haut (pH ca. 5,5), der vor Keimen schützt','Eine Creme gegen Sonnenbrand','Die Unterhaut','Ein Desinfektionsmittel','Zu häufiges oder zu scharfes Waschen zerstört ihn.'],
+  ['Welchen pH-Wert hat gesunde Haut etwa?','5,5 (leicht sauer)','7 (neutral)','9 (alkalisch)','2 (stark sauer)','Die Skala reicht von 0 (stark sauer) über 7 (neutral) bis 14 (stark alkalisch).'],
+  ['Woran erkennst du fette Haut (Seborrhoe)?','Sie glänzt, ist großporig und neigt zu Mitessern','Sie spannt, ist feinporig und schuppt','Sie ist rosig, feinporig und ebenmäßig','Sie ist dünn und stark gerötet','Fette Haut produziert zu viel Talg.'],
+  ['Woran erkennst du trockene Haut (Sebostase)?','Sie ist matt, feinporig, spannt und neigt zu Schüppchen und Fältchen','Sie glänzt und ist großporig','Sie hat viele Mitesser','Sie ist immer gerötet','Trockene Haut produziert zu wenig Talg und braucht rückfettende Pflege.'],
+  ['Was ist typisch für Mischhaut?','T-Zone (Stirn, Nase, Kinn) fettig, Wangen normal bis trocken','Überall gleich trocken','Überall gleich fettig','Nur die Wangen glänzen','Die T-Zone hat besonders viele Talgdrüsen.'],
+  ['Was sind Komedonen?','Mitesser, also verstopfte Talgdrüsenausgänge','Grieskörner','Muttermale','Sommersprossen','Offene Komedonen sind durch Oxidation dunkel, geschlossene sind weiß.'],
+  ['Was sind Milien (Grieskörner)?','Kleine, weiße, harte Hornknötchen unter der Haut, oft um die Augen','Entzündete Pickel','Erweiterte Äderchen','Pigmentflecken','Milien nicht ausdrücken, sondern im Diagnoseblatt vermerken.'],
+  ['Was ist Couperose?','Erweiterte, sichtbare Äderchen, meist an Wangen und Nase','Eine Pilzerkrankung','Ein anderer Name für Mitesser','Eine Haarerkrankung','Bei Couperose keine Hitze und keine starke, durchblutungsfördernde Massage.'],
+  ['Welche Massage passt zu geröteter, empfindlicher Haut?','Sanfte, beruhigende Streichungen ohne starke Durchblutungsförderung','Kräftige, belebende Klopfungen','Heiße Kompressen und starkes Kneten','Gar keine Reinigung','Belebende Massage passt eher zu fahler, trockener oder müder Haut.'],
+  ['Welche Aufgabe hat die Haut NICHT?','Verdauung','Schutz vor Keimen und UV-Strahlen','Regulierung der Körpertemperatur','Sinnesorgan (Tasten, Wärme, Schmerz)','Die Haut ist das größte Organ des Menschen.'],
+  ['Was ist Melanin?','Der Farbstoff (Pigment) von Haut und Haar','Ein Hautpilz','Das Fett der Talgdrüse','Ein Bestandteil des Nagels','Melanin wird in den Melanozyten gebildet und schützt vor UV-Strahlung.'],
+  ['Wie nimmst du Reinigungsmilch fachgerecht ab?','Mit feuchten Kompressen von der Gesichtsmitte nach außen','Mit trockenen Papiertüchern reiben','Mit kaltem Wasser abspritzen','Gar nicht, sie zieht ein','Das wird bei der Prüfung ausdrücklich bewertet.'],
+  ['Wozu dient das Gesichtswasser nach der Reinigung?','Es entfernt Reste, erfrischt und gleicht den pH-Wert der Haut aus','Es ersetzt die Reinigung','Es färbt die Haut','Es ist nur zum Duften','Tonic passend zum Hauttyp wählen, bei empfindlicher Haut ohne Alkohol.']
+ ], open:[
+  ['Beschreibe den Aufbau der Haut.',['Oberhaut (Epidermis): Hornschicht oben, Keimschicht unten, erneuert sich in ca. 4 Wochen','Lederhaut (Dermis): Talgdrüsen, Schweißdrüsen, Haarwurzeln, Blutgefäße, Nerven, elastische Fasern','Unterhaut (Subcutis): Fettgewebe, Wärmeschutz und Polster']],
+  ['Woran erkennst du fette und trockene Haut, und wie behandelst du sie?',['Fett: glänzend, großporig, Mitesser → Reinigungsgel, ausgleichende Pflege, keine zu starke Durchblutung','Trocken: matt, feinporig, spannt, Schüppchen → milde, rückfettende Reinigung, reichhaltige Pflege, belebende Massage','Mischhaut: T-Zone fettig, Wangen normal/trocken → Zonen unterschiedlich behandeln']],
+  ['Was ist der Säureschutzmantel und warum ist er wichtig?',['Film aus Schweiß und Talg','pH-Wert ca. 5,5','Schützt vor Bakterien und Pilzen','Wird durch zu häufiges oder alkalisches Waschen gestört']]
+ ]},
+ { id:'haar', name:'Haar', mc:[
+  ['Aus welchen drei Schichten besteht der Haarschaft?','Schuppenschicht (Kutikula), Faserschicht (Cortex), Markschicht (Medulla)','Oberhaut, Lederhaut, Unterhaut','Matrix, Lunula, Nagelplatte','Hornschicht, Keimschicht, Talgschicht','Die Schuppenschicht schützt, die Faserschicht gibt Festigkeit und Farbe.'],
+  ['In welcher Schicht liegen die Farbpigmente des Haares?','In der Faserschicht (Cortex)','In der Schuppenschicht','In der Kopfhaut','In der Talgdrüse','Deshalb muss Haarfarbe die Schuppenschicht öffnen, um in die Faserschicht zu gelangen.'],
+  ['Woraus besteht das Haar hauptsächlich?','Aus Keratin, einem Eiweiß','Aus Kalk','Aus Fett','Aus Wasser','Keratin ist auch Hauptbestandteil von Nägeln und Hornschicht.'],
+  ['Welche Bindungen werden durch Wasser gelöst und sind für die Wasserwelle wichtig?','Wasserstoffbrücken','Disulfidbrücken','Peptidbindungen','Keine, Wasser verändert das Haar nicht','Wasserstoffbrücken schließen sich beim Trocknen in der neuen Form. Das ist eine vorübergehende Umformung.'],
+  ['Welche Bindungen werden bei der Dauerwelle chemisch gelöst?','Disulfidbrücken (Schwefelbrücken)','Wasserstoffbrücken','Salzbrücken','Gar keine','Das Wellmittel öffnet sie, die Fixierung schließt sie in der neuen Form wieder.'],
+  ['Wie heißen die drei Phasen des Haarwachstums?','Anagen (Wachstum), Katagen (Übergang), Telogen (Ruhe)','Frühling, Sommer, Herbst','Matrix, Papille, Follikel','Kutikula, Cortex, Medulla','Etwa 85–90 % der Haare sind in der Anagenphase.'],
+  ['Wie lange dauert die Wachstumsphase (Anagen) etwa?','2 bis 6 Jahre','2 bis 3 Wochen','2 bis 3 Monate','20 Jahre','Die Dauer bestimmt, wie lang das Haar maximal werden kann.'],
+  ['Wie viel wächst Kopfhaar pro Monat ungefähr?','Etwa 1 bis 1,5 cm','Etwa 1 mm','Etwa 5 cm','Etwa 10 cm','Nützlich für die Beratung, zum Beispiel beim Nachwachsen des Ansatzes.'],
+  ['Wie viele Haare verliert ein Mensch normalerweise pro Tag?','Etwa 60 bis 100','Etwa 5','Etwa 1000','Gar keine','Erst deutlich mehr über längere Zeit gilt als verstärkter Haarausfall.'],
+  ['Was ist die Haarpapille?','Sie versorgt die Haarwurzel über Blutgefäße mit Nährstoffen','Die Spitze des Haares','Ein Pflegeprodukt','Die Talgdrüse','Aus den Zellen über der Papille (Matrix) wächst das Haar.'],
+  ['Woran erkennst du poröses Haar?','Es fühlt sich rau an, ist stumpf und nimmt Wasser und Farbe sehr schnell auf','Es glänzt stark und ist glatt','Es wächst schneller','Es ist immer lockig','Die Schuppenschicht ist beschädigt und abgespreizt.'],
+  ['Was bewirkt ein alkalisches Mittel (pH über 7) am Haar?','Es lässt das Haar quellen und öffnet die Schuppenschicht','Es schließt die Schuppenschicht','Es macht das Haar glänzend','Es hat keine Wirkung','Deshalb sind Dauerwelle und Farbe meist alkalisch.'],
+  ['Was bewirkt eine saure Spülung oder Pflege?','Sie schließt die Schuppenschicht, das Haar glänzt','Sie öffnet die Schuppenschicht','Sie färbt das Haar','Sie löst Disulfidbrücken','Saure Pflege stellt nach alkalischen Behandlungen den natürlichen Zustand wieder her.'],
+  ['Was ist Spliss (Trichoptilose)?','Aufgespaltene Haarspitzen','Kreisrunder Haarausfall','Schuppen','Eine Pilzerkrankung','Spliss lässt sich nur durch Schneiden entfernen.'],
+  ['Wie nennt man kreisrunden Haarausfall?','Alopecia areata','Trichoptilose','Pityriasis','Seborrhoe','Die Kundin einfühlsam an eine Hautärztin oder einen Hautarzt verweisen.'],
+  ['Was sind Schuppen (Pityriasis)?','Übermäßig abschilfernde Hornzellen der Kopfhaut','Aufgespaltene Spitzen','Läuse-Eier','Farbpigmente','Es gibt trockene und fettige Schuppen, beide stehen auch im Diagnoseblatt.'],
+  ['Welches Pigment sorgt für rötliche bis gelbliche Töne im Haar?','Phäomelanin','Eumelanin','Keratin','Chlorophyll','Eumelanin gibt braune bis schwarze Töne.']
+ ], open:[
+  ['Beschreibe den Aufbau des Haares.',['Haarschaft (sichtbar) und Haarwurzel (in der Haut, im Follikel)','Schuppenschicht (Kutikula): dachziegelartige Schuppen, Schutz, Glanz','Faserschicht (Cortex): Keratinfasern, Festigkeit, Elastizität, Farbpigmente','Markschicht (Medulla): innen, nicht immer vorhanden','Papille versorgt die Wurzel mit Nährstoffen']],
+  ['Erkläre den Haarzyklus.',['Anagen: Wachstumsphase, 2–6 Jahre, ca. 85–90 % der Haare','Katagen: Übergangsphase, ca. 2–3 Wochen','Telogen: Ruhephase, ca. 2–4 Monate, danach fällt das Haar aus','60–100 Haare Verlust pro Tag sind normal']],
+  ['Was passiert im Haar bei Wasserwelle und Dauerwelle?',['Wasserwelle: Wasser löst Wasserstoffbrücken, beim Trocknen schließen sie sich in neuer Form → vorübergehend','Dauerwelle: Wellmittel (reduzierend) öffnet Disulfidbrücken','Fixierung (oxidierend) schließt sie in der neuen Form → dauerhaft']]
+ ]},
+ { id:'farbe', name:'Farbenlehre', mc:[
+  ['Welche sind die Grundfarben (Primärfarben) im Farbkreis nach Itten?','Gelb, Rot, Blau','Grün, Orange, Violett','Schwarz, Weiß, Grau','Rot, Grün, Blau','Aus den Grundfarben lassen sich alle anderen Farben mischen.'],
+  ['Welche sind die Sekundärfarben?','Orange, Grün, Violett','Gelb, Rot, Blau','Braun, Beige, Grau','Rosa, Türkis, Gold','Sie entstehen aus je zwei Grundfarben.'],
+  ['Gelb + Blau ergibt …','Grün','Orange','Violett','Braun',''],
+  ['Rot + Gelb ergibt …','Orange','Grün','Violett','Rosa',''],
+  ['Rot + Blau ergibt …','Violett','Grün','Orange','Gelb',''],
+  ['Was ist die Komplementärfarbe zu Rot?','Grün','Orange','Violett','Blau','Komplementärfarben liegen sich im Farbkreis genau gegenüber.'],
+  ['Was ist die Komplementärfarbe zu Orange?','Blau','Grün','Violett','Gelb','Daher neutralisiert Blau (Asch) einen Orangestich.'],
+  ['Was ist die Komplementärfarbe zu Gelb?','Violett','Blau','Grün','Rot','Daher neutralisiert Violett (Silber- oder Perlnuance) einen Gelbstich.'],
+  ['Blondiertes Haar hat einen unerwünschten Gelbstich. Womit neutralisierst du?','Mit Violett','Mit Gelb','Mit Rot','Mit Orange','Komplementärfarben heben sich gegenseitig auf.'],
+  ['Unerwünschter Rotstich im Haar. Womit neutralisierst du?','Mit Grün (Matt)','Mit Rot','Mit Violett','Mit Gold','Grün liegt Rot im Farbkreis gegenüber.'],
+  ['Was passiert, wenn man zwei Komplementärfarben mischt?','Sie neutralisieren sich zu einem Grau- oder Braunton','Es entsteht immer Weiß','Die Farbe wird leuchtender','Es entsteht eine Grundfarbe','Genau das nutzt du beim Neutralisieren von Farbstichen.'],
+  ['Aus wie vielen Farben besteht der Farbkreis nach Itten?','12','6','3','24','3 Grundfarben, 3 Sekundärfarben und 6 Tertiärfarben.'],
+  ['Wie entstehen Tertiärfarben?','Aus einer Grundfarbe und einer benachbarten Sekundärfarbe','Aus Schwarz und Weiß','Aus zwei Komplementärfarben','Aus allen drei Grundfarben','Beispiele: Gelborange, Rotviolett, Blaugrün.'],
+  ['Welche Farben gelten als warm?','Gelb, Orange, Rot','Blau, Grün, Violett','Grau, Silber, Weiß','Nur Schwarz','Kalte Farben sind Blau, Grün und Violett.'],
+  ['Was gibt bei Haarfarben die Zahl vor dem Punkt oder Schrägstrich an (z. B. 7/43)?','Die Farbtiefe (Tonhöhe), z. B. 7 = Mittelblond','Die Nuance','Die Einwirkzeit','Den Preis','Die Zahlen danach geben Hauptnuance und Nebennuance an.'],
+  ['Auf der Farbtiefenskala steht 1 für …','Schwarz','Hell-Lichtblond','Rot','Grau','Die Skala reicht meist von 1 (Schwarz) bis 10 (Hell-Lichtblond).']
+ ], open:[
+  ['Erkläre den Farbkreis nach Itten.',['12 Farben','Grundfarben: Gelb, Rot, Blau','Sekundärfarben: Orange, Grün, Violett (je zwei Grundfarben)','Tertiärfarben: Grundfarbe + benachbarte Sekundärfarbe','Komplementärfarben liegen sich gegenüber']],
+  ['Wie neutralisierst du Farbstiche im Haar?',['Mit der Komplementärfarbe','Gelbstich → Violett','Orangestich → Blau','Rotstich → Grün','Komplementärfarben mischen sich zu Grau/Braun und heben sich auf']],
+  ['Wo nutzt du die Farbenlehre beim Make-up?',['Grüner Concealer neutralisiert Rötungen','Apricot/Lachs deckt bläuliche Augenringe ab','Violetter Korrektor gegen fahlen Gelbstich','Lidschatten in der Komplementärfarbe lässt die Augenfarbe strahlen (blaue Augen → Kupfer/Bronze)']]
+ ]},
+ { id:'naegel', name:'Nägel', mc:[
+  ['Woraus besteht der Nagel hauptsächlich?','Aus Keratin','Aus Kalk','Aus Knochen','Aus Knorpel','Wie Haar und Hornschicht der Haut.'],
+  ['Wo wird der Nagel gebildet?','In der Nagelmatrix (Nagelwurzel)','Im Nagelbett an der Spitze','In der Nagelplatte','Im Nagelhäutchen','Wird die Matrix verletzt, kann der Nagel dauerhaft verformt nachwachsen.'],
+  ['Was ist das Nagelmöndchen (Lunula)?','Der sichtbare, helle Teil der Nagelmatrix','Ein Pilz','Die Nagelspitze','Ein Nageldesign','Vorsicht mit Druck in diesem Bereich.'],
+  ['Wie viel wächst ein Fingernagel pro Monat ungefähr?','Etwa 3 mm','Etwa 1 cm','Etwa 0,1 mm','Etwa 2 cm','Ein ganzer Fingernagel wächst in ca. 5–6 Monaten nach.'],
+  ['Wozu dient das Nagelhäutchen?','Es schützt die Nagelmatrix vor eindringenden Keimen','Es lässt den Nagel schneller wachsen','Es färbt den Nagel','Es hat keine Aufgabe','Darum nur überschüssige, gelöste Haut entfernen und nicht ins lebende Gewebe schneiden.'],
+  ['Wie bereitest du die Nagelhaut vor, bevor du sie zurückschiebst?','Im warmen Wasserbad oder mit Nagelhautentferner aufweichen','Trocken abreißen','Mit Nagellackentferner einweichen','Mit der Feile abfeilen','Aufgeweichte Nagelhaut lässt sich schonend mit Rosenholzstäbchen oder Schieber zurückschieben.'],
+  ['Wie feilst du einen Naturnagel richtig?','Von außen zur Mitte in eine Richtung','Schnell hin und her sägen','Nur in der Mitte','Quer über die Nageloberfläche','Hin- und Herfeilen lässt den Nagel splittern und spalten.'],
+  ['Was ist die richtige Reihenfolge beim Lackieren?','Entfetten, Unterlack, 2 Schichten Farblack, Überlack','Farblack, Unterlack, Überlack','Überlack, Farblack, entfetten','Nur Farblack genügt','Unterlack schützt vor Verfärbung und verbessert die Haftung.'],
+  ['Wie trägst du den Farblack sauber auf?','Mit drei Strichen: Mitte, dann links und rechts','Mit vielen kleinen Tupfern','Von der Spitze zur Nagelhaut','Mit dem Finger','Einen kleinen Abstand zur Nagelhaut lassen, dann wirkt es sauber.'],
+  ['Was ist ein Niednagel?','Ein eingerissenes Hautstück am Nagelrand','Ein eingewachsener Zehennagel','Ein Nagelpilz','Ein künstlicher Nagel','Sauber mit der Nagelhautzange abschneiden, nicht abreißen.'],
+  ['Was ist eine Paronychie?','Eine Entzündung des Nagelwalls','Ein Nageldesign','Eine Feilform','Ein Nagellack','Bei Entzündungen nicht behandeln und an Ärztin oder Arzt verweisen.'],
+  ['An welcher Hand wird bei der Prüfung die Handmassage gemacht?','An der Hand, die NICHT manikürt wird','An der manikürten Hand','An beiden Händen','Gar nicht','So steht es in den Prüfungsbedingungen.'],
+  ['Wer bestimmt bei der Prüfung, welche Hand manikürt wird?','Die Prüfungskommission','Das Modell','Du selbst','Das Los','Übe darum an beiden Händen.'],
+  ['Wie viele Nägel bekommen bei der Prüfung ein Nageldesign?','2','1','5','Alle 10','Das Design passt zum gewählten Themenschwerpunkt.']
+ ], open:[
+  ['Beschreibe den Aufbau des Nagels.',['Nagelplatte aus Keratin','Nagelmatrix (Wurzel) bildet den Nagel, Lunula = sichtbarer Teil','Nagelbett unter der Platte','Nagelwall und Nagelhäutchen schützen die Matrix vor Keimen','Wachstum ca. 3 mm pro Monat']],
+  ['Erkläre den Ablauf einer Maniküre.',['Hygiene und Arbeitsplatz vorbereiten','Handmassage (Prüfung: an der anderen Hand)','Alten Lack entfernen, Nägel beurteilen','Feilen von außen zur Mitte','Wasserbad, Nagelhaut zurückschieben, lösen, entfernen','Entfetten, Unterlack, Farblack, Design, Überlack']],
+  ['Welche Nagelveränderungen kennst du und wie reagierst du?',['Nagelpilz (Onychomykose): ansteckend → nicht behandeln, an Arzt verweisen','Nagelbettentzündung (Paronychie): nicht behandeln','Niednagel: sauber abschneiden','Brüchige oder gespaltene Nägel: pflegen, richtig feilen']]
+ ]},
+ { id:'rasur', name:'Rasur', mc:[
+  ['Warum legst du vor der Rasur eine heiße Kompresse auf?','Der Bart wird weich, die Haut geschmeidig, die Rasur schonender','Damit das Modell einschläft','Um die Haut zu desinfizieren','Damit die Seife besser riecht','Weiche Barthaare lassen sich mit weniger Zug schneiden.'],
+  ['Was muss beim Anlegen der heißen Kompresse frei bleiben?','Nase und Mund','Die Ohren','Die Stirn','Das Kinn','Das Modell muss frei atmen können. Das wird bei der Prüfung bewertet.'],
+  ['Wozu dient das Einseifen?','Bart erweichen und aufrichten, das Messer gleitet besser, die Haut ist geschützt','Nur für den Duft','Um Pickel zu verdecken','Um die Haut zu färben','Mit Rasierseife und Pinsel kreisend einmassieren.'],
+  ['Was ist bei der Zwischenprüfung beim Rasieren verboten?','Rasierschaum aus der Dose, Messer mit kurzer Klinge und Bartformen','Rasierpinsel','Heiße Kompressen','After-Shave','Rasieren gegen den Strich ist nicht nötig, eine Nachrasur bei Bedarf schon.'],
+  ['Warum spannst du die Haut beim Rasieren?','Damit sie glatt liegt und das Messer nicht einschneidet','Damit es schneller geht','Um die Durchblutung zu stoppen','Das ist nicht nötig','Das nennt man Spannkegeltechnik: gespannte Haut bildet eine glatte Fläche.'],
+  ['Was bedeutet „mit dem Strich“ rasieren?','In Wuchsrichtung des Bartes','Gegen die Wuchsrichtung','Quer zur Wuchsrichtung','Im Kreis','Mit dem Strich schont die Haut. Die Wuchsrichtung ist an Hals und Wangen oft verschieden.'],
+  ['Wozu gibt es Vorhand- und Rückhandgriff?','Um in jeder Gesichtspartie in Wuchsrichtung und sicher rasieren zu können','Nur für Linkshänder','Zum Schärfen des Messers','Zum Einseifen','Welcher Griff wo passt, hängt von der Gesichtsseite und der Wuchsrichtung ab.'],
+  ['In welchem Winkel führst du das Messer zur Haut?','Flach, etwa 30 Grad','Senkrecht, 90 Grad','Gar kein Winkel, flach aufliegend','Etwa 60 Grad','Zu steil schneidet, zu flach rasiert nicht.'],
+  ['Wie läuft die Nachbehandlung ab?','Seife abwaschen, desinfizieren, ev. Wundversorgung, kalte Kompresse, After-Shave, eincremen','Nur abtrocknen','Heiße Kompresse und fertig','Puder und fertig','Danach folgt die Gesichtsmassage.'],
+  ['Warum kommt nach der Rasur eine kalte Kompresse?','Sie beruhigt die Haut, erfrischt und zieht die Poren zusammen','Um den Bart wieder wachsen zu lassen','Damit die Seife besser haftet','Sie ist nur im Sommer nötig','Warm öffnet, kalt beruhigt und schließt.'],
+  ['Was machst du mit der Klinge eines Wechselklingenmessers nach dem Kunden?','Klinge sicher entsorgen, für jede Person eine neue Klinge','Abwischen und wieder verwenden','Im Wasser aufbewahren','Nachschleifen','Blutkontakt ist bei der Rasur möglich, deshalb immer eine neue Klinge.'],
+  ['Worauf achtest du bei den Koteletten?','Beide Seiten gerade und gleich hoch','Eine Seite kürzer für mehr Stil','Sie werden immer ganz wegrasiert','Gar nicht, sie zählen nicht','Gerade, gleichmäßige Kotelettenansätze werden bewertet.'],
+  ['Was versteht man unter einem „ziehenden Schnitt“ beim Rasieren?','Das Messer wird leicht schräg durch den Bart gezogen, nicht gerade gedrückt','Das Messer wird seitlich über die Haut geschoben','Die Haut wird mit dem Messer nach vorne gezogen','Es wird gegen den Strich rasiert','Der ziehende Schnitt schneidet sauber und schont die Haut. Seitliches Schieben verursacht Schnitte.'],
+  ['Wie spannst du die Haut bei einem Rasierzug richtig?','Mit der freien Hand gegen die Zugrichtung des Messers','In dieselbe Richtung, in die das Messer läuft','Gar nicht, die Haut bleibt locker','Das Modell spannt selbst mit der Zunge','Die gespannte Fläche (Spannkegel) ist glatt, das Messer kann nicht einhaken.'],
+  ['Wie lang sollen die einzelnen Rasierzüge sein?','Kurz und gleichmäßig, nur so weit, wie die Haut gespannt ist','Möglichst lang über das ganze Gesicht','Egal, Hauptsache schnell','Nur ein einziger Zug pro Seite','Kurze, kontrollierte Züge sind sicherer und gründlicher.'],
+  ['Wo streifst du Seife und Haare nach einem Rasierzug ab?','Am Zellstoff','Am Handtuch des Modells','An deiner Handfläche','Am Umhang','Zellstoff wird danach entsorgt, das ist hygienisch und sicher.'],
+  ['Welche Stellen rasierst du mit besonders kleinen Zügen und guter Spannung?','Kinn, Oberlippe, Kehlkopf und Kieferwinkel','Nur die Wangen','Die Stirn','Die Ohrläppchen','Dort ist die Haut uneben oder beweglich, deshalb ist die Verletzungsgefahr hoch.'],
+  ['Warum wechselst du bei den Rasierzügen zwischen Vorhand- und Rückhandgriff?','Damit du auf beiden Gesichtsseiten in Wuchsrichtung und mit sicherer Haltung rasieren kannst','Damit die Hand nicht müde wird','Weil es bei der Prüfung Zusatzpunkte gibt','Um das Messer zu schärfen','„Schulmäßige Rasierzüge“ und die Vor- und Rückhandgrifftechnik werden bei der Prüfung bewertet.'],
+  ['Wann darfst du NICHT rasieren?','Bei entzündeter Haut, Hautinfektionen oder offenen Wunden','Wenn der Bart länger als 3 Tage ist','Am Nachmittag','Wenn das Modell Brillenträger ist','Du würdest Keime verteilen und die Haut verletzen.']
+ ], open:[
+  ['Beschreibe den Ablauf einer Rasur.',['Hygiene: Werkzeug desinfiziert, neue Klinge, frische Wäsche','Haut beurteilen','Heiße Kompresse (Nase, Mund frei)','Einseifen mit Pinsel','Haut spannen, mit dem Strich rasieren, Vor- und Rückhandgriff','Nachrasur bei Bedarf, Koteletten gerade','Nachbehandlung: Seife ab, desinfizieren, kalte Kompresse, After-Shave, Creme, Massage']],
+  ['Erkläre, wie du einen Rasierzug richtig ausführst.',['Haut mit der freien Hand gegen die Zugrichtung spannen (Spannkegel)','Messer flach, ca. 30°, ziehender Schnitt, nie seitlich schieben','Kurze, gleichmäßige Züge in Wuchsrichtung','Vorhand- und Rückhandgriff je nach Partie','Nach jedem Zug am Zellstoff abstreifen','Heikle Stellen (Kinn, Oberlippe, Kehlkopf) mit kleinen Zügen']],
+  ['Welche Messerhaltungen kennst du und wozu?',['Vorhandgriff','Rückhandgriff','Wechsel je nach Gesichtspartie und Wuchsrichtung','Flacher Winkel ca. 30°, Haut immer spannen']]
+ ]},
+ { id:'makeup', name:'Make-up & Brauen', mc:[
+  ['Wie findest du die richtige Farbe der Grundierung?','Am Kieferknochen testen, sie soll mit Gesicht und Hals verschmelzen','Am Handrücken testen','Immer eine Nuance dunkler wählen','Die Lieblingsfarbe der Kundin nehmen','Die Grundierung passt zum Hautton, sichtbare Ränder sind ein Fehler.'],
+  ['Worauf achtest du beim Auftragen der Grundierung?','Übergänge zu Haaransatz, Hals und Ohren exakt ausstreichen','Möglichst dick auftragen','Nur auf die Stirn','Kanten am Kinn sind normal','„Exaktes Ausstreichen der Konturen“ steht in den Prüfungskriterien.'],
+  ['Wofür verwendest du einen grünen Concealer?','Um Rötungen zu neutralisieren','Um Augenringe aufzuhellen','Für den Lidschatten','Um die Lippen zu betonen','Grün ist die Komplementärfarbe zu Rot.'],
+  ['Womit deckst du bläuliche Augenringe am besten ab?','Mit einem Concealer mit Apricot- oder Lachston','Mit grünem Concealer','Mit weißem Puder','Mit blauem Lidschatten','Orange ist die Komplementärfarbe zu Blau.'],
+  ['Wofür wird Puder verwendet?','Um das Make-up zu fixieren und zu mattieren','Um die Haut zu reinigen','Als Lippenstift','Um die Brauen zu färben',''],
+  ['Wo setzt du beim Tages-Make-up das Rouge?','Auf die Wangenknochen, zur Schläfe hin verblendet','Auf die Nasenspitze','Unter das Kinn','Rund in die Mitte der Wange als Kreis','Weich verblendet und typgerecht wirkt es natürlich.'],
+  ['Wie gehst du bei den Lippen vor?','Lipliner, dann Lippenstift mit dem Pinsel, eventuell Gloss','Lippenstift direkt aus der Hülse, dann Lipliner','Nur Gloss','Lippen werden beim Tages-Make-up ausgelassen','Der Pinsel ist hygienischer und genauer, bei der Prüfung ist er vorgeschrieben.'],
+  ['Wie soll ein Tages-Make-up bei der Prüfung wirken?','Typgerecht, gut sichtbar, harmonisch zum Modell und nicht zu blass','Möglichst unsichtbar','Wie ein Abend- oder Bühnen-Make-up','Möglichst bunt','Der Ausdruck soll zu Haarfarbe, Augenfarbe und Outfit passen.'],
+  ['Welche Lidschattenfarben lassen blaue Augen strahlen?','Warme Töne wie Kupfer, Bronze, Apricot','Blaue Töne in derselben Farbe','Grüne Töne','Grau','Orange ist die Komplementärfarbe zu Blau.'],
+  ['Welche Lidschattenfarben betonen grüne Augen?','Violett-, Pflaumen- und Bordeauxtöne','Grüne Töne','Gelbe Töne','Hellblau','Rot bzw. Violett liegt Grün gegenüber.'],
+  ['Was bewirkt ein dunklerer Farbton beim Konturieren?','Die Partie wirkt schmäler und tritt zurück','Die Partie tritt hervor','Die Haut wirkt gesünder','Er hat keine Wirkung','Hell hebt hervor, dunkel lässt zurücktreten.'],
+  ['Wie arbeitest du hygienisch mit Mascara?','Mit Einweg-Bürstchen, nie doppelt in die Tube tauchen','Die Bürste der Tube für alle verwenden','Die Bürste mit Wasser abspülen','Mascara wird nicht verwendet','Sonst gelangen Keime von Auge zu Auge.'],
+  ['Wo beginnt die Augenbraue?','Senkrecht über dem Nasenflügel','Über der Pupille','Über dem äußeren Augenwinkel','In der Stirnmitte','Messen mit einem Pinsel oder Stäbchen, das am Nasenflügel angelegt wird.'],
+  ['Wo liegt der höchste Punkt der Augenbraue?','Auf der Linie Nasenflügel – Pupille (Blick geradeaus)','Direkt über dem Nasenflügel','Am Ende der Braue','In der Mitte der Stirn',''],
+  ['Wo endet die Augenbraue?','Auf der Linie Nasenflügel – äußerer Augenwinkel','Über der Pupille','An der Schläfe beim Haaransatz','Über dem Ohr',''],
+  ['In welche Richtung zupfst du die Brauen?','In Wuchsrichtung, bei gespannter Haut','Gegen die Wuchsrichtung','Immer von oben','Egal','So bricht das Haar nicht ab und es tut weniger weh.'],
+  ['Warum werden beim Wimpernfärben Hautschutz und Wimpernblättchen verwendet?','Damit die Haut unter dem Auge nicht verfärbt','Damit die Farbe schneller wirkt','Damit die Wimpern länger werden','Nur für die Optik','Die Prüfung bewertet: keine Farbreste auf der Haut.'],
+  ['Womit färbst du Wimpern und Brauen?','Nur mit spezieller Wimpern- und Augenbrauenfarbe','Mit normaler Haarfarbe','Mit Lebensmittelfarbe','Mit Kajal','Normale Haarfarbe ist für den Augenbereich nicht zugelassen und gefährlich.'],
+  ['Was gilt bei der Prüfung für Vorarbeiten an Brauen und Wimpern?','Sie führen zu Punkteabzug','Sie sind erwünscht','Sie sind egal','Sie bringen Zusatzpunkte','Das Modell soll mit unbearbeiteten Brauen kommen.']
+ ], open:[
+  ['Wie gehst du beim Tages-Make-up vor?',['Pflege','Grundierung passend zum Hautton, Konturen exakt ausstreichen','Korrigieren, Puder fixieren','Augen: Lidschatten, Kajal/Eyeliner, Mascara','Rouge auf den Wangenknochen','Lippen: Lipliner, Lippenstift mit Pinsel, ev. Gloss','Typgerecht und gut sichtbar']],
+  ['Wie findest du die richtige Brauenform?',['Anfang: senkrecht über dem Nasenflügel','Höchster Punkt: Linie Nasenflügel – Pupille','Ende: Linie Nasenflügel – äußerer Augenwinkel','Haut spannen, in Wuchsrichtung zupfen, beide Seiten gleich']],
+  ['Beschreibe das Wimpernfärben.',['Nur spezielle Wimpernfarbe verwenden','Hautschutz auftragen, Wimpernblättchen anlegen','Farbe bis zum Ansatz auftragen','Einwirkzeit einhalten','Gefühlvoll abnehmen, keine Farbreste auf der Haut']]
+ ]},
+ { id:'werkzeug', name:'Werkzeugkunde', mc:[
+  ['Wie hältst du die Schere richtig?','Ringfinger im Fingerloch, Daumen im Daumenloch, nur der Daumen bewegt sich','Zeigefinger und Daumen in den Löchern, beide Blätter bewegen sich','Mit der ganzen Faust','Mittelfinger und kleiner Finger in den Löchern','Der kleine Finger liegt auf der Fingerstütze. So schneidest du ruhig und präzise.'],
+  ['Wofür verwendest du eine Effilierschere (Modellierschere)?','Um Haar auszudünnen und Übergänge weich zu machen','Um Papier zu schneiden','Um Nagelhaut zu entfernen','Für gerade, harte Konturen','Eine Seite ist gezahnt, darum schneidet sie nur einen Teil der Haare.'],
+  ['Worauf achtest du bei Kämmen?','Abgerundete Zähne ohne Grate','Möglichst scharfe Zähne','Nur Metallkämme verwenden','Es ist egal','Grate verletzen Kopfhaut und Schuppenschicht.'],
+  ['Welcher Kamm eignet sich für handgelegte Wasserwellen?','Ein Frisierkamm mit enger und weiter Zahnung','Eine Rundbürste','Ein grobzinkiger Afro-Kamm','Ein Stielkamm aus Metall mit Spitze','Die enge Zahnung formt saubere Wellenkanten.'],
+  ['Welche Wicklerstärke soll bei der Zwischenprüfung verwendet werden?','Mittlere Wicklerstärken','Nur die dicksten','Nur die dünnsten','Beliebig gemischt','So steht es in den Prüfungskriterien.'],
+  ['Wie pflegst du ein Rasiermesser?','Nach jeder Person reinigen, desinfizieren, trocknen und Klinge wechseln','Nur einmal pro Woche abwischen','Im Wasserglas aufbewahren','Nie reinigen, sonst wird es stumpf','Feuchtigkeit lässt es rosten, Keime übertragen Krankheiten.'],
+  ['Wozu dient die Nagelhautzange?','Um überschüssige, gelöste Nagelhaut und Niednägel abzuschneiden','Um Nägel zu kürzen','Um Nagellack aufzutragen','Um die Nagelhaut abzureißen','Nie ins lebende Gewebe schneiden.'],
+  ['Wie behandelst du Rosenholzstäbchen nach der Kundin?','Entsorgen, sie sind Einwegartikel','Desinfizieren und wiederverwenden','Abwaschen','Anspitzen und weiterverwenden','Holz ist porös und lässt sich nicht sicher desinfizieren.'],
+  ['Welche Feile eignet sich für Naturnägel?','Eine feine Feile (hohe Körnung, z. B. 180–240) oder Glasfeile','Eine grobe Feile für Kunstnägel (80–100)','Eine Metallraspel','Schleifpapier aus dem Baumarkt','Grobe Feilen lassen den Naturnagel splittern.'],
+  ['Wo bewahrst du desinfiziertes Werkzeug auf?','In einem sauberen, geschlossenen Behälter oder einer Lade','Offen auf dem Arbeitsplatz','In der Hosentasche','Im Waschbecken','So bleibt es bis zum nächsten Einsatz sauber.'],
+  ['Wie spitzt du einen Kajalstift hygienisch?','Vor und nach jeder Person anspitzen','Nie, das verschwendet Stift','Nur einmal im Monat','Mit der Schere','Beim Anspitzen entsteht eine frische, keimarme Oberfläche.'],
+  ['Wofür verwendest du einen Stielkamm?','Zum exakten Abteilen von Passees','Zum Föhnen','Zum Einseifen','Zum Wimpernfärben','Mit dem Stiel ziehst du saubere, gerade Abteilungen.']
+ ], open:[
+  ['Welche Scheren kennst du und wie pflegst du sie?',['Haarschneideschere (glatt), Effilierschere (gezahnt), ev. Messerschnittschere','Haltung: Ring- und Daumenloch, kleiner Finger auf der Stütze','Nach jeder Person reinigen und desinfizieren','Ölen am Gelenk, Spannung richtig einstellen','Nie fallen lassen, nicht für Papier verwenden']],
+  ['Welches Werkzeug brauchst du für die Nagelpflege?',['Feile (fein) oder Glasfeile','Rosenholzstäbchen (Einweg) oder Nagelhautschieber','Nagelhautzange','Schale für das Wasserbad','Zellstoff, Nagellackentferner, Unter-, Farb-, Überlack','Desinfektionsmittel, Wundversorgung, Handtücher']]
+ ]},
+ { id:'umformung', name:'Dauerwelle & Wasserwelle', mc:[
+  ['Was für eine Umformung ist die Wasserwelle?','Eine physikalische, vorübergehende Umformung','Eine chemische, dauerhafte Umformung','Gar keine Umformung','Eine Färbung','Sie hält nur bis zur nächsten Haarwäsche.'],
+  ['Was für eine Umformung ist die Dauerwelle?','Eine chemische, dauerhafte Umformung','Eine physikalische, vorübergehende Umformung','Eine reine Pflege','Eine Färbung','Die neue Form wächst erst mit dem Haar heraus.'],
+  ['Wie wirkt das Wellmittel?','Reduzierend: es öffnet die Disulfidbrücken','Oxidierend: es schließt die Disulfidbrücken','Es färbt das Haar','Es trocknet das Haar','Es ist alkalisch und lässt das Haar quellen.'],
+  ['Wie wirkt das Fixiermittel?','Oxidierend: es schließt die Disulfidbrücken in der neuen Form','Reduzierend: es öffnet die Brücken','Es wäscht nur das Wellmittel aus','Es macht das Haar glatt','Meist mit Wasserstoffperoxid.'],
+  ['Wozu dient das Spitzenpapier?','Damit die Spitzen glatt und gerade über dem Wickler liegen und nicht umknicken','Damit das Haar schneller trocknet','Als Hautschutz','Zur Dekoration','Umgebogene Spitzen (Hakenspitzen) sind ein typischer Fehler.'],
+  ['Wie breit soll die Abteilung für einen Wickler sein?','So breit wie der Wickler, so tief wie sein Durchmesser','Doppelt so breit wie der Wickler','Egal, Hauptsache gleichmäßig','Halb so breit wie der Wickler','So sitzt der Wickler auf seiner eigenen Basis.'],
+  ['Was passiert, wenn der Gummi zu fest oder schief sitzt?','Es entstehen Druckstellen und Haarbruch am Ansatz','Die Welle wird schöner','Nichts','Das Haar wird länger','Gummis gleichmäßig setzen, ohne Druck auf den Ansatz.'],
+  ['Was passiert bei zu starker Spannung beim Wickeln?','Haarbruch und Reizung der Kopfhaut','Die Welle wird gleichmäßiger','Der Wickler hält besser, sonst nichts','Das Wellmittel wirkt schwächer','Spannung soll gleichmäßig, aber nicht zu stark sein.'],
+  ['Wo liegen die Haarspitzen bei einer Papillote?','Innen','Außen','Unter dem Clip','Egal','So steht es in den Prüfungskriterien.'],
+  ['Wo wird der Clip bei der Papillote gesetzt?','Am Papillotenhals, ohne die Form zu verändern','Quer durch die Mitte','An den Spitzen','Gar keiner','Ein falsch gesetzter Clip drückt die Papillote platt.'],
+  ['Wie viele Wellen musst du bei den handgelegten Wasserwellen mindestens legen?','3','1','2','6','Das Ende darf mit Papilloten abschließen.'],
+  ['Was muss mit Wellenkämmen und Clipsen vor der Benotung passieren?','Sie müssen entfernt werden','Sie bleiben drin','Sie werden mit Haarspray fixiert','Sie werden gezählt','Sie dürfen beim Arbeiten helfen, aber nicht bewertet werden.'],
+  ['Warum muss die Wasserwelle bis zum Grund durchgearbeitet werden?','Sonst hält sie nur an der Oberfläche und fällt zusammen','Damit sie schneller trocknet','Damit sie glänzt','Das ist nicht nötig','„Bis zum Grund durchgearbeitet“ ist ein Prüfungskriterium.']
+ ], open:[
+  ['Worauf achtest du beim Wickeln einer Dauerwelle?',['Saubere, gleichmäßige Abteilungen (Wicklerbreite × Durchmesser)','Richtiger Winkel, Wickler auf der eigenen Basis','Spitzenpapier sauber, Spitzen gerade, nicht umgebogen','Gleichmäßige Spannung, keine Schlaufen','Gummis gleichmäßig, kein Druck am Ansatz','Ordentliche Platzierung, mittlere Wicklerstärken']],
+  ['Erkläre den Unterschied zwischen Wasserwelle und Dauerwelle.',['Wasserwelle: physikalisch, vorübergehend, Wasserstoffbrücken','Dauerwelle: chemisch, dauerhaft, Disulfidbrücken','Dauerwelle: Wellmittel (Reduktion) → Spülen → Fixierung (Oxidation)']],
+  ['Worauf achtest du bei handgelegten Wasserwellen?',['Saubere, reine Wellen, gut sichtbares Wellental','Gleichmäßige Kanten, gleiche Wellenbreite','Bis zum Grund durchgearbeitet','Haare nicht verzogen','Mindestens 3 Wellen','Hilfsmittel vor der Benotung entfernen']]
+ ]}
+];
+
+/* Fallbeispiele Hautdiagnose */
+const CASES = [
+ { id:'c1', d:'Stirn, Nase und Kinn glänzen, sind großporig und haben einige Mitesser. Die Wangen wirken normal, weder glänzend noch spannend.',
+   q:[['Welcher Hauttyp?','Mischhaut','Trockene Haut','Normale Haut','Empfindliche Haut'],
+      ['Wie behandelst du?','T-Zone ausgleichend und klärend, Wangen mild pflegen','Überall reichhaltige, fette Creme','Kräftig durchblutende Massage im ganzen Gesicht','Nur Puder auftragen']] },
+ { id:'c2', d:'Die Haut wirkt matt, spannt nach dem Waschen, ist feinporig und hat feine Schüppchen an den Wangen. Um die Augen zeigen sich erste Fältchen.',
+   q:[['Welcher Hauttyp?','Trockene Haut','Fette Haut','Mischhaut','Unreine Haut'],
+      ['Welche Reinigung und Massage passt?','Milde, rückfettende Reinigungsmilch und belebende Massage mit reichhaltiger Creme','Reinigungsgel für fettige Haut und keine Massage','Alkoholisches Gesichtswasser und Peeling','Nur mit Wasser abwaschen']] },
+ { id:'c3', d:'Das ganze Gesicht glänzt, ist großporig, an Stirn und Kinn sind Komedonen und einzelne entzündete Pusteln.',
+   q:[['Welcher Hauttyp?','Fette, unreine Haut','Trockene Haut','Normale Haut','Reife Haut'],
+      ['Worauf achtest du bei der Massage?','Sanft arbeiten, entzündete Stellen aussparen, keine starke Durchblutungsförderung','Pusteln ausdrücken','Besonders kräftig kneten, damit die Poren frei werden','Heiße Kompressen auf die Pusteln drücken']] },
+ { id:'c4', d:'Die Wangen sind gerötet, feine Äderchen sind sichtbar, und die Haut reagiert schnell mit Brennen.',
+   q:[['Was stellst du fest?','Empfindliche Haut mit Couperose','Fette Haut','Normale Haut','Trockene Schuppen'],
+      ['Wie behandelst du?','Sanfte, beruhigende Streichungen, lauwarme statt heiße Kompressen','Belebende Klopfmassage','Heiße Kompressen und kräftiges Reiben','Alkoholisches Gesichtswasser']] },
+ { id:'c5', d:'Die Haut ist feinporig, ebenmäßig und rosig, sie glänzt nicht und spannt nicht.',
+   q:[['Welcher Hauttyp?','Normale Haut','Mischhaut','Fette Haut','Trockene Haut'],
+      ['Was ist das Ziel der Pflege?','Den guten Zustand erhalten: mild reinigen, ausgewogen pflegen','Stark entfetten','Möglichst reichhaltig nachfetten','Gar nicht reinigen']] },
+ { id:'c6', d:'Die Haut ist normal, aber unter den Augen sitzen mehrere kleine, weiße, harte Knötchen.',
+   q:[['Was sind die Knötchen?','Milien (Grieskörner)','Komedonen','Pusteln','Sommersprossen'],
+      ['Was tust du?','Nicht ausdrücken, im Diagnoseblatt unter Besonderheiten vermerken','Mit der Pinzette aufstechen','Kräftig darüber massieren','Mit Make-up abdecken und nicht erwähnen']] },
+ { id:'c7', d:'Kundin, 58 Jahre: Die Haut wirkt dünner, hat Falten und einige Altersflecken und ist eher trocken.',
+   q:[['Was notierst du bei der Hautoberfläche?','Uneben/trocken und neigt zu Faltenbildung','Fett/glänzend','Fein/ebenmäßig','Gerötet/empfindlich'],
+      ['Welche Behandlung passt?','Reichhaltige Pflege und straffende, belebende Massage; Altersflecken vermerken','Reinigungsgel für fettige Haut','Keine Pflege, nur Puder','Starkes Peeling jeden Tag']] },
+ { id:'c8', d:'An der Wange sitzt ein erhabenes, dunkles Muttermal. Sonst ist die Haut normal.',
+   q:[['Wie gehst du damit um?','Im Diagnoseblatt vermerken, nicht darüber reiben oder zupfen','Wegzupfen, falls Haare darauf wachsen','Mit der Pinzette entfernen','Kräftig darüber massieren'],
+      ['Was sagst du der Kundin, wenn es sich verändert hat?','Freundlich empfehlen, es ärztlich anschauen zu lassen','Nichts','Dass es sicher Krebs ist','Dass du es beim nächsten Mal entfernst']] }
+];
+
+const PACK = [
+ { t:'Unterlagen', i:['Unterlagen Fachkunde ab dem 1. Lehrjahr','Unterlagen Fachberatung ab dem 1. Lehrjahr','Diagnoseblatt ausgefüllt','Prüfungseinladung und Ausweis'] },
+ { t:'Modelle', i:['Damenmodell (Schönheitspflege, Nägel): Brauen und Wimpern unbearbeitet, kein Permanent Make-up, kein Piercing','Modell für die Rasur: Bart ein paar Tage stehen lassen','Technikkopf mit Stativ'] },
+ { t:'Technikkopf', i:['Dauerwellwickler in mittlerer Stärke (mind. 10) mit Gummis','Spitzenpapier','Papillotenclips und Abteilklammern','Wellenkämme oder Clipse','Frisierkamm und Stielkamm','Sprühflasche','Wellengel oder Frisiercreme, wenig Finish'] },
+ { t:'Nagelpflege', i:['Schale für das Wasserbad','Feine Feile oder Glasfeile','Rosenholzstäbchen und Nagelhautschieber','Nagelhautzange','Nagellackentferner, Zellstoff','Unterlack, gut sichtbarer Farblack, Überlack','Material für das Nageldesign (2 Nägel, Thema)','Handcreme oder Massageöl','Wundversorgung, Pflaster'] },
+ { t:'Schönheitspflege', i:['Stirnband, Handtücher, Kompressentücher','Reinigungsmilch und Gesichtswasser passend zum Hauttyp','Massagecreme','Pinzette (Brauen)','Brauen- und Wimpernfarbe mit Entwickler','Wimpernblättchen, Hautschutz, Wattestäbchen','Grundierung, Concealer, Puder, Rouge','Lidschatten, Kajal, Eyeliner, Mascara mit Einweg-Bürstchen','Lipliner, Lippenstift, Lippenpinsel, ev. Gloss','Pinsel und Schwämmchen'] },
+ { t:'Rasur', i:['Rasiermesser mit langer Klinge oder Wechselklingenmesser + neue Klingen','Rasierseife oder -creme (keine Dose!) und Rasierpinsel','Schale, Kompressentücher (heiß und kalt)','Blutstillendes Mittel zum Einmalgebrauch','After-Shave und Creme','Umhang und Handtücher'] },
+ { t:'Allgemein', i:['Desinfektionsmittel für Hände, Haut und Werkzeug','Einmalhandschuhe','Saubere Arbeitskleidung','Müllsackerl','Etwas zu trinken und eine Jause'] }
+];
+
+const SCHEDULE = [
+ {s:'07:45',e:'08:00',n:'Begrüßung, Arbeitsplatz, Vorbereitung',min:15,p:true},
+ {s:'08:00',e:'08:35',n:'Technikkopf',min:35,part:'technik'},
+ {s:'08:35',e:'08:40',n:'Umbau',min:5,p:true},
+ {s:'08:40',e:'09:15',n:'Nagelpflege',min:35,part:'nagel'},
+ {s:'09:15',e:'09:20',n:'Umbau',min:5,p:true},
+ {s:'09:20',e:'10:00',n:'Schönheitspflege',min:40,part:'schoen'},
+ {s:'10:00',e:'10:05',n:'Umbau',min:5,p:true},
+ {s:'10:05',e:'10:35',n:'Rasieren',min:30,part:'rasur'},
+ {s:'10:35',e:'10:40',n:'Umbau',min:5,p:true},
+ {s:'10:40',e:'11:40',n:'Fachgespräch (10 Min. pro Person)',min:10,fach:true}
+];
+
+/* ============================================================
+   Aufbereitung
+   ============================================================ */
+function hash(s){let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return (x>>>0).toString(36);}
+const QUESTIONS=[];
+CATS.forEach(c=>{
+  c.mc.forEach(m=>QUESTIONS.push({id:c.id+'-'+hash(m[0]),cat:c.id,type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]||''}));
+  c.open.forEach(o=>QUESTIONS.push({id:c.id+'-o'+hash(o[0]),cat:c.id,type:'open',q:o[0],pts:o[1]}));
+});
+const CAT = Object.fromEntries(CATS.map(c=>[c.id,c]));
+const PART = Object.fromEntries(PARTS.map(p=>[p.id,p]));
+PARTS.forEach(p=>p.sections.forEach(s=>s.crit=s.crit.map((t,i)=>({id:p.id+'.'+s.id+'.'+i,t}))));
+function allCrit(p){return p.sections.flatMap(s=>s.crit);}
+const CRIT = Object.fromEntries(PARTS.flatMap(p=>allCrit(p).map(c=>[c.id,{...c,part:p.id}])));
+
+/* ============================================================
+   Speicher (nur auf diesem Gerät)
+   ============================================================ */
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  del(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+let profiles=store.get('zwp:profiles',null);
+if(!profiles||!Array.isArray(profiles.list)||!profiles.list.length){profiles={list:[{id:'p'+Date.now().toString(36),name:''}]};profiles.active=profiles.list[0].id;}
+if(!profiles.list.some(p=>p.id===profiles.active))profiles.active=profiles.list[0].id;
+let D=loadData();
+function loadData(){return Object.assign({praxis:[],q:{},pack:{},examDate:'',diag:{},cases:{}},store.get('zwp:data:'+profiles.active,{}));}
+function save(){store.set('zwp:data:'+profiles.active,D);store.set('zwp:profiles',profiles);}
+function activeProfile(){return profiles.list.find(p=>p.id===profiles.active);}
+
+/* ============================================================
+   Hilfen
+   ============================================================ */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pct(x){return Math.round(x*100);}
+function fmtDate(ts){const d=new Date(ts);return d.toLocaleDateString('de-AT',{day:'2-digit',month:'2-digit',year:'2-digit'});}
+function mmss(sec){sec=Math.max(0,Math.round(sec));const m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+function level(p){return p>=.8?'good':p>=.5?'warn':'bad';}
+let toastT;function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t);}t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2200);}
+
+/* Lernstand */
+const INTERVAL=[0,0,1,3,7,14];
+function qs(id){return D.q[id]||null;}
+function grade(id,res){const s=qs(id)||{b:0};let b;
+  if(res==='yes')b=Math.min(5,(s.b||0)+1);else if(res==='part')b=Math.max(1,s.b||1);else b=1;
+  const days=res==='part'?1:INTERVAL[b];D.q[id]={b,d:Date.now()+days*864e5};save();}
+function catProgress(cid){const qsA=QUESTIONS.filter(q=>q.cat===cid);const m=qsA.filter(q=>(qs(q.id)?.b||0)>=3).length;const seen=qsA.filter(q=>qs(q.id)).length;return {total:qsA.length,mastered:m,seen,p:m/qsA.length};}
+function theoryScore(){return QUESTIONS.reduce((a,q)=>a+Math.min(qs(q.id)?.b||0,3)/3,0)/QUESTIONS.length;}
+function dueCount(){const now=Date.now();return QUESTIONS.filter(q=>qs(q.id)&&qs(q.id).d<=now).length;}
+function sessionScore(s){const v=Object.values(s.r);return v.length?v.reduce((a,b)=>a+b,0)/(2*v.length):0;}
+function lastSession(pid){const l=D.praxis.filter(s=>s.part===pid);return l.length?l[l.length-1]:null;}
+function partScore(pid){const s=lastSession(pid);return s?sessionScore(s):0;}
+function praxisScore(){return PARTS.reduce((a,p)=>a+partScore(p.id),0)/PARTS.length;}
+function readiness(){return .6*praxisScore()+.4*theoryScore();}
+function weakSpots(pid,n){const counts={};
+  PARTS.filter(p=>!pid||p.id===pid).forEach(p=>{D.praxis.filter(s=>s.part===p.id).slice(-3).forEach(s=>{for(const [cid,v] of Object.entries(s.r)){if(v<2&&CRIT[cid]){counts[cid]=counts[cid]||{n:0,bad:0};counts[cid].n++;if(v===0)counts[cid].bad++;}}});});
+  return Object.entries(counts).sort((a,b)=>(b[1].n+b[1].bad)-(a[1].n+a[1].bad)).slice(0,n).map(([cid,c])=>({...CRIT[cid],...c}));}
+function daysLeft(){if(!D.examDate)return null;const t=new Date(D.examDate+'T08:00:00');const today=new Date();today.setHours(0,0,0,0);return Math.round((new Date(D.examDate+'T00:00:00')-today)/864e5);}
+
+/* ============================================================
+   Timer
+   ============================================================ */
+let T=null, tInt=null, audioCtx=null, wakeLock=null;
+function beep(n){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();for(let i=0;i<n;i++){const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=880;o.connect(g);g.connect(audioCtx.destination);const t0=audioCtx.currentTime+i*.35;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(.3,t0+.02);g.gain.exponentialRampToValueAtTime(.0001,t0+.25);o.start(t0);o.stop(t0+.3);}}catch(e){}
+  try{navigator.vibrate&&navigator.vibrate(n>1?[200,100,200]:200);}catch(e){}}
+function newTimer(min,label,onEnd){stopTimer();T={total:min*60,remain:min*60,running:false,label,onEnd,warned:{}};}
+function startTimer(){if(!T||T.running)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume&&audioCtx.resume();}catch(e){}
+  T.running=true;T.last=Date.now();tInt=setInterval(tick,250);
+  try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>wakeLock=w).catch(()=>{});}catch(e){}
+  paintTimer();}
+function pauseTimer(){if(!T)return;T.running=false;clearInterval(tInt);paintTimer();}
+function stopTimer(){clearInterval(tInt);if(T)T.running=false;try{wakeLock&&wakeLock.release();}catch(e){}wakeLock=null;}
+function tick(){if(!T||!T.running)return;const now=Date.now();T.remain-=(now-T.last)/1000;T.last=now;
+  [[600,'Noch 10 Minuten',1],[300,'Noch 5 Minuten',2]].forEach(([s,msg,n])=>{if(T.remain<=s&&T.total>s&&!T.warned[s]){T.warned[s]=1;T.msg=msg;beep(n);}});
+  if(T.remain<=0){T.remain=0;T.running=false;clearInterval(tInt);T.msg='Zeit ist um!';beep(3);if(T.onEnd)T.onEnd();}
+  paintTimer();}
+function timerHTML(){if(!T)return'';const C=2*Math.PI*64;
+  return `<div class="timer ${T.remain<=300?'alert':''}" id="timer"><div class="dial"><svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="64" fill="none" stroke="var(--surface-2)" stroke-width="10"/><circle id="tarc" cx="75" cy="75" r="64" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-T.remain/T.total)}"/></svg><div class="digits" id="tdig" role="timer" aria-live="off">${mmss(T.remain)}</div></div>
+  <div class="ctrl"><div class="eyebrow">${esc(T.label)} · ${T.total/60} Min. wie bei der Prüfung</div><div class="alertline" id="tmsg" aria-live="polite">${esc(T.msg||'')}</div>
+  <div class="row">${T.running?'<button class="btn" data-a="tpause">Pause</button>':`<button class="btn primary" data-a="tstart">${T.remain<T.total?'Weiter':'Start'}</button>`}<button class="btn ghost" data-a="treset">Zurücksetzen</button></div></div></div>`;}
+function paintTimer(){const el=$('#timer');if(!el||!T)return;const C=2*Math.PI*64;
+  $('#tdig').textContent=mmss(T.remain);$('#tarc').setAttribute('stroke-dashoffset',C*(1-T.remain/T.total));$('#tmsg').textContent=T.msg||'';
+  el.classList.toggle('alert',T.remain<=300);
+  const ctrl=el.querySelector('.row');const want=T.running?'run':'stop';if(ctrl.dataset.s!==want){ctrl.dataset.s=want;ctrl.innerHTML=(T.running?'<button class="btn" data-a="tpause">Pause</button>':`<button class="btn primary" data-a="tstart">${T.remain>0&&T.remain<T.total?'Weiter':'Start'}</button>`)+'<button class="btn ghost" data-a="treset">Zurücksetzen</button>';}}
+
+/* ============================================================
+   Ansicht / Navigation
+   ============================================================ */
+const ICONS={
+ start:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+ praxis:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg>',
+ theorie:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9.5 8.5a2.5 2.5 0 1 1 3 2.45c-.6.15-1 .6-1 1.2V13M11.5 15.5h0"/></svg>',
+ diagnose:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="11" r="7"/><path d="M9 10h.01M15 10h.01M9.5 14c1.5 1.3 3.5 1.3 5 0"/><path d="M12 18v3"/></svg>',
+ tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3v3H8z"/></svg>'
+};
+const TABS=[['start','Start'],['praxis','Praxis'],['theorie','Fachgespräch'],['diagnose','Hautdiagnose'],['tag','Prüfungstag']];
+let V={tab:'start'};
+let QZ=null; // laufende Lernrunde
+let SIM=null; // Prüfungstag-Simulation
+let DRAFT=null; // laufende Praxis-Bewertung
+let delPending=null;
+
+function go(tab,extra){V=Object.assign({tab},extra||{});render();window.scrollTo(0,0);}
+
+function renderTabs(){$('#tabs').innerHTML=TABS.map(([id,l])=>`<button data-a="tab" data-t="${id}" ${V.tab===id?'aria-current="page"':''}>${ICONS[id]}<span>${l}</span></button>`).join('');
+  const p=activeProfile();const n=p.name||'Profil';$('#profileChip').innerHTML=`<span class="av">${esc(n.charAt(0).toUpperCase())}</span><span>${esc(n)}</span>`;}
+
+function render(){renderTabs();const m=$('#main');
+  let h='';if(V.profiles)h+=profilesHTML();
+  h+=({start:startHTML,praxis:praxisHTML,theorie:theorieHTML,diagnose:diagnoseHTML,tag:tagHTML})[V.tab]();
+  m.innerHTML=h;paintTimer();}
+
+/* ---------- Profile ---------- */
+function profilesHTML(){return `<section class="panel profiles" aria-label="Lernprofile"><div class="row" style="justify-content:space-between"><h2>Wer lernt gerade?</h2><button class="btn ghost" data-a="profiles">Schließen</button></div>
+ <p class="muted small">Jeder Lehrling bekommt ein eigenes Profil auf diesem Gerät, zum Beispiel am Salon-Tablet. Es wird nichts ins Internet übertragen.</p>
+ ${profiles.list.map(p=>`<div class="p"><input type="text" id="pn-${p.id}" value="${esc(p.name)}" placeholder="Vorname" data-a="pname" data-id="${p.id}" aria-label="Name des Profils">
+  ${p.id===profiles.active?'<span class="pill accent">aktiv</span>':`<button class="btn" data-a="pswitch" data-id="${p.id}">Wechseln</button>`}
+  ${profiles.list.length>1?(delPending===p.id?`<button class="btn danger" data-a="pdel" data-id="${p.id}">Wirklich löschen?</button>`:`<button class="btn ghost" data-a="pdelask" data-id="${p.id}">Löschen</button>`):''}</div>`).join('')}
+ <div><button class="btn" data-a="padd">+ Profil hinzufügen</button></div></section>`;}
+
+/* ---------- Start ---------- */
+function startHTML(){const r=readiness(),C=2*Math.PI*56,p=activeProfile(),dl=daysLeft(),due=dueCount(),weak=weakSpots(null,4);
+ const greet=p.name?`Hallo ${esc(p.name)}!`:'Hallo!';
+ const cd=dl===null?`<button class="btn ghost" data-a="tab" data-t="tag" style="padding-inline:0;justify-content:flex-start">Prüfungstermin eintragen →</button>`:dl>0?`<span class="countdown"><b class="num">${dl}</b><span>${dl===1?'Tag':'Tage'} bis zur Zwischenprüfung</span></span>`:dl===0?'<span class="countdown"><b>Heute</b><span>ist Prüfungstag. Viel Erfolg!</span></span>':'<span class="muted">Prüfungstermin liegt in der Vergangenheit.</span>';
+ const msg=r<.25?'Du stehst am Anfang. Starte mit einer Übung am Technikkopf oder einer Fragerunde.':r<.6?'Guter Fortschritt! Arbeite jetzt gezielt an deinen Schwachstellen.':r<.85?'Fast prüfungsreif. Mach eine komplette Prüfungssimulation.':'Du bist sehr gut vorbereitet. Halte dein Niveau mit kurzen Wiederholungen.';
+ return `<section class="hero"><div class="ring" role="img" aria-label="Prüfungsbereit zu ${pct(r)} Prozent"><svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--surface-2)" stroke-width="12"/><circle cx="66" cy="66" r="56" fill="none" stroke="var(--copper)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-r)}"/></svg><div class="v"><div><b class="num">${pct(r)}%</b><small>bereit</small></div></div></div>
+  <div class="stack"><span class="eyebrow">greathairday · Zwischenprüfung 🎓</span><h1>${greet} Bereit für die Zwischenprüfung?</h1><p class="lead">${msg}</p>${cd}</div></section>
+ <section class="stack"><div class="row" style="justify-content:space-between"><h2>Deine Prüfung auf einen Blick</h2><span class="muted small">ca. 4 Stunden · Kompetenzzentrum, Mollardgasse 1, 1060 Wien</span></div>
+  <div class="exam-strip">${PARTS.map(pt=>{const s=partScore(pt.id),ls=lastSession(pt.id);return `<button data-a="part" data-id="${pt.id}"><span class="t">${pt.min} Min.</span><span class="n">${pt.name}</span><span class="small muted">${ls?'Zuletzt '+pct(s)+' %':'Noch nicht geübt'}</span><div class="bar"><i style="width:${pct(s)}%;background:var(--${ls?level(s):'line'})"></i></div></button>`;}).join('')}
+   <button data-a="tab" data-t="theorie"><span class="t">10 Min.</span><span class="n">Fachgespräch</span><span class="small muted">${pct(theoryScore())} % gelernt</span><div class="bar"><i style="width:${pct(theoryScore())}%"></i></div></button></div></section>
+ <section class="grid-2">
+  <div class="card stack"><div class="eyebrow">Heute dran</div><h3>${due?`${due} ${due===1?'Frage ist':'Fragen sind'} zur Wiederholung fällig`:'Fachgespräch trainieren'}</h3><p class="muted small">Fragen, die du falsch hattest, kommen öfter. Sichere Fragen kommen seltener.</p><button class="btn primary" data-a="quiz" data-cat="" data-type="mc">Lernrunde starten (10 Fragen)</button></div>
+  <div class="card stack"><div class="eyebrow">Daran arbeiten</div>${weak.length?`<ul class="clean weak">${weak.map(w=>`<li><span>${esc(w.t)}</span><span class="pill ${w.bad?'bad':'warn'}">${esc(PART[w.part].name)}</span></li>`).join('')}</ul>`:`<h3>Noch keine Schwachstellen bekannt</h3><p class="muted small">Mach eine Praxis-Übung mit Timer und bewerte dich danach anhand der offiziellen Kriterien. Dann siehst du hier, woran du noch arbeiten solltest.</p><button class="btn" data-a="part" data-id="technik">Technikkopf üben</button>`}</div>
+ </section>`;}
+
+/* ---------- Praxis ---------- */
+function praxisHTML(){if(V.session)return sessionHTML();if(V.part)return partHTML(PART[V.part]);
+ return `<section class="stack"><div class="eyebrow">Praktische Arbeiten · 140 Minuten</div><h1>Praxis üben</h1><p class="lead">Übe jeden Prüfungsteil mit der echten Prüfungszeit. Danach bewertest du dich (oder deine Ausbilderin dich) mit genau den Kriterien, auf die die Prüfer achten.</p></section>
+ <section class="grid-2">${PARTS.map(p=>{const ls=lastSession(p.id),s=partScore(p.id),n=D.praxis.filter(x=>x.part===p.id).length;return `<button class="card part-card" data-a="part" data-id="${p.id}"><div class="head"><h2>${p.name}</h2><span class="pill time">${p.min} Min.</span></div><p class="muted small">${esc(p.intro)}</p><div class="row small"><span class="pill ${ls?level(s):''}">${ls?'Zuletzt '+pct(s)+' %':'Noch nicht geübt'}</span><span class="muted">${n} ${n===1?'Übung':'Übungen'} · ${allCrit(p).length} Kriterien</span></div></button>`;}).join('')}</section>`;}
+
+function partHTML(p){const hist=D.praxis.filter(s=>s.part===p.id).slice().reverse(),weak=weakSpots(p.id,5),sub=V.sub||'krit';
+ return `<button class="btn ghost back" data-a="tab" data-t="praxis">← Alle Prüfungsteile</button>
+ <section class="stack"><div class="row"><span class="pill time">${p.min} Min.</span><span class="muted small">${esc(p.model)}</span></div><h1>${p.name}</h1><p class="lead">${esc(p.intro)}</p>
+  <div class="row"><button class="btn primary" data-a="session" data-id="${p.id}">Übung mit Timer starten</button><button class="btn" data-a="rateonly" data-id="${p.id}">Nur bewerten (ohne Timer)</button></div></section>
+ ${weak.length?`<section class="card stack"><div class="eyebrow">Deine Schwachstellen hier</div><ul class="clean weak">${weak.map(w=>`<li><span>${esc(w.t)}</span><span class="pill ${w.bad?'bad':'warn'}">${w.bad?'noch nicht':'fast'}</span></li>`).join('')}</ul></section>`:''}
+ <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
+ ${sub==='krit'?`<section class="grid-2">${p.sections.map(s=>`<div class="panel stack"><h3>${esc(s.name)}</h3><ul class="crit">${s.crit.map(c=>`<li>${esc(c.t)}</li>`).join('')}</ul></div>`).join('')}</section>
+   <section class="warnbox"><h3>Achtung, hier gibt es Punkteabzug</h3><ul>${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>`:''}
+ ${sub==='ablauf'?`<section class="grid-2">${p.ablauf.map(a=>`<div class="panel stack"><h3>${esc(a.t)}</h3><ol class="steps">${a.s.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ol></div>`).join('')}</section>`:''}
+ ${sub==='zeit'?`<section class="panel stack"><h3>So könntest du deine ${p.min} Minuten einteilen</h3><p class="muted small">Ein Vorschlag, den ihr im Salon an dein Tempo anpassen könnt.</p><ul class="clean weak">${p.plan.map(([a,b])=>`<li><span>${esc(a)}</span><span class="pill time">${esc(b)}</span></li>`).join('')}</ul></section>`:''}
+ ${sub==='hist'?(hist.length?`<section class="panel scroll-x"><table class="hist"><thead><tr><th>Datum</th><th>Bewertet von</th><th>Zeit</th><th>Ergebnis</th><th>Notiz</th></tr></thead><tbody>${hist.map(s=>`<tr><td class="num">${fmtDate(s.date)}</td><td>${s.who==='ausb'?'Ausbilderin':'Selbst'}</td><td class="num">${s.sec!=null?mmss(s.sec):'–'}</td><td><span class="pill ${level(sessionScore(s))}">${pct(sessionScore(s))} %</span></td><td style="white-space:normal;min-width:160px">${esc(s.note||'')}</td></tr>`).join('')}</tbody></table></section>`:`<p class="muted">Noch keine Übungen gespeichert.</p>`):''}`;}
+
+function sessionHTML(){const p=PART[V.session];if(!DRAFT||DRAFT.part!==p.id)DRAFT={part:p.id,r:{},who:'selbst',note:''};
+ const rated=Object.keys(DRAFT.r).length,total=allCrit(p).length;
+ return `<button class="btn ghost back" data-a="part" data-id="${p.id}">← Zurück zu ${p.name}</button>
+ <section class="stack"><div class="eyebrow">Übung</div><h1>${p.name}</h1></section>
+ ${V.timer?`<section class="card">${timerHTML()}</section>`:''}
+ <section class="stack"><div class="row" style="justify-content:space-between"><h2>Bewertung</h2><div class="seg" role="group" aria-label="Wer bewertet?">${[['selbst','Ich selbst'],['ausb','Ausbilderin']].map(([k,l])=>`<button class="n" data-a="who" data-w="${k}" aria-pressed="${DRAFT.who===k}">${l}</button>`).join('')}</div></div>
+ <p class="muted small">Bewerte nach der Übung jeden Punkt ehrlich. „Fast“ heißt: erkennbar, aber noch nicht prüfungssicher.</p>
+ ${p.sections.map(s=>`<div class="panel"><h3>${esc(s.name)}</h3>${s.crit.map(c=>{const v=DRAFT.r[c.id];return `<div class="rate-row"><span>${esc(c.t)}</span><div class="seg" role="group" aria-label="${esc(c.t)}"><button class="g" data-a="rate" data-c="${c.id}" data-v="2" aria-pressed="${v===2}">Gut</button><button class="m" data-a="rate" data-c="${c.id}" data-v="1" aria-pressed="${v===1}">Fast</button><button class="b" data-a="rate" data-c="${c.id}" data-v="0" aria-pressed="${v===0}">Noch nicht</button></div></div>`;}).join('')}</div>`).join('')}
+ <label class="f" for="note">Notiz (was nehme ich mir fürs nächste Mal vor?)<textarea id="note" data-a="note">${esc(DRAFT.note)}</textarea></label>
+ <div class="row"><button class="btn primary" data-a="savesession" ${rated?'':'disabled'}>Übung speichern</button><span class="muted small num" id="ratedinfo">${rated} von ${total} Punkten bewertet</span></div></section>`;}
+
+/* ---------- Theorie ---------- */
+function theorieHTML(){if(QZ)return quizHTML();
+ const due=dueCount();
+ return `<section class="stack"><div class="eyebrow">Fachgespräch · 10 Minuten</div><h1>Fachgespräch trainieren</h1><p class="lead">Beim Fachgespräch fragt die Kommission den Schulstoff ab dem 1. Lehrjahr ab, inklusive Hygiene und Werkzeugkunde. Hier lernst du mit Fragen, die sich nach deinem Wissen richten.</p></section>
+ <section class="grid">
+  <div class="card stack"><div class="eyebrow">Wissensfragen</div><h3>Lernrunde</h3><p class="muted small">10 Fragen mit Auswahl. ${due?`${due} fällig zur Wiederholung.`:'Neue und fällige Fragen gemischt.'}</p><button class="btn primary" data-a="quiz" data-cat="" data-type="mc">Starten</button></div>
+  <div class="card stack"><div class="eyebrow">Wie beim Prüfer</div><h3>Prüferfragen</h3><p class="muted small">Offene Fragen: erst selbst laut antworten, dann mit der Musterantwort vergleichen. Ideal zu zweit.</p><button class="btn" data-a="quiz" data-cat="" data-type="open">Starten</button></div>
+  <div class="card stack"><div class="eyebrow">Generalprobe</div><h3>Fachgespräch-Simulation</h3><p class="muted small">5 zufällige Prüferfragen in 10 Minuten. Die Ausbilderin liest vor, der Lehrling antwortet.</p><button class="btn" data-a="quiz" data-cat="" data-type="sim">Starten</button></div>
+ </section>
+ <section class="stack"><h2>Nach Themen</h2><div class="grid">${CATS.map(c=>{const pr=catProgress(c.id);return `<button class="cat" data-a="quiz" data-cat="${c.id}" data-type="mc"><strong>${esc(c.name)}</strong><span class="small muted num">${pr.mastered}/${pr.total}</span><div class="bar"><i style="width:${pct(pr.p)}%"></i></div></button>`;}).join('')}</div>
+ <p class="muted small">Eine Frage gilt als gelernt, wenn du sie an drei verschiedenen Tagen richtig beantwortet hast.</p></section>`;}
+
+function pickQuestions(cat,n,type){const now=Date.now();const pool=QUESTIONS.filter(q=>q.type===type&&(!cat||q.cat===cat));
+ const due=shuffle(pool.filter(q=>qs(q.id)&&qs(q.id).d<=now)).sort((a,b)=>qs(a.id).b-qs(b.id).b);
+ const fresh=shuffle(pool.filter(q=>!qs(q.id)));
+ const later=pool.filter(q=>qs(q.id)&&qs(q.id).d>now).sort((a,b)=>qs(a.id).d-qs(b.id).d);
+ return shuffle([...due,...fresh,...later].slice(0,n));}
+
+function startQuiz(cat,type){const kind=type;let items;
+ if(type==='sim'){items=shuffle(QUESTIONS.filter(q=>q.type==='open')).slice(0,5);newTimer(10,'Fachgespräch');}
+ else items=pickQuestions(cat,type==='open'?5:10,type);
+ QZ={kind,cat,items:items.map(q=>({q,opts:q.type==='mc'?shuffle([q.a,...q.w]):null,res:null,pick:null,shown:false})),i:0};
+ go('theorie');}
+
+function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
+ const dots=`<div class="progress-dots" aria-hidden="true">${QZ.items.map((x,i)=>`<i class="${x.res==='yes'?'ok':x.res==='no'?'no':x.res==='part'?'part':i===QZ.i?'cur':''}"></i>`).join('')}</div>`;
+ const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
+ if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
+  return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.kind==='mc'?'richtig':'gewusst'}</h1>
+  <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
+  <div class="row"><button class="btn primary" data-a="quiz" data-cat="${QZ.cat||''}" data-type="${QZ.kind}">Noch eine Runde</button><button class="btn" data-a="quizend">Fertig</button></div></div>`;}
+ const q=it.q;let body='';
+ if(q.type==='mc'){body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}return `<button data-a="ans" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
+  ${it.pick!=null?`<div class="explain"><strong>${it.res==='yes'?'Richtig!':'Leider falsch.'}</strong> ${it.res==='yes'?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
+ else{body=it.shown?`<div class="model"><div class="eyebrow">Das sollte in deiner Antwort vorkommen</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+  ${it.res?`<button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:`<div class="stack"><div class="small muted">Wie gut war die Antwort?</div><div class="row"><button class="btn" data-a="self" data-r="yes" style="border-color:var(--good);color:var(--good)">Gewusst</button><button class="btn" data-a="self" data-r="part" style="border-color:var(--warn);color:var(--warn)">Teilweise</button><button class="btn" data-a="self" data-r="no" style="border-color:var(--bad);color:var(--bad)">Noch nicht</button></div></div>`}`
+  :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
+ return `<div class="quiz"><div class="row" style="justify-content:space-between"><span class="eyebrow">${esc(title)} · ${esc(CAT[q.cat].name)}</span><span class="small muted num">Frage ${QZ.i+1} von ${n}</span></div>${dots}
+  ${QZ.kind==='sim'?`<div class="card">${timerHTML()}</div>`:''}
+  <div class="q">${esc(q.q)}</div>${body}<button class="btn ghost back" data-a="quizend">Runde beenden</button></div>`;}
+
+/* ---------- Diagnose ---------- */
+const SURF=['fein/ebenmäßig','uneben/trocken','fett/glänzend','neigt zu Faltenbildung','gerötet/empfindlich'];
+const PORES=['kleinporig','mittel','großporig'];const BLOOD=['stark','mittel','schwach'];
+const SPECIAL=['Muttermale','Altersflecken','helle Flecken','Sommersprossen','Leberflecken','Komedonen','Pustelbildung','Akne','Narben','Schuppen trocken','Schuppen fett','Milien (Grieskörner)','sonstiges'];
+function diagnoseHTML(){const sub=V.sub||'faelle';
+ return `<section class="stack"><div class="eyebrow">Schönheitspflege</div><h1>Hautdiagnose</h1><p class="lead">Die richtige Hautdiagnose wird bei der Reinigungsmassage bewertet, und das Technikblatt „Hautbeurteilung“ musst du ausgefüllt zur Prüfung mitbringen.</p></section>
+ <div class="subtabs" role="group" aria-label="Ansicht">${[['faelle','Fälle üben'],['blatt','Diagnoseblatt ausfüllen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
+ ${sub==='faelle'?casesHTML():sheetHTML()}`;}
+function casesHTML(){const done=Object.values(D.cases).filter(Boolean).length;
+ return `<p class="muted small">${done} von ${CASES.length} Fällen ganz richtig gelöst.</p><section class="stack">${CASES.map((c,ci)=>{const st=V.caseAns&&V.caseAns[c.id]||{};
+  return `<div class="panel stack"><div class="row" style="justify-content:space-between"><h3>Fall ${ci+1}</h3>${D.cases[c.id]?'<span class="pill good">gelöst</span>':''}</div><p>${esc(c.d)}</p>
+  ${c.q.map((qq,qi)=>{const opts=(V.caseOrder&&V.caseOrder[c.id+qi])||(V.caseOrder=V.caseOrder||{},V.caseOrder[c.id+qi]=shuffle(qq.slice(1)));const pick=st[qi];
+   return `<div class="stack"><strong class="small">${esc(qq[0])}</strong><div class="answers">${opts.map(o=>{let cls='';if(pick!=null){if(o===qq[1])cls='right';else if(o===pick)cls='wrong';}return `<button data-a="case" data-c="${c.id}" data-q="${qi}" data-o="${esc(o)}" class="${cls}" ${pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div></div>`;}).join('')}</div>`;}).join('')}</section>`;}
+function sheetHTML(){const d=D.diag;const ck=(k)=>d[k]?'checked':'';
+ const zoneRow=(grp,opts,type)=>opts.map(o=>`<tr><td>${esc(o)}</td>${['T','W'].map(z=>{const k=grp+'|'+z+'|'+(type==='radio'?'':o);const id='d-'+hash(grp+z+o);return type==='radio'?`<td class="c"><input type="radio" id="${id}" name="${grp}${z}" data-a="diag" data-k="${grp}|${z}" data-v="${esc(o)}" ${d[grp+'|'+z]===o?'checked':''} aria-label="${esc(o)} ${z==='T'?'T-Zone':'Wange'}"></td>`:`<td class="c"><input type="checkbox" id="${id}" data-a="diag" data-k="${k}" ${ck(k)} aria-label="${esc(o)} ${z==='T'?'T-Zone':'Wange'}"></td>`;}).join('')}</tr>`).join('');
+ const hint=diagHint();
+ return `<section class="panel diag stack"><div class="eyebrow">Technikblatt Hautbeurteilung (Diagnose, Behandlungsplan)</div>
+  <div class="grid-2"><label class="f" for="dname">Name Modell<input type="text" id="dname" data-a="diagt" data-k="name" value="${esc(d.name||'')}"></label><label class="f" for="dspiegel">Spiegel Nr.<input type="text" id="dspiegel" data-a="diagt" data-k="spiegel" value="${esc(d.spiegel||'')}"></label></div>
+  <div class="scroll-x"><table><thead><tr><th>Hautoberfläche</th><th class="c">T-Zone</th><th class="c">Wange</th></tr></thead><tbody>${zoneRow('surf',SURF,'check')}</tbody></table></div>
+  <div class="grid-2"><div class="scroll-x"><table><thead><tr><th>Poren</th><th class="c">T-Zone</th><th class="c">Wange</th></tr></thead><tbody>${zoneRow('pore',PORES,'radio')}</tbody></table></div>
+  <div class="scroll-x"><table><thead><tr><th>Durchblutung</th><th class="c">T-Zone</th><th class="c">Wange</th></tr></thead><tbody>${zoneRow('blut',BLOOD,'radio')}</tbody></table></div></div>
+  <div><h3>Besonderheiten</h3><div class="chkgrid">${SPECIAL.map(s=>{const k='sp|'+s;return `<label class="chk" for="d-${hash(k)}"><input type="checkbox" id="d-${hash(k)}" data-a="diag" data-k="${esc(k)}" ${ck(k)}>${esc(s)}</label>`;}).join('')}</div></div>
+  ${hint?`<div class="hint" id="dhint"><strong>Einschätzung:</strong> ${hint}</div>`:`<div class="hint" id="dhint">Kreuze die Hautoberfläche für T-Zone und Wange an, dann bekommst du hier eine Einschätzung des Hauttyps.</div>`}
+  <div class="stack"><h3>Behandlungsplan (verwendete Produkte)</h3>${['Reinigung','Gesichtswasser','Massage','Pflege / Make-up-Grundlage','Brauen- und Wimpernfarbe','Sonstiges'].map((l,i)=>`<label class="f" for="dp${i}">${l}<input type="text" id="dp${i}" data-a="diagt" data-k="plan${i}" value="${esc(d['plan'+i]||'')}"></label>`).join('')}</div>
+  <div class="row"><button class="btn" data-a="diagclear">Blatt leeren</button><span class="muted small">Wird automatisch auf diesem Gerät gespeichert. Für die Prüfung auf das Papier-Blatt übertragen.</span></div></section>`;}
+function diagHint(){const d=D.diag;const has=(o,z)=>d['surf|'+z+'|'+o];
+ const fT=has('fett/glänzend','T'),fW=has('fett/glänzend','W'),tr=has('uneben/trocken','T')||has('uneben/trocken','W'),rot=has('gerötet/empfindlich','T')||has('gerötet/empfindlich','W'),fal=has('neigt zu Faltenbildung','T')||has('neigt zu Faltenbildung','W'),fein=has('fein/ebenmäßig','T')&&has('fein/ebenmäßig','W');
+ const unrein=d['sp|Komedonen']||d['sp|Pustelbildung']||d['sp|Akne'];const out=[];
+ if(fT&&!fW)out.push('<b>Mischhaut</b>: T-Zone ausgleichend und klärend behandeln, Wangen mild pflegen.');
+ else if(fT&&fW)out.push('<b>Fette Haut</b>: Reinigungsgel, ausgleichende Pflege, keine stark durchblutende Massage.');
+ else if(tr)out.push('<b>Trockene Haut</b>: milde, rückfettende Reinigungsmilch, reichhaltige Pflege, belebende Massage.');
+ else if(fein)out.push('<b>Normale Haut</b>: den guten Zustand erhalten, mild reinigen, ausgewogen pflegen.');
+ if(unrein)out.push('<b>Unreinheiten</b>: entzündete Stellen aussparen, nichts ausdrücken.');
+ if(rot||d['blut|W']==='stark'||d['blut|T']==='stark')out.push('<b>Empfindlich/gerötet</b>: beruhigende Streichungen, lauwarme Kompressen, kein Alkohol im Gesichtswasser.');
+ if(fal)out.push('<b>Faltenneigung</b>: reichhaltige Pflege, straffende Massage.');
+ if(d['sp|Milien (Grieskörner)'])out.push('<b>Milien</b>: nicht ausdrücken, nur vermerken.');
+ return out.join('<br>');}
+
+/* ---------- Prüfungstag ---------- */
+function tagHTML(){if(SIM)return simHTML();const dl=daysLeft();const tot=PACK.reduce((a,g)=>a+g.i.length,0),done=Object.values(D.pack).filter(Boolean).length;
+ return `<section class="stack"><div class="eyebrow">Prüfungstag</div><h1>Gut vorbereitet am Prüfungstag</h1></section>
+ <section class="grid-2"><div class="card stack"><label class="f" for="examdate">Mein Prüfungstermin<input type="date" id="examdate" data-a="examdate" value="${esc(D.examDate)}"></label>${dl!=null&&dl>=0?`<p><span class="countdown"><b class="num">${dl}</b><span>${dl===1?'Tag':'Tage'} noch</span></span></p>`:''}<p class="muted small">Die Anmeldung und die Prüfungsgebühr laufen über die Ausschreibung der Landesinnung Wien der Friseure.</p></div>
+  <div class="card stack"><div class="eyebrow">Generalprobe</div><h3>Prüfungstag-Simulation</h3><p class="muted small">Alle vier Praxisteile hintereinander mit den echten Zeiten und 5 Minuten Umbau dazwischen, zum Schluss 10 Minuten Fachgespräch. Plane gut 3 Stunden ein.</p><button class="btn primary" data-a="simstart">Simulation starten</button></div></section>
+ <section class="panel stack"><h2>Zeitplan Vormittag</h2><p class="muted small">Nachmittagsgruppe: Beginn 12:30 Uhr, gleicher Ablauf, Zeugnisübergabe ca. 16:35 Uhr.</p><ul class="clean schedule">${SCHEDULE.map(s=>`<li class="${s.p?'pause':''}"><span class="tm">${s.s}–${s.e}</span><span>${esc(s.n)}</span><span class="pill time">${s.fach?'10 Min.':s.min+' Min.'}</span></li>`).join('')}<li><span class="tm">ca. 11:50</span><span>Übergabe der Zeugnisse</span><span></span></li></ul></section>
+ <section class="panel stack pack"><div class="row" style="justify-content:space-between"><h2>Packliste</h2><span class="pill ${done===tot?'good':'accent'} num">${done}/${tot}</span></div><p class="muted small">Ein Vorschlag, den ihr gemeinsam ergänzen könnt. Du musst sämtliches Werkzeug, alle Produkte und Materialien selbst mitbringen.</p>
+  ${PACK.map(g=>`<div><h3>${esc(g.t)}</h3>${g.i.map(i=>{const k=hash(g.t+i);return `<label class="${D.pack[k]?'done':''}" for="pk-${k}"><input type="checkbox" id="pk-${k}" data-a="pack" data-k="${k}" ${D.pack[k]?'checked':''}><span>${esc(i)}</span></label>`;}).join('')}</div>`).join('')}
+  <div><button class="btn ghost" data-a="packclear">Alle Haken entfernen</button></div></section>`;}
+
+function simBlocks(){return SCHEDULE.slice(1);}
+function startSimBlock(){const b=simBlocks()[SIM.i];newTimer(b.min,b.n,()=>{render();});}
+function simHTML(){const bl=simBlocks();if(SIM.i>=bl.length)return `<section class="stack"><div class="eyebrow">Simulation beendet</div><h1>Geschafft, gut gemacht!</h1><p class="lead">Bewerte jetzt jeden Praxisteil mit den Kriterien, am besten gemeinsam mit deiner Ausbilderin.</p><div class="row">${PARTS.map(p=>`<button class="btn" data-a="rateonly" data-id="${p.id}">${p.name} bewerten</button>`).join('')}</div><button class="btn ghost back" data-a="simend">Zurück zum Prüfungstag</button></section>`;
+ const b=bl[SIM.i],p=b.part?PART[b.part]:null;
+ return `<section class="stack"><div class="eyebrow">Simulation · Block ${SIM.i+1} von ${bl.length}</div><h1>${esc(b.n)}</h1></section>
+ <section class="card">${timerHTML()}</section>
+ ${p?`<section class="panel stack"><h3>Denk dran</h3><ul class="crit">${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>`:b.fach?`<section class="panel stack"><h3>Fachgespräch</h3><p>Die Ausbilderin stellt Fragen aus allen Themen. Tipp: Starte danach die Fachgespräch-Simulation im Bereich Fachgespräch.</p><button class="btn" data-a="quiz" data-cat="" data-type="sim">Fachgespräch-Simulation öffnen</button></section>`:`<section class="panel"><p>Arbeitsplatz aufräumen, Werkzeug desinfizieren, nächsten Teil vorbereiten.</p></section>`}
+ <section class="panel"><ul class="clean schedule">${bl.map((x,i)=>`<li class="${i<SIM.i?'done':i===SIM.i?'now':''} ${x.p?'pause':''}"><span class="tm">${x.s}</span><span>${esc(x.n)}</span><span class="pill time">${x.min} Min.</span></li>`).join('')}</ul></section>
+ <div class="row"><button class="btn primary" data-a="simnext">${SIM.i+1<bl.length?'Weiter zu: '+esc(bl[SIM.i+1].n):'Simulation abschließen'}</button><button class="btn ghost" data-a="simend">Abbrechen</button></div>`;}
+
+/* ============================================================
+   Ereignisse
+   ============================================================ */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el||el.tagName==='INPUT'||el.tagName==='TEXTAREA')return;const a=el.dataset.a,ds=el.dataset;
+ switch(a){
+  case 'tab': pauseTimer(); if(QZ&&QZ.kind==='sim'&&ds.t!=='theorie')QZ=null; go(ds.t); break;
+  case 'profiles': V.profiles=!V.profiles;delPending=null;render();break;
+  case 'padd':{const id='p'+Date.now().toString(36);profiles.list.push({id,name:''});save();profiles.active=id;D=loadData();save();QZ=null;SIM=null;DRAFT=null;stopTimer();render();setTimeout(()=>{const i=$('#pn-'+id);i&&i.focus();},30);break;}
+  case 'pswitch': profiles.active=ds.id;D=loadData();save();QZ=null;SIM=null;DRAFT=null;stopTimer();V={tab:'start',profiles:true};render();toast('Profil gewechselt');break;
+  case 'pdelask': delPending=ds.id;render();break;
+  case 'pdel': profiles.list=profiles.list.filter(p=>p.id!==ds.id);store.del('zwp:data:'+ds.id);if(profiles.active===ds.id){profiles.active=profiles.list[0].id;D=loadData();}delPending=null;save();render();toast('Profil gelöscht');break;
+  case 'part': stopTimer();SIM=null;go('praxis',{part:ds.id});break;
+  case 'sub': V.sub=ds.s;render();break;
+  case 'session': DRAFT=null;newTimer(PART[ds.id].min,PART[ds.id].name);go('praxis',{session:ds.id,timer:true});break;
+  case 'rateonly': stopTimer();SIM=null;DRAFT=null;T=null;go('praxis',{session:ds.id,timer:false});break;
+  case 'rate': DRAFT.r[ds.c]=+ds.v;{const row=el.parentElement;row.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el));const n=Object.keys(DRAFT.r).length;$('#ratedinfo').textContent=n+' von '+allCrit(PART[DRAFT.part]).length+' Punkten bewertet';$('[data-a="savesession"]').disabled=!n;}break;
+  case 'who': DRAFT.who=ds.w;el.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el));break;
+  case 'savesession':{const sec=V.timer&&T?Math.round(T.total-T.remain):null;D.praxis.push({part:DRAFT.part,date:Date.now(),who:DRAFT.who,r:DRAFT.r,note:DRAFT.note,sec:sec&&sec>0?sec:null});save();const pid=DRAFT.part;const sc=sessionScore(D.praxis[D.praxis.length-1]);DRAFT=null;stopTimer();T=null;go('praxis',{part:pid,sub:'hist'});toast('Gespeichert: '+pct(sc)+' %');break;}
+  case 'tstart': startTimer();break;
+  case 'tpause': pauseTimer();break;
+  case 'treset': if(T){stopTimer();T.remain=T.total;T.warned={};T.msg='';paintTimer();}break;
+  case 'quiz': SIM=null;startQuiz(ds.cat,ds.type);break;
+  case 'quizend': QZ=null;stopTimer();T=null;go('theorie');break;
+  case 'ans':{const it=QZ.items[QZ.i];if(it.pick!=null)break;it.pick=+ds.k;it.res=it.opts[it.pick]===it.q.a?'yes':'no';grade(it.q.id,it.res);render();break;}
+  case 'show': QZ.items[QZ.i].shown=true;render();break;
+  case 'self':{const it=QZ.items[QZ.i];it.res=ds.r;grade(it.q.id,ds.r);render();break;}
+  case 'next': QZ.i++;if(QZ.i>=QZ.items.length&&QZ.kind==='sim')stopTimer();render();window.scrollTo(0,0);break;
+  case 'case':{V.caseAns=V.caseAns||{};const st=V.caseAns[ds.c]=V.caseAns[ds.c]||{};st[ds.q]=ds.o;const c=CASES.find(x=>x.id===ds.c);if(c.q.every((qq,i)=>st[i]!=null)){D.cases[c.id]=c.q.every((qq,i)=>st[i]===qq[1]);save();}const y=window.scrollY;render();window.scrollTo(0,y);break;}
+  case 'diagclear': D.diag={};save();render();break;
+  case 'packclear': D.pack={};save();render();break;
+  case 'simstart': SIM={i:0};startSimBlock();go('tag');break;
+  case 'simnext': SIM.i++;if(SIM.i<simBlocks().length){startSimBlock();startTimer();}else stopTimer();render();window.scrollTo(0,0);break;
+  case 'simend': SIM=null;stopTimer();T=null;go('tag');break;
+ }});
+document.addEventListener('input',e=>{const el=e.target,a=el.dataset&&el.dataset.a;if(!a)return;
+ if(a==='pname'){const p=profiles.list.find(x=>x.id===el.dataset.id);if(p){p.name=el.value.slice(0,40);save();renderTabs();}}
+ else if(a==='note'&&DRAFT){DRAFT.note=el.value;}
+ else if(a==='diagt'){D.diag[el.dataset.k]=el.value;save();}});
+document.addEventListener('change',e=>{const el=e.target,a=el.dataset&&el.dataset.a;if(!a)return;
+ if(a==='examdate'){D.examDate=el.value;save();render();}
+ else if(a==='pack'){D.pack[el.dataset.k]=el.checked;save();el.closest('label').classList.toggle('done',el.checked);const tot=PACK.reduce((x,g)=>x+g.i.length,0),done=Object.values(D.pack).filter(Boolean).length;const pl=document.querySelector('.pack .pill');if(pl){pl.textContent=done+'/'+tot;pl.className='pill num '+(done===tot?'good':'accent');}}
+ else if(a==='diag'){if(el.type==='radio')D.diag[el.dataset.k]=el.dataset.v;else D.diag[el.dataset.k]=el.checked;save();const h=diagHint();const hb=$('#dhint');if(hb)hb.innerHTML=h?'<strong>Einschätzung:</strong> '+h:'Kreuze die Hautoberfläche für T-Zone und Wange an, dann bekommst du hier eine Einschätzung des Hauttyps.';}});
+
+render();
+</script>
+</body>
+</html>
