@@ -2440,13 +2440,20 @@ async function lehrlingAbschicken() {
     if (btn) { btn.disabled = false; btn.textContent = '✓ Test abschicken →'; }
   } else {
     // Wörni-Ereignis
-    await sb.from('ghd_ereignisse').insert({
-      app: 'Schnuppertag',
-      typ: 'lehrling_test_abgeschickt',
-      titel: '📋 Neuer Bewerber: ' + name + ' hat den Schnuppertag-Test abgeschlossen (' + wissen + ' Wissen-Punkte)',
-      prioritaet: 'heute',
-      gelesen: false,
-    });
+    // Bewerber:innen haben keinen Login: eng begrenzte öffentliche Meldefunktion
+    // (nur diese Meldungsart, kann nichts lesen; Team-Repo, Migration 20260927100000)
+    try {
+      await fetch(`${SB_URL}/rest/v1/rpc/ghd_ereignis_melden_oeffentlich`, {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          p_app: 'Schnuppertag',
+          p_typ: 'lehrling_test_abgeschickt',
+          p_titel: '📋 Neuer Bewerber: ' + name + ' hat den Schnuppertag-Test abgeschlossen (' + wissen + ' Wissen-Punkte)',
+          p_prioritaet: 'heute'
+        })
+      });
+    } catch(e) { console.warn('Wörni-Ereignis Bewerber:', e); }
 
     // Erfolgs-Anzeige
     okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#5B7B6F">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>';
