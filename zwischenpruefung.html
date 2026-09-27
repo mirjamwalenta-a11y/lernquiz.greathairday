@@ -221,7 +221,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
   </div>
 </header>
 <main class="wrap" id="main"></main>
-<footer class="wrap">Inhalte nach der Broschüre „Karriere mit Schere: Die Zwischenprüfung“ der Landesinnung Wien der Friseure. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
+<footer class="wrap">Inhalte nach der Broschüre „Karriere mit Schere: Die Zwischenprüfung“ und dem Rasur-Skript der Landesinnung Wien der Friseure sowie dem Fragenkatalog 1. und 2. Lehrjahr. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
 
 <script>
 "use strict";
@@ -287,9 +287,13 @@ const PARTS = [
     { id:'na', name:'Nachbehandlung', crit:['Seife abgewaschen','Desinfiziert, eventuell Wundversorgung','Kalte Kompresse','After-Shave und Eincremen','Gesichtsmassage','Keine Bartstoppel- oder Seifenreste','Kotelettenansätze gleichmäßig und gerade'] }
    ],
    ablauf:[
-    { t:'Ablauf Rasur', s:['Werkzeug desinfizieren, neue Klinge einsetzen, frische Wäsche und Umhang.','Haut beurteilen: Entzündungen oder Wunden? Dann nicht rasieren.','Heiße Kompresse auflegen, Nase und Mund bleiben frei.','Mit Rasierseife und Pinsel kreisend einseifen, der Bart richtet sich auf.','Haut spannen und mit dem Strich (in Wuchsrichtung) rasieren, flacher Winkel.','Vorhandgriff und Rückhandgriff je nach Gesichtspartie wechseln.','Kotelettenansätze auf beiden Seiten gerade und gleich hoch.','Bei Bedarf nachrasieren (gegen den Strich ist nicht nötig).','Seife abwaschen, desinfizieren, eventuell Wundversorgung.','Kalte Kompresse, After-Shave, eincremen, Gesichtsmassage.'] },
-    { t:'Rasierzüge – so führst du das Messer', s:['Die Rasur wird Gesichtspartie für Gesichtspartie in festen Rasierzügen ausgeführt (Reihenfolge wie in der Berufsschule gelernt).','Die freie Hand spannt die Haut gegen die Zugrichtung (Spannkegel), das Messer arbeitet in der gespannten Fläche.','Messer flach (ca. 30°) ansetzen und leicht schräg ziehen: ziehender Schnitt, nie seitlich schieben.','Kurze, gleichmäßige Züge in Wuchsrichtung, jede Partie nur so weit, wie du sie gerade spannst.','Vorhandgriff und Rückhandgriff je nach Gesichtsseite und Wuchsrichtung wechseln, dabei umgreifen statt verdrehen.','Nach jedem Zug Seife und Haare am Zellstoff abstreifen, nicht am Handtuch und nicht an der Hand.','Heikle Stellen (Kinn, Oberlippe, Kehlkopf, Kieferwinkel) mit kleinen Zügen und besonders guter Spannung rasieren.','Nachrasur bei Bedarf quer zur Wuchsrichtung, gegen den Strich ist bei der Prüfung nicht nötig.'] }
+    { t:'Vorbereitung', s:['Werkzeug desinfizieren, neue Klinge einsetzen, frische Wäsche bereitlegen.','Nackenstütze und Sesselhöhe einstellen: Der Kunde lehnt den Kopf bequem so weit zurück, bis die Halspartie gut gestreckt ist.','Halskrause, Umhang und Serviette bzw. Kompressentuch vorstecken, flach anliegend als Abgrenzung zur Halspartie.','Hautunebenheiten und Bartwuchsrichtung feststellen. Entzündungen oder Wunden? Dann nicht rasieren.'] },
+    { t:'Vorbehandeln', s:['Heiße Kompressen auflegen, Nase und Mund bleiben frei.','Bei empfindlicher Haut und starkem Bart eventuell vorher eincremen, danach die Rasiercreme auftragen.','Rasierschale ca. zur Hälfte mit warmem Wasser füllen, Pinsel kurz eintauchen.','Mit kreisenden Bewegungen Schaum entwickeln: am Kinn beginnen (im Uhrzeigersinn), weiter zu Wangen, Hals und Oberlippe.','Auf der Oberlippe den Pinsel mit den Fingern flachdrücken.','Pinsel zwischendurch immer wieder eintauchen.','So lange einseifen, bis eine cremige Schaumschicht da ist und das Barthaar erweicht ist.'] },
+    { t:'Rasiervorgang', s:['Vor dem 1. Rasierzug die Bartwuchsrichtung beachten.','Haar- bzw. Bartansatz und Hautunebenheiten freilegen (Schaum mit dem Messerrücken abstreifen), damit du siehst, wo das Messer angesetzt wird.','Seifenschaum vom Messer an der Serviette am Arbeitsplatz abstreifen, so oft wie nötig.','Hautspannung: Daumen der linken Hand an der rechten Schläfenpartie ansetzen (spitzer Spannkegel) und die Haut straff nach oben spannen.','Es gibt drei Spannkegel: spitzer, stumpfer und doppelter Spannkegel.','Dann die 15 Rasierzüge der Reihe nach, siehe Reiter „Rasierzüge 1–15“. Für Linkshänder gilt alles seitenverkehrt.'] },
+    { t:'Ausrasieren und Nachbehandlung', s:['Ausrasieren mit individuellen Rasierzügen gegen die Bartwuchsrichtung. Bei der Zwischenprüfung ist gegen den Strich nicht notwendig, eine Nachrasur bei Bedarf aber schon.','Seifenreste mit Kompressen entfernen, zum Abschluss eine kalte Kompresse.','Eventuell auftretende Blutungen stillen (Einmalhandschuhe, Einmalprodukt).','Rasierwasser auftragen.','Gesichtsmassage mit Creme (21 Griffe, siehe unten).'] },
+    { t:'Gesichtsmassage (21 Griffe)', s:['Großer Gesichtsausstreichgriff','Stirn ausstreichen (Beruhigungsgriff)','Großer Gesichtsausstreichgriff','Großer Augenkreis','Kleiner Augenkreis','Massage am Jochbogenrand (von außen nach innen)','Augen zuhalten','Großer Gesichtsausstreichgriff','Zornesfalte ausstreichen','Friktionen auf der Stirn','Stirn ausstreichen von Schläfe zu Schläfe','Großer Gesichtsausstreichgriff','Bindegewebsmassage von der Nasolabialfalte zu den Schläfen','Bindegewebsmassage vom Kinn zu den Ohren','Großer Gesichtsausstreichgriff','Friktionen in der Kinnrille','Mundringmuskel ausstreichen','Friktionen unterhalb des Kinns','Ausstreichen der Kinnpartie von Ohr zu Ohr','Seitlich den Hals ausstreichen von oben nach unten','Großer Gesichtsausstreichgriff'] }
    ],
+   fehler:[['Kopfstütze zu hoch','Halspartie liegt nicht frei, schlechte Hautspannung'],['Unebenheiten bzw. Bartwuchsrichtung nicht beachtet','Verletzungs- und Schmerzgefahr'],['Seifenschaum gelangt in Mund, Nase oder Ohren','Unangenehmes Gefühl für den Kunden'],['Seifenschaum zu kurz, ungenügend oder ungleichmäßig aufgetragen','Barthaare ungleichmäßig erweicht, Rasur wird als schmerzhaft empfunden'],['Seifenschaum nicht vom Haaransatz bzw. von Hautunebenheiten abgenommen','Unregelmäßige Haaransätze, Verletzungsgefahr'],['Rasiermesser nicht richtig geführt','Schmerzen, Verletzungsgefahr'],['Haut nicht richtig gespannt, keine glatte Rasierfläche','Unangenehm für den Kunden, Schmerzen, Verletzungsgefahr steigt'],['Rasierschaum nicht rechtzeitig vom Messer abgestreift bzw. seifige Hände','Messerstellung nicht genau erkennbar, keine exakte Führung möglich, extreme Verletzungsgefahr']],
    plan:[['Vorbereitung, heiße Kompresse, Einseifen','ca. 7 Min.'],['Rasur mit Nachrasur','ca. 13 Min.'],['Nachbehandlung und Gesichtsmassage','ca. 10 Min.']],
    achtung:['Rasierschaum aus der Dose ist verboten','Rasiermesser mit kurzer Klinge ist verboten','Oberlippenbart und jegliche Bartformen sind verboten','Seifen- oder Stoppelreste, schiefe Koteletten']
  }
@@ -353,7 +357,7 @@ const CATS = [
   ['Welche Bindungen werden durch Wasser gelöst und sind für die Wasserwelle wichtig?','Wasserstoffbrücken','Disulfidbrücken','Peptidbindungen','Keine, Wasser verändert das Haar nicht','Wasserstoffbrücken schließen sich beim Trocknen in der neuen Form. Das ist eine vorübergehende Umformung.'],
   ['Welche Bindungen werden bei der Dauerwelle chemisch gelöst?','Disulfidbrücken (Schwefelbrücken)','Wasserstoffbrücken','Salzbrücken','Gar keine','Das Wellmittel öffnet sie, die Fixierung schließt sie in der neuen Form wieder.'],
   ['Wie heißen die drei Phasen des Haarwachstums?','Anagen (Wachstum), Katagen (Übergang), Telogen (Ruhe)','Frühling, Sommer, Herbst','Matrix, Papille, Follikel','Kutikula, Cortex, Medulla','Etwa 85–90 % der Haare sind in der Anagenphase.'],
-  ['Wie lange dauert die Wachstumsphase (Anagen) etwa?','2 bis 6 Jahre','2 bis 3 Wochen','2 bis 3 Monate','20 Jahre','Die Dauer bestimmt, wie lang das Haar maximal werden kann.'],
+  ['Wie lange dauert die Wachstumsphase (Anagen) etwa?','2 bis 7 Jahre','2 bis 3 Wochen','2 bis 3 Monate','20 Jahre','Die Dauer bestimmt, wie lang das Haar maximal werden kann.'],
   ['Wie viel wächst Kopfhaar pro Monat ungefähr?','Etwa 1 bis 1,5 cm','Etwa 1 mm','Etwa 5 cm','Etwa 10 cm','Nützlich für die Beratung, zum Beispiel beim Nachwachsen des Ansatzes.'],
   ['Wie viele Haare verliert ein Mensch normalerweise pro Tag?','Etwa 60 bis 100','Etwa 5','Etwa 1000','Gar keine','Erst deutlich mehr über längere Zeit gilt als verstärkter Haarausfall.'],
   ['Was ist die Haarpapille?','Sie versorgt die Haarwurzel über Blutgefäße mit Nährstoffen','Die Spitze des Haares','Ein Pflegeprodukt','Die Talgdrüse','Aus den Zellen über der Papille (Matrix) wächst das Haar.'],
@@ -366,7 +370,7 @@ const CATS = [
   ['Welches Pigment sorgt für rötliche bis gelbliche Töne im Haar?','Phäomelanin','Eumelanin','Keratin','Chlorophyll','Eumelanin gibt braune bis schwarze Töne.']
  ], open:[
   ['Beschreibe den Aufbau des Haares.',['Haarschaft (sichtbar) und Haarwurzel (in der Haut, im Follikel)','Schuppenschicht (Kutikula): dachziegelartige Schuppen, Schutz, Glanz','Faserschicht (Cortex): Keratinfasern, Festigkeit, Elastizität, Farbpigmente','Markschicht (Medulla): innen, nicht immer vorhanden','Papille versorgt die Wurzel mit Nährstoffen']],
-  ['Erkläre den Haarzyklus.',['Anagen: Wachstumsphase, 2–6 Jahre, ca. 85–90 % der Haare','Katagen: Übergangsphase, ca. 2–3 Wochen','Telogen: Ruhephase, ca. 2–4 Monate, danach fällt das Haar aus','60–100 Haare Verlust pro Tag sind normal']],
+  ['Erkläre den Haarzyklus.',['Anagen: Wachstumsphase, 2–7 Jahre, ca. 85–90 % der Haare','Katagen: Übergangsphase, ca. 2–3 Wochen','Telogen: Ruhephase, ca. 2–4 Monate, danach fällt das Haar aus','60–100 Haare Verlust pro Tag sind normal']],
   ['Was passiert im Haar bei Wasserwelle und Dauerwelle?',['Wasserwelle: Wasser löst Wasserstoffbrücken, beim Trocknen schließen sie sich in neuer Form → vorübergehend','Dauerwelle: Wellmittel (reduzierend) öffnet Disulfidbrücken','Fixierung (oxidierend) schließt sie in der neuen Form → dauerhaft']]
  ]},
  { id:'farbe', name:'Farbenlehre', mc:[
@@ -414,27 +418,37 @@ const CATS = [
  { id:'rasur', name:'Rasur', mc:[
   ['Warum legst du vor der Rasur eine heiße Kompresse auf?','Der Bart wird weich, die Haut geschmeidig, die Rasur schonender','Damit das Modell einschläft','Um die Haut zu desinfizieren','Damit die Seife besser riecht','Weiche Barthaare lassen sich mit weniger Zug schneiden.'],
   ['Was muss beim Anlegen der heißen Kompresse frei bleiben?','Nase und Mund','Die Ohren','Die Stirn','Das Kinn','Das Modell muss frei atmen können. Das wird bei der Prüfung bewertet.'],
-  ['Wozu dient das Einseifen?','Bart erweichen und aufrichten, das Messer gleitet besser, die Haut ist geschützt','Nur für den Duft','Um Pickel zu verdecken','Um die Haut zu färben','Mit Rasierseife und Pinsel kreisend einmassieren.'],
-  ['Was ist bei der Zwischenprüfung beim Rasieren verboten?','Rasierschaum aus der Dose, Messer mit kurzer Klinge und Bartformen','Rasierpinsel','Heiße Kompressen','After-Shave','Rasieren gegen den Strich ist nicht nötig, eine Nachrasur bei Bedarf schon.'],
-  ['Warum spannst du die Haut beim Rasieren?','Damit sie glatt liegt und das Messer nicht einschneidet','Damit es schneller geht','Um die Durchblutung zu stoppen','Das ist nicht nötig','Das nennt man Spannkegeltechnik: gespannte Haut bildet eine glatte Fläche.'],
-  ['Was bedeutet „mit dem Strich“ rasieren?','In Wuchsrichtung des Bartes','Gegen die Wuchsrichtung','Quer zur Wuchsrichtung','Im Kreis','Mit dem Strich schont die Haut. Die Wuchsrichtung ist an Hals und Wangen oft verschieden.'],
-  ['Wozu gibt es Vorhand- und Rückhandgriff?','Um in jeder Gesichtspartie in Wuchsrichtung und sicher rasieren zu können','Nur für Linkshänder','Zum Schärfen des Messers','Zum Einseifen','Welcher Griff wo passt, hängt von der Gesichtsseite und der Wuchsrichtung ab.'],
-  ['In welchem Winkel führst du das Messer zur Haut?','Flach, etwa 30 Grad','Senkrecht, 90 Grad','Gar kein Winkel, flach aufliegend','Etwa 60 Grad','Zu steil schneidet, zu flach rasiert nicht.'],
-  ['Wie läuft die Nachbehandlung ab?','Seife abwaschen, desinfizieren, ev. Wundversorgung, kalte Kompresse, After-Shave, eincremen','Nur abtrocknen','Heiße Kompresse und fertig','Puder und fertig','Danach folgt die Gesichtsmassage.'],
-  ['Warum kommt nach der Rasur eine kalte Kompresse?','Sie beruhigt die Haut, erfrischt und zieht die Poren zusammen','Um den Bart wieder wachsen zu lassen','Damit die Seife besser haftet','Sie ist nur im Sommer nötig','Warm öffnet, kalt beruhigt und schließt.'],
-  ['Was machst du mit der Klinge eines Wechselklingenmessers nach dem Kunden?','Klinge sicher entsorgen, für jede Person eine neue Klinge','Abwischen und wieder verwenden','Im Wasser aufbewahren','Nachschleifen','Blutkontakt ist bei der Rasur möglich, deshalb immer eine neue Klinge.'],
+  ['Wie stellst du den Sessel und die Nackenstütze vor der Rasur ein?','So, dass der Kunde den Kopf bequem zurücklehnt und die Halspartie gut gestreckt ist','So hoch wie möglich','Der Kunde sitzt aufrecht und schaut nach vorne','Das ist egal','Ist die Kopfstütze zu hoch, liegt die Halspartie nicht frei und die Hautspannung ist schlecht.'],
+  ['Wo beginnst du mit dem Einseifen?','Am Kinn, kreisend im Uhrzeigersinn, dann Wangen, Hals und Oberlippe','An der Oberlippe, dann Hals','Am Hals von unten nach oben','An den Koteletten, dann Kinn','Auf der Oberlippe drückst du den Pinsel mit den Fingern flach.'],
+  ['Wie lange seifst du ein?','Bis eine cremige Schaumschicht da ist und das Barthaar erweicht ist','Genau 30 Sekunden','Einmal kurz darüber, das reicht','So lange, bis der Schaum trocken ist','Zu kurzes oder ungleichmäßiges Einseifen macht die Rasur schmerzhaft.'],
+  ['Wie viel Wasser kommt in die Rasierschale?','Etwa zur Hälfte warmes Wasser','Randvoll mit kaltem Wasser','Gar keins','Heißes Wasser bis zum Rand','Den Pinsel kurz eintauchen und zwischendurch immer wieder.'],
+  ['Was ist bei der Zwischenprüfung beim Rasieren verboten?','Rasierschaum aus der Dose, Messer mit kurzer Klinge und Bartformen','Rasierpinsel','Heiße Kompressen','Rasierwasser','Rasieren gegen den Strich ist nicht nötig, eine Nachrasur bei Bedarf schon.'],
+  ['Was machst du vor dem 1. Rasierzug?','Bartwuchsrichtung beachten und Bartansatz sowie Hautunebenheiten vom Schaum freilegen','Sofort am Hals beginnen','Den Schaum wieder abwaschen','Eine kalte Kompresse auflegen','So erkennst du genau, wo das Messer angesetzt wird.'],
+  ['Wo streifst du den Seifenschaum vom Messer ab?','An der Serviette am Arbeitsplatz, so oft wie nötig','An deiner Handfläche','Am Umhang des Kunden','Am Rasierpinsel','Schaum am Messer oder seifige Hände: Die Messerstellung ist nicht erkennbar, es besteht extreme Verletzungsgefahr.'],
+  ['Welche drei Spannkegel gibt es?','Spitzer, stumpfer und doppelter Spannkegel','Kleiner, mittlerer und großer Spannkegel','Vorder-, Rück- und Seitenkegel','Oberer, unterer und seitlicher Spannkegel','Mit dem Spannkegel spannst du die Haut zu einer glatten Rasierfläche.'],
+  ['Du setzt den Daumen der linken Hand an der rechten Schläfenpartie an. Welcher Spannkegel ist das?','Spitzer Spannkegel','Stumpfer Spannkegel','Doppelter Spannkegel','Das ist kein Spannkegel','Die Haut wird dabei straff nach oben gespannt.'],
+  ['Warum spannst du die Haut beim Rasieren?','Damit eine glatte Rasierfläche entsteht und das Messer nicht verletzt','Damit es schneller geht','Um die Durchblutung zu stoppen','Das ist nicht nötig','Ist die Haut nicht richtig gespannt, ist es unangenehm, schmerzhaft und die Verletzungsgefahr steigt.'],
+  ['Wie setzt du das Messer beim ersten Rasierzug an?','Flach, aber nicht mit dem Rücken aufliegend, unterhalb des Bartansatzes','Senkrecht zur Haut','Mit dem Rücken flach auf der Haut','Oberhalb des Bartansatzes','Dann führst du es mit leichtem Druck schräg nach unten.'],
+  ['Warum wird die Halspartie teils nach unten und teils nach oben rasiert?','Weil der Bart am Hals in verschiedene Richtungen wächst und man nicht gegen den Strich rasieren will','Weil es schneller geht','Damit beide Griffe geübt werden','Weil das Messer sonst stumpf wird','Die Rasierzüge passen sich der Wuchsrichtung an.'],
+  ['Wann wendet der Kunde den Kopf nach rechts?','Nach dem 5. Rasierzug, wenn die rechte Gesichtshälfte fertig ist','Vor dem 1. Rasierzug','Nach dem Kinnzug','Erst ganz am Ende','Dann beginnt die Rasur der linken Gesichtshälfte mit dem linken Wangenzug.'],
+  ['Wie fasst du beim Oberlippenbart die Nase?','Mit Daumen und Zeigefinger an der Nasenspitze, leicht anheben, ohne die Atmung zu behindern','Gar nicht, der Kunde hält selbst','Mit der ganzen Hand zuhalten','An den Nasenflügeln zusammendrücken','Das Messer führst du dann mit leichtem Druck von den Nasenlöchern abwärts, erst in der Rinne.'],
+  ['Womit endet die Rasur (letzter Rasierzug)?','Mit dem Ausrasieren der Mundwinkel','Mit dem rechten Wangenzug','Mit dem Kinnzug','Mit der Halsmitte','Rechter Mundwinkel im Rückhandgriff, linker Mundwinkel im Vorhandgriff.'],
+  ['Was gilt für Linkshänder bei den Rasierzügen?','Alles seitenverkehrt','Sie rasieren nur mit Rückhandgriff','Sie beginnen mit dem Kinnzug','Für sie gibt es keine festen Rasierzüge','So steht es im Skript der Landesinnung.'],
+  ['Wozu gibt es Vorhand- und Rückhandgriff?','Um in jeder Gesichtspartie in Wuchsrichtung und sicher rasieren zu können','Nur für Linkshänder','Zum Schärfen des Messers','Zum Einseifen','Welcher Griff wo passt, legen die Rasierzüge fest.'],
+  ['Wie läuft die Nachbehandlung ab?','Seifenreste mit Kompressen entfernen (zum Abschluss kalt), Blutungen stillen, Rasierwasser, Gesichtsmassage mit Creme','Nur abtrocknen','Heiße Kompresse und fertig','Puder und fertig','Bei der Prüfung wird auch auf Desinfektion und eventuell Wundversorgung geachtet.'],
+  ['Warum kommt zum Abschluss eine kalte Kompresse?','Sie beruhigt die Haut und erfrischt','Um den Bart wieder wachsen zu lassen','Damit die Seife besser haftet','Sie ist nur im Sommer nötig','Warm erweicht, kalt beruhigt.'],
+  ['Mit welchem Griff beginnt und endet die Gesichtsmassage?','Mit dem großen Gesichtsausstreichgriff','Mit dem kleinen Augenkreis','Mit Friktionen auf der Stirn','Mit dem Augen zuhalten','Der große Gesichtsausstreichgriff verbindet auch die einzelnen Abschnitte der Massage.'],
+  ['Welcher Massagegriff wird auch „Beruhigungsgriff“ genannt?','Stirn ausstreichen','Friktionen in der Kinnrille','Zornesfalte ausstreichen','Bindegewebsmassage vom Kinn zu den Ohren',''],
+  ['In welche Richtung wird am Jochbogenrand massiert?','Von außen nach innen','Von innen nach außen','Von unten nach oben','Im Kreis um das Auge',''],
+  ['Wie wird der Hals zum Schluss der Massage ausgestrichen?','Seitlich von oben nach unten','Von unten nach oben','Quer von links nach rechts','Gar nicht',''],
+  ['Was machst du mit der Klinge eines Wechselklingenmessers nach dem Kunden?','In einem stichfesten Sicherheitsbehälter entsorgen, für jede Person eine neue Klinge','Abwischen und wieder verwenden','Im Wasser aufbewahren','Nachschleifen','Benutzte Klingen: Verletzungs- und Infektionsgefahr.'],
   ['Worauf achtest du bei den Koteletten?','Beide Seiten gerade und gleich hoch','Eine Seite kürzer für mehr Stil','Sie werden immer ganz wegrasiert','Gar nicht, sie zählen nicht','Gerade, gleichmäßige Kotelettenansätze werden bewertet.'],
-  ['Was versteht man unter einem „ziehenden Schnitt“ beim Rasieren?','Das Messer wird leicht schräg durch den Bart gezogen, nicht gerade gedrückt','Das Messer wird seitlich über die Haut geschoben','Die Haut wird mit dem Messer nach vorne gezogen','Es wird gegen den Strich rasiert','Der ziehende Schnitt schneidet sauber und schont die Haut. Seitliches Schieben verursacht Schnitte.'],
-  ['Wie spannst du die Haut bei einem Rasierzug richtig?','Mit der freien Hand gegen die Zugrichtung des Messers','In dieselbe Richtung, in die das Messer läuft','Gar nicht, die Haut bleibt locker','Das Modell spannt selbst mit der Zunge','Die gespannte Fläche (Spannkegel) ist glatt, das Messer kann nicht einhaken.'],
-  ['Wie lang sollen die einzelnen Rasierzüge sein?','Kurz und gleichmäßig, nur so weit, wie die Haut gespannt ist','Möglichst lang über das ganze Gesicht','Egal, Hauptsache schnell','Nur ein einziger Zug pro Seite','Kurze, kontrollierte Züge sind sicherer und gründlicher.'],
-  ['Wo streifst du Seife und Haare nach einem Rasierzug ab?','Am Zellstoff','Am Handtuch des Modells','An deiner Handfläche','Am Umhang','Zellstoff wird danach entsorgt, das ist hygienisch und sicher.'],
-  ['Welche Stellen rasierst du mit besonders kleinen Zügen und guter Spannung?','Kinn, Oberlippe, Kehlkopf und Kieferwinkel','Nur die Wangen','Die Stirn','Die Ohrläppchen','Dort ist die Haut uneben oder beweglich, deshalb ist die Verletzungsgefahr hoch.'],
-  ['Warum wechselst du bei den Rasierzügen zwischen Vorhand- und Rückhandgriff?','Damit du auf beiden Gesichtsseiten in Wuchsrichtung und mit sicherer Haltung rasieren kannst','Damit die Hand nicht müde wird','Weil es bei der Prüfung Zusatzpunkte gibt','Um das Messer zu schärfen','„Schulmäßige Rasierzüge“ und die Vor- und Rückhandgrifftechnik werden bei der Prüfung bewertet.'],
   ['Wann darfst du NICHT rasieren?','Bei entzündeter Haut, Hautinfektionen oder offenen Wunden','Wenn der Bart länger als 3 Tage ist','Am Nachmittag','Wenn das Modell Brillenträger ist','Du würdest Keime verteilen und die Haut verletzen.']
  ], open:[
-  ['Beschreibe den Ablauf einer Rasur.',['Hygiene: Werkzeug desinfiziert, neue Klinge, frische Wäsche','Haut beurteilen','Heiße Kompresse (Nase, Mund frei)','Einseifen mit Pinsel','Haut spannen, mit dem Strich rasieren, Vor- und Rückhandgriff','Nachrasur bei Bedarf, Koteletten gerade','Nachbehandlung: Seife ab, desinfizieren, kalte Kompresse, After-Shave, Creme, Massage']],
-  ['Erkläre, wie du einen Rasierzug richtig ausführst.',['Haut mit der freien Hand gegen die Zugrichtung spannen (Spannkegel)','Messer flach, ca. 30°, ziehender Schnitt, nie seitlich schieben','Kurze, gleichmäßige Züge in Wuchsrichtung','Vorhand- und Rückhandgriff je nach Partie','Nach jedem Zug am Zellstoff abstreifen','Heikle Stellen (Kinn, Oberlippe, Kehlkopf) mit kleinen Zügen']],
-  ['Welche Messerhaltungen kennst du und wozu?',['Vorhandgriff','Rückhandgriff','Wechsel je nach Gesichtspartie und Wuchsrichtung','Flacher Winkel ca. 30°, Haut immer spannen']]
+  ['Beschreibe den Arbeitsvorgang einer Rasur.',['Vorbereitung: Nackenstütze und Sessel einstellen, Halspartie gestreckt, Halskrause, Umhang, Serviette vorstecken, Hautunebenheiten und Wuchsrichtung feststellen','Vorbehandeln: heiße Kompressen, einseifen am Kinn beginnend im Uhrzeigersinn, bis das Barthaar erweicht ist','Rasiervorgang: Bartansatz freilegen, Haut spannen (Spannkegel), 15 Rasierzüge, Schaum an der Serviette abstreifen','Ausrasieren','Nachbehandlung: Seifenreste mit Kompressen (zum Schluss kalt), Blutungen stillen, Rasierwasser, Gesichtsmassage mit Creme']],
+  ['Zähle die Rasierzüge der rechten Gesichtshälfte auf.',['1. Rechter Wangenzug (Vorhandgriff)','2. Rechter Mundwinkelzug (Rückhandgriff)','3. Rechter Kinnladenzug (vom Kinn Richtung Ohr)','4. Rechter Rasierzug nach unten (Vorhandgriff)','5. Rechter Halszug nach oben (Rückhandgriff)','Danach wendet der Kunde den Kopf nach rechts']],
+  ['Zähle die Rasierzüge der linken Gesichtshälfte und der Mitte auf.',['6. Linker Wangenzug (Rückhandgriff)','7. Linker Mundwinkelzug (Vorhandgriff)','8. Kinnladenzug (Vorhandgriff, vom Ohr Richtung Kinn)','9. Kinnzug (Vorhandgriff, von rechts nach links)','10. Linker Halszug nach unten (Rückhandgriff)','11. Linker Halszug nach oben (Vorhandgriff)','12. Halsmitte (Rückhandgriff)','13. Fliege (Rückhandgriff)','14. Oberlippenbart','15. Ausrasieren der Mundwinkel']],
+  ['Welche Fehlerquellen gibt es beim Rasieren?',['Kopfstütze zu hoch → Hals liegt nicht frei','Wuchsrichtung und Unebenheiten nicht beachtet → Verletzungsgefahr','Schaum in Mund, Nase oder Ohren','Zu wenig oder ungleichmäßig eingeseift → schmerzhaft','Haut nicht richtig gespannt','Schaum nicht rechtzeitig abgestreift, seifige Hände → extreme Verletzungsgefahr']]
  ]},
  { id:'makeup', name:'Make-up & Brauen', mc:[
   ['Wie findest du die richtige Farbe der Grundierung?','Am Kieferknochen testen, sie soll mit Gesicht und Hals verschmelzen','Am Handrücken testen','Immer eine Nuance dunkler wählen','Die Lieblingsfarbe der Kundin nehmen','Die Grundierung passt zum Hautton, sichtbare Ränder sind ein Fehler.'],
@@ -496,8 +510,135 @@ const CATS = [
   ['Worauf achtest du beim Wickeln einer Dauerwelle?',['Saubere, gleichmäßige Abteilungen (Wicklerbreite × Durchmesser)','Richtiger Winkel, Wickler auf der eigenen Basis','Spitzenpapier sauber, Spitzen gerade, nicht umgebogen','Gleichmäßige Spannung, keine Schlaufen','Gummis gleichmäßig, kein Druck am Ansatz','Ordentliche Platzierung, mittlere Wicklerstärken']],
   ['Erkläre den Unterschied zwischen Wasserwelle und Dauerwelle.',['Wasserwelle: physikalisch, vorübergehend, Wasserstoffbrücken','Dauerwelle: chemisch, dauerhaft, Disulfidbrücken','Dauerwelle: Wellmittel (Reduktion) → Spülen → Fixierung (Oxidation)']],
   ['Worauf achtest du bei handgelegten Wasserwellen?',['Saubere, reine Wellen, gut sichtbares Wellental','Gleichmäßige Kanten, gleiche Wellenbreite','Bis zum Grund durchgearbeitet','Haare nicht verzogen','Mindestens 3 Wellen','Hilfsmittel vor der Benotung entfernen']]
- ]}
+ ]},
+ { id:'komm', name:'Kommunikation & Beratung', mc:[], open:[] },
+ { id:'schutz', name:'Arbeitsschutz', mc:[], open:[] }
 ];
+
+/* Die 15 Rasierzüge nach dem Skript der Landesinnung Wien der Friseure (für Rechtshänder, Linkshänder seitenverkehrt)
+   [Name, Griff ('' = im Skript nicht angegeben), Beschreibung] */
+const ZUEGE = [
+ ['Rechter Wangenzug','Vorhandgriff','Mittelfinger oder Daumen der linken Hand oberhalb des Bartansatzes (etwa in Höhe des Augenwinkels) auflegen und die Haut straff nach oben spannen. Messer flach, aber nicht mit dem Rücken aufliegend, unterhalb des Bartansatzes ansetzen und mit leichtem Druck schräg nach unten führen.'],
+ ['Rechter Mundwinkelzug','Rückhandgriff','Messer schräg, leicht schiebend bis zum rechten Mundwinkel führen. Hautspannung mit dem Mittelfinger der linken Hand in Richtung Ohr.'],
+ ['Rechter Kinnladenzug','','Haut über dem rechten Unterkiefer mit Mittelfinger und Daumen spannen (auseinanderspreizen). Messer unter dem angehobenen Zeigefinger der spannenden Hand hindurch vom Kinn in Richtung Ohr führen.'],
+ ['Rechter Rasierzug nach unten','Vorhandgriff','Die rechte Halspartie wird teils nach unten, teils nach oben rasiert, weil der Bart dort in verschiedene Richtungen wächst. Beim Rasieren nach unten spannt der aufgelegte Mittelfinger die Haut nach oben.'],
+ ['Rechter Halszug nach oben','Rückhandgriff','Der kleine Finger der linken Hand spannt die Haut nach unten. Damit ist die rechte Gesichtshälfte fertig: Der Kunde wendet den Kopf nach rechts.'],
+ ['Linker Wangenzug','Rückhandgriff','Zuerst den Seifenschaum mit dem Messerrücken vom Bartansatz streifen. Mittelfinger oder Daumen der linken Hand oberhalb des Bartansatzes (Höhe Augenwinkel) auflegen, Haut straff nach oben spannen. Messer flach unterhalb des Bartansatzes ansetzen und mit leichtem Druck schräg nach unten führen.'],
+ ['Linker Mundwinkelzug','Vorhandgriff','Messer zum Vorhandgriff wenden und leicht schräg bis zum linken Mundwinkel führen. Hautspannung mit dem Mittelfinger der linken Hand, der Zeigefinger wird leicht abgehoben.'],
+ ['Kinnladenzug','Vorhandgriff','Haut mit Mittelfinger und Daumen spannen (auseinanderspreizen). Messer unter dem angehobenen Zeigefinger der spannenden Hand hindurch vom Ohr in Richtung Kinn führen.'],
+ ['Kinnzug','Vorhandgriff','Kinn von oben mit Daumen und Mittelfinger der linken Hand umfassen (der Kunde hebt es eventuell leicht an), Haut auseinanderspreizen und das Messer von rechts nach links führen.'],
+ ['Linker Halszug nach unten','Rückhandgriff','Die linke Halspartie wird teils nach unten, teils nach oben rasiert. Beim Rasieren nach unten (im Gegensatz zur rechten Seite im Rückhandgriff) spannt der aufgelegte Mittelfinger die Haut nach oben.'],
+ ['Linker Halszug nach oben','Vorhandgriff','Beim Rasieren nach oben (im Gegensatz zur rechten Seite im Vorhandgriff) den linken Arm über den Kopf des Kunden reichen und die Haut mit dem Mittelfinger straff spannen.'],
+ ['Halsmitte','Rückhandgriff','Mit dem Mittelfinger unter das Kinn fassen und die Haut straff nach oben spannen. Mit den übrigen Fingern dem Kunden nicht zu nahe kommen. Messer nach unten führen.'],
+ ['Rasieren der Fliege','Rückhandgriff','Haut unterhalb des Mundes mit dem aufgelegten Mittelfinger oder kleinen Finger nach unten spannen und das Messer nach oben gegen die Unterlippe führen. Danach im Vorhandgriff an der rechten Oberlippenbartseite weiter.'],
+ ['Oberlippenbart','','Nase mit Daumen und Zeigefinger an der Nasenspitze fassen und leicht anheben, ohne die Atmung zu behindern. Messer im Rückhand- oder Vorhandgriff mit leichtem Druck von den Nasenlöchern abwärts führen, erst in der Rinne. Für die linke Oberlippenbartseite das Messer zum Rückhandgriff wenden.'],
+ ['Ausrasieren der Mundwinkel','','Beschließt die Rasur. Rechter Mundwinkel im Rückhandgriff, linker Mundwinkel im Vorhandgriff.']
+];
+
+/* Fragenkatalog Friseurgewerbe 1. und 2. Lehrjahr (Frage, Antwort) */
+const KATALOG = {
+ komm:[
+  ['Welche Fragen stellt man bei einer Beratung?','Wünsche, bisherige Behandlungen, Haarpflege und Allergien.'],
+  ['Warum ist aktives Zuhören wichtig?','Es schafft Vertrauen und verbessert die Beratung.'],
+  ['Wie geht man mit einer Reklamation um?','Ruhig bleiben, zuhören, Verständnis zeigen und gemeinsam eine Lösung finden.'],
+  ['Warum ist ein Beratungsgespräch wichtig?','Damit die Wünsche des Kunden verstanden und Missverständnisse vermieden werden.'],
+  ['Wie begrüßt man einen Kunden?','Freundlich, höflich und mit Blickkontakt.'],
+  ['Warum sollte man gut zuhören?','Um die Bedürfnisse des Kunden richtig zu erkennen.'],
+  ['Was gehört zu einem professionellen Auftreten?','Freundlichkeit, Höflichkeit, gepflegtes Erscheinungsbild und Zuverlässigkeit.'],
+  ['Warum ist Körpersprache wichtig?','Sie vermittelt Interesse, Freundlichkeit und Sicherheit.'],
+  ['Was bedeutet aktives Zuhören?','Dem Kunden aufmerksam zuhören, nachfragen und das Gesagte zusammenfassen.'],
+  ['Wie reagiert man auf einen unzufriedenen Kunden?','Ruhig bleiben, Verständnis zeigen und gemeinsam nach einer Lösung suchen.'],
+  ['Warum sollte man Fachbegriffe verständlich erklären?','Damit der Kunde die Beratung nachvollziehen kann.'],
+  ['Welche Eigenschaften zeichnen einen guten Friseur aus?','Freundlichkeit, Geduld, Fachwissen, Kreativität und Zuverlässigkeit.'],
+  ['Warum ist eine Haaranalyse wichtig?','Sie hilft bei der Auswahl der richtigen Behandlung und Produkte.'],
+  ['Welche Fragen gehören zur Haaranalyse?','Naturhaarfarbe, frühere Colorationen, Haarzustand, Kopfhaut, Pflegegewohnheiten und Allergien.'],
+  ['Warum empfiehlt man Pflegeprodukte?','Damit das Ergebnis länger schön bleibt und das Haar gesund gepflegt wird.'],
+  ['Wann sollte ein Allergietest durchgeführt werden?','Vor einer ersten Coloration oder wenn Unsicherheiten bestehen.'],
+  ['Warum dokumentiert man chemische Behandlungen?','Damit spätere Behandlungen sicher geplant werden können.'],
+  ['Was ist das wichtigste Ziel jeder Friseurbehandlung?','Ein gesundes, schönes Ergebnis und ein zufriedener Kunde.']
+ ],
+ schutz:[
+  ['Warum ist Arbeitsschutz im Salon wichtig?','Er schützt Mitarbeiter und Kunden vor Unfällen, Infektionen und gesundheitlichen Schäden.'],
+  ['Warum ist eine gute Körperhaltung wichtig?','Um Rücken- und Gelenkbeschwerden vorzubeugen.'],
+  ['Warum sollte der Salon regelmäßig gelüftet werden?','Um Dämpfe und Gerüche zu reduzieren und für frische Luft zu sorgen.'],
+  ['Welche persönliche Schutzausrüstung wird im Salon verwendet?','Handschuhe und Schürzen.'],
+  ['Warum müssen elektrische Geräte regelmäßig überprüft werden?','Zur Vermeidung von Stromunfällen und zur Gewährleistung der Betriebssicherheit.']
+ ],
+ haut:[
+  ['Welche Funktion hat die Talgdrüse?','Sie produziert Talg, der Haut und Haare geschmeidig hält und vor dem Austrocknen schützt.'],
+  ['Welche Aufgabe hat die Schweißdrüse?','Sie reguliert die Körpertemperatur und unterstützt die Ausscheidung.'],
+  ['Was ist der Säureschutzmantel?','Ein natürlicher Schutzfilm der Haut mit einem pH-Wert von etwa 5,5, der Krankheitserreger abwehrt.'],
+  ['Was versteht man unter einer empfindlichen Kopfhaut?','Eine Kopfhaut, die schnell auf Pflegeprodukte oder äußere Einflüsse mit Rötungen oder Juckreiz reagiert.'],
+  ['Welche Ursachen können Schuppen haben?','Trockene Haut, Pilze, ungeeignete Pflegeprodukte oder Hauterkrankungen.'],
+  ['Welche Hautveränderungen sollte ein Friseur erkennen?','Schuppen, Rötungen, Ekzeme, Warzen oder Entzündungen.'],
+  ['Wann sollte ein Kunde an einen Hautarzt verwiesen werden?','Bei auffälligen Hautveränderungen, Entzündungen oder ansteckenden Erkrankungen.'],
+  ['Welche Aufgaben hat die Haut?','Sie schützt den Körper vor äußeren Einflüssen, reguliert die Körpertemperatur, speichert Fett und Wasser und dient als Sinnesorgan.'],
+  ['Aus welchen Schichten besteht die Haut?','Oberhaut (Epidermis), Lederhaut (Dermis) und Unterhaut (Subcutis).'],
+  ['Warum ist gesunde Kopfhaut wichtig?','Sie ist die Grundlage für gesundes Haarwachstum und schützt vor Krankheitserregern.']
+ ],
+ haar:[
+  ['Was bedeutet pH-Wert?','Er zeigt an, ob eine Lösung sauer, neutral oder alkalisch ist.'],
+  ['Welchen pH-Wert hat gesundes Haar ungefähr?','Etwa 4,5 bis 5,5.'],
+  ['Warum wird Conditioner verwendet?','Er schließt die Schuppenschicht, verbessert die Kämmbarkeit und schützt das Haar.'],
+  ['Wie viele Haare hat ein Mensch durchschnittlich?','Etwa 80.000 bis 150.000 Haare.'],
+  ['Wie schnell wächst ein Haar?','Etwa 1 bis 1,5 cm pro Monat.'],
+  ['Welche Wachstumsphasen hat das Haar?','Anagenphase (Wachstum), Katagenphase (Übergang), Telogenphase (Ruhe- und Ausfallphase).'],
+  ['Wie lange dauert die Wachstumsphase?','Etwa 2 bis 7 Jahre.'],
+  ['Wann ist Haarausfall normal?','Bis zu etwa 100 Haare pro Tag.'],
+  ['Wovon hängt die Haarstruktur ab?','Von der genetischen Veranlagung, dem Durchmesser und der Form des Haarfollikels.'],
+  ['Was ist poröses Haar?','Haar mit einer geschädigten Schuppenschicht, das Feuchtigkeit schlecht speichert.'],
+  ['Warum muss die Haarstruktur vor einer chemischen Behandlung beurteilt werden?','Damit das richtige Produkt und die passende Einwirkzeit gewählt werden.'],
+  ['Woraus besteht Keratin?','Aus Eiweiß (Protein).'],
+  ['Was versteht man unter Haarqualität?','Den Zustand des Haares hinsichtlich Gesundheit, Festigkeit und Elastizität.'],
+  ['Welche Faktoren beeinflussen die Haarqualität?','Ernährung, Pflege, Alter, Krankheiten, Umwelt und chemische Behandlungen.'],
+  ['Warum ist Feuchtigkeit für das Haar wichtig?','Sie erhält Elastizität, Glanz und Geschmeidigkeit.'],
+  ['Aus welchem Stoff bestehen Haare hauptsächlich?','Aus Keratin.'],
+  ['Welche drei Haarschichten gibt es?','Schuppenschicht (Cuticula), Faserschicht (Cortex) und Markschicht (Medulla).'],
+  ['Welche Aufgaben haben Haare?','Schutz, Wärmeregulierung und ästhetische Wirkung.'],
+  ['Welche Haarstrukturen gibt es?','Glattes, welliges, lockiges und krauses Haar.'],
+  ['Was bedeutet feines Haar?','Das einzelne Haar hat einen kleinen Durchmesser.'],
+  ['Wodurch kann Haar geschädigt werden?','Durch Hitze, chemische Behandlungen, UV-Strahlen und falsche Pflege.'],
+  ['Was ist Spliss?','Das Aufspalten der Haarspitzen durch Schädigung.'],
+  ['Warum sollte nasses Haar vorsichtig gekämmt werden?','Weil es empfindlicher und leichter dehnbar ist.'],
+  ['Was bedeutet elastisches Haar?','Es lässt sich dehnen und kehrt in seine ursprüngliche Form zurück.'],
+  ['Welche Haarstruktur eignet sich besonders gut für Dauerwellen?','Gesundes, elastisches und nicht zu stark geschädigtes Haar.'],
+  ['Was versteht man unter Haarporosität?','Die Fähigkeit des Haares, Feuchtigkeit und Wirkstoffe aufzunehmen.']
+ ],
+ farbe:[
+  ['Was versteht man unter dem Farbkreis?','Eine Darstellung der Grund-, Sekundär- und Komplementärfarben.'],
+  ['Warum werden Komplementärfarben beim Färben verwendet?','Um unerwünschte Farbstiche zu neutralisieren.'],
+  ['Welche Pigmente bestimmen die natürliche Haarfarbe?','Eumelanin und Phäomelanin.'],
+  ['Was ist eine Oxidationshaarfarbe?','Eine dauerhafte Haarfarbe, die mit Wasserstoffperoxid entwickelt wird.'],
+  ['Warum ist eine Haaranalyse vor dem Färben wichtig?','Um Haarzustand, Naturfarbe und mögliche Risiken zu beurteilen.'],
+  ['Was sind die drei Grundfarben?','Gelb, Rot und Blau.'],
+  ['Welche Farben entstehen durch das Mischen von zwei Grundfarben?','Orange, Grün und Violett.'],
+  ['Was sind Komplementärfarben?','Farben, die sich im Farbkreis gegenüberliegen und sich gegenseitig neutralisieren.'],
+  ['Welche warmen Farben gibt es?','Rot, Orange und Gelb.'],
+  ['Welche kalten Farben gibt es?','Blau, Grün und Violett.'],
+  ['Welche Farbe neutralisiert Gelb?','Violett.'],
+  ['Welche Farbe neutralisiert Orange?','Blau.'],
+  ['Welche Farbe neutralisiert Rot?','Grün.'],
+  ['Was bedeutet Tonhöhe?','Die Helligkeit oder Dunkelheit einer Haarfarbe.'],
+  ['Was ist eine Nuance?','Der Farbton innerhalb einer Tonhöhe.'],
+  ['Warum wird Wasserstoffperoxid verwendet?','Zum Aufhellen des Naturpigments und zum Entwickeln der Haarfarbe.'],
+  ['Was ist eine Tönung?','Eine nicht dauerhafte Haarfarbe, die sich nach mehreren Haarwäschen auswäscht.'],
+  ['Was ist Blondierung?','Eine chemische Aufhellung des natürlichen Haarpigments.']
+ ],
+ hyg:[
+  ['Wann müssen die Hände desinfiziert werden?','Vor und nach jedem Kunden sowie nach Verschmutzungen.'],
+  ['Warum müssen Handtücher nach jedem Kunden gewechselt werden?','Um die Übertragung von Keimen zu verhindern.'],
+  ['Wie werden Scheren und Kämme hygienisch aufbereitet?','Reinigen, gegebenenfalls desinfizieren und trocken lagern.'],
+  ['Was bedeutet persönliche Hygiene?','Saubere Arbeitskleidung, gepflegte Hände, kurze Fingernägel und tägliche Körperpflege.'],
+  ['Warum müssen Arbeitsgeräte gereinigt werden?','Um Krankheiten und Keime nicht zu übertragen.'],
+  ['Was gehört zur öffentlichen Hygiene?','Maßnahmen zum Schutz der Bevölkerung, z. B. Trinkwasserkontrolle und Abfallentsorgung.'],
+  ['Was bedeutet gewerbliche Hygiene?','Hygienemaßnahmen im Salon wie Reinigung, Desinfektion und Einhaltung gesetzlicher Vorschriften.'],
+  ['Warum trägt man Handschuhe?','Zum Schutz vor Chemikalien und Keimen.'],
+  ['Was ist der Unterschied zwischen Reinigen und Desinfizieren?','Reinigen entfernt Schmutz, Desinfizieren reduziert oder tötet Keime.'],
+  ['Wie oft müssen Umhänge gereinigt werden?','Nach jedem Kunden, oder man verwendet einen hygienischen Einweg-Halskragen.'],
+  ['Warum dürfen benutzte Rasierklingen nicht wiederverwendet werden?','Wegen der Verletzungs- und Infektionsgefahr.'],
+  ['Wie entsorgt man Rasierklingen?','In einem stichfesten Sicherheitsbehälter.']
+ ]
+};
 
 /* Fallbeispiele Hautdiagnose */
 const CASES = [
@@ -558,6 +699,14 @@ const QUESTIONS=[];
 CATS.forEach(c=>{
   c.mc.forEach(m=>QUESTIONS.push({id:c.id+'-'+hash(m[0]),cat:c.id,type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]||''}));
   c.open.forEach(o=>QUESTIONS.push({id:c.id+'-o'+hash(o[0]),cat:c.id,type:'open',q:o[0],pts:o[1]}));
+});
+Object.entries(KATALOG).forEach(([cid,list])=>list.forEach(([q,a])=>QUESTIONS.push({id:cid+'-k'+hash(q),cat:cid,type:'open',src:'katalog',q,pts:[a]})));
+/* Rasierzüge-Fragen aus den 15 Zügen erzeugen */
+ZUEGE.forEach(([name,griff],i)=>{const n=i+1;
+  const others=shuffle(ZUEGE.filter((z,j)=>j!==i&&z[0]!==name).map(z=>z[0])).slice(0,3);
+  QUESTIONS.push({id:'rasur-zn'+n,cat:'rasur',tag:'zug',type:'mc',q:`Wie heißt der ${n}. Rasierzug?`,a:name,w:others,e:ZUEGE[i][2]});
+  if(griff)QUESTIONS.push({id:'rasur-zg'+n,cat:'rasur',tag:'zug',type:'mc',q:`Mit welchem Griff führst du den ${n}. Rasierzug (${name})?`,a:griff,w:[griff==='Vorhandgriff'?'Rückhandgriff':'Vorhandgriff'],e:ZUEGE[i][2]});
+  if(n<ZUEGE.length){const nx=ZUEGE[i+1][0];QUESTIONS.push({id:'rasur-zx'+n,cat:'rasur',tag:'zug',type:'mc',q:`Welcher Rasierzug folgt auf Nr. ${n} („${name}“)?`,a:nx,w:shuffle(ZUEGE.filter(z=>z[0]!==nx&&z[0]!==name).map(z=>z[0])).slice(0,3),e:`Nr. ${n+1} ist: ${nx}.`});}
 });
 const CAT = Object.fromEntries(CATS.map(c=>[c.id,c]));
 const PART = Object.fromEntries(PARTS.map(p=>[p.id,p]));
@@ -698,13 +847,19 @@ function partHTML(p){const hist=D.praxis.filter(s=>s.part===p.id).slice().revers
  <section class="stack"><div class="row"><span class="pill time">${p.min} Min.</span><span class="muted small">${esc(p.model)}</span></div><h1>${p.name}</h1><p class="lead">${esc(p.intro)}</p>
   <div class="row"><button class="btn primary" data-a="session" data-id="${p.id}">Übung mit Timer starten</button><button class="btn" data-a="rateonly" data-id="${p.id}">Nur bewerten (ohne Timer)</button></div></section>
  ${weak.length?`<section class="card stack"><div class="eyebrow">Deine Schwachstellen hier</div><ul class="clean weak">${weak.map(w=>`<li><span>${esc(w.t)}</span><span class="pill ${w.bad?'bad':'warn'}">${w.bad?'noch nicht':'fast'}</span></li>`).join('')}</ul></section>`:''}
- <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
+ <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
  ${sub==='krit'?`<section class="grid-2">${p.sections.map(s=>`<div class="panel stack"><h3>${esc(s.name)}</h3><ul class="crit">${s.crit.map(c=>`<li>${esc(c.t)}</li>`).join('')}</ul></div>`).join('')}</section>
-   <section class="warnbox"><h3>Achtung, hier gibt es Punkteabzug</h3><ul>${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>`:''}
+   <section class="warnbox"><h3>Achtung, hier gibt es Punkteabzug</h3><ul>${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>
+   ${p.fehler?`<section class="panel stack"><h3>Fehlerquellen und ihre Folgen</h3><ul class="clean weak">${p.fehler.map(([f,g])=>`<li><span>${esc(f)}</span><span class="muted small" style="text-align:right">${esc(g)}</span></li>`).join('')}</ul></section>`:''}`:''}
+ ${sub==='zuege'?zuegeHTML():''}
  ${sub==='ablauf'?`<section class="grid-2">${p.ablauf.map(a=>`<div class="panel stack"><h3>${esc(a.t)}</h3><ol class="steps">${a.s.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ol></div>`).join('')}</section>`:''}
  ${sub==='zeit'?`<section class="panel stack"><h3>So könntest du deine ${p.min} Minuten einteilen</h3><p class="muted small">Ein Vorschlag, den ihr im Salon an dein Tempo anpassen könnt.</p><ul class="clean weak">${p.plan.map(([a,b])=>`<li><span>${esc(a)}</span><span class="pill time">${esc(b)}</span></li>`).join('')}</ul></section>`:''}
  ${sub==='hist'?(hist.length?`<section class="panel scroll-x"><table class="hist"><thead><tr><th>Datum</th><th>Bewertet von</th><th>Zeit</th><th>Ergebnis</th><th>Notiz</th></tr></thead><tbody>${hist.map(s=>`<tr><td class="num">${fmtDate(s.date)}</td><td>${s.who==='ausb'?'Ausbilderin':'Selbst'}</td><td class="num">${s.sec!=null?mmss(s.sec):'–'}</td><td><span class="pill ${level(sessionScore(s))}">${pct(sessionScore(s))} %</span></td><td style="white-space:normal;min-width:160px">${esc(s.note||'')}</td></tr>`).join('')}</tbody></table></section>`:`<p class="muted">Noch keine Übungen gespeichert.</p>`):''}`;}
 
+function zuegeHTML(){return `<section class="stack"><p class="lead">Die Rasur wird in 15 festen Rasierzügen ausgeführt (Skript der Landesinnung Wien). Beschrieben für Rechtshänder, <strong>für Linkshänder gilt alles seitenverkehrt</strong>.</p>
+ <div class="row"><button class="btn primary" data-a="quiz" data-cat="rasur" data-type="zug">Rasierzüge abfragen</button></div>
+ <div class="panel stack"><h3>Die drei Spannkegel</h3><p class="muted small">Spitzer, stumpfer und doppelter Spannkegel. Beim ersten Rasierzug setzt du den Daumen der linken Hand an der rechten Schläfenpartie an: das ist der spitze Spannkegel, die Haut wird straff nach oben gespannt.</p></div>
+ <ol class="steps">${ZUEGE.map(([n,g,t],i)=>`<li><div class="panel stack"><div class="row" style="justify-content:space-between"><h3>${esc(n)}</h3>${g?`<span class="pill ${g==='Vorhandgriff'?'accent':'warn'}">${g}</span>`:''}</div><p>${esc(t)}</p>${i===4?'<p class="small" style="color:var(--accent);font-weight:700">↻ Kunde wendet den Kopf nach rechts, jetzt kommt die linke Gesichtshälfte.</p>':''}</div></li>`).join('')}</ol></section>`;}
 function sessionHTML(){const p=PART[V.session];if(!DRAFT||DRAFT.part!==p.id)DRAFT={part:p.id,r:{},who:'selbst',note:''};
  const rated=Object.keys(DRAFT.r).length,total=allCrit(p).length;
  return `<button class="btn ghost back" data-a="part" data-id="${p.id}">← Zurück zu ${p.name}</button>
@@ -723,34 +878,37 @@ function theorieHTML(){if(QZ)return quizHTML();
  <section class="grid">
   <div class="card stack"><div class="eyebrow">Wissensfragen</div><h3>Lernrunde</h3><p class="muted small">10 Fragen mit Auswahl. ${due?`${due} fällig zur Wiederholung.`:'Neue und fällige Fragen gemischt.'}</p><button class="btn primary" data-a="quiz" data-cat="" data-type="mc">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Wie beim Prüfer</div><h3>Prüferfragen</h3><p class="muted small">Offene Fragen: erst selbst laut antworten, dann mit der Musterantwort vergleichen. Ideal zu zweit.</p><button class="btn" data-a="quiz" data-cat="" data-type="open">Starten</button></div>
+  <div class="card stack"><div class="eyebrow">Berufsschule 1. + 2. Lehrjahr</div><h3>Fragenkatalog</h3><p class="muted small">${QUESTIONS.filter(q=>q.src==='katalog').length} Fragen mit Antworten aus dem Fragenkatalog, inklusive Kommunikation, Beratung und Arbeitsschutz.</p><button class="btn" data-a="quiz" data-cat="" data-type="katalog">Starten</button></div>
+  <div class="card stack"><div class="eyebrow">Rasur</div><h3>Rasierzüge 1–15</h3><p class="muted small">Name, Reihenfolge und Griff jedes Rasierzugs abfragen.</p><button class="btn" data-a="quiz" data-cat="rasur" data-type="zug">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Generalprobe</div><h3>Fachgespräch-Simulation</h3><p class="muted small">5 zufällige Prüferfragen in 10 Minuten. Die Ausbilderin liest vor, der Lehrling antwortet.</p><button class="btn" data-a="quiz" data-cat="" data-type="sim">Starten</button></div>
  </section>
- <section class="stack"><h2>Nach Themen</h2><div class="grid">${CATS.map(c=>{const pr=catProgress(c.id);return `<button class="cat" data-a="quiz" data-cat="${c.id}" data-type="mc"><strong>${esc(c.name)}</strong><span class="small muted num">${pr.mastered}/${pr.total}</span><div class="bar"><i style="width:${pct(pr.p)}%"></i></div></button>`;}).join('')}</div>
+ <section class="stack"><h2>Nach Themen</h2><div class="grid">${CATS.map(c=>{const pr=catProgress(c.id);return `<button class="cat" data-a="quiz" data-cat="${c.id}" data-type="any"><strong>${esc(c.name)}</strong><span class="small muted num">${pr.mastered}/${pr.total}</span><div class="bar"><i style="width:${pct(pr.p)}%"></i></div></button>`;}).join('')}</div>
  <p class="muted small">Eine Frage gilt als gelernt, wenn du sie an drei verschiedenen Tagen richtig beantwortet hast.</p></section>`;}
 
-function pickQuestions(cat,n,type){const now=Date.now();const pool=QUESTIONS.filter(q=>q.type===type&&(!cat||q.cat===cat));
+function matchType(q,type){return type==='any'?true:type==='zug'?q.tag==='zug':type==='katalog'?q.src==='katalog':type==='open'?(q.type==='open'&&!q.src):q.type===type;}
+function pickQuestions(cat,n,type){const now=Date.now();const pool=QUESTIONS.filter(q=>matchType(q,type)&&(!cat||q.cat===cat));
  const due=shuffle(pool.filter(q=>qs(q.id)&&qs(q.id).d<=now)).sort((a,b)=>qs(a.id).b-qs(b.id).b);
  const fresh=shuffle(pool.filter(q=>!qs(q.id)));
  const later=pool.filter(q=>qs(q.id)&&qs(q.id).d>now).sort((a,b)=>qs(a.id).d-qs(b.id).d);
  return shuffle([...due,...fresh,...later].slice(0,n));}
 
 function startQuiz(cat,type){const kind=type;let items;
- if(type==='sim'){items=shuffle(QUESTIONS.filter(q=>q.type==='open')).slice(0,5);newTimer(10,'Fachgespräch');}
+ if(type==='sim'){items=shuffle(QUESTIONS.filter(q=>q.type==='open'&&!q.src)).slice(0,5);newTimer(10,'Fachgespräch');}
  else items=pickQuestions(cat,type==='open'?5:10,type);
  QZ={kind,cat,items:items.map(q=>({q,opts:q.type==='mc'?shuffle([q.a,...q.w]):null,res:null,pick:null,shown:false})),i:0};
  go('theorie');}
 
 function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  const dots=`<div class="progress-dots" aria-hidden="true">${QZ.items.map((x,i)=>`<i class="${x.res==='yes'?'ok':x.res==='no'?'no':x.res==='part'?'part':i===QZ.i?'cur':''}"></i>`).join('')}</div>`;
- const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
+ const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Fragenkatalog':QZ.kind==='zug'?'Rasierzüge':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
  if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
-  return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.kind==='mc'?'richtig':'gewusst'}</h1>
+  return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.items.every(x=>x.q.type==='mc')?'richtig':'gewusst'}</h1>
   <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
   <div class="row"><button class="btn primary" data-a="quiz" data-cat="${QZ.cat||''}" data-type="${QZ.kind}">Noch eine Runde</button><button class="btn" data-a="quizend">Fertig</button></div></div>`;}
  const q=it.q;let body='';
  if(q.type==='mc'){body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}return `<button data-a="ans" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
   ${it.pick!=null?`<div class="explain"><strong>${it.res==='yes'?'Richtig!':'Leider falsch.'}</strong> ${it.res==='yes'?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
- else{body=it.shown?`<div class="model"><div class="eyebrow">Das sollte in deiner Antwort vorkommen</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+ else{body=it.shown?`<div class="model"><div class="eyebrow">${q.src==='katalog'?'Antwort laut Fragenkatalog':'Das sollte in deiner Antwort vorkommen'}</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
   ${it.res?`<button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:`<div class="stack"><div class="small muted">Wie gut war die Antwort?</div><div class="row"><button class="btn" data-a="self" data-r="yes" style="border-color:var(--good);color:var(--good)">Gewusst</button><button class="btn" data-a="self" data-r="part" style="border-color:var(--warn);color:var(--warn)">Teilweise</button><button class="btn" data-a="self" data-r="no" style="border-color:var(--bad);color:var(--bad)">Noch nicht</button></div></div>`}`
   :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
  return `<div class="quiz"><div class="row" style="justify-content:space-between"><span class="eyebrow">${esc(title)} · ${esc(CAT[q.cat].name)}</span><span class="small muted num">Frage ${QZ.i+1} von ${n}</span></div>${dots}
