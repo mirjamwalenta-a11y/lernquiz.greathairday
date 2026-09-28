@@ -8,13 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
 <style>
-/* Beratung & Formwirkung – Stil der Lernapp (vgl. zwischenpruefung.html) */
+/* Beratung & Formwirkung – Farben der Lernapp (vgl. schnittwerkstatt.html) */
 :root{
-  --bg:#F5F3F7;--surface:#FFFFFF;--surface-2:#FAF8FC;--ink:#231B2E;--muted:#61586E;--line:#DDD6E6;
-  --accent:#6D2E7F;--accent-ink:#FFFFFF;--accent-soft:#F1E4F6;--accent-hover:#5A2469;
-  --good:#2F7D55;--good-soft:#E3F2EA;--bad:#B3362D;--bad-soft:#FBE6E3;
+  --bg:#F7F5F0;--surface:#FFFFFF;--surface-2:#FAF8F4;--ink:#1C1C1A;--muted:#66665E;--line:#E2DDD5;
+  --accent:#5B7B6F;--accent-ink:#FFFFFF;--accent-soft:#EAF0EE;--accent-hover:#4A665B;
+  --good:#2E7A4F;--good-soft:#E2F1E7;--bad:#B3362D;--bad-soft:#FBE6E3;
   --g-kopf:#E7E7EA;--g-kontur:#8C8C94;--g-haar:#8A8A92;--g-haar-kontur:#4C4C53;--g-hilfe:#A6A6AE;--g-flaeche:#EDEDF0;
-  --shadow:0 1px 2px rgba(35,27,46,.05),0 6px 18px -6px rgba(35,27,46,.10);
+  --shadow:0 1px 2px rgba(28,28,26,.05),0 6px 18px -6px rgba(28,28,26,.10);
   --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
   --r:14px;--r-s:10px;
@@ -24,8 +24,8 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme:dark;
-    --bg:#16121B;--surface:#201A28;--surface-2:#1B1622;--ink:#EEE8F4;--muted:#A99EB7;--line:#3A3045;
-    --accent:#CFA2E0;--accent-ink:#1C1422;--accent-soft:#3A2A45;--accent-hover:#DDB9EA;
+    --bg:#141614;--surface:#1D201E;--surface-2:#181B19;--ink:#ECEFEA;--muted:#A3AAA4;--line:#333934;
+    --accent:#93BFAE;--accent-ink:#10201A;--accent-soft:#25352F;--accent-hover:#A9CFC0;
     --good:#6CC196;--good-soft:#1D3328;--bad:#EE8177;--bad-soft:#3E1F1C;
     --g-kopf:#3B3B41;--g-kontur:#8E8E97;--g-haar:#6E6E76;--g-haar-kontur:#B4B4BC;--g-hilfe:#74747C;--g-flaeche:#2C2C31;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -8px rgba(0,0,0,.5);
@@ -33,8 +33,8 @@
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#16121B;--surface:#201A28;--surface-2:#1B1622;--ink:#EEE8F4;--muted:#A99EB7;--line:#3A3045;
-  --accent:#CFA2E0;--accent-ink:#1C1422;--accent-soft:#3A2A45;--accent-hover:#DDB9EA;
+  --bg:#141614;--surface:#1D201E;--surface-2:#181B19;--ink:#ECEFEA;--muted:#A3AAA4;--line:#333934;
+  --accent:#93BFAE;--accent-ink:#10201A;--accent-soft:#25352F;--accent-hover:#A9CFC0;
   --good:#6CC196;--good-soft:#1D3328;--bad:#EE8177;--bad-soft:#3E1F1C;
   --g-kopf:#3B3B41;--g-kontur:#8E8E97;--g-haar:#6E6E76;--g-haar-kontur:#B4B4BC;--g-hilfe:#74747C;--g-flaeche:#2C2C31;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -8px rgba(0,0,0,.5);
@@ -1624,7 +1624,7 @@ dl.steck dd{margin:0}
     var sc = bkScore(zeig), wort = sc < 0.45 ? "unausgeglichen" : sc < 0.75 ? "fast ausgeglichen" : "ausgeglichen";
     var werkzeuge = k.zeichnen
       ? '<div class="controls werkzeuge">' +
-          ['ink','accent','grau'].map(function(f){ return '<button class="chip' + (k.farbe === f ? ' on' : '') + '" type="button" data-act="bkset" data-key="farbe" data-val="' + f + '"><span class="punkt" style="background:' + BK_FARBEN[f] + '"></span>' + {ink:"Schwarz", accent:"Lila", grau:"Grau"}[f] + '</button>'; }).join("") +
+          ['ink','accent','grau'].map(function(f){ return '<button class="chip' + (k.farbe === f ? ' on' : '') + '" type="button" data-act="bkset" data-key="farbe" data-val="' + f + '"><span class="punkt" style="background:' + BK_FARBEN[f] + '"></span>' + {ink:"Schwarz", accent:"Grün", grau:"Grau"}[f] + '</button>'; }).join("") +
           [[2,"Dünn"],[4,"Mittel"],[7,"Dick"]].map(function(w){ return '<button class="chip' + (k.dicke === w[0] ? ' on' : '') + '" type="button" data-act="bkset" data-key="dicke" data-val="' + w[0] + '">' + w[1] + '</button>'; }).join("") +
           '<button class="chip' + (k.radieren ? ' on' : '') + '" type="button" data-act="bkradier">Radierer</button>' +
           '<button class="chip" type="button" data-act="bkundo"' + (k.striche.length ? '' : ' disabled') + '>Rückgängig</button>' +
@@ -1656,7 +1656,7 @@ dl.steck dd{margin:0}
         '</section>' +
         '<section class="card text bk-info">' +
           '<h2>Balance: ' + wort + '</h2>' +
-          '<p class="note">Die lila Messlinien zeigen, wie breit Stirn, Wangen und Kiefer mit Frisur und Bart wirken. Die lila Oval-Schablone zeigt die harmonische Form. Je näher die Gesamtform aus Gesicht, Frisur und Bart daran liegt, desto ausgeglichener wirkt das Gesicht.</p>' +
+          '<p class="note">Die grünen Messlinien zeigen, wie breit Stirn, Wangen und Kiefer mit Frisur und Bart wirken. Die grüne Oval-Schablone zeigt die harmonische Form. Je näher die Gesamtform aus Gesicht, Frisur und Bart daran liegt, desto ausgeglichener wirkt das Gesicht.</p>' +
           '<div class="callout accent"><p><strong>Aus dem Unterricht:</strong> ' + BK_TIPP[k.form] + '</p></div>' +
           (k.nase === "lang" || k.nase === "markant" ? '<div class="callout"><p><strong>Nase im Profil:</strong> Eine ' + (k.nase === "lang" ? 'lange' : 'markante') + ' Nase wirkt vor allem von der Seite. Schau dir die Ansicht Profil an. Volumen am Hinterkopf, auf der Verlängerung der Linie Nasenspitze – Ohrspitze, schafft ein Gegengewicht. Anliegend kurz fehlt es. Die Nase selbst bleibt gleich. <button class="linkbtn" type="button" data-act="goFall" data-val="nase">Zum Fall „Nase im Profil“</button></p></div>' : '') +
           '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="bksim">Ausgleichenden Haarschnitt simulieren</button>' +
