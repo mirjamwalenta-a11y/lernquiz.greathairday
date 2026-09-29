@@ -905,8 +905,8 @@ dl.steck dd{margin:0}
   ];
 
   // ---------- Zustand ----------
-  var BK_START = {ansicht:"vorne", form:"rund", augen:"mandel", brauen:"gebogen", mund:"voll", frisur:"seitlich", pony:"kein", bart:"kein", nase:"gerade", mess:true, oval:true, zeichnen:false, farbe:"ink", dicke:4, radieren:false, striche:[], vorher:null, vergleich:null};
-  var st = {richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", ans1:"profil", ans2:"vorne", bk:null, bkAnim:false, bkVon:null, view:"pilot", fall:"nase", kap:-1, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0};
+  var BK_START = {ansicht:"vorne", form:"rund", augen:"mandel", brauen:"gebogen", mund:"voll", frisur:"seitlich", pony:"kein", bart:"kein", nase:"gerade", auge1:"kein", mundwinkel:"gleich", mess:true, oval:true, zeichnen:false, farbe:"ink", dicke:4, radieren:false, striche:[], vorher:null, vergleich:null};
+  var st = {richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", ans1:"profil", ans2:"vorne", bk:null, bkAnim:false, bkVon:null, view:"pilot", fall:"nase", kap:-1, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0};
 
   var SCREENS = [
     {step:-1, render:function(){
@@ -1418,15 +1418,17 @@ dl.steck dd{margin:0}
   var BK_OPT = {
     form:   [["oval","Oval"],["rund","Rund"],["viereck","Viereck"],["rechteck","Rechteck (lang)"],["aufsteigend","Dreieck aufsteigend"],["abfallend","Dreieck abfallend"],["raute","Raute"]],
     augen:  [["mandel","Mandel"],["rund","Rund"],["schmal","Schmal"],["haengend","Hängend"]],
+    auge1:  [["kein","Beide gleich"],["haengend_l","Links hängend"],["haengend_r","Rechts hängend"],["klein_l","Links kleiner"],["klein_r","Rechts kleiner"]],
     brauen: [["gerade","Gerade"],["gebogen","Gebogen"],["kantig","Kantig"]],
     nase:   [["gerade","Gerade"],["klein","Klein"],["lang","Lang"],["markant","Markant"]],
     mund:   [["schmal","Schmal"],["voll","Voll"],["breit","Breit"]],
+    mundwinkel: [["gleich","Beide gleich"],["links","Links abfallend"],["rechts","Rechts abfallend"]],
     frisur: [["kurz","Kurz anliegend"],["oben","Volumen oben"],["seitlich","Volumen seitlich"],["hinterkopf","Volumen Hinterkopf"],["bob","Bob kinnlang"],["lang","Lang"]],
-    pony:   [["kein","Kein Pony"],["gerade","Gerade"],["schraeg","Schräg"]],
+    pony:   [["kein","Kein Pony"],["gerade","Gerade"],["schraeg","Schräg, tief links"],["schraeg_r","Schräg, tief rechts"]],
     bart:   [["kein","Kein Bart"],["stoppeln","Stoppeln"],["schnurr","Schnurrbart"],["kinn","Kinnbart"],["voll","Vollbart"]]
   };
-  var BK_GRUPPEN = ["form","augen","brauen","nase","mund","frisur","pony","bart"];
-  var BK_TITEL = {form:"Gesichtsform", augen:"Augen", brauen:"Augenbrauen", nase:"Nase", mund:"Mund", frisur:"Frisur", pony:"Pony", bart:"Bart"};
+  var BK_GRUPPEN = ["form","augen","auge1","brauen","nase","mund","mundwinkel","frisur","pony","bart"];
+  var BK_TITEL = {form:"Gesichtsform", augen:"Augen", auge1:"Ein Auge anders", brauen:"Augenbrauen", nase:"Nase", mund:"Mund", mundwinkel:"Mundwinkel", frisur:"Frisur", pony:"Pony", bart:"Bart"};
   // Gesichtsformen: Breite von Stirn (f), Wangen (c), Kiefer (j), Kinnbreite (ch), Oberkante (top), Kinn (cy)
   var BK_FORM = {
     oval:        {top:112, f:150, c:172, j:128, ch:44,  cy:402},
@@ -1482,7 +1484,7 @@ dl.steck dd{margin:0}
   // Wirkung auf die wahrgenommene Form: Breite Stirn (dF), Wangen (dC), Kiefer (dJ), Länge (dL, Faktor k)
   var BK_WIRKUNG = {
     frisur: {kurz:{dF:0,dC:0,dJ:0,dL:0}, oben:{dF:20,dC:0,dJ:0,dL:30}, seitlich:{dF:40,dC:50,dJ:20,dL:0}, hinterkopf:{dF:0,dC:0,dJ:0,dL:8}, bob:{dF:0,dC:0,dJ:24,dL:0}, lang:{dF:0,dC:-12,dJ:-26,dL:30}},
-    pony:   {kein:{dF:0,k:1}, gerade:{dF:10,k:0.9}, schraeg:{dF:-12,k:0.97}},
+    pony:   {kein:{dF:0,k:1}, gerade:{dF:10,k:0.9}, schraeg:{dF:-12,k:0.97}, schraeg_r:{dF:-12,k:0.97}},
     bart:   {kein:{dJ:0,dL:0}, stoppeln:{dJ:0,dL:0}, schnurr:{dJ:0,dL:-6}, kinn:{dJ:0,dL:22}, voll:{dJ:12,dL:16}}
   };
   function bkMass(k){
@@ -1496,7 +1498,7 @@ dl.steck dd{margin:0}
   function bkScore(k){
     if (!BK_IDEAL) BK_IDEAL = bkMass({form:"oval", frisur:"kurz", pony:"kein", bart:"kein"});
     var m = bkMass(k), I = BK_IDEAL;
-    var dev = Math.abs(Math.log(m.rF / I.rF)) + Math.abs(Math.log(m.rJ / I.rJ)) + Math.abs(Math.log(m.rL / I.rL)) + bkProfilAbzug(k);
+    var dev = Math.abs(Math.log(m.rF / I.rF)) + Math.abs(Math.log(m.rJ / I.rJ)) + Math.abs(Math.log(m.rL / I.rL)) + bkProfilAbzug(k) + bkAsymAbzug(k).auge + bkAsymAbzug(k).mund;
     return Math.max(0, Math.min(1, 1 - dev));
   }
   // Profil: Eine lange oder markante Nase braucht ein Gegengewicht am Hinterkopf (Fall 1).
@@ -1506,8 +1508,22 @@ dl.steck dd{margin:0}
   function bkProfilAbzug(k){
     var n = BK_NASE_GEWICHT[k.nase || "gerade"] || 0;
     if (!n) return 0;
-    var g = BK_GEGENGEWICHT[k.frisur] || 0, p = k.pony === "schraeg" ? 0.15 : 0;
+    var g = BK_GEGENGEWICHT[k.frisur] || 0, p = k.pony === "schraeg" || k.pony === "schraeg_r" ? 0.15 : 0;
     return n * Math.max(0, 1 - g - p);
+  }
+  // Einseitige Merkmale (Fall 2): Ein schräger Pony, der über dem hängenden oder kleineren Auge
+  // hoch liegt und zur anderen Seite fällt, lässt dort Luft. Fällt er auf dieses Auge, wirkt es schwerer.
+  // Mundwinkel: Der Schnitt ändert ihn nicht, lenkt aber den Blick (Höhe oben, Bart deckt, Kontur auf Mundhöhe betont).
+  function bkAsymAbzug(k){
+    var a1 = k.auge1 || "kein", mw = k.mundwinkel || "gleich", auge = 0, mund = 0;
+    if (a1 !== "kein"){
+      var seite = a1.slice(-1), tief = k.pony === "schraeg" ? "l" : k.pony === "schraeg_r" ? "r" : null;
+      auge = (a1.indexOf("haengend") === 0 ? 0.22 : 0.18) * (tief ? (tief === seite ? 1.4 : 0.15) : k.pony === "gerade" ? 1.2 : 1);
+    }
+    if (mw !== "gleich"){
+      mund = 0.08 * ({oben:0.6, bob:1.3}[k.frisur] || 1) * ({schnurr:0.4, voll:0.4, kinn:0.8}[k.bart] || 1);
+    }
+    return {auge:auge, mund:mund};
   }
   function bkBeste(k){
     var best = null, beste = -1, barte = k.bart === "kein" ? ["kein"] : ["stoppeln","schnurr","kinn","voll"];
@@ -1523,6 +1539,9 @@ dl.steck dd{margin:0}
     if (naeher(a.rL, b.rL, I.rL)) out.push(b.rL > a.rL ? "Das Gesicht wirkt länger und schmaler." : "Das Gesicht wirkt kürzer und breiter, also weniger lang.");
     if (naeher(a.rF, b.rF, I.rF)) out.push("Stirn und Wangen wirken im Verhältnis ausgeglichener.");
     if (naeher(a.rJ, b.rJ, I.rJ)) out.push(b.rJ > a.rJ ? "Der Kinn- und Kieferbereich bekommt Gewicht und gleicht die Stirn aus." : "Der Kieferbereich wirkt schmaler und leichter.");
+    var av = bkAsymAbzug(v), an = bkAsymAbzug(n);
+    if (an.auge < av.auge - 0.01) out.push("Der schräge Pony liegt über dem " + (n.auge1.indexOf("haengend") === 0 ? "hängenden" : "kleineren") + " Auge hoch und fällt zur anderen Seite. Dort entsteht Luft, die Augenpartie wirkt ausgeglichener. Die Augen bleiben gleich.");
+    if (an.mund < av.mund - 0.01) out.push("Der Blick wird vom abfallenden Mundwinkel weggelenkt. Der Mundwinkel selbst bleibt gleich.");
     if (bkProfilAbzug(n) < bkProfilAbzug(v) - 0.01) out.push("Im Profil bekommt die Nase ein Gegengewicht am Hinterkopf. Die Nase bleibt gleich, das Verhältnis ändert sich.");
     return out.length ? out : ["Die Form war schon ausgeglichen. Es ändert sich nur wenig."];
   }
@@ -1539,6 +1558,14 @@ dl.steck dd{margin:0}
       '<g clip-path="url(#bka' + id + s + ')"><circle cx="' + ex + '" cy="' + ey + '" r="7.5" fill="none" stroke="var(--ink)" stroke-width="1.8"/><circle cx="' + ex + '" cy="' + ey + '" r="3.4" fill="var(--ink)"/></g>' +
       '<path d="' + d + '" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>';
   }
+  // Ein Auge anders: s = -1 links, 1 rechts (vom Betrachter aus)
+  function bkAugeSeite(k, g, s, id){
+    var a1 = k.auge1 || "kein", betroffen = a1 !== "kein" && a1.slice(-1) === (s < 0 ? "l" : "r"), ex = 200 + s * g.ex;
+    if (!betroffen) return bkAuge(k.augen, ex, g.yE, s, id);
+    if (a1.indexOf("haengend") === 0) return bkAuge("haengend", ex, g.yE + 3, s, id) +
+      '<path d="M' + (ex - 17 * s) + ',' + (g.yE - 8) + ' Q' + (ex + 2 * s) + ',' + (g.yE - 17) + ' ' + (ex + 21 * s) + ',' + (g.yE + 4) + '" fill="none" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/>';
+    return '<g transform="translate(' + ex + ',' + g.yE + ') scale(.74) translate(' + (-ex) + ',' + (-g.yE) + ')">' + bkAuge(k.augen, ex, g.yE, s, id) + '</g>';
+  }
   function bkBraue(art, ex, by, s){
     var i = ex - 21 * s, o = ex + 23 * s, d;
     if (art === "gerade") d = "M" + i + "," + (by+2) + " Q" + ex + "," + (by-2) + " " + o + "," + (by+1);
@@ -1546,12 +1573,15 @@ dl.steck dd{margin:0}
     if (art === "kantig") d = "M" + i + "," + (by+3) + " L" + (ex + 9*s) + "," + (by-8) + " L" + o + "," + (by+4);
     return '<path d="' + d + '" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>';
   }
-  function bkMund(art, y){
+  function bkMund(art, y, winkel){
     var w = {schmal:22, voll:24, breit:32}[art], h = {schmal:4, voll:8, breit:5}[art];
+    var yl = y + (winkel === "links" ? 7 : 0), yr = y + (winkel === "rechts" ? 7 : 0);
+    var falte = winkel === "links" ? 'M' + (200-w-1) + ',' + (yl+2) + ' q-2,4 -1,8' : winkel === "rechts" ? 'M' + (200+w+1) + ',' + (yr+2) + ' q2,4 1,8' : '';
     return '<g fill="none" stroke="var(--ink)" stroke-linecap="round" stroke-linejoin="round">' +
-      '<path d="M' + (200-w) + ',' + y + ' Q' + (200-w/2) + ',' + (y-h) + ' 196,' + (y-h+1) + ' Q200,' + (y-h+3) + ' 204,' + (y-h+1) + ' Q' + (200+w/2) + ',' + (y-h) + ' ' + (200+w) + ',' + y + '" stroke-width="1.8"/>' +
-      '<path d="M' + (200-w) + ',' + y + ' Q200,' + (y+2) + ' ' + (200+w) + ',' + y + '" stroke-width="2.2"/>' +
-      '<path d="M' + (200-w*0.8) + ',' + (y+1) + ' Q200,' + (y+h*1.7) + ' ' + (200+w*0.8) + ',' + (y+1) + '" stroke-width="1.8"/></g>';
+      '<path d="M' + (200-w) + ',' + yl + ' Q' + (200-w/2) + ',' + (y-h) + ' 196,' + (y-h+1) + ' Q200,' + (y-h+3) + ' 204,' + (y-h+1) + ' Q' + (200+w/2) + ',' + (y-h) + ' ' + (200+w) + ',' + yr + '" stroke-width="1.8"/>' +
+      '<path d="M' + (200-w) + ',' + yl + ' Q200,' + (y+2) + ' ' + (200+w) + ',' + yr + '" stroke-width="2.2"/>' +
+      '<path d="M' + (200-w*0.8) + ',' + ((y+yl*4)/5+1) + ' Q200,' + (y+h*1.7) + ' ' + (200+w*0.8) + ',' + ((y+yr*4)/5+1) + '" stroke-width="1.8"/>' +
+      (falte ? '<path d="' + falte + '" stroke-width="1.4"/>' : '') + '</g>';
   }
   function bkBart(art, g, id){
     if (art === "kein") return "";
@@ -1572,6 +1602,7 @@ dl.steck dd{margin:0}
     if (art === "kein") return "";
     var F = g.F, yE = g.yE, kante;
     if (art === "gerade") kante = "M" + (200-F.f/2-20) + "," + (yE-30) + " Q200," + (yE-36) + " " + (200+F.f/2+20) + "," + (yE-30);
+    if (art === "schraeg_r") return '<g transform="translate(400,0) scale(-1,1)">' + bkPony("schraeg", g, gesicht, id + "r") + '</g>';
     if (art === "schraeg") kante = "M" + (200-F.f/2-20) + "," + (yE-28) + " C" + (200-F.f*0.1) + "," + (yE-34) + " " + (200+F.f*0.14) + "," + (g.yH+26) + " " + (200+F.f*0.3) + "," + (g.yH-10);
     var flaeche = kante + " L" + (art === "gerade" ? (200+F.f/2+20) + ",0" : (200+F.f*0.3) + ",0") + " L" + (200-F.f/2-20) + ",0 Z";
     return '<clipPath id="bkg' + id + '"><path d="' + gesicht + '"/></clipPath>' +
@@ -1653,11 +1684,14 @@ dl.steck dd{margin:0}
           '<h2>Zusammenstellen</h2>' +
           '<div class="bk-tabs" role="group" aria-label="Bereich wählen">' + BK_GRUPPEN.map(function(g){ var on = (st.bkGruppe || "form") === g; return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="bkgruppe" data-val="' + g + '">' + BK_TITEL[g] + '</button>'; }).join("") + '</div>' +
           BK_GRUPPEN.map(bkWahl).join("") +
+          '<p class="note">Links und rechts sind immer vom Betrachter aus gesehen.</p>' +
         '</section>' +
         '<section class="card text bk-info">' +
           '<h2>Balance: ' + wort + '</h2>' +
           '<p class="note">Die grünen Messlinien zeigen, wie breit Stirn, Wangen und Kiefer mit Frisur und Bart wirken. Die grüne Oval-Schablone zeigt die harmonische Form. Je näher die Gesamtform aus Gesicht, Frisur und Bart daran liegt, desto ausgeglichener wirkt das Gesicht.</p>' +
           '<div class="callout accent"><p><strong>Aus dem Unterricht:</strong> ' + BK_TIPP[k.form] + '</p></div>' +
+          ((k.auge1 || "kein") !== "kein" ? '<div class="callout"><p><strong>Ein Auge anders:</strong> Das ' + ((k.auge1.slice(-1) === "l") ? 'linke' : 'rechte') + ' Auge wirkt ' + (k.auge1.indexOf("haengend") === 0 ? 'schwerer' : 'kleiner') + '. Ein schräger Pony, der über diesem Auge hoch liegt und zur anderen Seite fällt, lässt Luft. Fällt der Pony auf dieses Auge, wirkt es noch schwerer. Links und rechts sind vom Betrachter aus gesehen. <button class="linkbtn" type="button" data-act="goFall" data-val="auge">Zum Fall „Auge öffnen“</button></p></div>' : '') +
+          ((k.mundwinkel || "gleich") !== "gleich" ? '<div class="callout"><p><strong>Mundwinkel:</strong> Den Mundwinkel verändert der Haarschnitt nicht. Er kann aber den Blick lenken: Höhe am Oberkopf führt ihn nach oben, ein Schnurr- oder Vollbart kann den Mundwinkel teilweise überdecken. Eine Kontur, die genau auf Mundhöhe endet, wie ein kinnlanger Bob, lenkt den Blick eher hin.</p></div>' : '') +
           (k.nase === "lang" || k.nase === "markant" ? '<div class="callout"><p><strong>Nase im Profil:</strong> Eine ' + (k.nase === "lang" ? 'lange' : 'markante') + ' Nase wirkt vor allem von der Seite. Schau dir die Ansicht Profil an. Volumen am Hinterkopf, auf der Verlängerung der Linie Nasenspitze – Ohrspitze, schafft ein Gegengewicht. Anliegend kurz fehlt es. Die Nase selbst bleibt gleich. <button class="linkbtn" type="button" data-act="goFall" data-val="nase">Zum Fall „Nase im Profil“</button></p></div>' : '') +
           '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="bksim">Ausgleichenden Haarschnitt simulieren</button>' +
           (k.vorher ? '<button class="btn" type="button" data-act="bkzurueck">Zurück zum Vorher</button>' : '') + '</div>' +
@@ -1701,9 +1735,9 @@ dl.steck dd{margin:0}
     s += '<g class="' + (o.einblenden ? 'sim-in' : '') + '">' + bkPony(k.pony, g, gesicht, id) + '</g>';
     // Gesichtszüge
     s += bkBraue(k.brauen, 200 - ex, g.yB, -1) + bkBraue(k.brauen, 200 + ex, g.yB, 1);
-    s += bkAuge(k.augen, 200 - ex, g.yE, -1, id) + bkAuge(k.augen, 200 + ex, g.yE, 1, id);
+    s += bkAugeSeite(k, g, -1, id) + bkAugeSeite(k, g, 1, id);
     s += bkNaseVorne(k.nase || "gerade", g);
-    s += bkMund(k.mund, g.yM);
+    s += bkMund(k.mund, g.yM, k.mundwinkel);
     s += '<g class="' + (o.einblenden ? 'sim-in' : '') + '">' + bkBart(k.bart, g, id) + '</g>';
     return s + (o.innen || '') + '</svg>';
   }
@@ -1790,8 +1824,12 @@ dl.steck dd{margin:0}
       '<path d="' + pGesicht(k.nase || "gerade") + '" stroke="var(--ink)" stroke-width="2.6"/>' +
       '<path d="' + NACKEN + '" stroke="var(--ink)" stroke-width="2.6"/>' +
       (kurzH ? '<path d="' + OHR + '" stroke="var(--ink)" stroke-width="2.3"/>' : '') + '</g>';
-    if (k.pony !== "kein") s += haarPfad(P_PONY[k.pony]);
-    s += profilBraue(k.brauen) + profilAuge(k.augen) + '<path d="M309,324 Q303,326 297,323" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>';
+    if (k.pony !== "kein") s += haarPfad(P_PONY[k.pony === "schraeg_r" ? "schraeg" : k.pony]);
+    // Profil rechts zeigt die rechte Gesichtshälfte (vom Betrachter aus), Profil links die linke
+    var seite = links ? "l" : "r", a1 = k.auge1 || "kein", aSeite = a1 !== "kein" && a1.slice(-1) === seite;
+    var augeArt = aSeite ? (a1.indexOf("haengend") === 0 ? "haengend" : "schmal") : k.augen;
+    var mSeite = (k.mundwinkel === "links" && seite === "l") || (k.mundwinkel === "rechts" && seite === "r");
+    s += profilBraue(k.brauen) + profilAuge(augeArt) + '<path d="' + (mSeite ? 'M309,324 Q303,327 296,329' : 'M309,324 Q303,326 297,323') + '" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>';
     if (kurzH) s += '<circle cx="192" cy="289" r="3.2" fill="var(--ink)" opacity="0"/>';
     if (k.bart === "voll" || k.bart === "stoppeln") s += bartPfad(P_BART.voll + " " + P_BART.schnurr, k.bart, id);
     if (k.bart === "kinn" || k.bart === "schnurr") s += bartPfad(P_BART[k.bart], k.bart, id);
@@ -1832,6 +1870,7 @@ dl.steck dd{margin:0}
     auge: {b:"Ein Auge wirkt schwer, kleiner oder optisch abgesenkt.", z:"Die Augenpartie soll offener und leichter wirken.", f:"Augenform und Gesichtsgrundform.", v:"Ponyführung, Scheitel, Gewicht im Vorderbereich.", l:"Die Augenwirkung entsteht auch durch Linienführung rundherum.", a:"Zu schwere oder zu kurze Vorderpartien können die Wirkung verschlechtern.", m:"Nicht das Auge allein entscheidet über die Wirkung, sondern auch die Linienführung rundherum."},
     dk:   {b:"Die untere Gesichtspartie wirkt schwerer oder kürzer.", z:"Das Gesicht soll gestreckter und leichter wirken.", f:"Kinn- und Halsbereich.", v:"Höhe am Oberkopf, Längenführung, Volumenverteilung rund um Kiefer und Nacken.", l:"Auch die vertikale Formführung beeinflusst die Wirkung der unteren Gesichtspartie.", a:"Zu viel Breite oder Gewicht unten kann die Schwere verstärken.", m:"Höhe und Länge strecken, Gewicht unten beschwert."},
     rund: {b:"Das Gesicht wirkt weich, breit oder kurz.", z:"Das Gesicht soll schmaler oder gestreckter wirken.", f:"Gesichtsgrundform.", v:"Länge, vertikale Linien, Seitenvolumen, Konturführung.", l:"Linien und Volumenverteilung verändern die wahrgenommene Gesichtsform.", a:"Zu viel Breite an den Seiten kann die Rundung verstärken.", m:"Längs streckt, Breite rundet."},
+    ohr:  {b:"Die Ohren stehen deutlich ab und bilden von vorne die breiteste Stelle.", z:"Die Ohren sollen weniger auffallen, die Kopfform ruhiger wirken.", f:"Ohren (Form und Stellung).", v:"Länge und Gewicht an den Seiten, wie viel vom Ohr sichtbar ist, Konturführung.", l:"Nicht das Ohr verändert sich, sondern wie viel davon sichtbar ist und welche Linie daneben liegt.", a:"Zu kurze Seiten, harte Kanten auf Ohrhöhe, zu wenig Gewicht über dem Ohr. Wirbel und Wunsch beachten.", m:"Bedecken beruhigt, freilegen betont."},
     hd:   {b:"Derselbe Schnitt wirkt unterschiedlich, je nachdem wo helle und dunkle Flächen sitzen.", z:"Bereiche gezielt betonen oder zurücknehmen, hier: die Form nach oben strecken.", f:"Kopf und Schnittform.", v:"Helle und dunkle Flächen.", l:"Helle Bereiche treten optisch hervor, dunkle treten zurück.", a:"Zu harte Kontraste, Gesichtsfarbe, Wunsch der Kundin oder des Kunden.", m:"Helles tritt hervor, Dunkles tritt zurück."}
   };
   function steckbrief(key){
@@ -2112,6 +2151,153 @@ dl.steck dd{margin:0}
     }}
   ];
 
+  // ==================== Fall 6: Abstehende Ohren (vorne) ====================
+  // Fix: Ohren (Form und Stellung). Variiert: Länge und Gewicht an den Seiten, wie viel vom Ohr sichtbar ist, Konturführung.
+  var OHR_BASIS = {form:"oval", augen:"mandel", brauen:"gebogen", mund:"voll", nase:"gerade", pony:"kein", bart:"kein"};
+  var OHR_ZUSTAND = {
+    A:        {frisur:"kurz",  seite:"",       sicht:"ganz sichtbar"},
+    M:        {frisur:"kurz",  seite:"halb",   sicht:"zur Hälfte bedeckt"},
+    B:        {frisur:"kurz",  seite:"deckt",  sicht:"weich bedeckt"},
+    kinn:     {frisur:"kurz",  seite:"kinn",   sicht:"bedeckt, Länge bis zum Kinn"},
+    stufig:   {frisur:"oben",  seite:"stufig", sicht:"Spitze sichtbar, Gewicht darüber"},
+    undercut: {frisur:"oben",  seite:"",       sicht:"ganz frei, Seiten sehr kurz"},
+    kante:    {frisur:"kurz",  seite:"kante",  sicht:"Kante auf Ohrhöhe"},
+    duenn:    {frisur:"kurz",  seite:"duenn",  sicht:"Haar steht mit ab"}
+  };
+  function ohrSeite(art, g){
+    // Punkte der rechten Seite (vom Betrachter aus), links wird gespiegelt
+    var F = g.F, x = 200 + F.c / 2, yE = g.yE, yN = g.yN;
+    var P = {
+      halb:   [[200+F.f/2-6,BK_Y.F-14],[x+34,yE-34],[x+44,yE+4],[x+40,yE+20],[x-10,yE+18]],
+      deckt:  [[200+F.f/2-6,BK_Y.F-14],[x+34,yE-34],[x+46,yE+12],[x+44,yN+22],[x+26,yN+34],[x-10,yN+24]],
+      kinn:   [[200+F.f/2-6,BK_Y.F-14],[x+34,yE-34],[x+46,yE+18],[x+42,BK_Y.J+10],[200+F.j/2+18,F.cy-10],[200+F.j/2-10,F.cy-16]],
+      stufig: [[200+F.f/2-6,BK_Y.F-14],[x+24,yE-30],[x+40,yE-8],[x+30,yE+2],[x-10,yE+2]],
+      duenn:  [[200+F.f/2-6,BK_Y.F-14],[x+36,yE-34],[x+58,yE+14],[x+56,yN+14],[x+36,yN+30],[x-10,yN+24]]
+    }[art];
+    if (art === "kante") return "M" + (200+F.f/2-6) + "," + (BK_Y.F-14) + " C" + (x+20) + "," + (yE-30) + " " + (x+44) + "," + (yE-14) + " " + (x+44) + "," + (yE+14) + " L" + (x-10) + "," + (yE+14) + " Z";
+    return glattZu(P.concat([[x-30, yE]]));
+  }
+  function ohrFig(o){
+    o = o || {};
+    var z = OHR_ZUSTAND[o.ohr || "A"], k = Object.assign({}, OHR_BASIS, {frisur:z.frisur}), g = bkGeo("oval"), F = g.F, id = ++uid;
+    var x = 200 + F.c / 2, yE = g.yE, yN = g.yN, gesicht = bkGesicht(F), innen = "";
+    // abstehendes Ohr (rechts), links gespiegelt
+    var ohr = "M" + (x-3) + "," + (yE-12) + " C" + (x+24) + "," + (yE-44) + " " + (x+50) + "," + (yE-8) + " " + (x+42) + "," + (yE+26) +
+      " C" + (x+36) + "," + (yN-2) + " " + (x+18) + "," + (yN+12) + " " + (x-3) + "," + (yN+6);
+    var ohrInnen = "M" + (x+6) + "," + (yE-8) + " C" + (x+24) + "," + (yE-26) + " " + (x+36) + "," + (yE+2) + " " + (x+30) + "," + (yE+22) + " C" + (x+26) + "," + (yE+34) + " " + (x+14) + "," + (yN-10) + " " + (x+8) + "," + (yN-6);
+    var beide = function(inhalt){ return inhalt + '<g transform="translate(400,0) scale(-1,1)">' + inhalt + '</g>'; };
+    // Ohren und Seitenpartie nur außerhalb des Gesichts
+    innen += '<clipPath id="ohc' + id + '"><path d="M0,0 H400 V500 H0 Z ' + gesicht + '" clip-rule="evenodd"/></clipPath>' +
+      '<g clip-path="url(#ohc' + id + ')">' + beide('<path d="' + ohr + ' Z" fill="var(--surface)" stroke="none"/><path d="' + ohr + '" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>' +
+      '<path d="' + ohrInnen + '" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round"/>') + '</g>';
+    if (z.seite){
+      var hart = z.seite === "kante";
+      innen += '<g clip-path="url(#ohc' + id + ')">' + beide('<path d="' + ohrSeite(z.seite, g) + '" fill="var(--g-flaeche)" stroke="var(--ink)" stroke-width="2.4"' + (hart ? '' : ' stroke-dasharray="8 5"') + ' stroke-linejoin="round"/>') + '</g>';
+    }
+    // Ohr unter dem Haar gestrichelt andeuten: Es ist noch da und unverändert
+    if (z.seite) innen += beide('<path d="' + ohr + '" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-dasharray="2 5" stroke-linecap="round" opacity=".8"/>');
+    if (z.seite === "duenn") innen += beide('<path d="M' + (x+36) + ',' + (yE-6) + ' l18,-8 M' + (x+44) + ',' + (yE+22) + ' l20,0" stroke="var(--g-haar-kontur)" stroke-width="2" stroke-linecap="round" marker-end="url(#pf' + id + ')"/>');
+    if (o.hilfe){
+      var yL = yE + 16, yO = 62, w = {"":x+46, halb:x+46, deckt:x+47, kinn:x+47, stufig:x+44, kante:x+46, duenn:x+58}[z.seite] - 200;
+      innen += '<line x1="' + (200-w) + '" y1="' + yO + '" x2="' + (200+w) + '" y2="' + yO + '" stroke="var(--g-haar-kontur)" stroke-width="2" opacity=".9"/>' +
+        '<line x1="' + (200-w) + '" y1="' + (yO-6) + '" x2="' + (200-w) + '" y2="' + yL + '" stroke="var(--g-haar-kontur)" stroke-width="1.4" stroke-dasharray="3 5"/>' +
+        '<line x1="' + (200+w) + '" y1="' + (yO-6) + '" x2="' + (200+w) + '" y2="' + yL + '" stroke="var(--g-haar-kontur)" stroke-width="1.4" stroke-dasharray="3 5"/>' +
+        txt(200, yO-8, "breiteste Stelle", {size:13, anchor:"middle", fill:"var(--muted)"});
+    }
+    innen += '<defs><marker id="pf' + id + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--g-haar-kontur)"/></marker></defs>';
+    innen += txt(200, 470, "Ohren unverändert", {size:15, anchor:"middle", fill:"var(--accent)"});
+    return bkVorne(k, {label:o.label || "Abstehende Ohren", innen:innen});
+  }
+  function ohrSicht(z){ return OHR_ZUSTAND[z].sicht; }
+  var RICHTUNG6 = {
+    B:      {t:"Ohr weich bedecken", d:"Die Seitenpartie fällt mit etwas Länge und Gewicht locker über das Ohr. Die Ohrform verschwindet in der Haarkontur."},
+    kinn:   {t:"Länge bis zum Kinn", d:"Längen, die über das Ohr bis Kinnhöhe fallen, bedecken das Ohr ganz. Die senkrechte Linie lenkt den Blick vom Ohr weg."},
+    stufig: {t:"Gewicht über dem Ohr", d:"Bei kürzeren Schnitten bleibt über und hinter dem Ohr etwas Länge stehen, oben etwas Höhe. Der Übergang zum Ohr wird weich, das Ohr ist nicht mehr die breiteste Stelle allein."},
+    M:      {t:"Teilweise bedecken", d:"Schon eine Seitenpartie, die das obere Drittel bis zur Hälfte des Ohrs bedeckt, nimmt dem Abstehen die Aufmerksamkeit."}
+  };
+  var FEHLER_OHR = {
+    undercut: {t:"Sehr kurze Seiten, Volumen oben", d:"Die Ohren liegen ganz frei. Der Kontrast zwischen kurzen Seiten und Volumen oben betont sie zusätzlich.", fig:{ohr:"undercut", hilfe:true}},
+    kante:    {t:"Harte Kante auf Ohrhöhe", d:"Eine waagrechte Linie, die genau auf Ohrhöhe endet, zeigt wie ein Pfeil auf das Ohr.", fig:{ohr:"kante", hilfe:true}},
+    duenn:    {t:"Zu wenig Länge und Gewicht", d:"Ist das Haar über dem Ohr zu kurz oder zu dünn, wird es vom Ohr nach außen gedrückt und steht mit ab. Die Stelle wirkt noch breiter.", fig:{ohr:"duenn", hilfe:true}},
+    gut:      {t:"So kann es passen", d:"Die Seitenpartie hat genug Länge und Gewicht und fällt weich über das Ohr.", fig:{ohr:"B", hilfe:true}, ok:true}
+  };
+  var FRAGEN_OHR = [
+    {q:"Was kann abstehende Ohren optisch beruhigen?",
+     a:["Sehr kurze Seiten","Eine Seitenpartie mit Länge und Gewicht, die weich über das Ohr fällt","Eine waagrechte Kante auf Ohrhöhe"],
+     r:1, f:"Länge und Gewicht an den Seiten bedecken das Ohr ganz oder teilweise. Die Ohrform tritt zurück."},
+    {q:"Bei welchem Bild fallen die Ohren weniger auf?", bild:true,
+     a:["Kurze Seiten, Ohren frei","Seitenpartie weich über dem Ohr"],
+     r:1, f:"Wenn die Haarkontur das Ohr umschließt, wird das Ohr nicht mehr als eigene Form gesehen."},
+    {q:"Was verändert sich an den Ohren?",
+     a:["Sie liegen näher am Kopf.","Nichts. Nur wie viel davon sichtbar ist und welche Linie daneben liegt.","Sie werden kleiner."],
+     r:1, f:"Die Ohren bleiben gleich. Der Schnitt verändert, wie sichtbar sie sind und wie sie wirken."},
+    {q:"Warum kann zu kurzes oder zu dünnes Haar über dem Ohr die Wirkung verschlechtern?",
+     a:["Weil es vom Ohr nach außen gedrückt wird und mit absteht","Weil kurzes Haar dunkler wirkt","Das kann es nicht"],
+     r:0, f:"Das Ohr drückt das Haar nach außen. Die Seite braucht genug Länge und Gewicht, damit sie anliegend fällt."},
+    {q:"Richtig oder falsch? „Abstehende Ohren müssen immer ganz bedeckt werden.“",
+     a:["Richtig","Falsch"],
+     r:1, f:"Ganz bedecken ist eine mögliche Richtung. Auch teilweise bedecken oder Gewicht über dem Ohr können helfen. Wunsch, Haarstruktur und Wirbel entscheiden mit."}
+  ];
+  var SCREENS_OHR = [
+    {step:-1, render:function(){
+      return card('<div class="pair">' +
+          '<figure>' + ohrFig({ohr:"A", label:"Vorher"}) + '<figcaption>Vorher</figcaption></figure>' +
+          '<figure>' + ohrFig({ohr:"B", label:"Nachher"}) + '<figcaption>Nachher</figcaption></figure>' +
+        '</div>',
+        '<h2>Worum es geht</h2>' +
+        '<p>Manche Ohren stehen deutlich vom Kopf ab. Von vorne sind sie dann oft die breiteste Stelle des Kopfes.</p>' +
+        '<p>Die Ohren bleiben in jedem Bild gleich. Nur die Seitenpartie der Frisur ändert sich.</p>') + steckbrief("ohr");
+    }},
+    {step:0, render:function(){
+      return card(ohrFig({ohr:"A", hilfe:st.ohrHilfe, label:"Ausgangsform"}) + controls(toggle("ohrHilfe","Hilfslinien zeigen", st.ohrHilfe)),
+        '<h2>Ausgangsform</h2>' +
+        '<p>Die Seiten sind kurz, die Ohren liegen ganz frei. Sie bilden die breiteste Stelle und ziehen den Blick an.</p>' +
+        '<p class="note">Die Hilfslinien zeigen die breiteste Stelle des Kopfes von vorne.</p>');
+    }},
+    {step:1, render:function(){
+      return card(ohrFig({ohr:st.ohren, hilfe:st.ohrHilfe, label:{A:"Zustand A", M:"Zwischenstufe", B:"Zustand B"}[st.ohren]}) +
+        '<p class="note" style="text-align:center">Ohr: ' + ohrSicht(st.ohren) + '</p>' +
+        controls(seg("ohren",[["A","A · Ohren frei"],["M","Zwischenstufe"],["B","B · weich bedeckt"]], st.ohren) + toggle("ohrHilfe","Hilfslinien", st.ohrHilfe)),
+        '<h2>Zielwirkung</h2>' +
+        '<p>Die Ohren sollen weniger auffallen, die Kopfform ruhiger wirken.</p>' +
+        '<p>Die Ohren bleiben genau gleich. Es verändern sich Länge und Gewicht an den Seiten.</p>');
+    }},
+    {step:2, render:function(){
+      var r = RICHTUNG6[st.richtung6];
+      return card(ohrFig({ohr:st.richtung6, hilfe:true, label:r.t}) +
+        '<p class="note" style="text-align:center">Ohr: ' + ohrSicht(st.richtung6) + '</p>' +
+        controls(seg("richtung6",[["B","Weich bedecken"],["kinn","Länge bis Kinn"],["stufig","Gewicht über dem Ohr"],["M","Teilweise"]], st.richtung6)) +
+        '<div class="callout accent"><strong>' + r.t + '</strong><p>' + r.d + '</p></div>',
+        '<h2>Mögliche gestalterische Richtungen</h2>' +
+        '<p>Es gibt nicht die eine Lösung. Diese Richtungen können abstehende Ohren beruhigen. Welche passt, hängt von Haarstruktur, Haarmenge, Wirbeln und Wunsch ab.</p>');
+    }},
+    {step:3, render:function(){
+      return card('<div class="pair">' +
+          '<figure>' + ohrFig({ohr:"A", hilfe:true, label:"Vorher"}) + '<figcaption>Vorher</figcaption></figure>' +
+          '<figure>' + ohrFig({ohr:"B", hilfe:true, label:"Nachher"}) + '<figcaption>Nachher</figcaption></figure>' +
+        '</div>',
+        '<h2>Warum es wirkt</h2>' +
+        '<p>Ein freies Ohr ist eine eigene, klar umrissene Form. Steht es ab, sieht das Auge zuerst diese Form.</p>' +
+        '<p>Legt sich die Haarkontur weich um das Ohr, gehört es zur Gesamtform. Die Breite ist fast gleich, aber sie wirkt ruhig und zusammenhängend.</p>');
+    }},
+    {step:4, render:function(){
+      var f = FEHLER_OHR[st.fehlerOhr];
+      return card(ohrFig(Object.assign({label:f.t}, f.fig)) +
+        controls(seg("fehlerOhr",[["undercut","Seiten sehr kurz"],["kante","Kante auf Ohrhöhe"],["duenn","Zu wenig Gewicht"],["gut","So kann es passen"]], st.fehlerOhr)) +
+        '<div class="callout ' + (f.ok ? 'good' : 'bad') + '"><strong>' + f.t + '</strong><p>' + f.d + '</p></div>',
+        '<h2>Worauf achten: Fehlerbilder</h2>' +
+        '<p>Zu kurze Seiten, harte Kanten auf Ohrhöhe und zu wenig Gewicht über dem Ohr können die Ohren noch mehr betonen.</p>');
+    }},
+    {step:5, render:renderCheck},
+    {step:6, render:function(){
+      return card('<div class="pair">' +
+          '<figure>' + ohrFig({ohr:"A", label:"Vorher"}) + '<figcaption>Vorher</figcaption></figure>' +
+          '<figure>' + ohrFig({ohr:"B", label:"Nachher"}) + '<figcaption>Nachher</figcaption></figure>' +
+        '</div>',
+        '<h2>Merksatz</h2><p class="merksatz">' + STECKBRIEF.ohr.m + '</p>');
+    }}
+  ];
+
   // ==================== Fälle zusammenführen ====================
   (function(){
     // Steckbrief im Einstieg von Fall 1, 2 und 5
@@ -2141,6 +2327,7 @@ dl.steck dd{margin:0}
     FAELLE.dk = {titel:"Doppelkinn", kurz:"Doppelkinn", screens:SCREENS_DK, fragen:FRAGEN_DK, bild:function(i, t){ return dkFig({dk: i === 0 ? "A" : "B", label:t}); }};
     FAELLE.rund = {titel:"Rundes Gesicht", kurz:"Rundes Gesicht", screens:SCREENS_RUND, fragen:FRAGEN_RUND, bild:function(i, t){ return rundFig({rund: i === 0 ? "A" : "B", label:t}); }};
     FAELLE.hd = hdFall;
+    FAELLE.ohr = {titel:"Abstehende Ohren", kurz:"Abstehende Ohren", screens:SCREENS_OHR, fragen:FRAGEN_OHR, bild:function(i, t){ return ohrFig({ohr: i === 0 ? "A" : "B", label:t}); }};
   })();
 
   // ---------- Bausteine ----------
@@ -2161,7 +2348,7 @@ dl.steck dd{margin:0}
 
 
   // ---------- App-Rahmen ----------
-  function neuStart(){ return {richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", ans1:"profil", ans2:"vorne", bk:st.bk, bkAnim:false, bkVon:null, view:st.view, fall:st.fall, kap:st.kap, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0}; }
+  function neuStart(){ return {richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", ans1:"profil", ans2:"vorne", bk:st.bk, bkAnim:false, bkVon:null, view:st.view, fall:st.fall, kap:st.kap, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0}; }
 
   function renderPilot(){
     var SC = fall().screens, S = SC[st.screen];
