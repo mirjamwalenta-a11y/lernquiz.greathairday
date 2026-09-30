@@ -239,7 +239,7 @@ dl.steck dd{margin:0}
 </style>
 </head>
 <body>
-<nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20260930d#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20260930d">Lern-Tool</a></nav>
+<nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20260930e#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20260930e">Lern-Tool</a></nav>
 <header class="appbar"><div class="appbar-in" id="bar"></div></header>
 <main class="wrap" id="app"></main>
 <script>
@@ -1213,7 +1213,6 @@ dl.steck dd{margin:0}
     umgekehrt: {oben:"dunkel", seiten:"hell"},
     hart:      {oben:"sehrhell", seiten:"sehrdunkel", hart:true}
   };
-  var HD_HAAR = "M146,330 C132,250 128,170 160,110 C186,70 216,58 250,58 C284,58 314,70 340,110 C372,170 368,250 354,330 C350,352 344,368 334,378 L166,378 C156,368 150,352 146,330 Z";
   var HD_GRENZE = 168;
   var HD_KOPF = "translate(50,17)";  // Frontkopf (Gesicht oval) in diese Grafik setzen
 
@@ -1224,20 +1223,19 @@ dl.steck dd{margin:0}
     // Gesicht: derselbe Frontkopf wie in allen Fällen; das Haar liegt darüber und lässt nur das Gesicht unter dem Haaransatz frei
     var kk = {form:"oval", frisur:"kurz", pony:"kein", bart:"kein", brauen:"gebogen", mund:"voll", nase:"gerade", augen:"mandel", auge1:"kein"};
     s += '<g transform="' + HD_KOPF + '">' + fzKopf(kk, {haar:false, ohren:false}) + '</g>';
-    s += '<mask id="hh' + id + '"><path d="' + HD_HAAR + '" fill="#fff"/><path d="' + fzFrei(bkGeo("oval")) + '" transform="' + HD_KOPF + '" fill="#000"/></mask>';
-    s += '<g mask="url(#hh' + id + ')">' +
-      '<rect x="0" y="0" width="600" height="' + HD_GRENZE + '" fill="' + HD_TON[Z.oben] + '"/>' +
-      '<rect x="0" y="' + HD_GRENZE + '" width="600" height="400" fill="' + HD_TON[Z.seiten] + '"/>' +
-      (Z.hart ? '' : '<rect x="0" y="' + (HD_GRENZE - 14) + '" width="600" height="28" fill="url(#hv' + id + ')"/>') +
-      (Z.hart ? '<line x1="120" y1="' + HD_GRENZE + '" x2="380" y2="' + HD_GRENZE + '" stroke="var(--ink)" stroke-width="2"/>' : '') +
-      // Strähnen über den Tönen (Linienstil wie überall)
-      '<g fill="var(--ink)" opacity=".7">' + symStraehnen(HD_HAAR, 250, true, 17, true) + '</g></g>' +
+    // Haar: Bob des Frontkopfs; die Töne liegen in der Haarfläche, darüber die Strähnen
+    var g = bkGeo("oval"), gr = HD_GRENZE - 17;
+    s += '<g transform="' + HD_KOPF + '">' +
+      '<mask id="hh' + id + '"><g fill="#fff">' + fzHaarFlaeche("bob", g) + '</g></mask>' +
+      '<g mask="url(#hh' + id + ')">' +
+        '<rect x="0" y="0" width="400" height="' + gr + '" fill="' + HD_TON[Z.oben] + '"/>' +
+        '<rect x="0" y="' + gr + '" width="400" height="400" fill="' + HD_TON[Z.seiten] + '"/>' +
+        (Z.hart ? '<line x1="0" y1="' + gr + '" x2="400" y2="' + gr + '" stroke="var(--ink)" stroke-width="2"/>' : '<rect x="0" y="' + (gr - 14) + '" width="400" height="28" fill="url(#hv' + id + ')"/>') + '</g>' +
+      '<g opacity=".8">' + fzHaar("bob", g, {ohneFlaeche:true}) + '</g>' +
+      // Schnittform (fix): Außenkontur in der Akzentfarbe
+      '<g fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-dasharray="2 6" stroke-linecap="round" opacity=".9">' + fzHaarUmriss("bob", g) + '</g>' +
+      '</g>' +
       '<defs><linearGradient id="hv' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + HD_TON[Z.oben] + '"/><stop offset="1" stop-color="' + HD_TON[Z.seiten] + '"/></linearGradient></defs>';
-    // Haaransatz und Gesichtsseiten über dem Haar nachziehen
-    s += '<path d="' + fzFrei(bkGeo("oval")) + '" transform="' + HD_KOPF + '" fill="none" stroke="var(--ink)" stroke-width="1.2" opacity=".8"/>';
-    // Schnittform (fix): Kontur in der Akzentfarbe
-    s += '<mask id="hk' + id + '"><rect x="0" y="0" width="600" height="600" fill="#fff"/><path d="' + fzFrei(bkGeo("oval")) + '" transform="' + HD_KOPF + '" fill="#000"/></mask>' +
-      '<path d="' + HD_HAAR + '" mask="url(#hk' + id + ')" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-dasharray="8 5" stroke-linejoin="round"/>';
     // Hilfslinien: Zonen und Wirkungspfeile
     if (o.hilfe){
       var pf = function(zone, wert){
@@ -1679,7 +1677,8 @@ dl.steck dd{margin:0}
   var FZ_HAAR = {kurz:{aussen:4, ende:"e"}, hinterkopf:{aussen:4, ende:"e"}, oben:{aussen:4, ende:"e"}, seitlich:{aussen:5, ende:"J"}, bob:{aussen:5, ende:"bob"}, lang:{aussen:6, ende:"lang"}};
   function fzHaarHaelfte(frisur, g){
     var F = g.F, e = g.yE, P = bkHaarPunkte(frisur, g), H = FZ_HAAR[frisur] || FZ_HAAR.kurz;
-    var aussen = P.slice(0, H.aussen);
+    // etwas mehr Volumen als die Messpunkte, damit das Haar nicht am Kopf klebt
+    var aussen = P.slice(0, H.aussen).map(function(p){ var v = Math.max(0, Math.min(1, (e + 40 - p[1]) / 80)); return [200 + (p[0] - 200) * (1 + 0.06 * v), p[1] - 8 * v * (1 - Math.abs(p[0] - 200) / 200)]; });
     aussen.splice(1, 0, [200 + F.f * 0.16, aussen[0][1] + 2]);  // Scheitel rund, nicht spitz
     var innen = [[200, g.yH - 4], [200 + F.f * 0.22, g.yH - 2], [200 + F.f * 0.4, g.yH + 8], [200 + F.f / 2 - 3, BK_Y.F + 10]];
     var seite = [[200 + F.c / 2 - 3, BK_Y.C], [200 + F.j / 2 - 3, BK_Y.J], [200 + F.ch / 2 + 2, F.cy - 14]];
@@ -1696,11 +1695,29 @@ dl.steck dd{margin:0}
       [200 + F.c / 2, BK_Y.C], [200 + F.j / 2, BK_Y.J], [200 + F.ch / 2, F.cy - 12], [200, F.cy]];
     return glattZu(r.concat(r.slice(1, -1).reverse().map(function(p){ return [400 - p[0], p[1]]; })));
   }
-  function fzHaar(frisur, g){
+  // Frisur von vorne: beide Hälften mit eigenen Strähnen (nicht spiegelgleich), ohne harten Umriss und ohne
+  // gezeichnete Haaransatzlinie; Mittelscheitel als kurze Linie
+  function fzHaar(frisur, g, o){
+    o = o || {};
     var h = fzHaarHaelfte(frisur, g);
-    var halb = '<path d="' + h.flaeche + '" fill="var(--surface)"/><g fill="var(--ink)">' + lkStraehnen(h.aussen, h.innen, 5, 11) +
-      lkStrich(lkGleich(h.innen, 40), 0.7, true) + '</g>';
-    return '<g class="haar">' + halb + '<g transform="translate(400,0) scale(-1,1)">' + halb + '</g></g>';
+    var kurz = frisur === "kurz" || frisur === "oben" || frisur === "hinterkopf";
+    var halb = function(seed){ return (o.ohneFlaeche ? '' : '<path d="' + h.flaeche + '" fill="var(--surface)"/>') +
+      '<g fill="var(--ink)">' + (kurz ? lkBueschel(h.aussen, h.innen, seed, 18, o.ohneFlaeche) : lkStraehnen(h.aussen, h.innen, seed, 12, false, o.ohneFlaeche, true)) + '</g>'; };
+    var top = punkte(h.aussen)[0][1];
+    return '<g class="haar">' + halb(5) + '<g transform="translate(400,0) scale(-1,1)">' + halb(8) + '</g>' +
+      '<g fill="var(--ink)">' + lkStrich([[200, top + 2], [200.5, top + 8], [201, top + 14], [201.5, top + 20]], 0.8, true) + '</g></g>';
+  }
+  // Haarfläche als Vereinigung der Strähnenbündel (unregelmäßiger Rand), z. B. als Maske für Farbtöne
+  function fzHaarFlaeche(frisur, g){
+    var h = fzHaarHaelfte(frisur, g), weiss = function(seed){ return lkStraehnen(h.aussen, h.innen, seed, 12, false, false, true).replace(/var\(--surface\)/g, "#fff"); };
+    var A = lkGleich(h.aussen, 60), B = lkGleich(h.innen, 60), kern = "M" + A.map(function(p, i){ var q = B[i]; return (q[0] + (p[0] - q[0]) * 0.88).toFixed(1) + "," + (q[1] + (p[1] - q[1]) * 0.88).toFixed(1); }).join(" L") +
+      " L" + B.slice().reverse().map(function(q){ return q[0].toFixed(1) + "," + q[1].toFixed(1); }).join(" L") + " Z";
+    var halb = function(seed){ return '<path d="' + kern + '"/>' + weiss(seed); };
+    return '<g fill="#fff">' + halb(5) + '<g transform="translate(400,0) scale(-1,1)">' + halb(8) + '</g></g>';
+  }
+  function fzHaarUmriss(frisur, g){
+    var h = fzHaarHaelfte(frisur, g);
+    return '<path d="' + h.aussen + '"/><path d="' + h.aussen + '" transform="translate(400,0) scale(-1,1)"/>';
   }
   // Pony: Strähnen vom Haaransatz bis zur Ponykante, unten spitz
   function fzPony(art, g, gesicht, id){
@@ -1992,8 +2009,8 @@ dl.steck dd{margin:0}
   // jedes Bündel hat eine eigene Fläche (verdeckt das darunterliegende), zwei Randlinien, feine Innenlinien,
   // schwingt leicht (S-Kurve) und läuft spitz aus. ohneFlaeche: nur Linien (z. B. über Farbtönen).
   var LK_STR = {};
-  function lkStraehnen(kontur, feld, seed, gruppen, kante, ohneFlaeche){
-    var ck = kontur + "|" + feld + "|" + (kante ? 1 : 0) + (ohneFlaeche ? "o" : "") + seed; if (LK_STR[ck]) return LK_STR[ck];
+  function lkStraehnen(kontur, feld, seed, gruppen, kante, ohneFlaeche, weich){
+    var ck = kontur + "|" + feld + "|" + (kante ? 1 : 0) + (ohneFlaeche ? "o" : "") + (weich ? "w" : "") + seed; if (LK_STR[ck]) return LK_STR[ck];
     var N = 200, a = lkGleich(feld, N), b = lkGleich(kontur, N), r = lkZufall(seed), s = "";
     var offen = Math.hypot(a[N][0] - b[N][0], a[N][1] - b[N][1]) > 12;
     function auf(P, k){
@@ -2001,12 +2018,12 @@ dl.steck dd{margin:0}
       var i = Math.max(0, Math.min(N - 1, Math.floor(k))), f = Math.max(0, k - i);
       return [P[i][0] + (P[i+1][0] - P[i][0]) * f, P[i][1] + (P[i+1][1] - P[i][1]) * f];
     }
-    function pkt(k, t){ t = Math.max(0.01, Math.min(1.05, t)); var p = auf(a, k), q = auf(b, k); return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]; }
+    function pkt(k, t){ t = weich ? Math.max(-0.1, Math.min(1.1, t)) : Math.max(0.01, Math.min(1.05, t)); var p = auf(a, k), q = auf(b, k); return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]; }
     var nL = Math.round(gruppen * 1.15), locks = [];
     for (var i = 0; i < nL; i++){
       var spaet = r() < 0.25, k0 = N * (spaet ? 0.1 + r() * 0.18 : r() * 0.07);
       var k1 = kante ? N : offen ? N * (0.88 + r() * 0.12) + N * (0.01 + r() * 0.04) : N * (0.6 + r() * 0.4);
-      locks.push({tc:0.06 + (i + 0.2 + r() * 0.6) / nL * 0.94, w:spaet ? 0.12 + r() * 0.08 : 0.2 + r() * 0.14, k0:k0, k1:Math.min(k1, kante ? N : N * 1.12),
+      locks.push({tc:weich ? -0.02 + (i + 0.2 + r() * 0.6) / nL * 1.06 : 0.06 + (i + 0.2 + r() * 0.6) / nL * 0.94, w:spaet ? 0.12 + r() * 0.08 : 0.2 + r() * 0.14, k0:k0, k1:Math.min(k1, kante ? N : N * 1.12),
         A:(0.03 + r() * 0.05) * (r() < 0.5 ? -1 : 1), ph:r() * Math.PI, fr:0.7 + r() * 0.8, curl:offen && !kante ? (r() - 0.3) * 0.22 : 0, z:r()});
     }
     locks.sort(function(x, y){ return x.z - y.z; });
@@ -2027,8 +2044,31 @@ dl.steck dd{margin:0}
         s += lkStrich(inn, 0.5 + r() * 0.15);
       }
     });
-    s += lkStrich(b.filter(function(_, i){ return i % 3 === 0 || i === N; }), 1.1, true);
+    // weich: kein durchgehender Umriss, die äußeren Bündel bilden die Kontur (wirkt nicht wie ein Helm)
+    if (!weich) s += lkStrich(b.filter(function(_, i){ return i % 3 === 0 || i === N; }), 1.1, true);
     if (kante) s += '<path d="M' + b[N][0].toFixed(1) + ',' + b[N][1].toFixed(1) + ' L' + a[N][0].toFixed(1) + ',' + a[N][1].toFixed(1) + '" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>';
+    return (LK_STR[ck] = s);
+  }
+  // Kurzhaar von vorne: Büschel vom Haaransatz quer zur Kontur, leicht zur Seite geneigt, Spitzen stehen über
+  // die Kontur hinaus (strukturierter Oberkopf statt glatter Kappe)
+  function lkBueschel(kontur, feld, seed, n, ohneFlaeche){
+    var ck = "b|" + kontur + "|" + feld + "|" + seed + (ohneFlaeche ? "o" : ""); if (LK_STR[ck]) return LK_STR[ck];
+    var N = 200, a = lkGleich(feld, N), b = lkGleich(kontur, N), r = lkZufall(seed), s = "", liste = [];
+    function pkt(k, t){ k = Math.max(0, Math.min(N, k)); var i = Math.min(N - 1, Math.floor(k)), f = k - i;
+      var p = [a[i][0] + (a[i+1][0] - a[i][0]) * f, a[i][1] + (a[i+1][1] - a[i][1]) * f], q = [b[i][0] + (b[i+1][0] - b[i][0]) * f, b[i][1] + (b[i+1][1] - b[i][1]) * f];
+      return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]; }
+    for (var i = 0; i < n; i++) liste.push({kc:N * (-0.08 + (i + r() * 0.8) / n * 0.95), dk:12 + r() * 12, z:r(), t0:-0.08 + r() * 0.1, t1:0.98 + r() * 0.07, bog:(r() - 0.3) * 8});
+    liste.sort(function(x, y){ return x.z - y.z; });
+    liste.forEach(function(B){
+      var lean = 34 + 30 * B.kc / N + r() * 16, li = [], re = [], mi = [];
+      for (var j = 0; j <= 14; j++){
+        var u = j / 14, k = B.kc + lean * Math.pow(u, 1.6) + Math.sin(u * Math.PI) * B.bog, t = B.t0 + (B.t1 - B.t0) * u;
+        var hw = B.dk / 2 * Math.pow(Math.min(1, u / 0.12), 0.5) * Math.pow(1 - u, 0.6);
+        li.push(pkt(k - hw, t)); re.push(pkt(k + hw, t)); mi.push([k, t]);
+      }
+      if (!ohneFlaeche) s += '<path d="' + lkGlatt(li) + " L" + lkGlatt(re.slice().reverse()).slice(1) + ' Z" fill="var(--surface)"/>';
+      s += lkStrich(li, 0.85) + lkStrich(re, 0.85) + lkStrich(mi.slice(2, 12).map(function(m){ return pkt(m[0] + (r() - 0.5) * 2, m[1]); }), 0.45);
+    });
     return (LK_STR[ck] = s);
   }
   function lkUmkehr(d){ return " L" + lkGleich(d, 70).reverse().map(function(p){ return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" L"); }
@@ -2357,7 +2397,12 @@ dl.steck dd{margin:0}
     kante:    {frisur:"kurz",  seite:"kante",  sicht:"Kante auf Ohrhöhe"},
     duenn:    {frisur:"kurz",  seite:"duenn",  sicht:"Haar steht mit ab"}
   };
-  function ohrSeite(art, g){
+  function ohrSeitePunkte(art, g){
+    var F = g.F, x = 200 + F.c / 2, yE = g.yE;
+    if (art === "kante") return [[200+F.f/2-6,BK_Y.F-14],[x+26,yE-28],[x+42,yE-8],[x+44,yE+14],[x-10,yE+14]];
+    return ohrSeite(art, g, true);
+  }
+  function ohrSeite(art, g, punkteNur){
     // Punkte der rechten Seite (vom Betrachter aus), links wird gespiegelt
     var F = g.F, x = 200 + F.c / 2, yE = g.yE, yN = g.yN;
     var P = {
@@ -2367,6 +2412,7 @@ dl.steck dd{margin:0}
       stufig: [[200+F.f/2-6,BK_Y.F-14],[x+24,yE-30],[x+40,yE-8],[x+30,yE+2],[x-10,yE+2]],
       duenn:  [[200+F.f/2-6,BK_Y.F-14],[x+36,yE-34],[x+58,yE+14],[x+56,yN+14],[x+36,yN+30],[x-10,yN+24]]
     }[art];
+    if (punkteNur) return P;
     if (art === "kante") return "M" + (200+F.f/2-6) + "," + (BK_Y.F-14) + " C" + (x+20) + "," + (yE-30) + " " + (x+44) + "," + (yE-14) + " " + (x+44) + "," + (yE+14) + " L" + (x-10) + "," + (yE+14) + " Z";
     return glattZu(P.concat([[x-30, yE]]));
   }
@@ -2387,19 +2433,11 @@ dl.steck dd{margin:0}
       '<g clip-path="url(#ohc' + id + ')">' + beide('<path d="' + ohr + ' Z" fill="var(--surface)" stroke="none"/>' + ohrNat()) + '</g>';
     if (z.seite){
       var hart = z.seite === "kante";
-      // Seitenpartie im Strähnenstil: Fläche, fallende Strähnen, Kontur (Kante = gerade Unterkante)
-      var sp = ohrSeite(z.seite, g), r = lkZufall(7), str = "";
-      for (var sx = x - 22; sx < x + 64; sx += 13 + r() * 5){
-        var y0 = BK_Y.F - 20 + r() * 30, y1 = y0 + 120 + r() * 110, bogen = 5 + r() * 5;
-        for (var j = 0; j < 2; j++){
-          var lin = [];
-          for (var t = 0; t <= 1.0001; t += 0.1) lin.push([sx + j * 3.5 + Math.sin(t * Math.PI) * bogen + t * 8, y0 + j * 10 + (y1 - y0) * t]);
-          str += lkStrich(lin, 0.75 - j * 0.2);
-        }
-      }
-      innen += '<clipPath id="ohs' + id + '"><path d="' + sp + '"/></clipPath>' +
-        '<g clip-path="url(#ohc' + id + ')">' + beide('<path d="' + sp + '" fill="var(--surface)"/><g clip-path="url(#ohs' + id + ')" fill="var(--ink)" opacity=".75">' + str + '</g>' +
-        '<path d="' + sp + '" fill="none" stroke="var(--ink)" stroke-width="' + (hart ? 2.6 : 2) + '" stroke-linejoin="round"/>') + '</g>';
+      // Seitenpartie aus Strähnenbündeln (Kante = gerade Unterkante), rechts und links mit eigenen Strähnen
+      var sp = ohrSeite(z.seite, g), P = ohrSeitePunkte(z.seite, g), ende = P[P.length - 1];
+      var aussenS = glattOffen(P.slice(0, -1)), feldS = glattOffen([P[0], [x - 4, (P[0][1] + ende[1]) / 2], ende]);
+      var seiteSvg = function(seed){ return '<path d="' + sp + '" fill="var(--surface)"/><g fill="var(--ink)">' + lkStraehnen(aussenS, feldS, seed, 7, hart, false, !hart) + '</g>'; };
+      innen += '<g clip-path="url(#ohc' + id + ')">' + seiteSvg(7) + '<g transform="translate(400,0) scale(-1,1)">' + seiteSvg(12) + '</g></g>';
     }
     // Ohr unter dem Haar gestrichelt andeuten: Es ist noch da und unverändert
     if (z.seite) innen += beide(ohrNat(0.4));
