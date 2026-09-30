@@ -239,7 +239,7 @@ dl.steck dd{margin:0}
 </style>
 </head>
 <body>
-<nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20260930h#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20260930h">Lern-Tool</a></nav>
+<nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20260930i#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20260930i">Lern-Tool</a></nav>
 <header class="appbar"><div class="appbar-in" id="bar"></div></header>
 <main class="wrap" id="app"></main>
 <script>
@@ -872,7 +872,7 @@ dl.steck dd{margin:0}
 
   // ---------- Zustand ----------
   var BK_START = {ansicht:"vorne", form:"rund", augen:"mandel", brauen:"gebogen", mund:"voll", frisur:"seitlich", pony:"kein", bart:"kein", nase:"gerade", auge1:"kein", mundwinkel:"gleich", mess:true, oval:true, zeichnen:false, farbe:"ink", dicke:4, radieren:false, striche:[], vorher:null, vergleich:null};
-  var st = {kopfArt:"frau", richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", ans1:"profil", ans2:"vorne", bk:null, bkAnim:false, bkVon:null, view:"pilot", fall:"nase", kap:-1, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0};
+  var st = {kopfArt:"frau", richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", hdForm:"rund", ans1:"profil", ans2:"vorne", bk:null, bkAnim:false, bkVon:null, view:"pilot", fall:"nase", kap:-1, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0};
 
   var SCREENS = [
     {step:-1, render:function(){
@@ -1272,6 +1272,71 @@ dl.steck dd{margin:0}
      r:1, f:"Die Konturen-Haarfarbe beeinflusst die Gesichtsfarbe (Seite 12). Kontrast muss zur Person passen."}
   ];
 
+
+  // ---------- Farbe und Schnitt kombinieren: je Gesichtsform ----------
+  // Haar-Contouring (Hell/Dunkel) und typgerechter Schnitt wirken zusammen am stärksten.
+  // ton: Verlauf der Töne im Haar (y = senkrecht von oben nach unten, x = waagrecht vom Rand zur Gesichtsmitte)
+  var HD_FORMEN = {
+    rund:        {t:"Rundes Gesicht", form:"rund", frisur:"lang", pony:"kein",
+                  ziel:"Senkrecht strecken, die Seiten schmaler wirken lassen.",
+                  farbe:"Oberkopf und Ansatz heller, die Seiten entlang der Wangenknochen dunkler.",
+                  schnitt:"Lang gestuft, die Stufen beginnen erst unter dem Kinn, oder ein tiefer Seitenscheitel.",
+                  wirkung:"Die dunklen Seiten und die senkrecht fallenden Längen „schneiden“ die Rundung seitlich ab. Das Gesicht wirkt schmaler.",
+                  ton:{y:[[0,"hell"],[0.3,"hellm"],[0.45,"dunkelm"],[1,"dunkel"]]}},
+    oval:        {t:"Ovales Gesicht", form:"oval", frisur:"bob", pony:"kein",
+                  ziel:"Die ausgewogenen Proportionen erhalten und Lebendigkeit geben.",
+                  farbe:"Dezente, hellere Reflexe rund um das Gesicht (Face Framing).",
+                  schnitt:"Fast alles ist möglich, zum Beispiel ein gestufter langer Bob oder lockere Wellen.",
+                  wirkung:"Es muss nichts ausgeglichen werden. Schnitt und weiche Reflexe betonen Augen und Lippen.",
+                  ton:{x:[[0,"mittel"],[0.6,"mittel"],[0.85,"hell"],[1,"hell"]]}},
+    aufsteigend: {t:"Herzform (breite Stirn, schmales Kinn)", form:"aufsteigend", frisur:"bob", pony:"schraeg",
+                  ziel:"Die breite Stirn kleiner und die Kinnpartie voller wirken lassen.",
+                  farbe:"Oberkopf und Schläfen dunkler, ab den Wangenknochen nach unten fließend heller (z. B. Balayage).",
+                  schnitt:"Langer, seitlich fallender Pony (Curtain Bangs), der die Schläfen bedeckt, dazu Volumen auf Kinnhöhe.",
+                  wirkung:"Pony und dunkle Farbe nehmen der Stirn die Breite. Helle Spitzen und Schwung gleichen das schmale Kinn aus.",
+                  ton:{y:[[0,"dunkel"],[0.35,"dunkelm"],[0.6,"hellm"],[1,"hell"]]}},
+    abfallend:   {t:"Trapezform (schmale Stirn, breiter Kiefer)", form:"abfallend", frisur:"seitlich", pony:"kein",
+                  ziel:"Die obere Kopfpartie weiten, den breiten Kiefer zurücktreten lassen.",
+                  farbe:"Helle, leuchtende Strähnen am Ansatz und an den Schläfen (Money Piece), zu den Spitzen und am Kiefer dunkler.",
+                  schnitt:"Stufenschnitt mit viel Fülle am Oberkopf, nach unten dünner auslaufend.",
+                  wirkung:"Helles Licht und Volumen oben ziehen den Blick nach oben. Dunkles, anliegendes Haar am Kiefer nimmt die Breite weg.",
+                  ton:{y:[[0,"hell"],[0.3,"hell"],[0.55,"mittel"],[1,"dunkel"]]}},
+    viereck:     {t:"Eckiges Gesicht", form:"viereck", frisur:"lang", pony:"kein",
+                  ziel:"Die harten Linien an Stirn und Kiefer weicher wirken lassen.",
+                  farbe:"Mehrere Töne gemischt: dunklere Schatten auf die Ecken (Schläfe, Kieferwinkel), dazwischen sehr feine helle Strähnen.",
+                  schnitt:"Fransige Stufen, weiche Wellen oder ein strukturierter langer Bob. Keine geraden Kanten.",
+                  wirkung:"Die Bewegung im Schnitt bricht die harten Linien. Hell und Dunkel lassen die Ecken im Schatten verschwinden.",
+                  ton:{y:[[0,"mittel"],[0.2,"dunkel"],[0.4,"mittel"],[0.62,"mittel"],[0.8,"dunkel"],[1,"mittel"]]}, straehnen:true},
+    rechteck:    {t:"Längliches Gesicht", form:"rechteck", frisur:"bob", pony:"gerade",
+                  ziel:"Das Gesicht kürzer wirken lassen, die Breite betonen.",
+                  farbe:"Oberkopf etwas dunkler, auf Höhe von Ohren und Wangen waagrechte, helle Highlights.",
+                  schnitt:"Voller, gerader Pony mit kinn- bis schulterlangem Bob, seitlich mit Volumen.",
+                  wirkung:"Der Pony verkürzt das Gesicht oben. Die hellen Seiten mit Volumen lenken den Blick in die Breite statt in die Länge.",
+                  ton:{y:[[0,"dunkelm"],[0.3,"dunkelm"],[0.45,"hell"],[0.7,"hell"],[1,"mittel"]]}}
+  };
+  function hdFormFig(key, o){
+    o = o || {};
+    var Z = HD_FORMEN[key], g = bkGeo(Z.form), id = ++uid, art = lkArt();
+    var k = {art:art, form:Z.form, frisur:Z.frisur, pony:Z.pony, bart:"kein", brauen:"gebogen", mund:"voll", nase:"gerade", augen:"mandel", auge1:"kein"};
+    var yo = g.F.top - 50, yu = Z.frisur === "lang" ? 470 : g.F.cy + 10;
+    var stops = function(L){ return L.map(function(q){ return '<stop offset="' + q[0] + '" stop-color="' + HD_TON[q[1]] + '"/>'; }).join(""); };
+    var grad = Z.ton.y ? '<linearGradient id="ht' + id + '" gradientUnits="userSpaceOnUse" x1="0" y1="' + yo + '" x2="0" y2="' + yu + '">' + stops(Z.ton.y) + '</linearGradient>'
+      : '<linearGradient id="ht' + id + '" gradientUnits="userSpaceOnUse" x1="' + (200 - g.F.c / 2 - 60) + '" y1="0" x2="200" y2="0" spreadMethod="reflect">' + stops(Z.ton.x) + '</linearGradient>';
+    var s = svgKopf("40 20 320 470", o.label || Z.t);
+    s += '<defs>' + grad + '</defs>';
+    s += fzKopf(k, {haar:false});
+    // Töne in der Haarfläche, darüber die Strähnen
+    s += '<mask id="hm' + id + '">' + fzHaarFlaeche(Z.frisur, g) + '</mask>' +
+      '<rect x="0" y="0" width="400" height="500" fill="url(#ht' + id + ')" mask="url(#hm' + id + ')"/>';
+    if (Z.straehnen){ var st2 = ""; for (var x = 64; x < 340; x += 23) st2 += '<path d="M' + x + ',' + (g.F.top + 10) + ' C' + (x + 8) + ',' + (g.yE) + ' ' + (x - 6) + ',' + (g.yM) + ' ' + (x + 4) + ',440" stroke="' + HD_TON.sehrhell + '" stroke-width="1.3" fill="none"/>';
+      s += '<g mask="url(#hm' + id + ')" opacity=".55">' + st2 + '</g>'; }
+    s += '<g opacity=".85">' + fzHaar(Z.frisur, g, {ohneFlaeche:true}) + '</g>' + fzPony(Z.pony, g, bkGesicht(g.F), id, 'url(#ht' + id + ')');
+    // Gesichtsform (fix) in der Akzentfarbe
+    s += '<clipPath id="hc' + id + '"><rect x="0" y="' + (g.yE - 30) + '" width="400" height="500"/></clipPath>' +
+      '<path d="' + bkGesicht(g.F) + '" clip-path="url(#hc' + id + ')" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-dasharray="7 5"/>';
+    return s + '</svg>';
+  }
+
   var SCREENS_HD = [
     {step:-1, render:function(){
       return card('<div class="pair">' +
@@ -1334,6 +1399,21 @@ dl.steck dd{margin:0}
         '<li><strong>Gesichtsform:</strong> Nicht jedes Gesicht soll schmaler wirken. Die Richtung hängt von der Form ab.</li>' +
         '<li><strong>Wunsch der Kundin oder des Kunden:</strong> Wie viel Kontrast möchte sie oder er tragen?</li>' +
         '</ul>');
+    }},
+    {step:4, render:function(){
+      var Z = HD_FORMEN[st.hdForm] || HD_FORMEN.rund;
+      return card(hdFormFig(st.hdForm) +
+        controls(seg("hdForm", Object.keys(HD_FORMEN).map(function(k){ return [k, {rund:"Rund", oval:"Oval", aufsteigend:"Herz", abfallend:"Trapez", viereck:"Eckig", rechteck:"Länglich"}[k]]; }), st.hdForm)),
+        '<h2>Farbe und Schnitt kombinieren</h2>' +
+        '<p>Am stärksten wirkt es, wenn Haarfarbe (Hell und Dunkel) und Schnitt zusammenspielen. Wähle eine Gesichtsform.</p>' +
+        '<h3>' + Z.t + '</h3>' +
+        '<ul>' +
+        '<li><strong>Ziel:</strong> ' + Z.ziel + '</li>' +
+        '<li><strong>Farbe:</strong> ' + Z.farbe + '</li>' +
+        '<li><strong>Schnitt:</strong> ' + Z.schnitt + '</li>' +
+        '</ul>' +
+        '<div class="callout accent"><p><strong>Zusammen:</strong> ' + Z.wirkung + '</p></div>' +
+        '<p class="note">Das sind mögliche Richtungen, keine festen Regeln. Die grüne Linie zeigt: Die Gesichtsform bleibt gleich.</p>');
     }},
     {step:5, render:renderCheck},
     {step:6, render:function(){
@@ -1791,9 +1871,9 @@ dl.steck dd{margin:0}
     return '<path d="' + h.aussen + '"/><path d="' + h.aussen + '" transform="translate(400,0) scale(-1,1)"/>';
   }
   // Pony: Strähnen vom Haaransatz bis zur Ponykante, unten spitz
-  function fzPony(art, g, gesicht, id){
+  function fzPony(art, g, gesicht, id, fuell){
     if (art === "kein") return "";
-    if (art === "schraeg_r") return '<g transform="translate(400,0) scale(-1,1)">' + fzPony("schraeg", g, gesicht, id + "r") + '</g>';
+    if (art === "schraeg_r") return '<g transform="translate(400,0) scale(-1,1)">' + fzPony("schraeg", g, gesicht, id + "r", fuell) + '</g>';
     var F = g.F, yE = g.yE, links = 200 - F.f / 2 - 8, rechts = 200 + F.f / 2 + 8;
     var kante = art === "gerade" ? function(x){ return yE - 30 - 6 * (1 - Math.pow((x - 200) / (F.f / 2 + 20), 2)); }
       : function(x){ var t = (x - links) / (F.f * 0.8 + 20); return yE - 28 - Math.pow(Math.max(0, t), 1.6) * (yE - 28 - g.yH + 10); };
@@ -1805,7 +1885,7 @@ dl.steck dd{margin:0}
     }
     // Strähnen aus der Frisurvorlage, in den Ponybereich gelegt (Ponykante = Innenkante, Oberkopf = Außenkontur)
     var flaeche = glattOffen(pts) + " L" + oben.slice().reverse().map(function(p){ return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" L") + " Z";
-    return '<g class="pony"><path d="' + flaeche + '" fill="var(--surface)"/><path d="' + hmZeichnen(pts.slice().reverse(), oben.slice().reverse(), "frau", "p" + art + F.f + F.top + g.yE, [0.36, 0.64]) + '" fill="var(--ink)"/></g>';
+    return '<g class="pony"><path d="' + flaeche + '" fill="' + (fuell || 'var(--surface)') + '"/><path d="' + hmZeichnen(pts.slice().reverse(), oben.slice().reverse(), "frau", "p" + art + F.f + F.top + g.yE, [0.36, 0.64]) + '" fill="var(--ink)"/></g>';
   }
   function bkVorne(k, o){
     o = o || {};
@@ -2683,7 +2763,7 @@ dl.steck dd{margin:0}
 
 
   // ---------- App-Rahmen ----------
-  function neuStart(){ return {kopfArt:st.kopfArt, richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", ans1:"profil", ans2:"vorne", bk:st.bk, bkAnim:false, bkVon:null, view:st.view, fall:st.fall, kap:st.kap, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0}; }
+  function neuStart(){ return {kopfArt:st.kopfArt, richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", hdForm:"rund", ans1:"profil", ans2:"vorne", bk:st.bk, bkAnim:false, bkVon:null, view:st.view, fall:st.fall, kap:st.kap, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0}; }
 
   function renderPilot(){
     var SC = fall().screens, S = SC[st.screen];
