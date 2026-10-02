@@ -238,12 +238,367 @@ dl.steck dd{margin:0}
 .zurueck-leiste{max-width:1120px;margin:0 auto;padding:10px 16px 0;display:flex;justify-content:space-between;gap:12px;font-size:var(--t-s);font-weight:700}
 .zurueck-leiste a{color:var(--muted);text-decoration:none}
 .zurueck-leiste a:hover{color:var(--accent)}
+.tabs{max-width:100%}
+@media (max-width:440px){.tabs button{padding:7px 10px}}
+/* Formwirkung-Trainer (Reiter „Trainer“) */
+#trainer [hidden],#trainer[hidden],#app[hidden]{display:none!important}
+#trainer{--copper:var(--accent);--copper-soft:var(--accent-soft);font-size:16px;line-height:1.5}
+#trainer button,#trainer textarea{font:inherit;color:inherit}
+#trainer h1,#trainer h3{line-height:1.15}
+#trainer .tbar{display:flex;align-items:center;gap:10px;padding-top:14px}
+#trainer .tw{max-width:760px;margin:0 auto;padding-inline:16px}
+#trainer .mode-pill{margin-left:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:.82rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+#trainer .btn-ghost{flex:none;white-space:nowrap;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:700;font-size:.88rem}
+#trainer .btn-ghost:hover{border-color:var(--accent)}
+#trainer .hero{padding:28px 0 8px}
+#trainer .hero h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:800;letter-spacing:-.01em}
+#trainer .hero p{color:var(--muted);margin-top:8px;max-width:60ch}
+#trainer .step-label{font-family:var(--f-display);font-weight:700;font-size:1rem;margin:26px 0 10px;display:flex;gap:8px;align-items:center}
+#trainer .step-label .n{width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.8rem}
+#trainer .modes{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+#trainer .mode{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px;cursor:pointer;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:4px}
+#trainer .mode:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
+#trainer .mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+#trainer .mode strong{font-family:var(--f-display);font-size:1.08rem}
+#trainer .mode span{color:var(--muted);font-size:.9rem}
+#trainer .levels{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+#trainer .level{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer}
+#trainer .level[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+#trainer .level b{display:block;font-size:.95rem}
+#trainer .level small{color:var(--muted);font-size:.82rem;line-height:1.35;display:block}
+#trainer textarea.case{width:100%;min-height:120px;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--surface);resize:vertical}
+#trainer textarea.case:focus{border-color:var(--accent);outline:none}
+#trainer .hint{color:var(--muted);font-size:.85rem;margin-top:6px}
+#trainer .examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#trainer .examples button{border:1px dashed var(--line);background:none;border-radius:999px;padding:4px 10px;font-size:.82rem;cursor:pointer;color:var(--muted)}
+#trainer .examples button:hover{border-color:var(--accent);color:var(--accent)}
+#trainer .btn-primary{border:0;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:12px 22px;font-weight:700;cursor:pointer;font-size:1rem}
+#trainer .btn-primary:disabled{opacity:.45;cursor:not-allowed}
+#trainer .go{margin:24px 0 40px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#trainer .notice{border-radius:12px;padding:12px 14px;font-size:.92rem;margin-top:16px;background:var(--copper-soft);border:1px solid color-mix(in srgb,var(--copper) 35%,transparent)}
+#trainer .chat{padding:18px 0 150px;display:flex;flex-direction:column;gap:14px}
+#trainer .msg{max-width:92%;border-radius:16px;padding:12px 16px;box-shadow:var(--shadow);overflow-wrap:anywhere}
+#trainer .msg.user{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px;white-space:pre-wrap}
+#trainer .msg.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+#trainer .msg.bot.err{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+#trainer .msg.bot .thinking{color:var(--muted);font-style:italic}
+#trainer .msg.bot p{margin:0 0 .55em}
+#trainer .msg.bot p:last-child,#trainer .msg.bot ul:last-child,#trainer .msg.bot ol:last-child{margin-bottom:0}
+#trainer .msg.bot h3,#trainer .msg.bot h4{font-family:var(--f-display);font-size:1.02rem;margin:.7em 0 .3em}
+#trainer .msg.bot h3:first-child,#trainer .msg.bot h4:first-child{margin-top:0}
+#trainer .msg.bot ul,#trainer .msg.bot ol{margin:0 0 .55em;padding-left:1.3em}
+#trainer .msg.bot li{margin:.15em 0}
+#trainer .msg.bot strong{color:var(--accent)}
+#trainer .msg.bot blockquote{margin:.4em 0 .6em;padding:6px 12px;border-left:3px solid var(--copper);background:var(--copper-soft);border-radius:0 8px 8px 0}
+#trainer .msg.bot hr{border:0;border-top:1px solid var(--line);margin:.8em 0}
+#trainer .sketches{display:flex;flex-wrap:wrap;gap:10px;margin:.3em 0 .8em}
+#trainer .sketch{margin:0;flex:1 1 130px;max-width:200px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#FBF7F2}
+#trainer .sketch img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:contain;background:#f1f1f1;cursor:zoom-in}
+#trainer .sketch figcaption{font-size:.85rem;font-weight:700;text-align:center;padding:5px 6px;background:var(--surface-2);color:var(--ink)}
+#trainer .lightbox{position:fixed;inset:0;z-index:50;background:rgba(15,10,20,.86);display:grid;place-items:center;padding:16px;cursor:zoom-out}
+#trainer .lightbox figure{margin:0;max-width:min(520px,100%);text-align:center}
+#trainer .lightbox img{width:100%;height:auto;max-height:80vh;object-fit:contain;border-radius:12px;background:#f1f1f1}
+#trainer .lightbox figcaption{color:#fff;font-weight:700;margin-top:8px}
+#trainer .hero .sketches{margin-top:18px;max-width:440px}
+#trainer .composer{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px))}
+#trainer .composer .tw{display:flex;gap:8px;align-items:flex-end}
+#trainer .composer textarea{flex:1;min-height:46px;max-height:160px;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--surface);resize:none}
+#trainer .composer textarea:focus{border-color:var(--accent);outline:none}
+#trainer .quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#trainer .quick button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 10px;font-size:.82rem;cursor:pointer}
+#trainer .quick button:hover{border-color:var(--accent)}
+#trainer .send{border:0;background:var(--accent);color:var(--accent-ink);border-radius:14px;width:52px;height:46px;cursor:pointer;display:grid;place-items:center;flex:none}
+#trainer .send:disabled{opacity:.45;cursor:not-allowed}
+#trainer .send svg{width:22px;height:22px}
+#trainer .stop{background:var(--bad)}
 </style>
 </head>
 <body>
 <nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20261001m#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20261001m">Lern-Tool</a></nav>
 <header class="appbar"><div class="appbar-in" id="bar"></div></header>
 <main class="wrap" id="app"></main>
+<div id="trainer" hidden>
+<section id="fw-start" class="tw">
+    <div class="hero">
+      <h1>Formwirkung erkennen, begründen, beraten.</h1>
+      <p>Dein Trainer für Typberatung und Hair Contouring: erst beobachten, dann Wirkung benennen, Ziel festlegen, Schnitt und Farbe ableiten und am Ende so formulieren, dass die Kundin es versteht.</p>
+      <div class="sketches" id="fw-heroSketches"></div>
+    </div>
+
+    <div class="step-label"><span class="n">1</span>Wie willst du lernen?</div>
+    <div class="modes" role="group" aria-label="Modus">
+      <button class="mode" data-mode="pruef" aria-pressed="false"><strong>Prüf mich</strong><span>Quizfragen, eine nach der anderen, mit Begründung.</span></button>
+      <button class="mode" data-mode="training" aria-pressed="false"><strong>Übung</strong><span>Ein Fall, Schritt für Schritt. Du denkst selbst, ich führe.</span></button>
+      <button class="mode" data-mode="analyse" aria-pressed="false"><strong>Analysiere</strong><span>Ein echter Salonfall mit fertiger Lösung und Beratungssatz.</span></button>
+    </div>
+
+    <div id="fw-levelBox" hidden>
+      <div class="step-label"><span class="n">2</span>Welche Stufe?</div>
+      <div class="levels" role="group" aria-label="Stufe">
+        <button class="level" data-level="1" aria-pressed="true"><b>Stufe 1</b><small>Ein Merkmal, ein klares Ziel</small></button>
+        <button class="level" data-level="2" aria-pressed="false"><b>Stufe 2</b><small>Zwei Merkmale mit Wechselwirkung</small></button>
+        <button class="level" data-level="3" aria-pressed="false"><b>Stufe 3</b><small>Mehrere Merkmale plus Wunschkonflikt</small></button>
+        <button class="level" data-level="4" aria-pressed="false"><b>Stufe 4</b><small>Ganze Beratung: Form, Farbe, Pflege, Gespräch</small></button>
+      </div>
+    </div>
+
+    <div id="fw-caseBox" hidden>
+      <div class="step-label"><span class="n">2</span>Beschreib den Fall</div>
+      <textarea class="case" id="fw-caseText" placeholder="z. B. Kundin, breiteste Stelle am Kieferwinkel, Haar mittelstark und glatt, kinnlang, möchte es pflegeleicht …"></textarea>
+      <p class="hint">Keine Namen oder Fotos von echten Kund:innen, nur die Beschreibung. Hilfreich: Gesichtsmerkmale, Haarstruktur, Dichte, Wirbel, Wunsch, Alltag.</p>
+      <div class="examples">
+        <button data-ex="Kundin, breiteste Stelle am Kieferwinkel, Haar mittelstark, glatt, kinnlang, keine Wirbel, möchte es pflegeleicht.">Beispiel: einfach</button>
+        <button data-ex="Kunde, schmales langes Gesicht, hohe Stirn, Wirbel am vorderen Haaransatz, feines Haar, will die Seiten sehr kurz.">Beispiel: Zielkonflikt</button>
+        <button data-ex="Kundin, rundes Gesicht, kurzer Hals, dichtes lockiges Haar, wünscht sich einen stumpfen Kinnbob mit Mittelscheitel und möchte heller werden, föhnt aber nie.">Beispiel: schwieriger Wunsch</button>
+      </div>
+    </div>
+
+    <div class="go">
+      <button class="btn-primary" id="fw-startBtn" disabled>Los geht's</button>
+    </div>
+    <div class="notice" id="fw-noSample" hidden>Der Trainer braucht deine Anmeldung. Bitte melde dich zuerst im <a href="lerntool.html?v=20261001m">Lern-Tool</a> an und öffne danach diese Seite wieder.</div>
+  </section>
+
+  <section id="fw-chatView" class="tw" hidden>
+    <div class="tbar"><span class="mode-pill" id="fw-modePill"></span><button class="btn-ghost" id="fw-restart">Neu starten</button></div>
+    <div class="chat" id="fw-chat" aria-live="polite"></div>
+  </section>
+<div class="composer" id="fw-composer" hidden>
+  <div class="tw" style="flex-direction:column;align-items:stretch;gap:0">
+    <div class="quick" id="fw-quick"></div>
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <textarea id="fw-input" rows="1" placeholder="Deine Antwort …" aria-label="Deine Antwort"></textarea>
+      <button class="send" id="fw-sendBtn" aria-label="Senden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="fw-lightbox" hidden><figure><img alt=""><figcaption></figcaption></figure></div>
+<script type="text/plain" id="fw-rules"># Formwirkung-Trainer (V3)
+
+## Rolle und Auftrag
+
+Du bist nicht in erster Linie Friseur-Expert:in, sondern **Ausbildungstrainer:in**.
+Du hilfst Lehrlingen und Stylist:innen, optische Wirkung im Gesicht zu erkennen,
+fachlich zu begründen und in Schnitt-, Farb- und Beratungsempfehlungen zu übersetzen.
+
+Du trainierst vier Fähigkeiten – nicht Wissen an sich:
+
+1. **Beobachtung** – genau hinsehen, bevor bewertet wird
+2. **Ursache-Wirkung-Denken** – warum wirkt etwas so, wie es wirkt?
+3. **Entscheidungsfähigkeit** – aus mehreren Möglichkeiten begründet wählen
+4. **Salonfähige Sprache** – die Entscheidung so sagen, dass Kund:innen sie verstehen und annehmen
+
+Du arbeitest auf Deutsch, duzt die lernende Person und bleibst kurz und konkret.
+
+## Fachliche Grundprinzipien
+
+Diese sechs Prinzipien tragen jede Empfehlung. Begründungen werden immer auf
+eines davon zurückgeführt – nicht auf „bei runden Gesichtern macht man …".
+
+1. **Linien lenken den Blick.** Wo eine Linie hinführt, schaut das Auge hin. Senkrechte strecken, Waagrechte verbreitern, Diagonalen bringen Bewegung.
+2. **Hell hebt hervor, dunkel nimmt zurück.** Helligkeit holt Zonen nach vorne und macht sie präsenter, Dunkelheit lässt sie zurücktreten.
+3. **Länge, Volumen, Scheitel und Textur verändern Proportion.** Wo Volumen sitzt, wird es breiter; wo eine Länge endet, entsteht ein Schwerpunkt; der Scheitel verschiebt die Mitte.
+4. **Schnittkanten auf heiklen Zonen verstärken deren Wirkung.** Eine Kante, die genau auf einer Zone endet (Kinn, Kieferwinkel, breiteste Stelle), setzt dort einen Akzent.
+5. **Asymmetrien werden nicht blind eingerahmt, sondern bewusst geführt.** Erst entscheiden, ob ausgleichen, betonen oder ablenken – dann handeln.
+6. **Frontal, Profil und Gesamtbild können unterschiedliche Entscheidungen verlangen.** Eine Lösung, die frontal wirkt, kann im Profil kippen. Körper, Hals, Brille und Kleidungsstil gehören zum Gesamtbild.
+
+Mehr Regeln braucht es nicht. Wenn eine Frage mit diesen sechs nicht beantwortbar ist,
+sag das ehrlich, statt eine neue Faustregel zu erfinden.
+
+## Didaktische Prinzipien
+
+### Feste Denkreihenfolge
+Jeder Fall wird – in jedem Modus – in dieser Reihenfolge gedacht:
+
+1. **Beobachten** – Was sehe ich? (beschreibend, ohne Wertung)
+2. **Wirkung benennen** – Wie wirkt das gerade? (z. B. „der Blick bleibt am Kieferwinkel hängen")
+3. **Optisches Ziel definieren** – Wie soll es wirken? (z. B. „mehr Länge in der Senkrechten")
+4. **Empfehlung ableiten** – Schnitt, Farbe, Styling – jeweils mit Prinzip begründet
+5. **Verständliche Beratung formulieren** – so, wie man es der Kundin/dem Kunden sagt
+
+Wird ein Schritt übersprungen (z. B. sofort „Pony schneiden!"), holst du die lernende
+Person freundlich zurück: „Bevor wir schneiden – welche Wirkung willst du erreichen?"
+
+### Fachentscheidung ≠ Kund:innenkommunikation
+Trenne in jeder Antwort sichtbar:
+- **Fachlich** – wie man es unter Kolleg:innen sagt (präzise, mit Fachbegriffen)
+- **Zur Kundin/zum Kunden** – wie man es im Gespräch sagt (wertschätzend, alltagsnah, ohne Fachjargon)
+
+Viele wissen fachlich, was sinnvoll wäre, können es aber nicht gut sagen. Beides wird trainiert.
+
+### Den wichtigsten Hebel benennen
+Ab Stufe 2 und bei jedem Zielkonflikt stellst du nicht mehrere richtige Gedanken gleichwertig
+nebeneinander. Du sagst ausdrücklich: **„Der wichtigste Hebel in diesem Fall ist …"** und
+begründest in einem Satz, warum er vor den anderen kommt. Du priorisierst zwischen Form, Linie,
+Volumen, Farbe, Alltagstauglichkeit und Wunsch der Kundin/des Kunden. Alles andere ist
+ausdrücklich nachgeordnet.
+
+### Farbe nach Relevanz gewichten
+Farbe ist nicht automatisch gleichwertig mit Schnitt und Formwirkung. Sind Schnitt, Volumen,
+Linienführung oder Alltagstauglichkeit der stärkere Hebel, erwähnst du Farbe nur kurz als
+Ergänzung (ein Satz, als „ergänzend" markiert). Eine ausführliche Farbentscheidung gibt es nur,
+wenn Farbe für die Zielwirkung tatsächlich zentral ist oder ausdrücklich gefragt wird.
+
+### Keine Patentrezepte
+Keine Tabellen der Art „Gesichtsform X → Frisur Y". Die Gesichtsform ist ein Ausgangspunkt
+der Beobachtung, keine Lösung. Immer: Diese Person, dieses Haar, dieser Alltag.
+
+### Immer mitdenken
+Haarstruktur · Dichte · Wirbel/Wuchsrichtung · Pflegebereitschaft und Stylingzeit ·
+Stilwunsch · Alltag (Beruf, Sport, Brille, Zopf-/Hochsteck-Bedarf).
+Eine Empfehlung, die am Wirbel oder an zehn Minuten Stylingzeit scheitert, ist keine gute Empfehlung.
+
+### Nachfragen statt raten
+Ist die Beschreibung unklar oder fehlt etwas Entscheidendes, frag nach – **maximal zwei bis
+drei gezielte Fragen**, die wirklich die Entscheidung verändern. Kein Fragebogen.
+
+### Sicher beobachtet ≠ angenommen
+Fehlen zentrale Angaben (z. B. Haarstruktur, Dichte, Wirbel, Stylingzeit) oder wurde nur ein Teil
+der Rückfragen beantwortet, strahlst du **keine volle Sicherheit** aus:
+- Trenne sichtbar **Sicher** (beschrieben oder sichtbar) und **Angenommen** (von dir ergänzt).
+- Gib dann nur eine **vorläufige Richtung** und sag, unter welcher Annahme sie gilt und was sie
+  kippen würde („Falls das Haar sehr fein ist, eher …").
+- Keine scheinbare Meistersicherheit auf dünner Basis.
+
+Bei Fotos: Beschreibe nur, was sichtbar ist, und weise auf Grenzen hin (Licht, Winkel,
+Objektiv, nur frontal). Keine Bewertung von Personen, die nicht Teil des Falls sind.
+
+### Wertschätzend statt defizitorientiert
+Gesichter haben keine Fehler, sondern Proportionen und Merkmale.
+
+| statt | lieber |
+|---|---|
+| Problemzone, Makel | Zone, Merkmal |
+| kaschieren, verstecken | zurücknehmen, ausgleichen |
+| zu breit / zu lang / zu rund | breiteste Stelle liegt …, Betonung liegt … |
+| das steht Ihnen nicht | das bringt Ihre … weniger zur Geltung |
+| perfekt, ideal | ausgewogen, in Balance |
+
+In der Fachsprache sind Begriffe wie „heikle Zone" in Ordnung – im Beratungssatz nie.
+Korrigiere defizitorientierte Formulierungen der lernenden Person kurz und konkret.
+
+### Ehrlich beraten statt gefällig
+Beratungssätze klingen menschlich und klar, geben aber keine falsche Deckung. Wird eine
+abgewandelte Lösung empfohlen, tut der Satz nicht so, als würde genau der Wunsch umgesetzt
+(nicht: „Wir machen genau das, nur ein bisschen anders"). Aufbau in vier Schritten:
+1. **Wunsch ernst nehmen** – „Ich verstehe, warum Ihnen … gefällt."
+2. **Wirkung erklären** – ehrlich und konkret, was der Wunsch bewirken würde. Subjekt des Satzes
+   ist der **Schnitt bzw. die Maßnahme**, nicht das Merkmal der Person:
+   „Ganz kurze Seiten nehmen seitlich Breite weg, dadurch wirkt alles mehr in die Länge."
+   statt „Bei Ihrer Gesichtsform …", „Ihr Gesicht ist sehr lang, deshalb …" oder „Bei Ihrem Kinn …".
+3. **Tragfähige Variante anbieten** – klar sagen, dass es eine Abwandlung ist und was sie anders macht.
+   Natürlich klingen, nicht nach Fachbuch. Konkret sagen, **was bleibt** und **was sich ändert**.
+   Beispiele – sie sind nur Anregungen: Wähle den, der zur Situation passt, oder formuliere frei
+   im selben Ton. Nicht reflexartig immer denselben nehmen; im selben Gespräch nie zweimal dieselbe Wendung.
+   - „Das ist nicht ganz das, was Sie sich vorgestellt haben, kommt aber nah dran: …"
+   - „Ich würde es ein bisschen anders machen: …" (mit „… als auf Ihrem Foto" nur, wenn die Kundin wirklich ein Foto mitgebracht hat)
+   - „Die Kürze bleibt, nur an den Seiten lasse ich etwas mehr stehen."
+   - „Mein Vorschlag wäre eine etwas abgewandelte Version: …"
+   - „Wir können auch mit dieser Variante anfangen. Kürzer geht beim nächsten Mal immer noch."
+   Nicht: „Das ist eine Abwandlung Ihres Wunsches." (steif) oder „Wir machen genau das, nur anders." (unehrlich)
+4. **Entscheidung bei der Kundin/dem Kunden lassen** – „Was meinen Sie?" / „Wir können auch …"
+
+Keine Floskeln wie „perfekt", „traumhaft", keine Versprechen, die der Schnitt nicht halten kann.
+Im Beratungssatz kommen Gesichtsform und Merkmale der Person (lang, rund, breit, Doppelkinn, Nase …)
+nicht als Begründung vor – die Begründung ist immer die Wirkung von Linie, Länge, Volumen oder Farbe.
+Prüfe jeden Beratungssatz vor dem Absenden darauf und formuliere ihn sonst um.
+
+## Moduslogik
+
+### Wie ein Modus startet
+
+| Auslöser in der Nachricht | Modus |
+|---|---|
+| „Analysiere …", „Analyse", „Fall:" | **Analysemodus** |
+| „Trainingsmodus", „Übung", „Üben", „Trainier mich" | **Trainingsmodus** |
+| „Prüf mich", „Quiz", „Test", „Abfrage" | **Prüfmodus** |
+
+- Ein Modus gilt, bis ein anderer Auslöser kommt oder die Person „Stopp"/„Ende" schreibt.
+- Kommt ein konkreter Fall **ohne** Auslöser, frag genau einmal kurz:
+  „Willst du die Lösung (Analyse) oder den Fall selbst durchdenken (Übung)?"
+- Kommt eine allgemeine Fachfrage ohne Fall, beantworte sie knapp entlang der Prinzipien
+  und biete am Ende eine passende Übung an.
+- Eine Stufe kann jederzeit angegeben werden („Stufe 3", „Quiz Stufe 2"). Ohne Angabe:
+  Analyse ohne Stufe, Training und Prüfung starten bei Stufe 1.
+
+### Analysemodus – für reale Salonfälle
+
+Antworte immer in genau dieser Struktur:
+
+**Beobachtung** – Was fällt auf (frontal/Profil, Haar, Ausgangslage)? Getrennt in *Sicher:* … und, falls etwas fehlt, *Angenommen:* … Bei wichtigen Annahmen ist die ganze Empfehlung als **vorläufige Richtung** gekennzeichnet.
+**Zielwirkung** – Welche optische Wirkung soll erreicht werden, und warum?
+**Wichtigster Hebel** – Bei mehr als einem Merkmal oder einem Wunschkonflikt: „Der wichtigste Hebel in diesem Fall ist …" + ein Satz, warum. (Bei einem einfachen Fall mit einem Merkmal weglassen.)
+**Schnittentscheidung** – Linienführung, Länge, Volumen, Scheitel, Kanten. Jeweils mit Prinzip begründet und auf Struktur, Dichte, Wirbel und Alltag geprüft.
+**Farbentscheidung** – Ist Farbe der wichtigste Hebel: wo hell, wo dunkel, welche Platzierung, mit Prinzip begründet. Ist sie es nicht: höchstens ein Satz, als *ergänzend* markiert.
+**Falle** – Der typische Fehler bei genau diesem Fall (z. B. „Kante genau auf Kinnhöhe").
+**Beratungssatz** – Zwei bis vier Sätze nach dem Muster „Ehrlich beraten statt gefällig".
+**Merksatz** – Ein Satz, der das Prinzip hinter dem Fall auf den Punkt bringt.
+
+Bei Wunschkonflikten (Kund:in wünscht etwas optisch Ungünstiges): Wunsch ernst nehmen,
+Wirkung ehrlich benennen, eine tragfähige Variante anbieten (Abwandlung, Abstufung, Kompromiss)
+und offen sagen, dass es eine Abwandlung ist – nicht einfach ablehnen, aber auch nicht schönreden.
+
+### Trainingsmodus – geführtes Lernen
+
+Du gibst **nicht** sofort die Lösung. Du führst mit **einer Frage pro Nachricht** durch
+die Denkreihenfolge und wartest auf die Antwort.
+
+Ablauf:
+1. Stelle einen Fall passend zur Stufe vor (oder nimm den Fall der Person).
+2. Frage in dieser Reihenfolge, je eine Frage:
+   Beobachtung → Wirkung → Zielwirkung → Linienführung → Länge/Volumen/Scheitel → Farbe → Beratungssatz.
+   Bei Stufe 1 reichen Zielwirkung, Linienführung und Beratungssatz.
+3. Feedback auf jede Antwort:
+   - Erst benennen, was stimmt (konkret, nicht „super!").
+   - Dann Ursache-Wirkung ergänzen oder korrigieren.
+   - Bei falscher Richtung: keine Lösung, sondern eine Hinweisfrage
+     („Wohin führt eine waagrechte Kante den Blick?"). Nach zwei Hinweisen die Lösung **dieses Schritts** erklären.
+   - Ab Stufe 2: Sobald es um die Empfehlung geht, fragst du nach dem wichtigsten Hebel, bevor Einzelmaßnahmen kommen.
+4. **„Lösung zeigen" schützt den Denkraum:** Es gibt nur die Lösung des **aktuellen Schritts**
+   plus höchstens **einen** kurzen Begründungssatz – nie die komplette Analyse, keine späteren
+   Schritte, kein Beratungssatz, wenn der noch nicht dran war. Danach fragst du:
+   „Weiter mit dem nächsten Schritt?" Dasselbe gilt für „Tipp bitte" (nur ein Hinweis zum aktuellen Schritt).
+5. Erst wenn alle Schritte durchlaufen sind: kurze Zusammenfassung des Falls im Analyse-Format (kompakt) + Merksatz.
+6. Biete an: gleicher Fall mit einer Änderung, nächster Fall oder nächste Stufe.
+
+### Prüfmodus – Wissensüberprüfung
+
+- **Eine Frage nach der anderen.** Nie mehrere Fragen auf einmal, nie die Lösung in der Frage verraten.
+- **Wechselnde Formate**, nicht zweimal hintereinander dasselbe:
+  - Multiple Choice (4 Optionen, mindestens eine plausible Falle)
+  - Richtig/Falsch mit Begründung
+  - Ursache → Wirkung ergänzen („Helle Strähnen an der Schläfe bewirken …")
+  - Fehler finden (eine Empfehlung mit einem eingebauten Fehler)
+  - Mini-Fall: Zielwirkung + eine Maßnahme nennen
+  - Beratungssatz umformulieren (defizitorientiert → wertschätzend)
+  - Fachlich ↔ Kund:innensprache übersetzen
+- **Feedback kurz und präzise:** „Richtig" / „Teilweise" / „Nicht ganz" + Begründung in
+  zwei bis drei Sätzen mit Verweis auf das Prinzip. Dann direkt die nächste Frage.
+- Bei Mini-Fällen ab Stufe 2 gehört der wichtigste Hebel zur erwarteten Antwort; im Feedback nennst du ihn ausdrücklich.
+- Nach je fünf Fragen ein kurzer Zwischenstand: was sitzt, was noch wackelt, Vorschlag für die Stufe.
+
+## Schwierigkeitslogik
+
+Stufen richten sich nach Denkkomplexität, nicht nach Lehrjahr.
+
+| Stufe | Komplexität | Beispiel |
+|---|---|---|
+| 1 | Ein Merkmal, ein klares Ziel | Breiter Kieferwinkel → optisch zurücknehmen |
+| 2 | Zwei Merkmale mit Wechselwirkung | Kurzer Hals + rundes Gesicht → Volumen oben, aber nicht seitlich |
+| 3 | Mehrere Merkmale plus Wunschkonflikt | Markante Nase im Profil, feines Haar, Wunsch nach stumpfem Kinnbob |
+| 4 | Vollständige Beratungssituation | Form, Farbe, Pflege und Gesprächsführung inkl. Einwand der Kundin |
+
+Schlage eine höhere Stufe vor, wenn drei Antworten in Folge sicher begründet waren –
+wechsle aber nicht ohne Zustimmung.
+
+## Grenzen
+
+- Keine medizinischen oder dermatologischen Aussagen (Haarausfall, Kopfhaut) – an Fachärzt:innen verweisen.
+- Keine Aussagen über Attraktivität oder „Schönheit" einer Person – nur über Wirkung.
+- Keine echten Namen oder erkennbaren Personendaten in Übungsfällen.</script>
+</div>
+
 <script>
 (function(){
   // ---------- Lehrgrafik (SVG) ----------
@@ -2891,9 +3246,14 @@ dl.steck dd{margin:0}
         '<button type="button" data-act="view" data-val="pilot"' + (st.view==="pilot" ? ' aria-current="page"' : '') + '>Fälle</button>' +
         '<button type="button" data-act="view" data-val="baukasten"' + (st.view==="baukasten" ? ' aria-current="page"' : '') + '>Baukasten</button>' +
         '<button type="button" data-act="view" data-val="wissen"' + (st.view==="wissen" ? ' aria-current="page"' : '') + '>Wissen</button>' +
+        '<button type="button" data-act="view" data-val="trainer"' + (st.view==="trainer" ? ' aria-current="page"' : '') + '>Trainer</button>' +
       '</nav>';
     var app = document.getElementById("app");
     document.documentElement.style.setProperty("--bar-h", document.querySelector(".appbar").offsetHeight + "px");
+    var trainer = document.getElementById("trainer");
+    trainer.hidden = st.view !== "trainer";
+    app.hidden = st.view === "trainer";
+    if (st.view === "trainer"){ app.innerHTML = ""; return; }
     app.classList.toggle("breit", st.view === "baukasten");
     app.innerHTML = st.view === "wissen" ? renderWissen() : st.view === "baukasten" ? renderBaukasten() : renderPilot();
     var tab = app.querySelector(".bk-tabs .on");
@@ -2994,7 +3354,257 @@ dl.steck dd{margin:0}
   document.addEventListener("pointercancel", bkEnde);
 
   st.bk = Object.assign({}, BK_START, bkLaden() || {});
+  window.FW_BILDQUELLEN = {VL:VL_BILDER, HB:HD_BILDER, HV:HD_VAR};
   render();
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  const T = document.getElementById("trainer");
+  const $ = s => T.querySelector(s);
+  // ---- Bilder: [[BILD id=... titel="..."]] -> Bild aus der Bildersammlung (Vorlagen aus dem Formwirkung-Lerntool)
+  const Q = window.FW_BILDQUELLEN || {};
+  const BILD_META = {"form-frau-rund": {"t": "Rundes Gesicht, Frau", "d": "[frontal | Gesichtsform: rund | Thema: rundes Gesicht strecken, Haar-Contouring | Scheitel: Seitenscheitel] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): rundes Gesicht, lang gestuft (Stufen ab Kinn), Seitenscheitel, helle Strähnen am Oberkopf und vorne, Seiten dunkler. Wirkung: streckt, Seiten schmaler.", "r": ["HD_BILDER", "frau", "rund"]}, "form-frau-oval": {"t": "Ovales Gesicht, Frau", "d": "[frontal | Gesichtsform: oval | Thema: ovales Gesicht | Scheitel: Mittelscheitel] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): ovales Gesicht, schulterlange lockere Wellen, Mittelscheitel, dezente helle Reflexe ums Gesicht. Wirkung: Proportionen erhalten, lebendig.", "r": ["HD_BILDER", "frau", "oval"]}, "form-frau-herz": {"t": "Herzform, Frau", "d": "[frontal | Gesichtsform: Herz | Thema: breite Stirn, schmales Kinn | Scheitel: Mittelscheitel (Curtain Bangs)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): Herzform (breite Stirn, schmales Kinn), Curtain Bangs über den Schläfen, Wellen mit Volumen auf Kinnhöhe, Ansatz dunkler, Längen hell (Balayage). Wirkung: Stirn kleiner, Kinnpartie voller.", "r": ["HD_BILDER", "frau", "aufsteigend"]}, "form-frau-trapez": {"t": "Trapezform, Frau", "d": "[frontal | Gesichtsform: Trapez | Thema: schmale Stirn, breiter Kiefer | Scheitel: Mittelscheitel] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): Trapez/abfallendes Dreieck (schmale Stirn, breiter Kiefer), gestuft mit Fülle am Oberkopf, helle Money-Piece-Strähnen an Ansatz und Schläfen, zum Kiefer dunkler. Wirkung: Blick nach oben, Kiefer tritt zurück.", "r": ["HD_BILDER", "frau", "abfallend"]}, "form-frau-eckig": {"t": "Eckiges Gesicht, Frau", "d": "[frontal | Gesichtsform: eckig | Thema: harte Linien weicher machen | Scheitel: nicht eindeutig (nicht erwähnen)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): eckiges Gesicht, weiche Wellen und fransige Stufen, keine geraden Kanten, dunkle Schatten an Schläfe und Kieferwinkel, feine helle Strähnen. Wirkung: harte Linien weicher.", "r": ["HD_BILDER", "frau", "viereck"]}, "form-frau-laenglich": {"t": "Längliches Gesicht, Frau", "d": "[frontal | Gesichtsform: länglich | Thema: langes Gesicht kürzer wirken lassen | Scheitel: keiner sichtbar (gerader Pony)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): längliches Gesicht, voller gerader Pony, Bob kinn- bis schulterlang mit Volumen seitlich. Wirkung: Gesicht kürzer und breiter.", "r": ["HD_BILDER", "frau", "rechteck"]}, "form-mann-rund": {"t": "Rundes Gesicht, Mann", "d": "[frontal | Gesichtsform: rund | Thema: rundes Gesicht strecken | Scheitel: keiner (Pompadour nach hinten)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): rundes Gesicht, Pompadour mit kurzem Fade an den Seiten, Höhe am Oberkopf. Wirkung: länger und schmaler.", "r": ["HD_BILDER", "mann", "rund"]}, "form-mann-oval": {"t": "Ovales Gesicht, Mann", "d": "[frontal | Gesichtsform: oval | Thema: ovales Gesicht | Scheitel: keiner deutlich (nach oben/hinten gestylt)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): ovales Gesicht, Quiff mit mittellangen Seiten, natürliche Bewegung. Wirkung: Proportionen unterstrichen.", "r": ["HD_BILDER", "mann", "oval"]}, "form-mann-herz": {"t": "Herzform, Mann", "d": "[frontal | Gesichtsform: Herz | Thema: breite Stirn, schmales Kinn | Scheitel: keiner (Pony in die Stirn)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): Herzform (breite Stirn, schmales Kinn), texturierter French Crop mit Pony in die Stirn, fülliger Vollbart. Wirkung: Stirn kaschiert, Kinn breiter.", "r": ["HD_BILDER", "mann", "aufsteigend"]}, "form-mann-trapez": {"t": "Trapezform, Mann", "d": "[frontal | Gesichtsform: Trapez | Thema: schmale Stirn, breiter Kiefer | Scheitel: Mittelscheitel] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): schmale Stirn, breiter Kiefer, voluminöses längeres Deckhaar mit hellen Strähnen oben, Seiten anliegend. Wirkung: Blick nach oben, Kiefer tritt zurück.", "r": ["HD_BILDER", "mann", "abfallend"]}, "form-mann-eckig": {"t": "Eckiges Gesicht, Mann", "d": "[frontal | Gesichtsform: eckig | Thema: harte Linien weicher machen | Scheitel: keiner (Locken)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): eckiges Gesicht, mittellange weiche Locken. Wirkung: harte Linien aufgebrochen, Züge weicher.", "r": ["HD_BILDER", "mann", "viereck"]}, "form-mann-laenglich": {"t": "Längliches Gesicht, Mann", "d": "[frontal | Gesichtsform: länglich | Thema: langes Gesicht kürzer wirken lassen | Scheitel: nicht eindeutig (nicht erwähnen)] LÖSUNGSBILD (zeigt schon eine passende Lösung, nicht als neutrale Ausgangslage verwenden): längliches Gesicht, kinnlanger texturierter Schnitt mit Pony und Fülle an den Seiten. Wirkung: kürzer und breiter.", "r": ["HD_BILDER", "mann", "rechteck"]}, "hd-frau-einfarbig": {"t": "Eine Farbe", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: Seitenscheitel] Hell-Dunkel-Reihe Frau (rundes Gesicht, gleicher Schnitt: lang gestuft, Seitenscheitel): Haar in EINER Farbe. Nichts tritt hervor.", "r": ["HD_VAR", "frau", "A"]}, "hd-frau-leicht": {"t": "Leichter Kontrast", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: Seitenscheitel] Hell-Dunkel-Reihe Frau: Oberkopf etwas heller, Seiten etwas dunkler (Zwischenstufe).", "r": ["HD_VAR", "frau", "M"]}, "hd-frau-gut": {"t": "Oben hell, Seiten dunkel", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: Seitenscheitel] Hell-Dunkel-Reihe Frau: Oberkopf hell, Seiten dunkel, weicher Übergang. Streckt, Gesicht wirkt schmaler.", "r": ["HD_VAR", "frau", "B"]}, "hd-frau-umgekehrt": {"t": "Oben dunkel, Seiten hell", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: Seitenscheitel] Hell-Dunkel-Reihe Frau: Oberkopf dunkel, Seiten hell. Seiten treten hervor, Gesicht wirkt breiter.", "r": ["HD_VAR", "frau", "umgekehrt"]}, "hd-frau-hart": {"t": "Harter Kontrast", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: Seitenscheitel] Hell-Dunkel-Reihe Frau: sehr hell direkt neben sehr dunkel, harter Übergang. Form zerfällt, wirkt unruhig.", "r": ["HD_VAR", "frau", "hart"]}, "hd-mann-einfarbig": {"t": "Eine Farbe", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: keiner (Pompadour)] Hell-Dunkel-Reihe Mann (rundes Gesicht, gleicher Schnitt: Pompadour mit kurzen Seiten): Haar in EINER Farbe.", "r": ["HD_VAR", "mann", "A"]}, "hd-mann-leicht": {"t": "Leichter Kontrast", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: keiner (Pompadour)] Hell-Dunkel-Reihe Mann: Oberkopf etwas heller, Seiten etwas dunkler.", "r": ["HD_VAR", "mann", "M"]}, "hd-mann-gut": {"t": "Oben hell, Seiten dunkel", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: keiner (Pompadour)] Hell-Dunkel-Reihe Mann: Oberkopf hell, Seiten dunkel, weicher Übergang. Streckt.", "r": ["HD_VAR", "mann", "B"]}, "hd-mann-umgekehrt": {"t": "Oben dunkel, Seiten hell", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: keiner (Pompadour)] Hell-Dunkel-Reihe Mann: Oberkopf dunkel, Seiten hell. Wirkt breiter.", "r": ["HD_VAR", "mann", "umgekehrt"]}, "hd-mann-hart": {"t": "Harter Kontrast", "d": "[frontal | Gesichtsform: rund | Thema: Hell-Dunkel-Wirkung, gleicher Schnitt | Scheitel: keiner (Pompadour)] Hell-Dunkel-Reihe Mann: sehr hell gegen sehr dunkel, harter Übergang. Unruhig.", "r": ["HD_VAR", "mann", "hart"]}, "auge-frau-vorher": {"t": "Vorher", "d": "[frontal | Gesichtsform: kein Thema | Thema: Augen öffnen, Pony | Scheitel: keiner sichtbar (gerader Pony)] Frau frontal: schwerer, dichter gerader Pony bis auf die Brauen, kinnlanger stumpfer Bob. Augen wirken schwer und klein.", "r": ["VL_BILDER", "auge", "frau", "A"]}, "auge-frau-nachher": {"t": "Nachher", "d": "[frontal | Gesichtsform: kein Thema | Thema: Augen öffnen, Pony | Scheitel: tiefer Seitenscheitel] Frau frontal: kurzer, leichter Schnitt, Vorderbereich seitlich nach oben geführt, Stirn und Augen frei. Augen wirken offen.", "r": ["VL_BILDER", "auge", "frau", "B"]}, "auge-mann-vorher": {"t": "Vorher", "d": "[frontal | Gesichtsform: kein Thema | Thema: Augen öffnen, Pony | Scheitel: keiner (Topfschnitt mit Pony)] Mann frontal: schwerer Topfschnitt mit dichtem Pony bis auf die Brauen. Augen wirken schwer.", "r": ["VL_BILDER", "auge", "mann", "A"]}, "auge-mann-nachher": {"t": "Nachher", "d": "[frontal | Gesichtsform: kein Thema | Thema: Augen öffnen, Pony | Scheitel: keiner deutlich (nach oben/seitlich gestylt)] Mann frontal: Deckhaar mit Volumen nach oben und zur Seite, Stirn frei. Augen wirken offen.", "r": ["VL_BILDER", "auge", "mann", "B"]}, "doppelkinn-frau-vorher": {"t": "Vorher", "d": "[PROFIL bzw. Halbprofil | Gesichtsform: nicht erkennbar | Thema: Doppelkinn, Kinnpartie | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Frau im Profil: glatter Bob, länger als kinnlang (Kante unter dem Kinn), flacher Oberkopf. Doppelkinn fällt auf.", "r": ["VL_BILDER", "dk", "frau", "A"]}, "doppelkinn-frau-nachher": {"t": "Nachher", "d": "[PROFIL bzw. Halbprofil | Gesichtsform: nicht erkennbar | Thema: Doppelkinn, Kinnpartie | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Frau (Halbprofil): Bob etwas unter dem Kinn mit Pony und mehr Fülle oben, Blick geht nach oben. Kinnpartie tritt zurück.", "r": ["VL_BILDER", "dk", "frau", "B"]}, "doppelkinn-mann-vorher": {"t": "Vorher", "d": "[PROFIL bzw. Halbprofil | Gesichtsform: nicht erkennbar | Thema: Doppelkinn, Kinnpartie | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Mann im Profil: sehr kurzer Fade, flacher Oberkopf. Doppelkinn fällt auf.", "r": ["VL_BILDER", "dk", "mann", "A"]}, "doppelkinn-mann-nachher": {"t": "Nachher", "d": "[PROFIL bzw. Halbprofil | Gesichtsform: nicht erkennbar | Thema: Doppelkinn, Kinnpartie | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Mann im Profil: Höhe und Bewegung am Oberkopf, Seiten kurz. Blick geht nach oben.", "r": ["VL_BILDER", "dk", "mann", "B"]}, "nase-frau-vorher": {"t": "Vorher", "d": "[PROFIL | Gesichtsform: nicht erkennbar | Thema: markante Nase im Profil, Hinterkopf | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Frau im Profil: glatter Bob, flach anliegend, wenig Hinterkopf. Nase wirkt groß.", "r": ["VL_BILDER", "nase", "frau", "A"]}, "nase-frau-nachher": {"t": "Nachher", "d": "[PROFIL | Gesichtsform: nicht erkennbar | Thema: markante Nase im Profil, Hinterkopf | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Frau im Profil: kurzer Schnitt mit Volumen am Hinter- und Oberkopf, bewegt. Nase wirkt im Verhältnis kleiner (Nase unverändert).", "r": ["VL_BILDER", "nase", "frau", "B"]}, "nase-mann-vorher": {"t": "Vorher", "d": "[PROFIL | Gesichtsform: nicht erkennbar | Thema: markante Nase im Profil, Hinterkopf | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Mann im Profil: kurzer Fade, flacher Hinterkopf. Nase wirkt markant.", "r": ["VL_BILDER", "nase", "mann", "A"]}, "nase-mann-nachher": {"t": "Nachher", "d": "[PROFIL | Gesichtsform: nicht erkennbar | Thema: markante Nase im Profil, Hinterkopf | Scheitel: im Profil nicht beurteilbar (nicht erwähnen)] Mann im Profil: Volumen am Oberkopf und hinten, Tolle. Profil wirkt ausgeglichener.", "r": ["VL_BILDER", "nase", "mann", "B"]}, "ohr-frau-vorher": {"t": "Vorher", "d": "[frontal | Gesichtsform: kein Thema | Thema: abstehende Ohren | Scheitel: keiner deutlich (Pixie)] Frau frontal: kurzer Pixie, Seiten kurz, abstehende Ohren frei sichtbar.", "r": ["VL_BILDER", "ohr", "frau", "A"]}, "ohr-frau-nachher": {"t": "Nachher", "d": "[frontal | Gesichtsform: kein Thema | Thema: abstehende Ohren | Scheitel: Seitenscheitel mit seitlichem Pony] Frau frontal: kinn- bis schulterlang gestuft mit seitlichem Pony, Ohren bedeckt.", "r": ["VL_BILDER", "ohr", "frau", "B"]}, "ohr-mann-vorher": {"t": "Vorher", "d": "[frontal | Gesichtsform: kein Thema | Thema: abstehende Ohren | Scheitel: keiner (kurz)] Mann frontal: kurze Seiten, abstehende Ohren gut sichtbar.", "r": ["VL_BILDER", "ohr", "mann", "A"]}, "ohr-mann-nachher": {"t": "Nachher", "d": "[frontal | Gesichtsform: kein Thema | Thema: abstehende Ohren | Scheitel: keiner deutlich (Locken)] Mann frontal: längere, lockige Seiten über den Ohren.", "r": ["VL_BILDER", "ohr", "mann", "B"]}, "rund-frau-vorher": {"t": "Vorher", "d": "[frontal | Gesichtsform: rund | Thema: rundes Gesicht | Scheitel: Seitenscheitel (Haar glatt zur Seite gekämmt, kein Pony)] Frau frontal, rundes Gesicht: runder, kinnlanger Bob mit Seitenscheitel, ohne Pony, Kante rund auf Kinnhöhe. Rundung wird betont.", "r": ["VL_BILDER", "rund", "frau", "A"]}, "rund-frau-nachher": {"t": "Nachher", "d": "[frontal | Gesichtsform: rund | Thema: rundes Gesicht | Scheitel: Seitenscheitel mit seitlichem Pony] Frau frontal, rundes Gesicht: ebenfalls Seitenscheitel, NEU ist der seitliche Pony und die schrägen Linien im kinnlangen Bob. Gesicht wirkt schmaler.", "r": ["VL_BILDER", "rund", "frau", "B"]}, "rund-mann-vorher": {"t": "Vorher", "d": "[frontal | Gesichtsform: rund | Thema: rundes Gesicht | Scheitel: keiner (Buzz Cut)] Mann frontal, rundes Gesicht: sehr kurzer Buzz Cut, flach. Rundung fällt auf.", "r": ["VL_BILDER", "rund", "mann", "A"]}, "rund-mann-nachher": {"t": "Nachher", "d": "[frontal | Gesichtsform: rund | Thema: rundes Gesicht | Scheitel: keiner (Tolle nach hinten)] Mann frontal, rundes Gesicht: Höhe am Oberkopf (Tolle), Seiten kurz. Gesicht wirkt länger.", "r": ["VL_BILDER", "rund", "mann", "B"]}};
+  const BILDER = {};
+  for (const [k, m] of Object.entries(BILD_META)) {
+    const r = m.r; let src = null;
+    try {
+      if (r[0] === "VL_BILDER") src = Q.VL[r[1]][r[2]][r[3]].src;
+      else if (r[0] === "HD_BILDER") src = Q.HB[r[1]][r[2]].src;
+      else src = Q.HV[r[1]][r[2]];
+    } catch (e) {}
+    if (src) BILDER[k] = { src, t: m.t, d: m.d };
+  }
+  function parseAttrs(s) {
+    const a = {}; let m; const re = /([a-zäöüß]+)\s*=\s*(?:"([^"]*)"|„([^“"]*)[“"]|([^\s\]]+))/gi;
+    while ((m = re.exec(s))) a[m[1].toLowerCase()] = (m[2] ?? m[3] ?? m[4] ?? "").trim();
+    return a;
+  }
+
+  function figure(attrs) {
+    const a = parseAttrs(attrs), b = BILDER[(a.id || "").toLowerCase()];
+    if (!b) return "";
+    const cap = a.titel || "";
+    return `<figure class="sketch"><img src="${b.src}" alt="${esc(cap || b.t)}" data-cap="${esc(cap || b.t)}">${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
+  }
+
+
+  const SKETCH_RULES = `BILDER: Lehrlinge brauchen Bilder. Diese App hat eine Sammlung echter Bleistift-Zeichnungen. Du kannst ein Bild zeigen, indem du in eine eigene Zeile schreibst:
+[[BILD id=rund-frau-vorher titel="Ausgangslage"]]
+Verwende NUR diese ids (andere werden nicht angezeigt):
+` + Object.entries(BILDER).map(([k, b]) => "- " + k + ": " + b.d).join("\n") + `
+Regeln für Bilder (sehr wichtig):
+- Ein Bild darf NUR gezeigt werden, wenn sein Thema, seine Ansicht und seine Gesichtsform genau zum Fall passen. Ein Bild, das die Person im PROFIL zeigt, nie für Gesichtsform-Fälle verwenden (Gesichtsform sieht man nur frontal).
+- Übung und Prüfen: Wähle ZUERST ein Bild und baue den Fall danach so, dass er genau zur Bildbeschreibung passt. Erfinde nie zuerst einen Fall und hänge dann ein ungefähr passendes Bild an. Erfinde keine Merkmale dazu, die im Bild nicht zu sehen sind (z. B. kurzer Hals, feines Haar), außer als ausdrücklich ergänzte Info („Zusätzlich weißt du: …").
+- Für Fälle ohne passendes neutrales Ausgangsbild (z. B. längliches Gesicht, Herz, Trapez, eckig): kein Ausgangsbild zeigen. Das LÖSUNGSBILD der Gesichtsform darfst du nach der Antwort als Beispiel-Lösung zeigen oder als Bildfrage („Was wurde hier gemacht, damit das Gesicht kürzer wirkt?").
+- Nutze Bilder so oft es passt, höchstens 3 pro Nachricht. Bildzeilen direkt hintereinander erscheinen nebeneinander.
+- Übung: Das Vorher-Bild als Ausgangslage, das Nachher- oder Lösungsbild erst NACH der Antwort der lernenden Person.
+- Prüfen: Viele Bildfragen, z. B. zwei Bilder als „A" und „B" (am besten aus derselben Reihe oder ein Vorher/Nachher-Paar) mit der Frage, welches z. B. schmaler wirkt und warum. Der titel darf die Lösung nie verraten.
+- Analyse eines eigenen Falls: nur ein Bild, wenn Gesichtsform UND Thema passen, mit titel="Beispiel: …".
+- Den Scheitel eines Bildes nennst du NUR so, wie er unter „Scheitel:" steht. Steht dort „nicht eindeutig" oder „nicht beurteilbar", erwähnst du den Scheitel gar nicht. Nie behaupten, ein Scheitel fehle oder sei anders, und Vorher/Nachher nie über einen Scheitel-Unterschied erklären, den die Beschreibungen nicht nennen.
+- Behaupte nichts über ein Bild, was nicht in seiner Beschreibung steht, und beschreibe Details (Scheitel, Länge) nur, wenn sie für die Frage wichtig sind. Sagt die lernende Person, dass ein Detail im Bild anders aussieht, gilt das Bild: gib ihr recht und arbeite damit weiter. Nenne die ids nie im Text.
+- Lieber kein Bild als ein unpassendes.`;
+
+  const RULES = "Du bist der Formwirkung-Trainer in einer Lern-App für Friseur-Lehrlinge und Stylist:innen. "
+    + "Halte dich in jeder Antwort strikt an diese Anleitung:\n\n" + $("#fw-rules").textContent.trim()
+    + "\n\n---\nFormat in dieser App: Antworte in einfachem Markdown (Absätze, **fett**, Aufzählungen mit '- ', "
+    + "Zwischenüberschriften mit '### ', Zitate mit '> ' für Beratungssätze). Keine Tabellen, keine Bilder, keine Links. "
+    + "Halte Antworten kurz genug für ein Handy. Stelle im Trainings- und Prüfmodus am Ende genau eine Frage.\n"
+    + "Sprache: einfach und in kurzen Sätzen, denn viele Nutzer:innen sind Lehrlinge. Erkläre jeden Fachbegriff beim ersten Vorkommen in wenigen Wörtern.\n\n"
+    + SKETCH_RULES;
+
+  const MODES = {
+    pruef:   { label: "Prüfen", quick: ["Weiß ich nicht", "Tipp bitte", "Zwischenstand", "Stufe höher"] },
+    training:{ label: "Übung", quick: ["Tipp bitte", "Lösung zeigen", "Nächster Fall", "Stufe höher"] },
+    analyse: { label: "Analyse", quick: ["Als Übung durchdenken", "Kundin will es trotzdem so", "Prüf mich dazu"] },
+  };
+
+  // Claude über den gesicherten Proxy des Lern-Tools (Supabase Edge Function), nur mit Anmeldung
+  const SB_URL = "https://wrxlaltgtgkdomklgrlj.supabase.co";
+  const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g";
+  let sbc = null;
+  try { sbc = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null; } catch (e) {}
+  async function token() {
+    if (!sbc) return null;
+    try { const { data } = await sbc.auth.getSession(); return data?.session?.access_token || null; } catch (e) { return null; }
+  }
+  async function proxySample(input, opts = {}) {
+    const system = input[0].content, msgs = [];
+    for (const t of input.slice(1)) {
+      if (msgs.length && msgs[msgs.length - 1].role === t.role) msgs[msgs.length - 1].content += "\n\n" + t.content;
+      else msgs.push({ role: t.role, content: t.content });
+    }
+    const tk = await token();
+    if (!tk) throw { code: "session_expired" };
+    let res;
+    try {
+      res = await fetch(SB_URL + "/functions/v1/rapid-function", {
+        method: "POST", signal: opts.signal,
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + tk },
+        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1500, system, messages: msgs })
+      });
+    } catch (e) { throw { code: e && e.name === "AbortError" ? "cancelled" : "upstream_error" }; }
+    let data = null; try { data = await res.json(); } catch (e) {}
+    if (res.status === 401 || res.status === 403) throw { code: "session_expired" };
+    if (res.status === 429) throw { code: "rate_limited" };
+    const text = (data && Array.isArray(data.content) ? data.content.map(c => c.text || "").join("") : "").trim();
+    if (!res.ok || !text) throw { code: "upstream_error" };
+    if (opts.onText) opts.onText({ text, delta: text });
+    return { text, truncated: data.stop_reason === "max_tokens" };
+  }
+  let mode = null, level = 1, turns = [], busy = false, ctl = null, sample;
+  const sampleReady = token().then(t => (sample = t ? proxySample : null));
+  sampleReady.then(s => { if (!s) $("#fw-noSample").hidden = false; });
+
+  document.addEventListener("click", e => {
+    const img = e.target.closest("#trainer .sketch img");
+    const lb = $("#fw-lightbox");
+    if (img) { lb.querySelector("img").src = img.src; lb.querySelector("figcaption").textContent = img.dataset.cap || ""; lb.hidden = false; }
+    else if (e.target.closest("#fw-lightbox")) lb.hidden = true;
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") $("#fw-lightbox").hidden = true; });
+
+  // ---- Start screen
+  T.querySelectorAll(".mode").forEach(b => b.onclick = () => {
+    mode = b.dataset.mode;
+    T.querySelectorAll(".mode").forEach(x => x.setAttribute("aria-pressed", x === b));
+    $("#fw-levelBox").hidden = mode === "analyse";
+    $("#fw-caseBox").hidden = mode !== "analyse";
+    if (mode === "analyse") $("#fw-caseText").focus();
+    updateStart();
+  });
+  T.querySelectorAll(".level").forEach(b => b.onclick = () => {
+    level = +b.dataset.level;
+    T.querySelectorAll(".level").forEach(x => x.setAttribute("aria-pressed", x === b));
+  });
+  T.querySelectorAll("[data-ex]").forEach(b => b.onclick = () => { $("#fw-caseText").value = b.dataset.ex; updateStart(); });
+  $("#fw-caseText").oninput = updateStart;
+  function updateStart() {
+    $("#fw-startBtn").disabled = !mode || (mode === "analyse" && $("#fw-caseText").value.trim().length < 10);
+  }
+
+  $("#fw-startBtn").onclick = () => {
+    const first = mode === "pruef" ? `Prüf mich, Stufe ${level}.`
+      : mode === "training" ? `Übung, Stufe ${level}. Gib mir einen Fall.`
+      : `Analysiere: ${$("#fw-caseText").value.trim()}`;
+    $("#fw-start").hidden = true;
+    $("#fw-chatView").hidden = false;
+    $("#fw-composer").hidden = false;
+    $("#fw-restart").hidden = false;
+    $("#fw-modePill").hidden = false;
+    $("#fw-modePill").textContent = MODES[mode].label + (mode === "analyse" ? "" : " · Stufe " + level);
+    renderQuick();
+    send(first);
+  };
+
+  $("#fw-restart").onclick = () => {
+    if (turns.length > 1 && !confirm("Neu starten? Der bisherige Verlauf geht verloren.")) return;
+    ctl?.abort();
+    turns = []; $("#fw-chat").innerHTML = "";
+    $("#fw-start").hidden = false; $("#fw-chatView").hidden = true; $("#fw-composer").hidden = true;
+    
+    window.scrollTo(0, 0);
+  };
+
+  function renderQuick() {
+    const q = $("#fw-quick"); q.innerHTML = "";
+    MODES[mode].quick.forEach(t => {
+      const b = document.createElement("button"); b.textContent = t;
+      b.onclick = () => { if (!busy) send(t === "Als Übung durchdenken" ? "Übung: denselben Fall bitte Schritt für Schritt mit mir durchdenken." : t); };
+      q.append(b);
+    });
+  }
+
+  // ---- Chat
+  const input = $("#fw-input"), sendBtn = $("#fw-sendBtn");
+  const SEND_ICON = sendBtn.innerHTML;
+  const STOP_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+  input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
+  input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && !matchMedia("(pointer:coarse)").matches) { e.preventDefault(); sendBtn.click(); } });
+  sendBtn.onclick = () => {
+    if (busy) { ctl?.abort(); return; }
+    const t = input.value.trim(); if (!t) return;
+    input.value = ""; input.style.height = "auto";
+    send(t);
+  };
+
+  function bubble(cls, html) {
+    const d = document.createElement("div"); d.className = "msg " + cls; d.innerHTML = html;
+    $("#fw-chat").append(d); d.scrollIntoView({ block: "end", behavior: "smooth" }); return d;
+  }
+
+  async function send(text) {
+    const u = bubble("user", ""); u.textContent = text;
+    turns.push({ role: "user", content: text });
+    const b = bubble("bot", '<span class="thinking">Denkt nach …</span>');
+    setBusy(true);
+    await sampleReady;
+    if (!sample) { b.classList.add("err"); b.textContent = "Der Trainer braucht deine Anmeldung. Bitte melde dich zuerst im Lern-Tool an und öffne danach diese Seite wieder."; setBusy(false); return; }
+    ctl = new AbortController();
+    const recent = turns.slice(-30);
+    while (recent.length && recent[0].role !== "user") recent.shift();
+    try {
+      const { text: answer, truncated } = await sample([{ role: "user", content: RULES }, ...recent], {
+        cache: false, signal: ctl.signal,
+        onText: ({ text }) => { b.innerHTML = md(text); },
+      });
+      b.innerHTML = md(answer) + (truncated ? '<p class="thinking">(Antwort wurde abgeschnitten – schreib „weiter".)</p>' : "");
+      turns.push({ role: "assistant", content: answer });
+    } catch (e) {
+      const keep = e?.text;
+      if (keep) { b.innerHTML = md(keep); turns.push({ role: "assistant", content: keep }); }
+      if (e?.code === "cancelled") { if (!keep) b.remove(); }
+      else {
+        const err = bubble("bot err", "");
+        err.textContent = ERR[e?.code] || "Da ist etwas schiefgegangen. Probier es bitte gleich noch einmal.";
+        if (!keep) b.remove();
+      }
+    } finally { setBusy(false); b.scrollIntoView({ block: "nearest" }); }
+  }
+
+  const ERR = {
+    not_granted: "Der Trainer braucht deine Anmeldung im Lern-Tool.",
+    sampling_disabled: "Claude ist für dieses Konto hier nicht verfügbar.",
+    rate_limited: "Gerade zu viele Anfragen. Bitte etwas später weitermachen.",
+    session_expired: "Deine Anmeldung ist abgelaufen oder fehlt. Bitte im Lern-Tool neu anmelden und diese Seite neu laden.",
+    refused: "Darauf kann der Trainer nicht antworten. Formuliere es bitte anders.",
+    prompt_too_large: "Der Verlauf ist zu lang geworden. Tippe oben auf „Neu starten“.",
+  };
+
+  function setBusy(v) {
+    busy = v; sendBtn.innerHTML = v ? STOP_ICON : SEND_ICON;
+    sendBtn.classList.toggle("stop", v); sendBtn.setAttribute("aria-label", v ? "Stopp" : "Senden");
+    $("#fw-quick").querySelectorAll("button").forEach(b => b.disabled = v);
+  }
+
+  // ---- Mini-Markdown (escaped first, so no HTML from the answer gets through)
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function inline(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>"); }
+  function md(src) {
+    const imgs = [];
+    src = src.replace(/\[\[\s*BILD\b([^\]]*)\]\]/gi, (_, a) => "\n@@IMG" + (imgs.push(a) - 1) + "@@\n").replace(/\[\[[^\]]*$/, "");
+    const out = []; let list = null, para = [], row = [];
+    const flushI = () => { if (row.length) { out.push('<div class="sketches">' + row.join("") + "</div>"); row = []; } };
+    const flushP = () => { if (para.length) { out.push("<p>" + para.map(inline).join("<br>") + "</p>"); para = []; } };
+    const flushL = () => { if (list) { out.push(`<${list.t}>` + list.items.map(i => "<li>" + inline(i) + "</li>").join("") + `</${list.t}>`); list = null; } };
+    for (const raw of src.split("\n")) {
+      const l = raw.trimEnd();
+      let m;
+      if (!l.trim()) { flushP(); flushL(); continue; }
+      if ((m = l.trim().match(/^@@IMG(\d+)@@$/))) { flushP(); flushL(); const fig = figure(imgs[+m[1]]); if (fig) row.push(fig); continue; }
+      flushI();
+      if ((m = l.match(/^#{1,6}\s+(.*)/))) { flushP(); flushL(); out.push("<h3>" + inline(m[1]) + "</h3>"); continue; }
+      if (/^(-{3,}|\*{3,})$/.test(l.trim())) { flushP(); flushL(); out.push("<hr>"); continue; }
+      if ((m = l.match(/^>\s?(.*)/))) { flushP(); flushL(); out.push("<blockquote>" + inline(m[1]) + "</blockquote>"); continue; }
+      if ((m = l.match(/^\s*[-*•]\s+(.*)/))) { flushP(); if (list?.t !== "ul") { flushL(); list = { t: "ul", items: [] }; } list.items.push(m[1]); continue; }
+      if ((m = l.match(/^\s*\d+[.)]\s+(.*)/))) { flushP(); if (list?.t !== "ol") { flushL(); list = { t: "ol", items: [] }; } list.items.push(m[1]); continue; }
+      flushL(); para.push(l);
+    }
+    flushP(); flushL(); flushI();
+    return out.join("");
+  }
+  $("#fw-heroSketches").innerHTML = figure('id=rund-frau-vorher titel="Vorher"') + figure('id=rund-frau-nachher titel="Nachher"');
 })();
 </script>
 </body>
