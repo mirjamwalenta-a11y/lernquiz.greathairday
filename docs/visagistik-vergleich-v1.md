@@ -240,7 +240,7 @@ Den eigenen Satz bestätigen und mit dem Mustersatz vergleichen: „Genau. Du ha
 
 Übungen liegen wie in der Schnittwerkstatt (`SB_FAELLE`) als statisches Array `VG_UEBUNGEN` in der HTML-Datei. **Keine neue Supabase-Tabelle in V1.** (Falls Übungen oder Ergebnisse später in Supabase gespeichert werden: RLS zuerst, siehe `CLAUDE.md`.)
 
-Bilder werden wie bisher über Platzhalter-Konstanten referenziert (`VG_BILD_…`). Die Seite von A und B wird beim Anzeigen zufällig gewählt.
+Bilder werden über die Schlüssel `VG_BILD_…` in `VG_BILDER` referenziert. Fehlt ein Foto, zeigt die App eine Zeichnung des Lehrkopfs mit demselben Haupthebel (`vgZeichnung`). Die Seite von A und B wird beim Anzeigen zufällig gewählt.
 
 | Feld | Inhalt |
 |---|---|

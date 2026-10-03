@@ -145,7 +145,7 @@ A und B nicht verwechseln: Was A und was B zeigt, steht in den Tabellen der Absc
 1. Ein bis zwei Minuten warten, bis GitHub Pages die Seite neu veröffentlicht hat.
 2. `https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/beratung-formwirkung.html` öffnen, Reiter **Visagistik**.
 3. Je Übung „Vergleich starten“: Ausgangsbild, A und B müssen als Foto erscheinen.
-4. **Steht noch eine Platzhalter-Kachel da?** Der Dateiname in der Kachel ist der, den die App sucht. Mit dem hochgeladenen Namen vergleichen. Häufigste Fehler: Großbuchstaben, `.jpeg` statt `.jpg`, Leerzeichen, A und B vertauscht.
+4. **Siehst du noch die Zeichnung statt des Fotos?** Dann findet die App die Datei nicht. Den hochgeladenen Namen mit der Tabelle in Schritt 1 vergleichen. Am Computer zeigt die Zeichnung den gesuchten Namen auch, wenn du mit der Maus darüberfährst. Häufigste Fehler: Großbuchstaben, `.jpeg` statt `.jpg`, Leerzeichen, A und B vertauscht.
 
 ### Foto später austauschen
 
