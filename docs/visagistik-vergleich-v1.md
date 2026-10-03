@@ -1,5 +1,7 @@
 # Visagistik-Vergleich – V1
 
+Umgesetzt in `beratung-formwirkung.html`, Reiter „Visagistik“ (Daten in `VG_UEBUNGEN`, Bilder in `VG_BILDER`).
+
 Ausbildungsmodul neben der Schnittwerkstatt. Drei Bereiche: **Augenbrauenform · Licht und Schatten · Hochsteckfrisur**.
 Grundprinzip in jeder Übung: **sehen → einordnen → entscheiden → begründen** (plus Gegenprobe).
 
@@ -191,11 +193,11 @@ Bewertet wird **immer von vorne, im Verhältnis zum Gesicht**, nicht die Steckar
 | **Ausgangslage** | Breite Stirn, ausgeprägte Wangenknochen, schmales, spitzes Kinn. |
 | **Kundenauftrag** | „Ich hab immer das Gefühl, meine Stirn ist so groß – und unten ist nix.“ |
 | **Zielbild** | Das obere Gesichtsdrittel tritt zurück, das untere bekommt optisch Breite. Das Gesicht wirkt ausgeglichen. |
-| **Variante A** | Schwerpunkt hoch: Dutt am Oberkopf, Volumen oben, Seiten anliegend, Stirn frei. |
-| **Variante B** | Schwerpunkt tief: Knoten im Nacken, seitlich auf Kinnhöhe sichtbar, gelöste Strähnen ab Kinnhöhe, weicher Seitenscheitel deckt die Stirnseite teilweise. Oberfläche in A und B gleich (leicht strukturiert). |
+| **Variante A** | Schwerpunkt hoch: Dutt am Oberkopf, Volumen oben, Seiten anliegend. Weicher Seitenscheitel, Oberfläche leicht strukturiert. |
+| **Variante B** | Schwerpunkt tief: Knoten im Nacken, seitlich auf Kinnhöhe sichtbar, gelöste Strähnen ab Kinnhöhe. Seitenscheitel und Oberfläche wie A, damit nur der Schwerpunkt wechselt. |
 | **Richtige Wahrnehmung** | Zone: Oberkopf (A) bzw. Nacken und Kinnhöhe (B). A betont die Stirn und streckt. B gibt dem unteren Gesichtsdrittel Breite. Oberfläche: **kein Unterschied**. |
 | **Richtige Entscheidung** | **B** |
-| **Begründung** | Der tiefe Schwerpunkt und das Volumen auf Kinnhöhe geben dem unteren Gesichtsdrittel Breite. Der Seitenscheitel nimmt die Stirnbreite zurück. Dadurch wirkt das Gesicht ausgeglichen. |
+| **Begründung** | Der tiefe Schwerpunkt und das Volumen auf Kinnhöhe geben dem unteren Gesichtsdrittel Breite. Dadurch tritt die Stirn zurück, das Gesicht wirkt ausgeglichen. |
 | **Typische Fehlentscheidung** | **A**, „weil ein hoher Dutt eleganter ist und streckt“. |
 | **Feedback** | „Du hast nach einer Stilregel entschieden („hoch = elegant“) statt nach dem Zielbild. Strecken war nicht gefragt. Die Kundin will, dass die Stirn zurücktritt. Der hohe Schwerpunkt zieht den Blick genau nach oben auf die Stirn. Schau, in welcher Variante das untere Gesichtsdrittel Breite bekommt.“ |
 | **Gegenprobe** | A wäre richtig für: *„Rundes Gesicht soll länger wirken, der Hals soll frei wirken.“* (Ablenker: „Eckiges Gesicht soll weicher wirken“ → Kontur aufgelöst; „Langes Gesicht soll kürzer wirken“ → Schwerpunkt tief, Volumen seitlich.) |
