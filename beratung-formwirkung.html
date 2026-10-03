@@ -251,6 +251,7 @@ dl.steck dd{margin:0}
 .vg-platzhalter{aspect-ratio:4/5;border:2px dashed var(--line);border-radius:var(--r-s);background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;color:var(--muted);font-size:var(--t-xs);line-height:1.35}
 .vg-ph-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ink);word-break:break-all}
 .vg-ph-hinweis{font-style:italic}
+.vg-bild img[hidden],.vg-platzhalter[hidden]{display:none}
 .vg-gruppe .chips{gap:6px}
 .vg-ziel p{margin:0}
 .vg-lesung,.vg-ergebnis{font-size:var(--t-s)}
@@ -3575,14 +3576,17 @@ wechsle aber nicht ohne Zustimmung.
   // A und B unterscheiden sich nur im Haupthebel. Die Seite (links/rechts) wird pro Durchgang zufällig vergeben.
   // Das Zielbild wird erst ab Schritt 3 gerendert. Rückmeldung immer nur zum frühesten Denkfehler.
 
-  // PLATZHALTER Bilder: Pfad zum echten Foto eintragen (z. B. "bilder/visagistik/braue01-a.jpg").
-  // Leerer Wert = Platzhalter-Kachel mit Bildschlüssel und Bildhinweis. Pro Paar: gleiches Gesicht, gleiches Licht,
-  // gleicher Blickwinkel, nur der Haupthebel wechselt. Keine Beschriftungen, Pfeile oder Wertungen im Bild.
+  // Bilder: Fotos mit genau diesen Dateinamen in den Ordner bilder/visagistik/ hochladen, fertig.
+  // Fehlt eine Datei, zeigt die App automatisch die Platzhalter-Kachel mit Dateiname und Bildhinweis.
+  // Vorgaben für die Fotos: docs/visagistik-bildvorlage-v1.md
   var VG_BILDER = {
-    VG_BILD_BRAUE01_AUSGANG:"", VG_BILD_BRAUE01_A:"", VG_BILD_BRAUE01_B:"",
-    VG_BILD_LICHT01_AUSGANG:"", VG_BILD_LICHT01_A:"", VG_BILD_LICHT01_B:"",
-    VG_BILD_HOCH01_AUSGANG:"",  VG_BILD_HOCH01_A:"",  VG_BILD_HOCH01_B:""
+    VG_BILD_BRAUE01_AUSGANG:"bilder/visagistik/braue01-ausgang.jpg", VG_BILD_BRAUE01_A:"bilder/visagistik/braue01-a.jpg", VG_BILD_BRAUE01_B:"bilder/visagistik/braue01-b.jpg",
+    VG_BILD_LICHT01_AUSGANG:"bilder/visagistik/licht01-ausgang.jpg", VG_BILD_LICHT01_A:"bilder/visagistik/licht01-a.jpg", VG_BILD_LICHT01_B:"bilder/visagistik/licht01-b.jpg",
+    VG_BILD_HOCH01_AUSGANG:"bilder/visagistik/hoch01-ausgang.jpg",   VG_BILD_HOCH01_A:"bilder/visagistik/hoch01-a.jpg",   VG_BILD_HOCH01_B:"bilder/visagistik/hoch01-b.jpg"
   };
+
+  // Nach dem Austausch eines Fotos hochzählen, damit Handys nicht das alte Bild aus dem Speicher zeigen
+  var VG_BILD_VERSION = 1;
 
   var VG_SCHRITTE = ["Sehen", "Wirkung lesen", "Entscheiden", "Begründen", "Gegenprobe"];
 
@@ -3753,11 +3757,12 @@ wechsle aber nicht ohne Zustimmung.
   function vgText(liste, id){ var t = liste.filter(function(x){ return x[0] === id; })[0]; return t ? t[1] : ""; }
 
   function vgBild(key, label, hinweis, gross){
-    var src = VG_BILDER[key];
+    var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key;
+    // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt
     return '<figure class="vg-bild' + (gross ? ' gross' : '') + '">' +
-      (src ? '<img src="' + src + '" alt="' + label + '">'
-           : '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"><span class="vg-ph-id">' + key + '</span><span>Bild folgt</span>' +
-               (hinweis ? '<span class="vg-ph-hinweis">' + hinweis + '</span>' : '') + '</div>') +
+      (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '') +
+      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span>' +
+        (hinweis ? '<span class="vg-ph-hinweis">' + hinweis + '</span>' : '') + '</div>' +
       '<figcaption>' + label + '</figcaption></figure>';
   }
   // A und B in zufälliger Reihenfolge, nur mit „A“ und „B“ beschriftet

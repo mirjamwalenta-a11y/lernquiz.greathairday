@@ -27,8 +27,7 @@ Fachliche Grundlage: `docs/visagistik-vergleich-v1.md`. Gilt für Fotoshooting u
 | Kleidung | schlichtes dunkles Oberteil mit rundem Ausschnitt, kein Schmuck |
 | Bearbeitung | gleiche Farbkorrektur für alle drei Bilder einer Übung, keine Weichzeichner- oder Beauty-Filter |
 
-**Ablage und Einbau:** Dateien in `bilder/visagistik/` ablegen und den Pfad in `VG_BILDER` in `beratung-formwirkung.html` eintragen, z. B.
-`VG_BILD_BRAUE01_A:"bilder/visagistik/braue01-a.jpg"`. Der Platzhalter verschwindet dann automatisch.
+**Ablage:** Dateien mit genau den Namen aus den Tabellen unten in den Ordner `bilder/visagistik/` hochladen. Am Code muss nichts geändert werden. Schritt für Schritt: Abschnitt 7.
 
 **Reihenfolge beim Fotografieren:** Ausgangsbild zuerst, dann A, dann B, ohne die Kamera zu bewegen und ohne dass das Model aufsteht. Zwischen A und B nur den Haupthebel ändern.
 
@@ -110,3 +109,44 @@ Vor dem Eintragen in `VG_BILDER` die drei Bilder nebeneinander legen und prüfen
 - [ ] A und B sind gleich sorgfältig gemacht, keine wirkt wie der „Fehler“
 - [ ] Keine Beschriftung, keine Linien, keine Wertung im Bild
 - [ ] Freigabe der abgebildeten Person liegt vor (bei Fotos)
+
+---
+
+## 7. Fotos einfügen – Schritt für Schritt
+
+Erst PR #28 mergen. Den Ordner `bilder/visagistik/` gibt es auf `main` erst danach.
+
+### Schritt 1 – Fotos vorbereiten
+
+1. **Format JPG.** iPhone-Fotos sind oft HEIC. Entweder vor dem Shooting unter *Einstellungen → Kamera → Formate* „Maximale Kompatibilität“ wählen, oder die Fotos am Computer als JPG exportieren.
+2. **Zuschneiden auf 4:5 Hochformat.** Alle drei Bilder einer Übung mit genau demselben Ausschnitt zuschneiden.
+3. **Verkleinern** auf ca. 1200 × 1500 px. Jede Datei unter 400 KB, sonst lädt die Seite am Handy langsam.
+4. **Umbenennen**, exakt so, alles klein, Endung `.jpg` (nicht `.JPG`, nicht `.jpeg`):
+
+| Übung | Ausgangsbild | Variante A | Variante B |
+|---|---|---|---|
+| 1 Augenbraue | `braue01-ausgang.jpg` | `braue01-a.jpg` | `braue01-b.jpg` |
+| 2 Licht und Schatten | `licht01-ausgang.jpg` | `licht01-a.jpg` | `licht01-b.jpg` |
+| 3 Hochsteckfrisur | `hoch01-ausgang.jpg` | `hoch01-a.jpg` | `hoch01-b.jpg` |
+
+A und B nicht verwechseln: Was A und was B zeigt, steht in den Tabellen der Abschnitte 3 bis 5.
+
+### Schritt 2 – Hochladen (am Computer im Browser)
+
+1. Auf GitHub das Repo `lernquiz.greathairday` öffnen.
+2. Ordner **`bilder`** → Ordner **`visagistik`** anklicken.
+3. Oben rechts **Add file → Upload files**.
+4. Die Fotos in das Feld ziehen. Es können alle neun auf einmal sein oder nur die einer Übung.
+5. Unten bei „Commit changes“ kurz eintragen, z. B. „Visagistik: Fotos Übung 1“, und **Commit changes** klicken (direkt auf `main`).
+
+### Schritt 3 – Prüfen
+
+1. Ein bis zwei Minuten warten, bis GitHub Pages die Seite neu veröffentlicht hat.
+2. `https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/beratung-formwirkung.html` öffnen, Reiter **Visagistik**.
+3. Je Übung „Vergleich starten“: Ausgangsbild, A und B müssen als Foto erscheinen.
+4. **Steht noch eine Platzhalter-Kachel da?** Der Dateiname in der Kachel ist der, den die App sucht. Mit dem hochgeladenen Namen vergleichen. Häufigste Fehler: Großbuchstaben, `.jpeg` statt `.jpg`, Leerzeichen, A und B vertauscht.
+
+### Foto später austauschen
+
+1. Neues Foto mit **demselben Namen** hochladen wie in Schritt 2. GitHub ersetzt die alte Datei.
+2. Damit Handys nicht das alte Bild aus dem Speicher zeigen: `beratung-formwirkung.html` auf GitHub öffnen, Stift-Symbol (*Edit*), nach `VG_BILD_VERSION = 1` suchen, die Zahl um eins erhöhen, **Commit changes**.
