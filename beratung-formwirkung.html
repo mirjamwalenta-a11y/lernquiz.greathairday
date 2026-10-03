@@ -250,7 +250,6 @@ dl.steck dd{margin:0}
 .vg-bild figcaption{font-family:var(--f-display);font-weight:800;font-size:var(--t-l);color:var(--ink)}
 .vg-platzhalter{aspect-ratio:4/5;border:2px dashed var(--line);border-radius:var(--r-s);background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;color:var(--muted);font-size:var(--t-xs);line-height:1.35}
 .vg-ph-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ink);word-break:break-all}
-.vg-ph-hinweis{font-style:italic}
 .vg-bild img[hidden],.vg-platzhalter[hidden]{display:none}
 .vg-gruppe .chips{gap:6px}
 .vg-ziel p{margin:0}
@@ -3756,19 +3755,19 @@ wechsle aber nicht ohne Zustimmung.
   function vgKarte(u, slot, id){ return u.satzbausteine[slot].filter(function(k){ return k.id === id; })[0]; }
   function vgText(liste, id){ var t = liste.filter(function(x){ return x[0] === id; })[0]; return t ? t[1] : ""; }
 
-  function vgBild(key, label, hinweis, gross){
+  function vgBild(key, label, gross){
     var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key;
-    // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt
+    // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt.
+    // Er zeigt nur den gesuchten Dateinamen, keine Bildbeschreibung, damit Schritt 1 nicht verraten wird.
     return '<figure class="vg-bild' + (gross ? ' gross' : '') + '">' +
       (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '') +
-      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span>' +
-        (hinweis ? '<span class="vg-ph-hinweis">' + hinweis + '</span>' : '') + '</div>' +
+      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span></div>' +
       '<figcaption>' + label + '</figcaption></figure>';
   }
   // A und B in zufälliger Reihenfolge, nur mit „A“ und „B“ beschriftet
   function vgPaar(u, r){
     var reihe = r.links === "a" ? ["a", "b"] : ["b", "a"];
-    return '<div class="pair vg-paar">' + reihe.map(function(k){ return vgBild(vgVar(u, k).bild, k.toUpperCase(), vgVar(u, k).bildhinweis); }).join("") + '</div>';
+    return '<div class="pair vg-paar">' + reihe.map(function(k){ return vgBild(vgVar(u, k).bild, k.toUpperCase()); }).join("") + '</div>';
   }
   function vgChip(act, key, val, label, on, gesperrt){
     return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="' + act + '" data-key="' + key + '" data-val="' + val + '"' + (gesperrt ? ' disabled' : '') + '>' + label + '</button>';
@@ -3918,7 +3917,7 @@ wechsle aber nicht ohne Zustimmung.
     var inhalt;
 
     if (n === 0){
-      inhalt = '<section class="card fig">' + vgBild(u.ausgangslage.bild, "Ausgangslage", "Ausgangsgesicht ohne die Veränderung aus A oder B.", true) + '</section>' +
+      inhalt = '<section class="card fig">' + vgBild(u.ausgangslage.bild, "Ausgangslage", true) + '</section>' +
         '<section class="card text"><h2>Ausgangslage</h2><p>' + u.ausgangslage.text + '</p>' +
         '<p class="note">Gleich siehst du dasselbe Gesicht in zwei Varianten, A und B. Sie unterscheiden sich nur in einem Punkt. Du schaust zuerst genau hin und beschreibst die Wirkung. Das Zielbild bekommst du erst danach.</p>' +
         '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="vgstart">Vergleich starten' + ICON_WEITER + '</button></div></section>';
@@ -3965,7 +3964,7 @@ wechsle aber nicht ohne Zustimmung.
           vgGruppe("Zielbild wählen", u.gegenprobe.optionen.map(function(o){ return vgChip("vgset", "gp", o.id, o.text, r.gp === o.id, gesperrt); }).join(""));
       }
       var bild = n === 5
-        ? (function(){ var nicht = u.richtige_entscheidung === "a" ? "b" : "a"; return vgBild(vgVar(u, nicht).bild, nicht.toUpperCase(), vgVar(u, nicht).bildhinweis, true); })()
+        ? (function(){ var nicht = u.richtige_entscheidung === "a" ? "b" : "a"; return vgBild(vgVar(u, nicht).bild, nicht.toUpperCase(), true); })()
         : vgPaar(u, r);
       inhalt = '<div class="bk-grid sb-grid">' +
         '<section class="card fig sb-fig vg-fig">' + bild + lage + '</section>' +
