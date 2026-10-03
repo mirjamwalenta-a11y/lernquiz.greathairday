@@ -251,9 +251,7 @@ dl.steck dd{margin:0}
 .vg-platzhalter{aspect-ratio:4/5;border:2px dashed var(--line);border-radius:var(--r-s);background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;color:var(--muted);font-size:var(--t-xs);line-height:1.35}
 .vg-ph-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ink);word-break:break-all}
 .vg-ph-hinweis{font-style:italic}
-.vg-bild img[hidden],.vg-platzhalter[hidden],.vg-zeichnung[hidden]{display:none}
-.vg-zeichnung{--ink:#2B221D;--surface:#F1DDCC;aspect-ratio:4/5;max-width:100%;border-radius:var(--r-s);overflow:hidden;background:#E8E7E4}
-.vg-zeichnung svg{display:block;width:100%;height:100%}
+.vg-bild img[hidden],.vg-platzhalter[hidden]{display:none}
 .vg-gruppe .chips{gap:6px}
 .vg-ziel p{margin:0}
 .vg-lesung,.vg-ergebnis{font-size:var(--t-s)}
@@ -2708,7 +2706,7 @@ wechsle aber nicht ohne Zustimmung.
     if (o.haar !== false) s += '<g class="' + (o.einblenden ? 'sim-in' : '') + '">' +
       (o.haarSvg || (vl ? fzMannVorlage(vl.typ, g, vl) : fzHaar(k.frisur, g) + fzPony(k.pony, g, gesicht, id))) + '</g>';
     // Gesichtszüge
-    if (o.brauen !== false) s += fzBraue(art, k, g, -1, ink) + fzBraue(art, k, g, 1, ink);
+    s += fzBraue(art, k, g, -1, ink) + fzBraue(art, k, g, 1, ink);
     if (o.augen !== false) s += fzAuge(art, k, g, -1, ink) + fzAuge(art, k, g, 1, ink);
     s += fzNase(art, k, g, ink) + fzMund(art, o.laecheln ? Object.assign({}, k, {laecheln:true}) : k, g, ink);
     s += '<g class="' + (o.einblenden ? 'sim-in' : '') + '">' + bkBart(k.bart, g, id) + '</g>';
@@ -3590,121 +3588,6 @@ wechsle aber nicht ohne Zustimmung.
   // Nach dem Austausch eines Fotos hochzählen, damit Handys nicht das alte Bild aus dem Speicher zeigen
   var VG_BILD_VERSION = 1;
 
-  // ---------- Zeichnungen, solange die Fotos fehlen ----------
-  // Lehrkopf von vorne (fzKopf) mit Hautton. Pro Übung ändert sich zwischen A und B nur der Haupthebel.
-  var VG_FARBE = {grund:"#E8E7E4", haut:"#F1DDCC", tinte:"#2B221D", braue:"#4E3627",
-    schatten:"#8E7363", licht:"#FFFFFF", rouge:"#E2867D",
-    haar:{BRAUE01:"#6E4B34", LICHT01:"#B59466", HOCH01:"#3B2A20"}};
-  function vgPkt(p){ return p[0].toFixed(1) + "," + p[1].toFixed(1); }
-
-  // Braue als gefüllte, auslaufende Form. s = -1 links im Bild, 1 rechts. form: ausgang | winkel | rund
-  // Brauenkopf und Brauenende liegen in allen Formen gleich; „winkel“ und „rund“ sind gleich hoch.
-  function vgBraue(g, s, form){
-    var ex = g.ex, yB = g.yB, x0 = ex - 19, x2 = ex + 27, y0 = yB + 3, n = 40, M = [];
-    if (form === "winkel"){
-      var x1 = ex + 8, y1 = yB - 8, roh = [];
-      for (var i = 0; i <= n; i++){
-        var t = i / n, a = t < 0.6 ? t / 0.6 : (t - 0.6) / 0.4;
-        roh.push(t < 0.6 ? [x0 + (x1 - x0) * a, y0 + (y1 - y0) * a] : [x1 + (x2 - x1) * a, y1 + (y0 - y1) * a - 2 * Math.sin(Math.PI * a)]);
-      }
-      // Ecke weich runden: zweimal gleitender Mittelwert
-      for (var r = 0; r < 2; r++) roh = roh.map(function(p, i){ var a = roh[i - 1] || p, b = roh[i + 1] || p; return [(a[0] + p[0] + b[0]) / 3, (a[1] + p[1] + b[1]) / 3]; });
-      M = roh;
-    } else {
-      var h = form === "rund" ? 11 : 6;
-      for (var j = 0; j <= n; j++){ var x = x0 + (x2 - x0) * j / n, w = x < ex ? ex - x0 : x2 - ex, q = (x - ex) / w; M.push([x, y0 - h * (1 - q * q)]); }
-    }
-    var oben = [], unten = [];
-    M.forEach(function(p, i){
-      var a = M[i - 1] || p, b = M[i + 1] || p, dx = b[0] - a[0], dy = b[1] - a[1], l = Math.sqrt(dx * dx + dy * dy) || 1, t = i / n;
-      var d = (t < 0.55 ? 8 - 2 * t / 0.55 : 6 - 4.6 * (t - 0.55) / 0.45) / 2;
-      oben.push([p[0] + dy / l * d, p[1] - dx / l * d]); unten.push([p[0] - dy / l * d, p[1] + dx / l * d]);
-    });
-    var ring = oben.concat(unten.reverse()).map(function(p){ return [200 + s * p[0], p[1]]; });
-    return '<path d="M' + ring.map(vgPkt).join(" L") + ' Z" fill="' + VG_FARBE.braue + '" stroke="' + VG_FARBE.braue + '" stroke-width=".6" stroke-linejoin="round"/>';
-  }
-
-  // Haar straff zurück (Kappe über der Stirn). scheitel: weicher Seitenscheitel rechts im Bild, Haar deckt links ca. ein Viertel der Stirn
-  function vgKappe(g, farbe, scheitel){
-    var F = g.F, t = F.top, yS = g.yE - 44, sp = function(p){ return [400 - p[0], p[1]]; };
-    var aussenL = [[200 - F.f / 2 - 3, yS], [200 - F.f / 2 - 9, BK_Y.F - 12], [200 - F.f * 0.42, t - 6]];
-    var innenL = scheitel ? [[200 - F.f * 0.2, t + 46], [200 - F.f / 2 + 6, BK_Y.F + 16]] : [[200 - F.f * 0.3, t + 20], [200 - F.f / 2 + 7, BK_Y.F]];
-    var innenR = scheitel ? [[200 + F.f / 2 - 7, BK_Y.F - 2], [200 + F.f * 0.3, t + 16]] : [sp(innenL[1]), sp(innenL[0])];
-    var ring = aussenL.concat([[200, t - 16]], aussenL.slice().reverse().map(sp), innenR, [[scheitel ? 200 + F.f * 0.05 : 200, t + 13]], innenL);
-    var striche = "";
-    for (var k = -3; k <= 3; k++){
-      var x0 = scheitel ? 200 + F.f * 0.2 : 200 + k * F.f * 0.12, y0 = scheitel ? t - 10 : t + 16, x1 = scheitel ? 200 + k * F.f * 0.13 - F.f * 0.04 : 200 + k * F.f * 0.06, y1 = scheitel ? t + 20 + Math.abs(k - 3) * 4 : t - 12;
-      striche += 'M' + vgPkt([x0, y0]) + ' Q' + vgPkt([(x0 + x1) / 2 + (scheitel ? 0 : k * 3), Math.min(y0, y1) - 6]) + ' ' + vgPkt([x1, y1]) + ' ';
-    }
-    if (scheitel) striche += 'M' + vgPkt([200 + F.f * 0.2, t - 15]) + ' L' + vgPkt([200 + F.f * 0.21, t + 15]);
-    return '<path d="' + glattZu(ring) + '" fill="' + farbe + '" stroke="' + VG_FARBE.tinte + '" stroke-width="2.2" stroke-linejoin="round"/>' +
-      '<path d="' + striche + '" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="1.1" stroke-linecap="round"/>';
-  }
-
-  // Licht, Schatten und Rouge (Übung 2): gleiche Farben und Intensität in A und B, nur die Richtung wechselt
-  function vgMakeup(g, art, id){
-    if (!art) return "";
-    var F = g.F, yE = g.yE, yN = g.yN, el = function(cx, cy, rx, ry, rot){
-      return '<ellipse cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" rx="' + rx + '" ry="' + ry + '"' + (rot ? ' transform="rotate(' + rot + ' ' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ')"' : '') + '/>';
-    };
-    var sch = "", li = "", ro = "";
-    [-1, 1].forEach(function(s){
-      if (art === "A"){
-        li += el(200 + s * F.c * 0.27, yE + 30, 26, 7);
-        ro += el(200 + s * F.c * 0.3, yE + 45, 24, 8);
-      } else {
-        sch += el(200 + s * (F.c / 2 - 17), (yE + yN) / 2 + 24, 8, 30, s * 14);
-        ro += el(200 + s * F.c * 0.3, yE + 32, 24, 8, -s * 28);
-      }
-    });
-    if (art === "A"){ sch += el(200, F.top + 24, F.f * 0.5, 13) + el(200, F.cy - 3, F.ch * 0.6 + 6, 11); }
-    else { li += el(200, F.top + 50, 8, 22) + el(200, (yE + yN) / 2 + 4, 4.5, 30) + el(200, F.cy - 24, 8, 10); }
-    return '<defs><clipPath id="vgc' + id + '"><path d="' + bkGesicht(F) + '"/></clipPath><filter id="vgf' + id + '" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter></defs>' +
-      '<g clip-path="url(#vgc' + id + ')"><g filter="url(#vgf' + id + ')">' +
-        '<g fill="' + VG_FARBE.schatten + '" opacity=".55">' + sch + '</g>' +
-        '<g fill="' + VG_FARBE.rouge + '" opacity=".5">' + ro + '</g>' +
-        '<g fill="' + VG_FARBE.licht + '" opacity=".95">' + li + '</g></g></g>';
-  }
-
-  // Übung 3: Dutt oben (A) oder Knoten tief im Nacken, links im Bild auf Kinnhöhe (B)
-  function vgDutt(g, farbe){
-    var F = g.F, cx = 200, cy = F.top - 42;
-    return '<circle cx="' + cx + '" cy="' + cy + '" r="33" fill="' + farbe + '" stroke="' + VG_FARBE.tinte + '" stroke-width="2.2"/>' +
-      '<path d="M' + (cx - 20) + ',' + (cy + 4) + ' Q' + cx + ',' + (cy - 26) + ' ' + (cx + 20) + ',' + (cy - 2) + ' M' + (cx - 14) + ',' + (cy + 16) + ' Q' + (cx + 4) + ',' + (cy - 6) + ' ' + (cx + 22) + ',' + (cy + 12) + '" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.2" stroke-linecap="round"/>';
-  }
-  function vgKnoten(g, farbe){
-    // Haar läuft hinter dem Ohr nach unten (größtenteils vom Gesicht verdeckt) in den Knoten auf Kinnhöhe
-    var F = g.F, kx = 200 - F.j / 2 - 8, ky = F.cy - 44, xr = 200 - F.c / 2;
-    var band = glattZu([[xr + 10, g.yE - 46], [xr - 6, g.yE + 10], [kx - 10, ky - 12], [kx + 18, ky - 6], [xr + 22, g.yE + 10], [xr + 24, g.yE - 46]]);
-    var str = "";
-    [[-10, 0], [2, 6], [12, -4]].forEach(function(d){
-      var x = kx + d[0], y = ky + 16;
-      str += 'M' + x + ',' + y + ' C' + (x - 6) + ',' + (y + 14) + ' ' + (x + 6 + d[1]) + ',' + (y + 26) + ' ' + (x + d[1]) + ',' + (y + 44) + ' ';
-    });
-    return '<path d="' + band + '" fill="' + farbe + '" stroke="' + VG_FARBE.tinte + '" stroke-width="2.2" stroke-linejoin="round"/>' +
-      '<path d="' + str + '" fill="none" stroke="' + farbe + '" stroke-width="3" stroke-linecap="round"/>' +
-      '<path d="' + str + '" fill="none" stroke="' + VG_FARBE.tinte + '" stroke-width=".8" stroke-linecap="round" opacity=".7"/>' +
-      '<ellipse cx="' + kx + '" cy="' + ky + '" rx="24" ry="21" fill="' + farbe + '" stroke="' + VG_FARBE.tinte + '" stroke-width="2.2"/>' +
-      '<path d="M' + (kx - 14) + ',' + (ky + 2) + ' Q' + kx + ',' + (ky - 16) + ' ' + (kx + 15) + ',' + (ky + 1) + '" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1.2"/>';
-  }
-
-  // Bildschlüssel → Zeichnung. Gibt "" zurück, wenn es für den Schlüssel keine Zeichnung gibt.
-  function vgZeichnung(key, label){
-    var m = /^VG_BILD_(BRAUE01|LICHT01|HOCH01)_(AUSGANG|A|B)$/.exec(key); if (!m) return "";
-    var ue = m[1], v = m[2];
-    if (!BK_FORM.vg_lang) BK_FORM.vg_lang = {top:92, f:144, c:152, j:132, ch:72, cy:432};
-    var form = {BRAUE01:"rund", LICHT01:"vg_lang", HOCH01:"aufsteigend"}[ue], g = bkGeo(form), id = ++uid, farbe = VG_FARBE.haar[ue];
-    var k = {art:"frau", form:form, frisur:"kurz", pony:"kein", bart:"kein"};
-    var hinten = ue === "HOCH01" && v === "B" ? vgKnoten(g, farbe) : "";
-    var haar = (ue === "LICHT01" ? vgMakeup(g, v === "AUSGANG" ? null : v, id) : "") +
-      (ue === "HOCH01" && v === "A" ? vgDutt(g, farbe) : "") + vgKappe(g, farbe, ue === "HOCH01");
-    var brauen = ue === "BRAUE01" ? vgBraue(g, -1, {AUSGANG:"ausgang", A:"winkel", B:"rund"}[v]) + vgBraue(g, 1, {AUSGANG:"ausgang", A:"winkel", B:"rund"}[v]) : "";
-    // Ausschnitt je Übung im Format 4:5, eng um das Gesicht (Übung 3 mit Platz für den Dutt)
-    var vb = {BRAUE01:[80, 100, 240, 300], LICHT01:[48, 70, 304, 380], HOCH01:[44, 30, 312, 390]}[ue];
-    return '<svg viewBox="' + vb.join(" ") + '" role="img" aria-label="Zeichnung ' + label + '"><rect x="' + vb[0] + '" y="' + vb[1] + '" width="' + vb[2] + '" height="' + vb[3] + '" fill="' + VG_FARBE.grund + '"/>' +
-      hinten + fzKopf(k, {haarSvg:haar, brauen:ue !== "BRAUE01"}) + brauen + '</svg>';
-  }
-
   var VG_SCHRITTE = ["Sehen", "Wirkung lesen", "Entscheiden", "Begründen", "Gegenprobe"];
 
   // Tags der Satzbausteine: a / b = beschreibt diese Variante · gleich = in A und B gleich · leer = Leerwort
@@ -3874,14 +3757,12 @@ wechsle aber nicht ohne Zustimmung.
   function vgText(liste, id){ var t = liste.filter(function(x){ return x[0] === id; })[0]; return t ? t[1] : ""; }
 
   function vgBild(key, label, hinweis, gross){
-    var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key, zeichnung = vgZeichnung(key, label);
-    // Ersatz (Zeichnung, sonst Platzhalter) liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt
-    var ersatz = zeichnung
-      ? '<div class="vg-zeichnung" title="Zeichnung – Foto ' + datei + ' fehlt noch">' + zeichnung + '</div>'
-      : '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span>' +
-          (hinweis ? '<span class="vg-ph-hinweis">' + hinweis + '</span>' : '') + '</div>';
+    var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key;
+    // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt
     return '<figure class="vg-bild' + (gross ? ' gross' : '') + '">' +
-      (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' + ersatz.replace('<div ', '<div hidden ') : ersatz) +
+      (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '') +
+      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span>' +
+        (hinweis ? '<span class="vg-ph-hinweis">' + hinweis + '</span>' : '') + '</div>' +
       '<figcaption>' + label + '</figcaption></figure>';
   }
   // A und B in zufälliger Reihenfolge, nur mit „A“ und „B“ beschriftet

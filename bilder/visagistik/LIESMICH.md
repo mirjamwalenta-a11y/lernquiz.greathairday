@@ -1,7 +1,7 @@
 # Fotos für den Visagistik-Vergleich
 
 In diesen Ordner gehören die neun Fotos für den Reiter „Visagistik“ in `beratung-formwirkung.html`.
-Die App sucht genau diese Dateinamen. Fehlt eine Datei, zeigt sie an dieser Stelle eine Zeichnung. Sobald das Foto da ist, ersetzt es die Zeichnung.
+Die App sucht genau diese Dateinamen. Fehlt eine Datei, zeigt sie an dieser Stelle eine Platzhalter-Kachel.
 
 | Übung | Ausgangsbild | Variante A | Variante B |
 |---|---|---|---|
