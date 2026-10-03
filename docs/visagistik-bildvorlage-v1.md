@@ -2,6 +2,7 @@
 
 Briefing für die neun Bilder des Reiters „Visagistik“ in `beratung-formwirkung.html`.
 Fachliche Grundlage: `docs/visagistik-vergleich-v1.md`. Gilt für Fotoshooting und Bildgenerator gleichermaßen.
+Genaue Beschreibung jedes einzelnen Bildes mit fertigen Prompts: `docs/visagistik-bildbeschreibungen-v1.md`.
 
 ---
 

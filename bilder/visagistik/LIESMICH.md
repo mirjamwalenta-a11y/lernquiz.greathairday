@@ -9,4 +9,5 @@ Die App sucht genau diese Dateinamen. Fehlt eine Datei, zeigt sie an dieser Stel
 | 2 Licht und Schatten | `licht01-ausgang.jpg` | `licht01-a.jpg` | `licht01-b.jpg` |
 | 3 Hochsteckfrisur | `hoch01-ausgang.jpg` | `hoch01-a.jpg` | `hoch01-b.jpg` |
 
-Was auf jedem Foto zu sehen sein muss und wie du hochlädst: `docs/visagistik-bildvorlage-v1.md`, Abschnitte 3 bis 7.
+Was auf jedem Foto zu sehen sein muss: `docs/visagistik-bildbeschreibungen-v1.md`.
+Wie du hochlädst: `docs/visagistik-bildvorlage-v1.md`, Abschnitt 7.
