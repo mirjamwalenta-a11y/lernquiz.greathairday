@@ -126,9 +126,9 @@ Erst PR #28 mergen. Den Ordner `bilder/visagistik/` gibt es auf `main` erst dana
 
 | Übung | Ausgangsbild | Variante A | Variante B |
 |---|---|---|---|
-| 1 Augenbraue | `braue01-ausgang.jpg` | `braue01-a.jpg` | `braue01-b.jpg` |
+| 1 Augenbraue | – | `braue01-a.jpg` | `braue01-b.jpg` |
 | 2 Licht und Schatten | `licht01-ausgang.jpg` | `licht01-a.jpg` | `licht01-b.jpg` |
-| 3 Hochsteckfrisur | `hoch01-ausgang.jpg` | `hoch01-a.jpg` | `hoch01-b.jpg` |
+| 3 Hochsteckfrisur | – | `hoch01-a.jpg` | `hoch01-b.jpg` |
 
 A und B nicht verwechseln: Was A und was B zeigt, steht in den Tabellen der Abschnitte 3 bis 5.
 

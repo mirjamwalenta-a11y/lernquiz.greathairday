@@ -3,6 +3,8 @@
 Genaue Beschreibung jedes Bildes zum Erstellen, mit Bildgenerator oder als Foto.
 Rahmen-Regeln, Technik und Hochladen: `docs/visagistik-bildvorlage-v1.md`.
 
+> **Stand 2026-10-03:** Die eingebauten Bilder zeigen eine schlanke Frau mit eher langem Gesicht und weichen damit von den Beschreibungen unten ab. Übung 1 vergleicht jetzt einen flachen mit einem runden, gewölbten Bogen (Zielbild: offenerer Ausdruck), Übung 3 nutzt einen Mittelscheitel, und Übung 1 und 3 haben kein Ausgangsbild. Licht und Schatten in Übung 2 sind auf ein echtes Basisfoto gelegt. Die Beschreibungen unten gelten, wenn die Bilder später durch neue Fotos ersetzt werden.
+
 ---
 
 ## So gehst du vor

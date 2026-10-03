@@ -154,27 +154,27 @@ Bewertet wird **immer von vorne, im Verhältnis zum Gesicht**, nicht die Steckar
 
 ## 5. Drei Beispielübungen
 
-### Übung 1 – Augenbraue: Rundes Gesicht strecken, ohne streng zu wirken
+### Übung 1 – Augenbraue: Strengen Ausdruck öffnen
 
 | | |
 |---|---|
-| **Ausgangslage** | Gesicht etwa so breit wie lang, volle Wangen, rundes Kinn. Eigene Braue mittelstark, leicht gerundet. |
-| **Kundenauftrag** | „Ich hätte gern, dass mein Gesicht nicht so rund aussieht – aber streng will ich nicht wirken.“ |
-| **Zielbild** | Das Gesicht wirkt länger und schmaler, der Ausdruck bleibt weich. |
-| **Variante A** | Weich gewinkelter Bogen, höchster Punkt über dem äußeren Irisrand, Ende schlank auslaufend. |
-| **Variante B** | Gleichmäßig runder Bogen ohne Winkel. Stärke und Farbtiefe wie A. |
-| **Richtige Wahrnehmung** | Zone: Brauenbogen. A führt den Blick nach oben-außen, das Gesicht wirkt länger. B wiederholt die Rundung, das Gesicht wirkt runder. Augenpartie: **kein Unterschied** (Stärke und Farbe gleich). |
-| **Richtige Entscheidung** | **A** |
-| **Begründung** | Der weich gewinkelte Bogen führt den Blick nach oben-außen und streckt das Gesicht. Weil der Winkel weich bleibt und das Ende schlank ausläuft, wirkt der Ausdruck nicht streng. |
-| **Typische Fehlentscheidung** | **B**, „weil runde Brauen weicher wirken und die Kundin nicht streng wirken will“. |
-| **Feedback** | „Du hast den Nebenwunsch über das Hauptziel gestellt. Das Hauptziel ist: Das Gesicht soll länger wirken. Die runde Braue wiederholt die Rundung des Gesichts. Die Weichheit kommt bei A vom weichen Winkel und dem schlanken Ende, dafür brauchst du keinen runden Bogen. Schau dir nochmal an, welche Variante das Gesicht länger wirken lässt.“ |
-| **Gegenprobe** | B wäre richtig für: *„Eckiges Gesicht mit kräftigem Kiefer soll weicher wirken.“* (Ablenker: „Langes Gesicht soll kürzer wirken“ → flache Braue; „Augen sollen offener wirken“ → schlankere, angehobene Braue.) |
+| **Ausgangslage** | Schmales, eher langes Gesicht, hohe Stirn. Kräftige, dichte Brauen, die eher flach über den Augen liegen. Kein Ausgangsbild, weil es eine der beiden Brauen schon zeigen würde. |
+| **Kundenauftrag** | „Ich höre oft, dass ich streng oder müde wirke. Ich möchte offener und freundlicher aussehen.“ |
+| **Zielbild** | Die Augenpartie wirkt offener, der Ausdruck weicher und freundlicher. |
+| **Variante A** | Flacher Bogen: Die Braue verläuft fast waagrecht und liegt tief über dem Auge. |
+| **Variante B** | Runder, höher gewölbter Bogen. Brauenkopf, Stärke, Farbe und Augen-Make-up wie A. |
+| **Richtige Wahrnehmung** | Zone: Brauenbogen. A liegt wie ein Balken über dem Auge: Augenpartie schwerer, Ausdruck strenger, Gesicht wirkt kürzer. B gibt dem Lid Raum: Blick offener. Augen-Make-up: **kein Unterschied**. |
+| **Richtige Entscheidung** | **B** |
+| **Begründung** | Der runde, höher gewölbte Bogen gibt dem Lid mehr Raum und öffnet die Augenpartie. Der flache Bogen in A lässt den Blick strenger wirken. |
+| **Typische Fehlentscheidung** | **A**, „weil die flache Braue klarer und ordentlicher aussieht“. |
+| **Feedback** | „Du hast die flache Braue als ‚klar und ordentlich‘ gelesen, nicht als Wirkung auf die Augenpartie. Die Kundin will offener und freundlicher wirken. Der flache Bogen liegt tief über dem Auge und nimmt dem Lid Raum. Genau das lässt den Blick streng wirken. Schau, in welcher Variante das Lid mehr Raum hat.“ |
+| **Gegenprobe** | A wäre richtig für: *„Langes Gesicht soll kürzer wirken.“* (Ablenker: „Rundes Gesicht soll länger wirken“ → weicher Winkel; „Augen sollen größer und wacher wirken“ → höherer Bogen.) |
 
 ### Übung 2 – Licht und Schatten: Langes Gesicht kürzer wirken lassen
 
 | | |
 |---|---|
-| **Ausgangslage** | Schmales, langes Gesicht, hohe Stirn, längliches Kinn. |
+| **Ausgangslage** | Schmales, eher langes Gesicht, hohe Stirn, schmales Kinn. |
 | **Kundenauftrag** | „Mein Gesicht wirkt so lang – auf Fotos noch mehr.“ |
 | **Zielbild** | Das Gesicht wirkt kürzer und ausgeglichener. |
 | **Variante A** | Schatten am Stirnhaaransatz und unter der Kinnspitze. Licht waagrecht auf den Wangenknochen. Rouge waagrecht von der Wangenmitte Richtung Ohr. |
@@ -186,16 +186,16 @@ Bewertet wird **immer von vorne, im Verhältnis zum Gesicht**, nicht die Steckar
 | **Feedback** | „Du hast nach einer Standardtechnik entschieden, nicht nach dem Zielbild. B wirkt definierter, weil der Schatten senkrecht in der Wangenmulde und das Licht auf der Mittelachse das Gesicht strecken. Das lange Gesicht wird dadurch noch länger. Licht holt hervor, Schatten nimmt zurück: Wo nimmt A Länge weg?“ |
 | **Gegenprobe** | B wäre richtig für: *„Rundes Gesicht soll schmaler und länger wirken.“* (Ablenker: „Eckiges Gesicht soll weicher wirken“ → Schatten auf den Ecken; „Stirn soll zurücktreten“ → Schatten an den Schläfen.) |
 
-### Übung 3 – Hochsteckfrisur: Herzförmiges Gesicht ausgleichen
+### Übung 3 – Hochsteckfrisur: Breite Stirn, schmales Kinn ausgleichen
 
 | | |
 |---|---|
-| **Ausgangslage** | Breite Stirn, ausgeprägte Wangenknochen, schmales, spitzes Kinn. |
+| **Ausgangslage** | Die Stirn ist deutlich breiter als das schmale, spitz zulaufende Kinn. Ausgeprägte Wangenknochen. Kein Ausgangsbild. |
 | **Kundenauftrag** | „Ich hab immer das Gefühl, meine Stirn ist so groß – und unten ist nix.“ |
 | **Zielbild** | Das obere Gesichtsdrittel tritt zurück, das untere bekommt optisch Breite. Das Gesicht wirkt ausgeglichen. |
-| **Variante A** | Schwerpunkt hoch: Dutt am Oberkopf, Volumen oben, Seiten anliegend. Weicher Seitenscheitel, Oberfläche leicht strukturiert. |
-| **Variante B** | Schwerpunkt tief: Knoten im Nacken, seitlich auf Kinnhöhe sichtbar, gelöste Strähnen ab Kinnhöhe. Seitenscheitel und Oberfläche wie A, damit nur der Schwerpunkt wechselt. |
-| **Richtige Wahrnehmung** | Zone: Oberkopf (A) bzw. Nacken und Kinnhöhe (B). A betont die Stirn und streckt. B gibt dem unteren Gesichtsdrittel Breite. Oberfläche: **kein Unterschied**. |
+| **Variante A** | Schwerpunkt hoch: Dutt am Oberkopf, Haar glatt nach oben genommen, Seiten anliegend. |
+| **Variante B** | Schwerpunkt tief: Knoten seitlich im Nacken, auf Kinnhöhe sichtbar, einzelne gelöste Strähnen. Make-up wie A. |
+| **Richtige Wahrnehmung** | Zone: Oberkopf (A) bzw. Nacken und Kinnhöhe (B). A betont die Stirn und streckt. B gibt dem unteren Gesichtsdrittel Breite. Make-up: **kein Unterschied**. |
 | **Richtige Entscheidung** | **B** |
 | **Begründung** | Der tiefe Schwerpunkt und das Volumen auf Kinnhöhe geben dem unteren Gesichtsdrittel Breite. Dadurch tritt die Stirn zurück, das Gesicht wirkt ausgeglichen. |
 | **Typische Fehlentscheidung** | **A**, „weil ein hoher Dutt eleganter ist und streckt“. |
@@ -240,7 +240,7 @@ Den eigenen Satz bestätigen und mit dem Mustersatz vergleichen: „Genau. Du ha
 
 Übungen liegen wie in der Schnittwerkstatt (`SB_FAELLE`) als statisches Array `VG_UEBUNGEN` in der HTML-Datei. **Keine neue Supabase-Tabelle in V1.** (Falls Übungen oder Ergebnisse später in Supabase gespeichert werden: RLS zuerst, siehe `CLAUDE.md`.)
 
-Bilder werden wie bisher über Platzhalter-Konstanten referenziert (`VG_BILD_…`). Die Seite von A und B wird beim Anzeigen zufällig gewählt.
+Bilder werden über die Schlüssel `VG_BILD_…` in `VG_BILDER` referenziert, die Dateien liegen in `bilder/visagistik/`. Fehlt eine Datei, zeigt die App eine Platzhalter-Kachel mit dem Dateinamen. Die Seite von A und B wird beim Anzeigen zufällig gewählt.
 
 | Feld | Inhalt |
 |---|---|
@@ -248,13 +248,12 @@ Bilder werden wie bisher über Platzhalter-Konstanten referenziert (`VG_BILD_…
 | `bereich` | `braue` · `licht_schatten` · `hochsteck` |
 | `titel` | Titel der Übung |
 | `haupthebel` | das eine Merkmal, in dem sich A und B unterscheiden |
-| `ausgangslage` | Text + Bild |
+| `ausgangslage` | Text + Bild (`bild: null` = kein Ausgangsbild) |
 | `zielbild` | `kundensprache` (Auftrag) + `fachsprache` (Zielbild) |
 | `variante_a`, `variante_b` | Bild + Beschreibung |
-| `zonen` | antippbare Bildzonen für S1 |
 | `wirkungsachsen` | Fragen für S2 mit `loesung`: `a` / `b` / `gleich` |
 | `richtige_wahrnehmung` | Zone, Merkmal, Text |
-| `merkmal_karten` | Auswahl für S1 |
+| `wahrnehmungsfrage` | Frage, Bereiche (`zonen`) und Merkmale für S1 |
 | `richtige_entscheidung` | `a` / `b` |
 | `begruendung` | richtige Karten-IDs + Mustersatz |
 | `satzbausteine` | Wortkarten für S4 mit Tag |
@@ -268,88 +267,199 @@ Bilder werden wie bisher über Platzhalter-Konstanten referenziert (`VG_BILD_…
 {
   "id": "braue-01",
   "bereich": "braue",
-  "titel": "Rundes Gesicht strecken, ohne streng zu wirken",
-  "haupthebel": "Brauenbogen",
+  "kurz": "Augenbraue",
+  "titel": "Strengen Ausdruck öffnen",
+  "haupthebel": "Brauenbogen (flach ↔ rund gewölbt)",
   "ausgangslage": {
-    "text": "Gesicht etwa so breit wie lang, volle Wangen, rundes Kinn. Eigene Braue mittelstark, leicht gerundet.",
-    "bild": "VG_BILD_BRAUE01_AUSGANG"
+    "text": "Schmales, eher langes Gesicht, hohe Stirn. Kräftige, dichte Brauen, die eher flach über den Augen liegen.",
+    "bild": null
   },
   "zielbild": {
-    "kundensprache": "Ich hätte gern, dass mein Gesicht nicht so rund aussieht – aber streng will ich nicht wirken.",
-    "fachsprache": "Das Gesicht wirkt länger und schmaler, der Ausdruck bleibt weich."
+    "kundensprache": "Ich höre oft, dass ich streng oder müde wirke. Ich möchte offener und freundlicher aussehen.",
+    "fachsprache": "Die Augenpartie wirkt offener, der Ausdruck weicher und freundlicher."
   },
   "variante_a": {
     "bild": "VG_BILD_BRAUE01_A",
-    "beschreibung": "Weich gewinkelter Bogen, höchster Punkt über dem äußeren Irisrand, Ende schlank auslaufend."
+    "bildhinweis": "Flacher Bogen: Die Braue verläuft fast waagrecht und liegt tief über dem Auge."
   },
   "variante_b": {
     "bild": "VG_BILD_BRAUE01_B",
-    "beschreibung": "Gleichmäßig runder Bogen ohne Winkel. Stärke und Farbtiefe wie A."
+    "bildhinweis": "Runder, höher gewölbter Bogen. Brauenkopf, Stärke, Farbe und Augen-Make-up wie A."
   },
-  "zonen": ["brauenkopf", "brauenbogen", "brauenende", "augenpartie"],
-  "merkmal_karten": [
-    { "id": "mk1", "text": "Form des Bogens" },
-    { "id": "mk2", "text": "Brauenstärke" },
-    { "id": "mk3", "text": "Farbtiefe" },
-    { "id": "mk4", "text": "Lage des Brauenkopfs" }
-  ],
-  "wirkungsachsen": [
-    { "achse": "proportion", "frage": "In welcher Variante wirkt das Gesicht länger?", "loesung": "a" },
-    { "achse": "proportion", "frage": "In welcher Variante wirkt das Gesicht runder?", "loesung": "b" },
-    { "achse": "augenpartie", "frage": "In welcher Variante wirkt die Augenpartie schwerer?", "loesung": "gleich" }
-  ],
+  "wahrnehmungsfrage": {
+    "frage": "Was ist zwischen A und B anders – und wo?",
+    "zonen": [
+      [
+        "brauenkopf",
+        "Brauenkopf"
+      ],
+      [
+        "augen",
+        "Augen (Make-up)"
+      ],
+      [
+        "brauenbogen",
+        "Brauenbogen"
+      ],
+      [
+        "lippen",
+        "Lippen"
+      ]
+    ],
+    "merkmale": [
+      [
+        "mk2",
+        "Augen-Make-up"
+      ],
+      [
+        "mk1",
+        "Form und Höhe des Bogens"
+      ],
+      [
+        "mk4",
+        "Lippenfarbe"
+      ],
+      [
+        "mk3",
+        "Lage des Brauenkopfs"
+      ]
+    ]
+  },
   "richtige_wahrnehmung": {
     "zone": "brauenbogen",
     "merkmal": "mk1",
-    "text": "A führt den Blick nach oben-außen, das Gesicht wirkt länger. B wiederholt die Rundung, das Gesicht wirkt runder. Stärke und Farbtiefe sind gleich."
+    "text": "In A liegt die Braue flach und tief wie ein Balken über dem Auge: Die Augenpartie wirkt schwerer, der Ausdruck strenger. In B ist der Bogen rund und höher: Das Lid bekommt Raum, der Blick wirkt offener. Das Augen-Make-up ist gleich."
   },
-  "richtige_entscheidung": "a",
+  "wirkungsachsen": [
+    {
+      "achse": "augenpartie",
+      "frage": "In welcher Variante wirkt die Augenpartie offener?",
+      "loesung": "b",
+      "hinweis": "Schau auf den Abstand zwischen Braue und Auge: Wo hat das Lid mehr Raum?"
+    },
+    {
+      "achse": "ausdruck",
+      "frage": "In welcher Variante wirkt der Ausdruck strenger?",
+      "loesung": "a",
+      "hinweis": "Welche Braue liegt flach und tief wie ein Balken über dem Auge?"
+    },
+    {
+      "achse": "make-up",
+      "frage": "In welcher Variante ist das Augen-Make-up kräftiger?",
+      "loesung": "gleich",
+      "hinweis": "Lidstrich, Wimpern und Lidschatten sind in A und B gleich."
+    },
+    {
+      "achse": "proportion",
+      "frage": "In welcher Variante wirkt das Gesicht kürzer?",
+      "loesung": "a",
+      "hinweis": "Welche Braue führt den Blick waagrecht zur Seite, welche nach oben?"
+    }
+  ],
+  "richtige_entscheidung": "b",
   "satzbausteine": {
     "merkmal": [
-      { "id": "m1", "text": "der weich gewinkelte Bogen", "tag": "a" },
-      { "id": "m2", "text": "der gleichmäßig runde Bogen", "tag": "b" },
-      { "id": "m3", "text": "die Brauenstärke", "tag": "gleich" }
+      {
+        "id": "m2",
+        "text": "der flache, tief liegende Bogen",
+        "tag": "a"
+      },
+      {
+        "id": "m3",
+        "text": "das Augen-Make-up",
+        "tag": "gleich"
+      },
+      {
+        "id": "m1",
+        "text": "der runde, höher gewölbte Bogen",
+        "tag": "b"
+      }
     ],
     "wirkung": [
-      { "id": "w1", "text": "den Blick nach oben-außen führt und das Gesicht streckt", "tag": "a" },
-      { "id": "w2", "text": "die Rundung des Gesichts wiederholt", "tag": "b" },
-      { "id": "w3", "text": "schöner aussieht", "tag": "leer" },
-      { "id": "w4", "text": "besser zum Gesicht passt", "tag": "leer" }
+      {
+        "id": "w3",
+        "text": "schöner aussieht",
+        "tag": "leer"
+      },
+      {
+        "id": "w2",
+        "text": "das Gesicht optisch verkürzt",
+        "tag": "a"
+      },
+      {
+        "id": "w1",
+        "text": "dem Lid mehr Raum gibt und die Augenpartie öffnet",
+        "tag": "b"
+      },
+      {
+        "id": "w5",
+        "text": "den Blick ruhig und gerade hält",
+        "tag": "a"
+      },
+      {
+        "id": "w4",
+        "text": "moderner wirkt",
+        "tag": "leer"
+      }
     ],
     "zielbezug": [
-      { "id": "z1", "text": "das Gesicht länger und schmaler wirken soll, ohne streng zu werden", "tag": "ziel" },
-      { "id": "z2", "text": "die Kundin weich wirken will", "tag": "teilziel" },
-      { "id": "z3", "text": "die Braue modern sein soll", "tag": "fremd" }
+      {
+        "id": "z2",
+        "text": "die Kundin weniger müde aussehen will",
+        "tag": "teilziel"
+      },
+      {
+        "id": "z1",
+        "text": "die Augenpartie offener und der Ausdruck freundlicher wirken soll",
+        "tag": "ziel"
+      },
+      {
+        "id": "z3",
+        "text": "kräftige Brauen gerade Trend sind",
+        "tag": "fremd"
+      }
     ]
   },
   "begruendung": {
     "merkmal": "m1",
     "wirkung": "w1",
     "zielbezug": "z1",
-    "mustersatz": "Ich wähle Variante A, weil der weich gewinkelte Bogen den Blick nach oben-außen führt und das Gesicht streckt. Das passt zum Zielbild, weil das Gesicht länger und schmaler wirken soll. Der Winkel bleibt weich, deshalb wirkt der Ausdruck nicht streng."
+    "mustersatz": "Ich wähle Variante B, weil der runde, höher gewölbte Bogen dem Lid mehr Raum gibt und die Augenpartie öffnet. Das passt zum Zielbild, weil die Augenpartie offener und der Ausdruck freundlicher wirken soll. Der flache Bogen in A liegt wie ein Balken über dem Auge und lässt den Blick strenger wirken."
   },
   "gegenprobe": {
-    "frage": "Für welches Zielbild wäre Variante B die richtige Wahl?",
     "optionen": [
-      { "id": "g1", "text": "Eckiges Gesicht mit kräftigem Kiefer soll weicher wirken." },
-      { "id": "g2", "text": "Langes Gesicht soll kürzer wirken." },
-      { "id": "g3", "text": "Die Augen sollen offener wirken." }
+      {
+        "id": "g2",
+        "text": "Rundes Gesicht soll länger wirken.",
+        "warum": "Dafür braucht es einen weichen Winkel, der den Blick nach oben-außen führt. Der flache Bogen führt in die Breite."
+      },
+      {
+        "id": "g1",
+        "text": "Langes Gesicht soll kürzer wirken."
+      },
+      {
+        "id": "g3",
+        "text": "Die Augen sollen größer und wacher wirken.",
+        "warum": "Der flache Bogen liegt tief und nimmt dem Lid Raum. Die Augen wirken dadurch eher kleiner."
+      }
     ],
     "richtig": "g1",
-    "erklaerung": "Der runde Bogen hat keine Ecke. Er nimmt einem kantigen Gesicht die Härte. Bei einem langen Gesicht bräuchte es einen flachen Bogen."
+    "erklaerung": "Der flache Bogen führt den Blick waagrecht zur Seite. Das nimmt einem langen Gesicht Länge."
   },
   "typische_fehler": [
-    { "code": "E_NEBENWUNSCH", "schritt": "S3", "ausloeser": { "entscheidung": "b", "zielbezug": "z2" }, "denkfehler": "Nebenwunsch über das Hauptziel gestellt" },
-    { "code": "W_HINEINGELESEN", "schritt": "S2", "ausloeser": { "achse": "augenpartie", "antwort": ["a", "b"] }, "denkfehler": "Unterschied in der Augenpartie gesehen, den es nicht gibt" },
-    { "code": "W_TECHNIK", "schritt": "S1", "ausloeser": { "merkmal": ["mk2", "mk3"] }, "denkfehler": "Gleiches Merkmal als Unterschied gewählt" }
+    {
+      "code": "E_KLARHEIT",
+      "wenn": {
+        "entscheidung": "a"
+      },
+      "denkfehler": "Du hast die flache Braue als „klar und ordentlich“ gelesen, nicht als Wirkung auf die Augenpartie.",
+      "text": "Die Kundin will offener und freundlicher wirken. Der flache Bogen liegt tief über dem Auge und nimmt dem Lid Raum. Genau das lässt den Blick streng wirken. Schau, in welcher Variante das Lid mehr Raum hat."
+    }
   ],
   "feedback": {
-    "wahrnehmung_falsch": "Schau auf den Brauenbogen: In A hat er einen weichen Winkel, in B ist er rund. Stärke und Farbe sind in beiden gleich.",
-    "entscheidung_falsch": "Du hast den Nebenwunsch über das Hauptziel gestellt. Das Hauptziel ist: Das Gesicht soll länger wirken. Die runde Braue wiederholt die Rundung des Gesichts. Die Weichheit kommt bei A vom weichen Winkel und dem schlanken Ende. Welche Variante lässt das Gesicht länger wirken?",
-    "begruendung_ungenau": "‚Schöner‘ beschreibt dein Gefühl, nicht die Wirkung. Was macht der Bogen mit dem Gesicht: länger, runder, weicher?",
-    "begruendung_widerspruch": "Deine Begründung beschreibt Variante B (runder Bogen), gewählt hast du aber A. Entscheidung und Begründung müssen zur selben Variante gehören.",
-    "richtig": "Genau. Du hast Merkmal, Wirkung und Zielbild verbunden: Der weiche Winkel streckt, ohne streng zu wirken.",
-    "merksatz": "Ein Bogen wiederholt oder bricht die Gesichtsform. Rund wiederholt Rundung, ein weicher Winkel streckt."
+    "leerfrage": "Was macht der Bogen mit der Augenpartie und dem Ausdruck: offener, schwerer, strenger, weicher?",
+    "richtig": "Mehr Raum über dem Auge öffnet den Blick.",
+    "merksatz": "Je flacher und tiefer die Braue, desto schwerer und strenger wirkt die Augenpartie. Ein runder, gewölbter Bogen öffnet sie."
   }
 }
 ```

@@ -3579,9 +3579,9 @@ wechsle aber nicht ohne Zustimmung.
   // Fehlt eine Datei, zeigt die App automatisch die Platzhalter-Kachel mit Dateiname und Bildhinweis.
   // Vorgaben für die Fotos: docs/visagistik-bildvorlage-v1.md
   var VG_BILDER = {
-    VG_BILD_BRAUE01_AUSGANG:"bilder/visagistik/braue01-ausgang.jpg", VG_BILD_BRAUE01_A:"bilder/visagistik/braue01-a.jpg", VG_BILD_BRAUE01_B:"bilder/visagistik/braue01-b.jpg",
+    VG_BILD_BRAUE01_A:"bilder/visagistik/braue01-a.jpg", VG_BILD_BRAUE01_B:"bilder/visagistik/braue01-b.jpg",
     VG_BILD_LICHT01_AUSGANG:"bilder/visagistik/licht01-ausgang.jpg", VG_BILD_LICHT01_A:"bilder/visagistik/licht01-a.jpg", VG_BILD_LICHT01_B:"bilder/visagistik/licht01-b.jpg",
-    VG_BILD_HOCH01_AUSGANG:"bilder/visagistik/hoch01-ausgang.jpg",   VG_BILD_HOCH01_A:"bilder/visagistik/hoch01-a.jpg",   VG_BILD_HOCH01_B:"bilder/visagistik/hoch01-b.jpg"
+    VG_BILD_HOCH01_A:"bilder/visagistik/hoch01-a.jpg",   VG_BILD_HOCH01_B:"bilder/visagistik/hoch01-b.jpg"
   };
 
   // Nach dem Austausch eines Fotos hochzählen, damit Handys nicht das alte Bild aus dem Speicher zeigen
@@ -3594,55 +3594,57 @@ wechsle aber nicht ohne Zustimmung.
   var VG_UEBUNGEN = [
     {
       id:"braue-01", bereich:"braue", kurz:"Augenbraue",
-      titel:"Rundes Gesicht strecken, ohne streng zu wirken",
-      haupthebel:"Brauenbogen",
-      ausgangslage:{text:"Gesicht etwa so breit wie lang, volle Wangen, rundes Kinn. Eigene Braue mittelstark, leicht gerundet.", bild:"VG_BILD_BRAUE01_AUSGANG"},
-      zielbild:{kundensprache:"Ich hätte gern, dass mein Gesicht nicht so rund aussieht – aber streng will ich nicht wirken.",
-                fachsprache:"Das Gesicht wirkt länger und schmaler, der Ausdruck bleibt weich."},
-      variante_a:{bild:"VG_BILD_BRAUE01_A", bildhinweis:"Weich gewinkelter Bogen, höchster Punkt über dem äußeren Irisrand, Ende schlank auslaufend."},
-      variante_b:{bild:"VG_BILD_BRAUE01_B", bildhinweis:"Gleichmäßig runder Bogen ohne Winkel. Stärke und Farbtiefe wie A."},
+      titel:"Strengen Ausdruck öffnen",
+      haupthebel:"Brauenbogen (flach ↔ rund gewölbt)",
+      // Kein Ausgangsbild: Es würde eine der beiden Brauen schon zeigen.
+      ausgangslage:{text:"Schmales, eher langes Gesicht, hohe Stirn. Kräftige, dichte Brauen, die eher flach über den Augen liegen.", bild:null},
+      zielbild:{kundensprache:"Ich höre oft, dass ich streng oder müde wirke. Ich möchte offener und freundlicher aussehen.",
+                fachsprache:"Die Augenpartie wirkt offener, der Ausdruck weicher und freundlicher."},
+      variante_a:{bild:"VG_BILD_BRAUE01_A", bildhinweis:"Flacher Bogen: Die Braue verläuft fast waagrecht und liegt tief über dem Auge."},
+      variante_b:{bild:"VG_BILD_BRAUE01_B", bildhinweis:"Runder, höher gewölbter Bogen. Brauenkopf, Stärke, Farbe und Augen-Make-up wie A."},
       wahrnehmungsfrage:{frage:"Was ist zwischen A und B anders – und wo?",
-        zonen:[["brauenkopf","Brauenkopf"],["augenpartie","Augenpartie"],["brauenbogen","Brauenbogen"],["brauenende","Brauenende"]],
-        merkmale:[["mk2","Brauenstärke"],["mk1","Form des Bogens"],["mk4","Lage des Brauenkopfs"],["mk3","Farbtiefe"]]},
+        zonen:[["brauenkopf","Brauenkopf"],["augen","Augen (Make-up)"],["brauenbogen","Brauenbogen"],["lippen","Lippen"]],
+        merkmale:[["mk2","Augen-Make-up"],["mk1","Form und Höhe des Bogens"],["mk4","Lippenfarbe"],["mk3","Lage des Brauenkopfs"]]},
       richtige_wahrnehmung:{zone:"brauenbogen", merkmal:"mk1",
-        text:"A führt den Blick nach oben-außen, das Gesicht wirkt länger. B wiederholt die Rundung, das Gesicht wirkt runder. Stärke und Farbtiefe sind gleich."},
+        text:"In A liegt die Braue flach und tief wie ein Balken über dem Auge: Die Augenpartie wirkt schwerer, der Ausdruck strenger. In B ist der Bogen rund und höher: Das Lid bekommt Raum, der Blick wirkt offener. Das Augen-Make-up ist gleich."},
       wirkungsachsen:[
-        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht länger?", loesung:"a", hinweis:"Schau auf den Bogen: Welche Linie führt den Blick nach oben-außen?"},
-        {achse:"augenpartie", frage:"In welcher Variante wirkt die Augenpartie schwerer?", loesung:"gleich", hinweis:"Brauenstärke und Farbtiefe sind in A und B gleich."},
-        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht runder?", loesung:"b", hinweis:"Welcher Bogen wiederholt die Rundung von Wangen und Kinn?"}
+        {achse:"augenpartie", frage:"In welcher Variante wirkt die Augenpartie offener?", loesung:"b", hinweis:"Schau auf den Abstand zwischen Braue und Auge: Wo hat das Lid mehr Raum?"},
+        {achse:"ausdruck", frage:"In welcher Variante wirkt der Ausdruck strenger?", loesung:"a", hinweis:"Welche Braue liegt flach und tief wie ein Balken über dem Auge?"},
+        {achse:"make-up", frage:"In welcher Variante ist das Augen-Make-up kräftiger?", loesung:"gleich", hinweis:"Lidstrich, Wimpern und Lidschatten sind in A und B gleich."},
+        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht kürzer?", loesung:"a", hinweis:"Welche Braue führt den Blick waagrecht zur Seite, welche nach oben?"}
       ],
-      richtige_entscheidung:"a",
+      richtige_entscheidung:"b",
       satzbausteine:{
-        merkmal:[{id:"m3", text:"die Brauenstärke", tag:"gleich"}, {id:"m2", text:"der gleichmäßig runde Bogen", tag:"b"}, {id:"m1", text:"der weich gewinkelte Bogen", tag:"a"}],
-        wirkung:[{id:"w3", text:"schöner aussieht", tag:"leer"}, {id:"w2", text:"die Rundung des Gesichts wiederholt", tag:"b"}, {id:"w1", text:"den Blick nach oben-außen führt und das Gesicht streckt", tag:"a"}, {id:"w5", text:"den Ausdruck weicher macht", tag:"b"}, {id:"w4", text:"besser zum Gesicht passt", tag:"leer"}],
-        zielbezug:[{id:"z2", text:"die Kundin weich wirken will", tag:"teilziel"}, {id:"z1", text:"das Gesicht länger und schmaler wirken soll, ohne streng zu werden", tag:"ziel"}, {id:"z3", text:"die Braue modern sein soll", tag:"fremd"}]
+        merkmal:[{id:"m2", text:"der flache, tief liegende Bogen", tag:"a"}, {id:"m3", text:"das Augen-Make-up", tag:"gleich"}, {id:"m1", text:"der runde, höher gewölbte Bogen", tag:"b"}],
+        wirkung:[{id:"w3", text:"schöner aussieht", tag:"leer"}, {id:"w2", text:"das Gesicht optisch verkürzt", tag:"a"}, {id:"w1", text:"dem Lid mehr Raum gibt und die Augenpartie öffnet", tag:"b"}, {id:"w5", text:"den Blick ruhig und gerade hält", tag:"a"}, {id:"w4", text:"moderner wirkt", tag:"leer"}],
+        zielbezug:[{id:"z2", text:"die Kundin weniger müde aussehen will", tag:"teilziel"}, {id:"z1", text:"die Augenpartie offener und der Ausdruck freundlicher wirken soll", tag:"ziel"}, {id:"z3", text:"kräftige Brauen gerade Trend sind", tag:"fremd"}]
       },
       begruendung:{merkmal:"m1", wirkung:"w1", zielbezug:"z1",
-        mustersatz:"Ich wähle Variante A, weil der weich gewinkelte Bogen den Blick nach oben-außen führt und das Gesicht streckt. Das passt zum Zielbild, weil das Gesicht länger und schmaler wirken soll. Der Winkel bleibt weich, deshalb wirkt der Ausdruck nicht streng."},
+        mustersatz:"Ich wähle Variante B, weil der runde, höher gewölbte Bogen dem Lid mehr Raum gibt und die Augenpartie öffnet. Das passt zum Zielbild, weil die Augenpartie offener und der Ausdruck freundlicher wirken soll. Der flache Bogen in A liegt wie ein Balken über dem Auge und lässt den Blick strenger wirken."},
       gegenprobe:{
         optionen:[
-          {id:"g2", text:"Langes Gesicht soll kürzer wirken.", warum:"Ein langes Gesicht braucht einen flachen, eher waagrechten Bogen. Der runde Bogen hat Höhe in der Mitte."},
-          {id:"g1", text:"Eckiges Gesicht mit kräftigem Kiefer soll weicher wirken."},
-          {id:"g3", text:"Die Augen sollen offener wirken.", warum:"Offener wirkt die Augenpartie durch eine schlankere, leicht angehobene Braue. Die Bogenform allein ändert das nicht."}
+          {id:"g2", text:"Rundes Gesicht soll länger wirken.", warum:"Dafür braucht es einen weichen Winkel, der den Blick nach oben-außen führt. Der flache Bogen führt in die Breite."},
+          {id:"g1", text:"Langes Gesicht soll kürzer wirken."},
+          {id:"g3", text:"Die Augen sollen größer und wacher wirken.", warum:"Der flache Bogen liegt tief und nimmt dem Lid Raum. Die Augen wirken dadurch eher kleiner."}
         ],
         richtig:"g1",
-        erklaerung:"Der runde Bogen hat keine Ecke. Er nimmt einem kantigen Gesicht die Härte. Bei einem langen Gesicht bräuchte es einen flachen Bogen."},
+        erklaerung:"Der flache Bogen führt den Blick waagrecht zur Seite. Das nimmt einem langen Gesicht Länge."},
       typische_fehler:[
-        {code:"E_NEBENWUNSCH", wenn:{entscheidung:"b", zielbezug:["z2"]},
-         denkfehler:"Du hast den Nebenwunsch über das Hauptziel gestellt.",
-         text:"Das Hauptziel ist: Das Gesicht soll länger wirken. Die runde Braue wiederholt die Rundung des Gesichts. Die Weichheit kommt bei A vom weichen Winkel und dem schlanken Ende, dafür brauchst du keinen runden Bogen. Schau dir nochmal an, welche Variante das Gesicht länger wirken lässt."}
+        {code:"E_KLARHEIT", wenn:{entscheidung:"a"},
+         denkfehler:"Du hast die flache Braue als „klar und ordentlich“ gelesen, nicht als Wirkung auf die Augenpartie.",
+         text:"Die Kundin will offener und freundlicher wirken. Der flache Bogen liegt tief über dem Auge und nimmt dem Lid Raum. Genau das lässt den Blick streng wirken. Schau, in welcher Variante das Lid mehr Raum hat."}
       ],
       feedback:{
-        leerfrage:"Was macht der Bogen mit dem Gesicht: länger, runder, weicher?",
-        richtig:"Der weiche Winkel streckt, ohne streng zu wirken.",
-        merksatz:"Ein Bogen wiederholt oder bricht die Gesichtsform. Rund wiederholt Rundung, ein weicher Winkel streckt."
+        leerfrage:"Was macht der Bogen mit der Augenpartie und dem Ausdruck: offener, schwerer, strenger, weicher?",
+        richtig:"Mehr Raum über dem Auge öffnet den Blick.",
+        merksatz:"Je flacher und tiefer die Braue, desto schwerer und strenger wirkt die Augenpartie. Ein runder, gewölbter Bogen öffnet sie."
       }
     },
     {
       id:"licht-01", bereich:"licht_schatten", kurz:"Licht & Schatten",
       titel:"Langes Gesicht kürzer wirken lassen",
       haupthebel:"Richtung von Licht, Schatten und Rouge (waagrecht ↔ senkrecht)",
-      ausgangslage:{text:"Schmales, langes Gesicht, hohe Stirn, längliches Kinn.", bild:"VG_BILD_LICHT01_AUSGANG"},
+      ausgangslage:{text:"Schmales, eher langes Gesicht, hohe Stirn, schmales Kinn.", bild:"VG_BILD_LICHT01_AUSGANG"},
       zielbild:{kundensprache:"Mein Gesicht wirkt so lang – auf Fotos noch mehr.",
                 fachsprache:"Das Gesicht wirkt kürzer und ausgeglichener."},
       variante_a:{bild:"VG_BILD_LICHT01_A", bildhinweis:"Schatten am Stirnhaaransatz und unter der Kinnspitze. Licht waagrecht auf den Wangenknochen. Rouge waagrecht von der Wangenmitte Richtung Ohr."},
@@ -3687,28 +3689,28 @@ wechsle aber nicht ohne Zustimmung.
     },
     {
       id:"hoch-01", bereich:"hochsteck", kurz:"Hochsteckfrisur",
-      titel:"Herzförmiges Gesicht ausgleichen",
+      titel:"Breite Stirn, schmales Kinn ausgleichen",
       haupthebel:"Schwerpunkt der Frisur (hoch ↔ tief)",
-      ausgangslage:{text:"Breite Stirn, ausgeprägte Wangenknochen, schmales, spitzes Kinn.", bild:"VG_BILD_HOCH01_AUSGANG"},
+      // Kein Ausgangsbild: A und B genügen für den Vergleich.
+      ausgangslage:{text:"Die Stirn ist deutlich breiter als das schmale, spitz zulaufende Kinn. Ausgeprägte Wangenknochen.", bild:null},
       zielbild:{kundensprache:"Ich hab immer das Gefühl, meine Stirn ist so groß – und unten ist nix.",
                 fachsprache:"Das obere Gesichtsdrittel tritt zurück, das untere bekommt optisch Breite. Das Gesicht wirkt ausgeglichen."},
-      // V1-Entscheidung: Seitenscheitel und Oberfläche in A und B gleich, damit nur der Schwerpunkt wechselt.
-      variante_a:{bild:"VG_BILD_HOCH01_A", bildhinweis:"Schwerpunkt hoch: Dutt am Oberkopf, Volumen oben, Seiten anliegend. Weicher Seitenscheitel, Oberfläche leicht strukturiert."},
-      variante_b:{bild:"VG_BILD_HOCH01_B", bildhinweis:"Schwerpunkt tief: Knoten im Nacken, seitlich auf Kinnhöhe sichtbar, gelöste Strähnen ab Kinnhöhe. Seitenscheitel und Oberfläche wie A."},
+      variante_a:{bild:"VG_BILD_HOCH01_A", bildhinweis:"Schwerpunkt hoch: Dutt am Oberkopf, Haar glatt nach oben genommen, Seiten anliegend."},
+      variante_b:{bild:"VG_BILD_HOCH01_B", bildhinweis:"Schwerpunkt tief: Knoten seitlich im Nacken, auf Kinnhöhe sichtbar, einzelne gelöste Strähnen. Make-up wie A."},
       wahrnehmungsfrage:{frage:"Was ist zwischen A und B anders – und wo?",
-        zonen:[["scheitel","Scheitel und Stirn"],["gesicht","Gesicht (Make-up)"],["oberkopf_nacken","Oberkopf und Nacken"],["ohren","Ohren"]],
-        merkmale:[["mk2","Oberfläche (glatt oder strukturiert)"],["mk3","Scheitel"],["mk4","Haarfarbe"],["mk1","Lage des Schwerpunkts (hoch oder tief)"]]},
+        zonen:[["augen","Augen (Make-up)"],["gesicht","Lippen"],["oberkopf_nacken","Oberkopf und Nacken"],["ohren","Ohren"]],
+        merkmale:[["mk2","Augen-Make-up"],["mk3","Gesichtsausdruck"],["mk4","Haarfarbe"],["mk1","Lage des Schwerpunkts (hoch oder tief)"]]},
       richtige_wahrnehmung:{zone:"oberkopf_nacken", merkmal:"mk1",
-        text:"A zieht den Blick nach oben: Die Stirn wirkt präsenter, das Gesicht länger. B setzt die Masse auf Kinnhöhe: Das untere Gesichtsdrittel bekommt Breite. Die Oberfläche ist gleich."},
+        text:"A zieht den Blick nach oben: Die Stirn wirkt präsenter, das Gesicht länger. B setzt die Masse auf Kinnhöhe: Das untere Gesichtsdrittel bekommt Breite. Das Make-up ist gleich."},
       wirkungsachsen:[
         {achse:"proportion", frage:"In welcher Variante bekommt das untere Gesichtsdrittel mehr Breite?", loesung:"b", hinweis:"Schau auf Kinnhöhe: Wo liegt dort Volumen?"},
         {achse:"schwerpunkt", frage:"In welcher Variante wirkt die Stirn präsenter?", loesung:"a", hinweis:"Wohin zieht die Hauptmasse den Blick: nach oben zur Stirn oder nach unten?"},
-        {achse:"oberflaeche", frage:"In welcher Variante wirkt die Oberfläche strenger?", loesung:"gleich", hinweis:"Die Oberfläche ist in A und B gleich, leicht strukturiert."},
+        {achse:"make-up", frage:"In welcher Variante ist das Make-up kräftiger?", loesung:"gleich", hinweis:"Das Make-up ist in A und B gleich."},
         {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht länger?", loesung:"a", hinweis:"Wo sitzt das Volumen: über dem Kopf oder neben dem Kinn?"}
       ],
       richtige_entscheidung:"b",
       satzbausteine:{
-        merkmal:[{id:"m2", text:"der hohe Dutt am Oberkopf", tag:"a"}, {id:"m1", text:"der tiefe Schwerpunkt im Nacken", tag:"b"}, {id:"m3", text:"der Seitenscheitel", tag:"gleich"}],
+        merkmal:[{id:"m2", text:"der hohe Dutt am Oberkopf", tag:"a"}, {id:"m1", text:"der tiefe Schwerpunkt im Nacken", tag:"b"}, {id:"m3", text:"das Make-up", tag:"gleich"}],
         wirkung:[{id:"w3", text:"eleganter wirkt", tag:"leer"}, {id:"w2", text:"das Gesicht streckt und den Hals frei zeigt", tag:"a"}, {id:"w4", text:"besser zum Anlass passt", tag:"leer"}, {id:"w1", text:"dem unteren Gesichtsdrittel auf Kinnhöhe Breite gibt und den Blick von der Stirn wegnimmt", tag:"b"}],
         zielbezug:[{id:"z3", text:"die Stirn kleiner wirken soll", tag:"teilziel"}, {id:"z2", text:"eine Hochsteckfrisur zum Anlass elegant sein soll", tag:"fremd"}, {id:"z1", text:"die Stirn zurücktreten und das Gesicht unten Breite bekommen soll", tag:"ziel"}]
       },
@@ -3917,7 +3919,7 @@ wechsle aber nicht ohne Zustimmung.
     var inhalt;
 
     if (n === 0){
-      inhalt = '<section class="card fig">' + vgBild(u.ausgangslage.bild, "Ausgangslage", true) + '</section>' +
+      inhalt = (u.ausgangslage.bild ? '<section class="card fig">' + vgBild(u.ausgangslage.bild, "Ausgangslage", true) + '</section>' : '') +
         '<section class="card text"><h2>Ausgangslage</h2><p>' + u.ausgangslage.text + '</p>' +
         '<p class="note">Gleich siehst du dasselbe Gesicht in zwei Varianten, A und B. Sie unterscheiden sich nur in einem Punkt. Du schaust zuerst genau hin und beschreibst die Wirkung. Das Zielbild bekommst du erst danach.</p>' +
         '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="vgstart">Vergleich starten' + ICON_WEITER + '</button></div></section>';
