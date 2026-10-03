@@ -239,7 +239,22 @@ dl.steck dd{margin:0}
 .zurueck-leiste a:hover{color:var(--accent)}
 .tabs{max-width:100%}
 @media (max-width:440px){.tabs button{padding:7px 10px}}
-/* Formwirkung-Trainer (Reiter „Trainer“) */
+@media (max-width:420px){.tabs{flex-wrap:wrap;border-radius:18px}.tabs button{padding:6px 9px}}
+/* Visagistik-Vergleich V1 (Reiter „Visagistik“) */
+.tabs{overflow-x:auto;scrollbar-width:none}
+.tabs button{flex:none}
+.vg-paar{align-items:start}
+.vg-bild{margin:0;display:flex;flex-direction:column;gap:6px;text-align:center}
+.vg-bild.gross{max-width:340px;margin:0 auto;width:100%}
+.vg-bild img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--r-s);background:var(--surface-2)}
+.vg-bild figcaption{font-family:var(--f-display);font-weight:800;font-size:var(--t-l);color:var(--ink)}
+.vg-platzhalter{aspect-ratio:4/5;border:2px dashed var(--line);border-radius:var(--r-s);background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;color:var(--muted);font-size:var(--t-xs);line-height:1.35}
+.vg-ph-id{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;color:var(--ink);word-break:break-all}
+.vg-bild img[hidden],.vg-platzhalter[hidden]{display:none}
+.vg-gruppe .chips{gap:6px}
+.vg-ziel p{margin:0}
+.vg-lesung,.vg-ergebnis{font-size:var(--t-s)}
+
 #trainer [hidden],#trainer[hidden],#app[hidden]{display:none!important}
 #trainer{--copper:var(--accent);--copper-soft:var(--accent-soft);font-size:16px;line-height:1.5}
 #trainer button,#trainer textarea{font:inherit;color:inherit}
@@ -3554,6 +3569,440 @@ wechsle aber nicht ohne Zustimmung.
   }
 
 
+  // ==================== Visagistik-Vergleich V1 (Reiter „Visagistik“) ====================
+  // Fachliche Grundlage: docs/visagistik-vergleich-v1.md
+  // Ablauf je Übung: Ausgangslage → 1 Sehen → 2 Wirkung lesen → 3 Entscheiden → 4 Begründen → 5 Gegenprobe → Abschluss.
+  // A und B unterscheiden sich nur im Haupthebel. Die Seite (links/rechts) wird pro Durchgang zufällig vergeben.
+  // Das Zielbild wird erst ab Schritt 3 gerendert. Rückmeldung immer nur zum frühesten Denkfehler.
+
+  // Bilder: Fotos mit genau diesen Dateinamen in den Ordner bilder/visagistik/ hochladen, fertig.
+  // Fehlt eine Datei, zeigt die App automatisch die Platzhalter-Kachel mit Dateiname und Bildhinweis.
+  // Vorgaben für die Fotos: docs/visagistik-bildvorlage-v1.md
+  var VG_BILDER = {
+    VG_BILD_BRAUE01_A:"bilder/visagistik/braue01-a.jpg", VG_BILD_BRAUE01_B:"bilder/visagistik/braue01-b.jpg",
+    VG_BILD_LICHT01_AUSGANG:"bilder/visagistik/licht01-ausgang.jpg", VG_BILD_LICHT01_A:"bilder/visagistik/licht01-a.jpg", VG_BILD_LICHT01_B:"bilder/visagistik/licht01-b.jpg",
+    VG_BILD_HOCH01_A:"bilder/visagistik/hoch01-a.jpg",   VG_BILD_HOCH01_B:"bilder/visagistik/hoch01-b.jpg"
+  };
+
+  // Nach dem Austausch eines Fotos hochzählen, damit Handys nicht das alte Bild aus dem Speicher zeigen
+  var VG_BILD_VERSION = 1;
+
+  var VG_SCHRITTE = ["Sehen", "Wirkung lesen", "Entscheiden", "Begründen", "Gegenprobe"];
+
+  // Tags der Satzbausteine: a / b = beschreibt diese Variante · gleich = in A und B gleich · leer = Leerwort
+  // ziel / teilziel / fremd = Zielbezug-Karten. Wirkungsachsen: Antwort immer A / B / kein Unterschied ("gleich").
+  var VG_UEBUNGEN = [
+    {
+      id:"braue-01", bereich:"braue", kurz:"Augenbraue",
+      titel:"Strengen Ausdruck öffnen",
+      haupthebel:"Brauenbogen (flach ↔ rund gewölbt)",
+      // Kein Ausgangsbild: Es würde eine der beiden Brauen schon zeigen.
+      ausgangslage:{text:"Schmales, eher langes Gesicht, hohe Stirn. Kräftige, dichte Brauen, die eher flach über den Augen liegen.", bild:null},
+      zielbild:{kundensprache:"Ich höre oft, dass ich streng oder müde wirke. Ich möchte offener und freundlicher aussehen.",
+                fachsprache:"Die Augenpartie wirkt offener, der Ausdruck weicher und freundlicher."},
+      variante_a:{bild:"VG_BILD_BRAUE01_A", bildhinweis:"Flacher Bogen: Die Braue verläuft fast waagrecht und liegt tief über dem Auge."},
+      variante_b:{bild:"VG_BILD_BRAUE01_B", bildhinweis:"Runder, höher gewölbter Bogen. Brauenkopf, Stärke, Farbe und Augen-Make-up wie A."},
+      wahrnehmungsfrage:{frage:"Was ist zwischen A und B anders – und wo?",
+        zonen:[["brauenkopf","Brauenkopf"],["augen","Augen (Make-up)"],["brauenbogen","Brauenbogen"],["lippen","Lippen"]],
+        merkmale:[["mk2","Augen-Make-up"],["mk1","Form und Höhe des Bogens"],["mk4","Lippenfarbe"],["mk3","Lage des Brauenkopfs"]]},
+      richtige_wahrnehmung:{zone:"brauenbogen", merkmal:"mk1",
+        text:"In A liegt die Braue flach und tief wie ein Balken über dem Auge: Die Augenpartie wirkt schwerer, der Ausdruck strenger. In B ist der Bogen rund und höher: Das Lid bekommt Raum, der Blick wirkt offener. Das Augen-Make-up ist gleich."},
+      wirkungsachsen:[
+        {achse:"augenpartie", frage:"In welcher Variante wirkt die Augenpartie offener?", loesung:"b", hinweis:"Schau auf den Abstand zwischen Braue und Auge: Wo hat das Lid mehr Raum?"},
+        {achse:"ausdruck", frage:"In welcher Variante wirkt der Ausdruck strenger?", loesung:"a", hinweis:"Welche Braue liegt flach und tief wie ein Balken über dem Auge?"},
+        {achse:"make-up", frage:"In welcher Variante ist das Augen-Make-up kräftiger?", loesung:"gleich", hinweis:"Lidstrich, Wimpern und Lidschatten sind in A und B gleich."},
+        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht kürzer?", loesung:"a", hinweis:"Welche Braue führt den Blick waagrecht zur Seite, welche nach oben?"}
+      ],
+      richtige_entscheidung:"b",
+      satzbausteine:{
+        merkmal:[{id:"m2", text:"der flache, tief liegende Bogen", tag:"a"}, {id:"m3", text:"das Augen-Make-up", tag:"gleich"}, {id:"m1", text:"der runde, höher gewölbte Bogen", tag:"b"}],
+        wirkung:[{id:"w3", text:"schöner aussieht", tag:"leer"}, {id:"w2", text:"das Gesicht optisch verkürzt", tag:"a"}, {id:"w1", text:"dem Lid mehr Raum gibt und die Augenpartie öffnet", tag:"b"}, {id:"w5", text:"den Blick ruhig und gerade hält", tag:"a"}, {id:"w4", text:"moderner wirkt", tag:"leer"}],
+        zielbezug:[{id:"z2", text:"die Kundin weniger müde aussehen will", tag:"teilziel"}, {id:"z1", text:"die Augenpartie offener und der Ausdruck freundlicher wirken soll", tag:"ziel"}, {id:"z3", text:"kräftige Brauen gerade Trend sind", tag:"fremd"}]
+      },
+      begruendung:{merkmal:"m1", wirkung:"w1", zielbezug:"z1",
+        mustersatz:"Ich wähle Variante B, weil der runde, höher gewölbte Bogen dem Lid mehr Raum gibt und die Augenpartie öffnet. Das passt zum Zielbild, weil die Augenpartie offener und der Ausdruck freundlicher wirken soll. Der flache Bogen in A liegt wie ein Balken über dem Auge und lässt den Blick strenger wirken."},
+      gegenprobe:{
+        optionen:[
+          {id:"g2", text:"Rundes Gesicht soll länger wirken.", warum:"Dafür braucht es einen weichen Winkel, der den Blick nach oben-außen führt. Der flache Bogen führt in die Breite."},
+          {id:"g1", text:"Langes Gesicht soll kürzer wirken."},
+          {id:"g3", text:"Die Augen sollen größer und wacher wirken.", warum:"Der flache Bogen liegt tief und nimmt dem Lid Raum. Die Augen wirken dadurch eher kleiner."}
+        ],
+        richtig:"g1",
+        erklaerung:"Der flache Bogen führt den Blick waagrecht zur Seite. Das nimmt einem langen Gesicht Länge."},
+      typische_fehler:[
+        {code:"E_KLARHEIT", wenn:{entscheidung:"a"},
+         denkfehler:"Du hast die flache Braue als „klar und ordentlich“ gelesen, nicht als Wirkung auf die Augenpartie.",
+         text:"Die Kundin will offener und freundlicher wirken. Der flache Bogen liegt tief über dem Auge und nimmt dem Lid Raum. Genau das lässt den Blick streng wirken. Schau, in welcher Variante das Lid mehr Raum hat."}
+      ],
+      feedback:{
+        leerfrage:"Was macht der Bogen mit der Augenpartie und dem Ausdruck: offener, schwerer, strenger, weicher?",
+        richtig:"Mehr Raum über dem Auge öffnet den Blick.",
+        merksatz:"Je flacher und tiefer die Braue, desto schwerer und strenger wirkt die Augenpartie. Ein runder, gewölbter Bogen öffnet sie."
+      }
+    },
+    {
+      id:"licht-01", bereich:"licht_schatten", kurz:"Licht & Schatten",
+      titel:"Langes Gesicht kürzer wirken lassen",
+      haupthebel:"Richtung von Licht, Schatten und Rouge (waagrecht ↔ senkrecht)",
+      ausgangslage:{text:"Schmales, eher langes Gesicht, hohe Stirn, schmales Kinn.", bild:"VG_BILD_LICHT01_AUSGANG"},
+      zielbild:{kundensprache:"Mein Gesicht wirkt so lang – auf Fotos noch mehr.",
+                fachsprache:"Das Gesicht wirkt kürzer und ausgeglichener."},
+      variante_a:{bild:"VG_BILD_LICHT01_A", bildhinweis:"Schatten am Stirnhaaransatz und unter der Kinnspitze. Licht waagrecht auf den Wangenknochen. Rouge waagrecht von der Wangenmitte Richtung Ohr."},
+      variante_b:{bild:"VG_BILD_LICHT01_B", bildhinweis:"Schatten senkrecht in der Wangenmulde. Licht senkrecht auf Stirnmitte, Nasenrücken und Kinn. Rouge schräg Richtung Schläfe. Gleiche Produktmenge wie A."},
+      wahrnehmungsfrage:{frage:"Was ist zwischen A und B anders – und wo?",
+        zonen:[["augen","Augen-Make-up"],["platzierung","Licht, Schatten und Rouge"],["lippen","Lippen"],["teint","Grundierung"]],
+        merkmale:[["mk2","Menge und Intensität"],["mk3","Farbe von Rouge und Schatten"],["mk1","Richtung der Platzierung (waagrecht oder senkrecht)"],["mk4","Deckkraft der Grundierung"]]},
+      richtige_wahrnehmung:{zone:"platzierung", merkmal:"mk1",
+        text:"B wirkt länger und markanter: Licht und Schatten laufen senkrecht. A wirkt kürzer und breiter: Schatten nimmt oben und unten Länge weg, Licht und Rouge laufen waagrecht. Die Intensität ist gleich."},
+      wirkungsachsen:[
+        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht länger?", loesung:"b", hinweis:"Folge Licht und Schatten mit dem Blick: Wo führen sie senkrecht, wo waagrecht?"},
+        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht breiter?", loesung:"a", hinweis:"Wo ziehen Licht und Rouge den Blick zur Seite?"},
+        {achse:"intensitaet", frage:"In welcher Variante wirkt das Make-up intensiver?", loesung:"gleich", hinweis:"Produktmenge und Intensität sind in A und B gleich. Nur die Platzierung ändert sich."},
+        {achse:"kontur", frage:"In welcher Variante wirkt das Gesicht markanter?", loesung:"b", hinweis:"Wo liegt Schatten unter dem Wangenknochen?"}
+      ],
+      richtige_entscheidung:"a",
+      satzbausteine:{
+        merkmal:[{id:"m2", text:"der senkrechte Schatten in der Wangenmulde", tag:"b"}, {id:"m3", text:"die Menge an Konturpuder", tag:"gleich"}, {id:"m1", text:"der Schatten am Haaransatz und unter dem Kinn", tag:"a"}],
+        wirkung:[{id:"w2", text:"das Gesicht definierter und markanter macht", tag:"b"}, {id:"w4", text:"professioneller aussieht", tag:"leer"}, {id:"w1", text:"oben und unten Länge zurücknimmt, während Licht und Rouge waagrecht den Blick in die Breite ziehen", tag:"a"}, {id:"w3", text:"mit senkrechtem Licht die Mitte betont und das Gesicht streckt", tag:"b"}, {id:"w5", text:"harmonischer wirkt", tag:"leer"}],
+        zielbezug:[{id:"z2", text:"Konturing unter die Wangenknochen gehört", tag:"fremd"}, {id:"z3", text:"das Gesicht auf Fotos gut aussehen soll", tag:"teilziel"}, {id:"z1", text:"das Gesicht kürzer und ausgeglichener wirken soll", tag:"ziel"}]
+      },
+      begruendung:{merkmal:"m1", wirkung:"w1", zielbezug:"z1",
+        mustersatz:"Ich wähle Variante A, weil der Schatten am Haaransatz und unter dem Kinn oben und unten Länge zurücknimmt, während Licht und Rouge waagrecht den Blick in die Breite ziehen. Das passt zum Zielbild, weil das Gesicht kürzer und ausgeglichener wirken soll."},
+      gegenprobe:{
+        optionen:[
+          {id:"g2", text:"Eckiges Gesicht soll weicher wirken.", warum:"Dafür liegt der Schatten auf den Stirn- und Kieferecken, nicht senkrecht in der Wangenmulde."},
+          {id:"g3", text:"Die Stirn soll zurücktreten.", warum:"Dafür liegt der Schatten an den Schläfen und seitlich an der Stirn. B holt die Stirnmitte mit Licht sogar hervor."},
+          {id:"g1", text:"Rundes Gesicht soll schmaler und länger wirken."}
+        ],
+        richtig:"g1",
+        erklaerung:"Senkrechtes Licht auf der Mittelachse und Schatten seitlich in der Wangenmulde strecken. Genau das braucht ein rundes Gesicht."},
+      typische_fehler:[
+        {code:"E_STANDARDTECHNIK", wenn:{entscheidung:"b"},
+         denkfehler:"Du hast nach einer Standardtechnik entschieden, nicht nach dem Zielbild.",
+         text:"B wirkt definierter, weil der Schatten senkrecht in der Wangenmulde und das Licht auf der Mittelachse das Gesicht strecken. Das lange Gesicht wird dadurch noch länger. Licht holt hervor, Schatten nimmt zurück: Wo nimmt A Länge weg?"}
+      ],
+      feedback:{
+        leerfrage:"Was machen Licht und Schatten mit dem Gesicht: länger, kürzer, schmaler, breiter?",
+        richtig:"Die Richtung entscheidet: Waagrecht verkürzt, senkrecht streckt.",
+        merksatz:"Licht holt hervor, Schatten nimmt zurück, Rouge gibt Richtung. Senkrecht streckt, waagrecht verkürzt."
+      }
+    },
+    {
+      id:"hoch-01", bereich:"hochsteck", kurz:"Hochsteckfrisur",
+      titel:"Breite Stirn, schmales Kinn ausgleichen",
+      haupthebel:"Schwerpunkt der Frisur (hoch ↔ tief)",
+      // Kein Ausgangsbild: A und B genügen für den Vergleich.
+      ausgangslage:{text:"Die Stirn ist deutlich breiter als das schmale, spitz zulaufende Kinn. Ausgeprägte Wangenknochen.", bild:null},
+      zielbild:{kundensprache:"Ich hab immer das Gefühl, meine Stirn ist so groß – und unten ist nix.",
+                fachsprache:"Das obere Gesichtsdrittel tritt zurück, das untere bekommt optisch Breite. Das Gesicht wirkt ausgeglichen."},
+      variante_a:{bild:"VG_BILD_HOCH01_A", bildhinweis:"Schwerpunkt hoch: Dutt am Oberkopf, Haar glatt nach oben genommen, Seiten anliegend."},
+      variante_b:{bild:"VG_BILD_HOCH01_B", bildhinweis:"Schwerpunkt tief: Knoten seitlich im Nacken, auf Kinnhöhe sichtbar, einzelne gelöste Strähnen. Make-up wie A."},
+      wahrnehmungsfrage:{frage:"Was ist zwischen A und B anders – und wo?",
+        zonen:[["augen","Augen (Make-up)"],["gesicht","Lippen"],["oberkopf_nacken","Oberkopf und Nacken"],["ohren","Ohren"]],
+        merkmale:[["mk2","Augen-Make-up"],["mk3","Gesichtsausdruck"],["mk4","Haarfarbe"],["mk1","Lage des Schwerpunkts (hoch oder tief)"]]},
+      richtige_wahrnehmung:{zone:"oberkopf_nacken", merkmal:"mk1",
+        text:"A zieht den Blick nach oben: Die Stirn wirkt präsenter, das Gesicht länger. B setzt die Masse auf Kinnhöhe: Das untere Gesichtsdrittel bekommt Breite. Das Make-up ist gleich."},
+      wirkungsachsen:[
+        {achse:"proportion", frage:"In welcher Variante bekommt das untere Gesichtsdrittel mehr Breite?", loesung:"b", hinweis:"Schau auf Kinnhöhe: Wo liegt dort Volumen?"},
+        {achse:"schwerpunkt", frage:"In welcher Variante wirkt die Stirn präsenter?", loesung:"a", hinweis:"Wohin zieht die Hauptmasse den Blick: nach oben zur Stirn oder nach unten?"},
+        {achse:"make-up", frage:"In welcher Variante ist das Make-up kräftiger?", loesung:"gleich", hinweis:"Das Make-up ist in A und B gleich."},
+        {achse:"proportion", frage:"In welcher Variante wirkt das Gesicht länger?", loesung:"a", hinweis:"Wo sitzt das Volumen: über dem Kopf oder neben dem Kinn?"}
+      ],
+      richtige_entscheidung:"b",
+      satzbausteine:{
+        merkmal:[{id:"m2", text:"der hohe Dutt am Oberkopf", tag:"a"}, {id:"m1", text:"der tiefe Schwerpunkt im Nacken", tag:"b"}, {id:"m3", text:"das Make-up", tag:"gleich"}],
+        wirkung:[{id:"w3", text:"eleganter wirkt", tag:"leer"}, {id:"w2", text:"das Gesicht streckt und den Hals frei zeigt", tag:"a"}, {id:"w4", text:"besser zum Anlass passt", tag:"leer"}, {id:"w1", text:"dem unteren Gesichtsdrittel auf Kinnhöhe Breite gibt und den Blick von der Stirn wegnimmt", tag:"b"}],
+        zielbezug:[{id:"z3", text:"die Stirn kleiner wirken soll", tag:"teilziel"}, {id:"z2", text:"eine Hochsteckfrisur zum Anlass elegant sein soll", tag:"fremd"}, {id:"z1", text:"die Stirn zurücktreten und das Gesicht unten Breite bekommen soll", tag:"ziel"}]
+      },
+      begruendung:{merkmal:"m1", wirkung:"w1", zielbezug:"z1",
+        mustersatz:"Ich wähle Variante B, weil der tiefe Schwerpunkt im Nacken dem unteren Gesichtsdrittel auf Kinnhöhe Breite gibt und den Blick von der Stirn wegnimmt. Das passt zum Zielbild, weil die Stirn zurücktreten und das Gesicht unten Breite bekommen soll."},
+      gegenprobe:{
+        optionen:[
+          {id:"g1", text:"Rundes Gesicht soll länger wirken, der Hals soll frei wirken."},
+          {id:"g2", text:"Eckiges Gesicht soll weicher wirken.", warum:"Dafür muss die Kontur am Gesicht aufgelöst werden. Der Schwerpunkt allein mildert keine Ecken."},
+          {id:"g3", text:"Langes Gesicht soll kürzer wirken.", warum:"Ein hoher Schwerpunkt streckt noch mehr. Ein langes Gesicht braucht den Schwerpunkt tief und Volumen seitlich."}
+        ],
+        richtig:"g1",
+        erklaerung:"Der hohe Schwerpunkt zieht den Blick nach oben und streckt. Das hilft einem runden Gesicht und zeigt den Hals frei."},
+      typische_fehler:[
+        {code:"E_STILREGEL", wenn:{entscheidung:"a"},
+         denkfehler:"Du hast nach einer Stilregel entschieden („hoch = elegant“) statt nach dem Zielbild.",
+         text:"Strecken war nicht gefragt. Die Kundin will, dass die Stirn zurücktritt. Der hohe Schwerpunkt zieht den Blick genau nach oben auf die Stirn. Schau, in welcher Variante das untere Gesichtsdrittel Breite bekommt."}
+      ],
+      feedback:{
+        leerfrage:"Was macht der Schwerpunkt mit dem Gesicht: länger, kürzer, oben betont, unten breiter?",
+        richtig:"Wo der Schwerpunkt sitzt, geht der Blick hin.",
+        merksatz:"Wo der Schwerpunkt sitzt, geht der Blick hin: Hoch streckt und betont die Stirn, tief gibt dem unteren Gesichtsdrittel Breite."
+      }
+    }
+  ];
+
+  var VG_ANTWORT = {a:"Variante A", b:"Variante B", gleich:"kein Unterschied"};
+
+  function vgNeu(){ return {schritt:0, links:Math.random() < .5 ? "a" : "b", s1:{}, s2:{}, entsch:null, satz:{}, gp:null, versuche:{}, hilfe:{}, ok:{}, fb:null}; }
+  function vgSpeichern(){ try { localStorage.setItem("vg-v1", JSON.stringify(st.vg)); } catch(e){} }
+  function vgLaden(){
+    var vg = {aktiv:VG_UEBUNGEN[0].id, laeufe:{}};
+    try { var d = JSON.parse(localStorage.getItem("vg-v1") || "null"); if (d && d.laeufe && vgUebung(d.aktiv)) vg = d; } catch(e){}
+    VG_UEBUNGEN.forEach(function(u){
+      var r = vg.laeufe[u.id];
+      if (!(r && typeof r.schritt === "number" && r.schritt >= 0 && r.schritt <= 6 && r.ok && r.s1 && r.s2 && r.satz)) vg.laeufe[u.id] = vgNeu();
+    });
+    return vg;
+  }
+  function vgUebung(id){ return VG_UEBUNGEN.filter(function(u){ return u.id === id; })[0]; }
+  function vgU(){ return vgUebung(st.vg.aktiv); }
+  function vgR(){ return st.vg.laeufe[st.vg.aktiv]; }
+  function vgVar(u, k){ return k === "a" ? u.variante_a : u.variante_b; }
+  function vgKarte(u, slot, id){ return u.satzbausteine[slot].filter(function(k){ return k.id === id; })[0]; }
+  function vgText(liste, id){ var t = liste.filter(function(x){ return x[0] === id; })[0]; return t ? t[1] : ""; }
+
+  function vgBild(key, label, gross){
+    var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key;
+    // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt.
+    // Er zeigt nur den gesuchten Dateinamen, keine Bildbeschreibung, damit Schritt 1 nicht verraten wird.
+    return '<figure class="vg-bild' + (gross ? ' gross' : '') + '">' +
+      (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '') +
+      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span></div>' +
+      '<figcaption>' + label + '</figcaption></figure>';
+  }
+  // A und B in zufälliger Reihenfolge, nur mit „A“ und „B“ beschriftet
+  function vgPaar(u, r){
+    var reihe = r.links === "a" ? ["a", "b"] : ["b", "a"];
+    return '<div class="pair vg-paar">' + reihe.map(function(k){ return vgBild(vgVar(u, k).bild, k.toUpperCase()); }).join("") + '</div>';
+  }
+  function vgChip(act, key, val, label, on, gesperrt){
+    return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="' + act + '" data-key="' + key + '" data-val="' + val + '"' + (gesperrt ? ' disabled' : '') + '>' + label + '</button>';
+  }
+  function vgGruppe(titel, inner){ return '<fieldset class="wahl vg-gruppe"><legend>' + titel + '</legend><div class="chips sb-chips">' + inner + '</div></fieldset>'; }
+
+  // ---------- Diagnose: liefert den frühesten Denkfehler eines Schritts oder null ----------
+  function vgDiagnose(n){
+    var u = vgU(), r = vgR(), W = u.richtige_wahrnehmung, wf = u.wahrnehmungsfrage;
+    if (n === 1){
+      if (r.s1.zone !== W.zone) return {art:"W_ZONE", denkfehler:"Du hast an der falschen Stelle gesucht.",
+        text:"Im Bereich „" + vgText(wf.zonen, r.s1.zone) + "“ sind A und B gleich. Vergleiche A und B Stelle für Stelle und such die eine Stelle, an der sie sich unterscheiden."};
+      if (r.s1.merkmal !== W.merkmal) return {art:"W_MERKMAL", denkfehler:"Du hast ein Merkmal gewählt, das sich nicht verändert.",
+        text:"„" + vgText(wf.merkmale, r.s1.merkmal) + "“ ist in A und B gleich, also kann es nicht der Unterschied sein."};
+      return null;
+    }
+    if (n === 2){
+      for (var i = 0; i < u.wirkungsachsen.length; i++){
+        var x = u.wirkungsachsen[i], a = r.s2[i];
+        if (a === x.loesung) continue;
+        var frage = "„" + x.frage + "“ ";
+        if (x.loesung === "gleich") return {art:"W_HINEINGELESEN", denkfehler:"Du hast einen Unterschied gesehen, den es hier nicht gibt.", text:frage + x.hinweis + " Bewerte nur, was sich wirklich verändert."};
+        if (a === "gleich") return {art:"W_UEBERSEHEN", denkfehler:"Du hast einen Unterschied übersehen.", text:frage + x.hinweis};
+        return {art:"W_VERTAUSCHT", denkfehler:"Du hast die Wirkung erkannt, aber der falschen Variante zugeordnet.", text:frage + x.hinweis};
+      }
+      return null;
+    }
+    if (n === 4){
+      var e = r.entsch, richtig = u.richtige_entscheidung, s = r.satz;
+      var m = vgKarte(u, "merkmal", s.merkmal), w = vgKarte(u, "wirkung", s.wirkung), z = vgKarte(u, "zielbezug", s.zielbezug);
+      // 1. Wahrnehmung: falsche Entscheidung als Folge einer in Schritt 2 falsch gelesenen Wirkung
+      if (e !== richtig && r.hilfe[2]) return {art:"W_FOLGEFEHLER", denkfehler:"Deine Entscheidung folgt aus einer falsch gelesenen Wirkung.",
+        text:"In Schritt 2 hast du die Wirkung zuerst anders gelesen. So wirken A und B wirklich: " + W.text + " Verbinde diese Wirkung jetzt mit dem Zielbild."};
+      // 2. Widerspruch: Begründung beschreibt die nicht gewählte Variante
+      var andere = [m, w].filter(function(k){ return (k.tag === "a" || k.tag === "b") && k.tag !== e; })[0];
+      if (andere) return {art:"B_WIDERSPRUCH", denkfehler:"Deine Begründung beschreibt Variante " + andere.tag.toUpperCase() + ", gewählt hast du aber Variante " + e.toUpperCase() + ".",
+        text:"Entscheidung und Begründung müssen zur selben Variante gehören. Welche Variante meinst du wirklich?" + (andere.tag === richtig ? " Deine Begründung stimmt. Prüfe deine Wahl." : "")};
+      // 3. Entscheidung passt nicht zum Zielbild
+      if (e !== richtig){
+        var tf = u.typische_fehler.filter(function(f){
+          return Object.keys(f.wenn).every(function(k){ var v = f.wenn[k], ist = k === "entscheidung" ? e : s[k]; return Array.isArray(v) ? v.indexOf(ist) >= 0 : v === ist; });
+        })[0];
+        if (tf) return {art:tf.code, denkfehler:tf.denkfehler, text:tf.text};
+        return {art:"E_VERBINDUNG", denkfehler:"Du hast die Wirkung richtig gelesen, sie aber nicht mit dem Zielbild verbunden.",
+          text:"Das Zielbild verlangt: " + u.zielbild.fachsprache + " Welche Variante erzeugt genau das?"};
+      }
+      // 4. Begründung zu ungenau
+      if (m.tag === "gleich") return {art:"B_MERKMAL_GLEICH", denkfehler:"„" + m.text + "“ ist in A und B gleich.",
+        text:"Ein Merkmal, das in beiden Varianten gleich ist, kann den Unterschied nicht erklären. Nenne das Merkmal, das sich verändert."};
+      if (w.tag === "leer") return {art:"B_LEERWORT", denkfehler:"„" + w.text + "“ beschreibt dein Gefühl, nicht die Wirkung.", text:u.feedback.leerfrage};
+      if (z.tag === "teilziel") return {art:"B_TEILZIEL", denkfehler:"Du begründest nur mit einem Teil des Auftrags.", text:"Das ganze Zielbild heißt: " + u.zielbild.fachsprache};
+      if (z.tag === "fremd") return {art:"B_FREMD", denkfehler:"Das stand nicht im Auftrag.", text:"Begründe mit dem Zielbild: " + u.zielbild.fachsprache};
+      return null;
+    }
+    if (n === 5){
+      if (r.gp === u.gegenprobe.richtig) return null;
+      var o = u.gegenprobe.optionen.filter(function(x){ return x.id === r.gp; })[0];
+      return {art:"G_FALSCH", denkfehler:"Diese Variante erreicht das gewählte Zielbild nicht.", text:o.warum};
+    }
+    return null;
+  }
+  function vgKomplett(n){
+    var u = vgU(), r = vgR();
+    if (n === 1) return !!(r.s1.zone && r.s1.merkmal);
+    if (n === 2) return u.wirkungsachsen.every(function(x, i){ return !!r.s2[i]; });
+    if (n === 3) return !!r.entsch;
+    if (n === 4) return !!(r.entsch && r.satz.merkmal && r.satz.wirkung && r.satz.zielbezug);
+    if (n === 5) return !!r.gp;
+    return true;
+  }
+  // Nach dem 2. Fehlversuch: richtige Lösung übernehmen
+  function vgLoesungSetzen(n){
+    var u = vgU(), r = vgR();
+    if (n === 1){ r.s1 = {zone:u.richtige_wahrnehmung.zone, merkmal:u.richtige_wahrnehmung.merkmal}; }
+    if (n === 2){ u.wirkungsachsen.forEach(function(x, i){ r.s2[i] = x.loesung; }); }
+    if (n === 4){ r.entsch = u.richtige_entscheidung; r.satz = {merkmal:u.begruendung.merkmal, wirkung:u.begruendung.wirkung, zielbezug:u.begruendung.zielbezug}; }
+    if (n === 5){ r.gp = u.gegenprobe.richtig; }
+  }
+  function vgLoesungText(n){
+    var u = vgU(), W = u.richtige_wahrnehmung, wf = u.wahrnehmungsfrage;
+    if (n === 1) return 'Der Unterschied liegt im Bereich „' + vgText(wf.zonen, W.zone) + '“: ' + vgText(wf.merkmale, W.merkmal) + '. Alles andere ist in A und B gleich.';
+    if (n === 2) return '<ul>' + u.wirkungsachsen.map(function(x){ return '<li>' + x.frage + ' <strong>' + VG_ANTWORT[x.loesung] + '</strong></li>'; }).join("") + '</ul>';
+    if (n === 4) return u.begruendung.mustersatz;
+    if (n === 5) return '„' + u.gegenprobe.optionen.filter(function(x){ return x.id === u.gegenprobe.richtig; })[0].text + '“ ' + u.gegenprobe.erklaerung;
+    return "";
+  }
+  function vgPasstText(n){
+    var u = vgU();
+    if (n === 1) return 'Genau. Der Unterschied ist der Haupthebel dieser Übung: ' + u.haupthebel + '. Alles andere ist gleich.';
+    if (n === 2) return 'Genau. ' + u.richtige_wahrnehmung.text;
+    if (n === 4) return 'Genau. Du hast Merkmal, Wirkung und Zielbild verbunden. ' + u.feedback.richtig;
+    if (n === 5) return 'Genau. ' + u.gegenprobe.erklaerung;
+    return "";
+  }
+  function vgPruefen(){
+    var r = vgR(), n = r.schritt;
+    if (r.ok[n] || !vgKomplett(n)) return;
+    r.versuche[n] = (r.versuche[n] || 0) + 1;
+    var f = vgDiagnose(n);
+    if (!f){ r.ok[n] = true; r.fb = {art:"passt", text:vgPasstText(n)}; return; }
+    if (r.versuche[n] >= 2){
+      r.hilfe[n] = true; r.ok[n] = true; vgLoesungSetzen(n);
+      r.fb = {art:"loesung", denkfehler:f.denkfehler, text:f.text, loesung:vgLoesungText(n)};
+      return;
+    }
+    r.fb = {art:"denk", denkfehler:f.denkfehler, text:f.text};
+  }
+
+  // Genau ein Feedbackblock. Keine Richtig/Falsch-Markierung an Varianten oder Antworten.
+  function vgFeedback(){
+    var fb = vgR().fb; if (!fb) return "";
+    if (fb.art === "passt") return '<div class="callout good" role="status"><p>' + fb.text + '</p></div>';
+    var kopf = '<p><strong>' + fb.denkfehler + '</strong></p><p>' + fb.text + '</p>';
+    if (fb.art === "loesung") return '<div class="callout accent" role="status">' + kopf + '<p><strong>So geht es:</strong></p><div>' + fb.loesung + '</div><p class="note">Die Lösung ist jetzt übernommen. Dieser Schritt zählt als „mit Hilfe“.</p></div>';
+    return '<div class="callout accent" role="status">' + kopf + '<p class="note">Ändere deine Antwort und prüfe noch einmal.</p></div>';
+  }
+  function vgAktionen(n){
+    var r = vgR(), ok = r.ok[n];
+    var weiterText = n === 5 ? 'Übung abschließen' : 'Weiter zu Schritt ' + (n + 1) + ': ' + VG_SCHRITTE[n];
+    if (n === 3) return '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="vgweiter"' + (vgKomplett(3) ? '' : ' disabled') + '>' + weiterText + ICON_WEITER + '</button></div>';
+    return '<div class="controls" style="justify-content:flex-start">' +
+      (ok ? '<button class="btn primary" type="button" data-act="vgweiter">' + weiterText + ICON_WEITER + '</button>'
+          : '<button class="btn primary" type="button" data-act="vgpruef"' + (vgKomplett(n) ? '' : ' disabled') + '>Prüfen</button>') + '</div>';
+  }
+  function vgSatz(u, r){
+    function slot(k, platzhalter){ var c = r.satz[k] ? vgKarte(u, k, r.satz[k]) : null; return '<span class="sb-slot' + (c ? '' : ' leer') + '">' + (c ? c.text : platzhalter) + '</span>'; }
+    return '<p class="sb-satz">Ich wähle <span class="sb-slot' + (r.entsch ? '' : ' leer') + '">' + (r.entsch ? 'Variante ' + r.entsch.toUpperCase() : 'Variante …') + '</span>, weil ' +
+      slot("merkmal", "Merkmal") + ' ' + slot("wirkung", "Wirkung") + '. Das passt zum Zielbild, weil ' + slot("zielbezug", "Zielbezug") + '.</p>';
+  }
+  function vgZielbild(u){
+    return '<div class="callout vg-ziel"><p class="sb-ebene">Kundenauftrag</p><p>„' + u.zielbild.kundensprache + '“</p>' +
+      '<p class="sb-ebene">Zielbild</p><p><strong>' + u.zielbild.fachsprache + '</strong></p></div>';
+  }
+
+  function renderVisagistik(){
+    if (!st.vg) st.vg = vgLaden();
+    var u = vgU(), r = vgR(), n = r.schritt, ok = r.ok[n];
+    var wahl = '<div class="chips sb-faelle" role="group" aria-label="Übung wählen">' + VG_UEBUNGEN.map(function(x, i){
+      var on = x.id === st.vg.aktiv, fertig = st.vg.laeufe[x.id].schritt === 6;
+      return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="vgwahl" data-val="' + x.id + '">Übung ' + (i + 1) + ': ' + x.kurz + (fertig ? ' ✓' : '') + '</button>';
+    }).join("") + '</div>';
+    var schritte = '<ol class="steps" aria-label="Lernschritte">' + VG_SCHRITTE.map(function(t, i){
+      var c = i + 1 === n ? "now" : (i + 1 < n ? "done" : "");
+      return '<li class="' + c + '"' + (i + 1 === n ? ' aria-current="step"' : '') + '>' + (i + 1) + ' · ' + t + '</li>';
+    }).join("") + '</ol>';
+    var lage = '<p class="note"><strong>Ausgangslage:</strong> ' + u.ausgangslage.text + '</p>';
+    var inhalt;
+
+    if (n === 0){
+      inhalt = (u.ausgangslage.bild ? '<section class="card fig">' + vgBild(u.ausgangslage.bild, "Ausgangslage", true) + '</section>' : '') +
+        '<section class="card text"><h2>Ausgangslage</h2><p>' + u.ausgangslage.text + '</p>' +
+        '<p class="note">Gleich siehst du dasselbe Gesicht in zwei Varianten, A und B. Sie unterscheiden sich nur in einem Punkt. Du schaust zuerst genau hin und beschreibst die Wirkung. Das Zielbild bekommst du erst danach.</p>' +
+        '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="vgstart">Vergleich starten' + ICON_WEITER + '</button></div></section>';
+    } else if (n === 6){
+      var zeilen = [["Sehen", 1], ["Wirkung lesen", 2], ["Entscheiden und Begründen", 4], ["Gegenprobe", 5]];
+      inhalt = '<section class="card text"><h2>Übung abgeschlossen</h2>' +
+        '<div class="callout good"><p><strong>Mustersatz:</strong> ' + u.begruendung.mustersatz + '</p></div>' +
+        '<p class="merksatz">' + u.feedback.merksatz + '</p>' +
+        '<ul class="vg-ergebnis">' + zeilen.map(function(z){ return '<li>' + z[0] + ': <strong>' + (r.hilfe[z[1]] ? 'mit Hilfe' : 'selbst gelöst') + '</strong></li>'; }).join("") + '</ul>' +
+        '<div class="controls" style="justify-content:flex-start">' +
+          VG_UEBUNGEN.filter(function(x){ return x.id !== u.id && st.vg.laeufe[x.id].schritt < 6; }).slice(0, 1).map(function(x){
+            return '<button class="btn primary" type="button" data-act="vgwahl" data-val="' + x.id + '">Weiter mit: ' + x.kurz + ICON_WEITER + '</button>'; }).join("") +
+          '<button class="btn" type="button" data-act="vgneu">Diese Übung nochmal</button></div></section>';
+    } else {
+      var aufgabe = '', gesperrt = !!ok;
+      if (n === 1){
+        aufgabe = '<h2>Schritt 1: Sehen</h2><p class="sb-leit">' + u.wahrnehmungsfrage.frage + '</p>' +
+          '<p class="note">Noch nicht bewerten. Nur hinschauen.</p>' +
+          vgGruppe("Wo liegt der Unterschied?", u.wahrnehmungsfrage.zonen.map(function(z){ return vgChip("vgset", "s1.zone", z[0], z[1], r.s1.zone === z[0], gesperrt); }).join("")) +
+          vgGruppe("Welches Merkmal ist anders?", u.wahrnehmungsfrage.merkmale.map(function(z){ return vgChip("vgset", "s1.merkmal", z[0], z[1], r.s1.merkmal === z[0], gesperrt); }).join(""));
+      } else if (n === 2){
+        aufgabe = '<h2>Schritt 2: Wirkung lesen</h2><p class="sb-leit">Wie verändert das Merkmal das Gesicht?</p>' +
+          u.wirkungsachsen.map(function(x, i){
+            return vgGruppe(x.frage, ["a", "b", "gleich"].map(function(k){ return vgChip("vgset", "s2." + i, k, VG_ANTWORT[k], r.s2[i] === k, gesperrt); }).join(""));
+          }).join("");
+      } else if (n === 3){
+        aufgabe = '<h2>Schritt 3: Entscheiden</h2>' + vgZielbild(u) +
+          '<p class="note"><strong>Deine Wirkungslesung:</strong></p><ul class="vg-lesung">' + u.wirkungsachsen.map(function(x, i){ return '<li>' + x.frage + ' → ' + VG_ANTWORT[r.s2[i]] + '</li>'; }).join("") + '</ul>' +
+          '<p class="sb-leit">Welche Variante erreicht das Zielbild?</p>' +
+          '<div class="chips">' + ["a", "b"].map(function(k){ return vgChip("vgset", "entsch", k, "Variante " + k.toUpperCase(), r.entsch === k, false); }).join("") + '</div>' +
+          '<p class="note">Deine Wahl wird zusammen mit deiner Begründung geprüft.</p>';
+      } else if (n === 4){
+        var sb = u.satzbausteine;
+        aufgabe = '<h2>Schritt 4: Begründen</h2>' + vgZielbild(u) +
+          '<p class="sb-leit">Warum erreicht deine Variante das Zielbild?</p>' + vgSatz(u, r) +
+          vgGruppe("Deine Wahl", ["a", "b"].map(function(k){ return vgChip("vgset", "entsch", k, "Variante " + k.toUpperCase(), r.entsch === k, gesperrt); }).join("")) +
+          vgGruppe("Merkmal", sb.merkmal.map(function(c){ return vgChip("vgset", "satz.merkmal", c.id, c.text, r.satz.merkmal === c.id, gesperrt); }).join("")) +
+          vgGruppe("Wirkung", sb.wirkung.map(function(c){ return vgChip("vgset", "satz.wirkung", c.id, c.text, r.satz.wirkung === c.id, gesperrt); }).join("")) +
+          vgGruppe("Zielbezug", sb.zielbezug.map(function(c){ return vgChip("vgset", "satz.zielbezug", c.id, c.text, r.satz.zielbezug === c.id, gesperrt); }).join(""));
+      } else if (n === 5){
+        var nicht = u.richtige_entscheidung === "a" ? "b" : "a";
+        aufgabe = '<h2>Schritt 5: Gegenprobe</h2><p class="sb-leit">Für welches Zielbild wäre Variante ' + nicht.toUpperCase() + ' die richtige Wahl?</p>' +
+          '<p class="note">Keine Variante ist an sich falsch. Sie passt nur zu einem anderen Zielbild.</p>' +
+          vgGruppe("Zielbild wählen", u.gegenprobe.optionen.map(function(o){ return vgChip("vgset", "gp", o.id, o.text, r.gp === o.id, gesperrt); }).join(""));
+      }
+      var bild = n === 5
+        ? (function(){ var nicht = u.richtige_entscheidung === "a" ? "b" : "a"; return vgBild(vgVar(u, nicht).bild, nicht.toUpperCase(), true); })()
+        : vgPaar(u, r);
+      inhalt = '<div class="bk-grid sb-grid">' +
+        '<section class="card fig sb-fig vg-fig">' + bild + lage + '</section>' +
+        '<section class="card text sb-aufgabe">' + aufgabe + vgFeedback() + vgAktionen(n) + '</section>' +
+      '</div>';
+    }
+
+    return '<div class="screen">' +
+      '<div class="pagehead"><h1>Visagistik-Vergleich <span class="tag">V1</span></h1>' +
+        '<p class="meta">Erst sehen, dann einordnen, dann entscheiden, dann begründen.</p></div>' +
+      wahl + '<p class="sb-fall"><strong>' + u.kurz + ':</strong> ' + u.titel + '</p>' + schritte + inhalt +
+    '</div>';
+  }
+
+  // Klicks im Reiter „Visagistik“; gibt true zurück, wenn der Bildschirm wechselt
+  function vgAktion(a, d){
+    if (!st.vg) st.vg = vgLaden();
+    var r = vgR(), n = r.schritt;
+    if (a === "vgwahl"){ st.vg.aktiv = d.val; vgSpeichern(); return true; }
+    if (a === "vgneu"){ st.vg.laeufe[st.vg.aktiv] = vgNeu(); vgSpeichern(); return true; }
+    if (a === "vgstart"){ r.schritt = 1; r.fb = null; vgSpeichern(); return true; }
+    if (a === "vgset"){
+      if (r.ok[n] && n !== 3) return false;
+      var teile = d.key.split(".");
+      if (teile.length === 2) r[teile[0]][teile[1]] = d.val; else r[teile[0]] = d.val;
+      r.fb = null; vgSpeichern(); return false;
+    }
+    if (a === "vgpruef"){ vgPruefen(); vgSpeichern(); return false; }
+    if (a === "vgweiter"){
+      // Weiter nur nach gültiger Eingabe: Schritt 3 braucht eine Wahl, alle anderen eine geprüfte Antwort
+      if (n === 3 ? !vgKomplett(3) : !r.ok[n]) return false;
+      r.schritt = n + 1; r.fb = null; vgSpeichern(); return true;
+    }
+    return false;
+  }
+
   // ---------- App-Rahmen ----------
   function neuStart(){ return {kopfArt:st.kopfArt, richtung1:"hinterkopf", richtung2:"B", dk:"A", dkHilfe:true, fehlerDk:"breit", rund:"A", rundHilfe:true, richtung4:"lang", fehlerRund:"seitlich", ohren:"A", ohrHilfe:true, richtung6:"B", fehlerOhr:"undercut", hd:"A", hdHilfe:true, fehlerHd:"umgekehrt", hdForm:"rund", ans1:"profil", ans2:"vorne", view:st.view, fall:st.fall, kap:st.kap, hilfe:true, pony:"A", fehlerAuge:"schwer", screen:0, ohr:true, hair:"A", zonen:true, schaedel:false, winkel:0, fehler:"tief", q:0, picked:null, score:0}; }
 
@@ -3586,6 +4035,7 @@ wechsle aber nicht ohne Zustimmung.
         '<button type="button" data-act="view" data-val="baukasten"' + (st.view==="baukasten" ? ' aria-current="page"' : '') + '>Baukasten</button>' +
         '<button type="button" data-act="view" data-val="wissen"' + (st.view==="wissen" ? ' aria-current="page"' : '') + '>Wissen</button>' +
         '<button type="button" data-act="view" data-val="trainer"' + (st.view==="trainer" ? ' aria-current="page"' : '') + '>Trainer</button>' +
+        '<button type="button" data-act="view" data-val="visagistik"' + (st.view==="visagistik" ? ' aria-current="page"' : '') + '>Visagistik</button>' +
       '</nav>';
     var app = document.getElementById("app");
     document.documentElement.style.setProperty("--bar-h", document.querySelector(".appbar").offsetHeight + "px");
@@ -3593,8 +4043,8 @@ wechsle aber nicht ohne Zustimmung.
     trainer.hidden = st.view !== "trainer";
     app.hidden = st.view === "trainer";
     if (st.view === "trainer"){ app.innerHTML = ""; return; }
-    app.classList.toggle("breit", st.view === "baukasten");
-    app.innerHTML = st.view === "wissen" ? renderWissen() : st.view === "baukasten" ? renderBaukasten() : renderPilot();
+    app.classList.toggle("breit", st.view === "baukasten" || st.view === "visagistik");
+    app.innerHTML = st.view === "wissen" ? renderWissen() : st.view === "baukasten" ? renderBaukasten() : st.view === "visagistik" ? renderVisagistik() : renderPilot();
   }
 
   window.addEventListener("resize", function(){ var b = document.querySelector(".appbar"); if (b) document.documentElement.style.setProperty("--bar-h", b.offsetHeight + "px"); });
@@ -3622,6 +4072,7 @@ wechsle aber nicht ohne Zustimmung.
     if (a==="sbmodul"){ st.sb.modul = +b.dataset.val; st.sb.geprueft = st.sb.fertig > st.sb.modul; sbSpeichern(); moved = true; }
     if (a==="sbneu"){ st.sb = st.sbAlle.faelle[st.sbAlle.aktiv] = sbNeu(); sbSpeichern(); moved = true; }
     if (a==="sbfall"){ st.sbAlle.aktiv = b.dataset.val; st.sb = st.sbAlle.faelle[b.dataset.val]; sbSpeichern(); moved = true; }
+    if (a.indexOf("vg") === 0){ if (vgAktion(a, b.dataset)) moved = true; }
     if (a==="pick"){ st.picked = +b.dataset.i; if (st.picked === fall().fragen[st.q].r) st.score++; }
     if (a==="nextQ"){ st.q++; st.picked = null; }
     if (a==="checkReset"){ st.q = 0; st.picked = null; st.score = 0; }
