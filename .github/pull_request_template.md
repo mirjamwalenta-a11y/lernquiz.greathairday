@@ -33,6 +33,7 @@
 - [ ] Rollenprüfungen (Chefin/Admin) serverseitig durchgesetzt, nicht nur per JS
 - [ ] Kein neuer Login- oder „Angemeldet bleiben“-Weg **oder** er nutzt ein zufälliges, ablaufendes Token
 - [ ] Keine Fotos oder Namen echter Kund:innen ohne Freigabe
+- [ ] Bei neuer Tabelle, Policy oder neuem Login-Weg: `SICHERHEIT-RLS-CHECK.md` durchgegangen
 
 ## Auslieferung
 
