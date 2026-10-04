@@ -59,6 +59,8 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 
 Bildaufgaben (S1, S6, Prüfungsfall): Die Flächen am Kopf sind nummeriert (1 = unten). Gewählt wird nur über die Nummern-Knöpfe unter dem Bild, die gewählte Fläche wird am Kopf farbig angezeigt. Erst „Prüfen“ wertet. In S2 wird die Zone über die Namens-Knöpfe gewählt. Das Foto selbst ist nicht antippbar.
 
+Mehrere Fragen pro Screen: Über jeder Frage steht „Frage x von y“. Nach dem Prüfen bleibt die Frage mit ihrem Ergebnis stehen; weiter geht es nur über den Knopf „Nächste Frage“ bzw. „Weiter zu S…“ direkt darunter. Kein automatischer Wechsel zur nächsten Frage.
+
 Regel für alle Screens: Weiter geht es mit richtiger Antwort. Nach einer falschen Antwort kann der Lehrling nochmal probieren oder „Lösung zeigen und weiter“ wählen: Dann erscheinen die richtige Antwort und die Begründung, die Frage zählt als falsch (✗) und die nächste Frage öffnet sich. Fehlversuche werden gezählt (Auswertung für Ausbilder:in).
 
 ---
