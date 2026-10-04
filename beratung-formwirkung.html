@@ -269,6 +269,7 @@ dl.steck dd{margin:0}
 .mok-pfeil{color:var(--muted);font-size:var(--t-xs)}
 .mok-titel{font-size:var(--t-m)}
 .mok-frage{font-weight:700}
+.mok-bildfrage{background:var(--accent-soft);border-radius:var(--r-s);padding:8px 12px;margin:0}
 .mok-erledigt{list-style:none;margin:0;padding:0 !important;display:flex;flex-direction:column;gap:6px}
 .mok-erledigt li{font-size:var(--t-s);padding:6px 10px;border-radius:var(--r-s);background:var(--accent-soft)}
 .mok-erledigt .sb-satz{background:transparent;border:0;padding:4px 0 0}
@@ -2474,8 +2475,8 @@ wechsle aber nicht ohne Zustimmung.
   // Beim Ersetzen durch Foto oder Illustration die y-Bereiche der Zonen ans neue Bild anpassen.
   // hw = halbe Kopfbreite. Zonen von oben nach unten: Deckhaar, oberer Bereich, Übergangslinie, Band 3, Band 2, Band 1.
   var MOK_KOEPFE = {
-    A: {hw:108, zonen:{deckhaar:[18,110], oben:[110,172], uebergang:[172,190], band3:[190,226], band2:[226,259], band1:[259,298]}},
-    B: {hw:96,  zonen:{deckhaar:[18,88],  oben:[88,136],  uebergang:[136,154], band3:[154,204], band2:[204,250], band1:[250,298]}}
+    A: {hw:108, zonen:{deckhaar:[18,110], oben:[110,168], uebergang:[168,192], band3:[192,226], band2:[226,259], band1:[259,298]}},
+    B: {hw:96,  zonen:{deckhaar:[18,88],  oben:[88,133],  uebergang:[133,157], band3:[157,204], band2:[204,250], band1:[250,298]}}
   };
   // bild = Kennung in den Übungen. platzhalter = was hier später als echtes Bild eingesetzt wird.
   var MOK_BILDER = {
@@ -2483,7 +2484,7 @@ wechsle aber nicht ohne Zustimmung.
     "A-kante": {kopf:"A", fehler:"kante", platzhalter:"MOK_FEHLER_KANTE_HINTERKOPF – Fehlerfoto Kante an der Übergangslinie"},
     "B":       {kopf:"B", platzhalter:"MOK_BILD_B – Foto Prüfungskopf, hoher Verlauf"},
     "B-stufe": {kopf:"B", fehler:"stufe", platzhalter:"MOK_FEHLER_STUFE – Fehlerfoto Stufe zwischen Band 2 und Band 3",
-                zonen:{band3:[154,194], grenze:[194,214], band2:[214,250]}}
+                zonen:{band3:[157,192], grenze:[192,216], band2:[216,250]}}
   };
   // Zonen: label = Beschriftung im Bild nach dem Markieren, name/arbeit = Standard-Feedback beim Antippen der falschen Zone.
   // Die Namen nennen bewusst keine Hebelstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
@@ -2751,7 +2752,7 @@ wechsle aber nicht ohne Zustimmung.
   ];
 
   // ---------- Zustand ----------
-  function mokNeu(){ return {screen:0, offen:0, u:{}, zone:null, reihe:[], flash:null, zuletzt:null}; }
+  function mokNeu(){ return {screen:0, offen:0, u:{}, zone:null, reihe:[], flash:null, zuletzt:null, geprueft:null, fokus:null}; }
   function mokU(id){ return st.mok.u[id] || (st.mok.u[id] = {wahl:null, versuche:0, ok:false, fehler:null}); }
   function mokX(id){ return MOK_UEBUNGEN.filter(function(x){ return x.id === id; })[0]; }
   function mokListe(sid){ return MOK_UEBUNGEN.filter(function(x){ return x.screen === sid; }); }
@@ -2780,7 +2781,7 @@ wechsle aber nicht ohne Zustimmung.
   }
   function mokPruefen(x, w){
     var s = mokU(x.id); if (s.ok || w == null) return;
-    s.wahl = w;
+    s.wahl = w; st.mok.geprueft = x.id;
     if (mokRichtig(x, w)){ s.ok = true; s.fehler = null; st.mok.zuletzt = x.id; if (x.screen === "S2") st.mok.zone = null; return; }
     s.versuche++;
     s.fehler = mokFehler(x, w);
@@ -2831,12 +2832,18 @@ wechsle aber nicht ohne Zustimmung.
   }
 
   // ---------- Bausteine ----------
+  // Fokus-Anker: Die Rückmeldung zur gerade geprüften Antwort wird nach dem Klick ins Bild gescrollt (Handy)
+  function mokAnker(x){
+    var M = st.mok;
+    if (M.fokus !== "fb" || M.geprueft !== x.id || M.ankerGesetzt) return '';
+    M.ankerGesetzt = true; return ' id="mok-fokus"';
+  }
   function mokRueckmeldung(x){
     var s = mokU(x.id), f = s.fehler, h = '';
-    if (s.ok) return '<div class="callout good"><p><strong>Richtig.</strong> ' + x.feedback.richtig + '</p></div>';
+    if (s.ok) return '<div class="callout good"' + mokAnker(x) + '><p><strong>Richtig.</strong> ' + x.feedback.richtig + '</p></div>';
     if (f){
       var glied = MOK_KETTE.filter(function(k){ return k[0] === f.zurueck; })[0][1];
-      h += '<div class="callout bad mok-fb">' +
+      h += '<div class="callout bad mok-fb"' + mokAnker(x) + '>' +
         '<p><strong>Denkfehler:</strong> ' + f.denkfehler + '</p>' +
         '<p class="mok-kette"><strong>Zurück zu:</strong><span class="sr">' + glied + '</span><span class="mok-glieder" aria-hidden="true">' +
           MOK_KETTE.map(function(k){ return '<span class="mok-glied' + (k[0] === f.zurueck ? ' on' : '') + '">' + k[1] + '</span>'; }).join('<span class="mok-pfeil">→</span>') + '</span></p>' +
@@ -2913,13 +2920,13 @@ wechsle aber nicht ohne Zustimmung.
     if (erledigt.length) h += '<ul class="mok-erledigt">' + erledigt.map(function(x){
       return '<li>✓ <strong>' + x.titel + (x.antworttyp === "satzbaustein" ? '</strong>' + mokSatz(x) : x.antworttyp === "hotspot" ? '</strong>' : ':</strong> ' + mokAntwort(x)) + '</li>'; }).join("") + '</ul>';
     var zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
-    if (zuletzt && zuletzt.screen === sid) h += mokRueckmeldung(zuletzt);
+    if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp !== "hotspot") h += mokRueckmeldung(zuletzt);
     if (akt){
       h += '<h3 class="mok-titel">' + akt.titel + '</h3><p class="note">' + akt.ausgangslage + '</p>';
-      if (akt.antworttyp === "hotspot") h += '<p class="mok-frage">' + akt.frage + '</p><p class="note">Tippe direkt im Bild.</p>';
+      if (akt.antworttyp === "hotspot") h += '<p class="note">Die Aufgabe steht direkt über dem Bild. Tippe im Bild.</p>';
       else if (akt.antworttyp === "satzbaustein") h += mokSatz(akt);
       else h += mokWahl(akt);
-      h += mokRueckmeldung(akt);
+      if (akt.antworttyp !== "hotspot") h += mokRueckmeldung(akt);
       // Mehrstufige Fälle (gleiche Fall-ID mit Buchstaben): spätere Stufen sichtbar, aber gesperrt
       L.slice(L.indexOf(akt) + 1).forEach(function(x){
         if (!/[a-z]$/.test(x.id) || x.id.slice(0, -1) !== akt.id.slice(0, -1)) return;
@@ -2943,7 +2950,11 @@ wechsle aber nicht ohne Zustimmung.
       else { o.markiert = x.zeigen || (x.antworttyp === "hotspot" ? [x.richtige_antwort] : []); o.aktiv = x.zone; }
     }
     var bildId = sid === "S6" || sid === "S7" ? o.bild : "A";
-    return mokKopf(o) + '<p class="mok-platzhalter">PLATZHALTER Bild · ' + MOK_BILDER[bildId].platzhalter + '</p>';
+    // Bildaufgabe: Frage direkt über dem Bild, Rückmeldung direkt darunter, damit beides am Handy im Blick bleibt
+    var oben = '', unten = '', zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
+    if (akt && akt.antworttyp === "hotspot"){ oben = '<p class="mok-frage mok-bildfrage">' + akt.frage + '</p>'; unten = mokRueckmeldung(akt); }
+    if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp === "hotspot") unten = mokRueckmeldung(zuletzt) + unten;
+    return oben + mokKopf(o) + unten + '<p class="mok-platzhalter">PLATZHALTER Bild · ' + MOK_BILDER[bildId].platzhalter + '</p>';
   }
 
   function mokAufgabe(sid){
@@ -2964,7 +2975,7 @@ wechsle aber nicht ohne Zustimmung.
       }).join("") + '</div>';
       var zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
       if (!x && zuletzt && zuletzt.screen === "S2") h += mokRueckmeldung(zuletzt);
-      if (x) h += '<h3 class="mok-titel">' + MOK_ZONEN[z].label + '</h3><p class="note">' + x.ausgangslage + '</p>' + mokWahl(x) + mokRueckmeldung(x);
+      if (x) h += '<div' + (st.mok.fokus === "wahl" ? ' id="mok-fokus"' : '') + '><h3 class="mok-titel">' + MOK_ZONEN[z].label + '</h3><p class="note">' + x.ausgangslage + '</p>' + mokWahl(x) + mokRueckmeldung(x) + '</div>';
       return h;
     }
     if (sid === "S4"){
@@ -2997,6 +3008,7 @@ wechsle aber nicht ohne Zustimmung.
 
   function renderMaschine(){
     if (!st.mok) st.mok = mokNeu();
+    st.mok.ankerGesetzt = false;
     var M = st.mok, i = M.screen, S = MOK_SCREENS[i], fertig = mokFertig(i), letzter = i === MOK_SCREENS.length - 1;
     var schritte = '<ol class="steps sb-steps" aria-label="Screens">' + MOK_SCREENS.map(function(x, k){
       var c = k === i ? "now" : (mokFertig(k) && k <= M.offen ? "done" : ""), offen = k <= M.offen && k !== i;
@@ -3005,7 +3017,7 @@ wechsle aber nicht ohne Zustimmung.
     }).join("") + '</ol>';
     var nav = '<div class="nav">' +
       '<button class="btn" type="button" data-act="mokprev"' + (i === 0 ? ' disabled' : '') + '>' + ICON_ZURUECK + 'Zurück</button>' +
-      (letzter ? '' : '<button class="btn primary" type="button" data-act="moknext"' + (fertig ? '' : ' disabled') + '>' + (i === 0 ? 'Los geht’s' : 'Weiter') + ICON_WEITER + '</button>') +
+      (letzter ? '' : '<button class="btn primary" type="button" data-act="moknext"' + (fertig ? '' : ' disabled') + (fertig && M.fokus === "weiter" ? ' id="mok-fokus"' : '') + '>' + (i === 0 ? 'Los geht’s' : 'Weiter') + ICON_WEITER + '</button>') +
       '</div>';
     return '<div class="screen mok">' +
       '<div class="pagehead"><h1>Maschinen&shy;haarschnitt ohne Aufsteck&shy;kämme <span class="tag">V1</span></h1>' +
@@ -3022,7 +3034,10 @@ wechsle aber nicht ohne Zustimmung.
   // Klicks im Reiter „Maschine“; gibt true zurück, wenn der Screen gewechselt hat
   function mokAktion(a, b){
     var M = st.mok, val = b.getAttribute("data-val"), id = b.getAttribute("data-id"), x, s;
-    M.flash = null;
+    var warFertig = mokFertig(M.screen);
+    M.flash = null; M.fokus = null;
+    if (a === "mokhot" || a === "mokpruef") M.fokus = "fb";
+    if (a === "mokzone") M.fokus = "wahl";
     if (a === "mokscreen"){ var k = +val; if (k <= M.offen){ M.screen = k; M.zuletzt = null; return true; } }
     if (a === "moknext" && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1){ M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; return true; }
     if (a === "mokprev" && M.screen > 0){ M.screen--; M.zuletzt = null; return true; }
@@ -3041,7 +3056,15 @@ wechsle aber nicht ohne Zustimmung.
     if (a === "mokraus" && !mokU("mok-s4").ok){ M.reihe = M.reihe.filter(function(r){ return r !== val; }); mokU("mok-s4").fehler = null; }
     if (a === "mokpruefneu"){ mokListe("S7").forEach(function(x){ delete M.u[x.id]; }); M.zuletzt = null; return true; }
     if (a === "mokneu"){ st.mok = mokNeu(); return true; }
+    if (!warFertig && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1) M.fokus = "weiter";
     return false;
+  }
+  // Nach einem Klick im Reiter „Maschine“: Rückmeldung, Auswahl oder Weiter-Knopf ins Bild holen, falls verdeckt
+  function mokZeigen(){
+    var el = document.getElementById("mok-fokus"); if (st.mok) st.mok.fokus = null;
+    if (!el) return;
+    var r = el.getBoundingClientRect(), bar = document.querySelector(".appbar"), oben = bar ? bar.getBoundingClientRect().bottom : 0;
+    if (r.top < oben || r.bottom > window.innerHeight) el.scrollIntoView({block:"nearest", behavior:"smooth"});
   }
 
 
@@ -4698,6 +4721,7 @@ wechsle aber nicht ohne Zustimmung.
     if (a==="checkReset"){ st.q = 0; st.picked = null; st.score = 0; }
     render();
     if (moved) window.scrollTo(0,0);
+    else if (st.view === "maschine" && st.mok && st.mok.fokus) mokZeigen();
   });
 
   // Bildflächen im Reiter „Maschine“ (SVG) mit Enter/Leertaste bedienbar
