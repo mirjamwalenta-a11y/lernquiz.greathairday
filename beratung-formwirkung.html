@@ -2480,19 +2480,20 @@ wechsle aber nicht ohne Zustimmung.
   // Fotos Hinterkopf (bilder/maschine/, 960 × 940). Koordinaten im Foto auf 480 × 470 umgerechnet.
   // x = linker und rechter Rand der Haarfläche, zonen = y-Bereiche von oben nach unten.
   // Beim Austausch eines Fotos die Zonen neu ausmessen und MOK_BILD_VERSION hochzählen (Handy-Cache).
-  var MOK_BILD_VERSION = 1;
+  var MOK_BILD_VERSION = 2;
   var MOK_KOEPFE = {
     A: {foto:"bilder/maschine/verlauf-a.jpg", x:[70,415], zonen:{deckhaar:[20,190], oben:[190,268], uebergang:[268,292], band3:[292,322], band2:[322,350], band1:[350,385]}},
     B: {foto:"bilder/maschine/verlauf-b.jpg", x:[75,418], zonen:{deckhaar:[55,215], oben:[215,330], uebergang:[330,354], band3:[354,385], band2:[385,413], band1:[413,447]}},
-    C: {foto:"bilder/maschine/verlauf-c.jpg", x:[62,422], zonen:{deckhaar:[15,215], oben:[215,320], uebergang:[320,344], band3:[344,376], band2:[376,406], band1:[406,442]}}
+    // Fehlerfotos: Die Fehlerstelle muss genau in der gesuchten Zone liegen (Kante in „uebergang“, Stufe in „grenze“)
+    C: {foto:"bilder/maschine/fehler-kante.jpg", x:[80,370], zonen:{deckhaar:[10,160], oben:[160,272], uebergang:[272,296], band3:[296,318], band2:[318,342], band1:[342,375]}},
+    D: {foto:"bilder/maschine/fehler-stufe.jpg", x:[65,410], zonen:{deckhaar:[5,150], oben:[150,280], uebergang:[280,304], band3:[304,358], grenze:[358,378], band2:[378,398], band1:[398,425]}}
   };
-  // bild = Kennung in den Übungen. Fehlerbilder: Der Fehler ist ins Foto eingezeichnet (kante, stufe).
+  // bild = Kennung in den Übungen. Fehlerbilder sind echte Fotos mit dem Fehler.
   var MOK_BILDER = {
     "A":       {kopf:"A", titel:"Foto: Übungskopf, Verlauf ohne Aufsteckkämme"},
-    "A-kante": {kopf:"C", fehler:"kante", titel:"Fehlerbild: Kante an der Übergangslinie (ins Foto eingezeichnet)"},
+    "A-kante": {kopf:"C", titel:"Fehlerbild: Kante an der Übergangslinie"},
     "B":       {kopf:"B", titel:"Foto: Prüfungskopf"},
-    "B-stufe": {kopf:"B", fehler:"stufe", titel:"Fehlerbild: Stufe zwischen Band 2 und Band 3 (ins Foto eingezeichnet)",
-                zonen:{band3:[354,376], grenze:[376,396], band2:[396,413]}}
+    "B-stufe": {kopf:"D", titel:"Fehlerbild: Stufe zwischen Band 2 und Band 3"}
   };
   // Zonen: label = Beschriftung im Bild nach dem Markieren, name/arbeit = Standard-Feedback beim Antippen der falschen Zone.
   // Die Namen nennen bewusst keine Hebelstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
@@ -2853,15 +2854,11 @@ wechsle aber nicht ohne Zustimmung.
   // ---------- Foto mit Zonen ----------
   // o: {bild, klick:[Zonen-IDs], act, markiert:[Zonen-IDs], aktiv, flash, werkzeuge:true}
   function mokKopf(o){
-    var B = MOK_BILDER[o.bild], K = MOK_KOEPFE[B.kopf], Z = K.zonen, R = mokRegionen(o.bild), xl = K.x[0], xr = K.x[1], xm = (xl + xr) / 2;
+    var B = MOK_BILDER[o.bild], K = MOK_KOEPFE[B.kopf], R = mokRegionen(o.bild), xl = K.x[0], xr = K.x[1], xm = (xl + xr) / 2;
     function band(y, fill, extra){ return '<rect x="' + xl + '" y="' + y[0] + '" width="' + (xr - xl) + '" height="' + (y[1] - y[0]) + '" fill="' + fill + '"' + (extra || '') + '/>'; }
     function linie(y, farbe, breite, extra){ return '<line x1="' + xl + '" x2="' + xr + '" y1="' + y + '" y2="' + y + '" stroke="' + farbe + '" stroke-width="' + breite + '"' + (extra || '') + '/>'; }
     var s = '<svg viewBox="20 0 420 470" role="img" aria-label="Foto Hinterkopf mit Verlauf">' +
-      '<defs><filter id="mokWeich" x="-5%" y="-50%" width="110%" height="200%"><feGaussianBlur stdDeviation="2.5"/></filter></defs>' +
       '<image href="' + K.foto + '?v=' + MOK_BILD_VERSION + '" x="0" y="0" width="480" height="470" preserveAspectRatio="none"/>';
-    // Eingezeichnete Fehler, weichgezeichnet: Kante = dunkler Rand an der Übergangslinie, Stufe = harter Sprung zwischen Band 2 und Band 3
-    if (B.fehler === "kante") s += band([Z.uebergang[1] - 10, Z.uebergang[1] - 1], "#000", ' fill-opacity=".7" filter="url(#mokWeich)"');
-    if (B.fehler === "stufe") s += band([Z.band2[0], Z.band1[1]], "#fff", ' fill-opacity=".2" filter="url(#mokWeich)"') + band([Z.band2[0] - 3, Z.band2[0] + 3], "#000", ' fill-opacity=".75" filter="url(#mokWeich)"');
     (o.markiert || []).forEach(function(id){
       var y = R[id], ym = (y[0] + y[1]) / 2, wz = o.werkzeuge ? mokS2Werkzeug(id) : null;
       s += id === "uebergang" || id === "grenze" ? linie(ym, "var(--accent)", 3) : band(y, "var(--accent)", ' fill-opacity="' + (id === o.aktiv ? .45 : .18) + '"') + linie(y[1], "#fff", 1, ' stroke-opacity=".7"');
