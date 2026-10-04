@@ -2484,12 +2484,14 @@ wechsle aber nicht ohne Zustimmung.
   // x = linker und rechter Rand der Haarfläche, zonen = y-Bereiche von oben nach unten.
   // Beim Austausch eines Fotos die Zonen neu ausmessen und MOK_BILD_VERSION hochzählen (Handy-Cache).
   var MOK_BILD_VERSION = 2;
+  // Zonen nach Helligkeit in der Kopfmitte ausgemessen: Übergangslinie = wo das dunkle Haar heller wird,
+  // Band 3–1 teilen den sichtbaren Verlauf bis zum Haaransatz im Nacken (Band 1 endet am Haaransatz).
   var MOK_KOEPFE = {
-    A: {foto:"bilder/maschine/verlauf-a.jpg", x:[70,415], zonen:{deckhaar:[20,190], oben:[190,268], uebergang:[268,292], band3:[292,322], band2:[322,350], band1:[350,385]}},
-    B: {foto:"bilder/maschine/verlauf-b.jpg", x:[75,418], zonen:{deckhaar:[55,215], oben:[215,330], uebergang:[330,354], band3:[354,385], band2:[385,413], band1:[413,447]}},
+    A: {foto:"bilder/maschine/verlauf-a.jpg", x:[70,415], zonen:{deckhaar:[20,190], oben:[190,300], uebergang:[300,324], band3:[324,356], band2:[356,388], band1:[388,422]}},
+    B: {foto:"bilder/maschine/verlauf-b.jpg", x:[75,418], zonen:{deckhaar:[55,215], oben:[215,360], uebergang:[360,384], band3:[384,412], band2:[412,440], band1:[440,468]}},
     // Fehlerfotos: Die Fehlerstelle muss genau in der gesuchten Zone liegen (Kante in „uebergang“, Stufe in „grenze“)
-    C: {foto:"bilder/maschine/fehler-kante.jpg", x:[80,370], zonen:{deckhaar:[10,160], oben:[160,272], uebergang:[272,296], band3:[296,318], band2:[318,342], band1:[342,375]}},
-    D: {foto:"bilder/maschine/fehler-stufe.jpg", x:[65,410], zonen:{deckhaar:[5,150], oben:[150,280], uebergang:[280,304], band3:[304,358], grenze:[358,378], band2:[378,398], band1:[398,425]}}
+    C: {foto:"bilder/maschine/fehler-kante.jpg", x:[80,370], zonen:{deckhaar:[10,160], oben:[160,272], uebergang:[272,296], band3:[296,324], band2:[324,352], band1:[352,384]}},
+    D: {foto:"bilder/maschine/fehler-stufe.jpg", x:[65,410], zonen:{deckhaar:[5,150], oben:[150,280], uebergang:[280,304], band3:[304,358], grenze:[358,378], band2:[378,394], band1:[394,414]}}
   };
   // bild = Kennung in den Übungen. Fehlerbilder sind echte Fotos mit dem Fehler.
   var MOK_BILDER = {
@@ -2876,6 +2878,8 @@ wechsle aber nicht ohne Zustimmung.
     // Antippbare Flächen: bei Bildaufgaben mit Trennlinien und Nummern (1 = unten), passend zur Knopfreihe unter dem Bild.
     // onclick="" ist nötig, damit iPhone-Safari Antippen von SVG-Flächen als Klick weitergibt.
     var reihe = mokReihenfolge(o.klick || [], R);
+    // Fläche hinter allem: Tippen neben die Zonen gibt einen Hinweis statt nichts
+    if (o.act === "mokhot" && reihe.length) s += '<rect x="20" y="0" width="420" height="470" fill="#000" fill-opacity="0" onclick="" data-act="mokdaneben"/>';
     if (o.act === "mokhot") reihe.forEach(function(id, i){
       var y = R[id], ym = (y[0] + y[1]) / 2;
       if (i < reihe.length - 1) s += linie(y[0], "#fff", 1.2, ' stroke-opacity=".85" stroke-dasharray="5 4"');
@@ -3038,6 +3042,7 @@ wechsle aber nicht ohne Zustimmung.
         mokReihenfolge(o.klick, R).map(function(id, i){
           var on = o.wahl === id, cls = on ? (o.falsch ? ' on wrong' : ' on') : '';
           return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokhot" data-val="' + id + '">' + (i + 1) + (i === 0 ? ' · unten' : '') + '</button>'; }).join("") + '</div>' +
+        (st.mok.daneben ? '<p class="callout"><strong>Dort ist keine Fläche.</strong> Tippe auf eine Fläche mit Nummer am Kopf oder wähle die Nummer hier.</p>' : '') +
         (akt && akt.antworttyp === "hotspot" ? mokPruefBtn(akt, o.wahl != null) : '') + '</div>';
     }
     return oben + mokKopf(o) + knoepfe + unten + '<p class="note">' + MOK_BILDER[bildId].titel + '</p>';
@@ -3121,7 +3126,7 @@ wechsle aber nicht ohne Zustimmung.
   function mokAktion(a, b){
     var M = st.mok, val = b.getAttribute("data-val"), id = b.getAttribute("data-id"), x, s;
     var warFertig = mokFertig(M.screen);
-    M.flash = null; M.fokus = null;
+    M.flash = null; M.fokus = null; M.daneben = a === "mokdaneben";
     if (a === "mokpruef") M.fokus = "fb";
     if (a === "mokzone") M.fokus = "wahl";
     if (a === "mokscreen"){ var k = +val; if (k <= M.offen){ M.screen = k; M.zuletzt = null; return true; } }
