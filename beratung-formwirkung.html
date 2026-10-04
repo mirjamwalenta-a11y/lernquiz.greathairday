@@ -256,8 +256,6 @@ dl.steck dd{margin:0}
 .vg-lesung,.vg-ergebnis{font-size:var(--t-s)}
 /* Maschinenhaarschnitt ohne Aufsteckkämme V1 (Reiter „Maschine“) */
 .mok-fig svg{max-width:560px}
-.mok-hot{cursor:pointer;fill-opacity:0;transition:fill-opacity .15s var(--ease)}
-.mok-hot:hover,.mok-hot:focus-visible{fill:var(--accent);fill-opacity:.16;outline:none}
 .mok-flash{stroke:var(--accent);stroke-width:3;fill-opacity:0;animation:mokFlash 1.8s ease-out 1}
 @keyframes mokFlash{0%,50%{fill-opacity:.5}100%{fill-opacity:0}}
 .mok-platzhalter{display:block;border:2px dashed var(--g-kontur);border-radius:var(--r-s);padding:6px 10px;font-size:var(--t-xs);font-weight:700;color:var(--muted);background:var(--surface-2)}
@@ -271,7 +269,7 @@ dl.steck dd{margin:0}
 .mok-pfeil{color:var(--muted);font-size:var(--t-xs)}
 .mok-titel{font-size:var(--t-m)}
 .mok-frage{font-weight:700}
-/* Kein Einblenden bei jedem Antippen: sonst springt der Inhalt und Antippen trifft daneben */
+/* Kein Einblenden bei jedem Antippen: sonst springt der Inhalt */
 .screen.mok{animation:none}
 .screen.mok,.screen.mok *{overflow-anchor:none}
 #mok-fokus{scroll-margin-top:calc(var(--bar-h,64px) + 12px);scroll-margin-bottom:12px}
@@ -2560,45 +2558,45 @@ wechsle aber nicht ohne Zustimmung.
   // Felder: id · screen · bereich (zonenlogik | werkzeugwahl | bewegungslogik | fehlerdiagnose) · titel · bild · ausgangslage · frage
   //         antworttyp (hotspot | werkzeug | auswahl | clip | reihenfolge | satzbaustein) · optionen · richtige_antwort · begruendung
   //         typische_fehler: [{option, fehlertyp, zurueck, denkfehler, leitfrage}] · feedback: {richtig, leitfrage, hilfe, falsch?}
-  // Hotspot: optionen = Zonen-IDs im Bild. Ohne eigenen Eintrag in typische_fehler meldet die App „Du hast … angetippt. Dort …“.
+  // Hotspot: optionen = Zonen-IDs im Bild. Ohne eigenen Eintrag in typische_fehler meldet die App „Du hast … gewählt. Dort …“.
   // feedback.falsch = Rückmeldung für alle falschen Optionen ohne eigenen Eintrag.
   // Mehrstufige Fälle tragen dieselbe Fall-ID mit Buchstaben (mok-s6a/b/c, mok-p5a/b/c) und werden der Reihe nach freigeschaltet.
   var MOK_S1_LAGE = "Hinterkopf, Verlauf im unteren Bereich gearbeitet, darüber das längere Haar. Die Zonen sind noch nicht markiert.";
   var MOK_UEBUNGEN = [
     // S1 – Zonen von unten nach oben markieren
     {id:"mok-s1-1", screen:"S1", bereich:"zonenlogik", titel:"Konturansatz", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Tippe den Konturansatz an – das unterste Band am Haaransatz im Nacken.", antworttyp:"hotspot",
+     frage:"Wähle den Konturansatz – das unterste Band am Haaransatz im Nacken.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band1",
      begruendung:"Der Verlauf beginnt am Haaransatz mit der kürzesten Länge.",
      typische_fehler:[{option:"band2", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du bist ein Band zu hoch. Der Konturansatz liegt direkt am Haaransatz.", leitfrage:"Wo beginnt das Haar im Nacken?"}],
-     feedback:{richtig:"Hier startet der Verlauf.", leitfrage:"Wo beginnt das Haar im Nacken?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+     feedback:{richtig:"Hier startet der Verlauf.", leitfrage:"Wo beginnt das Haar im Nacken?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
     {id:"mok-s1-2", screen:"S1", bereich:"zonenlogik", titel:"Band 2", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Tippe das Band direkt über dem Konturansatz an.", antworttyp:"hotspot",
+     frage:"Wähle das Band direkt über dem Konturansatz.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band2",
      begruendung:"Über dem Konturansatz wird der Verlauf Band für Band länger.",
      typische_fehler:[],
-     feedback:{richtig:"Über dem Konturansatz wird der Verlauf Band für Band länger.", leitfrage:"Welches Band liegt direkt über dem Konturansatz?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+     feedback:{richtig:"Über dem Konturansatz wird der Verlauf Band für Band länger.", leitfrage:"Welches Band liegt direkt über dem Konturansatz?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
     {id:"mok-s1-3", screen:"S1", bereich:"zonenlogik", titel:"Band 3", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Tippe das dritte Band von unten an – das letzte Band, in dem noch der Hebel arbeitet.", antworttyp:"hotspot",
+     frage:"Wähle das dritte Band von unten – das letzte Band, in dem noch der Hebel arbeitet.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band3",
      begruendung:"Band 3 ist das letzte Band des unteren Bereichs.",
-     typische_fehler:[{option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den oberen Bereich angetippt. Dort arbeitet schon der Kamm.", leitfrage:"Wo endet das, was der Hebel kann?"}],
-     feedback:{richtig:"Band 3 ist das letzte Band des unteren Bereichs.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+     typische_fehler:[{option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den oberen Bereich gewählt. Dort arbeitet schon der Kamm.", leitfrage:"Wo endet das, was der Hebel kann?"}],
+     feedback:{richtig:"Band 3 ist das letzte Band des unteren Bereichs.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
     {id:"mok-s1-4", screen:"S1", bereich:"zonenlogik", titel:"Übergangslinie", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Tippe die Übergangslinie an – die Stelle, an der die Arbeit mit dem Hebel endet und Maschine über Kamm beginnt.", antworttyp:"hotspot",
+     frage:"Wähle die Übergangslinie – die Stelle, an der die Arbeit mit dem Hebel endet und Maschine über Kamm beginnt.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
      begruendung:"Über dem offenen Hebel gibt es keine längere Hebelstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.",
      typische_fehler:[
        {option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den Deckhaaransatz gewählt. Zwischen dem letzten Hebel-Band und dem Deckhaar liegt aber noch der obere Bereich des Verlaufs.", leitfrage:"Wo endet das, was der Hebel kann?"},
        {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Im oberen Bereich arbeitet schon der Kamm. Gesucht ist die Grenze darunter.", leitfrage:"Wo endet das, was der Hebel kann?"},
        {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"In Band 3 arbeitet noch der Hebel. Die Übergangslinie liegt an seiner Oberkante.", leitfrage:"Wo endet das, was der Hebel kann?"}],
-     feedback:{richtig:"Über dem letzten Hebel-Band kann nur noch der Kamm Länge erzeugen.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+     feedback:{richtig:"Über dem letzten Hebel-Band kann nur noch der Kamm Länge erzeugen.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
     {id:"mok-s1-5", screen:"S1", bereich:"zonenlogik", titel:"Oberer Bereich", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Tippe den oberen Bereich an – hier entsteht der Übergang ins längere Haar.", antworttyp:"hotspot",
+     frage:"Wähle den oberen Bereich – hier entsteht der Übergang ins längere Haar.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"oben",
      begruendung:"Der obere Bereich liegt zwischen Übergangslinie und Deckhaar.",
      typische_fehler:[{option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das Deckhaar gehört nicht mehr zum Verlauf. Der obere Bereich liegt zwischen Übergangslinie und Deckhaar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?"}],
-     feedback:{richtig:"Zwischen Übergangslinie und Deckhaar entsteht der Übergang ins längere Haar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+     feedback:{richtig:"Zwischen Übergangslinie und Deckhaar entsteht der Übergang ins längere Haar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
 
     // S2 – Werkzeug je Zone (Zone frei wählbar)
     {id:"mok-s2-band1", screen:"S2", bereich:"werkzeugwahl", titel:"Band 1 · Konturansatz", bild:"A", zone:"band1",
@@ -2690,13 +2688,13 @@ wechsle aber nicht ohne Zustimmung.
     // S6 – Fehlerdiagnose (Konzept Übung 4): Stelle → Ursache → Korrektur
     {id:"mok-s6a", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Fehlerstelle", bild:"A-kante",
      ausgangslage:"Hinterkopf. Direkt über dem kurzen Bereich verläuft eine waagrechte dunkle Kante, darüber ist das Haar deutlich länger.",
-     frage:"Tippe die Fehlerstelle an.", antworttyp:"hotspot",
+     frage:"Wähle die Fehlerstelle.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
      begruendung:"Die Kante liegt genau an der Grenze, an der der Hebel endet und der Kamm beginnt.",
      typische_fehler:[
-       {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast das Band darunter angetippt. Die Kante sitzt genau an der Grenze, wo der Hebel endet.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?"},
+       {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast das Band darunter gewählt. Die Kante sitzt genau an der Grenze, wo der Hebel endet.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?"},
        {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Die Kante liegt unter dem oberen Bereich, genau an der Grenze zwischen Hebel und Kamm.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?"}],
-     feedback:{richtig:"Die Kante sitzt an der Übergangslinie.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+     feedback:{richtig:"Die Kante sitzt an der Übergangslinie.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
     {id:"mok-s6b", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Ursache", bild:"A-kante", zeigen:["uebergang"],
      ausgangslage:"Die Fehlerstelle liegt an der Übergangslinie.", frage:"Was hat diesen Fehler verursacht?", antworttyp:"auswahl",
      optionen:[{id:"a", text:"Hebel geschlossen zu hoch geführt"},{id:"b", text:"Kein Anschluss: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"c", text:"Kammbahnen nicht überlappend"},{id:"d", text:"Haar zu nass geschnitten"}],
@@ -2719,7 +2717,7 @@ wechsle aber nicht ohne Zustimmung.
 
     // S7 – Prüfungsfall: neuer Kopf, keine Hilfen (pruefung:true)
     {id:"mok-p1", screen:"S7", pruefung:true, bereich:"zonenlogik", titel:"Übergangslinie", bild:"B",
-     ausgangslage:"Neuer Prüfungskopf, andere Person.", frage:"Tippe die Übergangslinie an.", antworttyp:"hotspot",
+     ausgangslage:"Neuer Prüfungskopf, andere Person.", frage:"Wähle die Übergangslinie.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
      begruendung:"Über dem letzten Hebel-Band beginnt der Kamm.", typische_fehler:[],
      feedback:{richtig:"Die Übergangslinie liegt über dem letzten Hebel-Band.", leitfrage:"Wo endet das, was der Hebel kann?"}},
@@ -2739,7 +2737,7 @@ wechsle aber nicht ohne Zustimmung.
      begruendung:"An jeder Bandgrenze kippst du aus.", typische_fehler:MOK_HEBEL_FEHLER,
      feedback:{richtig:"Auskippen an der Bandgrenze.", leitfrage:"Was macht die Maschine an jeder Bandgrenze?"}},
     {id:"mok-p5a", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Stufe – Fehlerstelle", bild:"B-stufe",
-     ausgangslage:"Im unteren Bereich ist eine harte, waagrechte Stufe sichtbar.", frage:"Tippe die Fehlerstelle an.", antworttyp:"hotspot",
+     ausgangslage:"Im unteren Bereich ist eine harte, waagrechte Stufe sichtbar.", frage:"Wähle die Fehlerstelle.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","grenze","band2","band1"], richtige_antwort:"grenze",
      begruendung:"Die Stufe sitzt an der Grenze zwischen zwei Hebel-Bändern.",
      typische_fehler:[{option:"uebergang", fehlertyp:"zone", zurueck:"zone", denkfehler:"An der Übergangslinie entsteht eine Kante durch den Kamm. Diese Stufe liegt tiefer, zwischen zwei Hebel-Bändern.", leitfrage:"Zwischen welchen Bändern ist die Länge sprunghaft?"}],
@@ -2793,7 +2791,7 @@ wechsle aber nicht ohne Zustimmung.
     if (t) return t;
     if (x.feedback.falsch) return x.feedback.falsch;
     var z = MOK_ZONEN[key];
-    return {fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast " + z.name + " angetippt. Dort " + z.arbeit + ".", leitfrage:x.feedback.leitfrage};
+    return {fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast " + z.name + " gewählt. Dort " + z.arbeit + ".", leitfrage:x.feedback.leitfrage};
   }
   function mokPruefen(x, w){
     var s = mokU(x.id); if (s.ok || s.weg || w == null) return;
@@ -2875,19 +2873,14 @@ wechsle aber nicht ohne Zustimmung.
     if (o.flash) s += band(R[o.flash], "var(--accent)", ' class="mok-flash"');
     // Gewählte Fläche (noch nicht geprüft): deutlich umrandet; nach falscher Prüfung rot
     if (o.wahl && R[o.wahl]) s += band(R[o.wahl], o.falsch ? "var(--bad)" : "var(--accent)", ' fill-opacity=".35" stroke="' + (o.falsch ? "var(--bad)" : "var(--accent)") + '" stroke-width="3"');
-    // Antippbare Flächen: bei Bildaufgaben mit Trennlinien und Nummern (1 = unten), passend zur Knopfreihe unter dem Bild.
-    // onclick="" ist nötig, damit iPhone-Safari Antippen von SVG-Flächen als Klick weitergibt.
+    // Bildaufgaben: Trennlinien und Nummern (1 = unten). Gewählt wird nur über die Nummern-Knöpfe unter dem Bild,
+    // das Foto selbst ist nicht antippbar (ein Weg statt zwei).
     var reihe = mokReihenfolge(o.klick || [], R);
-    // Fläche hinter allem: Tippen neben die Zonen gibt einen Hinweis statt nichts
-    if (o.act === "mokhot" && reihe.length) s += '<rect x="20" y="0" width="420" height="470" fill="#000" fill-opacity="0" onclick="" data-act="mokdaneben"/>';
     if (o.act === "mokhot") reihe.forEach(function(id, i){
       var y = R[id], ym = (y[0] + y[1]) / 2;
       if (i < reihe.length - 1) s += linie(y[0], "#fff", 1.2, ' stroke-opacity=".85" stroke-dasharray="5 4"');
       s += '<circle cx="40" cy="' + ym + '" r="10" fill="var(--surface)" stroke="var(--g-kontur)"/>' +
         '<text x="40" y="' + (ym + 4) + '" font-size="12" font-weight="700" text-anchor="middle" fill="var(--ink)">' + (i + 1) + '</text>';
-    });
-    reihe.forEach(function(id, i){
-      s += band(R[id], "#000", ' class="mok-hot" onclick="" data-act="' + o.act + '" data-val="' + id + '" role="button" tabindex="0" aria-label="Fläche ' + (i + 1) + ' von unten"');
     });
     return s + '</svg>';
   }
@@ -2997,7 +2990,7 @@ wechsle aber nicht ohne Zustimmung.
     if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp !== "hotspot") h += mokRueckmeldung(zuletzt);
     if (akt){
       h += '<h3 class="mok-titel">' + akt.titel + '</h3><p class="note">' + akt.ausgangslage + '</p>';
-      if (akt.antworttyp === "hotspot") h += '<p class="note">Die Aufgabe steht direkt über dem Bild. Fläche wählen, dann „Prüfen“.</p>';
+      if (akt.antworttyp === "hotspot") h += '<p class="note">Die Aufgabe steht direkt über dem Bild. Nummer unter dem Bild wählen, dann „Prüfen“.</p>';
       else if (akt.antworttyp === "satzbaustein") h += mokSatz(akt);
       else h += mokWahl(akt);
       if (akt.antworttyp !== "hotspot") h += mokRueckmeldung(akt);
@@ -3038,11 +3031,10 @@ wechsle aber nicht ohne Zustimmung.
     if (o.act === "mokhot" && o.klick && o.klick.length){
       var R = mokRegionen(o.bild);
       // Antippen wählt nur aus, erst „Prüfen“ wertet: Vertipper am kleinen Handybild zählen nicht als Fehler
-      knoepfe = '<div class="mok-flaechen"><span class="note">Fläche im Bild antippen oder hier wählen, dann „Prüfen“:</span><div class="chips">' +
+      knoepfe = '<div class="mok-flaechen"><span class="note">Nummer wählen – die Fläche wird am Kopf farbig angezeigt. Dann „Prüfen“:</span><div class="chips">' +
         mokReihenfolge(o.klick, R).map(function(id, i){
           var on = o.wahl === id, cls = on ? (o.falsch ? ' on wrong' : ' on') : '';
           return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokhot" data-val="' + id + '">' + (i + 1) + (i === 0 ? ' · unten' : '') + '</button>'; }).join("") + '</div>' +
-        (st.mok.daneben ? '<p class="callout"><strong>Dort ist keine Fläche.</strong> Tippe auf eine Fläche mit Nummer am Kopf oder wähle die Nummer hier.</p>' : '') +
         (akt && akt.antworttyp === "hotspot" ? mokPruefBtn(akt, o.wahl != null) : '') + '</div>';
     }
     return oben + mokKopf(o) + knoepfe + unten + '<p class="note">' + MOK_BILDER[bildId].titel + '</p>';
@@ -3060,7 +3052,7 @@ wechsle aber nicht ohne Zustimmung.
     }
     if (sid === "S2"){
       var L = mokListe("S2"), z = st.mok.zone, x = z ? mokX("mok-s2-" + z) : null;
-      h += '<p class="note">Tippe am Kopf eine Zone an und wähle dann das Werkzeug.</p><div class="chips" role="group" aria-label="Zone wählen">' + L.map(function(u){
+      h += '<p class="note">Wähle eine Zone, sie wird am Kopf farbig angezeigt. Dann das Werkzeug wählen.</p><div class="chips" role="group" aria-label="Zone wählen">' + L.map(function(u){
         var ok = mokErledigt(u.id), on = u.zone === z;
         return '<button class="chip' + (on ? ' on' : '') + (ok ? ' right' : '') + '" type="button" aria-pressed="' + on + '" data-act="mokzone" data-val="' + u.zone + '"' + (ok ? ' disabled' : '') + '>' + (ok ? (mokU(u.id).weg ? '✗ ' : '✓ ') : '') + MOK_ZONEN[u.zone].label + '</button>';
       }).join("") + '</div>';
@@ -3126,7 +3118,7 @@ wechsle aber nicht ohne Zustimmung.
   function mokAktion(a, b){
     var M = st.mok, val = b.getAttribute("data-val"), id = b.getAttribute("data-id"), x, s;
     var warFertig = mokFertig(M.screen);
-    M.flash = null; M.fokus = null; M.daneben = a === "mokdaneben";
+    M.flash = null; M.fokus = null;
     if (a === "mokpruef") M.fokus = "fb";
     if (a === "mokzone") M.fokus = "wahl";
     if (a === "mokscreen"){ var k = +val; if (k <= M.offen){ M.screen = k; M.zuletzt = null; return true; } }
@@ -4833,13 +4825,6 @@ wechsle aber nicht ohne Zustimmung.
     render();
     if (moved) window.scrollTo(0,0);
     else if (st.view === "maschine" && st.mok && st.mok.fokus) mokZeigen();
-  });
-
-  // Bildflächen im Reiter „Maschine“ (SVG) mit Enter/Leertaste bedienbar
-  document.addEventListener("keydown", function(e){
-    var el = e.target.closest && e.target.closest('.mok-hot[data-act]');
-    if (!el || (e.key !== "Enter" && e.key !== " ")) return;
-    e.preventDefault(); el.dispatchEvent(new MouseEvent("click", {bubbles:true}));
   });
 
   // Regler: nur Grafik und Text neu zeichnen, damit der Regler beim Ziehen bedienbar bleibt
