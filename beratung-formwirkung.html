@@ -254,6 +254,29 @@ dl.steck dd{margin:0}
 .vg-gruppe .chips{gap:6px}
 .vg-ziel p{margin:0}
 .vg-lesung,.vg-ergebnis{font-size:var(--t-s)}
+/* Maschinenhaarschnitt ohne Aufsteckkämme V1 (Reiter „Maschine“) */
+.mok-fig svg{max-width:440px}
+.mok-hot{cursor:pointer;fill-opacity:0;transition:fill-opacity .15s var(--ease)}
+.mok-hot:hover,.mok-hot:focus-visible{fill:var(--accent);fill-opacity:.16;outline:none}
+.mok-flash{stroke:var(--accent);stroke-width:3;fill-opacity:0;animation:mokFlash 1.8s ease-out 1}
+@keyframes mokFlash{0%,50%{fill-opacity:.5}100%{fill-opacity:0}}
+.mok-platzhalter{display:block;border:2px dashed var(--g-kontur);border-radius:var(--r-s);padding:6px 10px;font-size:var(--t-xs);font-weight:700;color:var(--muted);background:var(--surface-2)}
+.mok-clipbtn{flex-direction:column;align-items:flex-start}
+.mok-kette{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.mok-glieder{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
+.mok-glied{font-size:var(--t-xs);font-weight:700;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
+.mok-glied.on{border-color:var(--bad);color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+.mok-pfeil{color:var(--muted);font-size:var(--t-xs)}
+.mok-titel{font-size:var(--t-m)}
+.mok-frage{font-weight:700}
+.mok-erledigt{list-style:none;margin:0;padding:0 !important;display:flex;flex-direction:column;gap:6px}
+.mok-erledigt li{font-size:var(--t-s);padding:6px 10px;border-radius:var(--r-s);background:var(--accent-soft)}
+.mok-erledigt .sb-satz{background:transparent;border:0;padding:4px 0 0}
+.mok-gesperrt{font-size:var(--t-s);color:var(--muted);padding:6px 10px;border:1px dashed var(--line);border-radius:var(--r-s)}
+.mok-reihe{list-style:none;margin:0;padding:0 !important;display:flex;flex-direction:column;gap:6px}
+.mok-reihe .btn{width:100%;justify-content:flex-start;text-align:left;font-weight:400}
+.mok-nr{font-family:var(--f-display);font-weight:800;color:var(--accent);min-width:1.4em}
+.mok-std{padding-left:1.25em;display:flex;flex-direction:column;gap:2px;font-size:var(--t-s)}
 
 #trainer [hidden],#trainer[hidden],#app[hidden]{display:none!important}
 #trainer{--copper:var(--accent);--copper-soft:var(--accent-soft);font-size:16px;line-height:1.5}
@@ -2426,6 +2449,601 @@ wechsle aber nicht ohne Zustimmung.
     for (var m = 0; m < SB_MODULE.length; m++) if (SB_MODULE[m].fragen.some(function(f){ return f.key === key; })) return m;
     return -1;
   }
+  // ==================== Maschinenhaarschnitt ohne Aufsteckkämme (Reiter „Maschine“) ====================
+  // Verbindliche Grundlage: docs/maschinenhaarschnitt-ohne-aufsteckkamm-v1.md
+  // Arbeitskette: Zone erkennen → Werkzeug wählen → Bewegung wählen → Begründen → Fehler lesen.
+  // Screens S0–S7 (MOK_SCREENS). Jede Übung (MOK_UEBUNGEN) gehört zu genau einem Screen. Der nächste Screen öffnet sich
+  // erst, wenn alle Übungen des Screens richtig gelöst sind. Eine falsche Antwort wird nie automatisch gelöst.
+  // Feedback hat immer drei Teile: Denkfehler · Zurück zu (genau ein Glied: zone | werkzeug | bewegung) · Leitfrage.
+  // Pro Prüfung wird genau ein Fehler zurückgemeldet. Ab dem 2. Fehlversuch kommt feedback.hilfe dazu (nicht in S7).
+  var MOK_MERKSATZ = "Unten entscheidet der Hebel, oben entscheidet der Kamm.";
+  var MOK_KETTE = [["zone","Zone"],["werkzeug","Werkzeug"],["bewegung","Bewegung"]];
+
+  var MOK_SCREENS = [
+    {id:"S0", titel:"Auftrag", schritt:"Einstieg", leit:"Was ist erlaubt, und wie gehst du vor?"},
+    {id:"S1", titel:"Zonen markieren", schritt:"Schritt 1 · Zone erkennen", leit:"Wo am Kopf bin ich gerade?"},
+    {id:"S2", titel:"Werkzeug zuordnen", schritt:"Schritt 2 · Werkzeug wählen", leit:"Was bestimmt hier die Länge – der Hebel oder der Kamm?"},
+    {id:"S3", titel:"Bewegung wählen", schritt:"Schritt 3 · Bewegung wählen", leit:"Wie führst du Maschine und Kamm?"},
+    {id:"S4", titel:"Arbeitsreihenfolge", schritt:"Schritt 3 · Bewegung wählen", leit:"In welcher Reihenfolge arbeitest du?"},
+    {id:"S5", titel:"Begründen", schritt:"Schritt 4 · Begründen", leit:"Warum ist diese Entscheidung prüfungskonform?"},
+    {id:"S6", titel:"Fehler lesen", schritt:"Schritt 5 · Fehler lesen", leit:"Wo ist der Fehler, was hat ihn verursacht, wie korrigierst du?"},
+    {id:"S7", titel:"Prüfungsfall", schritt:"Prüfungsfall · ohne Hilfen", leit:"Schaffst du die ganze Kette an einem neuen Kopf?"}
+  ];
+
+  // PLATZHALTER Zonengrafik: Beide Köpfe sind schematische SVG-Köpfe (Hinterkopf, viewBox 0 0 470 340).
+  // Beim Ersetzen durch Foto oder Illustration die y-Bereiche der Zonen ans neue Bild anpassen.
+  // hw = halbe Kopfbreite. Zonen von oben nach unten: Deckhaar, oberer Bereich, Übergangslinie, Band 3, Band 2, Band 1.
+  var MOK_KOEPFE = {
+    A: {hw:108, zonen:{deckhaar:[18,110], oben:[110,172], uebergang:[172,190], band3:[190,226], band2:[226,259], band1:[259,298]}},
+    B: {hw:96,  zonen:{deckhaar:[18,88],  oben:[88,136],  uebergang:[136,154], band3:[154,204], band2:[204,250], band1:[250,298]}}
+  };
+  // bild = Kennung in den Übungen. platzhalter = was hier später als echtes Bild eingesetzt wird.
+  var MOK_BILDER = {
+    "A":       {kopf:"A", platzhalter:"MOK_BILD_A – Foto Hinterkopf, Verlauf ohne Aufsteckkämme"},
+    "A-kante": {kopf:"A", fehler:"kante", platzhalter:"MOK_FEHLER_KANTE_HINTERKOPF – Fehlerfoto Kante an der Übergangslinie"},
+    "B":       {kopf:"B", platzhalter:"MOK_BILD_B – Foto Prüfungskopf, hoher Verlauf"},
+    "B-stufe": {kopf:"B", fehler:"stufe", platzhalter:"MOK_FEHLER_STUFE – Fehlerfoto Stufe zwischen Band 2 und Band 3",
+                zonen:{band3:[154,194], grenze:[194,214], band2:[214,250]}}
+  };
+  // Zonen: label = Beschriftung im Bild nach dem Markieren, name/arbeit = Standard-Feedback beim Antippen der falschen Zone.
+  // Die Namen nennen bewusst keine Hebelstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
+  var MOK_ZONEN = {
+    band1:     {label:"Band 1 · Konturansatz", name:"den Konturansatz", arbeit:"arbeitet noch der Hebel"},
+    band2:     {label:"Band 2", name:"das Band über dem Konturansatz", arbeit:"arbeitet noch der Hebel"},
+    band3:     {label:"Band 3", name:"das Band unter der Übergangslinie", arbeit:"arbeitet noch der Hebel"},
+    uebergang: {label:"Übergangslinie", name:"die Übergangslinie", arbeit:"endet der Hebel und beginnt der Kamm"},
+    oben:      {label:"Oberer Bereich", name:"den oberen Bereich", arbeit:"arbeitet schon der Kamm"},
+    deckhaar:  {label:"Deckhaar", name:"das Deckhaar", arbeit:"liegt das längere Haar, das nicht mehr zum Verlauf gehört"},
+    grenze:    {label:"Grenze Band 2 / 3", name:"die Grenze zwischen Band 2 und Band 3", arbeit:"treffen zwei Hebelstellungen aufeinander"}
+  };
+  var MOK_WERKZEUGE = [["geschlossen","Hebel geschlossen"],["halboffen","Hebel halboffen"],["offen","Hebel offen"],["kamm","Maschine über Kamm"],["schere","Schere über Kamm"]];
+
+  // Werkzeugfehler je Zone: in Schritt 2 und im Prüfungsfall gleich.
+  // zurueck = "zone", wenn Hebel und Kamm verwechselt wurden; "werkzeug", wenn die Methode stimmt, aber die Hebelstellung nicht.
+  var MOK_WZ_LEIT = "Was bestimmt hier die Länge – der Hebel oder der Kamm?";
+  var MOK_WZ_SCHERE = {fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Ohne Aufsteckkämme arbeitest du im Verlauf mit der Maschine: unten über den Hebel, oben über den Kamm. Schere über Kamm ist hier nicht gefragt.", leitfrage:"Welches Maschinenwerkzeug gehört in diese Zone?"};
+  var MOK_WZ_FEHLER = {
+    band1: [
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Am Konturansatz brauchst du die kürzeste Länge. Mit halboffenem Hebel bleibt der Ansatz zu lang.", leitfrage:"Welche Hebelstellung gibt die kürzeste Länge?"},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Offen ist die längste Hebelstellung. Am Konturansatz wird es damit zu lang, und für die Bänder darüber bleibt keine längere Stufe.", leitfrage:"Welche Hebelstellung gibt die kürzeste Länge?"},
+      {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Am Konturansatz bestimmt der Hebel die Länge, nicht der Kamm. Maschine über Kamm brauchst du erst über der Übergangslinie.", leitfrage:MOK_WZ_LEIT}],
+    band2: [
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört an den Konturansatz. Hier wird es damit zu kurz – der Verlauf wirkt zu hoch ausrasiert.", leitfrage:"Welche Hebelstellung folgt auf die kürzeste?"},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Du hast eine Stufe übersprungen. Zwischen geschlossen und offen fehlt der Zwischenschritt, an der Grenze entsteht eine Stufe.", leitfrage:"Welche Hebelstellung liegt zwischen geschlossen und offen?"},
+      {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Unter der Übergangslinie bestimmt der Hebel die Länge. Der Kamm übernimmt erst darüber.", leitfrage:MOK_WZ_LEIT}],
+    band3: [
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört nur an den Konturansatz. Hier wird es zu kurz – unter der Übergangslinie entsteht ein Loch.", leitfrage:"Welche Hebelstellung gibt die längste Länge?"},
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Halboffen arbeitet schon im Band darunter. Ohne offenen Hebel fehlt die längste Stufe, und der Kamm hat keinen Anschluss.", leitfrage:"Welche Hebelstellung gibt die längste Länge?"},
+      {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Unter der Übergangslinie bestimmt noch der Hebel die Länge. Erst darüber übernimmt der Kamm.", leitfrage:MOK_WZ_LEIT}],
+    oben: [
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im oberen Bereich reicht der Hebel nicht mehr. Mit geschlossenem Hebel wird es hier viel zu kurz – es entsteht ein Loch.", leitfrage:MOK_WZ_LEIT},
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im oberen Bereich reicht der Hebel nicht mehr. Die Hebelstellungen liegen nur wenige Millimeter auseinander – hier wird es zu kurz.", leitfrage:MOK_WZ_LEIT},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Auch offen liegt der Hebel nur wenige Millimeter über geschlossen. Über der Übergangslinie wird es damit zu kurz.", leitfrage:MOK_WZ_LEIT}]
+  };
+
+  // Bewegung im unteren Bereich: in Schritt 3 und im Prüfungsfall gleich.
+  // PLATZHALTER Clip: clip = Kennung der Bewegungsanimation, die das Textfeld später ersetzt.
+  var MOK_HEBEL_OPTIONEN = [
+    {id:"a", text:"Gegen die Wuchsrichtung nach oben, an der Bandgrenze gerade weiter hochfahren", clip:"MOK_CLIP_HEBEL_A"},
+    {id:"b", text:"Gegen die Wuchsrichtung nach oben, unten flach am Kopf, an der Bandgrenze aus dem Handgelenk auskippen", clip:"MOK_CLIP_HEBEL_B"},
+    {id:"c", text:"Mit der Wuchsrichtung von oben nach unten, Maschine flach am Kopf", clip:"MOK_CLIP_HEBEL_C"}];
+  var MOK_HEBEL_FEHLER = [
+    {option:"a", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Fährst du an der Bandgrenze gerade weiter, schneidet die Maschine bis zur Oberkante gleich kurz. Es entsteht eine Stufe.", leitfrage:"Was macht die Maschine an jeder Bandgrenze?"},
+    {option:"c", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Mit der Wuchsrichtung legt die Maschine das Haar an, statt es aufzunehmen. Sie schneidet ungleichmäßig, die Bandgrenze bleibt hart.", leitfrage:"In welche Richtung führst du die Maschine, damit sie das Haar aufnimmt?"}];
+
+  // Arbeitsreihenfolge = methodischer Standard für die Prüfung (Konzept Übung 5)
+  var MOK_REIHE = [
+    {id:"linie", text:"Übergangslinie festlegen und beidseitig kontrollieren"},
+    {id:"offen", text:"Hebel offen: unteren Bereich bis zur Übergangslinie, an der Linie auskippen"},
+    {id:"halboffen", text:"Hebel halboffen: unteres Band, an der Grenze auskippen"},
+    {id:"geschlossen", text:"Hebel geschlossen: Konturansatz"},
+    {id:"verblenden", text:"Bandgrenzen kontrollieren und verblenden"},
+    {id:"kamm", text:"Maschine über Kamm: vom offenen Band nach oben ins längere Haar"},
+    {id:"kontrolle", text:"Gesamtkontrolle beidseitig, Konturen"}];
+
+  // ---------- V1-Übungen ----------
+  // Felder: id · screen · bereich (zonenlogik | werkzeugwahl | bewegungslogik | fehlerdiagnose) · titel · bild · ausgangslage · frage
+  //         antworttyp (hotspot | werkzeug | auswahl | clip | reihenfolge | satzbaustein) · optionen · richtige_antwort · begruendung
+  //         typische_fehler: [{option, fehlertyp, zurueck, denkfehler, leitfrage}] · feedback: {richtig, leitfrage, hilfe, falsch?}
+  // Hotspot: optionen = Zonen-IDs im Bild. Ohne eigenen Eintrag in typische_fehler meldet die App „Du hast … angetippt. Dort …“.
+  // feedback.falsch = Rückmeldung für alle falschen Optionen ohne eigenen Eintrag.
+  // Mehrstufige Fälle tragen dieselbe Fall-ID mit Buchstaben (mok-s6a/b/c, mok-p5a/b/c) und werden der Reihe nach freigeschaltet.
+  var MOK_S1_LAGE = "Hinterkopf, Verlauf im unteren Bereich gearbeitet, darüber das längere Haar. Die Zonen sind noch nicht markiert.";
+  var MOK_UEBUNGEN = [
+    // S1 – Zonen von unten nach oben markieren
+    {id:"mok-s1-1", screen:"S1", bereich:"zonenlogik", titel:"Konturansatz", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Tippe den Konturansatz an – das unterste Band am Haaransatz im Nacken.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band1",
+     begruendung:"Der Verlauf beginnt am Haaransatz mit der kürzesten Länge.",
+     typische_fehler:[{option:"band2", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du bist ein Band zu hoch. Der Konturansatz liegt direkt am Haaransatz.", leitfrage:"Wo beginnt das Haar im Nacken?"}],
+     feedback:{richtig:"Hier startet der Verlauf.", leitfrage:"Wo beginnt das Haar im Nacken?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+    {id:"mok-s1-2", screen:"S1", bereich:"zonenlogik", titel:"Band 2", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Tippe das Band direkt über dem Konturansatz an.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band2",
+     begruendung:"Über dem Konturansatz wird der Verlauf Band für Band länger.",
+     typische_fehler:[],
+     feedback:{richtig:"Über dem Konturansatz wird der Verlauf Band für Band länger.", leitfrage:"Welches Band liegt direkt über dem Konturansatz?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+    {id:"mok-s1-3", screen:"S1", bereich:"zonenlogik", titel:"Band 3", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Tippe das dritte Band von unten an – das letzte Band, in dem noch der Hebel arbeitet.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band3",
+     begruendung:"Band 3 ist das letzte Band des unteren Bereichs.",
+     typische_fehler:[{option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den oberen Bereich angetippt. Dort arbeitet schon der Kamm.", leitfrage:"Wo endet das, was der Hebel kann?"}],
+     feedback:{richtig:"Band 3 ist das letzte Band des unteren Bereichs.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+    {id:"mok-s1-4", screen:"S1", bereich:"zonenlogik", titel:"Übergangslinie", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Tippe die Übergangslinie an – die Stelle, an der die Arbeit mit dem Hebel endet und Maschine über Kamm beginnt.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
+     begruendung:"Über dem offenen Hebel gibt es keine längere Hebelstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.",
+     typische_fehler:[
+       {option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den Deckhaaransatz gewählt. Zwischen dem letzten Hebel-Band und dem Deckhaar liegt aber noch der obere Bereich des Verlaufs.", leitfrage:"Wo endet das, was der Hebel kann?"},
+       {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Im oberen Bereich arbeitet schon der Kamm. Gesucht ist die Grenze darunter.", leitfrage:"Wo endet das, was der Hebel kann?"},
+       {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"In Band 3 arbeitet noch der Hebel. Die Übergangslinie liegt an seiner Oberkante.", leitfrage:"Wo endet das, was der Hebel kann?"}],
+     feedback:{richtig:"Über dem letzten Hebel-Band kann nur noch der Kamm Länge erzeugen.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+    {id:"mok-s1-5", screen:"S1", bereich:"zonenlogik", titel:"Oberer Bereich", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Tippe den oberen Bereich an – hier entsteht der Übergang ins längere Haar.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"oben",
+     begruendung:"Der obere Bereich liegt zwischen Übergangslinie und Deckhaar.",
+     typische_fehler:[{option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das Deckhaar gehört nicht mehr zum Verlauf. Der obere Bereich liegt zwischen Übergangslinie und Deckhaar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?"}],
+     feedback:{richtig:"Zwischen Übergangslinie und Deckhaar entsteht der Übergang ins längere Haar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+
+    // S2 – Werkzeug je Zone (Zone frei wählbar)
+    {id:"mok-s2-band1", screen:"S2", bereich:"werkzeugwahl", titel:"Band 1 · Konturansatz", bild:"A", zone:"band1",
+     ausgangslage:"Die Zonen sind markiert. Am Konturansatz startet der Verlauf.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"geschlossen",
+     begruendung:"Am Konturansatz startet der Verlauf mit der kürzesten Länge.", typische_fehler:MOK_WZ_FEHLER.band1,
+     feedback:{richtig:"Hebel geschlossen: Am Konturansatz startet der Verlauf mit der kürzesten Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Unten entscheidet der Hebel. Ganz unten steht die kürzeste Stellung.", falsch:MOK_WZ_SCHERE}},
+    {id:"mok-s2-band2", screen:"S2", bereich:"werkzeugwahl", titel:"Band 2", bild:"A", zone:"band2",
+     ausgangslage:"Darunter ist mit geschlossenem Hebel gearbeitet.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"halboffen",
+     begruendung:"Der Verlauf wird nach oben schrittweise länger. Auf geschlossen folgt die nächstlängere Stellung.", typische_fehler:MOK_WZ_FEHLER.band2,
+     feedback:{richtig:"Hebel halboffen: Auf geschlossen folgt die nächstlängere Stellung.", leitfrage:MOK_WZ_LEIT, hilfe:"Der Verlauf wird nach oben Schritt für Schritt länger. Welche Stellung folgt auf die kürzeste?", falsch:MOK_WZ_SCHERE}},
+    {id:"mok-s2-band3", screen:"S2", bereich:"werkzeugwahl", titel:"Band 3", bild:"A", zone:"band3",
+     ausgangslage:"Das letzte Band unter der Übergangslinie.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"offen",
+     begruendung:"Das letzte Hebel-Band bekommt die längste Hebelstellung. Daran schließt später der Kamm an.", typische_fehler:MOK_WZ_FEHLER.band3,
+     feedback:{richtig:"Hebel offen: die längste Hebelstellung. Daran schließt später der Kamm an.", leitfrage:MOK_WZ_LEIT, hilfe:"Das ist das letzte Band, in dem der Hebel arbeitet.", falsch:MOK_WZ_SCHERE}},
+    {id:"mok-s2-oben", screen:"S2", bereich:"werkzeugwahl", titel:"Oberer Bereich", bild:"A", zone:"oben",
+     ausgangslage:"Über der Übergangslinie, bis ins längere Haar.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"kamm",
+     begruendung:"Die Hebelstellungen liegen nur wenige Millimeter auseinander. Für mehr Länge übernimmt der Kamm.", typische_fehler:MOK_WZ_FEHLER.oben,
+     feedback:{richtig:"Maschine über Kamm: Hier bestimmt der Kamm Winkel und Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Über der Übergangslinie reicht der Hebel nicht mehr.", falsch:MOK_WZ_SCHERE}},
+
+    // S3 – Bewegung je Methode
+    {id:"mok-s3-hebel", screen:"S3", bereich:"bewegungslogik", titel:"Führung im unteren Bereich", bild:"A",
+     ausgangslage:"Band 2 mit halboffenem Hebel. Darunter steht der Konturansatz (Hebel geschlossen).", frage:"Wie führst du die Maschine?", antworttyp:"clip",
+     optionen:MOK_HEBEL_OPTIONEN, richtige_antwort:"b",
+     begruendung:"Unten flach, an der Grenze auskippen: So läuft das Band weich aus, statt eine Stufe zu bilden.", typische_fehler:MOK_HEBEL_FEHLER,
+     feedback:{richtig:"Unten flach, an der Grenze auskippen: So läuft das Band weich aus, statt eine Stufe zu bilden.", leitfrage:"Was macht die Maschine an jeder Bandgrenze?", hilfe:"Achte auf die Bandgrenze: Dort muss sich die Maschine vom Kopf lösen."}},
+    {id:"mok-s3-kamm", screen:"S3", bereich:"bewegungslogik", titel:"Führung im oberen Bereich", bild:"A",
+     ausgangslage:"Der untere Bereich ist fertig. Du arbeitest mit Maschine über Kamm vom offenen Band nach oben ins längere Haar.", frage:"Wie führst du den Kamm?", antworttyp:"clip",
+     optionen:[
+       {id:"a", text:"Kamm flach am Kopf, bleibt auf gleicher Höhe stehen, Maschine schneidet ab", clip:"MOK_CLIP_KAMM_A"},
+       {id:"b", text:"Kamm setzt flach am offenen Band an, wird von unten nach oben geführt, der Winkel öffnet sich nach oben schrittweise, die Maschine folgt am Kammrücken", clip:"MOK_CLIP_KAMM_B"},
+       {id:"c", text:"Kamm von Anfang an steil vom Kopf weg, große Bahnen von oben nach unten", clip:"MOK_CLIP_KAMM_C"}],
+     richtige_antwort:"b",
+     begruendung:"Der Kamm bestimmt Winkel und Länge. Flach ansetzen schließt an den offenen Hebel an, das schrittweise Öffnen erzeugt den Übergang zum längeren Haar.",
+     typische_fehler:[
+       {option:"a", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Bei deiner Führung bleibt der Kamm stehen. Dann schneidet die Maschine überall auf derselben Länge – es entsteht eine Kante statt eines Übergangs.", leitfrage:"Was muss der Kamm tun, damit die Länge nach oben zunimmt?"},
+       {option:"c", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Steil und von oben nach unten fehlt der Anschluss an das offene Band. Es entsteht eine Kante.", leitfrage:"Wo setzt der Kamm an, und in welche Richtung führst du ihn?"}],
+     feedback:{richtig:"Der Kamm führt, die Maschine folgt. Flach ansetzen, dann den Winkel öffnen: So entsteht der Übergang.", leitfrage:"Was muss der Kamm tun, damit die Länge nach oben zunimmt?", hilfe:"Oben entscheidet der Kamm: Er setzt flach am offenen Band an und bewegt sich nach oben."}},
+
+    // S4 – Arbeitsreihenfolge (Fehler = erste Karte, die zu früh liegt)
+    {id:"mok-s4", screen:"S4", bereich:"bewegungslogik", titel:"Arbeitsreihenfolge", bild:"A",
+     ausgangslage:"Prüfungskopf, Haar trocken und durchgekämmt. Aufsteckkämme sind verboten.", frage:"Tippe die Arbeitsschritte in der richtigen Reihenfolge an.", antworttyp:"reihenfolge",
+     optionen:MOK_REIHE, richtige_antwort:["linie","offen","halboffen","geschlossen","verblenden","kamm","kontrolle"],
+     begruendung:"Erst die Grenze, dann im unteren Bereich von lang nach kurz. So wird keine Länge zu früh weggenommen. Der Kamm arbeitet nach den Hebel-Bändern, weil er an das fertige offene Band anschließen muss. Kontrolle und Konturen kommen zuletzt.",
+     typische_fehler:[
+       {option:"geschlossen", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Du beginnst zu früh mit der kürzesten Länge. Was einmal zu kurz ist, kannst du nicht zurückholen.", leitfrage:"Mit welcher Hebelstellung tastest du dich an die kurze Länge heran?"},
+       {option:"halboffen", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Halboffen kommt nach offen. Im unteren Bereich arbeitest du von lang nach kurz.", leitfrage:"Welche Hebelstellung ist die längste?"},
+       {option:"offen", fehlertyp:"zone", zurueck:"zone", denkfehler:"Ohne festgelegte Übergangslinie weißt du nicht, wie hoch der offene Hebel geht. Die Seiten werden ungleich hoch.", leitfrage:"Was legst du fest, bevor die Maschine zum ersten Mal ansetzt?"},
+       {option:"verblenden", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Verblenden geht erst, wenn alle drei Hebel-Bänder stehen.", leitfrage:"Welche Bänder müssen fertig sein, bevor du ihre Grenzen verblendest?"},
+       {option:"kamm", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Maschine über Kamm schließt an das fertige offene Band an. Vorher fehlt ihm der Anschluss.", leitfrage:"Woran muss der Kamm unten anschließen?"},
+       {option:"kontrolle", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Kontrolle und Konturen kommen am Schluss, wenn der ganze Übergang steht.", leitfrage:"Was muss fertig sein, bevor du kontrollierst?"}],
+     feedback:{richtig:"Das ist der Standard für die Prüfung.", leitfrage:"Was kommt zuerst, und in welche Richtung arbeitest du im unteren Bereich?", hilfe:"Drei Regeln: Erst die Grenze. Unten von lang nach kurz. Der Kamm kommt nach den Hebel-Bändern."}},
+
+    // S5 – Begründungssätze (Zone, Werkzeug, Bewegung sind aus S1–S3 vorbefüllt; gewählt werden „weil“ und „sonst“)
+    {id:"mok-s5-unten", screen:"S5", bereich:"werkzeugwahl", titel:"Begründung unterer Bereich", bild:"A",
+     ausgangslage:"Band 2, aus deinen Antworten in Schritt 1 bis 3.", frage:"Vervollständige den Satz.", antworttyp:"satzbaustein",
+     satz:{anfang:"In", zone:"Band 2", werkzeug:"Hebel halboffen", bewegung:"Auskippen an der Bandgrenze"},
+     optionen:{
+       weil:[{id:"a", text:"der Verlauf hier schön sauber aussehen soll"},{id:"b", text:"hier der Hebel die Länge bestimmt und auf geschlossen die nächstlängere Stellung folgt"},{id:"c", text:"hier der Kamm Winkel und Länge bestimmt"},{id:"d", text:"der halboffene Hebel so lang ist wie ein Aufsteckkamm"}],
+       sonst:[{id:"a", text:"eine Kante an der Übergangslinie"},{id:"b", text:"Streifen im oberen Bereich"},{id:"c", text:"eine Stufe zwischen den Bändern"}]},
+     richtige_antwort:{weil:"b", sonst:"c"},
+     begruendung:"Im unteren Bereich bestimmt der Hebel die Länge. Wer eine Stellung überspringt, erzeugt eine Stufe.",
+     typische_fehler:[
+       {option:"weil:a", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Das gilt für jeden Schnitt. Deine Begründung sagt nicht, was hier die Länge bestimmt.", leitfrage:"Was bestimmt in diesem Band die Länge, und welche Stellung folgt auf geschlossen?"},
+       {option:"weil:c", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im unteren Bereich bestimmt der Hebel die Länge. Der Kamm übernimmt erst über der Übergangslinie.", leitfrage:MOK_WZ_LEIT},
+       {option:"weil:d", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die Hebelstellungen liegen nur wenige Millimeter auseinander. Deshalb reicht der Hebel nur für den unteren Bereich.", leitfrage:"Wie groß ist der Unterschied zwischen den Hebelstellungen?"},
+       {option:"sonst:a", fehlertyp:"zone", zurueck:"zone", denkfehler:"Eine Kante an der Übergangslinie entsteht beim Kamm. In Band 2 droht etwas anderes.", leitfrage:"Was entsteht, wenn zwischen zwei Hebel-Bändern eine Stellung übersprungen wird?"},
+       {option:"sonst:b", fehlertyp:"zone", zurueck:"zone", denkfehler:"Streifen entstehen bei Maschine über Kamm im oberen Bereich. In Band 2 droht etwas anderes.", leitfrage:"Was entsteht, wenn zwischen zwei Hebel-Bändern eine Stellung übersprungen wird?"}],
+     feedback:{richtig:"Der Satz nennt, was die Länge bestimmt und was sonst passiert.", leitfrage:"Was bestimmt hier die Länge?", hilfe:"Eine gute Begründung nennt, was die Länge bestimmt – Hebel oder Kamm – und welcher Fehler sonst entsteht."}},
+    {id:"mok-s5-oben", screen:"S5", bereich:"werkzeugwahl", titel:"Begründung oberer Bereich", bild:"A",
+     ausgangslage:"Oberer Bereich, aus deinen Antworten in Schritt 1 bis 3.", frage:"Vervollständige den Satz.", antworttyp:"satzbaustein",
+     satz:{anfang:"Im", zone:"oberen Bereich", werkzeug:"Maschine über Kamm", bewegung:"Kamm führt von unten nach oben, Winkel öffnet sich"},
+     optionen:{
+       weil:[{id:"a", text:"die Maschine hier die Länge bestimmt"},{id:"b", text:"der Übergang schön werden soll"},{id:"c", text:"hier der Kamm Winkel und Länge bestimmt und der Hebel nicht mehr reicht"},{id:"d", text:"das schneller geht als mit dem Hebel"}],
+       sonst:[{id:"a", text:"eine Kante statt eines Übergangs"},{id:"b", text:"eine Stufe zwischen zwei Hebel-Bändern"},{id:"c", text:"ein zu hoch ausrasierter Verlauf"}]},
+     richtige_antwort:{weil:"c", sonst:"a"},
+     begruendung:"Oben entscheidet der Kamm. Bleibt er stehen oder fehlt der Anschluss, entsteht eine Kante.",
+     typische_fehler:[
+       {option:"weil:a", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Bei Maschine über Kamm schneidet die Maschine nur am Kamm entlang. Die Länge bestimmt der Kamm.", leitfrage:MOK_WZ_LEIT},
+       {option:"weil:b", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Das gilt für jeden Schnitt. Deine Begründung sagt nicht, was hier die Länge bestimmt.", leitfrage:"Wer bestimmt im oberen Bereich Winkel und Länge?"},
+       {option:"weil:d", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Es geht nicht um Tempo. Der Hebel reicht hier nicht mehr, weil seine Stellungen nur wenige Millimeter auseinanderliegen.", leitfrage:"Was bestimmt über der Übergangslinie die Länge?"},
+       {option:"sonst:b", fehlertyp:"zone", zurueck:"zone", denkfehler:"Stufen zwischen Hebel-Bändern entstehen im unteren Bereich. Oben droht etwas anderes.", leitfrage:"Was entsteht, wenn der Kamm stehen bleibt?"},
+       {option:"sonst:c", fehlertyp:"zone", zurueck:"zone", denkfehler:"Ein zu hoch ausrasierter Verlauf kommt vom geschlossenen Hebel im unteren Bereich.", leitfrage:"Was entsteht, wenn der Kamm stehen bleibt?"}],
+     feedback:{richtig:"Oben entscheidet der Kamm – und ohne Kammführung entsteht eine Kante.", leitfrage:"Was bestimmt hier die Länge?", hilfe:"Eine gute Begründung nennt, was die Länge bestimmt – Hebel oder Kamm – und welcher Fehler sonst entsteht."}},
+
+    // S6 – Fehlerdiagnose (Konzept Übung 4): Stelle → Ursache → Korrektur
+    {id:"mok-s6a", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Fehlerstelle", bild:"A-kante",
+     ausgangslage:"Hinterkopf. Direkt über dem kurzen Bereich verläuft eine waagrechte dunkle Kante, darüber ist das Haar deutlich länger.",
+     frage:"Tippe die Fehlerstelle an.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
+     begruendung:"Die Kante liegt genau an der Grenze, an der der Hebel endet und der Kamm beginnt.",
+     typische_fehler:[
+       {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast das Band darunter angetippt. Die Kante sitzt genau an der Grenze, wo der Hebel endet.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?"},
+       {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Die Kante liegt unter dem oberen Bereich, genau an der Grenze zwischen Hebel und Kamm.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?"}],
+     feedback:{richtig:"Die Kante sitzt an der Übergangslinie.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Tippe sie jetzt selbst an."}},
+    {id:"mok-s6b", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Ursache", bild:"A-kante", zeigen:["uebergang"],
+     ausgangslage:"Die Fehlerstelle liegt an der Übergangslinie.", frage:"Was hat diesen Fehler verursacht?", antworttyp:"auswahl",
+     optionen:[{id:"a", text:"Hebel geschlossen zu hoch geführt"},{id:"b", text:"Kein Anschluss: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"c", text:"Kammbahnen nicht überlappend"},{id:"d", text:"Haar zu nass geschnitten"}],
+     richtige_antwort:"b",
+     begruendung:"Die Kante liegt genau an der Grenze zwischen Hebel und Kamm. Dort fehlt die Verbindung zwischen offenem Hebel und Maschine über Kamm.",
+     typische_fehler:[
+       {option:"a", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Ein zu hoch geführter geschlossener Hebel erzeugt eine helle, zu kurze Fläche – keine dunkle Kante an der Übergangslinie.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?"},
+       {option:"c", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Nicht überlappende Bahnen erzeugen senkrechte Streifen im oberen Bereich. Dein Fehler ist eine waagrechte Kante direkt an der Übergangslinie.", leitfrage:"Was passiert genau an dieser Grenze?"},
+       {option:"d", fehlertyp:"ursache", zurueck:"werkzeug", denkfehler:"Die Ursache liegt nicht am Haar, sondern an der Führung des Werkzeugs.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie, und was kann es falsch machen?"}],
+     feedback:{richtig:"Der Kamm muss an den offenen Hebel anschließen. Beginnt er zu weit weg, entsteht eine Kante.", leitfrage:"In welcher Zone liegt der Fehler, und welches Werkzeug arbeitet dort?", hilfe:"An der Übergangslinie muss Maschine über Kamm an das offene Band anschließen."}},
+    {id:"mok-s6c", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Korrektur", bild:"A-kante", zeigen:["uebergang"],
+     ausgangslage:"Ursache: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen.", frage:"Wie korrigierst du?", antworttyp:"auswahl",
+     optionen:[{id:"a", text:"Die Kante mit geschlossenem Hebel wegfahren"},{id:"b", text:"Das Deckhaar kürzen"},{id:"c", text:"Maschine über Kamm direkt am offenen Band flach ansetzen und den Winkel erst darüber öffnen"}],
+     richtige_antwort:"c",
+     begruendung:"Der Fehler kommt vom Kamm, also korrigierst du mit dem Kamm: flach am offenen Band ansetzen.",
+     typische_fehler:[
+       {option:"a", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit geschlossenem Hebel wird aus der Kante eine zu kurze Fläche – der Verlauf rutscht nach oben.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?"},
+       {option:"b", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das Deckhaar liegt über dem Fehler. Die Kante sitzt an der Übergangslinie, dort setzt du an.", leitfrage:"In welcher Zone liegt der Fehler?"}],
+     feedback:{richtig:"Der Kamm hat den Fehler erzeugt, also korrigiert der Kamm ihn.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?", hilfe:"Der Fehler kommt vom Kamm. Korrigiere mit dem Werkzeug, das ihn verursacht hat."}},
+
+    // S7 – Prüfungsfall: neuer Kopf, keine Hilfen (pruefung:true)
+    {id:"mok-p1", screen:"S7", pruefung:true, bereich:"zonenlogik", titel:"Übergangslinie", bild:"B",
+     ausgangslage:"Neuer Prüfungskopf mit hohem Verlauf.", frage:"Tippe die Übergangslinie an.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
+     begruendung:"Über dem letzten Hebel-Band beginnt der Kamm.", typische_fehler:[],
+     feedback:{richtig:"Die Übergangslinie liegt über dem letzten Hebel-Band.", leitfrage:"Wo endet das, was der Hebel kann?"}},
+    {id:"mok-p2", screen:"S7", pruefung:true, bereich:"werkzeugwahl", titel:"Werkzeug Band 3", bild:"B", zone:"band3",
+     ausgangslage:"Das markierte Band liegt direkt unter der Übergangslinie.", frage:"Welches Werkzeug gehört auf das markierte Band?", antworttyp:"werkzeug",
+     optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"offen",
+     begruendung:"Das letzte Hebel-Band bekommt die längste Hebelstellung.", typische_fehler:MOK_WZ_FEHLER.band3,
+     feedback:{richtig:"Hebel offen.", leitfrage:MOK_WZ_LEIT, falsch:MOK_WZ_SCHERE}},
+    {id:"mok-p3", screen:"S7", pruefung:true, bereich:"werkzeugwahl", titel:"Werkzeug oberer Bereich", bild:"B", zone:"oben",
+     ausgangslage:"Der markierte Bereich liegt über der Übergangslinie.", frage:"Welches Werkzeug gehört auf den markierten Bereich?", antworttyp:"werkzeug",
+     optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"kamm",
+     begruendung:"Über der Übergangslinie bestimmt der Kamm die Länge.", typische_fehler:MOK_WZ_FEHLER.oben,
+     feedback:{richtig:"Maschine über Kamm.", leitfrage:MOK_WZ_LEIT, falsch:MOK_WZ_SCHERE}},
+    {id:"mok-p4", screen:"S7", pruefung:true, bereich:"bewegungslogik", titel:"Führung an der Bandgrenze", bild:"B", zeigen:["band2","band3"],
+     ausgangslage:"Du arbeitest Band 2 mit halboffenem Hebel, darüber liegt Band 3.", frage:"Wie führst du die Maschine an der Grenze zu Band 3?", antworttyp:"clip",
+     optionen:MOK_HEBEL_OPTIONEN, richtige_antwort:"b",
+     begruendung:"An jeder Bandgrenze kippst du aus.", typische_fehler:MOK_HEBEL_FEHLER,
+     feedback:{richtig:"Auskippen an der Bandgrenze.", leitfrage:"Was macht die Maschine an jeder Bandgrenze?"}},
+    {id:"mok-p5a", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Stufe – Fehlerstelle", bild:"B-stufe",
+     ausgangslage:"Im unteren Bereich ist eine harte, waagrechte Stufe sichtbar.", frage:"Tippe die Fehlerstelle an.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","grenze","band2","band1"], richtige_antwort:"grenze",
+     begruendung:"Die Stufe sitzt an der Grenze zwischen zwei Hebel-Bändern.",
+     typische_fehler:[{option:"uebergang", fehlertyp:"zone", zurueck:"zone", denkfehler:"An der Übergangslinie entsteht eine Kante durch den Kamm. Diese Stufe liegt tiefer, zwischen zwei Hebel-Bändern.", leitfrage:"Zwischen welchen Bändern ist die Länge sprunghaft?"}],
+     feedback:{richtig:"Die Stufe sitzt an der Grenze zwischen Band 2 und Band 3.", leitfrage:"Zwischen welchen Bändern ist die Länge sprunghaft?"}},
+    {id:"mok-p5b", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Stufe – Ursache", bild:"B-stufe", zeigen:["grenze"],
+     ausgangslage:"Die Fehlerstelle liegt an der Grenze zwischen Band 2 und Band 3.", frage:"Was hat diesen Fehler verursacht?", antworttyp:"auswahl",
+     optionen:[{id:"a", text:"Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"b", text:"An der Bandgrenze nicht ausgekippt, gerade hochgefahren"},{id:"c", text:"Hebel geschlossen zu hoch geführt"},{id:"d", text:"Kammbahnen nicht überlappend"}],
+     richtige_antwort:"b",
+     begruendung:"An der Bandgrenze muss die Maschine auskippen. Fährt sie gerade weiter, entsteht eine Stufe.",
+     typische_fehler:[
+       {option:"a", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Die Stufe liegt im unteren Bereich. Dort arbeitet der Hebel, nicht der Kamm.", leitfrage:"Welches Werkzeug arbeitet an dieser Grenze?"},
+       {option:"c", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Ein zu hoch geführter geschlossener Hebel erzeugt eine helle, zu kurze Fläche am Ansatz – keine Stufe zwischen Band 2 und Band 3.", leitfrage:"Zwischen welchen Bändern liegt die Stufe?"},
+       {option:"d", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Bahnen gibt es nur bei Maschine über Kamm im oberen Bereich. Die Stufe liegt im unteren Bereich.", leitfrage:"Welches Werkzeug arbeitet an dieser Grenze?"}],
+     feedback:{richtig:"Nicht ausgekippt: An der Grenze ist eine Stufe stehen geblieben.", leitfrage:"Welches Werkzeug arbeitet an dieser Grenze, und wie muss es geführt werden?"}},
+    {id:"mok-p5c", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Stufe – Korrektur", bild:"B-stufe", zeigen:["grenze"],
+     ausgangslage:"Ursache: An der Bandgrenze nicht ausgekippt.", frage:"Wie korrigierst du?", antworttyp:"auswahl",
+     optionen:[{id:"a", text:"Die Grenze mit offenem Hebel und Auskippen verblenden"},{id:"b", text:"Die Stufe mit geschlossenem Hebel wegfahren"},{id:"c", text:"Maschine über Kamm über die Stufe führen"}],
+     richtige_antwort:"a",
+     begruendung:"Die Grenze wird mit der nächstlängeren Hebelstellung und Auskippen verblendet.",
+     typische_fehler:[
+       {option:"b", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit geschlossenem Hebel wird es an der Grenze zu kurz – aus der Stufe wird ein Loch.", leitfrage:"Welche Hebelstellung ist länger als das Band unter der Stufe?"},
+       {option:"c", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Die Stufe liegt im unteren Bereich. Dort arbeitet der Hebel, nicht der Kamm.", leitfrage:MOK_WZ_LEIT}],
+     feedback:{richtig:"Mit der nächstlängeren Hebelstellung und Auskippen verschwindet die Stufe.", leitfrage:"Welche Hebelstellung ist länger als das Band unter der Stufe?"}}
+  ];
+
+  // ---------- Zustand ----------
+  function mokNeu(){ return {screen:0, offen:0, u:{}, zone:null, reihe:[], flash:null, zuletzt:null}; }
+  function mokU(id){ return st.mok.u[id] || (st.mok.u[id] = {wahl:null, versuche:0, ok:false, fehler:null}); }
+  function mokX(id){ return MOK_UEBUNGEN.filter(function(x){ return x.id === id; })[0]; }
+  function mokListe(sid){ return MOK_UEBUNGEN.filter(function(x){ return x.screen === sid; }); }
+  function mokFertig(i){ return mokListe(MOK_SCREENS[i].id).every(function(x){ return mokU(x.id).ok; }); }
+  function mokAktuell(sid){ return mokListe(sid).filter(function(x){ return !mokU(x.id).ok; })[0] || null; }
+  function mokRegionen(bild){ var B = MOK_BILDER[bild]; return Object.assign({}, MOK_KOEPFE[B.kopf].zonen, B.zonen || {}); }
+  function mokS2Werkzeug(zone){ var x = mokX("mok-s2-" + zone); return x && mokU(x.id).ok ? x.richtige_antwort : null; }
+  function mokWzText(id){ return MOK_WERKZEUGE.filter(function(w){ return w[0] === id; })[0][1]; }
+
+  function mokRichtig(x, w){
+    if (w == null) return false;
+    if (x.antworttyp === "satzbaustein") return w.weil === x.richtige_antwort.weil && w.sonst === x.richtige_antwort.sonst;
+    if (x.antworttyp === "reihenfolge") return w.join() === x.richtige_antwort.join();
+    return w === x.richtige_antwort;
+  }
+  // Genau ein Fehler: Satzbaustein zuerst „weil“, dann „sonst“; Reihenfolge = erste Karte, die zu früh liegt.
+  function mokFehler(x, w){
+    var key = w, i;
+    if (x.antworttyp === "satzbaustein") key = w.weil !== x.richtige_antwort.weil ? "weil:" + w.weil : "sonst:" + w.sonst;
+    if (x.antworttyp === "reihenfolge") for (i = 0; i < w.length; i++) if (w[i] !== x.richtige_antwort[i]){ key = w[i]; break; }
+    var t = x.typische_fehler.filter(function(f){ return f.option === key; })[0];
+    if (t) return t;
+    if (x.feedback.falsch) return x.feedback.falsch;
+    var z = MOK_ZONEN[key];
+    return {fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast " + z.name + " angetippt. Dort " + z.arbeit + ".", leitfrage:x.feedback.leitfrage};
+  }
+  function mokPruefen(x, w){
+    var s = mokU(x.id); if (s.ok || w == null) return;
+    s.wahl = w;
+    if (mokRichtig(x, w)){ s.ok = true; s.fehler = null; st.mok.zuletzt = x.id; if (x.screen === "S2") st.mok.zone = null; return; }
+    s.versuche++;
+    s.fehler = mokFehler(x, w);
+    if (x.antworttyp === "hotspot" && s.versuche >= 2 && !x.pruefung) st.mok.flash = x.richtige_antwort;
+  }
+
+  // ---------- Kopf (PLATZHALTER-Grafik) ----------
+  // o: {bild, klick:[Zonen-IDs], act, markiert:[Zonen-IDs], aktiv, flash, werkzeuge:true}
+  function mokKopf(o){
+    var B = MOK_BILDER[o.bild], K = MOK_KOEPFE[B.kopf], hw = K.hw, Z = K.zonen, R = mokRegionen(o.bild), cx = 150;
+    function x(f){ return (cx + hw * f).toFixed(1); }
+    var umriss = "M150,18 C" + x(.66) + ",18 " + x(1) + ",62 " + x(1) + ",140 C" + x(1) + ",196 " + x(.86) + ",248 " + x(.6) + ",278 C" + x(.4) + ",294 " + x(.2) + ",298 150,298 " +
+                 "C" + x(-.2) + ",298 " + x(-.4) + ",294 " + x(-.6) + ",278 C" + x(-.86) + ",248 " + x(-1) + ",196 " + x(-1) + ",140 C" + x(-1) + ",62 " + x(-.66) + ",18 150,18 Z";
+    function band(y, fill, extra){ return '<rect x="0" y="' + y[0] + '" width="300" height="' + (y[1] - y[0]) + '" fill="' + fill + '" clip-path="url(#mokClip)"' + (extra || '') + '/>'; }
+    var deck = {band3:.44, band2:.28, band1:.14};
+    if (B.fehler === "stufe"){ deck.band3 = .56; deck.band2 = .14; deck.band1 = .08; }
+    var s = '<svg viewBox="0 0 470 340" role="img" aria-label="Schematischer Hinterkopf (Platzhalter)">' +
+      '<defs><clipPath id="mokClip"><path d="' + umriss + '"/></clipPath>' +
+      '<linearGradient id="mokVerlauf" x1="0" y1="1" x2="0" y2="0"><stop offset="0" style="stop-color:var(--g-haar);stop-opacity:.5"/><stop offset="1" style="stop-color:var(--g-haar);stop-opacity:.92"/></linearGradient></defs>' +
+      '<text x="6" y="14" font-size="11" fill="var(--muted)">PLATZHALTER · Schema</text>' +
+      '<rect x="' + (cx - 46) + '" y="262" width="92" height="78" rx="18" fill="var(--g-kopf)" stroke="var(--g-kontur)" stroke-width="1.5"/>' +
+      '<ellipse cx="' + x(-1.04) + '" cy="172" rx="13" ry="27" fill="var(--g-kopf)" stroke="var(--g-kontur)" stroke-width="1.5"/>' +
+      '<ellipse cx="' + x(1.04) + '" cy="172" rx="13" ry="27" fill="var(--g-kopf)" stroke="var(--g-kontur)" stroke-width="1.5"/>' +
+      '<path d="' + umriss + '" fill="var(--g-kopf)"/>' +
+      band(Z.deckhaar, "var(--g-haar)") +
+      band([Z.oben[0], Z.uebergang[1]], "url(#mokVerlauf)") +
+      band(Z.band3, "var(--g-haar)", ' fill-opacity="' + deck.band3 + '"') +
+      band(Z.band2, "var(--g-haar)", ' fill-opacity="' + deck.band2 + '"') +
+      band(Z.band1, "var(--g-haar)", ' fill-opacity="' + deck.band1 + '"');
+    if (B.fehler === "kante") s += band([Z.uebergang[1] - 9, Z.uebergang[1] - 1], "var(--g-haar-kontur)", ' fill-opacity=".9"');
+    if (B.fehler === "stufe") s += '<line x1="0" x2="300" y1="' + Z.band2[0] + '" y2="' + Z.band2[0] + '" stroke="var(--g-haar-kontur)" stroke-width="3" clip-path="url(#mokClip)"/>';
+    s += '<path d="' + umriss + '" fill="none" stroke="var(--g-kontur)" stroke-width="1.5"/>';
+    (o.markiert || []).forEach(function(id){
+      var y = R[id], ym = (y[0] + y[1]) / 2, wz = o.werkzeuge ? mokS2Werkzeug(id) : null;
+      s += id === "uebergang" || id === "grenze"
+        ? '<line x1="0" x2="300" y1="' + ym + '" y2="' + ym + '" stroke="var(--accent)" stroke-width="3" clip-path="url(#mokClip)"/>'
+        : band(y, "var(--accent)", ' fill-opacity="' + (id === o.aktiv ? .45 : .2) + '"');
+      s += '<line x1="' + x(.94) + '" x2="' + (cx + hw + 24) + '" y1="' + ym + '" y2="' + ym + '" stroke="var(--accent)" stroke-width="1.5"/>' +
+        '<text x="' + (cx + hw + 28) + '" y="' + (ym + 4) + '" font-size="13" font-weight="700" fill="var(--ink)">' + MOK_ZONEN[id].label +
+        (wz ? '<tspan x="' + (cx + hw + 28) + '" dy="15" font-weight="400" fill="var(--accent)">' + mokWzText(wz) + '</tspan>' : '') + '</text>';
+    });
+    if (o.aktiv && (o.markiert || []).indexOf(o.aktiv) < 0) s += band(R[o.aktiv], "var(--accent)", ' fill-opacity=".45"');
+    if (o.flash) s += band(R[o.flash], "var(--accent)", ' class="mok-flash"');
+    (o.klick || []).forEach(function(id, i){
+      s += band(R[id], "#000", ' class="mok-hot" data-act="' + o.act + '" data-val="' + id + '" role="button" tabindex="0" aria-label="Fläche ' + (o.klick.length - i) + ' von unten"');
+    });
+    return s + '</svg>';
+  }
+
+  // ---------- Bausteine ----------
+  function mokRueckmeldung(x){
+    var s = mokU(x.id), f = s.fehler, h = '';
+    if (s.ok) return '<div class="callout good"><p><strong>Richtig.</strong> ' + x.feedback.richtig + '</p></div>';
+    if (f){
+      var glied = MOK_KETTE.filter(function(k){ return k[0] === f.zurueck; })[0][1];
+      h += '<div class="callout bad mok-fb">' +
+        '<p><strong>Denkfehler:</strong> ' + f.denkfehler + '</p>' +
+        '<p class="mok-kette"><strong>Zurück zu:</strong><span class="sr">' + glied + '</span><span class="mok-glieder" aria-hidden="true">' +
+          MOK_KETTE.map(function(k){ return '<span class="mok-glied' + (k[0] === f.zurueck ? ' on' : '') + '">' + k[1] + '</span>'; }).join('<span class="mok-pfeil">→</span>') + '</span></p>' +
+        '<p><strong>Frage dich:</strong> ' + f.leitfrage + '</p>' +
+        '<p class="note">' + MOK_MERKSATZ + '</p></div>';
+    }
+    if (s.versuche >= 2 && !x.pruefung && x.feedback.hilfe) h += '<div class="callout accent"><p><strong>Hilfe:</strong> ' + x.feedback.hilfe + '</p></div>';
+    return h;
+  }
+  function mokOptText(x, id){
+    if (x.antworttyp === "werkzeug") return mokWzText(id);
+    var o = x.optionen.filter(function(o){ return o.id === id; })[0]; return o ? o.text : id;
+  }
+  function mokAntwort(x){
+    var w = mokU(x.id).wahl;
+    if (x.antworttyp === "reihenfolge") return "richtig geordnet";
+    return mokOptText(x, w);
+  }
+  function mokPruefBtn(x, bereit){
+    return '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="mokpruef" data-id="' + x.id + '"' + (bereit ? '' : ' disabled') + '>Prüfen</button></div>';
+  }
+  function mokWahl(x){ // werkzeug | auswahl | clip
+    var s = mokU(x.id);
+    if (x.antworttyp === "werkzeug"){
+      return '<fieldset class="wahl"><legend>' + x.frage + '</legend><div class="chips">' + x.optionen.map(function(id){
+        var on = s.wahl === id, cls = on ? (s.ok ? ' on right' : (s.fehler ? ' on wrong' : ' on')) : '';
+        return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + id + '"' + (s.ok ? ' disabled' : '') + '>' + mokWzText(id) + '</button>';
+      }).join("") + '</div></fieldset>' + (s.ok ? '' : mokPruefBtn(x, s.wahl != null));
+    }
+    return '<fieldset class="wahl"><legend>' + x.frage + '</legend><div class="answers">' + x.optionen.map(function(o){
+      var on = s.wahl === o.id, cls = on ? (s.ok ? ' right' : (s.fehler ? ' wrong' : ' on')) : '';
+      // PLATZHALTER Clip: o.clip wird durch eine kurze Bewegungsanimation ersetzt
+      var clip = o.clip ? '<span class="mok-platzhalter">PLATZHALTER Clip · ' + o.clip + '</span>' : '';
+      return '<button class="btn' + (o.clip ? ' mok-clipbtn' : '') + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + o.id + '"' + (s.ok ? ' disabled' : '') + '>' + clip + '<span>' + o.text + '</span></button>';
+    }).join("") + '</div></fieldset>' + (s.ok ? '' : mokPruefBtn(x, s.wahl != null));
+  }
+  function mokSatz(x){
+    var s = mokU(x.id), w = s.wahl || {};
+    function slot(t, leer){ return '<span class="sb-slot' + (leer ? ' leer' : '') + '">' + t + '</span>'; }
+    function wahlText(feld){ var o = x.optionen[feld].filter(function(o){ return o.id === w[feld]; })[0]; return o ? slot(o.text) : slot(feld === "weil" ? "[weil … wählen]" : "[Fehler wählen]", true); }
+    var satz = '<p class="sb-satz">' + x.satz.anfang + ' ' + slot(x.satz.zone) + ' arbeite ich mit ' + slot(x.satz.werkzeug) + ' und ' + slot(x.satz.bewegung) + ', weil ' + wahlText("weil") + '. Sonst entsteht ' + wahlText("sonst") + '.</p>';
+    if (s.ok) return satz;
+    return satz + ["weil", "sonst"].map(function(feld){
+      return '<fieldset class="wahl"><legend>' + (feld === "weil" ? "weil …" : "Sonst entsteht …") + '</legend><div class="chips sb-chips">' + x.optionen[feld].map(function(o){
+        var on = w[feld] === o.id;
+        return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-feld="' + feld + '" data-val="' + o.id + '">' + o.text + '</button>';
+      }).join("") + '</div></fieldset>';
+    }).join("") + mokPruefBtn(x, w.weil != null && w.sonst != null);
+  }
+  function mokReihe(x){
+    var s = mokU(x.id), R = st.mok.reihe, geprueft = s.fehler && s.wahl && s.wahl.join() === R.join();
+    var liste = '<ol class="mok-reihe">' + R.map(function(id, i){
+      var cls = s.ok ? ' right' : (geprueft ? (id === x.richtige_antwort[i] ? ' right' : ' wrong') : '');
+      return '<li><button class="btn' + cls + '" type="button" data-act="mokraus" data-val="' + id + '"' + (s.ok ? ' disabled' : '') + '><span class="mok-nr">' + (i + 1) + '</span>' + mokOptText(x, id) + '</button></li>';
+    }).join("") + '</ol>';
+    if (s.ok) return liste;
+    var rest = x.optionen.filter(function(o){ return R.indexOf(o.id) < 0; });
+    // feste, gemischte Reihenfolge im Vorrat
+    var mix = ["kamm","geschlossen","linie","kontrolle","halboffen","verblenden","offen"];
+    rest.sort(function(a, b){ return mix.indexOf(a.id) - mix.indexOf(b.id); });
+    return '<p class="mok-frage">' + x.frage + '</p>' +
+      (R.length ? liste + '<p class="note">Tippe einen gelegten Schritt an, um ihn zurückzulegen.</p>' : '') +
+      (rest.length ? '<div class="answers">' + rest.map(function(o){ return '<button class="btn" type="button" data-act="mokreihe" data-val="' + o.id + '">' + o.text + '</button>'; }).join("") + '</div>' : '') +
+      (R.length === x.optionen.length ? mokPruefBtn(x, true) : '');
+  }
+  function mokStandard(){
+    return '<div class="callout accent"><p><strong>Der Standard für die Prüfung</strong></p><p class="merksatz" style="font-size:var(--t-l);text-align:left;padding:0">' + MOK_MERKSATZ + '</p>' +
+      '<ol class="mok-std">' + MOK_REIHE.map(function(r){ return '<li>' + r.text + '</li>'; }).join("") + '</ol></div>';
+  }
+  // Übungen eines Screens der Reihe nach: erledigte kurz, aktuelle voll, spätere gesperrt
+  function mokFolge(sid){
+    var L = mokListe(sid), akt = mokAktuell(sid), h = '';
+    var erledigt = L.filter(function(x){ return mokU(x.id).ok; });
+    if (erledigt.length) h += '<ul class="mok-erledigt">' + erledigt.map(function(x){
+      return '<li>✓ <strong>' + x.titel + (x.antworttyp === "satzbaustein" ? '</strong>' + mokSatz(x) : x.antworttyp === "hotspot" ? '</strong>' : ':</strong> ' + mokAntwort(x)) + '</li>'; }).join("") + '</ul>';
+    var zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
+    if (zuletzt && zuletzt.screen === sid) h += mokRueckmeldung(zuletzt);
+    if (akt){
+      h += '<h3 class="mok-titel">' + akt.titel + '</h3><p class="note">' + akt.ausgangslage + '</p>';
+      if (akt.antworttyp === "hotspot") h += '<p class="mok-frage">' + akt.frage + '</p><p class="note">Tippe direkt im Bild.</p>';
+      else if (akt.antworttyp === "satzbaustein") h += mokSatz(akt);
+      else h += mokWahl(akt);
+      h += mokRueckmeldung(akt);
+      // Mehrstufige Fälle (gleiche Fall-ID mit Buchstaben): spätere Stufen sichtbar, aber gesperrt
+      L.slice(L.indexOf(akt) + 1).forEach(function(x){
+        if (!/[a-z]$/.test(x.id) || x.id.slice(0, -1) !== akt.id.slice(0, -1)) return;
+        h += '<p class="mok-gesperrt">Gesperrt: ' + x.titel + ' – öffnet sich, wenn „' + L[L.indexOf(x) - 1].titel + '“ richtig ist.</p>';
+      });
+    }
+    return h;
+  }
+
+  function mokFigur(sid){
+    var akt = mokAktuell(sid), o;
+    var s1 = mokListe("S1").filter(function(x){ return mokU(x.id).ok; }).map(function(x){ return x.richtige_antwort; });
+    if (sid === "S0") o = {bild:"A"};
+    else if (sid === "S1") o = {bild:"A", markiert:s1, klick:akt ? akt.optionen : [], act:"mokhot", flash:st.mok.flash};
+    else if (sid === "S2") o = {bild:"A", markiert:s1, werkzeuge:true, aktiv:st.mok.zone, klick:["oben","band3","band2","band1"], act:"mokzone"};
+    else if (sid === "S3" || sid === "S4" || sid === "S5") o = {bild:"A", markiert:s1, werkzeuge:true};
+    else {
+      var x = akt || mokListe(sid).slice(-1)[0];
+      o = {bild:x.bild};
+      if (akt && x.antworttyp === "hotspot") o = {bild:x.bild, klick:x.optionen, act:"mokhot", flash:st.mok.flash};
+      else { o.markiert = x.zeigen || (x.antworttyp === "hotspot" ? [x.richtige_antwort] : []); o.aktiv = x.zone; }
+    }
+    var bildId = sid === "S6" || sid === "S7" ? o.bild : "A";
+    return mokKopf(o) + '<p class="mok-platzhalter">PLATZHALTER Bild · ' + MOK_BILDER[bildId].platzhalter + '</p>';
+  }
+
+  function mokAufgabe(sid){
+    var h = '';
+    if (sid === "S0"){
+      return h + '<p><strong>Gesellenprüfung, Verlauf.</strong> Die Maschine ist erlaubt, aber nur ohne Aufsteckkämme. Jede Länge erzeugst du selbst:</p>' +
+        '<ul><li><strong>Unterer Bereich:</strong> Maschine ohne Aufsatz, über die Hebelstellung – geschlossen, halboffen, offen.</li>' +
+        '<li><strong>Oberer Bereich:</strong> Maschine über Kamm – der Kamm bestimmt Winkel und Länge.</li></ul>' +
+        '<p class="merksatz">' + MOK_MERKSATZ + '</p>' +
+        '<p><strong>So arbeitest du dich durch:</strong></p><ol><li>Zone erkennen</li><li>Werkzeug wählen</li><li>Bewegung wählen</li><li>Begründen</li><li>Fehler lesen</li></ol>' +
+        '<p class="note">Erst erkennen, dann wählen, dann erklären, dann Fehler lesen. Der nächste Schritt öffnet sich erst, wenn der aktuelle richtig ist.</p>';
+    }
+    if (sid === "S2"){
+      var L = mokListe("S2"), z = st.mok.zone, x = z ? mokX("mok-s2-" + z) : null;
+      h += '<p class="note">Tippe am Kopf eine Zone an und wähle dann das Werkzeug.</p><div class="chips" role="group" aria-label="Zone wählen">' + L.map(function(u){
+        var ok = mokU(u.id).ok, on = u.zone === z;
+        return '<button class="chip' + (on ? ' on' : '') + (ok ? ' right' : '') + '" type="button" aria-pressed="' + on + '" data-act="mokzone" data-val="' + u.zone + '"' + (ok ? ' disabled' : '') + '>' + (ok ? '✓ ' : '') + MOK_ZONEN[u.zone].label + '</button>';
+      }).join("") + '</div>';
+      var zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
+      if (!x && zuletzt && zuletzt.screen === "S2") h += mokRueckmeldung(zuletzt);
+      if (x) h += '<h3 class="mok-titel">' + MOK_ZONEN[z].label + '</h3><p class="note">' + x.ausgangslage + '</p>' + mokWahl(x) + mokRueckmeldung(x);
+      return h;
+    }
+    if (sid === "S4"){
+      var r = mokX("mok-s4");
+      h += '<p class="note">' + r.ausgangslage + '</p>' + mokReihe(r) + mokRueckmeldung(r);
+      if (mokU(r.id).ok) h += '<p>' + r.begruendung + '</p>' + mokStandard();
+      return h;
+    }
+    h += mokFolge(sid);
+    if (sid === "S7" && mokFertig(7)) h += mokErgebnis();
+    return h;
+  }
+
+  // Prüfungsfall bestanden: Zone und Werkzeug alles beim ersten Versuch, Bewegung und Fehlerdiagnose höchstens 1 Fehler
+  function mokErgebnis(){
+    var L = mokListe("S7");
+    var zw = L.filter(function(x){ return x.bereich === "zonenlogik" || x.bereich === "werkzeugwahl"; });
+    var bf = L.filter(function(x){ return x.bereich === "bewegungslogik" || x.bereich === "fehlerdiagnose"; });
+    var zwOk = zw.filter(function(x){ return mokU(x.id).versuche === 0; }).length;
+    var bfFehler = bf.filter(function(x){ return mokU(x.id).versuche > 0; }).length;
+    var bestanden = zwOk === zw.length && bfFehler <= 1;
+    return '<div class="callout ' + (bestanden ? 'good' : 'bad') + '"><p><strong>' + (bestanden ? 'Prüfungsfall bestanden.' : 'Prüfungsfall noch nicht bestanden.') + '</strong></p>' +
+      '<p>Zone und Werkzeug beim ersten Versuch richtig: ' + zwOk + ' von ' + zw.length + ' (gefordert: alle).</p>' +
+      '<p>Fehler bei Bewegung und Fehlerdiagnose: ' + bfFehler + ' (erlaubt: höchstens 1).</p></div>' +
+      mokStandard() +
+      '<div class="controls" style="justify-content:flex-start">' +
+        '<button class="btn primary" type="button" data-act="mokpruefneu">Prüfungsfall wiederholen</button>' +
+        '<button class="btn" type="button" data-act="mokneu">Modul von vorne</button></div>';
+  }
+
+  function renderMaschine(){
+    if (!st.mok) st.mok = mokNeu();
+    var M = st.mok, i = M.screen, S = MOK_SCREENS[i], fertig = mokFertig(i), letzter = i === MOK_SCREENS.length - 1;
+    var schritte = '<ol class="steps sb-steps" aria-label="Screens">' + MOK_SCREENS.map(function(x, k){
+      var c = k === i ? "now" : (mokFertig(k) && k <= M.offen ? "done" : ""), offen = k <= M.offen && k !== i;
+      return '<li class="' + c + '"' + (k === i ? ' aria-current="step"' : '') + '>' +
+        (offen ? '<button type="button" data-act="mokscreen" data-val="' + k + '">' + x.id + ' · ' + x.titel + '</button>' : x.id + ' · ' + x.titel) + '</li>';
+    }).join("") + '</ol>';
+    var nav = '<div class="nav">' +
+      '<button class="btn" type="button" data-act="mokprev"' + (i === 0 ? ' disabled' : '') + '>' + ICON_ZURUECK + 'Zurück</button>' +
+      (letzter ? '' : '<button class="btn primary" type="button" data-act="moknext"' + (fertig ? '' : ' disabled') + '>' + (i === 0 ? 'Los geht’s' : 'Weiter') + ICON_WEITER + '</button>') +
+      '</div>';
+    return '<div class="screen mok">' +
+      '<div class="pagehead"><h1>Maschinen&shy;haarschnitt ohne Aufsteck&shy;kämme <span class="tag">V1</span></h1>' +
+        '<p class="meta">' + MOK_MERKSATZ + '</p></div>' +
+      schritte +
+      '<div class="bk-grid sb-grid">' +
+        '<section class="card fig sb-fig mok-fig"><h2 class="sb-bildtitel">' + (i >= 6 ? 'Fehlerbild' : 'Zonenbild') + '</h2>' + mokFigur(S.id) + '</section>' +
+        '<section class="card text sb-aufgabe"><p class="sb-ebene">' + S.schritt + '</p><h2>' + S.id + ' · ' + S.titel + '</h2><p class="sb-leit">' + S.leit + '</p>' +
+          mokAufgabe(S.id) + '</section>' +
+      '</div>' + nav +
+    '</div>';
+  }
+
+  // Klicks im Reiter „Maschine“; gibt true zurück, wenn der Screen gewechselt hat
+  function mokAktion(a, b){
+    var M = st.mok, val = b.getAttribute("data-val"), id = b.getAttribute("data-id"), x, s;
+    M.flash = null;
+    if (a === "mokscreen"){ var k = +val; if (k <= M.offen){ M.screen = k; M.zuletzt = null; return true; } }
+    if (a === "moknext" && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1){ M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; return true; }
+    if (a === "mokprev" && M.screen > 0){ M.screen--; M.zuletzt = null; return true; }
+    if (a === "mokhot"){ x = mokAktuell(MOK_SCREENS[M.screen].id); if (x && x.antworttyp === "hotspot") mokPruefen(x, val); }
+    if (a === "mokzone" && MOK_SCREENS[M.screen].id === "S2"){ x = mokX("mok-s2-" + val); if (x && !mokU(x.id).ok){ M.zone = val; M.zuletzt = null; } }
+    if (a === "mokwahl"){
+      x = mokX(id); s = mokU(id);
+      if (!s.ok){
+        var feld = b.getAttribute("data-feld");
+        if (feld){ s.wahl = Object.assign({}, s.wahl || {}); s.wahl[feld] = val; } else s.wahl = val;
+        s.fehler = null;
+      }
+    }
+    if (a === "mokpruef"){ x = mokX(id); mokPruefen(x, x.antworttyp === "reihenfolge" ? M.reihe.slice() : mokU(id).wahl); }
+    if (a === "mokreihe" && M.reihe.indexOf(val) < 0 && !mokU("mok-s4").ok){ M.reihe.push(val); mokU("mok-s4").fehler = null; }
+    if (a === "mokraus" && !mokU("mok-s4").ok){ M.reihe = M.reihe.filter(function(r){ return r !== val; }); mokU("mok-s4").fehler = null; }
+    if (a === "mokpruefneu"){ mokListe("S7").forEach(function(x){ delete M.u[x.id]; }); M.zuletzt = null; return true; }
+    if (a === "mokneu"){ st.mok = mokNeu(); return true; }
+    return false;
+  }
+
 
 
   // Nase von vorne: w = halbe Breite der Nasenflügel, dy = Länge (Nasenspitze tiefer)
@@ -4033,6 +4651,7 @@ wechsle aber nicht ohne Zustimmung.
       '<nav class="tabs" aria-label="Bereiche">' +
         '<button type="button" data-act="view" data-val="pilot"' + (st.view==="pilot" ? ' aria-current="page"' : '') + '>Fälle</button>' +
         '<button type="button" data-act="view" data-val="baukasten"' + (st.view==="baukasten" ? ' aria-current="page"' : '') + '>Baukasten</button>' +
+        '<button type="button" data-act="view" data-val="maschine"' + (st.view==="maschine" ? ' aria-current="page"' : '') + '>Maschine</button>' +
         '<button type="button" data-act="view" data-val="wissen"' + (st.view==="wissen" ? ' aria-current="page"' : '') + '>Wissen</button>' +
         '<button type="button" data-act="view" data-val="trainer"' + (st.view==="trainer" ? ' aria-current="page"' : '') + '>Trainer</button>' +
         '<button type="button" data-act="view" data-val="visagistik"' + (st.view==="visagistik" ? ' aria-current="page"' : '') + '>Visagistik</button>' +
@@ -4043,8 +4662,8 @@ wechsle aber nicht ohne Zustimmung.
     trainer.hidden = st.view !== "trainer";
     app.hidden = st.view === "trainer";
     if (st.view === "trainer"){ app.innerHTML = ""; return; }
-    app.classList.toggle("breit", st.view === "baukasten" || st.view === "visagistik");
-    app.innerHTML = st.view === "wissen" ? renderWissen() : st.view === "baukasten" ? renderBaukasten() : st.view === "visagistik" ? renderVisagistik() : renderPilot();
+    app.classList.toggle("breit", st.view === "baukasten" || st.view === "visagistik" || st.view === "maschine");
+    app.innerHTML = st.view === "wissen" ? renderWissen() : st.view === "baukasten" ? renderBaukasten() : st.view === "visagistik" ? renderVisagistik() : st.view === "maschine" ? renderMaschine() : renderPilot();
   }
 
   window.addEventListener("resize", function(){ var b = document.querySelector(".appbar"); if (b) document.documentElement.style.setProperty("--bar-h", b.offsetHeight + "px"); });
@@ -4073,11 +4692,19 @@ wechsle aber nicht ohne Zustimmung.
     if (a==="sbneu"){ st.sb = st.sbAlle.faelle[st.sbAlle.aktiv] = sbNeu(); sbSpeichern(); moved = true; }
     if (a==="sbfall"){ st.sbAlle.aktiv = b.dataset.val; st.sb = st.sbAlle.faelle[b.dataset.val]; sbSpeichern(); moved = true; }
     if (a.indexOf("vg") === 0){ if (vgAktion(a, b.dataset)) moved = true; }
+    if (a.indexOf("mok") === 0 && st.mok){ if (mokAktion(a, b)) moved = true; }
     if (a==="pick"){ st.picked = +b.dataset.i; if (st.picked === fall().fragen[st.q].r) st.score++; }
     if (a==="nextQ"){ st.q++; st.picked = null; }
     if (a==="checkReset"){ st.q = 0; st.picked = null; st.score = 0; }
     render();
     if (moved) window.scrollTo(0,0);
+  });
+
+  // Bildflächen im Reiter „Maschine“ (SVG) mit Enter/Leertaste bedienbar
+  document.addEventListener("keydown", function(e){
+    var el = e.target.closest && e.target.closest('.mok-hot[data-act]');
+    if (!el || (e.key !== "Enter" && e.key !== " ")) return;
+    e.preventDefault(); el.dispatchEvent(new MouseEvent("click", {bubbles:true}));
   });
 
   // Regler: nur Grafik und Text neu zeichnen, damit der Regler beim Ziehen bedienbar bleibt
