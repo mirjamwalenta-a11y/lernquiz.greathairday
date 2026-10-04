@@ -278,6 +278,7 @@ dl.steck dd{margin:0}
 .mok-flaechen .chip{min-width:44px;justify-content:center}
 .mok-nr-frage{display:inline-block;font-size:var(--t-xs);font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent)}
 .mok-zone{display:inline-block;background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:0 6px}
+.mok .sb-leit{font-family:var(--f-body);font-size:var(--t-m);font-weight:400;color:var(--muted)}
 .mok-bildfrage{background:var(--accent-soft);border-radius:var(--r-s);padding:8px 12px;margin:0}
 .mok-erledigt{list-style:none;margin:0;padding:0 !important;display:flex;flex-direction:column;gap:6px}
 .mok-erledigt li{font-size:var(--t-s);padding:6px 10px;border-radius:var(--r-s);background:var(--accent-soft)}
@@ -2469,15 +2470,16 @@ wechsle aber nicht ohne Zustimmung.
   var MOK_MERKSATZ = "Unten entscheidet der Hebel, oben entscheidet der Kamm.";
   var MOK_KETTE = [["zone","Zone"],["werkzeug","Werkzeug"],["bewegung","Bewegung"]];
 
+  // leit = kurze Anweisung unter dem Titel (keine Frage, die beantwortet werden muss)
   var MOK_SCREENS = [
-    {id:"S0", titel:"Auftrag", schritt:"Einstieg", leit:"Was ist erlaubt, und wie gehst du vor?"},
-    {id:"S1", titel:"Zonen erkennen", schritt:"Schritt 1 · Zone erkennen", leit:"Wo ist das Haar kurz, wo ist es lang?"},
-    {id:"S2", titel:"Werkzeug zuordnen", schritt:"Schritt 2 · Werkzeug wählen", leit:"Was bestimmt hier die Länge – der Hebel oder der Kamm?"},
-    {id:"S3", titel:"Bewegung wählen", schritt:"Schritt 3 · Bewegung wählen", leit:"Wie führst du Maschine und Kamm?"},
-    {id:"S4", titel:"Arbeitsreihenfolge", schritt:"Schritt 3 · Bewegung wählen", leit:"In welcher Reihenfolge arbeitest du?"},
-    {id:"S5", titel:"Begründen", schritt:"Schritt 4 · Begründen", leit:"Warum ist diese Entscheidung prüfungskonform?"},
-    {id:"S6", titel:"Fehler lesen", schritt:"Schritt 5 · Fehler lesen", leit:"Wo ist der Fehler, was hat ihn verursacht, wie korrigierst du?"},
-    {id:"S7", titel:"Prüfungsfall", schritt:"Prüfungsfall · ohne Hilfen", leit:"Schaffst du die ganze Kette an einem neuen Kopf?"}
+    {id:"S0", titel:"Auftrag", schritt:"Einstieg", leit:"Lies kurz, worum es geht. Dann „Los geht’s“."},
+    {id:"S1", titel:"Zonen erkennen", schritt:"Schritt 1 · Zone erkennen", leit:"Erkenne am Foto, wo das Haar kurz und wo es lang ist. 5 Fragen."},
+    {id:"S2", titel:"Werkzeug zuordnen", schritt:"Schritt 2 · Werkzeug wählen", leit:"Ordne jeder Zone das passende Werkzeug zu. 4 Fragen."},
+    {id:"S3", titel:"Bewegung wählen", schritt:"Schritt 3 · Bewegung wählen", leit:"Wähle, wie du Maschine und Kamm führst. 2 Fragen."},
+    {id:"S4", titel:"Arbeitsreihenfolge", schritt:"Schritt 3 · Bewegung wählen", leit:"Bring die Arbeitsschritte in die richtige Reihenfolge."},
+    {id:"S5", titel:"Begründen", schritt:"Schritt 4 · Begründen", leit:"Vervollständige zwei Sätze, die deine Entscheidung begründen."},
+    {id:"S6", titel:"Fehler lesen", schritt:"Schritt 5 · Fehler lesen", leit:"Finde den Fehler im Foto, seine Ursache und die Korrektur. 3 Fragen."},
+    {id:"S7", titel:"Prüfungsfall", schritt:"Prüfungsfall · ohne Hilfen", leit:"Ein neuer Kopf, 7 Fragen, keine Hilfen. Beantworte jeweils die Frage über dem Foto."}
   ];
 
   // Fotos Hinterkopf (bilder/maschine/, 960 × 940). Koordinaten im Foto auf 480 × 470 umgerechnet.
@@ -2724,7 +2726,7 @@ wechsle aber nicht ohne Zustimmung.
      feedback:{richtig:"Der Kamm hat den Fehler erzeugt, also korrigiert der Kamm ihn.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?", hilfe:"Der Fehler kommt vom Kamm. Korrigiere mit dem Werkzeug, das ihn verursacht hat."}},
 
     // S7 – Prüfungsfall: neuer Kopf, keine Hilfen (pruefung:true)
-    {id:"mok-p1", screen:"S7", pruefung:true, bereich:"zonenlogik", titel:"Übergangslinie", bild:"B",
+    {id:"mok-p1", screen:"S7", pruefung:true, bereich:"zonenlogik", titel:"Übergang", bild:"B",
      ausgangslage:"Neuer Prüfungskopf, andere Person.", frage:"Wo wird das Haar deutlich länger? Wähle den Übergang.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
      begruendung:"Über dem letzten Hebel-Band beginnt der Kamm.", typische_fehler:[],
