@@ -16,7 +16,7 @@ Alle Modultexte, Antwortoptionen und Feedbacks verwenden nur diese Begriffe:
 
 Merksatz für die App: **Unten entscheidet der Hebel, oben entscheidet der Kamm.**
 
-Bilder in der App: drei Fotos Hinterkopf in `bilder/maschine/` (Übungskopf, Prüfungskopf, Fehlerbild). Die Fehler Kante und Stufe sind ins Foto eingezeichnet. Die Bewegungsclips in S3 und im Prüfungsfall sind kurze, schematische Animationen (Seitenansicht), die nur die Bewegung zeigen, keine Wertung.
+Bilder in der App: vier Fotos Hinterkopf in `bilder/maschine/`: Übungskopf, Prüfungskopf und je ein echtes Fehlerfoto für Kante und Stufe. Die Bewegungsclips in S3 und im Prüfungsfall sind kurze, schematische Animationen (Seitenansicht), die nur die Bewegung zeigen, keine Wertung.
 
 Dieses Dokument entspricht dem Stand der App (`beratung-formwirkung.html`, Reiter „Maschine“, Daten in `MOK_UEBUNGEN`, Screens in `MOK_SCREENS`). Umsetzungsdetail: In S1 heißen die Bänder neutral „Band 1 · Konturansatz“, „Band 2“, „Band 3“, damit die Hebelstellung nicht schon vor S2 verraten wird.
 
