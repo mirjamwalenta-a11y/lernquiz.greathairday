@@ -2471,7 +2471,7 @@ wechsle aber nicht ohne Zustimmung.
 
   var MOK_SCREENS = [
     {id:"S0", titel:"Auftrag", schritt:"Einstieg", leit:"Was ist erlaubt, und wie gehst du vor?"},
-    {id:"S1", titel:"Zonen markieren", schritt:"Schritt 1 · Zone erkennen", leit:"Wo am Kopf bin ich gerade?"},
+    {id:"S1", titel:"Zonen erkennen", schritt:"Schritt 1 · Zone erkennen", leit:"Wo ist das Haar kurz, wo ist es lang?"},
     {id:"S2", titel:"Werkzeug zuordnen", schritt:"Schritt 2 · Werkzeug wählen", leit:"Was bestimmt hier die Länge – der Hebel oder der Kamm?"},
     {id:"S3", titel:"Bewegung wählen", schritt:"Schritt 3 · Bewegung wählen", leit:"Wie führst du Maschine und Kamm?"},
     {id:"S4", titel:"Arbeitsreihenfolge", schritt:"Schritt 3 · Bewegung wählen", leit:"In welcher Reihenfolge arbeitest du?"},
@@ -2503,14 +2503,15 @@ wechsle aber nicht ohne Zustimmung.
   // Zonen: label = Beschriftung im Bild nach dem Markieren, name/arbeit = Standard-Feedback beim Antippen der falschen Zone.
   // Die Namen nennen bewusst keine Hebelstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
   var MOK_ZONEN = {
-    band1:     {label:"Band 1 · Konturansatz", name:"den Konturansatz", arbeit:"arbeitet noch der Hebel"},
-    band2:     {label:"Band 2", name:"das Band über dem Konturansatz", arbeit:"arbeitet noch der Hebel"},
+    band1:     {label:"Band 1 · kürzeste Stelle", name:"die kürzeste Stelle", arbeit:"arbeitet noch der Hebel"},
+    band2:     {label:"Band 2", name:"das Band über der kürzesten Stelle", arbeit:"arbeitet noch der Hebel"},
     band3:     {label:"Band 3", name:"das Band unter der Übergangslinie", arbeit:"arbeitet noch der Hebel"},
     uebergang: {label:"Übergangslinie", name:"die Übergangslinie", arbeit:"endet der Hebel und beginnt der Kamm"},
     oben:      {label:"Oberer Bereich", name:"den oberen Bereich", arbeit:"arbeitet schon der Kamm"},
     deckhaar:  {label:"Deckhaar", name:"das Deckhaar", arbeit:"liegt das längere Haar, das nicht mehr zum Verlauf gehört"},
     grenze:    {label:"Grenze Band 2 / 3", name:"die Grenze zwischen Band 2 und Band 3", arbeit:"treffen zwei Hebelstellungen aufeinander"}
   };
+  var MOK_ALLE_ZONEN = ["deckhaar","oben","uebergang","band3","band2","band1"];
   var MOK_WERKZEUGE = [["geschlossen","Hebel geschlossen"],["halboffen","Hebel halboffen"],["offen","Hebel offen"],["kamm","Maschine über Kamm"],["schere","Schere über Kamm"]];
 
   // Werkzeugfehler je Zone: in Schritt 2 und im Prüfungsfall gleich.
@@ -2519,15 +2520,15 @@ wechsle aber nicht ohne Zustimmung.
   var MOK_WZ_SCHERE = {fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Ohne Aufsteckkämme arbeitest du im Verlauf mit der Maschine: unten über den Hebel, oben über den Kamm. Schere über Kamm ist hier nicht gefragt.", leitfrage:"Welches Maschinenwerkzeug gehört in diese Zone?"};
   var MOK_WZ_FEHLER = {
     band1: [
-      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Am Konturansatz brauchst du die kürzeste Länge. Mit halboffenem Hebel bleibt der Ansatz zu lang.", leitfrage:"Welche Hebelstellung gibt die kürzeste Länge?"},
-      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Offen ist die längste Hebelstellung. Am Konturansatz wird es damit zu lang, und für die Bänder darüber bleibt keine längere Stufe.", leitfrage:"Welche Hebelstellung gibt die kürzeste Länge?"},
-      {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Am Konturansatz bestimmt der Hebel die Länge, nicht der Kamm. Maschine über Kamm brauchst du erst über der Übergangslinie.", leitfrage:MOK_WZ_LEIT}],
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"An der kürzesten Stelle brauchst du die kürzeste Länge. Mit halboffenem Hebel bleibt der Ansatz zu lang.", leitfrage:"Welche Hebelstellung gibt die kürzeste Länge?"},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Offen ist die längste Hebelstellung. An der kürzesten Stelle wird es damit zu lang, und für die Bänder darüber bleibt keine längere Stufe.", leitfrage:"Welche Hebelstellung gibt die kürzeste Länge?"},
+      {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"An der kürzesten Stelle bestimmt der Hebel die Länge, nicht der Kamm. Maschine über Kamm brauchst du erst über der Übergangslinie.", leitfrage:MOK_WZ_LEIT}],
     band2: [
-      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört an den Konturansatz. Hier wird es damit zu kurz – der Verlauf wirkt zu hoch ausrasiert.", leitfrage:"Welche Hebelstellung folgt auf die kürzeste?"},
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört an die kürzeste Stelle. Hier wird es damit zu kurz – der Verlauf wirkt zu hoch ausrasiert.", leitfrage:"Welche Hebelstellung folgt auf die kürzeste?"},
       {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Du hast eine Stufe übersprungen. Zwischen geschlossen und offen fehlt der Zwischenschritt, an der Grenze entsteht eine Stufe.", leitfrage:"Welche Hebelstellung liegt zwischen geschlossen und offen?"},
       {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Unter der Übergangslinie bestimmt der Hebel die Länge. Der Kamm übernimmt erst darüber.", leitfrage:MOK_WZ_LEIT}],
     band3: [
-      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört nur an den Konturansatz. Hier wird es zu kurz – unter der Übergangslinie entsteht ein Loch.", leitfrage:"Welche Hebelstellung gibt die längste Länge?"},
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört nur an die kürzeste Stelle. Hier wird es zu kurz – unter der Übergangslinie entsteht ein Loch.", leitfrage:"Welche Hebelstellung gibt die längste Länge?"},
       {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Halboffen arbeitet schon im Band darunter. Ohne offenen Hebel fehlt die längste Stufe, und der Kamm hat keinen Anschluss.", leitfrage:"Welche Hebelstellung gibt die längste Länge?"},
       {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Unter der Übergangslinie bestimmt noch der Hebel die Länge. Erst darüber übernimmt der Kamm.", leitfrage:MOK_WZ_LEIT}],
     oben: [
@@ -2551,7 +2552,7 @@ wechsle aber nicht ohne Zustimmung.
     {id:"linie", text:"Übergangslinie festlegen und beidseitig kontrollieren"},
     {id:"offen", text:"Hebel offen: unteren Bereich bis zur Übergangslinie, an der Linie auskippen"},
     {id:"halboffen", text:"Hebel halboffen: unteres Band, an der Grenze auskippen"},
-    {id:"geschlossen", text:"Hebel geschlossen: Konturansatz"},
+    {id:"geschlossen", text:"Hebel geschlossen: kürzeste Stelle unten im Nacken"},
     {id:"verblenden", text:"Bandgrenzen kontrollieren und verblenden"},
     {id:"kamm", text:"Maschine über Kamm: vom offenen Band nach oben ins längere Haar"},
     {id:"kontrolle", text:"Gesamtkontrolle beidseitig, Konturen"}];
@@ -2563,49 +2564,54 @@ wechsle aber nicht ohne Zustimmung.
   // Hotspot: optionen = Zonen-IDs im Bild. Ohne eigenen Eintrag in typische_fehler meldet die App „Du hast … gewählt. Dort …“.
   // feedback.falsch = Rückmeldung für alle falschen Optionen ohne eigenen Eintrag.
   // Mehrstufige Fälle tragen dieselbe Fall-ID mit Buchstaben (mok-s6a/b/c, mok-p5a/b/c) und werden der Reihe nach freigeschaltet.
-  var MOK_S1_LAGE = "Hinterkopf, Verlauf im unteren Bereich gearbeitet, darüber das längere Haar. Die Zonen sind noch nicht markiert.";
+  var MOK_S1_LAGE = "Hinterkopf mit Verlauf: unten im Nacken kurz, oben lang.";
+  var MOK_S1_HILFE = "Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer.";
   var MOK_UEBUNGEN = [
-    // S1 – Zonen von unten nach oben markieren
-    {id:"mok-s1-1", screen:"S1", bereich:"zonenlogik", titel:"Konturansatz", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Wähle den Konturansatz – das unterste Band am Haaransatz im Nacken.", antworttyp:"hotspot",
+    // S1 – Zonen über die Länge erkennen: kürzeste Stelle, längste Stelle, Übergang, oberer Bereich, Band darüber
+    {id:"mok-s1-1", screen:"S1", bereich:"zonenlogik", titel:"Kürzeste Stelle", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Wo ist das Haar am kürzesten?", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band1",
-     begruendung:"Der Verlauf beginnt am Haaransatz mit der kürzesten Länge.",
-     typische_fehler:[{option:"band2", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du bist ein Band zu hoch. Der Konturansatz liegt direkt am Haaransatz.", leitfrage:"Wo beginnt das Haar im Nacken?"}],
-     feedback:{richtig:"Hier startet der Verlauf.", leitfrage:"Wo beginnt das Haar im Nacken?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
-    {id:"mok-s1-2", screen:"S1", bereich:"zonenlogik", titel:"Band 2", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Wähle das Band direkt über dem Konturansatz.", antworttyp:"hotspot",
-     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band2",
-     begruendung:"Über dem Konturansatz wird der Verlauf Band für Band länger.",
-     typische_fehler:[],
-     feedback:{richtig:"Über dem Konturansatz wird der Verlauf Band für Band länger.", leitfrage:"Welches Band liegt direkt über dem Konturansatz?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
-    {id:"mok-s1-3", screen:"S1", bereich:"zonenlogik", titel:"Band 3", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Wähle das dritte Band von unten – das letzte Band, in dem noch der Hebel arbeitet.", antworttyp:"hotspot",
-     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band3",
-     begruendung:"Band 3 ist das letzte Band des unteren Bereichs.",
-     typische_fehler:[{option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den oberen Bereich gewählt. Dort arbeitet schon der Kamm.", leitfrage:"Wo endet das, was der Hebel kann?"}],
-     feedback:{richtig:"Band 3 ist das letzte Band des unteren Bereichs.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
-    {id:"mok-s1-4", screen:"S1", bereich:"zonenlogik", titel:"Übergangslinie", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Wähle die Übergangslinie – die Stelle, an der die Arbeit mit dem Hebel endet und Maschine über Kamm beginnt.", antworttyp:"hotspot",
-     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
-     begruendung:"Über dem offenen Hebel gibt es keine längere Hebelstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.",
+     begruendung:"Unten im Nacken ist das Haar am kürzesten. Hier beginnt der Verlauf.",
      typische_fehler:[
-       {option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast den Deckhaaransatz gewählt. Zwischen dem letzten Hebel-Band und dem Deckhaar liegt aber noch der obere Bereich des Verlaufs.", leitfrage:"Wo endet das, was der Hebel kann?"},
-       {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Im oberen Bereich arbeitet schon der Kamm. Gesucht ist die Grenze darunter.", leitfrage:"Wo endet das, was der Hebel kann?"},
-       {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"In Band 3 arbeitet noch der Hebel. Die Übergangslinie liegt an seiner Oberkante.", leitfrage:"Wo endet das, was der Hebel kann?"}],
-     feedback:{richtig:"Über dem letzten Hebel-Band kann nur noch der Kamm Länge erzeugen.", leitfrage:"Wo endet das, was der Hebel kann?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
-    {id:"mok-s1-5", screen:"S1", bereich:"zonenlogik", titel:"Oberer Bereich", bild:"A", ausgangslage:MOK_S1_LAGE,
-     frage:"Wähle den oberen Bereich – hier entsteht der Übergang ins längere Haar.", antworttyp:"hotspot",
+       {option:"band2", fehlertyp:"zone", zurueck:"zone", denkfehler:"Fast – hier ist das Haar schon etwas länger. Am kürzesten ist es ganz unten, wo das Haar in die Haut übergeht.", leitfrage:"Wo geht das Haar in die Haut über?"},
+       {option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Hier ist das Haar am längsten, nicht am kürzesten.", leitfrage:"Wo geht das Haar in die Haut über?"}],
+     feedback:{richtig:"Unten im Nacken ist das Haar am kürzesten. Hier beginnt der Verlauf.", leitfrage:"Wo geht das Haar in die Haut über?", hilfe:MOK_S1_HILFE}},
+    {id:"mok-s1-2", screen:"S1", bereich:"zonenlogik", titel:"Längste Stelle", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Wo ist das Haar am längsten?", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"deckhaar",
+     begruendung:"Ganz oben liegt das längste Haar, das Deckhaar. Es gehört nicht mehr zum Verlauf.",
+     typische_fehler:[
+       {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Hier ist das Haar schon länger, aber noch nicht am längsten. Das längste Haar liegt ganz oben.", leitfrage:"Wo liegt das Deckhaar?"},
+       {option:"band1", fehlertyp:"zone", zurueck:"zone", denkfehler:"Hier ist das Haar am kürzesten, nicht am längsten.", leitfrage:"Wo liegt das Deckhaar?"}],
+     feedback:{richtig:"Ganz oben liegt das längste Haar. Das Deckhaar gehört nicht mehr zum Verlauf.", leitfrage:"Wo liegt das Deckhaar?", hilfe:MOK_S1_HILFE}},
+    {id:"mok-s1-3", screen:"S1", bereich:"zonenlogik", titel:"Übergang", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Wo wird das Haar deutlich länger? Hier hört die Arbeit mit dem Hebel auf und Maschine über Kamm beginnt.", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
+     begruendung:"Über dem kurzen Bereich gibt es keine längere Hebelstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.",
+     typische_fehler:[
+       {option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das ist das längste Haar ganz oben. Der Übergang liegt tiefer, dort wo das kurze Haar endet.", leitfrage:"Wo endet das kurze Haar?"},
+       {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Hier ist das Haar schon länger, hier arbeitet schon der Kamm. Gesucht ist die Grenze darunter.", leitfrage:"Wo endet das kurze Haar?"},
+       {option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"Hier ist das Haar noch kurz, hier arbeitet noch der Hebel. Der Übergang liegt direkt darüber.", leitfrage:"Wo endet das kurze Haar?"}],
+     feedback:{richtig:"Hier endet das kurze Haar. Darüber kann nur noch der Kamm Länge erzeugen.", leitfrage:"Wo endet das kurze Haar?", hilfe:MOK_S1_HILFE}},
+    {id:"mok-s1-4", screen:"S1", bereich:"zonenlogik", titel:"Oberer Bereich", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Welche Fläche liegt zwischen dem Übergang und dem längsten Haar? Hier arbeitest du mit Maschine über Kamm.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"oben",
-     begruendung:"Der obere Bereich liegt zwischen Übergangslinie und Deckhaar.",
-     typische_fehler:[{option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das Deckhaar gehört nicht mehr zum Verlauf. Der obere Bereich liegt zwischen Übergangslinie und Deckhaar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?"}],
-     feedback:{richtig:"Zwischen Übergangslinie und Deckhaar entsteht der Übergang ins längere Haar.", leitfrage:"Was liegt zwischen Übergangslinie und Deckhaar?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
+     begruendung:"Der obere Bereich liegt zwischen Übergang und Deckhaar. Hier entsteht der Übergang ins längere Haar.",
+     typische_fehler:[{option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das ist schon das längste Haar. Gesucht ist die Fläche darunter, bis zum Übergang.", leitfrage:"Was liegt zwischen Übergang und dem längsten Haar?"}],
+     feedback:{richtig:"Zwischen Übergang und Deckhaar arbeitest du mit Maschine über Kamm.", leitfrage:"Was liegt zwischen Übergang und dem längsten Haar?", hilfe:MOK_S1_HILFE}},
+    {id:"mok-s1-5", screen:"S1", bereich:"zonenlogik", titel:"Band über der kürzesten Stelle", bild:"A", ausgangslage:MOK_S1_LAGE,
+     frage:"Zwischen der kürzesten Stelle und dem Übergang liegen zwei Bänder. Welches liegt direkt über der kürzesten Stelle?", antworttyp:"hotspot",
+     optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"band2",
+     begruendung:"Von der kürzesten Stelle aus wird der Verlauf Band für Band länger: Band 1, Band 2, Band 3, dann der Übergang.",
+     typische_fehler:[{option:"band3", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das ist das obere der beiden Bänder, direkt unter dem Übergang. Gesucht ist das untere.", leitfrage:"Welches Band grenzt an die kürzeste Stelle?"}],
+     feedback:{richtig:"Darüber folgt Band 3, dann der Übergang.", leitfrage:"Welches Band grenzt an die kürzeste Stelle?", hilfe:MOK_S1_HILFE}},
 
     // S2 – Werkzeug je Zone (Zone frei wählbar)
-    {id:"mok-s2-band1", screen:"S2", bereich:"werkzeugwahl", titel:"Band 1 · Konturansatz", bild:"A", zone:"band1",
-     ausgangslage:"Die Zonen sind markiert. Am Konturansatz startet der Verlauf.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+    {id:"mok-s2-band1", screen:"S2", bereich:"werkzeugwahl", titel:"Band 1 · kürzeste Stelle", bild:"A", zone:"band1",
+     ausgangslage:"Die Zonen sind markiert. An der kürzesten Stelle startet der Verlauf.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"geschlossen",
-     begruendung:"Am Konturansatz startet der Verlauf mit der kürzesten Länge.", typische_fehler:MOK_WZ_FEHLER.band1,
-     feedback:{richtig:"Hebel geschlossen: Am Konturansatz startet der Verlauf mit der kürzesten Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Unten entscheidet der Hebel. Ganz unten steht die kürzeste Stellung.", falsch:MOK_WZ_SCHERE}},
+     begruendung:"Unten im Nacken startet der Verlauf mit der kürzesten Länge.", typische_fehler:MOK_WZ_FEHLER.band1,
+     feedback:{richtig:"Hebel geschlossen: Unten im Nacken startet der Verlauf mit der kürzesten Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Unten entscheidet der Hebel. Ganz unten steht die kürzeste Stellung.", falsch:MOK_WZ_SCHERE}},
     {id:"mok-s2-band2", screen:"S2", bereich:"werkzeugwahl", titel:"Band 2", bild:"A", zone:"band2",
      ausgangslage:"Darunter ist mit geschlossenem Hebel gearbeitet.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"halboffen",
@@ -2624,7 +2630,7 @@ wechsle aber nicht ohne Zustimmung.
 
     // S3 – Bewegung je Methode
     {id:"mok-s3-hebel", screen:"S3", bereich:"bewegungslogik", titel:"Führung im unteren Bereich", bild:"A",
-     ausgangslage:"Band 2 mit halboffenem Hebel. Darunter steht der Konturansatz (Hebel geschlossen).", frage:"Wie führst du die Maschine?", antworttyp:"clip",
+     ausgangslage:"Band 2 mit halboffenem Hebel. Darunter liegt die kürzeste Stelle (Hebel geschlossen).", frage:"Wie führst du die Maschine?", antworttyp:"clip",
      optionen:MOK_HEBEL_OPTIONEN, richtige_antwort:"b",
      begruendung:"Unten flach, an der Grenze auskippen: So läuft das Band weich aus, statt eine Stufe zu bilden.", typische_fehler:MOK_HEBEL_FEHLER,
      feedback:{richtig:"Unten flach, an der Grenze auskippen: So läuft das Band weich aus, statt eine Stufe zu bilden.", leitfrage:"Was macht die Maschine an jeder Bandgrenze?", hilfe:"Achte auf die Bandgrenze: Dort muss sich die Maschine vom Kopf lösen."}},
@@ -2719,7 +2725,7 @@ wechsle aber nicht ohne Zustimmung.
 
     // S7 – Prüfungsfall: neuer Kopf, keine Hilfen (pruefung:true)
     {id:"mok-p1", screen:"S7", pruefung:true, bereich:"zonenlogik", titel:"Übergangslinie", bild:"B",
-     ausgangslage:"Neuer Prüfungskopf, andere Person.", frage:"Wähle die Übergangslinie.", antworttyp:"hotspot",
+     ausgangslage:"Neuer Prüfungskopf, andere Person.", frage:"Wo wird das Haar deutlich länger? Wähle den Übergang.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
      begruendung:"Über dem letzten Hebel-Band beginnt der Kamm.", typische_fehler:[],
      feedback:{richtig:"Die Übergangslinie liegt über dem letzten Hebel-Band.", leitfrage:"Wo endet das, was der Hebel kann?"}},
@@ -2927,8 +2933,14 @@ wechsle aber nicht ohne Zustimmung.
         '<p class="note">' + MOK_MERKSATZ + '</p></div>';
     }
     if (s.versuche >= 2 && !x.pruefung && x.feedback.hilfe) h += '<div class="callout accent"><p><strong>Hilfe:</strong> ' + x.feedback.hilfe + '</p></div>';
-    // Nach einer falschen Antwort: nochmal probieren oder Lösung ansehen und weitergehen
-    if (s.versuche >= 1) h += '<div class="controls" style="justify-content:flex-start"><button class="btn" type="button" data-act="mokskip" data-id="' + x.id + '">Lösung zeigen und weiter' + ICON_WEITER + '</button></div>';
+    // Nach einer falschen Antwort: direkt weiter (zählt als falsch) oder nochmal neu wählen
+    if (s.versuche >= 1){
+      var L = mokListe(x.screen), i = L.indexOf(x), k = -1;
+      MOK_SCREENS.forEach(function(sc, j){ if (sc.id === x.screen) k = j; });
+      var text = i < L.length - 1 ? 'Nächste Frage (' + (i + 2) + ' von ' + L.length + ')' : (k < MOK_SCREENS.length - 1 ? 'Weiter zu ' + MOK_SCREENS[k + 1].id + ' · ' + MOK_SCREENS[k + 1].titel : 'Zum Ergebnis');
+      h += '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="mokweiterfalsch" data-id="' + x.id + '">' + text + ICON_WEITER + '</button></div>' +
+        '<p class="note">Oder wähle nochmal neu und prüfe. Gehst du weiter, zählt die Frage als falsch und die Lösung bleibt markiert.</p>';
+    }
     return h ? '<div class="mok-rm"' + mokAnker(x) + '>' + h + '</div>' : '';
   }
   function mokLoesungText(x){
@@ -3002,7 +3014,7 @@ wechsle aber nicht ohne Zustimmung.
     var L = mokListe(sid), akt = mokAnzeige(sid), h = '';
     var erledigt = L.filter(function(x){ return mokErledigt(x.id) && x !== akt; });
     if (erledigt.length) h += '<ul class="mok-erledigt">' + erledigt.map(function(x){
-      return '<li>' + (mokU(x.id).weg ? '✗ ' : '✓ ') + '<strong>' + x.titel + (x.antworttyp === "satzbaustein" ? '</strong>' + mokSatz(x) : x.antworttyp === "hotspot" ? '</strong>' : ':</strong> ' + mokAntwort(x)) + '</li>'; }).join("") + '</ul>';
+      return '<li>' + (mokU(x.id).weg ? '✗ ' : '✓ ') + '<strong>' + x.titel + (x.antworttyp === "satzbaustein" ? '</strong>' + mokSatz(x) : x.antworttyp === "hotspot" ? '</strong>' + (mokU(x.id).weg ? ' – richtig: ' + mokOptText(x, x.richtige_antwort) : '') : ':</strong> ' + (mokU(x.id).weg ? 'richtig: ' : '') + mokAntwort(x)) + '</li>'; }).join("") + '</ul>';
     if (akt){
       var nr = mokNr(akt), fertig = mokErledigt(akt.id);
       h += '<h3 class="mok-titel"' + (!mokImBild(akt) ? mokFrageAnker() : '') + '>' + (nr ? '<span class="mok-nr-frage">' + nr + '</span> ' : '') + akt.titel + '</h3><p class="note">' + akt.ausgangslage + '</p>';
@@ -3024,8 +3036,9 @@ wechsle aber nicht ohne Zustimmung.
     var s1 = mokListe("S1").filter(function(x){ return mokErledigt(x.id); }).map(function(x){ return x.richtige_antwort; });
     if (sid === "S0") o = {bild:"A"};
     else if (sid === "S1") o = {bild:"A", markiert:s1, klick:akt ? akt.optionen : [], act:"mokhot", flash:st.mok.flash, wahl:akt && mokU(akt.id).wahl, falsch:akt && !fertig && !!mokU(akt.id).fehler};
-    else if (sid === "S2") o = {bild:"A", markiert:s1, werkzeuge:true, aktiv:akt && akt.zone};
-    else if (sid === "S3" || sid === "S4" || sid === "S5") o = {bild:"A", markiert:s1, werkzeuge:true};
+    // ab S2 sind alle Zonen bekannt und beschriftet
+    else if (sid === "S2") o = {bild:"A", markiert:MOK_ALLE_ZONEN, werkzeuge:true, aktiv:akt && akt.zone};
+    else if (sid === "S3" || sid === "S4" || sid === "S5") o = {bild:"A", markiert:MOK_ALLE_ZONEN, werkzeuge:true};
     else {
       var x = akt || mokListe(sid).slice(-1)[0];
       o = {bild:x.bild};
@@ -3148,6 +3161,19 @@ wechsle aber nicht ohne Zustimmung.
         else s.wahl = x.richtige_antwort;
         M.zuletzt = x.id; M.geprueft = x.id; M.fokus = "fb";
         M.halt = x.id;
+      }
+    }
+    if (a === "mokweiterfalsch"){
+      x = mokX(id); s = mokU(id);
+      if (x && !s.ok && !s.weg && s.versuche >= 1){
+        s.weg = true; s.fehler = null;
+        if (x.antworttyp === "reihenfolge"){ M.reihe = x.richtige_antwort.slice(); s.wahl = M.reihe.slice(); }
+        else if (x.antworttyp === "satzbaustein") s.wahl = Object.assign({}, x.richtige_antwort);
+        else s.wahl = x.richtige_antwort;
+        var Lw = mokListe(x.screen);
+        if (Lw.indexOf(x) < Lw.length - 1){ M.halt = null; M.zuletzt = null; M.fokus = "frage"; }
+        else if (M.screen < MOK_SCREENS.length - 1){ M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; M.halt = null; return true; }
+        else { M.halt = x.id; M.zuletzt = x.id; }
       }
     }
     if (a === "mokpruefneu"){ mokListe("S7").forEach(function(x){ delete M.u[x.id]; }); M.zuletzt = null; return true; }

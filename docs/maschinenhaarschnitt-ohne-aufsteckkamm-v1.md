@@ -20,6 +20,8 @@ Bilder in der App: vier Fotos Hinterkopf in `bilder/maschine/`: Übungskopf, Pr�
 
 Dieses Dokument entspricht dem Stand der App (`beratung-formwirkung.html`, Reiter „Maschine“, Daten in `MOK_UEBUNGEN`, Screens in `MOK_SCREENS`). Umsetzungsdetail: In S1 heißen die Bänder neutral „Band 1 · Konturansatz“, „Band 2“, „Band 3“, damit die Hebelstellung nicht schon vor S2 verraten wird.
 
+Begriff in der App: Statt „Konturansatz“ heißt Band 1 „kürzeste Stelle“ (am Haaransatz im Nacken sitzen oft Wirbel, die Kontur ist kein verlässlicher Bezugspunkt). S1 fragt über die Länge: Wo ist das Haar am kürzesten, wo am längsten, wo wird es deutlich länger?
+
 Fachlicher Kern, der in jedem Feedback mitschwingt: Die Hebelstufen liegen nur wenige Millimeter auseinander. Der Hebel kann deshalb nur das untere Band des Verlaufs erzeugen. Sobald mehr Länge gebraucht wird, übernimmt der Kamm.
 
 ---
@@ -36,7 +38,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 
 | Schritt | Ziel | Leitfrage | Antwortformat | Didaktischer Nutzen |
 |---|---|---|---|---|
-| **1 Zone erkennen** | Unteren Bereich, Hebelbänder und Übergangslinie am Kopf sicher verorten | Wo am Kopf bin ich gerade? | Antippen im Kopfbild (Hotspot) | Erst schauen, dann schneiden. Werkzeuge sind in diesem Schritt nicht sichtbar. |
+| **1 Zone erkennen** | Kurze und lange Bereiche, Übergang und Bänder am Kopf sicher verorten | Wo ist das Haar kurz, wo ist es lang? | Fläche über Nummer am Foto wählen | Erst schauen, dann schneiden. Werkzeuge sind in diesem Schritt nicht sichtbar. |
 | **2 Werkzeug wählen** | Jeder Zone das richtige Werkzeug bzw. die richtige Hebelstellung zuordnen | Was bestimmt hier die Länge – der Hebel oder der Kamm? | Werkzeugkarte auf die Zone ziehen | Trennt die zwei Methoden sauber. Der Lehrling merkt: Die Zone entscheidet das Werkzeug, nicht die Gewohnheit. |
 | **3 Bewegung wählen** | Passende Führung zur gewählten Methode und richtige Arbeitsreihenfolge | Wie führe ich Maschine bzw. Kamm, und in welcher Reihenfolge? | Bewegungsclip wählen + Arbeitsschritte in Reihenfolge ziehen | Bewegung wird als Folge der Werkzeugwahl gelernt, nicht als eigene Liste. |
 | **4 Begründen** | Die Kette Zone → Werkzeug → Bewegung → Ergebnis selbst schließen | Warum ist diese Entscheidung prüfungskonform? | Satzbaustein mit Auswahlfeldern (kein Freitext) | Macht sichtbar, ob verstanden oder geraten wurde. Bleibt auswertbar. |
@@ -49,7 +51,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 | Screen | Lehrling sieht | Lehrling tut | Geprüft wird | Freischaltung |
 |---|---|---|---|---|
 | **S0 Auftrag** | Zielbild Verlauf (Hinterkopf + Profil), Hinweis „Aufsteckkämme verboten“, Merksatz | Auftrag bestätigen | nichts | sofort |
-| **S1 Zonen markieren** | Kopfbild ohne Markierungen | Nacheinander antippen: Konturansatz, Band halboffen, Band offen, Übergangslinie, oberer Bereich | Treffer innerhalb der Zielfläche, Reihenfolge von unten nach oben | alle 5 Zonen richtig; nach 2 Fehlversuchen pro Zone wird die Zielfläche kurz eingeblendet, danach muss selbst getippt werden |
+| **S1 Zonen erkennen** | Foto Hinterkopf mit nummerierten Flächen | Nacheinander: kürzeste Stelle, längste Stelle, Übergang (wo das Haar deutlich länger wird), oberer Bereich, Band über der kürzesten Stelle | gewählte Fläche | nach jeder Frage „Nächste Frage“, nach Frage 5 „Weiter zu S2“ |
 | **S2 Werkzeug zuordnen** | Kopfbild mit den eigenen Zonen, 5 Werkzeugkarten: Hebel geschlossen · Hebel halboffen · Hebel offen · Maschine über Kamm · Schere über Kamm (Distraktor, im Verlaufsbereich nicht gefragt) | Karten auf Zonen ziehen | jede Zone hat die richtige Karte | alle Zuordnungen richtig |
 | **S3 Bewegung wählen** | pro Methode 3 kurze Bewegungsclips (Animation), eine davon richtig | je Methode den passenden Clip wählen | Bewegung passt zur Methode | beide richtig |
 | **S4 Arbeitsreihenfolge** | 7 Arbeitsschrittkarten, ungeordnet | in Reihenfolge ziehen | Reihenfolge (siehe Übung 5) | Reihenfolge richtig; bei Fehler werden nur falsch liegende Karten markiert |
@@ -61,7 +63,7 @@ Bildaufgaben (S1, S6, Prüfungsfall): Die Flächen am Kopf sind nummeriert (1 = 
 
 Mehrere Fragen pro Screen: Über jeder Frage steht „Frage x von y“. Nach dem Prüfen bleibt die Frage mit ihrem Ergebnis stehen; weiter geht es nur über den Knopf „Nächste Frage“ bzw. „Weiter zu S…“ direkt darunter. Kein automatischer Wechsel zur nächsten Frage.
 
-Regel für alle Screens: Weiter geht es mit richtiger Antwort. Nach einer falschen Antwort kann der Lehrling nochmal probieren oder „Lösung zeigen und weiter“ wählen: Dann erscheinen die richtige Antwort und die Begründung, die Frage zählt als falsch (✗) und die nächste Frage öffnet sich. Fehlversuche werden gezählt (Auswertung für Ausbilder:in).
+Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer falschen Antwort. Nach einer falschen Antwort steht unter der Rückmeldung direkt „Nächste Frage“ bzw. „Weiter zu S…“; die Frage zählt dann als falsch (✗) und die richtige Lösung bleibt markiert bzw. steht in der Liste. Wer will, kann vorher nochmal neu wählen und prüfen. Fehlversuche werden gezählt (Auswertung für Ausbilder:in).
 
 ---
 
@@ -188,7 +190,7 @@ Jedes Feedback hat dieselben drei Teile:
 2. **Zurückverweisen** – auf genau ein Glied der Kette: Zone, Werkzeug oder Bewegung.
 3. **Leitfrage stellen** – eine Frage, mit der der Lehrling selbst auf die Lösung kommt.
 
-Nie nur „falsch“. Ab dem 2. Fehlversuch erscheint ein Hilfe-Hinweis. Die Lösung zeigt die App nur, wenn der Lehrling nach einer falschen Antwort „Lösung zeigen und weiter“ wählt; die Frage zählt dann als falsch.
+Nie nur „falsch“. Ab dem 2. Fehlversuch erscheint ein Hilfe-Hinweis. Wer nach einer falschen Antwort weitergeht, sieht die richtige Lösung im Foto bzw. in der Liste der erledigten Fragen; die Frage zählt als falsch.
 
 | Fehlertyp | Zurück zu | Feedback-Muster | Beispiel |
 |---|---|---|---|
