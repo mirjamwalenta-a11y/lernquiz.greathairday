@@ -262,6 +262,8 @@ dl.steck dd{margin:0}
 @keyframes mokFlash{0%,50%{fill-opacity:.5}100%{fill-opacity:0}}
 .mok-platzhalter{display:block;border:2px dashed var(--g-kontur);border-radius:var(--r-s);padding:6px 10px;font-size:var(--t-xs);font-weight:700;color:var(--muted);background:var(--surface-2)}
 .mok-clipbtn{flex-direction:column;align-items:flex-start}
+.mok-clip{display:block;width:100%;max-width:240px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-s);padding:4px}
+.mok-clip svg{display:block;width:100%;height:auto}
 .mok-kette{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .mok-glieder{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
 .mok-glied{font-size:var(--t-xs);font-weight:700;padding:2px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
@@ -2529,7 +2531,7 @@ wechsle aber nicht ohne Zustimmung.
   };
 
   // Bewegung im unteren Bereich: in Schritt 3 und im Prüfungsfall gleich.
-  // PLATZHALTER Clip: clip = Kennung der Bewegungsanimation, die das Textfeld später ersetzt.
+  // clip = Kennung der Bewegungsanimation in MOK_CLIPS (Seitenansicht, schematisch).
   var MOK_HEBEL_OPTIONEN = [
     {id:"a", text:"Gegen die Wuchsrichtung nach oben, an der Bandgrenze gerade weiter hochfahren", clip:"MOK_CLIP_HEBEL_A"},
     {id:"b", text:"Gegen die Wuchsrichtung nach oben, unten flach am Kopf, an der Bandgrenze aus dem Handgelenk auskippen", clip:"MOK_CLIP_HEBEL_B"},
@@ -2796,6 +2798,58 @@ wechsle aber nicht ohne Zustimmung.
     if (x.antworttyp === "hotspot" && s.versuche >= 2 && !x.pruefung) st.mok.flash = x.richtige_antwort;
   }
 
+
+  // ---------- Bewegungsclips (S3, Prüfungsfall) ----------
+  // Schematische Seitenansicht: Kopf links, Hinterkopf rechts, Nacken unten. Die Clips zeigen nur die Bewegung, keine Wertung.
+  // t = Positionen (translate) im Zeitverlauf, r = Winkel, k = keyTimes. Hebel: Maschine kippt um ihre Ferse,
+  // Kamm: Kamm dreht um sein unteres Ende, die Maschine liegt außen am Kammrücken.
+  var MOK_CLIPS = {
+    MOK_CLIP_HEBEL_A: {art:"hebel", t:["80 142","80 92","80 92"], r:["0","0","0"], k:"0;.75;1", pfad:"M112,146 L112,94"},
+    MOK_CLIP_HEBEL_B: {art:"hebel", t:["80 142","80 121","80 112","80 112"], r:["0","0","32","32"], k:"0;.45;.75;1", pfad:"M112,146 L112,124 Q113,108 130,100"},
+    MOK_CLIP_HEBEL_C: {art:"hebel", runter:true, t:["80 92","80 142","80 142"], r:["0","0","0"], k:"0;.75;1", pfad:"M112,94 L112,144"},
+    MOK_CLIP_KAMM_A:  {art:"kamm", t:["82 122","82 122"], r:["0","0"], k:"0;1", saegen:true},
+    MOK_CLIP_KAMM_B:  {art:"kamm", t:["82 130","83 110","86 88","86 88"], r:["0","10","26","26"], k:"0;.45;.85;1", pfad:"M118,130 Q121,106 138,86"},
+    MOK_CLIP_KAMM_C:  {art:"kamm", t:["90 80","90 134","90 134"], r:["38","38","38"], k:"0;.8;1", pfad:"M140,80 L140,132"}
+  };
+  var MOK_CLIP_NR = 0;
+  function mokClip(id){
+    var c = MOK_CLIPS[id], n = "mc" + (++MOK_CLIP_NR), dur = "3.2s";
+    var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function anim(typ, werte, zusatz){
+      if (still) return '';
+      return '<animateTransform attributeName="transform" type="' + typ + '" values="' + werte.join(";") + '" keyTimes="' + c.k + '" dur="' + dur + '" repeatCount="indefinite"' + (zusatz || '') + '/>';
+    }
+    var mitte = Math.floor(c.t.length / 2), grenze = c.art === "hebel" ? 118 : 96;
+    var s = '<svg viewBox="0 0 222 172" role="img" aria-label="Bewegung als Animation, Seitenansicht">' +
+      '<defs><clipPath id="' + n + 'k"><path d="M20,166 L80,166 L80,50 C80,26 62,12 36,10 L20,10 Z"/></clipPath>' +
+      '<marker id="' + n + 'p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--accent)"/></marker></defs>' +
+      // Kopf, Haar am Kopf in Bändern (unten kurz und hell, oben lang und dunkel), Haarvolumen außen
+      '<path d="M20,166 L80,166 L80,50 C80,26 62,12 36,10 L20,10 Z" fill="var(--g-kopf)"/>' +
+      '<g clip-path="url(#' + n + 'k)" fill="var(--g-haar)"><rect x="20" y="0" width="60" height="96" fill-opacity=".85"/><rect x="20" y="96" width="60" height="22" fill-opacity=".5"/>' +
+        '<rect x="20" y="118" width="60" height="22" fill-opacity=".32"/><rect x="20" y="140" width="60" height="26" fill-opacity=".16"/></g>' +
+      '<path d="M80,166 L81.5,166 L83,118 L84.5,96 L93,78 L100,52 L101,30 C96,15 80,6 58,6 L36,10 C62,12 80,26 80,50 Z" fill="var(--g-haar)" fill-opacity=".85"/>' +
+      '<line x1="58" x2="150" y1="' + grenze + '" y2="' + grenze + '" stroke="var(--muted)" stroke-dasharray="3 3"/>' +
+      '<text x="151" y="' + (grenze + 3) + '" font-size="9" fill="var(--muted)">' + (c.art === "hebel" ? "Bandgrenze" : "Übergangslinie") + '</text>' +
+      '<text x="4" y="168" font-size="8" fill="var(--muted)">Seitenansicht · Hinterkopf rechts</text>';
+    if (c.pfad) s += '<path d="' + c.pfad + '" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#' + n + 'p)"/>';
+    var werkzeug;
+    if (c.art === "hebel"){
+      // Maschine: flache Seite am Kopf, Schneidekante vorne (bei „runter“ unten)
+      var kante = c.runter ? '<rect x="1" y="20" width="15" height="4" rx="1" fill="var(--accent)"/>' : '<rect x="1" y="-24" width="15" height="4" rx="1" fill="var(--accent)"/>';
+      werkzeug = '<g transform="rotate(' + c.r[mitte] + ' 2 22)">' + anim("rotate", c.r.map(function(w){ return w + " 2 22"; })) +
+        '<rect x="2" y="-21" width="13" height="42" rx="4" fill="var(--ink)" fill-opacity=".85"/>' + kante + '</g>';
+    } else {
+      // Kamm mit Zähnen zum Kopf, Maschine außen am Kammrücken
+      var zaehne = ''; for (var y = -44; y <= -2; y += 4) zaehne += '<line x1="-4" x2="0" y1="' + y + '" y2="' + y + '" stroke="var(--ink)" stroke-width="1"/>';
+      var maschine = '<rect x="7" y="-40" width="12" height="30" rx="3" fill="var(--ink)" fill-opacity=".85"><title>Maschine</title></rect><rect x="6" y="-40" width="3" height="30" fill="var(--accent)"/>';
+      if (c.saegen && !still) maschine = '<g>' + '<animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0;0 8;0 0" dur="1.6s" repeatCount="indefinite"/>' + maschine + '</g>';
+      werkzeug = '<g transform="rotate(' + c.r[mitte] + ')">' + anim("rotate", c.r) +
+        '<rect x="0" y="-46" width="5" height="46" rx="1.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.2"/>' + zaehne + maschine + '</g>';
+    }
+    s += '<g transform="translate(' + c.t[mitte] + ')">' + anim("translate", c.t) + werkzeug + '</g>';
+    return s + '</svg>';
+  }
+
   // ---------- Foto mit Zonen ----------
   // o: {bild, klick:[Zonen-IDs], act, markiert:[Zonen-IDs], aktiv, flash, werkzeuge:true}
   function mokKopf(o){
@@ -2890,8 +2944,7 @@ wechsle aber nicht ohne Zustimmung.
     }
     return '<fieldset class="wahl"><legend>' + x.frage + '</legend><div class="answers">' + x.optionen.map(function(o){
       var on = s.wahl === o.id, cls = on ? ((s.ok || s.weg) ? ' right' : (s.fehler ? ' wrong' : ' on')) : '';
-      // PLATZHALTER Clip: o.clip wird durch eine kurze Bewegungsanimation ersetzt
-      var clip = o.clip ? '<span class="mok-platzhalter">PLATZHALTER Clip · ' + o.clip + '</span>' : '';
+      var clip = o.clip ? '<span class="mok-clip">' + mokClip(o.clip) + '</span>' : '';
       return '<button class="btn' + (o.clip ? ' mok-clipbtn' : '') + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + o.id + '"' + ((s.ok || s.weg) ? ' disabled' : '') + '>' + clip + '<span>' + o.text + '</span></button>';
     }).join("") + '</div></fieldset>' + ((s.ok || s.weg) ? '' : mokPruefBtn(x, s.wahl != null));
   }
