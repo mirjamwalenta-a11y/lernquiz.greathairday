@@ -57,7 +57,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 | **S6 Fehler lesen** | Fehlerfoto bzw. Fehlerzeichnung | Fehlerstelle antippen → Ursache wählen → Korrektur wählen | Zone, Ursache, Korrektur jeweils einzeln | alle drei richtig; Ursache wird erst freigeschaltet, wenn die Zone stimmt |
 | **S7 Prüfungsfall** | neuer Kopf, keine Hilfen, alle Schritte in einem Durchlauf | S1–S6 in Kurzform | alles, ohne Einblendungen | Modul gilt als bestanden bei 100 % in Zone und Werkzeug und höchstens 1 Fehler in Bewegung/Fehlerdiagnose |
 
-Bildaufgaben (S1, S6, Prüfungsfall): Antippen im Foto oder in der Knopfreihe wählt nur eine Fläche aus, erst „Prüfen“ wertet. So zählen Vertipper am kleinen Handybild nicht als Fehler.
+Bildaufgaben (S1, S6, Prüfungsfall): Die Flächen am Kopf sind nummeriert (1 = unten). Gewählt wird nur über die Nummern-Knöpfe unter dem Bild, die gewählte Fläche wird am Kopf farbig angezeigt. Erst „Prüfen“ wertet. In S2 wird die Zone über die Namens-Knöpfe gewählt. Das Foto selbst ist nicht antippbar.
 
 Regel für alle Screens: Weiter geht es mit richtiger Antwort. Nach einer falschen Antwort kann der Lehrling nochmal probieren oder „Lösung zeigen und weiter“ wählen: Dann erscheinen die richtige Antwort und die Begründung, die Frage zählt als falsch (✗) und die nächste Frage öffnet sich. Fehlversuche werden gezählt (Auswertung für Ausbilder:in).
 
