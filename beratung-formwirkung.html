@@ -255,7 +255,7 @@ dl.steck dd{margin:0}
 .vg-ziel p{margin:0}
 .vg-lesung,.vg-ergebnis{font-size:var(--t-s)}
 /* Maschinenhaarschnitt ohne Aufsteckkämme V1 (Reiter „Maschine“) */
-.mok-fig svg{max-width:440px}
+.mok-fig svg{max-width:560px}
 .mok-hot{cursor:pointer;fill-opacity:0;transition:fill-opacity .15s var(--ease)}
 .mok-hot:hover,.mok-hot:focus-visible{fill:var(--accent);fill-opacity:.16;outline:none}
 .mok-flash{stroke:var(--accent);stroke-width:3;fill-opacity:0;animation:mokFlash 1.8s ease-out 1}
@@ -2475,20 +2475,22 @@ wechsle aber nicht ohne Zustimmung.
     {id:"S7", titel:"Prüfungsfall", schritt:"Prüfungsfall · ohne Hilfen", leit:"Schaffst du die ganze Kette an einem neuen Kopf?"}
   ];
 
-  // PLATZHALTER Zonengrafik: Beide Köpfe sind schematische SVG-Köpfe (Hinterkopf, viewBox 0 0 470 340).
-  // Beim Ersetzen durch Foto oder Illustration die y-Bereiche der Zonen ans neue Bild anpassen.
-  // hw = halbe Kopfbreite. Zonen von oben nach unten: Deckhaar, oberer Bereich, Übergangslinie, Band 3, Band 2, Band 1.
+  // Fotos Hinterkopf (bilder/maschine/, 960 × 940). Koordinaten im Foto auf 480 × 470 umgerechnet.
+  // x = linker und rechter Rand der Haarfläche, zonen = y-Bereiche von oben nach unten.
+  // Beim Austausch eines Fotos die Zonen neu ausmessen und MOK_BILD_VERSION hochzählen (Handy-Cache).
+  var MOK_BILD_VERSION = 1;
   var MOK_KOEPFE = {
-    A: {hw:108, zonen:{deckhaar:[18,110], oben:[110,168], uebergang:[168,192], band3:[192,226], band2:[226,259], band1:[259,298]}},
-    B: {hw:96,  zonen:{deckhaar:[18,88],  oben:[88,133],  uebergang:[133,157], band3:[157,204], band2:[204,250], band1:[250,298]}}
+    A: {foto:"bilder/maschine/verlauf-a.jpg", x:[70,415], zonen:{deckhaar:[20,190], oben:[190,268], uebergang:[268,292], band3:[292,322], band2:[322,350], band1:[350,385]}},
+    B: {foto:"bilder/maschine/verlauf-b.jpg", x:[75,418], zonen:{deckhaar:[55,215], oben:[215,330], uebergang:[330,354], band3:[354,385], band2:[385,413], band1:[413,447]}},
+    C: {foto:"bilder/maschine/verlauf-c.jpg", x:[62,422], zonen:{deckhaar:[15,215], oben:[215,320], uebergang:[320,344], band3:[344,376], band2:[376,406], band1:[406,442]}}
   };
-  // bild = Kennung in den Übungen. platzhalter = was hier später als echtes Bild eingesetzt wird.
+  // bild = Kennung in den Übungen. Fehlerbilder: Der Fehler ist ins Foto eingezeichnet (kante, stufe).
   var MOK_BILDER = {
-    "A":       {kopf:"A", platzhalter:"MOK_BILD_A – Foto Hinterkopf, Verlauf ohne Aufsteckkämme"},
-    "A-kante": {kopf:"A", fehler:"kante", platzhalter:"MOK_FEHLER_KANTE_HINTERKOPF – Fehlerfoto Kante an der Übergangslinie"},
-    "B":       {kopf:"B", platzhalter:"MOK_BILD_B – Foto Prüfungskopf, hoher Verlauf"},
-    "B-stufe": {kopf:"B", fehler:"stufe", platzhalter:"MOK_FEHLER_STUFE – Fehlerfoto Stufe zwischen Band 2 und Band 3",
-                zonen:{band3:[157,192], grenze:[192,216], band2:[216,250]}}
+    "A":       {kopf:"A", titel:"Foto: Übungskopf, Verlauf ohne Aufsteckkämme"},
+    "A-kante": {kopf:"C", fehler:"kante", titel:"Fehlerbild: Kante an der Übergangslinie (ins Foto eingezeichnet)"},
+    "B":       {kopf:"B", titel:"Foto: Prüfungskopf"},
+    "B-stufe": {kopf:"B", fehler:"stufe", titel:"Fehlerbild: Stufe zwischen Band 2 und Band 3 (ins Foto eingezeichnet)",
+                zonen:{band3:[354,376], grenze:[376,396], band2:[396,413]}}
   };
   // Zonen: label = Beschriftung im Bild nach dem Markieren, name/arbeit = Standard-Feedback beim Antippen der falschen Zone.
   // Die Namen nennen bewusst keine Hebelstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
@@ -2709,7 +2711,7 @@ wechsle aber nicht ohne Zustimmung.
 
     // S7 – Prüfungsfall: neuer Kopf, keine Hilfen (pruefung:true)
     {id:"mok-p1", screen:"S7", pruefung:true, bereich:"zonenlogik", titel:"Übergangslinie", bild:"B",
-     ausgangslage:"Neuer Prüfungskopf mit hohem Verlauf.", frage:"Tippe die Übergangslinie an.", antworttyp:"hotspot",
+     ausgangslage:"Neuer Prüfungskopf, andere Person.", frage:"Tippe die Übergangslinie an.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
      begruendung:"Über dem letzten Hebel-Band beginnt der Kamm.", typische_fehler:[],
      feedback:{richtig:"Die Übergangslinie liegt über dem letzten Hebel-Band.", leitfrage:"Wo endet das, was der Hebel kann?"}},
@@ -2794,52 +2796,35 @@ wechsle aber nicht ohne Zustimmung.
     if (x.antworttyp === "hotspot" && s.versuche >= 2 && !x.pruefung) st.mok.flash = x.richtige_antwort;
   }
 
-  // ---------- Kopf (PLATZHALTER-Grafik) ----------
+  // ---------- Foto mit Zonen ----------
   // o: {bild, klick:[Zonen-IDs], act, markiert:[Zonen-IDs], aktiv, flash, werkzeuge:true}
   function mokKopf(o){
-    var B = MOK_BILDER[o.bild], K = MOK_KOEPFE[B.kopf], hw = K.hw, Z = K.zonen, R = mokRegionen(o.bild), cx = 150;
-    function x(f){ return (cx + hw * f).toFixed(1); }
-    var umriss = "M150,18 C" + x(.66) + ",18 " + x(1) + ",62 " + x(1) + ",140 C" + x(1) + ",196 " + x(.86) + ",248 " + x(.6) + ",278 C" + x(.4) + ",294 " + x(.2) + ",298 150,298 " +
-                 "C" + x(-.2) + ",298 " + x(-.4) + ",294 " + x(-.6) + ",278 C" + x(-.86) + ",248 " + x(-1) + ",196 " + x(-1) + ",140 C" + x(-1) + ",62 " + x(-.66) + ",18 150,18 Z";
-    function band(y, fill, extra){ return '<rect x="0" y="' + y[0] + '" width="300" height="' + (y[1] - y[0]) + '" fill="' + fill + '" clip-path="url(#mokClip)"' + (extra || '') + '/>'; }
-    var deck = {band3:.44, band2:.28, band1:.14};
-    if (B.fehler === "stufe"){ deck.band3 = .56; deck.band2 = .14; deck.band1 = .08; }
-    var s = '<svg viewBox="0 0 470 340" role="img" aria-label="Schematischer Hinterkopf (Platzhalter)">' +
-      '<defs><clipPath id="mokClip"><path d="' + umriss + '"/></clipPath>' +
-      '<linearGradient id="mokVerlauf" x1="0" y1="1" x2="0" y2="0"><stop offset="0" style="stop-color:var(--g-haar);stop-opacity:.5"/><stop offset="1" style="stop-color:var(--g-haar);stop-opacity:.92"/></linearGradient></defs>' +
-      '<text x="6" y="14" font-size="11" fill="var(--muted)">PLATZHALTER · Schema</text>' +
-      '<rect x="' + (cx - 46) + '" y="262" width="92" height="78" rx="18" fill="var(--g-kopf)" stroke="var(--g-kontur)" stroke-width="1.5"/>' +
-      '<ellipse cx="' + x(-1.04) + '" cy="172" rx="13" ry="27" fill="var(--g-kopf)" stroke="var(--g-kontur)" stroke-width="1.5"/>' +
-      '<ellipse cx="' + x(1.04) + '" cy="172" rx="13" ry="27" fill="var(--g-kopf)" stroke="var(--g-kontur)" stroke-width="1.5"/>' +
-      '<path d="' + umriss + '" fill="var(--g-kopf)"/>' +
-      band(Z.deckhaar, "var(--g-haar)") +
-      band([Z.oben[0], Z.uebergang[1]], "url(#mokVerlauf)") +
-      band(Z.band3, "var(--g-haar)", ' fill-opacity="' + deck.band3 + '"') +
-      band(Z.band2, "var(--g-haar)", ' fill-opacity="' + deck.band2 + '"') +
-      band(Z.band1, "var(--g-haar)", ' fill-opacity="' + deck.band1 + '"');
-    if (B.fehler === "kante") s += band([Z.uebergang[1] - 9, Z.uebergang[1] - 1], "var(--g-haar-kontur)", ' fill-opacity=".9"');
-    if (B.fehler === "stufe") s += '<line x1="0" x2="300" y1="' + Z.band2[0] + '" y2="' + Z.band2[0] + '" stroke="var(--g-haar-kontur)" stroke-width="3" clip-path="url(#mokClip)"/>';
-    s += '<path d="' + umriss + '" fill="none" stroke="var(--g-kontur)" stroke-width="1.5"/>';
+    var B = MOK_BILDER[o.bild], K = MOK_KOEPFE[B.kopf], Z = K.zonen, R = mokRegionen(o.bild), xl = K.x[0], xr = K.x[1], xm = (xl + xr) / 2;
+    function band(y, fill, extra){ return '<rect x="' + xl + '" y="' + y[0] + '" width="' + (xr - xl) + '" height="' + (y[1] - y[0]) + '" fill="' + fill + '"' + (extra || '') + '/>'; }
+    function linie(y, farbe, breite, extra){ return '<line x1="' + xl + '" x2="' + xr + '" y1="' + y + '" y2="' + y + '" stroke="' + farbe + '" stroke-width="' + breite + '"' + (extra || '') + '/>'; }
+    var s = '<svg viewBox="20 0 420 470" role="img" aria-label="Foto Hinterkopf mit Verlauf">' +
+      '<defs><filter id="mokWeich" x="-5%" y="-50%" width="110%" height="200%"><feGaussianBlur stdDeviation="2.5"/></filter></defs>' +
+      '<image href="' + K.foto + '?v=' + MOK_BILD_VERSION + '" x="0" y="0" width="480" height="470" preserveAspectRatio="none"/>';
+    // Eingezeichnete Fehler, weichgezeichnet: Kante = dunkler Rand an der Übergangslinie, Stufe = harter Sprung zwischen Band 2 und Band 3
+    if (B.fehler === "kante") s += band([Z.uebergang[1] - 10, Z.uebergang[1] - 1], "#000", ' fill-opacity=".7" filter="url(#mokWeich)"');
+    if (B.fehler === "stufe") s += band([Z.band2[0], Z.band1[1]], "#fff", ' fill-opacity=".2" filter="url(#mokWeich)"') + band([Z.band2[0] - 3, Z.band2[0] + 3], "#000", ' fill-opacity=".75" filter="url(#mokWeich)"');
     (o.markiert || []).forEach(function(id){
       var y = R[id], ym = (y[0] + y[1]) / 2, wz = o.werkzeuge ? mokS2Werkzeug(id) : null;
-      s += id === "uebergang" || id === "grenze"
-        ? '<line x1="0" x2="300" y1="' + ym + '" y2="' + ym + '" stroke="var(--accent)" stroke-width="3" clip-path="url(#mokClip)"/>'
-        : band(y, "var(--accent)", ' fill-opacity="' + (id === o.aktiv ? .45 : .2) + '"');
-      s += '<line x1="' + x(.94) + '" x2="' + (cx + hw + 24) + '" y1="' + ym + '" y2="' + ym + '" stroke="var(--accent)" stroke-width="1.5"/>' +
-        '<text x="' + (cx + hw + 28) + '" y="' + (ym + 4) + '" font-size="13" font-weight="700" fill="var(--ink)">' + MOK_ZONEN[id].label +
-        (wz ? '<tspan x="' + (cx + hw + 28) + '" dy="15" font-weight="400" fill="var(--accent)">' + mokWzText(wz) + '</tspan>' : '') + '</text>';
+      s += id === "uebergang" || id === "grenze" ? linie(ym, "var(--accent)", 3) : band(y, "var(--accent)", ' fill-opacity="' + (id === o.aktiv ? .45 : .18) + '"') + linie(y[1], "#fff", 1, ' stroke-opacity=".7"');
+      // Beschriftung direkt in der Zone, weiß mit dunklem Rand (auf Haar und Haut lesbar)
+      s += '<text x="' + xm + '" y="' + (ym + 5) + '" font-size="14" font-weight="700" text-anchor="middle" fill="#fff" stroke="#111" stroke-width="3" stroke-opacity=".75" paint-order="stroke">' +
+        MOK_ZONEN[id].label + (wz ? ' · ' + mokWzText(wz) : '') + '</text>';
     });
-    if (o.aktiv && (o.markiert || []).indexOf(o.aktiv) < 0) s += band(R[o.aktiv], "var(--accent)", ' fill-opacity=".45"');
+    if (o.aktiv && (o.markiert || []).indexOf(o.aktiv) < 0) s += band(R[o.aktiv], "var(--accent)", ' fill-opacity=".5"');
     if (o.flash) s += band(R[o.flash], "var(--accent)", ' class="mok-flash"');
     // Antippbare Flächen: bei Bildaufgaben mit Trennlinien und Nummern (1 = unten), passend zur Knopfreihe unter dem Bild.
     // onclick="" ist nötig, damit iPhone-Safari Antippen von SVG-Flächen als Klick weitergibt.
     var reihe = mokReihenfolge(o.klick || [], R);
     if (o.act === "mokhot") reihe.forEach(function(id, i){
-      var y = R[id];
-      if (i < reihe.length - 1) s += '<line x1="0" x2="300" y1="' + y[0] + '" y2="' + y[0] + '" stroke="var(--ink)" stroke-opacity=".45" stroke-width="1" stroke-dasharray="4 4" clip-path="url(#mokClip)"/>';
-      var ym = (y[0] + y[1]) / 2;
-      s += '<circle cx="' + (cx - hw - 26) + '" cy="' + ym + '" r="9" fill="var(--surface)" stroke="var(--g-kontur)"/>' +
-        '<text x="' + (cx - hw - 26) + '" y="' + (ym + 4) + '" font-size="11" font-weight="700" text-anchor="middle" fill="var(--ink)">' + (i + 1) + '</text>';
+      var y = R[id], ym = (y[0] + y[1]) / 2;
+      if (i < reihe.length - 1) s += linie(y[0], "#fff", 1.2, ' stroke-opacity=".85" stroke-dasharray="5 4"');
+      s += '<circle cx="40" cy="' + ym + '" r="10" fill="var(--surface)" stroke="var(--g-kontur)"/>' +
+        '<text x="40" y="' + (ym + 4) + '" font-size="12" font-weight="700" text-anchor="middle" fill="var(--ink)">' + (i + 1) + '</text>';
     });
     reihe.forEach(function(id, i){
       s += band(R[id], "#000", ' class="mok-hot" onclick="" data-act="' + o.act + '" data-val="' + id + '" role="button" tabindex="0" aria-label="Fläche ' + (i + 1) + ' von unten"');
@@ -2996,7 +2981,7 @@ wechsle aber nicht ohne Zustimmung.
       knoepfe = '<div class="mok-flaechen"><span class="note">Fläche antippen oder hier wählen:</span><div class="chips">' +
         mokReihenfolge(o.klick, R).map(function(id, i){ return '<button class="chip" type="button" data-act="mokhot" data-val="' + id + '">' + (i + 1) + (i === 0 ? ' · unten' : '') + '</button>'; }).join("") + '</div></div>';
     }
-    return oben + mokKopf(o) + knoepfe + unten + '<p class="mok-platzhalter">PLATZHALTER Bild · ' + MOK_BILDER[bildId].platzhalter + '</p>';
+    return oben + mokKopf(o) + knoepfe + unten + '<p class="note">' + MOK_BILDER[bildId].titel + '</p>';
   }
 
   function mokAufgabe(sid){
