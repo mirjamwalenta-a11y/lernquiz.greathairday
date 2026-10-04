@@ -63,7 +63,7 @@ Bildaufgaben (S1, S6, Prüfungsfall): Die Flächen am Kopf sind nummeriert (1 = 
 
 Mehrere Fragen pro Screen: Über jeder Frage steht „Frage x von y“. Nach dem Prüfen bleibt die Frage mit ihrem Ergebnis stehen; weiter geht es nur über den Knopf „Nächste Frage“ bzw. „Weiter zu S…“ direkt darunter. Kein automatischer Wechsel zur nächsten Frage.
 
-Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer falschen Antwort. Nach einer falschen Antwort steht unter der Rückmeldung direkt „Nächste Frage“ bzw. „Weiter zu S…“; die Frage zählt dann als falsch (✗) und die richtige Lösung bleibt markiert bzw. steht in der Liste. Wer will, kann vorher nochmal neu wählen und prüfen. Fehlversuche werden gezählt (Auswertung für Ausbilder:in).
+Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer falschen Antwort. Nach einer falschen Antwort steht unter der Rückmeldung direkt „Nächste Frage“ bzw. „Weiter zu S…“; die Frage zählt dann als falsch (✗) und die richtige Lösung bleibt markiert bzw. steht in der Liste. Wer will, kann vorher nochmal neu wählen und prüfen. Der Knopf „Weiter“ unten ist nie gesperrt: Sind noch Fragen offen, heißt er „Überspringen und weiter“, offene Fragen zählen dann als falsch und ihre Lösung wird übernommen. Ein gesperrter „Prüfen“-Knopf sagt, was fehlt („Erst eine Nummer wählen“). Fehlversuche werden gezählt (Auswertung für Ausbilder:in).
 
 ---
 

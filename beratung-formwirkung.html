@@ -2960,7 +2960,9 @@ wechsle aber nicht ohne Zustimmung.
     return mokOptText(x, w);
   }
   function mokPruefBtn(x, bereit){
-    return '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="mokpruef" data-id="' + x.id + '"' + (bereit ? '' : ' disabled') + '>Prüfen</button></div>';
+    // Gesperrt sagt der Knopf, was noch fehlt
+    var fehlt = x.antworttyp === "hotspot" ? 'Erst eine Nummer wählen' : x.antworttyp === "reihenfolge" ? 'Erst alle Schritte legen' : 'Erst eine Antwort wählen';
+    return '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="mokpruef" data-id="' + x.id + '"' + (bereit ? '>Prüfen' : ' disabled>' + fehlt) + '</button></div>';
   }
   function mokWahl(x){ // werkzeug | auswahl | clip
     var s = mokU(x.id);
@@ -3117,7 +3119,8 @@ wechsle aber nicht ohne Zustimmung.
     }).join("") + '</ol>';
     var nav = '<div class="nav">' +
       '<button class="btn" type="button" data-act="mokprev"' + (i === 0 ? ' disabled' : '') + '>' + ICON_ZURUECK + 'Zurück</button>' +
-      (letzter ? '' : '<button class="btn primary" type="button" data-act="moknext"' + (fertig ? '' : ' disabled') + (fertig && M.fokus === "weiter" ? ' id="mok-fokus"' : '') + '>' + (i === 0 ? 'Los geht’s' : 'Weiter') + ICON_WEITER + '</button>') +
+      // „Weiter“ ist nie gesperrt: Offene Fragen werden beim Überspringen als falsch gezählt
+      (letzter ? '' : '<button class="btn primary" type="button" data-act="moknext"' + (fertig ? '' : ' title="Offene Fragen zählen als falsch"') + '>' + (i === 0 ? 'Los geht’s' : fertig ? 'Weiter' : 'Überspringen und weiter') + ICON_WEITER + '</button>') +
       '</div>';
     return '<div class="screen mok">' +
       '<div class="pagehead"><h1>Maschinen&shy;haarschnitt ohne Aufsteck&shy;kämme <span class="tag">V1</span></h1>' +
@@ -3137,7 +3140,15 @@ wechsle aber nicht ohne Zustimmung.
     M.flash = null; M.fokus = null;
     if (a === "mokpruef") M.fokus = "fb";
     if (a === "mokscreen"){ var k = +val; if (k <= M.offen){ M.screen = k; M.zuletzt = null; M.halt = null; return true; } }
-    if (a === "moknext" && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1){ M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; M.halt = null; return true; }
+    if (a === "moknext" && M.screen < MOK_SCREENS.length - 1){
+      // offene Fragen dieses Screens als falsch werten, Lösung übernehmen
+      mokListe(MOK_SCREENS[M.screen].id).forEach(function(u){
+        var su = mokU(u.id); if (su.ok || su.weg) return;
+        su.weg = true; su.fehler = null; su.versuche = Math.max(su.versuche, 1);
+        if (u.antworttyp === "reihenfolge"){ M.reihe = u.richtige_antwort.slice(); su.wahl = M.reihe.slice(); }
+        else if (u.antworttyp === "satzbaustein") su.wahl = Object.assign({}, u.richtige_antwort);
+        else su.wahl = u.richtige_antwort;
+      }); M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; M.halt = null; return true; }
     if (a === "mokprev" && M.screen > 0){ M.screen--; M.zuletzt = null; M.halt = null; return true; }
     if (a === "mokfrage"){ M.halt = null; M.zuletzt = null; M.fokus = "frage"; }
     if (a === "mokhot"){ x = mokAnzeige(MOK_SCREENS[M.screen].id); if (x && x.antworttyp === "hotspot"){ s = mokU(x.id); if (!s.ok && !s.weg){ s.wahl = val; s.fehler = null; } } }
