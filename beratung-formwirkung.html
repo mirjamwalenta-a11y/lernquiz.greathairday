@@ -269,6 +269,8 @@ dl.steck dd{margin:0}
 .mok-pfeil{color:var(--muted);font-size:var(--t-xs)}
 .mok-titel{font-size:var(--t-m)}
 .mok-frage{font-weight:700}
+.mok-flaechen{display:flex;flex-direction:column;gap:6px}
+.mok-flaechen .chip{min-width:44px;justify-content:center}
 .mok-bildfrage{background:var(--accent-soft);border-radius:var(--r-s);padding:8px 12px;margin:0}
 .mok-erledigt{list-style:none;margin:0;padding:0 !important;display:flex;flex-direction:column;gap:6px}
 .mok-erledigt li{font-size:var(--t-s);padding:6px 10px;border-radius:var(--r-s);background:var(--accent-soft)}
@@ -2825,10 +2827,24 @@ wechsle aber nicht ohne Zustimmung.
     });
     if (o.aktiv && (o.markiert || []).indexOf(o.aktiv) < 0) s += band(R[o.aktiv], "var(--accent)", ' fill-opacity=".45"');
     if (o.flash) s += band(R[o.flash], "var(--accent)", ' class="mok-flash"');
-    (o.klick || []).forEach(function(id, i){
-      s += band(R[id], "#000", ' class="mok-hot" data-act="' + o.act + '" data-val="' + id + '" role="button" tabindex="0" aria-label="Fläche ' + (o.klick.length - i) + ' von unten"');
+    // Antippbare Flächen: bei Bildaufgaben mit Trennlinien und Nummern (1 = unten), passend zur Knopfreihe unter dem Bild.
+    // onclick="" ist nötig, damit iPhone-Safari Antippen von SVG-Flächen als Klick weitergibt.
+    var reihe = mokReihenfolge(o.klick || [], R);
+    if (o.act === "mokhot") reihe.forEach(function(id, i){
+      var y = R[id];
+      if (i < reihe.length - 1) s += '<line x1="0" x2="300" y1="' + y[0] + '" y2="' + y[0] + '" stroke="var(--ink)" stroke-opacity=".45" stroke-width="1" stroke-dasharray="4 4" clip-path="url(#mokClip)"/>';
+      var ym = (y[0] + y[1]) / 2;
+      s += '<circle cx="' + (cx - hw - 26) + '" cy="' + ym + '" r="9" fill="var(--surface)" stroke="var(--g-kontur)"/>' +
+        '<text x="' + (cx - hw - 26) + '" y="' + (ym + 4) + '" font-size="11" font-weight="700" text-anchor="middle" fill="var(--ink)">' + (i + 1) + '</text>';
+    });
+    reihe.forEach(function(id, i){
+      s += band(R[id], "#000", ' class="mok-hot" onclick="" data-act="' + o.act + '" data-val="' + id + '" role="button" tabindex="0" aria-label="Fläche ' + (i + 1) + ' von unten"');
     });
     return s + '</svg>';
+  }
+  // Zonen von unten nach oben sortiert (Nummer 1 = unterste Fläche)
+  function mokReihenfolge(ids, R){
+    return ids.slice().sort(function(a, b){ return R[b][0] - R[a][0]; });
   }
 
   // ---------- Bausteine ----------
@@ -2954,7 +2970,14 @@ wechsle aber nicht ohne Zustimmung.
     var oben = '', unten = '', zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
     if (akt && akt.antworttyp === "hotspot"){ oben = '<p class="mok-frage mok-bildfrage">' + akt.frage + '</p>'; unten = mokRueckmeldung(akt); }
     if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp === "hotspot") unten = mokRueckmeldung(zuletzt) + unten;
-    return oben + mokKopf(o) + unten + '<p class="mok-platzhalter">PLATZHALTER Bild · ' + MOK_BILDER[bildId].platzhalter + '</p>';
+    // Knopfreihe unter dem Bild: dieselben Flächen als normale Buttons (funktioniert auf jedem Handy)
+    var knoepfe = '';
+    if (o.act === "mokhot" && o.klick && o.klick.length){
+      var R = mokRegionen(o.bild);
+      knoepfe = '<div class="mok-flaechen"><span class="note">Fläche antippen oder hier wählen:</span><div class="chips">' +
+        mokReihenfolge(o.klick, R).map(function(id, i){ return '<button class="chip" type="button" data-act="mokhot" data-val="' + id + '">' + (i + 1) + (i === 0 ? ' · unten' : '') + '</button>'; }).join("") + '</div></div>';
+    }
+    return oben + mokKopf(o) + knoepfe + unten + '<p class="mok-platzhalter">PLATZHALTER Bild · ' + MOK_BILDER[bildId].platzhalter + '</p>';
   }
 
   function mokAufgabe(sid){
