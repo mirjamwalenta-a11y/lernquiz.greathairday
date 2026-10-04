@@ -269,6 +269,8 @@ dl.steck dd{margin:0}
 .mok-pfeil{color:var(--muted);font-size:var(--t-xs)}
 .mok-titel{font-size:var(--t-m)}
 .mok-frage{font-weight:700}
+#mok-fokus{scroll-margin-top:calc(var(--bar-h,64px) + 12px);scroll-margin-bottom:12px}
+.mok-rm{display:flex;flex-direction:column;gap:10px}
 .mok-flaechen{display:flex;flex-direction:column;gap:6px}
 .mok-flaechen .chip{min-width:44px;justify-content:center}
 .mok-bildfrage{background:var(--accent-soft);border-radius:var(--r-s);padding:8px 12px;margin:0}
@@ -2755,13 +2757,15 @@ wechsle aber nicht ohne Zustimmung.
 
   // ---------- Zustand ----------
   function mokNeu(){ return {screen:0, offen:0, u:{}, zone:null, reihe:[], flash:null, zuletzt:null, geprueft:null, fokus:null}; }
-  function mokU(id){ return st.mok.u[id] || (st.mok.u[id] = {wahl:null, versuche:0, ok:false, fehler:null}); }
+  function mokU(id){ return st.mok.u[id] || (st.mok.u[id] = {wahl:null, versuche:0, ok:false, weg:false, fehler:null}); }
+  // erledigt = richtig gelöst oder nach falscher Antwort mit „Lösung zeigen und weiter“ übersprungen (weg)
+  function mokErledigt(id){ var s = mokU(id); return s.ok || s.weg; }
   function mokX(id){ return MOK_UEBUNGEN.filter(function(x){ return x.id === id; })[0]; }
   function mokListe(sid){ return MOK_UEBUNGEN.filter(function(x){ return x.screen === sid; }); }
-  function mokFertig(i){ return mokListe(MOK_SCREENS[i].id).every(function(x){ return mokU(x.id).ok; }); }
-  function mokAktuell(sid){ return mokListe(sid).filter(function(x){ return !mokU(x.id).ok; })[0] || null; }
+  function mokFertig(i){ return mokListe(MOK_SCREENS[i].id).every(function(x){ return mokErledigt(x.id); }); }
+  function mokAktuell(sid){ return mokListe(sid).filter(function(x){ return !mokErledigt(x.id); })[0] || null; }
   function mokRegionen(bild){ var B = MOK_BILDER[bild]; return Object.assign({}, MOK_KOEPFE[B.kopf].zonen, B.zonen || {}); }
-  function mokS2Werkzeug(zone){ var x = mokX("mok-s2-" + zone); return x && mokU(x.id).ok ? x.richtige_antwort : null; }
+  function mokS2Werkzeug(zone){ var x = mokX("mok-s2-" + zone); return x && mokErledigt(x.id) ? x.richtige_antwort : null; }
   function mokWzText(id){ return MOK_WERKZEUGE.filter(function(w){ return w[0] === id; })[0][1]; }
 
   function mokRichtig(x, w){
@@ -2782,7 +2786,7 @@ wechsle aber nicht ohne Zustimmung.
     return {fehlertyp:"zone", zurueck:"zone", denkfehler:"Du hast " + z.name + " angetippt. Dort " + z.arbeit + ".", leitfrage:x.feedback.leitfrage};
   }
   function mokPruefen(x, w){
-    var s = mokU(x.id); if (s.ok || w == null) return;
+    var s = mokU(x.id); if (s.ok || s.weg || w == null) return;
     s.wahl = w; st.mok.geprueft = x.id;
     if (mokRichtig(x, w)){ s.ok = true; s.fehler = null; st.mok.zuletzt = x.id; if (x.screen === "S2") st.mok.zone = null; return; }
     s.versuche++;
@@ -2857,9 +2861,10 @@ wechsle aber nicht ohne Zustimmung.
   function mokRueckmeldung(x){
     var s = mokU(x.id), f = s.fehler, h = '';
     if (s.ok) return '<div class="callout good"' + mokAnker(x) + '><p><strong>Richtig.</strong> ' + x.feedback.richtig + '</p></div>';
+    if (s.weg) return '<div class="callout accent"' + mokAnker(x) + '><p><strong>Lösung:</strong> ' + mokLoesungText(x) + '</p><p>' + x.begruendung + '</p><p class="note">Diese Frage zählt als falsch beantwortet.</p></div>';
     if (f){
       var glied = MOK_KETTE.filter(function(k){ return k[0] === f.zurueck; })[0][1];
-      h += '<div class="callout bad mok-fb"' + mokAnker(x) + '>' +
+      h += '<div class="callout bad mok-fb">' +
         '<p><strong>Denkfehler:</strong> ' + f.denkfehler + '</p>' +
         '<p class="mok-kette"><strong>Zurück zu:</strong><span class="sr">' + glied + '</span><span class="mok-glieder" aria-hidden="true">' +
           MOK_KETTE.map(function(k){ return '<span class="mok-glied' + (k[0] === f.zurueck ? ' on' : '') + '">' + k[1] + '</span>'; }).join('<span class="mok-pfeil">→</span>') + '</span></p>' +
@@ -2867,10 +2872,19 @@ wechsle aber nicht ohne Zustimmung.
         '<p class="note">' + MOK_MERKSATZ + '</p></div>';
     }
     if (s.versuche >= 2 && !x.pruefung && x.feedback.hilfe) h += '<div class="callout accent"><p><strong>Hilfe:</strong> ' + x.feedback.hilfe + '</p></div>';
-    return h;
+    // Nach einer falschen Antwort: nochmal probieren oder Lösung ansehen und weitergehen
+    if (s.versuche >= 1) h += '<div class="controls" style="justify-content:flex-start"><button class="btn" type="button" data-act="mokskip" data-id="' + x.id + '">Lösung zeigen und weiter' + ICON_WEITER + '</button></div>';
+    return h ? '<div class="mok-rm"' + mokAnker(x) + '>' + h + '</div>' : '';
+  }
+  function mokLoesungText(x){
+    var r = x.richtige_antwort;
+    if (x.antworttyp === "reihenfolge") return "die Reihenfolge oben.";
+    if (x.antworttyp === "satzbaustein") return "… weil " + x.optionen.weil.filter(function(o){ return o.id === r.weil; })[0].text + ". Sonst entsteht " + x.optionen.sonst.filter(function(o){ return o.id === r.sonst; })[0].text + ".";
+    return mokOptText(x, r);
   }
   function mokOptText(x, id){
     if (x.antworttyp === "werkzeug") return mokWzText(id);
+    if (x.antworttyp === "hotspot") return MOK_ZONEN[id].label;
     var o = x.optionen.filter(function(o){ return o.id === id; })[0]; return o ? o.text : id;
   }
   function mokAntwort(x){
@@ -2885,23 +2899,23 @@ wechsle aber nicht ohne Zustimmung.
     var s = mokU(x.id);
     if (x.antworttyp === "werkzeug"){
       return '<fieldset class="wahl"><legend>' + x.frage + '</legend><div class="chips">' + x.optionen.map(function(id){
-        var on = s.wahl === id, cls = on ? (s.ok ? ' on right' : (s.fehler ? ' on wrong' : ' on')) : '';
-        return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + id + '"' + (s.ok ? ' disabled' : '') + '>' + mokWzText(id) + '</button>';
-      }).join("") + '</div></fieldset>' + (s.ok ? '' : mokPruefBtn(x, s.wahl != null));
+        var on = s.wahl === id, cls = on ? ((s.ok || s.weg) ? ' on right' : (s.fehler ? ' on wrong' : ' on')) : '';
+        return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + id + '"' + ((s.ok || s.weg) ? ' disabled' : '') + '>' + mokWzText(id) + '</button>';
+      }).join("") + '</div></fieldset>' + ((s.ok || s.weg) ? '' : mokPruefBtn(x, s.wahl != null));
     }
     return '<fieldset class="wahl"><legend>' + x.frage + '</legend><div class="answers">' + x.optionen.map(function(o){
-      var on = s.wahl === o.id, cls = on ? (s.ok ? ' right' : (s.fehler ? ' wrong' : ' on')) : '';
+      var on = s.wahl === o.id, cls = on ? ((s.ok || s.weg) ? ' right' : (s.fehler ? ' wrong' : ' on')) : '';
       // PLATZHALTER Clip: o.clip wird durch eine kurze Bewegungsanimation ersetzt
       var clip = o.clip ? '<span class="mok-platzhalter">PLATZHALTER Clip · ' + o.clip + '</span>' : '';
-      return '<button class="btn' + (o.clip ? ' mok-clipbtn' : '') + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + o.id + '"' + (s.ok ? ' disabled' : '') + '>' + clip + '<span>' + o.text + '</span></button>';
-    }).join("") + '</div></fieldset>' + (s.ok ? '' : mokPruefBtn(x, s.wahl != null));
+      return '<button class="btn' + (o.clip ? ' mok-clipbtn' : '') + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + o.id + '"' + ((s.ok || s.weg) ? ' disabled' : '') + '>' + clip + '<span>' + o.text + '</span></button>';
+    }).join("") + '</div></fieldset>' + ((s.ok || s.weg) ? '' : mokPruefBtn(x, s.wahl != null));
   }
   function mokSatz(x){
     var s = mokU(x.id), w = s.wahl || {};
     function slot(t, leer){ return '<span class="sb-slot' + (leer ? ' leer' : '') + '">' + t + '</span>'; }
     function wahlText(feld){ var o = x.optionen[feld].filter(function(o){ return o.id === w[feld]; })[0]; return o ? slot(o.text) : slot(feld === "weil" ? "[weil … wählen]" : "[Fehler wählen]", true); }
     var satz = '<p class="sb-satz">' + x.satz.anfang + ' ' + slot(x.satz.zone) + ' arbeite ich mit ' + slot(x.satz.werkzeug) + ' und ' + slot(x.satz.bewegung) + ', weil ' + wahlText("weil") + '. Sonst entsteht ' + wahlText("sonst") + '.</p>';
-    if (s.ok) return satz;
+    if ((s.ok || s.weg)) return satz;
     return satz + ["weil", "sonst"].map(function(feld){
       return '<fieldset class="wahl"><legend>' + (feld === "weil" ? "weil …" : "Sonst entsteht …") + '</legend><div class="chips sb-chips">' + x.optionen[feld].map(function(o){
         var on = w[feld] === o.id;
@@ -2912,10 +2926,10 @@ wechsle aber nicht ohne Zustimmung.
   function mokReihe(x){
     var s = mokU(x.id), R = st.mok.reihe, geprueft = s.fehler && s.wahl && s.wahl.join() === R.join();
     var liste = '<ol class="mok-reihe">' + R.map(function(id, i){
-      var cls = s.ok ? ' right' : (geprueft ? (id === x.richtige_antwort[i] ? ' right' : ' wrong') : '');
-      return '<li><button class="btn' + cls + '" type="button" data-act="mokraus" data-val="' + id + '"' + (s.ok ? ' disabled' : '') + '><span class="mok-nr">' + (i + 1) + '</span>' + mokOptText(x, id) + '</button></li>';
+      var cls = (s.ok || s.weg) ? ' right' : (geprueft ? (id === x.richtige_antwort[i] ? ' right' : ' wrong') : '');
+      return '<li><button class="btn' + cls + '" type="button" data-act="mokraus" data-val="' + id + '"' + ((s.ok || s.weg) ? ' disabled' : '') + '><span class="mok-nr">' + (i + 1) + '</span>' + mokOptText(x, id) + '</button></li>';
     }).join("") + '</ol>';
-    if (s.ok) return liste;
+    if ((s.ok || s.weg)) return liste;
     var rest = x.optionen.filter(function(o){ return R.indexOf(o.id) < 0; });
     // feste, gemischte Reihenfolge im Vorrat
     var mix = ["kamm","geschlossen","linie","kontrolle","halboffen","verblenden","offen"];
@@ -2932,9 +2946,9 @@ wechsle aber nicht ohne Zustimmung.
   // Übungen eines Screens der Reihe nach: erledigte kurz, aktuelle voll, spätere gesperrt
   function mokFolge(sid){
     var L = mokListe(sid), akt = mokAktuell(sid), h = '';
-    var erledigt = L.filter(function(x){ return mokU(x.id).ok; });
+    var erledigt = L.filter(function(x){ return mokErledigt(x.id); });
     if (erledigt.length) h += '<ul class="mok-erledigt">' + erledigt.map(function(x){
-      return '<li>✓ <strong>' + x.titel + (x.antworttyp === "satzbaustein" ? '</strong>' + mokSatz(x) : x.antworttyp === "hotspot" ? '</strong>' : ':</strong> ' + mokAntwort(x)) + '</li>'; }).join("") + '</ul>';
+      return '<li>' + (mokU(x.id).weg ? '✗ ' : '✓ ') + '<strong>' + x.titel + (x.antworttyp === "satzbaustein" ? '</strong>' + mokSatz(x) : x.antworttyp === "hotspot" ? '</strong>' : ':</strong> ' + mokAntwort(x)) + '</li>'; }).join("") + '</ul>';
     var zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
     if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp !== "hotspot") h += mokRueckmeldung(zuletzt);
     if (akt){
@@ -2954,7 +2968,7 @@ wechsle aber nicht ohne Zustimmung.
 
   function mokFigur(sid){
     var akt = mokAktuell(sid), o;
-    var s1 = mokListe("S1").filter(function(x){ return mokU(x.id).ok; }).map(function(x){ return x.richtige_antwort; });
+    var s1 = mokListe("S1").filter(function(x){ return mokErledigt(x.id); }).map(function(x){ return x.richtige_antwort; });
     if (sid === "S0") o = {bild:"A"};
     else if (sid === "S1") o = {bild:"A", markiert:s1, klick:akt ? akt.optionen : [], act:"mokhot", flash:st.mok.flash};
     else if (sid === "S2") o = {bild:"A", markiert:s1, werkzeuge:true, aktiv:st.mok.zone, klick:["oben","band3","band2","band1"], act:"mokzone"};
@@ -2968,7 +2982,12 @@ wechsle aber nicht ohne Zustimmung.
     var bildId = sid === "S6" || sid === "S7" ? o.bild : "A";
     // Bildaufgabe: Frage direkt über dem Bild, Rückmeldung direkt darunter, damit beides am Handy im Blick bleibt
     var oben = '', unten = '', zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
-    if (akt && akt.antworttyp === "hotspot"){ oben = '<p class="mok-frage mok-bildfrage">' + akt.frage + '</p>'; unten = mokRueckmeldung(akt); }
+    if (akt && akt.antworttyp === "hotspot"){
+      var M = st.mok, gx = M.geprueft && mokX(M.geprueft);
+      var zurFrage = M.fokus === "fb" && gx && gx.id !== akt.id && gx.screen === sid && gx.antworttyp === "hotspot" && mokErledigt(gx.id);
+      if (zurFrage) M.ankerGesetzt = true;
+      oben = '<p class="mok-frage mok-bildfrage"' + (zurFrage ? ' id="mok-fokus"' : '') + '>' + akt.frage + '</p>'; unten = mokRueckmeldung(akt);
+    }
     if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp === "hotspot") unten = mokRueckmeldung(zuletzt) + unten;
     // Knopfreihe unter dem Bild: dieselben Flächen als normale Buttons (funktioniert auf jedem Handy)
     var knoepfe = '';
@@ -2993,8 +3012,8 @@ wechsle aber nicht ohne Zustimmung.
     if (sid === "S2"){
       var L = mokListe("S2"), z = st.mok.zone, x = z ? mokX("mok-s2-" + z) : null;
       h += '<p class="note">Tippe am Kopf eine Zone an und wähle dann das Werkzeug.</p><div class="chips" role="group" aria-label="Zone wählen">' + L.map(function(u){
-        var ok = mokU(u.id).ok, on = u.zone === z;
-        return '<button class="chip' + (on ? ' on' : '') + (ok ? ' right' : '') + '" type="button" aria-pressed="' + on + '" data-act="mokzone" data-val="' + u.zone + '"' + (ok ? ' disabled' : '') + '>' + (ok ? '✓ ' : '') + MOK_ZONEN[u.zone].label + '</button>';
+        var ok = mokErledigt(u.id), on = u.zone === z;
+        return '<button class="chip' + (on ? ' on' : '') + (ok ? ' right' : '') + '" type="button" aria-pressed="' + on + '" data-act="mokzone" data-val="' + u.zone + '"' + (ok ? ' disabled' : '') + '>' + (ok ? (mokU(u.id).weg ? '✗ ' : '✓ ') : '') + MOK_ZONEN[u.zone].label + '</button>';
       }).join("") + '</div>';
       var zuletzt = st.mok.zuletzt && mokX(st.mok.zuletzt);
       if (!x && zuletzt && zuletzt.screen === "S2") h += mokRueckmeldung(zuletzt);
@@ -3004,7 +3023,7 @@ wechsle aber nicht ohne Zustimmung.
     if (sid === "S4"){
       var r = mokX("mok-s4");
       h += '<p class="note">' + r.ausgangslage + '</p>' + mokReihe(r) + mokRueckmeldung(r);
-      if (mokU(r.id).ok) h += '<p>' + r.begruendung + '</p>' + mokStandard();
+      if (mokErledigt(r.id)) h += '<p>' + r.begruendung + '</p>' + mokStandard();
       return h;
     }
     h += mokFolge(sid);
@@ -3065,18 +3084,29 @@ wechsle aber nicht ohne Zustimmung.
     if (a === "moknext" && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1){ M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; return true; }
     if (a === "mokprev" && M.screen > 0){ M.screen--; M.zuletzt = null; return true; }
     if (a === "mokhot"){ x = mokAktuell(MOK_SCREENS[M.screen].id); if (x && x.antworttyp === "hotspot") mokPruefen(x, val); }
-    if (a === "mokzone" && MOK_SCREENS[M.screen].id === "S2"){ x = mokX("mok-s2-" + val); if (x && !mokU(x.id).ok){ M.zone = val; M.zuletzt = null; } }
+    if (a === "mokzone" && MOK_SCREENS[M.screen].id === "S2"){ x = mokX("mok-s2-" + val); if (x && !mokErledigt(x.id)){ M.zone = val; M.zuletzt = null; } }
     if (a === "mokwahl"){
       x = mokX(id); s = mokU(id);
-      if (!s.ok){
+      if (!s.ok && !s.weg){
         var feld = b.getAttribute("data-feld");
         if (feld){ s.wahl = Object.assign({}, s.wahl || {}); s.wahl[feld] = val; } else s.wahl = val;
         s.fehler = null;
       }
     }
     if (a === "mokpruef"){ x = mokX(id); mokPruefen(x, x.antworttyp === "reihenfolge" ? M.reihe.slice() : mokU(id).wahl); }
-    if (a === "mokreihe" && M.reihe.indexOf(val) < 0 && !mokU("mok-s4").ok){ M.reihe.push(val); mokU("mok-s4").fehler = null; }
-    if (a === "mokraus" && !mokU("mok-s4").ok){ M.reihe = M.reihe.filter(function(r){ return r !== val; }); mokU("mok-s4").fehler = null; }
+    if (a === "mokreihe" && M.reihe.indexOf(val) < 0 && !mokErledigt("mok-s4")){ M.reihe.push(val); mokU("mok-s4").fehler = null; }
+    if (a === "mokraus" && !mokErledigt("mok-s4")){ M.reihe = M.reihe.filter(function(r){ return r !== val; }); mokU("mok-s4").fehler = null; }
+    if (a === "mokskip"){
+      x = mokX(id); s = mokU(id);
+      if (x && !s.ok && !s.weg && s.versuche >= 1){
+        s.weg = true; s.fehler = null;
+        if (x.antworttyp === "reihenfolge"){ M.reihe = x.richtige_antwort.slice(); s.wahl = M.reihe.slice(); }
+        else if (x.antworttyp === "satzbaustein") s.wahl = Object.assign({}, x.richtige_antwort);
+        else s.wahl = x.richtige_antwort;
+        M.zuletzt = x.id; M.geprueft = x.id; M.fokus = "fb";
+        if (x.screen === "S2") M.zone = null;
+      }
+    }
     if (a === "mokpruefneu"){ mokListe("S7").forEach(function(x){ delete M.u[x.id]; }); M.zuletzt = null; return true; }
     if (a === "mokneu"){ st.mok = mokNeu(); return true; }
     if (!warFertig && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1) M.fokus = "weiter";
