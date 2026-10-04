@@ -271,6 +271,9 @@ dl.steck dd{margin:0}
 .mok-pfeil{color:var(--muted);font-size:var(--t-xs)}
 .mok-titel{font-size:var(--t-m)}
 .mok-frage{font-weight:700}
+/* Kein Einblenden bei jedem Antippen: sonst springt der Inhalt und Antippen trifft daneben */
+.screen.mok{animation:none}
+.screen.mok,.screen.mok *{overflow-anchor:none}
 #mok-fokus{scroll-margin-top:calc(var(--bar-h,64px) + 12px);scroll-margin-bottom:12px}
 .mok-rm{display:flex;flex-direction:column;gap:10px}
 .mok-flaechen{display:flex;flex-direction:column;gap:6px}
@@ -2868,6 +2871,8 @@ wechsle aber nicht ohne Zustimmung.
     });
     if (o.aktiv && (o.markiert || []).indexOf(o.aktiv) < 0) s += band(R[o.aktiv], "var(--accent)", ' fill-opacity=".5"');
     if (o.flash) s += band(R[o.flash], "var(--accent)", ' class="mok-flash"');
+    // Gewählte Fläche (noch nicht geprüft): deutlich umrandet; nach falscher Prüfung rot
+    if (o.wahl && R[o.wahl]) s += band(R[o.wahl], o.falsch ? "var(--bad)" : "var(--accent)", ' fill-opacity=".35" stroke="' + (o.falsch ? "var(--bad)" : "var(--accent)") + '" stroke-width="3"');
     // Antippbare Flächen: bei Bildaufgaben mit Trennlinien und Nummern (1 = unten), passend zur Knopfreihe unter dem Bild.
     // onclick="" ist nötig, damit iPhone-Safari Antippen von SVG-Flächen als Klick weitergibt.
     var reihe = mokReihenfolge(o.klick || [], R);
@@ -2988,7 +2993,7 @@ wechsle aber nicht ohne Zustimmung.
     if (zuletzt && zuletzt.screen === sid && zuletzt.antworttyp !== "hotspot") h += mokRueckmeldung(zuletzt);
     if (akt){
       h += '<h3 class="mok-titel">' + akt.titel + '</h3><p class="note">' + akt.ausgangslage + '</p>';
-      if (akt.antworttyp === "hotspot") h += '<p class="note">Die Aufgabe steht direkt über dem Bild. Tippe im Bild.</p>';
+      if (akt.antworttyp === "hotspot") h += '<p class="note">Die Aufgabe steht direkt über dem Bild. Fläche wählen, dann „Prüfen“.</p>';
       else if (akt.antworttyp === "satzbaustein") h += mokSatz(akt);
       else h += mokWahl(akt);
       if (akt.antworttyp !== "hotspot") h += mokRueckmeldung(akt);
@@ -3005,13 +3010,13 @@ wechsle aber nicht ohne Zustimmung.
     var akt = mokAktuell(sid), o;
     var s1 = mokListe("S1").filter(function(x){ return mokErledigt(x.id); }).map(function(x){ return x.richtige_antwort; });
     if (sid === "S0") o = {bild:"A"};
-    else if (sid === "S1") o = {bild:"A", markiert:s1, klick:akt ? akt.optionen : [], act:"mokhot", flash:st.mok.flash};
+    else if (sid === "S1") o = {bild:"A", markiert:s1, klick:akt ? akt.optionen : [], act:"mokhot", flash:st.mok.flash, wahl:akt && mokU(akt.id).wahl, falsch:akt && !!mokU(akt.id).fehler};
     else if (sid === "S2") o = {bild:"A", markiert:s1, werkzeuge:true, aktiv:st.mok.zone, klick:["oben","band3","band2","band1"], act:"mokzone"};
     else if (sid === "S3" || sid === "S4" || sid === "S5") o = {bild:"A", markiert:s1, werkzeuge:true};
     else {
       var x = akt || mokListe(sid).slice(-1)[0];
       o = {bild:x.bild};
-      if (akt && x.antworttyp === "hotspot") o = {bild:x.bild, klick:x.optionen, act:"mokhot", flash:st.mok.flash};
+      if (akt && x.antworttyp === "hotspot") o = {bild:x.bild, klick:x.optionen, act:"mokhot", flash:st.mok.flash, wahl:mokU(x.id).wahl, falsch:!!mokU(x.id).fehler};
       else { o.markiert = x.zeigen || (x.antworttyp === "hotspot" ? [x.richtige_antwort] : []); o.aktiv = x.zone; }
     }
     var bildId = sid === "S6" || sid === "S7" ? o.bild : "A";
@@ -3028,8 +3033,12 @@ wechsle aber nicht ohne Zustimmung.
     var knoepfe = '';
     if (o.act === "mokhot" && o.klick && o.klick.length){
       var R = mokRegionen(o.bild);
-      knoepfe = '<div class="mok-flaechen"><span class="note">Fläche antippen oder hier wählen:</span><div class="chips">' +
-        mokReihenfolge(o.klick, R).map(function(id, i){ return '<button class="chip" type="button" data-act="mokhot" data-val="' + id + '">' + (i + 1) + (i === 0 ? ' · unten' : '') + '</button>'; }).join("") + '</div></div>';
+      // Antippen wählt nur aus, erst „Prüfen“ wertet: Vertipper am kleinen Handybild zählen nicht als Fehler
+      knoepfe = '<div class="mok-flaechen"><span class="note">Fläche im Bild antippen oder hier wählen, dann „Prüfen“:</span><div class="chips">' +
+        mokReihenfolge(o.klick, R).map(function(id, i){
+          var on = o.wahl === id, cls = on ? (o.falsch ? ' on wrong' : ' on') : '';
+          return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokhot" data-val="' + id + '">' + (i + 1) + (i === 0 ? ' · unten' : '') + '</button>'; }).join("") + '</div>' +
+        (akt && akt.antworttyp === "hotspot" ? mokPruefBtn(akt, o.wahl != null) : '') + '</div>';
     }
     return oben + mokKopf(o) + knoepfe + unten + '<p class="note">' + MOK_BILDER[bildId].titel + '</p>';
   }
@@ -3113,12 +3122,12 @@ wechsle aber nicht ohne Zustimmung.
     var M = st.mok, val = b.getAttribute("data-val"), id = b.getAttribute("data-id"), x, s;
     var warFertig = mokFertig(M.screen);
     M.flash = null; M.fokus = null;
-    if (a === "mokhot" || a === "mokpruef") M.fokus = "fb";
+    if (a === "mokpruef") M.fokus = "fb";
     if (a === "mokzone") M.fokus = "wahl";
     if (a === "mokscreen"){ var k = +val; if (k <= M.offen){ M.screen = k; M.zuletzt = null; return true; } }
     if (a === "moknext" && mokFertig(M.screen) && M.screen < MOK_SCREENS.length - 1){ M.screen++; M.offen = Math.max(M.offen, M.screen); M.zuletzt = null; return true; }
     if (a === "mokprev" && M.screen > 0){ M.screen--; M.zuletzt = null; return true; }
-    if (a === "mokhot"){ x = mokAktuell(MOK_SCREENS[M.screen].id); if (x && x.antworttyp === "hotspot") mokPruefen(x, val); }
+    if (a === "mokhot"){ x = mokAktuell(MOK_SCREENS[M.screen].id); if (x && x.antworttyp === "hotspot"){ s = mokU(x.id); if (!s.ok && !s.weg){ s.wahl = val; s.fehler = null; } } }
     if (a === "mokzone" && MOK_SCREENS[M.screen].id === "S2"){ x = mokX("mok-s2-" + val); if (x && !mokErledigt(x.id)){ M.zone = val; M.zuletzt = null; } }
     if (a === "mokwahl"){
       x = mokX(id); s = mokU(id);
@@ -3149,10 +3158,19 @@ wechsle aber nicht ohne Zustimmung.
   }
   // Nach einem Klick im Reiter „Maschine“: Rückmeldung, Auswahl oder Weiter-Knopf ins Bild holen, falls verdeckt
   function mokZeigen(){
-    var el = document.getElementById("mok-fokus"); if (st.mok) st.mok.fokus = null;
+    if (st.mok) st.mok.fokus = null;
+    // erst nach dem Neuzeichnen messen
+    (window.requestAnimationFrame || setTimeout)(mokZeigenJetzt);
+  }
+  function mokZeigenJetzt(){
+    var el = document.getElementById("mok-fokus");
     if (!el) return;
     var r = el.getBoundingClientRect(), bar = document.querySelector(".appbar"), oben = bar ? bar.getBoundingClientRect().bottom : 0;
-    if (r.top < oben || r.bottom > window.innerHeight) el.scrollIntoView({block:"nearest", behavior:"smooth"});
+    // Abstand selbst berechnen: oben unter der Kopfleiste frei lassen, unten nur so weit wie nötig
+    var luft = 12, dy = 0;
+    if (r.top < oben + luft) dy = r.top - oben - luft;
+    else if (r.bottom > window.innerHeight - luft) dy = Math.min(r.bottom - window.innerHeight + luft, r.top - oben - luft);
+    if (dy) window.scrollBy({top:dy, behavior:"smooth"});
   }
 
 
