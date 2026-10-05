@@ -8,7 +8,7 @@ Alle zeigen einen Hinterkopf mit Verlauf und sind auf 960 × 940 Pixel zugeschni
 | `verlauf-a.jpg` | Übungskopf, S0 bis S5 | `A` |
 | `verlauf-b.jpg` | Prüfungskopf, S7 | `B` |
 | `fehler-kante.jpg` | Fehlerbild Kante an der Übergangslinie, S6 | `C` |
-| `fehler-stufe.jpg` | Fehlerbild Stufe zwischen Band 2 und Band 3, Prüfungsfall S7 | `D` |
+| `fehler-stufe.jpg` | Fehlerbild harte Linie am Übergang (nicht ausgekippt), Prüfungsfall S7 | `D` |
 
 ## Foto austauschen
 
@@ -16,4 +16,4 @@ Alle zeigen einen Hinterkopf mit Verlauf und sind auf 960 × 940 Pixel zugeschni
 2. In `beratung-formwirkung.html` bei `MOK_KOEPFE` die Zonen (`deckhaar`, `oben`, `uebergang`, `band3`, `band2`, `band1`) und den Haarrand `x` neu ausmessen. Die Werte sind auf 480 × 470 umgerechnet (Pixel ÷ 2).
 3. `MOK_BILD_VERSION` um 1 erhöhen, damit Handys das neue Foto laden.
 
-Bei den Fehlerfotos muss die Fehlerstelle genau in der gesuchten Zone liegen: die Kante in `uebergang`, die Stufe in `grenze`. Sonst ist die Aufgabe „Tippe die Fehlerstelle an“ nicht eindeutig.
+Bei den Fehlerfotos muss die Fehlerstelle genau in der gesuchten Zone liegen: bei beiden Fotos (Kante und harte Linie) in `uebergang`. Sonst ist die Aufgabe „Wähle die Fehlerstelle“ nicht eindeutig.
