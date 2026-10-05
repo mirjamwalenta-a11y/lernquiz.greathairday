@@ -2755,23 +2755,23 @@ wechsle aber nicht ohne Zustimmung.
      feedback:{richtig:"Die harte Linie sitzt am Übergang zwischen Band 1 und Kammbereich.", leitfrage:"Wo springt das Haar von hell zu dunkel, ohne weichen Übergang?"}},
     {id:"mok-p5b", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Harte Linie – Ursache", bild:"B-stufe", zeigen:["uebergang"],
      ausgangslage:"Die Fehlerstelle liegt am Übergang, direkt über Band 1.", frage:"Was hat diesen Fehler verursacht?", antworttyp:"auswahl",
-     optionen:[{id:"a", text:"Kammbahnen nicht überlappend"},{id:"b", text:"Band 1 mit der längsten Einstellung gerade hochgefahren, oben nicht ausgekippt"},{id:"c", text:"Kürzeste Einstellung zu hoch geführt"},{id:"d", text:"Haar zu nass geschnitten"}],
+     optionen:[{id:"a", text:"Kammbahnen nicht überlappend"},{id:"b", text:"Maschine gerade hochgefahren und an der Linie nicht angehoben"},{id:"c", text:"Kammwinkel zu früh geöffnet"},{id:"d", text:"Haar zu nass geschnitten"}],
      richtige_antwort:"b",
-     begruendung:"Am oberen Rand von Band 1 muss die Maschine auskippen. Fährt sie gerade hoch, bleibt eine harte Linie.",
+     begruendung:"Nicht die Einstellung ist der Fehler, sondern die Führung: An der Linie muss die Maschine angehoben (ausgekippt) werden. Fährt sie gerade hoch, bleibt eine harte Linie.",
      typische_fehler:[
        {option:"a", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Nicht überlappende Bahnen erzeugen senkrechte Streifen im Kammbereich. Dein Fehler ist eine waagrechte, gerade Linie am Übergang.", leitfrage:"Ist die Linie senkrecht oder waagrecht – und wo liegt sie?"},
-       {option:"c", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Die kürzeste Einstellung, zu hoch geführt, macht unten eine helle, zu kurze Fläche – keine gerade Linie am Übergang.", leitfrage:"Wo genau liegt die Linie?"},
-       {option:"d", fehlertyp:"ursache", zurueck:"bewegung", denkfehler:"Die Ursache liegt nicht am Haar, sondern an der Führung der Maschine.", leitfrage:"Wie muss die Maschine am oberen Rand von Band 1 geführt werden?"}],
-     feedback:{richtig:"Nicht ausgekippt: Am oberen Rand von Band 1 ist eine harte Linie stehen geblieben.", leitfrage:"Wie muss die Maschine am oberen Rand von Band 1 geführt werden?"}},
+       {option:"c", fehlertyp:"ursache", zurueck:"bewegung", denkfehler:"Ein zu früh geöffneter Kammwinkel lässt darüber zu viel Länge stehen. Die harte Linie entsteht aber darunter, wo die Maschine ohne Kamm arbeitet.", leitfrage:"Was macht die Maschine am Ende ihrer Bahn, bevor die Linie entsteht?"},
+       {option:"d", fehlertyp:"ursache", zurueck:"bewegung", denkfehler:"Die Ursache liegt nicht am Haar, sondern an der Führung der Maschine.", leitfrage:"Was macht die Maschine am Ende ihrer Bahn, bevor die Linie entsteht?"}],
+     feedback:{richtig:"Nicht angehoben: Die Maschine ist gerade hochgefahren, deshalb ist eine harte Linie stehen geblieben.", leitfrage:"Was macht die Maschine am Ende ihrer Bahn, bevor die Linie entsteht?"}},
     {id:"mok-p5c", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Harte Linie – Korrektur", bild:"B-stufe", zeigen:["uebergang"],
-     ausgangslage:"Ursache: Band 1 mit der längsten Einstellung gerade hochgefahren, nicht ausgekippt.", frage:"Wie korrigierst du?", antworttyp:"auswahl",
-     optionen:[{id:"a", text:"Am oberen Rand von Band 1 mit der längsten Einstellung auskippen und mit Maschine über Kamm flach anschließen"},{id:"b", text:"Die Linie mit der kürzesten Einstellung wegfahren"},{id:"c", text:"Das Deckhaar kürzen"}],
+     ausgangslage:"Ursache: Maschine gerade hochgefahren, an der Linie nicht angehoben.", frage:"Wie korrigierst du?", antworttyp:"auswahl",
+     optionen:[{id:"a", text:"Mit der nächstlängeren Einstellung an der Linie ansetzen, anheben und mit Maschine über Kamm flach anschließen"},{id:"b", text:"Die Linie mit der kürzesten Einstellung höher wegfahren"},{id:"c", text:"Das Deckhaar kürzen"}],
      richtige_antwort:"a",
-     begruendung:"Die Linie wird mit der längsten Einstellung ausgekippt und mit dem Kamm flach angeschlossen.",
+     begruendung:"Die Linie wird mit der nächstlängeren Einstellung und Anheben weich gemacht, darüber schließt der Kamm flach an.",
      typische_fehler:[
-       {option:"b", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit der kürzesten Einstellung wird es dort zu kurz – aus der Linie wird ein Loch.", leitfrage:"Womit machst du die Linie weich, ohne dass es zu kurz wird?"},
+       {option:"b", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit der kürzesten Einstellung schiebst du die Linie nur nach oben – der Verlauf wird zu hoch, die Linie bleibt.", leitfrage:"Womit machst du die Linie weich, ohne dass es zu kurz wird?"},
        {option:"c", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das Deckhaar liegt weit über dem Fehler. Die Linie sitzt am Übergang.", leitfrage:"In welcher Zone liegt der Fehler?"}],
-     feedback:{richtig:"Auskippen und flach mit dem Kamm anschließen: Die harte Linie verschwindet.", leitfrage:"Womit machst du die Linie weich, ohne dass es zu kurz wird?"}}
+     feedback:{richtig:"Anheben und flach mit dem Kamm anschließen: Die harte Linie verschwindet.", leitfrage:"Womit machst du die Linie weich, ohne dass es zu kurz wird?"}}
   ];
 
   // ---------- Zustand ----------

@@ -108,7 +108,7 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 | Fehlerbild | Zone | Ursache | Korrektur |
 |---|---|---|---|
 | Stufe zwischen zwei Einstellungen | Band 1, Grenze zwischen zwei Einstellungen | an der Grenze nicht ausgekippt, gerade hochgefahren | Grenze mit der nächstlängeren Einstellung und Auskippen verblenden |
-| Harte Linie am Übergang (Fehlerfoto im Prüfungsfall) | Übergang | Band 1 mit der längsten Einstellung gerade hochgefahren, nicht ausgekippt | am oberen Rand von Band 1 auskippen, mit Maschine über Kamm flach anschließen |
+| Harte Linie am Übergang (Fehlerfoto im Prüfungsfall) | Übergang | Maschine gerade hochgefahren, an der Linie nicht angehoben (die Einstellung ist nicht der Fehler) | mit der nächstlängeren Einstellung an der Linie anheben, mit Maschine über Kamm flach anschließen |
 | Kante / dunkler Rand an der Übergangslinie | Übergangslinie | Kamm im Übergang zu weit weg oder zu steil, kein Anschluss an den offenen Hebel | Maschine über Kamm direkt am offenen Band ansetzen, Kamm flach beginnen, Winkel erst darüber öffnen |
 | Loch / helle Stelle im oberen Bereich | oberer Bereich | Kamm zu nah am Kopf gedrückt oder Kamm stehen geblieben | umliegende Partie mit Maschine über Kamm angleichen, Kamm gleichmäßig führen |
 | Verlauf zu hoch „ausrasiert“ | unterer Bereich | geschlossener Hebel zu hoch geführt | Übergang darüber mit halboffenem/offenem Hebel und Kamm neu aufbauen; Höhe ist nicht zurückzuholen |
