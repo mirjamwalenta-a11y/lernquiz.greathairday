@@ -17,7 +17,7 @@ Aufbau von unten nach oben: **Band 1 (Hebel) → Übergang → Kammbereich (ab B
 | Kammbereich (ab Band 2) | Übergang bis Deckhaar | **Maschine über Kamm** | der Kamm (Abstand und Winkel zum Kopf) | Kamm führt von unten nach oben, Maschine folgt am Kammrücken |
 | Deckhaar | ganz oben | gehört nicht mehr zum Verlauf | – | – |
 
-Merksatz für die App: **In Band 1 entscheidet der Hebel, ab Band 2 entscheidet der Kamm.**
+Merksatz für die App (Grundregel): **In Band 1 steuert der Hebel die Schnittlänge – ab Band 2 steuert der Kamm Winkel und Länge.**
 
 Bilder in der App: vier Fotos Hinterkopf in `bilder/maschine/`: Übungskopf, Prüfungskopf und je ein echtes Fehlerfoto für Kante und Stufe. Die Bewegungsclips in S3 und im Prüfungsfall sind kurze, schematische Animationen (Seitenansicht), die nur die Bewegung zeigen, keine Wertung.
 
@@ -45,7 +45,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 | **2 Werkzeug wählen** | Jeder Zone das richtige Werkzeug bzw. die richtige Einstellung zuordnen | Was bestimmt hier die Länge – der Hebel oder der Kamm? | Werkzeugkarte auf die Zone ziehen | Trennt die zwei Methoden sauber. Der Lehrling merkt: Die Zone entscheidet das Werkzeug, nicht die Gewohnheit. |
 | **3 Bewegung wählen** | Passende Führung zur gewählten Methode und richtige Arbeitsreihenfolge | Wie führe ich Maschine bzw. Kamm, und in welcher Reihenfolge? | Bewegungsclip wählen + Arbeitsschritte in Reihenfolge ziehen | Bewegung wird als Folge der Werkzeugwahl gelernt, nicht als eigene Liste. |
 | **4 Begründen** | Die Kette Zone → Werkzeug → Bewegung → Ergebnis selbst schließen | Warum ist diese Entscheidung prüfungskonform? | Satzbaustein mit Auswahlfeldern (kein Freitext) | Macht sichtbar, ob verstanden oder geraten wurde. Bleibt auswertbar. |
-| **5 Fehler lesen** | Fehlerbild einer Zone zuordnen, Ursache benennen, Korrektur wählen | Wo ist der Fehler, was hat ihn verursacht, wie korrigiere ich? | Fehlerbild antippen → Ursache wählen → Korrektur wählen | Überträgt die Kette rückwärts. Das ist der Prüfungsalltag: sehen, was schiefging, und es retten. |
+| **5 Fehleranalyse** | Fehlerbild einer Zone zuordnen, Ursache benennen, Korrektur wählen | Wo ist der Fehler, was hat ihn verursacht, wie korrigiere ich? | Fehlerbild antippen → Ursache wählen → Korrektur wählen | Überträgt die Kette rückwärts. Das ist der Prüfungsalltag: sehen, was schiefging, und es retten. |
 
 ---
 
@@ -59,7 +59,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 | **S3 Bewegung wählen** | pro Methode 3 kurze Bewegungsclips (Animation), eine davon richtig | je Methode den passenden Clip wählen | Bewegung passt zur Methode | beide richtig |
 | **S4 Arbeitsreihenfolge** | 7 Arbeitsschrittkarten, ungeordnet | in Reihenfolge ziehen | Reihenfolge (siehe Übung 5) | Reihenfolge richtig; bei Fehler werden nur falsch liegende Karten markiert |
 | **S5 Begründen** | Satzbaustein, eigene Antworten aus S1–S3 vorbefüllt | Auswahlfeld „weil …“ und „sonst entsteht …“ wählen | fachliche Genauigkeit der Begründung | richtige, präzise Begründung |
-| **S6 Fehler lesen** | Fehlerfoto bzw. Fehlerzeichnung | Fehlerstelle antippen → Ursache wählen → Korrektur wählen | Zone, Ursache, Korrektur jeweils einzeln | alle drei richtig; Ursache wird erst freigeschaltet, wenn die Zone stimmt |
+| **S6 Fehleranalyse** | Fehlerfoto bzw. Fehlerzeichnung | Fehlerstelle antippen → Ursache wählen → Korrektur wählen | Zone, Ursache, Korrektur jeweils einzeln | alle drei richtig; Ursache wird erst freigeschaltet, wenn die Zone stimmt |
 | **S7 Prüfungsfall** | neuer Kopf, keine Hilfen, alle Schritte in einem Durchlauf | S1–S6 in Kurzform | alles, ohne Einblendungen | Modul gilt als bestanden bei 100 % in Zone und Werkzeug und höchstens 1 Fehler in Bewegung/Fehlerdiagnose |
 
 Bildaufgaben (S1, S6, Prüfungsfall): Die Flächen am Kopf sind nummeriert (1 = unten). Gewählt wird nur über die Nummern-Knöpfe unter dem Bild, die gewählte Fläche wird am Kopf farbig angezeigt. Erst „Prüfen“ wertet. In S2 wird die Zone über die Namens-Knöpfe gewählt. Das Foto selbst ist nicht antippbar.
@@ -288,5 +288,5 @@ Mehrstufige Übungen (Fehlerdiagnose a/b/c) werden als drei Übungen mit gemeins
 - **Werkzeugleiste unten:** vier Karten (kürzeste Einstellung / halboffen / offen, Maschine über Kamm) mit kleinem Symbol der Einstellung bzw. Kammwinkel. Ziehen auf die Zone.
 - **Bewegungsclips:** kurze Schleifen (2–3 s) direkt über dem Kopfbild, im Vergleich nebeneinander, wenn falsch gewählt.
 - **Fehlerbild:** Foto mit Tippfläche; nach richtiger Zone erscheint die Ursachenauswahl darunter.
-- **Schrittführung oben:** Erkennen · Wählen · Bewegen · Begründen · Fehler lesen – aktiver Schritt hervorgehoben, spätere gesperrt.
+- **Schrittführung oben:** Erkennen · Wählen · Bewegen · Begründen · Fehleranalyse – aktiver Schritt hervorgehoben, spätere gesperrt.
 - **Merksatz** „Unten entscheidet der Hebel, oben entscheidet der Kamm“ bleibt in jedem Feedback als Fußzeile sichtbar.
