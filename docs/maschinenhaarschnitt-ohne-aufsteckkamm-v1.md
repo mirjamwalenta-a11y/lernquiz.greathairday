@@ -5,22 +5,22 @@ Prüfungsfeld: Verlauf bei der Gesellenprüfung, Aufsteckkämme verboten.
 ## Festes Sprachraster
 
 Alle Modultexte, Antwortoptionen und Feedbacks verwenden nur diese Begriffe:
-**Unterer Bereich · Oberer Bereich · Übergangslinie · Hebel geschlossen · Hebel halboffen · Hebel offen · Maschine über Kamm · Kammwinkel · Auskippen · Stufe · Kante · Loch**
+**Unterer Bereich · Oberer Bereich · Übergangslinie · kürzeste Einstellung · mittlere Einstellung · längste Einstellung · Maschine über Kamm · Kammwinkel · Auskippen · Stufe · Kante · Loch**
 
 | Bereich | Lage | Werkzeug | Was bestimmt die Länge? | Bewegung |
 |---|---|---|---|---|
-| Unterer Bereich, Band 1 | Konturansatz (Nacken, hinter dem Ohr) | Maschine ohne Aufsatz, **Hebel geschlossen** | der Hebel (kürzeste Einstellung) | flach am Kopf, gegen die Wuchsrichtung nach oben |
-| Unterer Bereich, Band 2 | über Band 1 | Maschine ohne Aufsatz, **Hebel halboffen** | der Hebel (mittlere Einstellung) | nach oben führen, an der Bandgrenze auskippen |
-| Unterer Bereich, Band 3 | über Band 2 bis zur Übergangslinie | Maschine ohne Aufsatz, **Hebel offen** | der Hebel (längste Einstellung) | nach oben führen, an der Übergangslinie auskippen |
+| Unterer Bereich, Band 1 | Konturansatz (Nacken, hinter dem Ohr) | Maschine ohne Aufsatz, **kürzeste Einstellung** | der Hebel (kürzeste Einstellung) | flach am Kopf, gegen die Wuchsrichtung nach oben |
+| Unterer Bereich, Band 2 | über Band 1 | Maschine ohne Aufsatz, **mittlere Einstellung** | der Hebel (mittlere Einstellung) | nach oben führen, an der Bandgrenze auskippen |
+| Unterer Bereich, Band 3 | über Band 2 bis zur Übergangslinie | Maschine ohne Aufsatz, **längste Einstellung** | der Hebel (längste Einstellung) | nach oben führen, an der Übergangslinie auskippen |
 | Oberer Bereich | Übergangslinie bis Deckhaar | **Maschine über Kamm** | der Kamm (Abstand und Winkel zum Kopf) | Kamm führt von unten nach oben, Maschine folgt am Kammrücken |
 
 Merksatz für die App: **Unten entscheidet der Hebel, oben entscheidet der Kamm.**
 
 Bilder in der App: vier Fotos Hinterkopf in `bilder/maschine/`: Übungskopf, Prüfungskopf und je ein echtes Fehlerfoto für Kante und Stufe. Die Bewegungsclips in S3 und im Prüfungsfall sind kurze, schematische Animationen (Seitenansicht), die nur die Bewegung zeigen, keine Wertung.
 
-Dieses Dokument entspricht dem Stand der App (`beratung-formwirkung.html`, Reiter „Maschine“, Daten in `MOK_UEBUNGEN`, Screens in `MOK_SCREENS`). Umsetzungsdetail: In S1 heißen die Bänder neutral „Band 1 · Konturansatz“, „Band 2“, „Band 3“, damit die Hebelstellung nicht schon vor S2 verraten wird.
+Dieses Dokument entspricht dem Stand der App (`beratung-formwirkung.html`, Reiter „Maschine“, Daten in `MOK_UEBUNGEN`, Screens in `MOK_SCREENS`). Umsetzungsdetail: In S1 heißen die Bänder neutral „Band 1 · Konturansatz“, „Band 2“, „Band 3“, damit die Einstellung nicht schon vor S2 verraten wird.
 
-Begriff in der App: Statt „Konturansatz“ heißt Band 1 „kürzeste Stelle“ (am Haaransatz im Nacken sitzen oft Wirbel, die Kontur ist kein verlässlicher Bezugspunkt). S1 fragt über die Länge: Wo ist das Haar am kürzesten, wo am längsten, wo wird es deutlich länger?
+Begriff in der App: Die drei Einstellungen der Maschine heißen „kürzeste“, „mittlere“ und „längste Einstellung“ (nicht „Hebel geschlossen/halboffen/offen“, das sagt im Salon niemand). Statt „Konturansatz“ heißt Band 1 „kürzeste Stelle“ (am Haaransatz im Nacken sitzen oft Wirbel, die Kontur ist kein verlässlicher Bezugspunkt). S1 fragt über die Länge: Wo ist das Haar am kürzesten, wo am längsten, wo wird es deutlich länger?
 
 Fachlicher Kern, der in jedem Feedback mitschwingt: Die Hebelstufen liegen nur wenige Millimeter auseinander. Der Hebel kann deshalb nur das untere Band des Verlaufs erzeugen. Sobald mehr Länge gebraucht wird, übernimmt der Kamm.
 
@@ -39,7 +39,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 | Schritt | Ziel | Leitfrage | Antwortformat | Didaktischer Nutzen |
 |---|---|---|---|---|
 | **1 Zone erkennen** | Kurze und lange Bereiche, Übergang und Bänder am Kopf sicher verorten | Wo ist das Haar kurz, wo ist es lang? | Fläche über Nummer am Foto wählen | Erst schauen, dann schneiden. Werkzeuge sind in diesem Schritt nicht sichtbar. |
-| **2 Werkzeug wählen** | Jeder Zone das richtige Werkzeug bzw. die richtige Hebelstellung zuordnen | Was bestimmt hier die Länge – der Hebel oder der Kamm? | Werkzeugkarte auf die Zone ziehen | Trennt die zwei Methoden sauber. Der Lehrling merkt: Die Zone entscheidet das Werkzeug, nicht die Gewohnheit. |
+| **2 Werkzeug wählen** | Jeder Zone das richtige Werkzeug bzw. die richtige Einstellung zuordnen | Was bestimmt hier die Länge – der Hebel oder der Kamm? | Werkzeugkarte auf die Zone ziehen | Trennt die zwei Methoden sauber. Der Lehrling merkt: Die Zone entscheidet das Werkzeug, nicht die Gewohnheit. |
 | **3 Bewegung wählen** | Passende Führung zur gewählten Methode und richtige Arbeitsreihenfolge | Wie führe ich Maschine bzw. Kamm, und in welcher Reihenfolge? | Bewegungsclip wählen + Arbeitsschritte in Reihenfolge ziehen | Bewegung wird als Folge der Werkzeugwahl gelernt, nicht als eigene Liste. |
 | **4 Begründen** | Die Kette Zone → Werkzeug → Bewegung → Ergebnis selbst schließen | Warum ist diese Entscheidung prüfungskonform? | Satzbaustein mit Auswahlfeldern (kein Freitext) | Macht sichtbar, ob verstanden oder geraten wurde. Bleibt auswertbar. |
 | **5 Fehler lesen** | Fehlerbild einer Zone zuordnen, Ursache benennen, Korrektur wählen | Wo ist der Fehler, was hat ihn verursacht, wie korrigiere ich? | Fehlerbild antippen → Ursache wählen → Korrektur wählen | Überträgt die Kette rückwärts. Das ist der Prüfungsalltag: sehen, was schiefging, und es retten. |
@@ -52,7 +52,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 |---|---|---|---|---|
 | **S0 Auftrag** | Zielbild Verlauf (Hinterkopf + Profil), Hinweis „Aufsteckkämme verboten“, Merksatz | Auftrag bestätigen | nichts | sofort |
 | **S1 Zonen erkennen** | Foto Hinterkopf mit nummerierten Flächen | Nacheinander: kürzeste Stelle, längste Stelle, Übergang (wo das Haar deutlich länger wird), oberer Bereich, Band über der kürzesten Stelle | gewählte Fläche | nach jeder Frage „Nächste Frage“, nach Frage 5 „Weiter zu S2“ |
-| **S2 Werkzeug zuordnen** | Kopfbild mit den eigenen Zonen, 5 Werkzeugkarten: Hebel geschlossen · Hebel halboffen · Hebel offen · Maschine über Kamm · Schere über Kamm (Distraktor, im Verlaufsbereich nicht gefragt) | Karten auf Zonen ziehen | jede Zone hat die richtige Karte | alle Zuordnungen richtig |
+| **S2 Werkzeug zuordnen** | Kopfbild mit den eigenen Zonen, 5 Werkzeugkarten: kürzeste Einstellung · mittlere Einstellung · längste Einstellung · Maschine über Kamm · Schere über Kamm (Distraktor, im Verlaufsbereich nicht gefragt) | Karten auf Zonen ziehen | jede Zone hat die richtige Karte | alle Zuordnungen richtig |
 | **S3 Bewegung wählen** | pro Methode 3 kurze Bewegungsclips (Animation), eine davon richtig | je Methode den passenden Clip wählen | Bewegung passt zur Methode | beide richtig |
 | **S4 Arbeitsreihenfolge** | 7 Arbeitsschrittkarten, ungeordnet | in Reihenfolge ziehen | Reihenfolge (siehe Übung 5) | Reihenfolge richtig; bei Fehler werden nur falsch liegende Karten markiert |
 | **S5 Begründen** | Satzbaustein, eigene Antworten aus S1–S3 vorbefüllt | Auswahlfeld „weil …“ und „sonst entsteht …“ wählen | fachliche Genauigkeit der Begründung | richtige, präzise Begründung |
@@ -79,7 +79,7 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 - **Hilfreiches Feedback:** zeigt die getippte Stelle und die richtige Zone nebeneinander und fragt: „Welches Werkzeug würde an deiner Stelle die Länge bestimmen?“
 
 ### 4.2 Werkzeugwahl
-- **Trainiert wird:** Hebelstellung passend zum Band wählen; erkennen, ab wann der Hebel nicht mehr reicht und der Kamm übernimmt.
+- **Trainiert wird:** Einstellung passend zum Band wählen; erkennen, ab wann der Hebel nicht mehr reicht und der Kamm übernimmt.
 - **Typische Fehlvorstellungen:**
   - „Der offene Hebel ist so lang wie ein Aufsteckkamm.“ (Die Stufen liegen nur wenige Millimeter auseinander.)
   - „Bei Maschine über Kamm bestimmt die Maschine die Länge.“ (Der Kamm bestimmt sie.)
@@ -104,7 +104,7 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 
 | Fehlerbild | Zone | Ursache | Korrektur |
 |---|---|---|---|
-| Stufe zwischen zwei Hebelbändern | unterer Bereich, Bandgrenze | an der Grenze nicht ausgekippt, gerade hochgefahren | Grenze mit der nächstlängeren Hebelstellung und Auskippen verblenden |
+| Stufe zwischen zwei Hebelbändern | unterer Bereich, Bandgrenze | an der Grenze nicht ausgekippt, gerade hochgefahren | Grenze mit der nächstlängeren Einstellung und Auskippen verblenden |
 | Kante / dunkler Rand an der Übergangslinie | Übergangslinie | Kamm im Übergang zu weit weg oder zu steil, kein Anschluss an den offenen Hebel | Maschine über Kamm direkt am offenen Band ansetzen, Kamm flach beginnen, Winkel erst darüber öffnen |
 | Loch / helle Stelle im oberen Bereich | oberer Bereich | Kamm zu nah am Kopf gedrückt oder Kamm stehen geblieben | umliegende Partie mit Maschine über Kamm angleichen, Kamm gleichmäßig führen |
 | Verlauf zu hoch „ausrasiert“ | unterer Bereich | geschlossener Hebel zu hoch geführt | Übergang darüber mit halboffenem/offenem Hebel und Kamm neu aufbauen; Höhe ist nicht zurückzuholen |
@@ -126,17 +126,17 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 - **Frage:** Tippe die Stelle an, an der die Arbeit mit dem Hebel endet und Maschine über Kamm beginnt.
 - **Interaktion:** Hotspot im Kopfbild.
 - **Richtige Lösung:** die Übergangslinie, direkt über dem Band mit offenem Hebel.
-- **Begründung:** Über dem offenen Hebel gibt es keine längere Hebelstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.
+- **Begründung:** Über dem offenen Hebel gibt es keine längere Einstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.
 - **Typische Fehlentscheidung:** Tippen auf den Deckhaaransatz (zu hoch).
 - **Feedback:** „Du hast den Deckhaaransatz gewählt. Zwischen offenem Hebel und Deckhaar liegt aber noch der obere Bereich des Verlaufs. Frag dich: Wo endet das, was der Hebel kann? Genau dort beginnt der Kamm.“
 
 ### Übung 2 – Hebeleinstellung wählen
 - **Ausgangslage:** Profil links. Markiert ist das Band direkt über dem Konturansatz (Band 2). Darunter ist mit geschlossenem Hebel gearbeitet.
 - **Frage:** Welche Einstellung brauchst du für das markierte Band?
-- **Antwortoptionen:** Hebel geschlossen · **Hebel halboffen** · Hebel offen · Maschine über Kamm
-- **Richtige Lösung:** Hebel halboffen.
+- **Antwortoptionen:** kürzeste Einstellung · **mittlere Einstellung** · längste Einstellung · Maschine über Kamm
+- **Richtige Lösung:** mittlere Einstellung.
 - **Begründung:** Der Verlauf wird nach oben schrittweise länger. Auf geschlossen folgt die nächstlängere Stellung. Ein Sprung auf offen erzeugt eine sichtbare Stufe.
-- **Typische Fehlentscheidung:** Hebel offen („geht schneller“).
+- **Typische Fehlentscheidung:** längste Einstellung („geht schneller“).
 - **Feedback:** „Du hast eine Stufe übersprungen. Zwischen geschlossen und offen fehlt dann der Zwischenschritt, und an der Grenze entsteht eine Stufe. Unten entscheidet der Hebel – und zwar Schritt für Schritt.“
 
 ### Übung 3 – Kammführung wählen
@@ -155,14 +155,14 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 - **Ausgangslage:** Foto Hinterkopf. Direkt über dem kurzen Bereich verläuft eine waagrechte dunkle Kante, darüber ist das Haar deutlich länger.
 - **Frage:** (a) Tippe die Fehlerstelle an. (b) Was hat den Fehler verursacht? (c) Wie korrigierst du?
 - **Antwortoptionen (b):**
-  - Hebel geschlossen zu hoch geführt
+  - kürzeste Einstellung zu hoch geführt
   - **Kein Anschluss: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen**
   - Kammbahnen nicht überlappend
   - Haar zu nass geschnitten
 - **Antwortoptionen (c):** **Maschine über Kamm direkt am offenen Band flach ansetzen und Winkel erst darüber öffnen** · Kante mit geschlossenem Hebel wegfahren · Deckhaar kürzen
 - **Richtige Lösung:** (a) Übergangslinie, (b) kein Anschluss, Kamm zu weit weg, (c) flach am offenen Band ansetzen.
-- **Begründung:** Die Kante liegt genau an der Grenze Hebel/Kamm. Dort fehlt die Verbindung zwischen der längsten Hebelstellung und dem Kamm.
-- **Typische Fehlentscheidung:** „Hebel geschlossen zu hoch“.
+- **Begründung:** Die Kante liegt genau an der Grenze Hebel/Kamm. Dort fehlt die Verbindung zwischen der längsten Einstellung und dem Kamm.
+- **Typische Fehlentscheidung:** „kürzeste Einstellung zu hoch“.
 - **Feedback:** „Schau, wo die Kante liegt: an der Übergangslinie, nicht im unteren Band. Dort arbeitet der Kamm. Ein zu hoch geführter geschlossener Hebel würde eine helle, zu kurze Fläche erzeugen – keine dunkle Kante.“
 
 ### Übung 5 – Arbeitsreihenfolge erkennen
@@ -171,9 +171,9 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 - **Interaktion:** 7 Karten ziehen.
 - **Richtige Lösung:**
   1. Übergangslinie festlegen und beidseitig kontrollieren
-  2. Hebel offen: unteren Bereich bis zur Übergangslinie, an der Linie auskippen
-  3. Hebel halboffen: unteres Band, an der Grenze auskippen
-  4. Hebel geschlossen: Konturansatz
+  2. längste Einstellung: unteren Bereich bis zur Übergangslinie, an der Linie auskippen
+  3. mittlere Einstellung: unteres Band, an der Grenze auskippen
+  4. kürzeste Einstellung: Konturansatz
   5. Bandgrenzen kontrollieren und verblenden
   6. Maschine über Kamm: vom offenen Band nach oben ins längere Haar
   7. Gesamtkontrolle beidseitig, Konturen
@@ -244,7 +244,7 @@ Mehrstufige Übungen (Fehlerdiagnose a/b/c) werden als drei Übungen mit gemeins
   "frage": "Was hat diesen Fehler verursacht?",
   "antworttyp": "auswahl",
   "optionen": [
-    { "id": "a", "text": "Hebel geschlossen zu hoch geführt" },
+    { "id": "a", "text": "kürzeste Einstellung zu hoch geführt" },
     { "id": "b", "text": "Kein Anschluss: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen" },
     { "id": "c", "text": "Kammbahnen nicht überlappend" },
     { "id": "d", "text": "Haar zu nass geschnitten" }
@@ -281,7 +281,7 @@ Mehrstufige Übungen (Fehlerdiagnose a/b/c) werden als drei Übungen mit gemeins
 ## 8. UI-Idee
 
 - **Zonenbild als feste Mitte:** ein Kopf (Hinterkopf, Profil links/rechts umschaltbar). Zonen werden erst vom Lehrling markiert und färben sich dann ein: drei Hebelbänder in abgestuften Tönen, Übergangslinie als kräftige Linie, oberer Bereich mit Kammsymbol.
-- **Werkzeugleiste unten:** vier Karten (Hebel geschlossen / halboffen / offen, Maschine über Kamm) mit kleinem Symbol der Hebelstellung bzw. Kammwinkel. Ziehen auf die Zone.
+- **Werkzeugleiste unten:** vier Karten (kürzeste Einstellung / halboffen / offen, Maschine über Kamm) mit kleinem Symbol der Einstellung bzw. Kammwinkel. Ziehen auf die Zone.
 - **Bewegungsclips:** kurze Schleifen (2–3 s) direkt über dem Kopfbild, im Vergleich nebeneinander, wenn falsch gewählt.
 - **Fehlerbild:** Foto mit Tippfläche; nach richtiger Zone erscheint die Ursachenauswahl darunter.
 - **Schrittführung oben:** Erkennen · Wählen · Bewegen · Begründen · Fehler lesen – aktiver Schritt hervorgehoben, spätere gesperrt.
