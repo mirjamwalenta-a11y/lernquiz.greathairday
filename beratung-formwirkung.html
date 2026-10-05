@@ -2503,7 +2503,7 @@ wechsle aber nicht ohne Zustimmung.
     "B-stufe": {kopf:"D", titel:"Fehlerbild: Stufe zwischen Band 2 und Band 3"}
   };
   // Zonen: label = Beschriftung im Bild nach dem Markieren, name/arbeit = Standard-Feedback beim Antippen der falschen Zone.
-  // Die Namen nennen bewusst keine Hebelstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
+  // Die Namen nennen bewusst keine Einstellung, damit Schritt 2 nicht schon in Schritt 1 verraten wird.
   var MOK_ZONEN = {
     band1:     {label:"Band 1 · kürzeste Stelle", name:"die kürzeste Stelle", arbeit:"arbeitet noch der Hebel"},
     band2:     {label:"Band 2", name:"das Band über der kürzesten Stelle", arbeit:"arbeitet noch der Hebel"},
@@ -2511,32 +2511,32 @@ wechsle aber nicht ohne Zustimmung.
     uebergang: {label:"Übergangslinie", name:"die Übergangslinie", arbeit:"endet der Hebel und beginnt der Kamm"},
     oben:      {label:"Oberer Bereich", name:"den oberen Bereich", arbeit:"arbeitet schon der Kamm"},
     deckhaar:  {label:"Deckhaar", name:"das Deckhaar", arbeit:"liegt das längere Haar, das nicht mehr zum Verlauf gehört"},
-    grenze:    {label:"Grenze Band 2 / 3", name:"die Grenze zwischen Band 2 und Band 3", arbeit:"treffen zwei Hebelstellungen aufeinander"}
+    grenze:    {label:"Grenze Band 2 / 3", name:"die Grenze zwischen Band 2 und Band 3", arbeit:"treffen zwei Einstellungen aufeinander"}
   };
   var MOK_ALLE_ZONEN = ["deckhaar","oben","uebergang","band3","band2","band1"];
-  var MOK_WERKZEUGE = [["geschlossen","Hebel geschlossen"],["halboffen","Hebel halboffen"],["offen","Hebel offen"],["kamm","Maschine über Kamm"],["schere","Schere über Kamm"]];
+  var MOK_WERKZEUGE = [["geschlossen","Kürzeste Einstellung"],["halboffen","Mittlere Einstellung"],["offen","Längste Einstellung"],["kamm","Maschine über Kamm"],["schere","Schere über Kamm"]];
 
   // Werkzeugfehler je Zone: in Schritt 2 und im Prüfungsfall gleich.
-  // zurueck = "zone", wenn Hebel und Kamm verwechselt wurden; "werkzeug", wenn die Methode stimmt, aber die Hebelstellung nicht.
+  // zurueck = "zone", wenn Hebel und Kamm verwechselt wurden; "werkzeug", wenn die Methode stimmt, aber die Einstellung nicht.
   var MOK_WZ_LEIT = "Was bestimmt hier die Länge – der Hebel oder der Kamm?";
   var MOK_WZ_SCHERE = {fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Ohne Aufsteckkämme arbeitest du im Verlauf mit der Maschine: unten über den Hebel, oben über den Kamm. Schere über Kamm ist hier nicht gefragt.", leitfrage:"Welches Maschinenwerkzeug gehört in diese Zone?"};
   var MOK_WZ_FEHLER = {
     band1: [
-      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"An der kürzesten Stelle muss die Maschine am kürzesten schneiden. Mit halboffenem Hebel bleibt das Haar hier zu lang.", leitfrage:"Welche Hebelstellung schneidet am kürzesten?"},
-      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Offen ist die längste Hebelstellung. An der kürzesten Stelle wird es damit zu lang, und für die Bänder darüber bleibt keine längere Stufe.", leitfrage:"Welche Hebelstellung schneidet am kürzesten?"},
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"An der kürzesten Stelle muss die Maschine am kürzesten schneiden. Mit der mittleren Einstellung bleibt das Haar hier zu lang.", leitfrage:"Welche Einstellung schneidet am kürzesten?"},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die längste Einstellung lässt am meisten stehen. An der kürzesten Stelle wird es damit zu lang, und für die Bänder darüber bleibt keine längere Stufe.", leitfrage:"Welche Einstellung schneidet am kürzesten?"},
       {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"An der kürzesten Stelle bestimmt der Hebel die Länge, nicht der Kamm. Maschine über Kamm brauchst du erst über der Übergangslinie.", leitfrage:MOK_WZ_LEIT}],
     band2: [
-      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört an die kürzeste Stelle. Hier wird es damit zu kurz – der Verlauf wirkt zu hoch ausrasiert.", leitfrage:"Welche Hebelstellung folgt auf die kürzeste?"},
-      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Du hast eine Stufe übersprungen. Zwischen geschlossen und offen fehlt der Zwischenschritt, an der Grenze entsteht eine Stufe.", leitfrage:"Welche Hebelstellung liegt zwischen geschlossen und offen?"},
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die kürzeste Einstellung gehört an die kürzeste Stelle. Hier wird es damit zu kurz – der Verlauf wirkt zu hoch ausrasiert.", leitfrage:"Welche Einstellung folgt auf die kürzeste?"},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Du hast eine Stufe übersprungen. Zwischen kürzester und längster Einstellung fehlt der Zwischenschritt, an der Grenze entsteht eine Stufe.", leitfrage:"Welche Einstellung liegt zwischen der kürzesten und der längsten?"},
       {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Unter der Übergangslinie bestimmt der Hebel die Länge. Der Kamm übernimmt erst darüber.", leitfrage:MOK_WZ_LEIT}],
     band3: [
-      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Geschlossen gehört nur an die kürzeste Stelle. Hier wird es zu kurz – unter der Übergangslinie entsteht ein Loch.", leitfrage:"Welche Hebelstellung lässt am meisten Länge stehen?"},
-      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Halboffen arbeitet schon im Band darunter. Ohne offenen Hebel fehlt die längste Stufe, und der Kamm hat keinen Anschluss.", leitfrage:"Welche Hebelstellung lässt am meisten Länge stehen?"},
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die kürzeste Einstellung gehört nur an die kürzeste Stelle. Hier wird es zu kurz – unter der Übergangslinie entsteht ein Loch.", leitfrage:"Welche Einstellung lässt am meisten Länge stehen?"},
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die mittlere Einstellung gehört ins Band darunter. Ohne die längste Einstellung fehlt die längste Stufe, und der Kamm hat keinen Anschluss.", leitfrage:"Welche Einstellung lässt am meisten Länge stehen?"},
       {option:"kamm", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Unter der Übergangslinie bestimmt noch der Hebel die Länge. Erst darüber übernimmt der Kamm.", leitfrage:MOK_WZ_LEIT}],
     oben: [
-      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im oberen Bereich reicht der Hebel nicht mehr. Mit geschlossenem Hebel wird es hier viel zu kurz – es entsteht ein Loch.", leitfrage:MOK_WZ_LEIT},
-      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im oberen Bereich reicht der Hebel nicht mehr. Die Hebelstellungen liegen nur wenige Millimeter auseinander – hier wird es zu kurz.", leitfrage:MOK_WZ_LEIT},
-      {option:"offen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Auch offen liegt der Hebel nur wenige Millimeter über geschlossen. Über der Übergangslinie wird es damit zu kurz.", leitfrage:MOK_WZ_LEIT}]
+      {option:"geschlossen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im oberen Bereich reicht der Hebel nicht mehr. Mit der kürzesten Einstellung wird es hier viel zu kurz – es entsteht ein Loch.", leitfrage:MOK_WZ_LEIT},
+      {option:"halboffen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im oberen Bereich reicht der Hebel nicht mehr. Die Einstellungen liegen nur wenige Millimeter auseinander – hier wird es zu kurz.", leitfrage:MOK_WZ_LEIT},
+      {option:"offen", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Auch die längste Einstellung liegt nur wenige Millimeter über der kürzesten. Über der Übergangslinie wird es damit zu kurz.", leitfrage:MOK_WZ_LEIT}]
   };
 
   // Bewegung im unteren Bereich: in Schritt 3 und im Prüfungsfall gleich.
@@ -2552,11 +2552,11 @@ wechsle aber nicht ohne Zustimmung.
   // Arbeitsreihenfolge = methodischer Standard für die Prüfung (Konzept Übung 5)
   var MOK_REIHE = [
     {id:"linie", text:"Übergangslinie festlegen und beidseitig kontrollieren"},
-    {id:"offen", text:"Hebel offen: unteren Bereich bis zur Übergangslinie, an der Linie auskippen"},
-    {id:"halboffen", text:"Hebel halboffen: unteres Band, an der Grenze auskippen"},
-    {id:"geschlossen", text:"Hebel geschlossen: kürzeste Stelle unten im Nacken"},
+    {id:"offen", text:"Längste Einstellung: unteren Bereich bis zur Übergangslinie, an der Linie auskippen"},
+    {id:"halboffen", text:"Mittlere Einstellung: unteres Band, an der Grenze auskippen"},
+    {id:"geschlossen", text:"Kürzeste Einstellung: kürzeste Stelle unten im Nacken"},
     {id:"verblenden", text:"Bandgrenzen kontrollieren und verblenden"},
-    {id:"kamm", text:"Maschine über Kamm: vom offenen Band nach oben ins längere Haar"},
+    {id:"kamm", text:"Maschine über Kamm: vom Band mit der längsten Einstellung nach oben ins längere Haar"},
     {id:"kontrolle", text:"Gesamtkontrolle beidseitig, Konturen"}];
 
   // ---------- V1-Übungen ----------
@@ -2589,7 +2589,7 @@ wechsle aber nicht ohne Zustimmung.
     {id:"mok-s1-3", screen:"S1", bereich:"zonenlogik", titel:"Übergang", bild:"A", ausgangslage:MOK_S1_LAGE,
      frage:"Wo wird das Haar deutlich länger? Hier hört die Arbeit mit dem Hebel auf und Maschine über Kamm beginnt.", antworttyp:"hotspot",
      optionen:["deckhaar","oben","uebergang","band3","band2","band1"], richtige_antwort:"uebergang",
-     begruendung:"Über dem kurzen Bereich gibt es keine längere Hebelstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.",
+     begruendung:"Über dem kurzen Bereich gibt es keine längere Einstellung mehr. Ab hier kann nur noch der Kamm Länge erzeugen.",
      typische_fehler:[
        {option:"deckhaar", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das ist das längste Haar ganz oben. Der Übergang liegt tiefer, dort wo das Haar nach oben deutlich dunkler wird.", leitfrage:"Ab wo wird das Haar nach oben deutlich dunkler und länger?"},
        {option:"oben", fehlertyp:"zone", zurueck:"zone", denkfehler:"Hier ist das Haar schon länger, hier arbeitet schon der Kamm. Gesucht ist die Grenze darunter.", leitfrage:"Ab wo wird das Haar nach oben deutlich dunkler und länger?"},
@@ -2610,72 +2610,72 @@ wechsle aber nicht ohne Zustimmung.
 
     // S2 – Werkzeug je Zone (Zone frei wählbar)
     {id:"mok-s2-band1", screen:"S2", bereich:"werkzeugwahl", titel:"Band 1 · kürzeste Stelle", bild:"A", zone:"band1",
-     ausgangslage:"Die Zonen sind markiert. An der kürzesten Stelle startet der Verlauf.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     ausgangslage:"Die Zonen sind markiert. An der kürzesten Stelle startet der Verlauf.", frage:"Womit arbeitest du in dieser Zone?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"geschlossen",
      begruendung:"Unten im Nacken startet der Verlauf mit der kürzesten Länge.", typische_fehler:MOK_WZ_FEHLER.band1,
-     feedback:{richtig:"Hebel geschlossen: Unten im Nacken startet der Verlauf mit der kürzesten Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Unten entscheidet der Hebel. Ganz unten kommt die Stellung, die am kürzesten schneidet.", falsch:MOK_WZ_SCHERE}},
+     feedback:{richtig:"Kürzeste Einstellung: Unten im Nacken startet der Verlauf mit der kürzesten Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Unten entscheidet der Hebel. Ganz unten kommt die Stellung, die am kürzesten schneidet.", falsch:MOK_WZ_SCHERE}},
     {id:"mok-s2-band2", screen:"S2", bereich:"werkzeugwahl", titel:"Band 2", bild:"A", zone:"band2",
-     ausgangslage:"Darunter ist mit geschlossenem Hebel gearbeitet.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     ausgangslage:"Darunter ist mit der kürzesten Einstellung gearbeitet.", frage:"Womit arbeitest du in dieser Zone?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"halboffen",
-     begruendung:"Der Verlauf wird nach oben schrittweise länger. Auf geschlossen folgt die nächstlängere Stellung.", typische_fehler:MOK_WZ_FEHLER.band2,
-     feedback:{richtig:"Hebel halboffen: Auf geschlossen folgt die nächstlängere Stellung.", leitfrage:MOK_WZ_LEIT, hilfe:"Der Verlauf wird nach oben Schritt für Schritt länger. Welche Stellung folgt auf die kürzeste?", falsch:MOK_WZ_SCHERE}},
+     begruendung:"Der Verlauf wird nach oben schrittweise länger. Auf die kürzeste folgt die nächstlängere Einstellung.", typische_fehler:MOK_WZ_FEHLER.band2,
+     feedback:{richtig:"Mittlere Einstellung: Auf die kürzeste folgt die nächstlängere Stellung.", leitfrage:MOK_WZ_LEIT, hilfe:"Der Verlauf wird nach oben Schritt für Schritt länger. Welche Stellung folgt auf die kürzeste?", falsch:MOK_WZ_SCHERE}},
     {id:"mok-s2-band3", screen:"S2", bereich:"werkzeugwahl", titel:"Band 3", bild:"A", zone:"band3",
-     ausgangslage:"Das letzte Band unter der Übergangslinie.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     ausgangslage:"Das letzte Band unter der Übergangslinie.", frage:"Womit arbeitest du in dieser Zone?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"offen",
-     begruendung:"Das letzte Hebel-Band bekommt die längste Hebelstellung. Daran schließt später der Kamm an.", typische_fehler:MOK_WZ_FEHLER.band3,
-     feedback:{richtig:"Hebel offen: die längste Hebelstellung. Daran schließt später der Kamm an.", leitfrage:MOK_WZ_LEIT, hilfe:"Das ist das letzte Band, in dem der Hebel arbeitet.", falsch:MOK_WZ_SCHERE}},
+     begruendung:"Das letzte Hebel-Band bekommt die längste Einstellung. Daran schließt später der Kamm an.", typische_fehler:MOK_WZ_FEHLER.band3,
+     feedback:{richtig:"Längste Einstellung. Daran schließt später der Kamm an.", leitfrage:MOK_WZ_LEIT, hilfe:"Das ist das letzte Band, in dem der Hebel arbeitet.", falsch:MOK_WZ_SCHERE}},
     {id:"mok-s2-oben", screen:"S2", bereich:"werkzeugwahl", titel:"Oberer Bereich", bild:"A", zone:"oben",
-     ausgangslage:"Über der Übergangslinie, bis ins längere Haar.", frage:"Welches Werkzeug gehört auf diese Zone?", antworttyp:"werkzeug",
+     ausgangslage:"Über der Übergangslinie, bis ins längere Haar.", frage:"Womit arbeitest du in dieser Zone?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"kamm",
-     begruendung:"Die Hebelstellungen liegen nur wenige Millimeter auseinander. Für mehr Länge übernimmt der Kamm.", typische_fehler:MOK_WZ_FEHLER.oben,
+     begruendung:"Die Einstellungen liegen nur wenige Millimeter auseinander. Für mehr Länge übernimmt der Kamm.", typische_fehler:MOK_WZ_FEHLER.oben,
      feedback:{richtig:"Maschine über Kamm: Hier bestimmt der Kamm Winkel und Länge.", leitfrage:MOK_WZ_LEIT, hilfe:"Über der Übergangslinie reicht der Hebel nicht mehr.", falsch:MOK_WZ_SCHERE}},
 
     // S3 – Bewegung je Methode
     {id:"mok-s3-hebel", screen:"S3", bereich:"bewegungslogik", titel:"Führung im unteren Bereich", bild:"A",
-     ausgangslage:"Band 2 mit halboffenem Hebel. Darunter liegt die kürzeste Stelle (Hebel geschlossen).", frage:"Wie führst du die Maschine?", antworttyp:"clip",
+     ausgangslage:"Band 2 mit der mittleren Einstellung. Darunter liegt die kürzeste Stelle (kürzeste Einstellung).", frage:"Wie führst du die Maschine?", antworttyp:"clip",
      optionen:MOK_HEBEL_OPTIONEN, richtige_antwort:"b",
      begruendung:"Unten flach, an der Grenze auskippen: So läuft das Band weich aus, statt eine Stufe zu bilden.", typische_fehler:MOK_HEBEL_FEHLER,
      feedback:{richtig:"Unten flach, an der Grenze auskippen: So läuft das Band weich aus, statt eine Stufe zu bilden.", leitfrage:"Was macht dein Handgelenk an jeder Bandgrenze?", hilfe:"Achte auf die Bandgrenze: Dort muss sich die Maschine vom Kopf lösen."}},
     {id:"mok-s3-kamm", screen:"S3", bereich:"bewegungslogik", titel:"Führung im oberen Bereich", bild:"A",
-     ausgangslage:"Der untere Bereich ist fertig. Du arbeitest mit Maschine über Kamm vom offenen Band nach oben ins längere Haar.", frage:"Wie führst du den Kamm?", antworttyp:"clip",
+     ausgangslage:"Der untere Bereich ist fertig. Du arbeitest mit Maschine über Kamm vom Band mit der längsten Einstellung nach oben ins längere Haar.", frage:"Wie führst du den Kamm?", antworttyp:"clip",
      optionen:[
        {id:"a", text:"Kamm flach am Kopf, bleibt auf gleicher Höhe stehen, Maschine schneidet ab", clip:"MOK_CLIP_KAMM_A"},
-       {id:"b", text:"Kamm setzt flach am offenen Band an, wird von unten nach oben geführt, der Winkel öffnet sich nach oben schrittweise, die Maschine folgt am Kammrücken", clip:"MOK_CLIP_KAMM_B"},
+       {id:"b", text:"Kamm setzt flach am Band mit der längsten Einstellung an, wird von unten nach oben geführt, der Winkel öffnet sich nach oben schrittweise, die Maschine folgt am Kammrücken", clip:"MOK_CLIP_KAMM_B"},
        {id:"c", text:"Kamm von Anfang an steil vom Kopf weg, große Bahnen von oben nach unten", clip:"MOK_CLIP_KAMM_C"}],
      richtige_antwort:"b",
-     begruendung:"Der Kamm bestimmt Winkel und Länge. Flach ansetzen schließt an den offenen Hebel an, das schrittweise Öffnen erzeugt den Übergang zum längeren Haar.",
+     begruendung:"Der Kamm bestimmt Winkel und Länge. Flach ansetzen schließt an das Band mit der längsten Einstellung an, das schrittweise Öffnen erzeugt den Übergang zum längeren Haar.",
      typische_fehler:[
        {option:"a", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Bei deiner Führung bleibt der Kamm stehen. Dann schneidet die Maschine überall auf derselben Länge – es entsteht eine Kante statt eines Übergangs.", leitfrage:"Was muss der Kamm tun, damit die Länge nach oben zunimmt?"},
-       {option:"c", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Steil und von oben nach unten fehlt der Anschluss an das offene Band. Es entsteht eine Kante.", leitfrage:"Wo setzt der Kamm an, und in welche Richtung führst du ihn?"}],
-     feedback:{richtig:"Der Kamm führt, die Maschine folgt. Flach ansetzen, dann den Winkel öffnen: So entsteht der Übergang.", leitfrage:"Was muss der Kamm tun, damit die Länge nach oben zunimmt?", hilfe:"Oben entscheidet der Kamm: Er setzt flach am offenen Band an und bewegt sich nach oben."}},
+       {option:"c", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Steil und von oben nach unten fehlt der Anschluss an das Band mit der längsten Einstellung. Es entsteht eine Kante.", leitfrage:"Wo setzt der Kamm an, und in welche Richtung führst du ihn?"}],
+     feedback:{richtig:"Der Kamm führt, die Maschine folgt. Flach ansetzen, dann den Winkel öffnen: So entsteht der Übergang.", leitfrage:"Was muss der Kamm tun, damit die Länge nach oben zunimmt?", hilfe:"Oben entscheidet der Kamm: Er setzt flach am Band mit der längsten Einstellung an und bewegt sich nach oben."}},
 
     // S4 – Arbeitsreihenfolge (Fehler = erste Karte, die zu früh liegt)
     {id:"mok-s4", screen:"S4", bereich:"bewegungslogik", titel:"Arbeitsreihenfolge", bild:"A",
      ausgangslage:"Prüfungskopf, Haar trocken und durchgekämmt. Aufsteckkämme sind verboten.", frage:"Tippe die Arbeitsschritte in der richtigen Reihenfolge an.", antworttyp:"reihenfolge",
      optionen:MOK_REIHE, richtige_antwort:["linie","offen","halboffen","geschlossen","verblenden","kamm","kontrolle"],
-     begruendung:"Erst die Grenze, dann im unteren Bereich von lang nach kurz. So wird keine Länge zu früh weggenommen. Der Kamm arbeitet nach den Hebel-Bändern, weil er an das fertige offene Band anschließen muss. Kontrolle und Konturen kommen zuletzt.",
+     begruendung:"Erst die Grenze, dann im unteren Bereich von lang nach kurz. So wird keine Länge zu früh weggenommen. Der Kamm arbeitet nach den Hebel-Bändern, weil er an das fertige Band mit der längsten Einstellung anschließen muss. Kontrolle und Konturen kommen zuletzt.",
      typische_fehler:[
-       {option:"geschlossen", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Du beginnst zu früh mit der kürzesten Länge. Was einmal zu kurz ist, kannst du nicht zurückholen.", leitfrage:"Mit welcher Hebelstellung fängst du an, damit nichts zu kurz wird?"},
-       {option:"halboffen", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Halboffen kommt nach offen. Im unteren Bereich arbeitest du von lang nach kurz.", leitfrage:"Welche Hebelstellung ist die längste?"},
-       {option:"offen", fehlertyp:"zone", zurueck:"zone", denkfehler:"Ohne festgelegte Übergangslinie weißt du nicht, wie hoch der offene Hebel geht. Die Seiten werden ungleich hoch.", leitfrage:"Was legst du fest, bevor die Maschine zum ersten Mal ansetzt?"},
+       {option:"geschlossen", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Du beginnst zu früh mit der kürzesten Länge. Was einmal zu kurz ist, kannst du nicht zurückholen.", leitfrage:"Mit welcher Einstellung fängst du an, damit nichts zu kurz wird?"},
+       {option:"halboffen", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Die mittlere Einstellung kommt nach der längsten. Im unteren Bereich arbeitest du von lang nach kurz.", leitfrage:"Welche Einstellung ist die längste?"},
+       {option:"offen", fehlertyp:"zone", zurueck:"zone", denkfehler:"Ohne festgelegte Übergangslinie weißt du nicht, wie hoch du mit der längsten Einstellung gehst. Die Seiten werden ungleich hoch.", leitfrage:"Was legst du fest, bevor die Maschine zum ersten Mal ansetzt?"},
        {option:"verblenden", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Verblenden geht erst, wenn alle drei Hebel-Bänder stehen.", leitfrage:"Welche Bänder müssen fertig sein, bevor du ihre Grenzen verblendest?"},
-       {option:"kamm", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Maschine über Kamm schließt an das fertige offene Band an. Vorher fehlt ihm der Anschluss.", leitfrage:"Woran muss der Kamm unten anschließen?"},
+       {option:"kamm", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Maschine über Kamm schließt an das fertige Band mit der längsten Einstellung an. Vorher fehlt ihm der Anschluss.", leitfrage:"Woran muss der Kamm unten anschließen?"},
        {option:"kontrolle", fehlertyp:"bewegung", zurueck:"bewegung", denkfehler:"Kontrolle und Konturen kommen am Schluss, wenn der ganze Übergang steht.", leitfrage:"Was muss fertig sein, bevor du kontrollierst?"}],
      feedback:{richtig:"Das ist der Standard für die Prüfung.", leitfrage:"Was kommt zuerst, und in welche Richtung arbeitest du im unteren Bereich?", hilfe:"Drei Regeln: Erst die Grenze. Unten von lang nach kurz. Der Kamm kommt nach den Hebel-Bändern."}},
 
     // S5 – Begründungssätze (Zone, Werkzeug, Bewegung sind aus S1–S3 vorbefüllt; gewählt werden „weil“ und „sonst“)
     {id:"mok-s5-unten", screen:"S5", bereich:"werkzeugwahl", titel:"Begründung unterer Bereich", bild:"A",
      ausgangslage:"Band 2, aus deinen Antworten in Schritt 1 bis 3.", frage:"Vervollständige den Satz.", antworttyp:"satzbaustein",
-     satz:{anfang:"In", zone:"Band 2", werkzeug:"Hebel halboffen", bewegung:"Auskippen an der Bandgrenze"},
+     satz:{anfang:"In", zone:"Band 2", werkzeug:"mittlere Einstellung", bewegung:"Auskippen an der Bandgrenze"},
      optionen:{
-       weil:[{id:"a", text:"der Verlauf hier schön sauber aussehen soll"},{id:"b", text:"hier der Hebel die Länge bestimmt und auf geschlossen die nächstlängere Stellung folgt"},{id:"c", text:"hier der Kamm Winkel und Länge bestimmt"},{id:"d", text:"der halboffene Hebel so lang ist wie ein Aufsteckkamm"}],
+       weil:[{id:"a", text:"der Verlauf hier schön sauber aussehen soll"},{id:"b", text:"hier der Hebel die Länge bestimmt und auf die kürzeste die nächstlängere Einstellung folgt"},{id:"c", text:"hier der Kamm Winkel und Länge bestimmt"},{id:"d", text:"die mittlere Einstellung so lang ist wie ein Aufsteckkamm"}],
        sonst:[{id:"a", text:"eine Kante an der Übergangslinie"},{id:"b", text:"Streifen im oberen Bereich"},{id:"c", text:"eine Stufe zwischen den Bändern"}]},
      richtige_antwort:{weil:"b", sonst:"c"},
      begruendung:"Im unteren Bereich bestimmt der Hebel die Länge. Wer eine Stellung überspringt, erzeugt eine Stufe.",
      typische_fehler:[
-       {option:"weil:a", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Das gilt für jeden Schnitt. Deine Begründung sagt nicht, was hier die Länge bestimmt.", leitfrage:"Was bestimmt in diesem Band die Länge, und welche Stellung folgt auf geschlossen?"},
+       {option:"weil:a", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Das gilt für jeden Schnitt. Deine Begründung sagt nicht, was hier die Länge bestimmt.", leitfrage:"Was bestimmt in diesem Band die Länge, und welche Einstellung folgt auf die kürzeste?"},
        {option:"weil:c", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Im unteren Bereich bestimmt der Hebel die Länge. Der Kamm übernimmt erst über der Übergangslinie.", leitfrage:MOK_WZ_LEIT},
-       {option:"weil:d", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die Hebelstellungen liegen nur wenige Millimeter auseinander. Deshalb reicht der Hebel nur für den unteren Bereich.", leitfrage:"Wie groß ist der Unterschied zwischen den Hebelstellungen?"},
+       {option:"weil:d", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Die Einstellungen liegen nur wenige Millimeter auseinander. Deshalb reicht der Hebel nur für den unteren Bereich.", leitfrage:"Wie groß ist der Unterschied zwischen den Einstellungen?"},
        {option:"sonst:a", fehlertyp:"zone", zurueck:"zone", denkfehler:"Eine Kante an der Übergangslinie entsteht beim Kamm. In Band 2 droht etwas anderes.", leitfrage:"Was entsteht, wenn zwischen zwei Hebel-Bändern eine Stellung übersprungen wird?"},
        {option:"sonst:b", fehlertyp:"zone", zurueck:"zone", denkfehler:"Streifen entstehen bei Maschine über Kamm im oberen Bereich. In Band 2 droht etwas anderes.", leitfrage:"Was entsteht, wenn zwischen zwei Hebel-Bändern eine Stellung übersprungen wird?"}],
      feedback:{richtig:"Der Satz nennt, was die Länge bestimmt und was sonst passiert.", leitfrage:"Was bestimmt hier die Länge?", hilfe:"Eine gute Begründung nennt, was die Länge bestimmt – Hebel oder Kamm – und welcher Fehler sonst entsteht."}},
@@ -2692,7 +2692,7 @@ wechsle aber nicht ohne Zustimmung.
        {option:"weil:b", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Das gilt für jeden Schnitt. Deine Begründung sagt nicht, was hier die Länge bestimmt.", leitfrage:"Wer bestimmt im oberen Bereich Winkel und Länge?"},
        {option:"weil:d", fehlertyp:"begruendung", zurueck:"werkzeug", denkfehler:"Es geht nicht um Tempo. Der Hebel reicht hier nicht mehr, weil seine Stellungen nur wenige Millimeter auseinanderliegen.", leitfrage:"Was bestimmt über der Übergangslinie die Länge?"},
        {option:"sonst:b", fehlertyp:"zone", zurueck:"zone", denkfehler:"Stufen zwischen Hebel-Bändern entstehen im unteren Bereich. Oben droht etwas anderes.", leitfrage:"Was entsteht, wenn der Kamm stehen bleibt?"},
-       {option:"sonst:c", fehlertyp:"zone", zurueck:"zone", denkfehler:"Ein zu hoch ausrasierter Verlauf kommt vom geschlossenen Hebel im unteren Bereich.", leitfrage:"Was entsteht, wenn der Kamm stehen bleibt?"}],
+       {option:"sonst:c", fehlertyp:"zone", zurueck:"zone", denkfehler:"Ein zu hoch ausrasierter Verlauf kommt von der kürzesten Einstellung, zu hoch geführt.", leitfrage:"Was entsteht, wenn der Kamm stehen bleibt?"}],
      feedback:{richtig:"Oben entscheidet der Kamm – und ohne Kammführung entsteht eine Kante.", leitfrage:"Was bestimmt hier die Länge?", hilfe:"Eine gute Begründung nennt, was die Länge bestimmt – Hebel oder Kamm – und welcher Fehler sonst entsteht."}},
 
     // S6 – Fehlerdiagnose (Konzept Übung 4): Stelle → Ursache → Korrektur
@@ -2707,21 +2707,21 @@ wechsle aber nicht ohne Zustimmung.
      feedback:{richtig:"Die Kante sitzt an der Übergangslinie.", leitfrage:"Wo endet der Hebel, und wo beginnt der Kamm?", hilfe:"Die gesuchte Fläche blinkt kurz auf. Wähle jetzt selbst ihre Nummer."}},
     {id:"mok-s6b", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Ursache", bild:"A-kante", zeigen:["uebergang"],
      ausgangslage:"Die Fehlerstelle liegt an der Übergangslinie.", frage:"Was hat diesen Fehler verursacht?", antworttyp:"auswahl",
-     optionen:[{id:"a", text:"Hebel geschlossen zu hoch geführt"},{id:"b", text:"Kein Anschluss: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"c", text:"Kammbahnen nicht überlappend"},{id:"d", text:"Haar zu nass geschnitten"}],
+     optionen:[{id:"a", text:"Kürzeste Einstellung zu hoch geführt"},{id:"b", text:"Kein Anschluss: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"c", text:"Kammbahnen nicht überlappend"},{id:"d", text:"Haar zu nass geschnitten"}],
      richtige_antwort:"b",
-     begruendung:"Die Kante liegt genau an der Grenze zwischen Hebel und Kamm. Dort fehlt die Verbindung zwischen offenem Hebel und Maschine über Kamm.",
+     begruendung:"Die Kante liegt genau an der Grenze zwischen Hebel und Kamm. Dort fehlt die Verbindung zwischen längster Einstellung und Maschine über Kamm.",
      typische_fehler:[
-       {option:"a", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Ein zu hoch geführter geschlossener Hebel erzeugt eine helle, zu kurze Fläche – keine dunkle Kante an der Übergangslinie.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?"},
+       {option:"a", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Die kürzeste Einstellung, zu hoch geführt, erzeugt eine helle, zu kurze Fläche – keine dunkle Kante an der Übergangslinie.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?"},
        {option:"c", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Nicht überlappende Bahnen erzeugen senkrechte Streifen im oberen Bereich. Dein Fehler ist eine waagrechte Kante direkt an der Übergangslinie.", leitfrage:"Ist dein Fehler senkrecht oder waagrecht – und wo genau liegt er?"},
        {option:"d", fehlertyp:"ursache", zurueck:"werkzeug", denkfehler:"Die Ursache liegt nicht am Haar, sondern an der Führung des Werkzeugs.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie, und was kann es falsch machen?"}],
-     feedback:{richtig:"Der Kamm muss an den offenen Hebel anschließen. Beginnt er zu weit weg, entsteht eine Kante.", leitfrage:"In welcher Zone liegt der Fehler, und welches Werkzeug arbeitet dort?", hilfe:"An der Übergangslinie muss Maschine über Kamm an das offene Band anschließen."}},
+     feedback:{richtig:"Der Kamm muss an das Band mit der längsten Einstellung anschließen. Beginnt er zu weit weg, entsteht eine Kante.", leitfrage:"In welcher Zone liegt der Fehler, und welches Werkzeug arbeitet dort?", hilfe:"An der Übergangslinie muss Maschine über Kamm an das Band mit der längsten Einstellung anschließen."}},
     {id:"mok-s6c", screen:"S6", bereich:"fehlerdiagnose", titel:"Kante – Korrektur", bild:"A-kante", zeigen:["uebergang"],
      ausgangslage:"Ursache: Maschine über Kamm hat zu weit vom Kopf entfernt begonnen.", frage:"Wie korrigierst du?", antworttyp:"auswahl",
-     optionen:[{id:"a", text:"Die Kante mit geschlossenem Hebel wegfahren"},{id:"b", text:"Das Deckhaar kürzen"},{id:"c", text:"Maschine über Kamm direkt am offenen Band flach ansetzen und den Winkel erst darüber öffnen"}],
+     optionen:[{id:"a", text:"Die Kante mit der kürzesten Einstellung wegfahren"},{id:"b", text:"Das Deckhaar kürzen"},{id:"c", text:"Maschine über Kamm direkt am Band mit der längsten Einstellung flach ansetzen und den Winkel erst darüber öffnen"}],
      richtige_antwort:"c",
-     begruendung:"Der Fehler kommt vom Kamm, also korrigierst du mit dem Kamm: flach am offenen Band ansetzen.",
+     begruendung:"Der Fehler kommt vom Kamm, also korrigierst du mit dem Kamm: flach am Band mit der längsten Einstellung ansetzen.",
      typische_fehler:[
-       {option:"a", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit geschlossenem Hebel wird aus der Kante eine zu kurze Fläche – der Verlauf rutscht nach oben.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?"},
+       {option:"a", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit der kürzesten Einstellung wird aus der Kante eine zu kurze Fläche – der Verlauf rutscht nach oben.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?"},
        {option:"b", fehlertyp:"zone", zurueck:"zone", denkfehler:"Das Deckhaar liegt über dem Fehler. Die Kante sitzt an der Übergangslinie, dort setzt du an.", leitfrage:"In welcher Zone liegt der Fehler?"}],
      feedback:{richtig:"Der Kamm hat den Fehler erzeugt, also korrigiert der Kamm ihn.", leitfrage:"Welches Werkzeug arbeitet an der Übergangslinie?", hilfe:"Der Fehler kommt vom Kamm. Korrigiere mit dem Werkzeug, das ihn verursacht hat."}},
 
@@ -2732,17 +2732,17 @@ wechsle aber nicht ohne Zustimmung.
      begruendung:"Über dem letzten Hebel-Band beginnt der Kamm.", typische_fehler:[],
      feedback:{richtig:"Die Übergangslinie liegt über dem letzten Hebel-Band.", leitfrage:"Ab wo wird das Haar nach oben deutlich dunkler und länger?"}},
     {id:"mok-p2", screen:"S7", pruefung:true, bereich:"werkzeugwahl", titel:"Werkzeug Band 3", bild:"B", zone:"band3",
-     ausgangslage:"Das markierte Band liegt direkt unter der Übergangslinie.", frage:"Welches Werkzeug gehört auf das markierte Band?", antworttyp:"werkzeug",
+     ausgangslage:"Das markierte Band liegt direkt unter der Übergangslinie.", frage:"Womit arbeitest du im markierten Band?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"offen",
-     begruendung:"Das letzte Hebel-Band bekommt die längste Hebelstellung.", typische_fehler:MOK_WZ_FEHLER.band3,
-     feedback:{richtig:"Hebel offen.", leitfrage:MOK_WZ_LEIT, falsch:MOK_WZ_SCHERE}},
+     begruendung:"Das letzte Hebel-Band bekommt die längste Einstellung.", typische_fehler:MOK_WZ_FEHLER.band3,
+     feedback:{richtig:"Längste Einstellung.", leitfrage:MOK_WZ_LEIT, falsch:MOK_WZ_SCHERE}},
     {id:"mok-p3", screen:"S7", pruefung:true, bereich:"werkzeugwahl", titel:"Werkzeug oberer Bereich", bild:"B", zone:"oben",
-     ausgangslage:"Der markierte Bereich liegt über der Übergangslinie.", frage:"Welches Werkzeug gehört auf den markierten Bereich?", antworttyp:"werkzeug",
+     ausgangslage:"Der markierte Bereich liegt über der Übergangslinie.", frage:"Womit arbeitest du im markierten Bereich?", antworttyp:"werkzeug",
      optionen:["geschlossen","halboffen","offen","kamm","schere"], richtige_antwort:"kamm",
      begruendung:"Über der Übergangslinie bestimmt der Kamm die Länge.", typische_fehler:MOK_WZ_FEHLER.oben,
      feedback:{richtig:"Maschine über Kamm.", leitfrage:MOK_WZ_LEIT, falsch:MOK_WZ_SCHERE}},
     {id:"mok-p4", screen:"S7", pruefung:true, bereich:"bewegungslogik", titel:"Führung an der Bandgrenze", bild:"B", zeigen:["band2","band3"],
-     ausgangslage:"Du arbeitest Band 2 mit halboffenem Hebel, darüber liegt Band 3.", frage:"Wie führst du die Maschine an der Grenze zu Band 3?", antworttyp:"clip",
+     ausgangslage:"Du arbeitest Band 2 mit der mittleren Einstellung, darüber liegt Band 3.", frage:"Wie führst du die Maschine an der Grenze zu Band 3?", antworttyp:"clip",
      optionen:MOK_HEBEL_OPTIONEN, richtige_antwort:"b",
      begruendung:"An jeder Bandgrenze kippst du aus.", typische_fehler:MOK_HEBEL_FEHLER,
      feedback:{richtig:"Auskippen an der Bandgrenze.", leitfrage:"Was macht dein Handgelenk an jeder Bandgrenze?"}},
@@ -2754,23 +2754,23 @@ wechsle aber nicht ohne Zustimmung.
      feedback:{richtig:"Die Stufe sitzt an der Grenze zwischen Band 2 und Band 3.", leitfrage:"Wo springt das Haar von hell zu dunkel, ohne weichen Übergang?"}},
     {id:"mok-p5b", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Stufe – Ursache", bild:"B-stufe", zeigen:["grenze"],
      ausgangslage:"Die Fehlerstelle liegt an der Grenze zwischen Band 2 und Band 3.", frage:"Was hat diesen Fehler verursacht?", antworttyp:"auswahl",
-     optionen:[{id:"a", text:"Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"b", text:"An der Bandgrenze nicht ausgekippt, gerade hochgefahren"},{id:"c", text:"Hebel geschlossen zu hoch geführt"},{id:"d", text:"Kammbahnen nicht überlappend"}],
+     optionen:[{id:"a", text:"Maschine über Kamm hat zu weit vom Kopf entfernt begonnen"},{id:"b", text:"An der Bandgrenze nicht ausgekippt, gerade hochgefahren"},{id:"c", text:"Kürzeste Einstellung zu hoch geführt"},{id:"d", text:"Kammbahnen nicht überlappend"}],
      richtige_antwort:"b",
      begruendung:"An der Bandgrenze muss die Maschine auskippen. Fährt sie gerade weiter, entsteht eine Stufe.",
      typische_fehler:[
        {option:"a", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Die Stufe liegt im unteren Bereich. Dort arbeitet der Hebel, nicht der Kamm.", leitfrage:"Welches Werkzeug arbeitet an dieser Grenze?"},
-       {option:"c", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Ein zu hoch geführter geschlossener Hebel erzeugt eine helle, zu kurze Fläche am Ansatz – keine Stufe zwischen Band 2 und Band 3.", leitfrage:"Zwischen welchen Bändern liegt die Stufe?"},
+       {option:"c", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Die kürzeste Einstellung, zu hoch geführt, erzeugt eine helle, zu kurze Fläche am Ansatz – keine Stufe zwischen Band 2 und Band 3.", leitfrage:"Zwischen welchen Bändern liegt die Stufe?"},
        {option:"d", fehlertyp:"ursache", zurueck:"zone", denkfehler:"Bahnen gibt es nur bei Maschine über Kamm im oberen Bereich. Die Stufe liegt im unteren Bereich.", leitfrage:"Welches Werkzeug arbeitet an dieser Grenze?"}],
      feedback:{richtig:"Nicht ausgekippt: An der Grenze ist eine Stufe stehen geblieben.", leitfrage:"Welches Werkzeug arbeitet an dieser Grenze, und wie muss es geführt werden?"}},
     {id:"mok-p5c", screen:"S7", pruefung:true, bereich:"fehlerdiagnose", titel:"Stufe – Korrektur", bild:"B-stufe", zeigen:["grenze"],
      ausgangslage:"Ursache: An der Bandgrenze nicht ausgekippt.", frage:"Wie korrigierst du?", antworttyp:"auswahl",
-     optionen:[{id:"a", text:"Die Grenze mit offenem Hebel und Auskippen verblenden"},{id:"b", text:"Die Stufe mit geschlossenem Hebel wegfahren"},{id:"c", text:"Maschine über Kamm über die Stufe führen"}],
+     optionen:[{id:"a", text:"Die Grenze mit der längsten Einstellung und Auskippen verblenden"},{id:"b", text:"Die Stufe mit der kürzesten Einstellung wegfahren"},{id:"c", text:"Maschine über Kamm über die Stufe führen"}],
      richtige_antwort:"a",
-     begruendung:"Die Grenze wird mit der nächstlängeren Hebelstellung und Auskippen verblendet.",
+     begruendung:"Die Grenze wird mit der nächstlängeren Einstellung und Auskippen verblendet.",
      typische_fehler:[
-       {option:"b", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit geschlossenem Hebel wird es an der Grenze zu kurz – aus der Stufe wird ein Loch.", leitfrage:"Mit welcher Hebelstellung machst du die Grenze weich, ohne dass es zu kurz wird?"},
+       {option:"b", fehlertyp:"werkzeug", zurueck:"werkzeug", denkfehler:"Mit der kürzesten Einstellung wird es an der Grenze zu kurz – aus der Stufe wird ein Loch.", leitfrage:"Mit welcher Einstellung machst du die Grenze weich, ohne dass es zu kurz wird?"},
        {option:"c", fehlertyp:"werkzeug", zurueck:"zone", denkfehler:"Die Stufe liegt im unteren Bereich. Dort arbeitet der Hebel, nicht der Kamm.", leitfrage:MOK_WZ_LEIT}],
-     feedback:{richtig:"Mit der nächstlängeren Hebelstellung und Auskippen verschwindet die Stufe.", leitfrage:"Mit welcher Hebelstellung machst du die Grenze weich, ohne dass es zu kurz wird?"}}
+     feedback:{richtig:"Mit der nächstlängeren Einstellung und Auskippen verschwindet die Stufe.", leitfrage:"Mit welcher Einstellung machst du die Grenze weich, ohne dass es zu kurz wird?"}}
   ];
 
   // ---------- Zustand ----------
@@ -2969,7 +2969,7 @@ wechsle aber nicht ohne Zustimmung.
   function mokWahl(x){ // werkzeug | auswahl | clip
     var s = mokU(x.id);
     if (x.antworttyp === "werkzeug"){
-      return '<fieldset class="wahl"><legend>' + (mokImBild(x) ? 'Werkzeug wählen, dann „Prüfen“:' : x.frage) + '</legend><div class="chips">' + x.optionen.map(function(id){
+      return '<fieldset class="wahl"><legend>' + (mokImBild(x) ? 'Einstellung oder Werkzeug wählen, dann „Prüfen“:' : x.frage) + '</legend><div class="chips">' + x.optionen.map(function(id){
         var on = s.wahl === id, cls = on ? ((s.ok || s.weg) ? ' on right' : (s.fehler ? ' on wrong' : ' on')) : '';
         return '<button class="chip' + cls + '" type="button" aria-pressed="' + on + '" data-act="mokwahl" data-id="' + x.id + '" data-val="' + id + '"' + ((s.ok || s.weg) ? ' disabled' : '') + '>' + mokWzText(id) + '</button>';
       }).join("") + '</div></fieldset>' + ((s.ok || s.weg) ? '' : mokPruefBtn(x, s.wahl != null));
@@ -3076,7 +3076,7 @@ wechsle aber nicht ohne Zustimmung.
     var h = '';
     if (sid === "S0"){
       return h + '<p><strong>Gesellenprüfung, Verlauf.</strong> Die Maschine ist erlaubt, aber nur ohne Aufsteckkämme. Jede Länge erzeugst du selbst:</p>' +
-        '<ul><li><strong>Unterer Bereich:</strong> Maschine ohne Aufsatz, über die Hebelstellung – geschlossen, halboffen, offen.</li>' +
+        '<ul><li><strong>Unterer Bereich:</strong> Maschine ohne Aufsatz, über die Einstellung des Hebels – kürzeste, mittlere, längste Einstellung.</li>' +
         '<li><strong>Oberer Bereich:</strong> Maschine über Kamm – der Kamm bestimmt Winkel und Länge.</li></ul>' +
         '<p class="merksatz">' + MOK_MERKSATZ + '</p>' +
         '<p><strong>So arbeitest du dich durch:</strong></p><ol><li>Zone erkennen</li><li>Werkzeug wählen</li><li>Bewegung wählen</li><li>Begründen</li><li>Fehler lesen</li></ol>' +
