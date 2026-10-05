@@ -5,24 +5,27 @@ Prüfungsfeld: Verlauf bei der Gesellenprüfung, Aufsteckkämme verboten.
 ## Festes Sprachraster
 
 Alle Modultexte, Antwortoptionen und Feedbacks verwenden nur diese Begriffe:
-**Unterer Bereich · Oberer Bereich · Übergangslinie · kürzeste Einstellung · mittlere Einstellung · längste Einstellung · Maschine über Kamm · Kammwinkel · Auskippen · Stufe · Kante · Loch**
+**Band 1 · Übergang · Kammbereich · Deckhaar · kürzeste Einstellung · mittlere Einstellung · längste Einstellung · Maschine über Kamm · Kammwinkel · Auskippen · Stufe · Kante · Loch**
+
+Aufbau von unten nach oben: **Band 1 (Hebel) → Übergang → Kammbereich (ab Band 2) → Deckhaar.** Weil kein Aufsatz erlaubt ist, arbeitet die Maschine ohne Kamm nur in Band 1. Alle drei Einstellungen liegen in Band 1, ab Band 2 arbeitest du mit Maschine über Kamm.
 
 | Bereich | Lage | Werkzeug | Was bestimmt die Länge? | Bewegung |
 |---|---|---|---|---|
-| Unterer Bereich, Band 1 | Konturansatz (Nacken, hinter dem Ohr) | Maschine ohne Aufsatz, **kürzeste Einstellung** | der Hebel (kürzeste Einstellung) | flach am Kopf, gegen die Wuchsrichtung nach oben |
-| Unterer Bereich, Band 2 | über Band 1 | Maschine ohne Aufsatz, **mittlere Einstellung** | der Hebel (mittlere Einstellung) | nach oben führen, an der Bandgrenze auskippen |
-| Unterer Bereich, Band 3 | über Band 2 bis zur Übergangslinie | Maschine ohne Aufsatz, **längste Einstellung** | der Hebel (längste Einstellung) | nach oben führen, an der Übergangslinie auskippen |
-| Oberer Bereich | Übergangslinie bis Deckhaar | **Maschine über Kamm** | der Kamm (Abstand und Winkel zum Kopf) | Kamm führt von unten nach oben, Maschine folgt am Kammrücken |
+| Band 1 · unten | kürzeste Stelle im Nacken | Maschine ohne Aufsatz, **kürzeste Einstellung** | der Hebel (kürzeste Einstellung) | flach am Kopf, gegen die Wuchsrichtung nach oben |
+| Band 1 · Mitte | darüber | Maschine ohne Aufsatz, **mittlere Einstellung** | der Hebel (mittlere Einstellung) | nach oben führen, an der Grenze zur nächsten Einstellung auskippen |
+| Band 1 · oberer Rand | bis zum Übergang | Maschine ohne Aufsatz, **längste Einstellung** | der Hebel (längste Einstellung) | nach oben führen, am Übergang auskippen |
+| Kammbereich (ab Band 2) | Übergang bis Deckhaar | **Maschine über Kamm** | der Kamm (Abstand und Winkel zum Kopf) | Kamm führt von unten nach oben, Maschine folgt am Kammrücken |
+| Deckhaar | ganz oben | gehört nicht mehr zum Verlauf | – | – |
 
-Merksatz für die App: **Unten entscheidet der Hebel, oben entscheidet der Kamm.**
+Merksatz für die App: **In Band 1 entscheidet der Hebel, ab Band 2 entscheidet der Kamm.**
 
 Bilder in der App: vier Fotos Hinterkopf in `bilder/maschine/`: Übungskopf, Prüfungskopf und je ein echtes Fehlerfoto für Kante und Stufe. Die Bewegungsclips in S3 und im Prüfungsfall sind kurze, schematische Animationen (Seitenansicht), die nur die Bewegung zeigen, keine Wertung.
 
-Dieses Dokument entspricht dem Stand der App (`beratung-formwirkung.html`, Reiter „Maschine“, Daten in `MOK_UEBUNGEN`, Screens in `MOK_SCREENS`). Umsetzungsdetail: In S1 heißen die Bänder neutral „Band 1 · Konturansatz“, „Band 2“, „Band 3“, damit die Einstellung nicht schon vor S2 verraten wird.
+Dieses Dokument entspricht dem Stand der App (`beratung-formwirkung.html`, Reiter „Maschine“, Daten in `MOK_UEBUNGEN`, Screens in `MOK_SCREENS`). Umsetzungsdetail: Die Fotos haben vier Flächen (Band 1, Übergang, Kammbereich, Deckhaar). Für S2 und den Prüfungsfall wird Band 1 in drei gleich hohe Teile geteilt (unten, Mitte, oberer Rand) und der gefragte Teil am Kopf markiert. Auf beiden Fehlerfotos liegt die Fehlerstelle am Übergang.
 
-Begriff in der App: Die drei Einstellungen der Maschine heißen „kürzeste“, „mittlere“ und „längste Einstellung“ (nicht „Hebel geschlossen/halboffen/offen“, das sagt im Salon niemand). Statt „Konturansatz“ heißt Band 1 „kürzeste Stelle“ (am Haaransatz im Nacken sitzen oft Wirbel, die Kontur ist kein verlässlicher Bezugspunkt). S1 fragt über die Länge: Wo ist das Haar am kürzesten, wo am längsten, wo wird es deutlich länger?
+Begriff in der App: Die drei Einstellungen der Maschine heißen „kürzeste“, „mittlere“ und „längste Einstellung“ (nicht „Hebel geschlossen/halboffen/offen“, das sagt im Salon niemand). Statt „Konturansatz“ heißt Band 1 „kürzeste Stelle“ (am Haaransatz im Nacken sitzen oft Wirbel, die Kontur ist kein verlässlicher Bezugspunkt). S1 fragt über die Länge: Wo ist das Haar am kürzesten, wo am längsten, ab wo schimmert die Kopfhaut nicht mehr durch (Übergang), wo arbeitet der Kamm?
 
-Fachlicher Kern, der in jedem Feedback mitschwingt: Die Hebelstufen liegen nur wenige Millimeter auseinander. Der Hebel kann deshalb nur das untere Band des Verlaufs erzeugen. Sobald mehr Länge gebraucht wird, übernimmt der Kamm.
+Fachlicher Kern, der in jedem Feedback mitschwingt: Die Hebelstufen liegen nur wenige Millimeter auseinander. Der Hebel kann deshalb nur Band 1 erzeugen. Sobald mehr Länge gebraucht wird, übernimmt der Kamm.
 
 ---
 
@@ -51,7 +54,7 @@ Grundprinzip: **erst erkennen, dann wählen, dann erklären, dann Fehler lesen.*
 | Screen | Lehrling sieht | Lehrling tut | Geprüft wird | Freischaltung |
 |---|---|---|---|---|
 | **S0 Auftrag** | Zielbild Verlauf (Hinterkopf + Profil), Hinweis „Aufsteckkämme verboten“, Merksatz | Auftrag bestätigen | nichts | sofort |
-| **S1 Zonen erkennen** | Foto Hinterkopf mit nummerierten Flächen | Nacheinander: kürzeste Stelle, längste Stelle, Übergang (wo das Haar deutlich länger wird), oberer Bereich, Band über der kürzesten Stelle | gewählte Fläche | nach jeder Frage „Nächste Frage“, nach Frage 5 „Weiter zu S2“ |
+| **S1 Zonen erkennen** | Foto Hinterkopf mit nummerierten Flächen | Nacheinander: kürzeste Stelle (Band 1), längste Stelle (Deckhaar), Übergang (ab wo die Kopfhaut nicht mehr durchschimmert), Kammbereich | gewählte Fläche | nach jeder Frage „Nächste Frage“, nach Frage 4 „Weiter zu S2“ |
 | **S2 Werkzeug zuordnen** | Kopfbild mit den eigenen Zonen, 5 Werkzeugkarten: kürzeste Einstellung · mittlere Einstellung · längste Einstellung · Maschine über Kamm · Schere über Kamm (Distraktor, im Verlaufsbereich nicht gefragt) | Karten auf Zonen ziehen | jede Zone hat die richtige Karte | alle Zuordnungen richtig |
 | **S3 Bewegung wählen** | pro Methode 3 kurze Bewegungsclips (Animation), eine davon richtig | je Methode den passenden Clip wählen | Bewegung passt zur Methode | beide richtig |
 | **S4 Arbeitsreihenfolge** | 7 Arbeitsschrittkarten, ungeordnet | in Reihenfolge ziehen | Reihenfolge (siehe Übung 5) | Reihenfolge richtig; bei Fehler werden nur falsch liegende Karten markiert |
@@ -104,7 +107,8 @@ Regel für alle Screens: Nach dem Prüfen geht es immer weiter, auch nach einer 
 
 | Fehlerbild | Zone | Ursache | Korrektur |
 |---|---|---|---|
-| Stufe zwischen zwei Hebelbändern | unterer Bereich, Bandgrenze | an der Grenze nicht ausgekippt, gerade hochgefahren | Grenze mit der nächstlängeren Einstellung und Auskippen verblenden |
+| Stufe zwischen zwei Einstellungen | Band 1, Grenze zwischen zwei Einstellungen | an der Grenze nicht ausgekippt, gerade hochgefahren | Grenze mit der nächstlängeren Einstellung und Auskippen verblenden |
+| Harte Linie am Übergang (Fehlerfoto im Prüfungsfall) | Übergang | Band 1 mit der längsten Einstellung gerade hochgefahren, nicht ausgekippt | am oberen Rand von Band 1 auskippen, mit Maschine über Kamm flach anschließen |
 | Kante / dunkler Rand an der Übergangslinie | Übergangslinie | Kamm im Übergang zu weit weg oder zu steil, kein Anschluss an den offenen Hebel | Maschine über Kamm direkt am offenen Band ansetzen, Kamm flach beginnen, Winkel erst darüber öffnen |
 | Loch / helle Stelle im oberen Bereich | oberer Bereich | Kamm zu nah am Kopf gedrückt oder Kamm stehen geblieben | umliegende Partie mit Maschine über Kamm angleichen, Kamm gleichmäßig führen |
 | Verlauf zu hoch „ausrasiert“ | unterer Bereich | geschlossener Hebel zu hoch geführt | Übergang darüber mit halboffenem/offenem Hebel und Kamm neu aufbauen; Höhe ist nicht zurückzuholen |
