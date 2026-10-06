@@ -52,16 +52,20 @@ abgesichert, schließt es das Issue.
 **Schritt 1 – Lese-Konto anlegen** (Supabase → SQL Editor). Das Konto braucht keine Rechte auf Tabellen. Es liest nur den
 Systemkatalog, und das darf jede Rolle.
 ```sql
-CREATE ROLE rls_audit LOGIN PASSWORD '<neues langes Zufallspasswort>'
+CREATE ROLE rls_pruefung LOGIN PASSWORD '<neues langes Zufallspasswort>'
   NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
-ALTER ROLE rls_audit SET default_transaction_read_only = on;
+ALTER ROLE rls_pruefung SET default_transaction_read_only = on;
 ```
-Das Passwort nirgends im Repo ablegen.
+Das Passwort nirgends im Repo ablegen. Nur Buchstaben und Zahlen verwenden: Zeichen wie `@ # / ? %` stören später in der Verbindungs-URL.
 
-**Schritt 2 – Verbindungs-URL holen.** Supabase → *Connect* → **Session pooler** (Port 5432). Die direkte Verbindung
+Stand 2026-10-06: Das Konto heißt `rls_pruefung` und ist eingerichtet. Das ältere Konto `rls_audit` existiert noch, wurde aber nicht
+vom SQL Editor angelegt und lässt sich dort nicht ändern („permission denied to alter role“). Es wird nicht verwendet.
+Neues Passwort für `rls_pruefung`: `ALTER ROLE rls_pruefung WITH PASSWORD '<neues Passwort>';`, danach das Secret aktualisieren.
+
+**Schritt 2 – Verbindungs-URL holen.** Supabase → Knopf *Connect* (oben in der Leiste neben dem Branch-Namen) → Reiter *Connection String* → Auswahlfeld *Method* → **Session pooler** (Port 5432). Die direkte Verbindung
 funktioniert von GitHub aus oft nicht, weil sie nur IPv6 nutzt. In der URL Benutzer und Passwort ersetzen:
 ```
-postgresql://rls_audit.wrxlaltgtgkdomklgrlj:<PASSWORT>@<host aus dem Dashboard>:5432/postgres
+postgresql://rls_pruefung.wrxlaltgtgkdomklgrlj:<PASSWORT>@aws-0-eu-west-1.pooler.supabase.com:5432/postgres
 ```
 
 **Schritt 3 – Secret setzen.** GitHub → Repo → *Settings* → *Secrets and variables* → *Actions* →
@@ -69,6 +73,7 @@ postgresql://rls_audit.wrxlaltgtgkdomklgrlj:<PASSWORT>@<host aus dem Dashboard>:
 
 **Schritt 4 – Testlauf.** GitHub → *Actions* → *RLS-Audit* → *Run workflow*. Grün = alles abgesichert oder Issue angelegt.
 Rot mit „Secret SUPABASE_DB_URL fehlt“ = Schritt 3 fehlt.
+Rot mit „password authentication failed“ = Passwort im Secret passt nicht zum Konto (neu setzen, siehe Schritt 1).
 
 Das Audit ist nur das Sicherheitsnetz. Es ersetzt die Abschnitte 1 bis 3 nicht und prüft keine Policies, nur ob RLS an ist.
 
