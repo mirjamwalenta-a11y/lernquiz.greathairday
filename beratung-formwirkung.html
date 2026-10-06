@@ -362,7 +362,7 @@ dl.steck dd{margin:0}
 </style>
 </head>
 <body>
-<nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20261001m#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20261001m">Lern-Tool</a></nav>
+<nav class="zurueck-leiste" aria-label="Lern-Tool"><a href="schnittwerkstatt.html?v=20261006a#formwirkung">← Zurück zur Schnittwerkstatt</a><a href="lerntool.html?v=20261001m">Lern-Tool</a></nav>
 <header class="appbar"><div class="appbar-in" id="bar"></div></header>
 <main class="wrap" id="app"></main>
 <div id="trainer" hidden>
@@ -4698,6 +4698,7 @@ wechsle aber nicht ohne Zustimmung.
   }
 
   function renderVisagistik(){
+    if (st.vgTeil === "brauen") return renderBrauen();
     if (!st.vg) st.vg = vgLaden();
     var u = vgU(), r = vgR(), n = r.schritt, ok = r.ok[n];
     var wahl = '<div class="chips sb-faelle" role="group" aria-label="Übung wählen">' + VG_UEBUNGEN.map(function(x, i){
@@ -4767,11 +4768,129 @@ wechsle aber nicht ohne Zustimmung.
       '</div>';
     }
 
-    return '<div class="screen">' +
+    return '<div class="screen">' + brTeilWahl() +
       '<div class="pagehead"><h1>Visagistik-Vergleich <span class="tag">V1</span></h1>' +
         '<p class="meta">Erst sehen, dann einordnen, dann entscheiden, dann begründen.</p></div>' +
       wahl + '<p class="sb-fall"><strong>' + u.kurz + ':</strong> ' + u.titel + '</p>' + schritte + inhalt +
     '</div>';
+  }
+
+  // ==================== Augenbrauen & Wimpern (Reiter „Visagistik“, Teil 2) ====================
+  // Inhalte nach dem Salon-Skript „Visagistische Erarbeitung der Augenbrauen“ und „Wimpern färben“.
+  // Alle drei Hilfslinien gehen vom Nasenflügel aus (wie in der Abbildung im Skript).
+  var BR_LINIEN = [
+    ["anfang", "Anfang", "Senkrecht vom Nasenflügel nach oben, am inneren Augenwinkel vorbei."],
+    ["hoch", "höchster Punkt", "Schräg vom Nasenflügel über die Pupille."],
+    ["ende", "auslaufendes Ende", "Schräg vom Nasenflügel über den äußeren Augenwinkel."]
+  ];
+  var BR_WIMPERN = [
+    {t:"Schützen", s:["Haut mit Fettcreme bestreichen", "Bitten Sie die Kundin, ihre Augen weit zu öffnen", "Schutzblättchen auf die Haut unterhalb der Wimpern schieben – bis zum Ansatz der Wimpernhärchen"]},
+    {t:"Auftragen", s:["Das Glasstäbchen etwa in der Mitte der Wimpernlänge ansetzen und das Färbemittel durch leicht rollende Bewegungen mit dem Glasstäbchen sowohl nach den Spitzen als auch zum Ansatz hin verteilen."]},
+    {t:"Einwirkzeit", s:["Je länger, umso intensiver der Farbton.", "Maximal 10 Minuten."]},
+    {t:"Abnehmen", s:["a) Abnehmen des …", "b) Entfernen mit …", "c) Abwischen vom …"], luecke:true}
+  ];
+  // Fragen: [Frage, richtige Antwort, falsch, falsch, falsch, Erklärung, Linie im Bild (optional)]
+  var BR_FRAGEN = [
+    ["Welche Hilfslinie ist hier markiert?", "Anfang", "höchster Punkt", "auslaufendes Ende", "Brauenmitte", "Der Anfang liegt senkrecht über dem Nasenflügel.", "anfang"],
+    ["Welche Hilfslinie ist hier markiert?", "höchster Punkt", "Anfang", "auslaufendes Ende", "Brauenmitte", "Der höchste Punkt liegt auf der Linie vom Nasenflügel über die Pupille.", "hoch"],
+    ["Welche Hilfslinie ist hier markiert?", "auslaufendes Ende", "Anfang", "höchster Punkt", "Brauenmitte", "Das Ende liegt auf der Linie vom Nasenflügel über den äußeren Augenwinkel.", "ende"],
+    ["Was machst du als Erstes bei der Erarbeitung der Augenbrauen?", "Die typgerechte Farbe auf die gesamte Augenbraue auftragen", "Die Augenbraue zupfen", "Die Hilfslinien mit dem Stift einzeichnen", "Die Wimpern färben", "Erst dann wird die Augenbraue wie abgebildet korrigiert."],
+    ["Worauf musst du bei sehr hellen Augenbrauen achten?", "Auf die Einwirkzeit", "Auf die Wimpernlänge", "Auf die Lippenfarbe", "Auf die Gesichtsform", ""],
+    ["Wann wird die Augenbraue korrigiert?", "Erst nach dem Färben", "Vor dem Färben", "Während die Farbe einwirkt", "Gar nicht", "Zuerst Farbe auftragen, dann wie abgebildet korrigieren."],
+    ["Wie wird die Augenbraue korrigiert?", "Von der Mitte weg und von unten aus", "Von oben nach unten", "Von außen zur Nase hin", "Nur am Brauenkopf", ""],
+    ["Von wo gehen die drei Hilfslinien aus?", "Vom Nasenflügel", "Vom Mundwinkel", "Von der Ohrmitte", "Von der Stirnmitte", ""],
+    ["Womit schützt du die Haut beim Wimpernfärben?", "Mit Fettcreme und Schutzblättchen unterhalb der Wimpern", "Mit Puder", "Mit Wasser", "Mit Haarspray", "Die Schutzblättchen werden bis zum Ansatz der Wimpernhärchen geschoben."],
+    ["Worum bittest du die Kundin, bevor du die Schutzblättchen anlegst?", "Die Augen weit zu öffnen", "Die Augen fest zu schließen", "Nach unten zu schauen", "Zu blinzeln", ""],
+    ["Wo setzt du das Glasstäbchen beim Auftragen an?", "Etwa in der Mitte der Wimpernlänge", "Direkt an den Spitzen", "Auf dem Lid", "Unter dem Auge", "Dann mit leicht rollenden Bewegungen zu den Spitzen und zum Ansatz hin verteilen."],
+    ["Wie lange darf die Wimpernfarbe höchstens einwirken?", "Maximal 10 Minuten", "Maximal 2 Minuten", "Maximal 30 Minuten", "So lange, bis die Kundin fertig ist", "Je länger, umso intensiver der Farbton."],
+    ["Was passiert, wenn die Farbe länger einwirkt?", "Der Farbton wird intensiver", "Der Farbton wird heller", "Die Wimpern werden länger", "Nichts", ""],
+    ["Wohin kommen gebrauchte Stäbchen, Schutzblättchen und Watte?", "In den Abfallbehälter", "Zurück in die Schublade", "Ins Waschbecken", "Zum Desinfizieren in die Schale", ""]
+  ];
+
+  function brSVG(hi, ohneText){
+    // Nasenflügel N; Linien: Anfang senkrecht, höchster Punkt über die Pupille, Ende über den äußeren Augenwinkel
+    var L = {anfang:[95,282,95,58], hoch:[95,282,233,60], ende:[95,282,302,116]};
+    var T = {anfang:[95,50,"middle"], hoch:[236,52,"middle"], ende:[322,104,"middle"]};
+    var h = '<svg viewBox="20 30 380 265" role="img" aria-label="' + (ohneText ? 'Augenbraue mit einer markierten Hilfslinie' : 'Augenbraue mit den Hilfslinien Anfang, höchster Punkt und auslaufendes Ende') + '">' +
+      '<path d="M66,140 Q58,232 92,280 Q104,292 122,286" fill="none" stroke="var(--g-kontur)" stroke-width="2"/>' +
+      '<line x1="45" y1="130" x2="335" y2="130" stroke="var(--g-hilfe)" stroke-width="1.5" stroke-dasharray="5 4"/>' +
+      '<path d="M95,131 Q95,113 120,108 L203,95 Q232,97 286,130 Q232,111 203,108 L120,122 Q100,125 95,131 Z" fill="var(--g-haar)" stroke="var(--g-haar-kontur)" stroke-width="1.5"/>' +
+      '<path d="M108,172 Q165,136 236,168 Q172,202 108,172 Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>' +
+      '<circle cx="160" cy="171" r="22" fill="var(--ink)"/><circle cx="153" cy="164" r="5" fill="var(--surface)"/>';
+    BR_LINIEN.forEach(function(x){
+      var k = x[0], l = L[k], an = hi === k, zeigen = !ohneText || an;
+      if (!zeigen) return;
+      var farbe = an ? "var(--bad)" : "var(--accent)";
+      h += '<line x1="' + l[0] + '" y1="' + l[1] + '" x2="' + l[2] + '" y2="' + l[3] + '" stroke="' + farbe + '" stroke-width="' + (an ? 4 : 2.5) + '" stroke-linecap="round"/>';
+      if (!ohneText) h += '<text x="' + T[k][0] + '" y="' + T[k][1] + '" text-anchor="' + T[k][2] + '" font-size="15" font-weight="700" fill="' + (an ? "var(--bad)" : "var(--ink)") + '">' + x[1] + '</text>';
+    });
+    h += '<circle cx="95" cy="282" r="4.5" fill="var(--ink)"/>' + (ohneText ? '' : '<text x="128" y="292" font-size="13" fill="var(--muted)">Nasenflügel</text>');
+    return h + '</svg>';
+  }
+  function brKorrSVG(){
+    return '<svg viewBox="0 0 340 130" role="img" aria-label="Augenbraue: von der Mitte weg und von unten aus korrigieren">' +
+      '<defs><marker id="brpf" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--accent)"/></marker></defs>' +
+      '<path d="M60,70 Q60,46 92,42 L200,30 Q240,32 300,62 Q240,46 200,44 L92,58 Q66,62 60,70 Z" fill="var(--g-haar)" stroke="var(--g-haar-kontur)" stroke-width="1.5"/>' +
+      '<line x1="14" y1="58" x2="50" y2="58" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#brpf)"/>' +
+      [140,190,240,285].map(function(x){ var y = x < 200 ? 98 : 96; return '<line x1="' + x + '" y1="' + (y + 22) + '" x2="' + x + '" y2="' + (y - 18) + '" stroke="var(--accent)" stroke-width="2.5" marker-end="url(#brpf)"/>'; }).join("") +
+      '</svg>';
+  }
+  function brNeu(){
+    return {i:0, pick:null, richtig:0, reihe:BR_FRAGEN.map(function(f, i){ return i; }).sort(function(){ return Math.random() - .5; }),
+      opts:BR_FRAGEN.map(function(f){ return [f[1], f[2], f[3], f[4]].sort(function(){ return Math.random() - .5; }); })};
+  }
+  function brTeilWahl(){
+    var t = st.vgTeil || "vergleich";
+    return '<div class="chips" role="group" aria-label="Teil wählen">' +
+      [["vergleich", "Vergleich üben"], ["brauen", "Augenbrauen & Wimpern"]].map(function(x){
+        var on = x[0] === t;
+        return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="brteil" data-val="' + x[0] + '">' + x[1] + '</button>';
+      }).join("") + '</div>';
+  }
+  function renderBrauen(){
+    if (!st.br) st.br = brNeu();
+    var hi = st.brLinie || "";
+    var linien = '<div class="chips" role="group" aria-label="Hilfslinie hervorheben">' +
+      BR_LINIEN.map(function(x){ var on = hi === x[0]; return '<button class="chip' + (on ? ' on' : '') + '" type="button" aria-pressed="' + on + '" data-act="brlinie" data-val="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div>';
+    var erarb = '<div class="bk-grid">' +
+      '<section class="card fig">' + brSVG(hi, false) + linien + '<p class="note">Tippe auf eine Linie, um sie hervorzuheben.</p></section>' +
+      '<section class="card text"><h2>Visagistische Erarbeitung der Augenbrauen</h2>' +
+        '<ol><li>Als Erstes wird die <strong>typgerechte Farbe</strong> auf die gesamte Augenbraue aufgetragen. Bei sehr hellen Augenbrauen muss die <strong>Einwirkzeit</strong> beachtet werden!</li>' +
+        '<li>Erst dann wird die Augenbraue wie abgebildet <strong>korrigiert</strong>.</li></ol>' +
+        '<h3>Die Hilfslinien</h3><ul>' + BR_LINIEN.map(function(x){ return '<li><strong>' + x[1] + ':</strong> ' + x[2] + '</li>'; }).join("") + '</ul>' +
+        '<h3>Korrigieren</h3>' + brKorrSVG() + '<ul><li><strong>Von der Mitte weg</strong> korrigieren</li><li><strong>Von unten aus</strong> korrigieren</li></ul></section>' +
+      '</div>';
+    var wimpern = '<section class="card text"><h2>Wimpern färben</h2><ol start="3">' + BR_WIMPERN.map(function(w){
+        return '<li><strong>' + w.t + '</strong><ul>' + w.s.map(function(x){ return '<li>' + x + '</li>'; }).join("") + '</ul>' + (w.luecke ? '<p class="note">Auf dem Blatt zum Ergänzen: Vervollständige die drei Sätze selbst.</p>' : '') + '</li>';
+      }).join("") + '</ol><div class="callout accent"><p>Gebrauchte Stäbchen, Schutzblättchen, Watte usw. in den Abfallbehälter legen.</p></div></section>';
+    return '<div class="screen">' + brTeilWahl() +
+      '<div class="pagehead"><h1>Augenbrauen &amp; Wimpern</h1><p class="meta">Brauen visagistisch erarbeiten und Wimpern färben, wie im Salon-Skript.</p></div>' +
+      erarb + wimpern + brQuizHTML() + '</div>';
+  }
+  function brQuizHTML(){
+    var q = st.br, n = BR_FRAGEN.length;
+    if (q.i >= n) return '<section class="card text" id="brquiz"><h2>Abfrage</h2><p class="merksatz">' + q.richtig + ' von ' + n + ' richtig</p>' +
+      '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="brneu">Nochmal</button></div></section>';
+    var fi = q.reihe[q.i], f = BR_FRAGEN[fi], opts = q.opts[fi], fertig = q.pick != null;
+    return '<section class="card text" id="brquiz"><h2>Abfrage</h2><p class="note">Frage ' + (q.i + 1) + ' von ' + n + ' · ' + q.richtig + ' richtig</p>' +
+      '<p class="sb-leit"><strong>' + f[0] + '</strong></p>' + (f[6] ? '<div class="fig">' + brSVG(f[6], true) + '</div>' : '') +
+      '<div class="chips">' + opts.map(function(o, k){
+        var cls = fertig ? (o === f[1] ? ' right' : (k === q.pick ? ' wrong' : '')) : '';
+        return '<button class="chip' + cls + '" type="button" data-act="brans" data-val="' + k + '"' + (fertig ? ' disabled' : '') + '>' + o + '</button>';
+      }).join("") + '</div>' +
+      (fertig ? '<div class="callout ' + (opts[q.pick] === f[1] ? 'good' : 'bad') + '"><p><strong>' + (opts[q.pick] === f[1] ? 'Richtig!' : 'Leider falsch.') + '</strong> ' + (opts[q.pick] === f[1] ? '' : 'Richtig ist: ' + f[1] + '. ') + f[5] + '</p></div>' +
+        '<div class="controls" style="justify-content:flex-start"><button class="btn primary" type="button" data-act="brweiter">' + (q.i + 1 < n ? 'Nächste Frage' : 'Ergebnis ansehen') + '</button></div>' : '') +
+      '</section>';
+  }
+  // Klicks im Teil „Augenbrauen & Wimpern“; gibt true zurück, wenn der Bildschirm wechselt
+  function brAktion(a, d){
+    if (a === "brteil"){ st.vgTeil = d.val; return true; }
+    if (a === "brlinie"){ st.brLinie = st.brLinie === d.val ? "" : d.val; return false; }
+    if (!st.br) st.br = brNeu();
+    if (a === "brans"){ if (st.br.pick == null){ st.br.pick = +d.val; var f = BR_FRAGEN[st.br.reihe[st.br.i]]; if (st.br.opts[st.br.reihe[st.br.i]][st.br.pick] === f[1]) st.br.richtig++; } return false; }
+    if (a === "brweiter"){ st.br.i++; st.br.pick = null; return false; }
+    if (a === "brneu"){ st.br = brNeu(); return false; }
+    return false;
   }
 
   // Klicks im Reiter „Visagistik“; gibt true zurück, wenn der Bildschirm wechselt
@@ -4867,6 +4986,7 @@ wechsle aber nicht ohne Zustimmung.
     if (a==="sbneu"){ st.sb = st.sbAlle.faelle[st.sbAlle.aktiv] = sbNeu(); sbSpeichern(); moved = true; }
     if (a==="sbfall"){ st.sbAlle.aktiv = b.dataset.val; st.sb = st.sbAlle.faelle[b.dataset.val]; sbSpeichern(); moved = true; }
     if (a.indexOf("vg") === 0){ if (vgAktion(a, b.dataset)) moved = true; }
+    if (a.indexOf("br") === 0){ if (brAktion(a, b.dataset)) moved = true; }
     if (a.indexOf("mok") === 0 && st.mok){ if (mokAktion(a, b)) moved = true; }
     if (a==="pick"){ st.picked = +b.dataset.i; if (st.picked === fall().fragen[st.q].r) st.score++; }
     if (a==="nextQ"){ st.q++; st.picked = null; }
