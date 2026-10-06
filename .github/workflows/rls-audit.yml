@@ -4,7 +4,7 @@
 # Fund → GitHub-Issue mit Label „rls-audit“ (bzw. Kommentar, wenn schon eines offen ist).
 # Kein Fund und ein Issue ist noch offen → Issue wird mit Kommentar geschlossen.
 #
-# Setup: Repository-Secret SUPABASE_DB_URL mit der Verbindung des Lese-Kontos „rls_audit“
+# Setup: Repository-Secret SUPABASE_DB_URL mit der Verbindung des Lese-Kontos „rls_pruefung“
 # über den Session Pooler. Anleitung in SICHERHEIT-RLS-CHECK.md, Abschnitt 4.
 
 name: RLS-Audit
