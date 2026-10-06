@@ -106,8 +106,8 @@ ul.clean{list-style:none;margin:0;padding:0}
 .crit{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
 .crit li::marker{color:var(--accent)}
 ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
-ol.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
-ol.steps li::before{content:counter(s);font-family:var(--f-mono);font-weight:700;font-size:.85rem;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+ol.steps>li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:start}
+ol.steps>li::before{content:counter(s);font-family:var(--f-mono);font-weight:700;font-size:.85rem;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
 .warnbox{background:var(--bad-soft);border-radius:8px;padding:16px 18px;color:var(--ink)}
 .warnbox h3{color:var(--bad)}
 .warnbox ul{margin:8px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
@@ -198,6 +198,8 @@ figure{margin:0}
 figure.panel figcaption{font-size:.875rem;color:var(--muted)}
 .zug{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);gap:14px;align-items:start}
 .qfig .dia.face{max-width:200px}
+.dia.nail{max-width:440px;margin-inline:auto}
+.qfig .dia.nail{max-width:380px}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{display:inline-block;width:18px;height:4px;border-radius:2px}
@@ -601,6 +603,24 @@ const ZUEGE = [
  ['Ausrasieren der Mundwinkel','','Beschließt die Rasur. Rechter Mundwinkel im Rückhandgriff, linker Mundwinkel im Vorhandgriff.']
 ];
 
+/* Nagelaufbau und Ablauf einer professionellen Maniküre */
+const NAGELTEILE=[
+ ['Nagelplatte','Corpus unguis','Die sichtbare, verhornte Schicht des Nagels.'],
+ ['Nagelbett','Lectulus unguis','Das Gewebe unter der Nagelplatte, das den Nagel verankert und versorgt.'],
+ ['Matrix (Nagelwurzel)','','Der hintere Bereich unter der Haut, in dem die Keratinzellen gebildet werden (Bildungsstätte des Nagels).'],
+ ['Lunula (Möndchen)','','Der helle, halbmondförmige Bereich am Ende der Matrix.'],
+ ['Eponychium / Cuticula (Nagelhaut)','','Der Schutzbereich an der Nagelbasis, der das Eindringen von Bakterien in die Matrix verhindert.'],
+ ['Freier Nagelrand','','Der nach vorne überstehende Teil des Nagels.'],
+ ['Hyponychium','','Die Übergangshaut unter dem freien Nagelrand.']
+];
+const MANIKUERE=[
+ {t:'Vorbereitung & Desinfektion',s:['Hände reinigen (Fingerbad).','Eventuelle Altlasten (z. B. Nagellack oder Modellagereste) sanft entfernen.']},
+ {t:'Formen & Kürzen',s:['Nagelränder sanft in eine Richtung feilen (oval, eckig oder mandelförmig).']},
+ {t:'Nagelhautpflege',s:['Nagelhautlöser auftragen und kurz einwirken lassen.','Mit einem Pferdefüßchen oder Rosenholzstäbchen die Nagelhaut sanft zurückschieben.','Überschüssige, abgestorbene Nagelhaut vorsichtig entfernen (nicht tief in die gesunde Haut schneiden).']},
+ {t:'Glätten & Vorbereiten der Oberfläche',s:['Mit einer Buffer-Feile die Nagelplatte sanft anrauen bzw. Unebenheiten glätten (wichtig für die Haftung bei Lack/Gel).']},
+ {t:'Pflege & Abschluss',s:['Nagelöl auf den Nagelwall auftragen und einmassieren.','Handcreme einpflegen oder je nach Wunsch Base Coat / Farblack / Versiegelung auftragen.']}
+];
+
 const MGRIFFE=[
  ['Effleurage','Streichungen zur Vorbereitung','Lange, ruhige Streichungen von der Gesichtsmitte nach außen: Stirn, Wangen, Kinnpartie.'],
  ['Petrissage','Knetungen zur Durchblutungsförderung','Die Haut wird mit den Fingern sanft angehoben und geknetet, entlang von Wangen und Kinnpartie.'],
@@ -779,6 +799,23 @@ Object.entries(KATALOG).forEach(([cid,list])=>list.forEach(([q,a])=>QUESTIONS.pu
 MGRIFFE.forEach(([n,w],i)=>{QUESTIONS.push({id:'haut-mg'+i,cat:'haut',tag:'massage',type:'mc',q:'Welcher Massagegriff ist hier gezeigt?',a:n,w:shuffle(MGRIFFE.filter((x,j)=>j!==i).map(x=>x[0])).slice(0,3),e:`${n}: ${w}.`,mg:i});
  QUESTIONS.push({id:'haut-mw'+i,cat:'haut',tag:'massage',type:'mc',q:`Welche Wirkung hat ${n}?`,a:w,w:shuffle(MGRIFFE.filter((x,j)=>j!==i).map(x=>x[1])).slice(0,3),e:'',mg:i});
  if(i<4)QUESTIONS.push({id:'haut-mn'+i,cat:'haut',tag:'massage',type:'mc',q:`Welcher Griff folgt auf ${n}?`,a:MGRIFFE[i+1][0],w:shuffle(MGRIFFE.filter((x,j)=>j!==i+1&&j!==i).map(x=>x[0])).slice(0,3),e:'Reihenfolge: Effleurage, Petrissage, Friktion, Vibration, Tapotement.'});});
+/* Nagelaufbau- und Maniküre-Fragen (Thema Nägel) */
+NAGELTEILE.forEach(([n,lat,d],i)=>{const o=NAGELTEILE.filter((x,j)=>j!==i);
+ QUESTIONS.push({id:'naegel-nb'+i,cat:'naegel',tag:'nagelbau',type:'mc',q:'Welcher Teil des Nagels ist hier markiert?',a:n,w:shuffle(o.map(x=>x[0])).slice(0,3),e:d,nb:i});
+ QUESTIONS.push({id:'naegel-nd'+i,cat:'naegel',tag:'nagelbau',type:'mc',q:`Welcher Teil des Nagels ist das? „${d}“`,a:n,w:shuffle(o.map(x=>x[0])).slice(0,3),e:''});
+ QUESTIONS.push({id:'naegel-nw'+i,cat:'naegel',tag:'nagelbau',type:'mc',q:`Was beschreibt der Begriff „${n}“?`,a:d,w:shuffle(o.map(x=>x[2])).slice(0,3),e:''});});
+QUESTIONS.push({id:'naegel-lat1',cat:'naegel',tag:'nagelbau',type:'mc',q:'Wie heißt die Nagelplatte mit dem Fachbegriff?',a:'Corpus unguis',w:['Lectulus unguis','Hyponychium','Eponychium'],e:'Corpus unguis ist die sichtbare, verhornte Schicht des Nagels.'});
+QUESTIONS.push({id:'naegel-lat2',cat:'naegel',tag:'nagelbau',type:'mc',q:'Was bedeutet Lectulus unguis?',a:'Nagelbett',w:['Nagelplatte','Nagelwurzel','Nagelhaut'],e:'Das Nagelbett verankert und versorgt den Nagel.'});
+MANIKUERE.forEach((m,i)=>{if(i<MANIKUERE.length-1)QUESTIONS.push({id:'naegel-mf'+i,cat:'naegel',tag:'nagelbau',type:'mc',q:`Welcher Schritt der Maniküre folgt auf „${m.t}“?`,a:MANIKUERE[i+1].t,w:MANIKUERE.filter((x,j)=>j!==i&&j!==i+1).map(x=>x.t).slice(0,3),e:'Reihenfolge: '+MANIKUERE.map(x=>x.t).join(' → ')+'.'});});
+[['Was machst du, bevor du die Nagelhaut zurückschiebst?','Nagelhautlöser auftragen und kurz einwirken lassen','Die Nagelhaut trocken abschneiden','Nagelöl auftragen','Den Base Coat auftragen',''],
+ ['Womit schiebst du die Nagelhaut sanft zurück?','Mit einem Pferdefüßchen oder Rosenholzstäbchen','Mit der Nagelschere','Mit der Buffer-Feile','Mit dem Fingernagel',''],
+ ['Wie entfernst du überschüssige Nagelhaut?','Nur abgestorbene Haut vorsichtig entfernen, nicht tief in die gesunde Haut schneiden','Die ganze Nagelhaut bis zum Ansatz wegschneiden','Gar nicht, nur lackieren','Mit der Feile wegfeilen','Die Nagelhaut schützt die Matrix vor Bakterien.'],
+ ['Wozu raust du die Nagelplatte mit der Buffer-Feile sanft an?','Damit Lack oder Gel besser haftet und Unebenheiten geglättet sind','Damit der Nagel schneller wächst','Damit die Nagelhaut weich wird','Damit der Nagel dünner wird',''],
+ ['Wohin trägst du zum Abschluss das Nagelöl auf?','Auf den Nagelwall, dann einmassieren','Unter den freien Nagelrand','Nur auf die Fingerkuppe','Vor dem Feilen auf die Nagelplatte',''],
+ ['Wie feilst du die Nagelränder?','Sanft in eine Richtung','Kräftig hin und her','Quer über die Nagelplatte','Nur in der Mitte','Hin- und Herfeilen lässt den Nagel splittern.'],
+ ['Welche Nagelformen kannst du feilen?','Oval, eckig oder mandelförmig','Nur spitz','Nur rund','Nur eckig',''],
+ ['Was gehört zur Vorbereitung der Maniküre?','Hände reinigen (Fingerbad) und alten Lack oder Modellagereste sanft entfernen','Sofort lackieren','Nagelöl auftragen','Nagelhaut abschneiden','']
+].forEach(m=>QUESTIONS.push({id:'naegel-m'+hash(m[0]),cat:'naegel',tag:'nagelbau',type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]}));
 /* Rasierzüge-Fragen aus den 15 Zügen erzeugen */
 ZUEGE.forEach(([name,griff],i)=>{const n=i+1;
   const others=shuffle(ZUEGE.filter((z,j)=>j!==i&&z[0]!==name).map(z=>z[0])).slice(0,3);
@@ -1024,13 +1061,14 @@ function partHTML(p){const hist=D.praxis.filter(s=>s.part===p.id).slice().revers
  <section class="stack"><div class="row"><span class="pill time">${p.min} Min.</span><span class="muted small">${esc(p.model)}</span></div><h1>${p.name}</h1><p class="lead">${esc(p.intro)}</p>
   <div class="row"><button class="btn primary" data-a="session" data-id="${p.id}">Übung mit Timer starten</button><button class="btn" data-a="rateonly" data-id="${p.id}">Nur bewerten (ohne Timer)</button></div></section>
  ${weak.length?`<section class="card stack"><div class="eyebrow">Deine Schwachstellen hier</div><ul class="clean weak">${weak.map(w=>`<li><span>${esc(w.t)}</span><span class="pill ${w.bad?'bad':'warn'}">${w.bad?'noch nicht':'fast'}</span></li>`).join('')}</ul></section>`:''}
- <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),...(p.id==='technik'?[['bilder','Bilder']]:[]),...(p.id==='schoen'?[['massage','Massagegriffe']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
+ <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),...(p.id==='technik'?[['bilder','Bilder']]:[]),...(p.id==='schoen'?[['massage','Massagegriffe']]:[]),...(p.id==='nagel'?[['aufbau','Nagelaufbau & Maniküre']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
  ${sub==='krit'?`<section class="grid-2">${p.sections.map(s=>`<div class="panel stack"><h3>${esc(s.name)}</h3><ul class="crit">${s.crit.map(c=>`<li>${esc(c.t)}</li>`).join('')}</ul></div>`).join('')}</section>
    <section class="warnbox"><h3>Achtung, hier gibt es Punkteabzug</h3><ul>${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>
    ${p.fehler?`<section class="panel stack"><h3>Fehlerquellen und ihre Folgen</h3><ul class="clean weak">${p.fehler.map(([f,g])=>`<li><span>${esc(f)}</span>${g?`<span class="muted small" style="text-align:right">→ ${esc(g)}</span>`:''}</li>`).join('')}</ul></section>`:''}`:''}
  ${sub==='zuege'?zuegeHTML():''}
  ${sub==='bilder'?bilderHTML():''}
  ${sub==='massage'?massageHTML():''}
+ ${sub==='aufbau'?nagelHTML():''}
  ${sub==='ablauf'?`<section class="grid-2">${p.ablauf.map(a=>`<div class="panel stack"><h3>${esc(a.t)}</h3><ol class="steps">${a.s.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ol></div>`).join('')}</section>`:''}
  ${sub==='zeit'?`<section class="panel stack"><h3>So könntest du deine ${p.min} Minuten einteilen</h3><p class="muted small">Ein Vorschlag, den ihr im Salon an dein Tempo anpassen könnt.</p><ul class="clean weak">${p.plan.map(([a,b])=>`<li><span>${esc(a)}</span><span class="pill time">${esc(b)}</span></li>`).join('')}</ul></section>`:''}
  ${sub==='hist'?(hist.length?`<section class="panel scroll-x"><table class="hist"><thead><tr><th>Datum</th><th>Bewertet von</th><th>Zeit</th><th>Ergebnis</th><th>Notiz</th></tr></thead><tbody>${hist.map(s=>`<tr><td class="num">${fmtDate(s.date)}</td><td>${s.who==='ausb'?'Ausbilderin':'Selbst'}</td><td class="num">${s.sec!=null?mmss(s.sec):'–'}</td><td><span class="pill ${level(sessionScore(s))}">${pct(sessionScore(s))} %</span></td><td style="white-space:normal;min-width:160px">${esc(s.note||'')}</td></tr>`).join('')}</tbody></table></section>`:`<p class="muted">Noch keine Übungen gespeichert.</p>`):''}`;}
@@ -1051,6 +1089,38 @@ function massageHTML(){return `<p class="lead">Die fünf Standard-Massagegriffe 
  <div class="row"><button class="btn primary" data-a="quiz" data-cat="" data-type="massage">Massagegriffe abfragen</button></div>
  <ol class="steps">${MGRIFFE.map(([n,w,t],i)=>`<li><div class="panel zug">${massageSVG(i)}<div class="stack"><h3>${n}</h3><p><strong>${esc(w)}</strong></p><p class="muted">${esc(t)}</p></div></div></li>`).join('')}</ol>
  <p class="small muted">Selbst gezeichnete Schemas. Die Zeichen zeigen die Art des Griffs: Pfeile = Streichen, Schlaufen = Kneten, Kreise = Friktion, Zickzack = Vibration, Punkte = Klopfen.</p>`;}
+/* Nagel im Längsschnitt, Nummern 1–7 wie NAGELTEILE. hi = Index: nur dieser Teil markiert (Abfrage) */
+const NAGEL_PTS=[[[215,52],[215,18]],[[205,64],[205,108]],[[100,68],[80,110]],[[138,57],[150,18]],[[126,50],[95,18]],[[318,58],[332,22]],[[296,68],[334,104]]];
+function nailSVG(hi){const q=hi!=null;const SK='#F2D6C3',SKS='#B98F78';
+ let h=`<svg class="dia nail" viewBox="50 0 300 186" role="img" aria-label="${q?'Nagel im Längsschnitt, ein Teil ist markiert':'Nagel im Längsschnitt mit den Teilen 1 bis 7'}">
+ <path d="M10,62 L278,59 Q302,60 312,88 Q322,125 296,152 Q262,176 200,178 L10,178 Z" fill="${SK}" stroke="${SKS}" stroke-width="1.5"/>
+ <path d="M20,100 L190,96 Q232,98 236,118 Q232,136 196,138 L20,140 Z" fill="#EFEBE3" stroke="${C_LINE}" stroke-width="1.2"/>
+ <path d="M124,61 L280,58.5 Q292,59.5 297,66 L124,70 Z" fill="#E7A79D"/>
+ <path d="M76,58 Q78,74 100,75 L124,72 L124,61 L84,62 Z" fill="#C8766C"/>
+ <path d="M80,56 L278,52 Q306,51 324,58 L324,63 Q306,57 280,58 L84,62 Z" fill="#F8EEE6" stroke="${C_MUT}" stroke-width="1.2"/>
+ <path d="M124,55.2 L152,54.6 L152,60.4 L124,61 Z" fill="#fff"/>
+ <path d="M281,58.6 Q297,60 305,70 L299,73 Q292,64 280,62 Z" fill="#D9A68E"/>
+ <path d="M30,62 Q50,46 86,45 L118,46 Q130,48 129,54.6 L84,56 Q56,57 30,62 Z" fill="${SK}" stroke="${SKS}" stroke-width="1.5"/>
+ <path d="M117,46.5 Q131,47 141,54.2 L129,54.8 Q129,49 117,46.5 Z" fill="#D7A58F"/>`;
+ NAGEL_PTS.forEach(([[px,py],[cx,cy]],i)=>{if(q&&i!==hi)return;const c=q?C_RED:C_ACC;
+  h+=`<line x1="${px}" y1="${py}" x2="${cx}" y2="${cy}" stroke="${c}" stroke-width="1.4"/><circle cx="${px}" cy="${py}" r="2.6" fill="${c}"/><circle cx="${cx}" cy="${cy}" r="10" fill="${c}"/><text x="${cx}" y="${cy+4.5}" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">${q?'?':i+1}</text>`;});
+ return h+'</svg>';}
+function nagelHTML(){const o=V.ord;
+ return `<section class="stack"><p class="lead">Fachbegriffe zum Nagelaufbau und der Ablauf einer professionellen Maniküre. Beim Fachgespräch solltest du jeden Teil zeigen und erklären können.</p>
+ <div class="row"><button class="btn primary" data-a="quiz" data-cat="naegel" data-type="nagelbau">Nagelaufbau & Maniküre abfragen</button></div></section>
+ <section class="grid-2"><figure class="panel stack"><h3>1. Anatomie & Aufbau des Nagels</h3>${nailSVG()}<figcaption>Selbst gezeichnetes Schema: Fingerkuppe im Längsschnitt, Fingerspitze rechts.</figcaption></figure>
+  <div class="panel stack"><h3>Die Teile des Nagels</h3><ol class="steps">${NAGELTEILE.map(([n,lat,d])=>`<li><span><strong>${esc(n)}</strong>${lat?` <em class="muted">(${esc(lat)})</em>`:''}<br><span class="muted small">${esc(d)}</span></span></li>`).join('')}</ol></div></section>
+ <section class="panel stack"><h3>2. Ablauf einer professionellen Maniküre</h3><ol class="steps">${MANIKUERE.map(m=>`<li><span><strong>${esc(m.t)}</strong><ul class="crit">${m.s.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></span></li>`).join('')}</ol>
+  <p class="small muted">Bei der Prüfung gelten zusätzlich die Vorgaben aus der Broschüre (Handmassage an der anderen Hand, Lackieren, Nageldesign an 2 Fingern), siehe „Ablauf“ und „So wird bewertet“.</p></section>
+ <section class="panel stack"><h3>Übung: Reihenfolge der Maniküre</h3>${ordHTML(o)}</section>`;}
+function ordItems(l){return l==='all'?MANIKUERE.flatMap(m=>m.s):MANIKUERE.map(m=>m.t);}
+function ordHTML(o){const lv=[['main','5 Hauptschritte'],['all','Alle Einzelschritte']];
+ const seg=`<div class="subtabs" role="group" aria-label="Schwierigkeit">${lv.map(([k,l])=>`<button data-a="ordreset" data-l="${k}" aria-pressed="${!!o&&o.l===k}">${l}</button>`).join('')}</div>`;
+ if(!o)return `<p class="muted small">Tippe die Schritte in der richtigen Reihenfolge an. Wähle zuerst, wie schwer es sein soll.</p>${seg}`;
+ const it=ordItems(o.l),done=o.got.length===it.length;
+ return `${seg}<ol class="steps">${o.got.map(k=>`<li><span>${esc(it[k])}</span></li>`).join('')}</ol>
+ ${done?`<div class="explain"><strong>${o.err?'Geschafft!':'Perfekt!'}</strong> ${o.err?`Alle Schritte in der richtigen Reihenfolge, mit ${o.err} ${o.err===1?'Fehlversuch':'Fehlversuchen'}.`:'Alles auf Anhieb richtig.'}</div><div class="row"><button class="btn primary" data-a="ordreset" data-l="${o.l}">Nochmal</button></div>`
+ :`<p class="small muted" aria-live="polite">${o.bad!=null?'<span style="color:var(--bad)">Noch nicht, welcher Schritt kommt davor?</span>':`Schritt ${o.got.length+1} von ${it.length}: Was kommt jetzt?`}</p><div class="answers">${o.seq.filter(k=>!o.got.includes(k)).map(k=>`<button data-a="ord" data-k="${k}" class="${o.bad===k?'wrong':''}">${esc(it[k])}</button>`).join('')}</div>`}`;}
 function zuegeHTML(){return `<section class="stack"><p class="lead">Die Rasur wird in 15 festen Rasierzügen ausgeführt (Skript der Landesinnung Wien). Beschrieben für Rechtshänder, <strong>für Linkshänder gilt alles seitenverkehrt</strong>.</p>
  <div class="row"><button class="btn primary" data-a="quiz" data-cat="rasur" data-type="zug">Rasierzüge abfragen</button></div>
  <div class="panel stack"><h3>Die drei Spannkegel</h3><p class="muted small">Spitzer, stumpfer und doppelter Spannkegel. Beim ersten Rasierzug setzt du den Daumen der linken Hand an der rechten Schläfenpartie an: das ist der spitze Spannkegel, die Haut wird straff nach oben gespannt.</p></div>
@@ -1077,12 +1147,13 @@ function theorieHTML(){if(QZ)return quizHTML();
   <div class="card stack"><div class="eyebrow">Wie beim Prüfer</div><h3>Prüferfragen</h3><p class="muted small">Offene Fragen: erst selbst laut antworten, dann mit der Musterantwort vergleichen. Ideal zu zweit.</p><button class="btn" data-a="quiz" data-cat="" data-type="open">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Berufsschule 1. + 2. Lehrjahr</div><h3>Fragenkatalog</h3><p class="muted small">${QUESTIONS.filter(q=>q.src==='katalog').length} Fragen mit Antworten aus dem Fragenkatalog, inklusive Kommunikation, Beratung und Arbeitsschutz.</p><button class="btn" data-a="quiz" data-cat="" data-type="katalog">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Rasur</div><h3>Rasierzüge 1–15</h3><p class="muted small">Name, Reihenfolge und Griff jedes Rasierzugs abfragen.</p><button class="btn" data-a="quiz" data-cat="rasur" data-type="zug">Starten</button></div>
+  <div class="card stack"><div class="eyebrow">Nägel</div><h3>Nagelaufbau & Maniküre</h3><p class="muted small">Teile des Nagels am Schema erkennen, Fachbegriffe und Ablauf der Maniküre.</p><button class="btn" data-a="quiz" data-cat="naegel" data-type="nagelbau">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Generalprobe</div><h3>Fachgespräch-Simulation</h3><p class="muted small">5 zufällige Prüferfragen in 10 Minuten. Die Ausbilderin liest vor, der Lehrling antwortet.</p><button class="btn" data-a="quiz" data-cat="" data-type="sim">Starten</button></div>
  </section>
  <section class="stack"><h2>Nach Themen</h2><div class="grid">${CATS.map(c=>{const pr=catProgress(c.id);return `<button class="cat" data-a="quiz" data-cat="${c.id}" data-type="any"><strong>${esc(c.name)}</strong><span class="small muted num">${pr.mastered}/${pr.total}</span><div class="bar"><i style="width:${pct(pr.p)}%"></i></div></button>`;}).join('')}</div>
  <p class="muted small">Eine Frage gilt als gelernt, wenn du sie an drei verschiedenen Tagen richtig beantwortet hast.</p></section>`;}
 
-function matchType(q,type){return type==='any'?true:type==='zug'?q.tag==='zug':type==='massage'?q.tag==='massage':type==='katalog'?q.src==='katalog':type==='open'?(q.type==='open'&&!q.src):q.type===type;}
+function matchType(q,type){return type==='any'?true:type==='zug'?q.tag==='zug':type==='massage'?q.tag==='massage':type==='nagelbau'?q.tag==='nagelbau':type==='katalog'?q.src==='katalog':type==='open'?(q.type==='open'&&!q.src):q.type===type;}
 function pickQuestions(cat,n,type){const now=Date.now();const pool=QUESTIONS.filter(q=>matchType(q,type)&&(!cat||q.cat===cat));
  const due=shuffle(pool.filter(q=>qs(q.id)&&qs(q.id).d<=now)).sort((a,b)=>qs(a.id).b-qs(b.id).b);
  const fresh=shuffle(pool.filter(q=>!qs(q.id)));
@@ -1097,7 +1168,7 @@ function startQuiz(cat,type){const kind=type;let items;
 
 function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  const dots=`<div class="progress-dots" aria-hidden="true">${QZ.items.map((x,i)=>`<i class="${x.res==='yes'?'ok':x.res==='no'?'no':x.res==='part'?'part':i===QZ.i?'cur':''}"></i>`).join('')}</div>`;
- const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Fragenkatalog':QZ.kind==='zug'?'Rasierzüge':QZ.kind==='massage'?'Massagegriffe':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
+ const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Fragenkatalog':QZ.kind==='zug'?'Rasierzüge':QZ.kind==='massage'?'Massagegriffe':QZ.kind==='nagelbau'?'Nagelaufbau & Maniküre':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
  if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
   return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.items.every(x=>x.q.type==='mc')?'richtig':'gewusst'}</h1>
   <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
@@ -1110,7 +1181,7 @@ function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
   :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
  return `<div class="quiz"><div class="row" style="justify-content:space-between"><span class="eyebrow">${esc(title)} · ${esc(CAT[q.cat].name)}</span><span class="small muted num">Frage ${QZ.i+1} von ${n}</span></div>${dots}
   ${QZ.kind==='sim'?`<div class="card">${timerHTML()}</div>`:''}
-  <div class="q">${esc(q.q)}</div>${q.zi!=null?`<div class="qfig">${zugSVG(q.zi,q.neutral)}</div>`:q.mg!=null&&q.q.startsWith('Welcher Massagegriff')?`<div class="qfig">${massageSVG(q.mg)}</div>`:''}${body}<button class="btn ghost back" data-a="quizend">Runde beenden</button></div>`;}
+  <div class="q">${esc(q.q)}</div>${q.zi!=null?`<div class="qfig">${zugSVG(q.zi,q.neutral)}</div>`:q.mg!=null&&q.q.startsWith('Welcher Massagegriff')?`<div class="qfig">${massageSVG(q.mg)}</div>`:q.nb!=null?`<div class="qfig">${nailSVG(q.nb)}</div>`:''}${body}<button class="btn ghost back" data-a="quizend">Runde beenden</button></div>`;}
 
 /* ---------- Diagnose ---------- */
 const SURF=['fein/ebenmäßig','uneben/trocken','fett/glänzend','neigt zu Faltenbildung','gerötet/empfindlich'];
@@ -1215,6 +1286,8 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!
   case 'self':{const it=QZ.items[QZ.i];it.res=ds.r;grade(it.q.id,ds.r);render();break;}
   case 'next': QZ.i++;if(QZ.i>=QZ.items.length&&QZ.kind==='sim')stopTimer();render();window.scrollTo(0,0);break;
   case 'case':{V.caseAns=V.caseAns||{};const st=V.caseAns[ds.c]=V.caseAns[ds.c]||{};st[ds.q]=ds.o;const c=CASES.find(x=>x.id===ds.c);if(c.q.every((qq,i)=>st[i]!=null)){D.cases[c.id]=c.q.every((qq,i)=>st[i]===qq[1]);save();}const y=window.scrollY;render();window.scrollTo(0,y);break;}
+  case 'ordreset': V.ord={l:ds.l,seq:shuffle(ordItems(ds.l).map((x,k)=>k)),got:[],err:0,bad:null};{const y=window.scrollY;render();window.scrollTo(0,y);}break;
+  case 'ord':{const o=V.ord,k=+ds.k;if(k===o.got.length){o.got.push(k);o.bad=null;}else{o.bad=k;o.err++;}const y=window.scrollY;render();window.scrollTo(0,y);break;}
   case 'diagclear': D.diag={};save();render();break;
   case 'packclear': D.pack={};save();render();break;
   case 'simstart': SIM={i:0};startSimBlock();go('tag');break;
