@@ -1523,6 +1523,8 @@ async function zeigeDetailLehrling(lehrling){
   });
 }
 
+// Fehler der Edge Function lesbar machen (kommt mal als Text, mal als Objekt)
+function fehlerText(e){ if(!e) return 'unbekannt'; if(typeof e==='string') return e; return e.message||e.msg||JSON.stringify(e); }
 async function speichereNeuenLehrling(){
   if(!ISTMEISTERIN) return;
   var name=document.getElementById('neu-name').value.trim();
@@ -1563,7 +1565,7 @@ async function speichereNeuenLehrling(){
     }
     var insertRes2 = await fetch("https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function", {method:"POST",headers:{"Content-Type":"application/json",...(meisterinToken?{"Authorization":"Bearer "+meisterinToken}:{})},body:JSON.stringify({action:"insert_lehrling",user_id:recoveredUserId,name:name,lehrjahr:lj})});
     var insertJson2 = await insertRes2.json();
-    if(insertJson2 && insertJson2.error){zeigeFehler("neu-fehler","Datenbankfehler: "+insertJson2.error.message);return;}
+    if(insertJson2 && insertJson2.error){zeigeFehler("neu-fehler","Datenbankfehler: "+fehlerText(insertJson2.error));return;}
     document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
     await ladeDashboard();zeige('s-dashboard');
     return;
@@ -1577,7 +1579,7 @@ async function speichereNeuenLehrling(){
     body:JSON.stringify({action:'insert_lehrling', user_id:authData.user.id, name:name, lehrjahr:lj})
   });
   var insertJson = await insertRes.json();
-  if(insertJson && insertJson.error){zeigeFehler('neu-fehler','Datenbankfehler: '+insertJson.error);return;}
+  if(insertJson && insertJson.error){zeigeFehler('neu-fehler','Datenbankfehler: '+fehlerText(insertJson.error));return;}
   document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
   await ladeDashboard();zeige('s-dashboard');
 }
