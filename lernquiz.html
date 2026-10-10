@@ -1537,6 +1537,10 @@ async function speichereNeuenLehrling(){
   // zum neuen/wiederhergestellten Lehrling wechselt oder ausgeloggt wird.
   var {data:sessionVorher}=await sb.auth.getSession();
   var meisterinToken=sessionVorher&&sessionVorher.session?sessionVorher.session.access_token:null;
+  // Adresse serverseitig vormerken – neue Konten lässt der Auth-Hook nur auf Einladung zu
+  // (supabase/20261010_registrierung_nur_auf_einladung.sql). Fehler hier nicht abbrechen:
+  // ist der Hook noch nicht aktiv, klappt die Registrierung auch ohne Vormerkung.
+  try{ await sb.rpc('registrierung_vormerken',{p_email:email}); }catch(e){}
   var {data:authData,error:authErr}=await sb.auth.signUp({email:email,password:pin,options:{data:{name:name},emailRedirectTo:null}});
   // Supabase gibt "User already registered" wenn die generierte E-Mail schon existiert.
   // Das passiert z.B. wenn ein Lehrling geloescht wurde (DB-Eintrag weg, Auth-User bleibt).
