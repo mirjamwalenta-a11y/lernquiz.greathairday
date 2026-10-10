@@ -86,6 +86,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .pin-sub{font-size:12px;color:#7A7A70;margin-bottom:20px}
 .pin-input{width:100%;border:1.5px solid #E2DDD5;border-radius:8px;padding:13px;font-size:22px;text-align:center;letter-spacing:8px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none;margin-bottom:12px}
 .pin-input:focus{border-color:#5B7B6F}
+.pin-feld{font-size:15px;letter-spacing:0;text-align:left}
 .pin-fehler{font-size:12px;color:#C44030;margin-bottom:10px;min-height:16px}
 /* POPUP */
 .sp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(3px)}
@@ -125,7 +126,8 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="pin-logo">✂️</div>
       <div class="pin-titel">Hallo Mirjam!</div>
       <div class="pin-sub">Dein persönlicher Lernbereich</div>
-      <input class="pin-input" type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="· · · · · ·" autofocus>
+      <input class="pin-input pin-feld" type="email" id="login-email" autocomplete="username" placeholder="E-Mail" autofocus>
+      <input class="pin-input pin-feld" type="password" id="pin-input" autocomplete="current-password" placeholder="Passwort">
       <div class="pin-fehler" id="pin-fehler"></div>
       <button class="btn-primary" onclick="pinPruefen()">Einloggen →</button>
     </div>
@@ -526,25 +528,30 @@ async function zeigeEnVerlaufFuer(lehrling){
 // ════════════════════════════════════════════════════════
 // PIN
 // ════════════════════════════════════════════════════════
-var PIN = '191299';
-
-function pinPruefen(){
-  var val = document.getElementById('pin-input').value.trim();
-  if(val === PIN){
-    try{ localStorage.setItem('m_eingeloggt','1'); }catch(e){}
-    zeige('home');
-    // Streak von Supabase laden sobald eingeloggt
-    ladeStreakVonSupabase();
-  } else {
-    document.getElementById('pin-fehler').textContent = 'Falsche PIN — bitte nochmal versuchen.';
-    document.getElementById('pin-input').value = '';
-    document.getElementById('pin-input').focus();
-  }
+// Anmeldung mit dem Meisterinnen-Konto (Supabase). Ob das Konto
+// Meisterin ist, entscheidet der Server (ist_meisterin, Tabelle app_rollen).
+async function istMeisterinServer(){
+  try{var r=await sb_m.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
 }
-function pinAbmelden(){
-  try{ localStorage.removeItem('m_eingeloggt'); }catch(e){}
+function pinFehler(t){document.getElementById('pin-fehler').textContent=t;}
+async function pinPruefen(){
+  var email=document.getElementById('login-email').value.trim();
+  var pw=document.getElementById('pin-input').value;
+  pinFehler('');
+  if(!sb_m){pinFehler('Keine Verbindung zu Supabase.');return;}
+  if(!email||!pw){pinFehler('Bitte E-Mail und Passwort eingeben.');return;}
+  var res=await sb_m.auth.signInWithPassword({email:email,password:pw});
+  if(res.error){pinFehler('E-Mail oder Passwort nicht korrekt.');document.getElementById('pin-input').value='';return;}
+  if(!(await istMeisterinServer())){await sb_m.auth.signOut();pinFehler('Dieses Konto hat keinen Meisterinnen-Zugang.');return;}
+  document.getElementById('pin-input').value='';
+  zeige('home');
+  // Streak von Supabase laden sobald eingeloggt
+  ladeStreakVonSupabase();
+}
+async function pinAbmelden(){
+  try{ if(sb_m) await sb_m.auth.signOut(); }catch(e){}
   document.getElementById('pin-input').value = '';
-  document.getElementById('pin-fehler').textContent = '';
+  pinFehler('');
   zeige('pin');
 }
 
@@ -1100,11 +1107,15 @@ function zeigeKartenEnde(){
 // INIT
 // ════════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded',function(){
-  // Auto-Login wenn gespeichert
-  try{ if(localStorage.getItem('m_eingeloggt')==='1'){ zeige('home'); return; } }catch(e){}
-  // PIN Enter-Taste
-  document.getElementById('pin-input').addEventListener('keydown',function(e){
-    if(e.key==='Enter') pinPruefen();
+  // altes PIN-Merkzeichen aufräumen (zählt nicht mehr als Anmeldung)
+  try{ localStorage.removeItem('m_eingeloggt'); }catch(e){}
+  // Angemeldet bleiben: nur mit gültiger Supabase-Sitzung + Meisterin-Rolle
+  if(sb_m) sb_m.auth.getSession().then(async function(r){
+    if(r.data&&r.data.session&&(await istMeisterinServer())){ zeige('home'); ladeStreakVonSupabase(); }
+  });
+  // Enter-Taste
+  ['login-email','pin-input'].forEach(function(id){
+    document.getElementById(id).addEventListener('keydown',function(e){ if(e.key==='Enter') pinPruefen(); });
   });
   // Karte onclick
   document.getElementById('karte-vorder').addEventListener('click', karteUmdrehen);
