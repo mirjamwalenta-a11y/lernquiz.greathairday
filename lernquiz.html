@@ -1523,8 +1523,27 @@ async function zeigeDetailLehrling(lehrling){
   });
 }
 
-// Fehler der Edge Function lesbar machen (kommt mal als Text, mal als Objekt)
-function fehlerText(e){ if(!e) return 'unbekannt'; if(typeof e==='string') return e; return e.message||e.msg||JSON.stringify(e); }
+// Lehrling in die Liste eintragen – direkt mit dem Meisterin-Token (RLS-Policy
+// lehrlinge_meisterin über ist_meisterin()). Die frühere Edge Function
+// (rapid-function, insert_lehrling) trug seit Ende August nichts mehr ein.
+async function lehrlingEintragen(meisterinToken,userId,name,lj){
+  if(!meisterinToken) return 'Meisterin nicht angemeldet – bitte neu einloggen.';
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/lehrlinge',{method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+meisterinToken,'Content-Type':'application/json','Prefer':'return=minimal'},
+      body:JSON.stringify({user_id:userId,name:name,lehrjahr:lj})});
+    if(r.ok) return null;
+    var t=await r.text(); try{ var j=JSON.parse(t); return j.message||t; }catch(e){ return t||('HTTP '+r.status); }
+  }catch(e){ return e.message||String(e); }
+}
+// Nach signUp/signIn des Lehrlings wieder die Sitzung der Meisterin herstellen
+async function meisterinSitzungZurueck(sessionVorher){
+  try{
+    var akt=(await sb.auth.getSession()).data.session;
+    if(sessionVorher && (!akt || akt.user.id!==sessionVorher.user.id))
+      await sb.auth.setSession({access_token:sessionVorher.access_token,refresh_token:sessionVorher.refresh_token});
+  }catch(e){}
+}
 async function speichereNeuenLehrling(){
   if(!ISTMEISTERIN) return;
   var name=document.getElementById('neu-name').value.trim();
@@ -1534,52 +1553,37 @@ async function speichereNeuenLehrling(){
   if(!name||!pin){zeigeFehler('neu-fehler','Bitte alle Felder ausfüllen.');return;}
   if(pin.length!==6||!/^\d{6}$/.test(pin)){zeigeFehler('neu-fehler','PIN muss genau 6 Ziffern sein.');return;}
   var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
-  // Meisterin-Token VOR dem signUp/signIn-Tanz sichern, damit rapid-function
-  // auch dann noch autorisiert aufgerufen werden kann, wenn die Session zwischendurch
-  // zum neuen/wiederhergestellten Lehrling wechselt oder ausgeloggt wird.
-  var {data:sessionVorher}=await sb.auth.getSession();
-  var meisterinToken=sessionVorher&&sessionVorher.session?sessionVorher.session.access_token:null;
+  // Meisterin-Sitzung VOR dem signUp/signIn sichern: die Sitzung kann dabei zum
+  // Lehrling wechseln oder abgemeldet werden.
+  var vorher=(await sb.auth.getSession()).data.session;
+  var meisterinToken=vorher?vorher.access_token:null;
   // Adresse serverseitig vormerken – neue Konten lässt der Auth-Hook nur auf Einladung zu
-  // (supabase/20261010_registrierung_nur_auf_einladung.sql). Fehler hier nicht abbrechen:
-  // ist der Hook noch nicht aktiv, klappt die Registrierung auch ohne Vormerkung.
+  // (supabase/20261010_registrierung_nur_auf_einladung.sql).
   try{ await sb.rpc('registrierung_vormerken',{p_email:email}); }catch(e){}
   var {data:authData,error:authErr}=await sb.auth.signUp({email:email,password:pin,options:{data:{name:name},emailRedirectTo:null}});
-  // Supabase gibt "User already registered" wenn die generierte E-Mail schon existiert.
-  // Das passiert z.B. wenn ein Lehrling geloescht wurde (DB-Eintrag weg, Auth-User bleibt).
-  // Loesung: Auth-Login mit gleicher E-Mail versuchen, DB-Eintrag pruefen und ggf. neu anlegen.
+  var userId=null;
+  // "User already registered": Auth-Konto existiert schon (z.B. Lehrling gelöscht oder
+  // früherer Versuch ohne Listeneintrag) → user_id per Login mit derselben PIN holen.
   if(authErr && authErr.message && authErr.message.toLowerCase().includes('already registered')){
-    // Auth-User existiert noch (z.B. nach Loeschen eines Lehrlings).
-    // user_id per signIn holen, sofort wieder ausloggen, dann als Admin inserieren.
     var {data:signInData,error:signInErr}=await sb.auth.signInWithPassword({email:email,password:pin});
     if(signInErr){
+      await meisterinSitzungZurueck(vorher);
       zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen existiert bereits. Bitte einen anderen Namen oder andere PIN verwenden.');
       return;
     }
-    var recoveredUserId = signInData.user.id;
-    // Sofort ausloggen – danach laeuft alles wieder unter Admin-Session
-    await sb.auth.signOut();
-    var {data:vorhandene}=await sb.from('lehrlinge').select('id').eq('user_id',recoveredUserId).maybeSingle();
-    if(vorhandene){
-      zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.');
-      return;
-    }
-    var insertRes2 = await fetch("https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function", {method:"POST",headers:{"Content-Type":"application/json",...(meisterinToken?{"Authorization":"Bearer "+meisterinToken}:{})},body:JSON.stringify({action:"insert_lehrling",user_id:recoveredUserId,name:name,lehrjahr:lj})});
-    var insertJson2 = await insertRes2.json();
-    if(insertJson2 && insertJson2.error){zeigeFehler("neu-fehler","Datenbankfehler: "+fehlerText(insertJson2.error));return;}
-    document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
-    await ladeDashboard();zeige('s-dashboard');
-    return;
+    userId=signInData.user.id;
+    await sb.auth.signOut({scope:'local'});
+    await meisterinSitzungZurueck(vorher);
+    var {data:vorhandene}=await sb.from('lehrlinge').select('id').eq('user_id',userId).maybeSingle();
+    if(vorhandene){zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.');return;}
+  } else {
+    if(authErr){await meisterinSitzungZurueck(vorher);zeigeFehler('neu-fehler','Fehler: '+authErr.message);return;}
+    userId=authData.user.id;
+    await meisterinSitzungZurueck(vorher);
+    await sb.rpc('confirm_user_email',{user_id:userId}).catch(function(){});
   }
-  if(authErr){zeigeFehler('neu-fehler','Fehler: '+authErr.message);return;}
-  if(authData&&authData.user) await sb.rpc('confirm_user_email',{user_id:authData.user.id}).catch(function(){});
-  // Insert über Edge Function mit Service-Role → umgeht RLS
-  var insertRes = await fetch('https://wrxlaltgtgkdomklgrlj.supabase.co/functions/v1/rapid-function', {
-    method:'POST',
-    headers:{'Content-Type':'application/json', ...(meisterinToken?{'Authorization':'Bearer '+meisterinToken}:{})},
-    body:JSON.stringify({action:'insert_lehrling', user_id:authData.user.id, name:name, lehrjahr:lj})
-  });
-  var insertJson = await insertRes.json();
-  if(insertJson && insertJson.error){zeigeFehler('neu-fehler','Datenbankfehler: '+fehlerText(insertJson.error));return;}
+  var fehler=await lehrlingEintragen(meisterinToken,userId,name,lj);
+  if(fehler){zeigeFehler('neu-fehler','Datenbankfehler: '+fehler);return;}
   document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
   await ladeDashboard();zeige('s-dashboard');
 }
