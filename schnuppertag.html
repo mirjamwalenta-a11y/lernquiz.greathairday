@@ -192,7 +192,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <div id="lehrling-name-box" style="display:none;margin-bottom:16px">
     <div class="card" style="border-color:#5B7B6F;border-width:2px">
       <div class="label">Dein Name</div>
-      <input type="text" id="lehrling-name-input" placeholder="Vor- und Nachname" oninput="syncLehrlingName(this.value)">
+      <input type="text" autocomplete="off" id="lehrling-name-input" placeholder="Vor- und Nachname" oninput="syncLehrlingName(this.value)">
       <div style="font-size:11px;color:#9A9A90;margin-top:6px">Wird nur für die Auswertung verwendet.</div>
     </div>
   </div>
@@ -266,29 +266,29 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <div class="section-head">Offene Fragen — eigene Worte</div>
     <div class="card">
       <div class="q-text">Warum möchtest du Friseurin / Friseur werden?</div>
-      <textarea rows="3" id="oq1" placeholder="Was zieht dich an diesem Beruf an?"></textarea>
+      <textarea autocomplete="off" rows="3" id="oq1" placeholder="Was zieht dich an diesem Beruf an?"></textarea>
     </div>
     <div class="card">
       <div class="q-text">Was machst du, wenn eine Kundin mit dem Ergebnis nicht zufrieden ist?</div>
-      <textarea rows="3" id="oq2" placeholder="Kein Richtig oder Falsch — wir wollen wissen wie du denkst."></textarea>
+      <textarea autocomplete="off" rows="3" id="oq2" placeholder="Kein Richtig oder Falsch — wir wollen wissen wie du denkst."></textarea>
     </div>
     <div class="card">
       <div class="q-text">Beschreib dich in drei Wörtern.</div>
-      <input type="text" id="oq3" placeholder="z.B. freundlich, neugierig, zuverlässig…">
+      <input type="text" autocomplete="off" id="oq3" placeholder="z.B. freundlich, neugierig, zuverlässig…">
     </div>
     <div class="card">
       <div class="q-text">Was machst du, wenn du merkst dass du eine Aufgabe noch nicht kannst?</div>
-      <textarea rows="3" id="oq4" placeholder="Wir suchen jemanden der fragen traut."></textarea>
+      <textarea autocomplete="off" rows="3" id="oq4" placeholder="Wir suchen jemanden der fragen traut."></textarea>
     </div>
     <div class="card">
       <div class="q-text">Was bedeutet für dich guter Kundenservice?</div>
-      <textarea rows="3" id="oq5" placeholder="In deinen eigenen Worten."></textarea>
+      <textarea autocomplete="off" rows="3" id="oq5" placeholder="In deinen eigenen Worten."></textarea>
     </div>
 
     <div class="section-head">Einschätzung Ausbilderin</div>
     <div class="card">
       <div class="label">Notizen zu Körpersprache, Auftreten & Gesamteindruck</div>
-      <textarea rows="4" id="notizen-ausbilderin" placeholder="Erster Eindruck, Spontanität, Auftreten…"></textarea>
+      <textarea autocomplete="off" rows="4" id="notizen-ausbilderin" placeholder="Erster Eindruck, Spontanität, Auftreten…"></textarea>
     </div>
 
     <div class="section-head">Chefin-Beurteilung der Werte</div>
@@ -329,7 +329,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <div class="section-head">Notiz Chefin</div>
     <div class="card">
       <div class="label">Persönliche Notizen & Gesamteindruck</div>
-      <textarea rows="5" id="notiz-chefin" placeholder="Deine persönlichen Gedanken — Bauchgefühl, besondere Beobachtungen, offene Fragen…"></textarea>
+      <textarea autocomplete="off" rows="5" id="notiz-chefin" placeholder="Deine persönlichen Gedanken — Bauchgefühl, besondere Beobachtungen, offene Fragen…"></textarea>
     </div>
 
     <!-- Lehrlings-Abschicken Button (nur im Lehrlings-Modus) -->
@@ -361,7 +361,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
         <div style="flex:1;min-width:140px">
           <div style="font-size:11px;color:#7A7A70;margin-bottom:4px">Name</div>
-          <input type="text" id="bewerber-name-schnell" placeholder="z.B. Lisa Müller" oninput="document.getElementById('bewerber-name').value=this.value">
+          <input type="text" autocomplete="off" id="bewerber-name-schnell" placeholder="z.B. Lisa Müller" oninput="document.getElementById('bewerber-name').value=this.value">
         </div>
         <div style="flex:1;min-width:130px">
           <div style="font-size:11px;color:#7A7A70;margin-bottom:4px">Datum</div>
@@ -376,6 +376,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <div id="schnell-ok" class="ok-box" style="margin-top:8px"></div>
       <div id="schnell-err" class="fehler-box" style="margin-top:8px"></div>
       <button class="btn-primary" style="margin-top:10px" onclick="schnellSpeichern()">💾 Bewerber speichern →</button>
+      <button class="btn-sec btn-neuer-test" style="display:none;margin-top:8px" onclick="testZuruecksetzen()">Neuer Schnuppertag – Felder leeren</button>
     </div>
 
     <div id="ergebnis-box" style="display:none">
@@ -458,7 +459,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <div class="section-head">Bewerber speichern</div>
     <div class="card">
       <div class="label">Name des Bewerbers</div>
-      <input type="text" id="bewerber-name" placeholder="z.B. Lisa Müller" style="margin-bottom:10px">
+      <input type="text" autocomplete="off" id="bewerber-name" placeholder="z.B. Lisa Müller" style="margin-bottom:10px">
       <div class="label">Datum des Schnuppertags</div>
       <input type="date" id="bewerber-datum" style="margin-bottom:10px">
       <div class="label">Entscheidung</div>
@@ -470,6 +471,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <div id="speichern-fehler" class="fehler-box"></div>
       <div id="speichern-ok" class="ok-box"></div>
       <button class="btn-primary" onclick="speichereSchnuppertag()">Ergebnis speichern →</button>
+      <button class="btn-sec btn-neuer-test" style="display:none;margin-top:8px" onclick="testZuruecksetzen()">Neuer Schnuppertag – Felder leeren</button>
     </div>
   </div>
 </div>
@@ -789,7 +791,7 @@ function renderWissenFragen() {
       html += '<div class="card">' +
         '<div class="q-text">' + f.text + '</div>' +
         '<span class="q-pts">' + f.punkte + ' Punkt' + (f.punkte > 1 ? 'e' : '') + '</span>' +
-        '<' + inputType + ' placeholder="Antwort…" class="ant-input" id="ant-' + f.id + '">' + inputClose +
+        '<' + inputType + ' placeholder="Antwort…" class="ant-input" autocomplete="off" id="ant-' + f.id + '">' + inputClose +
         '<button class="reveal-btn" onclick="reveal(\'rev-' + f.id + '\')">Lösung zeigen</button>' +
         '<div class="answer-reveal" id="rev-' + f.id + '">✓ Richtige Antwort: <strong>' + f.antwort + '</strong></div>' +
       '</div>';
@@ -1180,6 +1182,7 @@ async function schnellSpeichern() {
     // Sync auch im Haupt-Speichern-Bereich
     var ok2 = document.getElementById('speichern-ok');
     if (ok2) { ok2.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; ok2.style.display = 'block'; }
+    document.querySelectorAll('.btn-neuer-test').forEach(function(b){ b.style.display = 'block'; });
     var entText = AKT_ENTSCHEIDUNG === 'ja' ? '→ Probezeit' : AKT_ENTSCHEIDUNG === 'nein' ? '→ Nicht geeignet' : '→ Entscheidung offen';
     var prio = AKT_ENTSCHEIDUNG === 'ja' ? 'diese-woche' : AKT_ENTSCHEIDUNG === 'nein' ? 'wann-moeglich' : 'heute';
     ghd_rpcEreignis('Schnuppertag', 'schnuppertag_abgeschlossen',
@@ -1226,6 +1229,7 @@ async function speichereSchnuppertag() {
   if (error) { fehlerEl.textContent = 'Fehler beim Speichern: ' + error.message; fehlerEl.style.display = 'block'; }
   else {
     okEl.textContent = '✓ Schnuppertag von ' + name + ' gespeichert!'; okEl.style.display = 'block';
+    document.querySelectorAll('.btn-neuer-test').forEach(function(b){ b.style.display = 'block'; });
     // ── GHD-EREIGNIS ──────────────────────────────────────────────
     var entText = AKT_ENTSCHEIDUNG === 'ja' ? '→ Probezeit' : AKT_ENTSCHEIDUNG === 'nein' ? '→ Nicht geeignet' : '→ Entscheidung offen';
     var prio = AKT_ENTSCHEIDUNG === 'ja' ? 'diese-woche' : AKT_ENTSCHEIDUNG === 'nein' ? 'wann-moeglich' : 'heute';
@@ -2413,10 +2417,6 @@ async function lehrlingAbschicken() {
   // Auto-Auswertung der Wissensfragen
   autoAuswerten();
   var wissen = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
-  var gesamt = wissen; // praktik = 0 weil Lehrling das nicht bewertet
-
-  var datum = new Date().toISOString().slice(0,10);
-
   // Werte sammeln
   var werte = {
     freundlichkeit: (document.querySelector('[oninput="updateSlider(\'sv1\',this.value)"]')||{}).value || 3,
@@ -2436,13 +2436,13 @@ async function lehrlingAbschicken() {
 
   if (btn) { btn.disabled = true; btn.textContent = 'Wird übermittelt…'; }
 
-  var { error } = await sb.from('schnuppertage').insert({
-    name: name,
-    datum: datum,
-    punkte_gesamt: gesamt,
-    punkte_detail: { wissen: wissen, praktik: 0, geschicklichkeit: 0, rollenspiel: 0, hinweis: 'Praktik noch nicht bewertet' },
-    entscheidung: 'offen',
-    werte: werte
+  // Bewerber:innen haben keinen Login: schnuppertage ist per RLS nur für die
+  // Meisterin beschreibbar, daher eng begrenzte Einreich-Funktion
+  // (kann nur anlegen, nichts lesen; supabase/20261015_schnuppertag_test_einreichen.sql)
+  var { error } = await sb.rpc('schnuppertag_test_einreichen', {
+    p_name: name,
+    p_wissen: wissen,
+    p_werte: werte
   });
 
   if (error) {
@@ -2466,12 +2466,48 @@ async function lehrlingAbschicken() {
       });
     } catch(e) { console.warn('Wörni-Ereignis Bewerber:', e); }
 
+    // Antworten sofort leeren, damit die nächste Person sie nicht sieht
+    testZuruecksetzen();
+
     // Erfolgs-Anzeige
-    okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#5B7B6F">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>';
+    okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#5B7B6F">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>' +
+      '<button class="btn-sec" style="margin-top:10px" onclick="testZuruecksetzen();window.scrollTo(0,0)">Neuer Test für die nächste Person</button>';
     okEl.style.display = 'block';
     if (btn) { btn.disabled = true; btn.textContent = '✓ Übermittelt'; btn.style.background = '#9A9A90'; }
     window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
   }
+}
+
+// ── TEST ZURÜCKSETZEN (nächste Person) ───────────────────────────────────────
+var AUTO_AUSWERTUNG_HTML = null;
+
+function testZuruecksetzen() {
+  var seite = document.getElementById('p-eignungstest');
+  if (!seite) return;
+  seite.querySelectorAll('input, textarea').forEach(function(el) {
+    if (el.type === 'range') { el.value = 3; if (el.oninput) el.oninput(); }
+    else if (el.type !== 'date') { el.value = ''; }
+    el.style.borderColor = ''; el.style.background = '';
+  });
+  seite.querySelectorAll('.answer-reveal.show').forEach(function(el){ el.classList.remove('show'); });
+  seite.querySelectorAll('.pts-btn.sel').forEach(function(el){ el.classList.remove('sel'); });
+  seite.querySelectorAll('.ok-box, .fehler-box, .btn-neuer-test').forEach(function(el){ el.style.display = 'none'; });
+
+  AUTO_PUNKTE = {};
+  AKT_PUNKTE = {gs1:null, gs2:null, gs3:null, rp:null};
+  AKT_ENTSCHEIDUNG = null;
+
+  var ergBox = document.getElementById('ergebnis-box');
+  if (ergBox) ergBox.style.display = 'none';
+  var autoBox = document.getElementById('auto-auswertung-box');
+  if (autoBox && AUTO_AUSWERTUNG_HTML !== null) autoBox.innerHTML = AUTO_AUSWERTUNG_HTML;
+
+  var btn = document.getElementById('lehrling-send-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '✓ Test abschicken →'; btn.style.background = ''; }
+
+  renderWissenFragen();
+  var tabs = document.querySelectorAll('#p-eignungstest .tab-btn');
+  testTab('wissen', tabs[0]);
 }
 
 // ── HILFSFUNKTIONEN ───────────────────────────────────────────────────────────
@@ -2642,6 +2678,13 @@ window.addEventListener('DOMContentLoaded', function() {
   if (urlEl) urlEl.textContent = lehrlingUrl;
 
   var params = new URLSearchParams(window.location.search);
+
+  var autoBox = document.getElementById('auto-auswertung-box');
+  if (autoBox) AUTO_AUSWERTUNG_HTML = autoBox.innerHTML;
+  // Seite aus dem Browser-Cache (Zurück-Taste) → keine alten Antworten zeigen
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted && LEHRLING_MODUS) testZuruecksetzen();
+  });
 
   // Lehrlings-Quiz-Modus
   if (params.get('modus') === 'lehrling-quiz') {
