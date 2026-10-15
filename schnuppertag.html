@@ -2496,6 +2496,7 @@ function testZuruecksetzen() {
   AUTO_PUNKTE = {};
   AKT_PUNKTE = {gs1:null, gs2:null, gs3:null, rp:null};
   AKT_ENTSCHEIDUNG = null;
+  entwurfLoeschen();
 
   var ergBox = document.getElementById('ergebnis-box');
   if (ergBox) ergBox.style.display = 'none';
@@ -2508,6 +2509,46 @@ function testZuruecksetzen() {
   renderWissenFragen();
   var tabs = document.querySelectorAll('#p-eignungstest .tab-btn');
   testTab('wissen', tabs[0]);
+}
+
+// ── ENTWURF (Bewerber-Link) ──────────────────────────────────────────────────
+// Antworten bis zum erfolgreichen Abschicken im Tab merken, damit ein
+// Neuladen oder ein Fehler beim Abschicken nichts löscht. sessionStorage:
+// gilt nur für diesen Tab und ist beim Schließen des Tabs weg.
+var ENTWURF_KEY = 'ghd_schnuppertest_entwurf';
+
+function entwurfFelder() {
+  var seite = document.getElementById('p-eignungstest');
+  return seite ? Array.prototype.slice.call(seite.querySelectorAll('input, textarea')) : [];
+}
+
+function entwurfSpeichern() {
+  if (!LEHRLING_MODUS) return;
+  var daten = { felder: {}, regler: [] };
+  entwurfFelder().forEach(function(el) {
+    if (el.type === 'range') daten.regler.push(el.value);
+    else if (el.id && el.type !== 'date') daten.felder[el.id] = el.value;
+  });
+  try { sessionStorage.setItem(ENTWURF_KEY, JSON.stringify(daten)); } catch(e) {}
+}
+
+function entwurfLaden() {
+  var daten = null;
+  try { daten = JSON.parse(sessionStorage.getItem(ENTWURF_KEY) || 'null'); } catch(e) {}
+  if (!daten) return;
+  var r = 0;
+  entwurfFelder().forEach(function(el) {
+    if (el.type === 'range') {
+      if (daten.regler && daten.regler[r] != null) { el.value = daten.regler[r]; if (el.oninput) el.oninput(); }
+      r++;
+    } else if (el.id && daten.felder && daten.felder[el.id] != null) {
+      el.value = daten.felder[el.id];
+    }
+  });
+}
+
+function entwurfLoeschen() {
+  try { sessionStorage.removeItem(ENTWURF_KEY); } catch(e) {}
 }
 
 // ── HILFSFUNKTIONEN ───────────────────────────────────────────────────────────
@@ -2681,10 +2722,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
   var autoBox = document.getElementById('auto-auswertung-box');
   if (autoBox) AUTO_AUSWERTUNG_HTML = autoBox.innerHTML;
-  // Seite aus dem Browser-Cache (Zurück-Taste) → keine alten Antworten zeigen
-  window.addEventListener('pageshow', function(e) {
-    if (e.persisted && LEHRLING_MODUS) testZuruecksetzen();
-  });
 
   // Lehrlings-Quiz-Modus
   if (params.get('modus') === 'lehrling-quiz') {
@@ -2703,6 +2740,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
   if (params.get('modus') === 'lehrling') {
     aktiviereLehrlingsModus();
+    entwurfLaden();
+    var seite = document.getElementById('p-eignungstest');
+    if (seite) seite.addEventListener('input', entwurfSpeichern);
     return;
   }
 
