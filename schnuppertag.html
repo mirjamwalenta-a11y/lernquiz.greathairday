@@ -2512,6 +2512,8 @@ function testZuruecksetzen() {
   AKT_PUNKTE = {gs1:null, gs2:null, gs3:null, rp:null};
   AKT_ENTSCHEIDUNG = null;
   entwurfLoeschen();
+  var hinweis = document.getElementById('entwurf-hinweis');
+  if (hinweis) hinweis.remove();
 
   var ergBox = document.getElementById('ergebnis-box');
   if (ergBox) ergBox.style.display = 'none';
@@ -2560,6 +2562,29 @@ function entwurfLaden() {
       el.value = daten.felder[el.id];
     }
   });
+  entwurfHinweis((daten.felder && daten.felder['lehrling-name-input']) || '');
+}
+
+// Sichtbar machen, dass Antworten einer früheren Person zurückgeholt wurden
+function entwurfHinweis(name) {
+  var box = document.getElementById('entwurf-hinweis');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'entwurf-hinweis';
+    box.className = 'card-amber';
+    box.style.marginBottom = '16px';
+    var ziel = document.getElementById('lehrling-name-box');
+    if (ziel) ziel.parentNode.insertBefore(box, ziel);
+  }
+  box.innerHTML = '<div style="font-size:14px;line-height:1.5;margin-bottom:10px">' +
+    '<strong>Hier stehen noch Antworten, die nicht abgeschickt wurden</strong>' +
+    (name ? ' (von <span id="entwurf-name"></span>)' : '') + '.</div>' +
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button class="btn-sec" onclick="document.getElementById(\'entwurf-hinweis\').remove()">Das bin ich – weitermachen</button>' +
+      '<button class="btn-primary" onclick="testZuruecksetzen();window.scrollTo(0,0)">Neuer Test – alles leeren</button>' +
+    '</div>';
+  var n = document.getElementById('entwurf-name');
+  if (n) n.textContent = name;
 }
 
 function entwurfLoeschen() {
