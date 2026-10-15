@@ -808,6 +808,21 @@ function renderWissenFragen() {
     '</div></div>';
 
   container.innerHTML = html;
+  felderOhneVorschlaege();
+}
+
+// Chrome merkt sich Eingaben pro Feldname und schlägt sie der nächsten Person
+// vor – auch trotz autocomplete="off". Mit einem zufälligen Namen pro Aufruf
+// passt kein gespeicherter Eintrag mehr.
+function felderOhneVorschlaege() {
+  var seite = document.getElementById('p-eignungstest');
+  if (!seite) return;
+  var zufall = Math.random().toString(36).slice(2, 8);
+  seite.querySelectorAll('input, textarea').forEach(function(el, i) {
+    if (el.type === 'range' || el.type === 'date') return;
+    el.setAttribute('autocomplete', 'off');
+    el.setAttribute('name', 'f' + zufall + i);
+  });
 }
 
 // ── SLIDER ────────────────────────────────────────────────────────────────────
