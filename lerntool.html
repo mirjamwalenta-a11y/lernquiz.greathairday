@@ -524,7 +524,8 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <p class="sub">Vom Waschplatz bis zum Turban.</p>
   <div class="pm-tabs">
     <button class="btn-toggle" id="pmw-tab-ablauf" onclick="pmWaschTab('ablauf')">Ablauf</button>
-    <button class="btn-toggle" id="pmw-tab-temp" onclick="pmWaschTab('temp')">Temperatur</button>
+    <button class="btn-toggle" id="pmw-tab-temp" onclick="pmWaschTab('temp')">Wasser</button>
+    <button class="btn-toggle" id="pmw-tab-waesche" onclick="pmWaschTab('waesche')">Wäsche</button>
     <button class="btn-toggle" id="pmw-tab-massage" onclick="pmWaschTab('massage')">Massage</button>
     <button class="btn-toggle" id="pmw-tab-check" onclick="pmWaschTab('check')">Check</button>
   </div>
@@ -543,6 +544,20 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pmf-tab-karten" onclick="pmFarbeTab('karten')">Lernkarten</button>
   </div>
   <div id="pmf-inhalt"></div>
+</div>
+
+<!-- ── MODUL 3: STRÄHNENTECHNIKEN ── -->
+<div id="p-pm-straehnen" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">2. Lehrjahr · Praxis-Modul</div>
+  <h1>Strähnentechniken</h1>
+  <p class="sub">Welche Technik, welche Abteilung, welche Wirkung.</p>
+  <div class="pm-tabs">
+    <button class="btn-toggle" id="pms-tab-technik" onclick="pmStraehnenTab('technik')">Techniken</button>
+    <button class="btn-toggle" id="pms-tab-abteilen" onclick="pmStraehnenTab('abteilen')">Abteilen</button>
+    <button class="btn-toggle" id="pms-tab-quiz" onclick="pmStraehnenTab('quiz')">Quiz</button>
+  </div>
+  <div id="pms-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -1643,13 +1658,13 @@ var PMW_SCHRITTE = [
   {i:'🫧',t:'Erste Wäsche',p:true,
    was:'Shampoo in den Handflächen verteilen, auf die Kopfhaut auftragen, kurz einschäumen und ausspülen.',
    warum:'Grundsätzlich wird zweimal gewaschen. Die erste Wäsche löst Talg, Stylingprodukte und Schmutz. Dass sie wenig schäumt, ist normal.'},
-  {i:'💆',t:'Zweite Wäsche mit Kopfmassage',p:true,
-   was:'Shampoo passend zu Haar und Kopfhaut auftragen, einschäumen und dabei massieren (siehe „Massage“). Danach gründlich ausspülen, bis das Wasser klar ist, besonders im Nacken und hinter den Ohren.',
+  {i:'💆',t:'Zweite Wäsche als Entspannungshaarwäsche',p:true,
+   was:'Shampoo passend zu Haar und Kopfhaut auftragen und die Entspannungshaarwäsche in 4 Phasen machen (siehe „Wäsche“). Danach gründlich ausspülen, bis das Wasser klar ist, besonders im Nacken und hinter den Ohren.',
    warum:'Erst jetzt schäumt das Shampoo richtig und reinigt die Kopfhaut. Shampooreste machen das Haar stumpf und können die Kopfhaut reizen.'},
-  {i:'🧴',t:'Pflege auftragen und ausspülen',
-   was:'Wasser leicht ausdrücken, Spülung oder Kur in Längen und Spitzen einarbeiten, mit einem grobzinkigen Kamm verteilen. Einwirkzeit laut Produkt, dann etwas kühler ausspülen.',
-   warum:'Pflege gehört dorthin, wo das Haar strapaziert ist. Auf der Kopfhaut beschwert sie und fettet nach. Kühleres Wasser zum Schluss lässt die Schuppenschicht glatter anliegen.',
-   achtung:'Ausnahme: Kopfhautpflege (z. B. Tonic oder Serum) gehört gezielt auf die Kopfhaut.'},
+  {i:'🧴',t:'Pflege mit Basismassage',p:true,
+   was:'Wasser leicht ausdrücken, Pflege in Längen und Spitzen einarbeiten und dabei die Basismassage machen (siehe „Massage“). Pflege zum Ausspülen: Einwirkzeit laut Produkt, dann etwas kühler ausspülen. Pflege, die im Haar bleibt: nicht ausspülen.',
+   warum:'Die Basismassage gehört zu jeder Pflege-Anwendung, egal ob die Pflege ausgespült wird oder im Haar bleibt. Pflege gehört dorthin, wo das Haar strapaziert ist. Kühleres Wasser zum Schluss lässt die Schuppenschicht glatter anliegen.',
+   achtung:'Kopfhautpflege (z. B. Tonic oder Serum) gehört gezielt auf die Kopfhaut.'},
   {i:'🧖',t:'Turban wickeln',p:true,
    was:'Haar sanft ausdrücken, nicht rubbeln. Handtuch als Turban um den Kopf wickeln und dem Gast beim Aufrichten helfen.',
    warum:'Rubbeln raut die nasse, empfindliche Schuppenschicht auf. Der Turban hält das Wasser von Gesicht und Nacken fern.'},
@@ -1675,32 +1690,106 @@ var PMW_TEMP_HAAR = {
   blondiert:{n:'blondiert/strapaziert', d:-2, w:'Blondiertes Haar ist porös, Hitze strapaziert es zusätzlich.'}
 };
 
-var PMW_GRIFFE = [
-  {id:'streichen', n:'Streichen', fach:'Effleurage',
-   wie:'Finger leicht gespreizt, die ganzen Fingerflächen liegen auf. Lange, ruhige Züge vom Stirnansatz über den Oberkopf zum Nacken, die Hände wechseln sich ab.',
-   wirkung:'Beruhigt, baut Vertrauen auf und verteilt das Shampoo. Damit beginnt und endet jede Massage.',
-   druck:'leicht', dauer:'ca. 30 Sekunden am Anfang und am Ende',
-   fehler:'Kurze, hektische Züge. Hände abheben und den Kontakt verlieren.'},
-  {id:'zirkeln', n:'Zirkeln', fach:'Fingerkuppen kreisen',
-   wie:'Die Fingerkuppen beider Hände setzen am Stirnansatz auf und kreisen klein. Die Kopfhaut wird verschoben, nicht gerieben. Reihe für Reihe nach hinten bis zum Nacken, danach über die Schläfen und hinter den Ohren.',
-   wirkung:'Fördert die Durchblutung und reinigt die Kopfhaut gründlich.',
-   druck:'mittel', dauer:'1–2 Minuten',
-   fehler:'Mit den Fingernägeln arbeiten. Die Haare mitkreisen lassen (verfilzt langes Haar). Zu schnell werden.'},
-  {id:'kneten', n:'Kneten', fach:'Petrissage, Kopfhaut verschieben',
-   wie:'Die Hände mit gespreizten Fingern seitlich anlegen. Die Kopfhaut gegengleich verschieben: eine Hand nach vorne, die andere nach hinten.',
-   wirkung:'Lockert die Kopfhaut und löst Verspannungen.',
-   druck:'mittel', dauer:'ca. 1 Minute',
-   fehler:'Haare einklemmen oder daran ziehen. Zu kräftig an den Schläfen arbeiten.'},
-  {id:'vibration', n:'Vibration', fach:'feines Zittern',
-   wie:'Die Fingerkuppen ruhig auflegen und aus dem Unterarm ein feines, schnelles Zittern erzeugen. Die Finger bleiben an derselben Stelle. Gut am Oberkopf und am Hinterkopf.',
-   wirkung:'Sehr entspannend, löst leichte Verspannungen.',
-   druck:'leicht', dauer:'20–30 Sekunden pro Stelle',
-   fehler:'Die Finger rutschen über die Kopfhaut. Zu grob, das wird zum Rütteln.'},
-  {id:'druck', n:'Druckpunkte', fach:'sanfter Punktdruck',
-   wie:'Mit den Fingerkuppen langsam Druck aufbauen, 3–5 Sekunden halten und langsam lösen. An den Schläfen, an der Stirnmitte am Haaransatz und entlang des Schädelrands im Nacken.',
-   wirkung:'Löst Spannung. Ein angenehmer Abschluss vor dem letzten Streichen.',
-   druck:'leicht bis mittel, langsam steigern', dauer:'ca. 1 Minute',
-   fehler:'Ruckartig drücken oder loslassen. Druck auf die weiche Halsseite: tabu.'}
+// Phasen nach den Salon-Vorlagen (Basismassage mit vitalisierender und
+// beruhigender Variante) und Wella System Professional (Entspannungsmassage,
+// Entspannungshaarwäsche). bild verweist auf eine Skizze in pmwSkizze().
+var PMW_PHASEN = {
+  b1:{k:'1', n:'Greifbewegung', z:'Basis 1 · Vorbereitungsphase', bild:'b1',
+      ziel:'Einstieg in die Massage, entspannt die Halsmuskulatur.',
+      wie:['An der oberen Halswirbelsäule mit leichter Druckmassage die beiden Muskelstränge massieren.',
+           'Auf jeder Seite gibt es 3 Druckpunkte.',
+           'Die Hände kommen im Wechsel zum Einsatz, eine Hand stützt jeweils die Stirn ab.',
+           'Massiert wird mit Daumen, Zeige-, Mittel- und Ringfinger.',
+           'Ohne abrupt abzubrechen, fließend in Phase 2 übergehen.']},
+  b2:{k:'2', n:'Kreisende Bewegungen', z:'Basis 2 · für das allgemeine Wohlbefinden', bild:'b2',
+      wie:['Die Finger steil auf die Kopfhaut aufsetzen.',
+           'In kreisenden Bewegungen vom Nacken bis zur Stirnkontur und wieder zum Nacken zurück massieren.',
+           'Der Druck kann nach Bedarf etwas verstärkt werden. Wichtig ist ein gleichmäßiger Massagegriff.',
+           'Dreimal durchführen, dann übergangslos weiter.']},
+  b3:{k:'3', n:'Druckpunktmassage', z:'Basis 3 · Vier-Punkt-System', bild:'b3',
+      wie:['Vom Nacken aus (Punkt 1 und 2) eine Druckmassage über die Ohrkontur und die Schläfen bis zur Stirnkontur durchführen.',
+           'Mit den gesamten Fingern Druck ausüben, der langsam zunimmt. Zum Schluss noch einmal kräftig steigern, dann sanfter werden.',
+           'Die Finger heben und etwa 2 cm hinter der ersten Position aufsetzen (Punkt 3 und 4), dann erneut eine Druckmassage.',
+           'Dreimal durchführen.']},
+  b4:{k:'4', n:'Ausstreichgriff', z:'Basis 4 · Abschluss', bild:'b4',
+      wie:['Den ganzen Kopf von der Stirnkontur bis zum Nacken mit gleichmäßig kreisenden Bewegungen massieren.',
+           'Im Nacken eine kurze Druckmassage an den Nervenpunkten.',
+           'Über die Seitenstränge ausstreichen und mit einem kräftigen Griff an der Schulter die Massage beenden.',
+           'Dreimal durchführen.']},
+  a1:{k:'1a', n:'Anregend', z:'1a · vitalisierend', bild:'a1',
+      wie:['Mit allen Fingern stufenweise vom Nacken bis zum Oberkopf schrittweise mit Druck über den Kopf gehen.',
+           'Der Daumen schiebt dabei jeweils Zeige-, Mittel- oder Ringfinger weiter.',
+           'Den Druck dem Wunsch des Gastes anpassen. Der Hauptdruck kommt von Zeige-, Mittel- und Ringfinger.']},
+  a2:{k:'2a', n:'Klopfmassage', z:'2a · vitalisierend', bild:'a2',
+      wie:['Mit den Handkanten beider Hände klopfend massieren. Die kleinen Finger der gespreizten Hände setzen leicht federnd auf.',
+           'Zuerst die Schulterregion massieren.',
+           'Dann den Hinterkopf mit der gleichen Technik horizontal massieren.',
+           'Danach den Vorderkopf von Ohr zu Ohr miteinbeziehen.']},
+  a3:{k:'3a', n:'Zickzack-Massage', z:'3a · vitalisierend', bild:'a3',
+      wie:['Mit den Fingerkuppen vom Nacken bis zum Oberkopf massieren. Beide Hände arbeiten gegeneinander in einer Zickzack-Bewegung.',
+           'So Partie für Partie den ganzen Kopf systematisch massieren.']},
+  r1:{k:'1b', n:'Handflächen auflegen', z:'1b · beruhigend', bild:'r1',
+      wie:['Die Handinnenflächen nacheinander an die Schläfen, dann über die Ohren, hinter die Ohren und auf den Nacken legen.',
+           'Jeweils mit leichtem Druck kreisende Bewegungen durchführen.',
+           'Insgesamt dreimal wiederholen.']},
+  r2:{k:'2b', n:'Druckmassage zur Kontur', z:'2b · beruhigend', bild:'r2',
+      wie:['Mit den Fingerkuppen eine Druckmassage vom Oberkopf schrittweise bis zu den Konturen durchführen.',
+           'Am Oberkopf beginnen: zu den Ohren hin mit 3 Druckpunkten, zum Nacken hin mit 4 Druckpunkten.',
+           'Die Druckmassage endet im Nacken.']},
+  r3:{k:'3b', n:'Streichmassage', z:'3b · beruhigend', bild:'r3',
+      wie:['Mit der gesamten Handfläche eine Streichmassage von der Stirn bis zum Nacken durchführen.',
+           'Von der Mitte aus in Wellenbewegungen die Kontur miteinbeziehen.',
+           'Dann zu den Schultern hin ausstreichen.']},
+  e1:{k:'1', n:'Greifbewegung', z:'Schritt 1', bild:'b1',
+      wie:['Mit leichter Druckmassage die beiden Muskelträger der oberen Halswirbelsäule massieren.',
+           'Auf jeder Seite gibt es 3 Druckpunkte.',
+           'Die Hände kommen im Wechsel zum Einsatz, eine Hand stützt die Stirn ab.',
+           'Massiert wird mit Daumen, Zeige-, Mittel- und Ringfinger.',
+           'In Schwimmrichtung massieren.']},
+  e2:{k:'2', n:'Kreisende Bewegung', z:'Schritt 2', bild:'b2',
+      wie:['Die Finger steil auf die Kopfhaut aufsetzen.',
+           'In kreisenden Bewegungen von der Stirnkontur zum Nacken und wieder zurück massieren.',
+           'In Schwimmrichtung massieren.']},
+  e3:{k:'3', n:'Druckpunktmassage', z:'Schritt 3', bild:'b3',
+      wie:['Druckpunktmassage in der Kontur, mit allen Fingern Druck ausüben.',
+           'Vom Nacken ausgehend über die Ohrenkontur weiter zu den Schläfen und zur Stirnkontur massieren.']},
+  e4:{k:'4', n:'Zickzack-Massage', z:'Schritt 4', bild:'a3',
+      wie:['Mit den Fingerkuppen beider Hände eine Zickzack-Bewegung durchführen, die Hände arbeiten gegeneinander.',
+           'Vom Oberkopf bis zum Nacken systematisch den ganzen Kopf massieren.']},
+  e5:{k:'5', n:'Ausstreichgriff', z:'Schritt 5', bild:'b4',
+      wie:['Von der Stirnkontur zum Nacken mit gleichmäßig kreisenden Bewegungen massieren (von innen nach außen).',
+           'Im Nacken eine kurze Druckpunktmassage an den Nervenendpunkten.',
+           'Über die Seitenstränge ausstreichen und mit einem kräftigen Griff an der Schulter die Massage beenden.',
+           'In Schwimmrichtung massieren.']}
+};
+
+var PMW_MASSAGEN = {
+  basis:{n:'Basismassage', folge:['b1','b2','b3','b4'],
+         info:'Die Basismassage machst du bei jeder Pflege-Anwendung, egal ob die Pflege ausgespült wird oder im Haar bleibt.'},
+  vital:{n:'Vitalisierend', folge:['b1','a1','b2','a2','b3','a3','b4'],
+         info:'Anregend: Nach jeder Basis-Phase kommt eine anregende Phase dazu (1a, 2a, 3a). Den Abschluss bildet der Ausstreichgriff.'},
+  ruhig:{n:'Beruhigend', folge:['b1','r1','b2','r2','b3','r3','b4'],
+         info:'Beruhigend: Nach jeder Basis-Phase kommt eine beruhigende Phase dazu (1b, 2b, 3b). Den Abschluss bildet der Ausstreichgriff.'},
+  wella:{n:'Entspannungsmassage', folge:['e1','e2','e3','e4','e5'],
+         info:'Entspannungsmassage in 5 Schritten (Wella System Professional).'}
+};
+
+var PMW_WAESCHE = [
+  {n:'Lockerungsphase', bild:'w1',
+   wie:['Die Fingerkuppen beider Hände an der Stirnkontur aufsetzen.',
+        'Großzügige Zickzack-Bewegungen beider Hände über die Kontur zurück zum Oberkopf bis zum Nacken durchführen.',
+        'Den Kopf leicht anheben. Im Nacken mit Druck rhythmisch ausstreichen.',
+        'Mit allen Fingern in Richtung Kontur Druck ausüben, in Richtung Oberkopf ohne Druck arbeiten.']},
+  {n:'Entspannungsphase', bild:'w2',
+   wie:['Die Fingerkuppen einer Hand an der Stirnkontur aufsetzen.',
+        'In strahlenförmigen Bewegungen (Fingerspitzen spreizen und zusammenziehen) über den Oberkopf und die Kopfmitte zum Hinterkopf führen.',
+        'Mit allen Fingern in Richtung Kontur Druck ausüben, in Richtung Oberkopf ohne Druck arbeiten.']},
+  {n:'Ausgleichsphase', bild:'w3',
+   wie:['Die Daumen beider Hände an der Stirnkontur anlegen.',
+        'Ca. 5 cm links und rechts des Scheitels mit Druck zur Kontur bis zum Wirbel ausstreichen.']},
+  {n:'Ruhephase', bild:'w4',
+   wie:['Die Hände an der Stirnkontur aufsetzen und in großen Wellenbewegungen über den Hinterkopf ausstreichen.',
+        'Den Kopf etwas anheben und mit Druck auf die Fingerkuppen bis über den Hals ausstreichen.']}
 ];
 
 var PMW_SELBST = [
@@ -1710,8 +1799,9 @@ var PMW_SELBST = [
   'Gast nach der Temperatur gefragt',
   'Gesicht und Ohren mit der Hand abgeschirmt',
   'Zweimal gewaschen',
+  'Entspannungshaarwäsche in 4 Phasen gemacht',
+  'Basismassage bei der Pflege gemacht',
   'Bei der Massage nach dem Druck gefragt',
-  'Eine Hand hatte immer Kontakt zum Kopf',
   'Shampoo vollständig ausgespült (Nacken, hinter den Ohren)',
   'Pflege nur in Längen und Spitzen',
   'Turban gewickelt, nicht gerubbelt',
@@ -1719,7 +1809,7 @@ var PMW_SELBST = [
 ];
 var PMW_SELBST_KEY = 'pm_wasch_selbstcheck';
 
-var PMW = {tab:'ablauf', idx:0, schritt:'vor', haut:'normal', haar:'natur', griff:0, pause:false, pool:[], wahl:[], geprueft:false};
+var PMW = {tab:'ablauf', idx:0, schritt:'vor', haut:'normal', haar:'natur', prog:'basis', mi:0, pool:[], wahl:[], geprueft:false};
 
 function pmWaschOeffnen() {
   zeige('pm-wasch');
@@ -1728,11 +1818,12 @@ function pmWaschOeffnen() {
 
 function pmWaschTab(tab) {
   PMW.tab = tab;
-  ['ablauf','temp','massage','check'].forEach(function(t){
+  ['ablauf','temp','waesche','massage','check'].forEach(function(t){
     document.getElementById('pmw-tab-'+t).classList.toggle('ak', t === tab);
   });
   if (tab === 'ablauf') pmwAblauf();
   if (tab === 'temp') pmwTemp();
+  if (tab === 'waesche') pmwWaesche();
   if (tab === 'massage') pmwMassage();
   if (tab === 'check') pmwCheck();
 }
@@ -1800,121 +1891,185 @@ function pmwTemp() {
   pmwSetze(html);
 }
 
-// ── Massagegriffe mit Animation ──
-var PMW_FARBE = '#5B7B6F', PMW_SPUR = '#C4B86A';
+// ── Skizzen: schwarze Strichzeichnungen im Stil der Vorlagen ──
+var PMW_LINIE = '#1C1C1A';
 
-function pmwKopf(innen, label) {
-  return '<svg class="pm-svg" id="pmw-svg" viewBox="0 0 200 236" role="img" aria-label="'+label+'">' +
-    '<text x="100" y="11" text-anchor="middle" font-size="9" fill="#7A7A70">Stirn (vorne)</text>' +
-    '<ellipse cx="31" cy="122" rx="7" ry="15" fill="#EFE7DC" stroke="#C8C4BC"/>' +
-    '<ellipse cx="169" cy="122" rx="7" ry="15" fill="#EFE7DC" stroke="#C8C4BC"/>' +
-    '<path d="M92 38 L100 19 L108 38" fill="#EFE7DC" stroke="#C8C4BC"/>' +
-    '<ellipse cx="100" cy="122" rx="68" ry="88" fill="#F3EEE6" stroke="#C8C4BC" stroke-width="1.5"/>' +
-    '<path d="M100 36 L100 208" stroke="#E2DDD5" stroke-dasharray="3 4"/>' +
-    innen +
-    '<text x="100" y="230" text-anchor="middle" font-size="9" fill="#7A7A70">Nacken (hinten)</text>' +
-  '</svg>';
+function pmwKopfHinten(x, innen) {
+  var L = PMW_LINIE;
+  return '<g transform="translate('+x+',0)" fill="none" stroke="'+L+'" stroke-width="1.3" stroke-linecap="round">' +
+    '<ellipse cx="60" cy="56" rx="36" ry="44"/>' +
+    '<path d="M25 50 q-7 2 -6 12 q1 9 7 10"/><path d="M95 50 q7 2 6 12 q-1 9 -7 10"/>' +
+    '<path d="M44 96 q2 18 -4 32"/><path d="M76 96 q-2 18 4 32"/>' +
+    '<path d="M40 128 q-16 6 -34 16"/><path d="M80 128 q16 6 34 16"/>' +
+    innen + '</g>';
 }
 
-function pmwAnimation(id) {
-  var h = '';
-  if (id === 'streichen') {
-    ['M78 50 Q70 122 80 198','M100 44 L100 204','M122 50 Q130 122 120 198'].forEach(function(p, i){
-      var b = (i * 0.4) + 's';
-      h += '<path d="'+p+'" fill="none" stroke="'+PMW_SPUR+'" stroke-dasharray="4 4"/>' +
-        '<ellipse rx="10" ry="5" fill="'+PMW_FARBE+'" opacity="0">' +
-          '<animateMotion path="'+p+'" dur="2.4s" begin="'+b+'" repeatCount="indefinite"/>' +
-          '<animate attributeName="opacity" values="0;.9;.9;0" dur="2.4s" begin="'+b+'" repeatCount="indefinite"/>' +
-        '</ellipse>';
-    });
-    return pmwKopf(h, 'Streichen: lange Züge von der Stirn zum Nacken');
+function pmwKopfVorne(x, innen) {
+  var L = PMW_LINIE;
+  return '<g transform="translate('+x+',0)" fill="none" stroke="'+L+'" stroke-width="1.3" stroke-linecap="round">' +
+    '<ellipse cx="60" cy="58" rx="32" ry="42"/>' +
+    '<path d="M31 46 Q60 18 89 46"/>' +
+    '<path d="M44 62 q5 4 10 0"/><path d="M66 62 q5 4 10 0"/>' +
+    '<path d="M60 66 l-2 9 l4 0"/><path d="M54 84 q6 4 12 0"/>' +
+    '<path d="M28 54 q-6 2 -5 10 q1 7 6 8"/><path d="M92 54 q6 2 5 10 q-1 7 -6 8"/>' +
+    '<path d="M48 98 q0 16 -4 30"/><path d="M72 98 q0 16 4 30"/>' +
+    innen + '</g>';
+}
+
+function pmwKopfOben(x, innen) {
+  var L = PMW_LINIE;
+  return '<g transform="translate('+x+',0)" fill="none" stroke="'+L+'" stroke-width="1.3" stroke-linecap="round">' +
+    '<ellipse cx="60" cy="74" rx="40" ry="52"/>' +
+    '<path d="M55 23 l5 -9 l5 9"/>' +
+    '<path d="M20 66 q-7 8 0 16"/><path d="M100 66 q7 8 0 16"/>' +
+    '<text x="60" y="8" font-size="8" fill="#7A7A70" stroke="none" text-anchor="middle">Stirn</text>' +
+    '<text x="60" y="140" font-size="8" fill="#7A7A70" stroke="none" text-anchor="middle">Nacken</text>' +
+    innen + '</g>';
+}
+
+function pmwPunkt(x, y) { return '<circle cx="'+x+'" cy="'+y+'" r="2.4" fill="'+PMW_LINIE+'" stroke="none"/>'; }
+function pmwKringel(x, y) { return '<path d="M'+(x+3)+' '+(y+1)+' a3.2 3.2 0 1 1 -0.6 -3"/>'; }
+function pmwZickzack(x, y0, y1, a) {
+  var d = 'M'+x+' '+y0, s = 1;
+  for (var y = y0 - 6; y >= y1; y -= 6) { d += ' L'+(x + s*a)+' '+y; s = -s; }
+  return '<path d="'+d+'"/>';
+}
+function pmwPfeil(d) { return '<path d="'+d+'" marker-end="url(#pmw-pfeil)"/>'; }
+
+function pmwSkizze(id) {
+  var h = '', w = 240, P = pmwPunkt, K = pmwKringel, i, x, y;
+  if (id === 'b1') {
+    h = pmwKopfHinten(0, P(52,100)+P(52,107)+P(52,114)) + pmwKopfHinten(120, P(68,100)+P(68,107)+P(68,114));
+  } else if (id === 'b2') {
+    var kr = '';
+    for (y = 26; y <= 86; y += 12) for (x = 32; x <= 88; x += 11) {
+      var dx = (x - 60) / 34, dy = (y - 56) / 42;
+      if (dx*dx + dy*dy < 0.8) kr += K(x + (y % 24 ? 5 : 0), y);
+    }
+    h = pmwKopfHinten(60, kr); w = 240;
+  } else if (id === 'b3') {
+    var vorne = '';
+    [[34,46],[40,38],[48,32],[56,30],[64,30],[72,32],[80,38],[86,46]].forEach(function(p){ vorne += P(p[0], p[1]); });
+    var hinten = P(50,98)+P(70,98)+P(48,90)+P(72,90) +
+      '<text x="44" y="110" font-size="7" fill="'+PMW_LINIE+'" stroke="none">1</text><text x="72" y="110" font-size="7" fill="'+PMW_LINIE+'" stroke="none">2</text>' +
+      '<text x="40" y="88" font-size="7" fill="'+PMW_LINIE+'" stroke="none">3</text><text x="76" y="88" font-size="7" fill="'+PMW_LINIE+'" stroke="none">4</text>';
+    [[30,80],[27,70],[26,58],[94,58],[93,70],[90,80]].forEach(function(p){ hinten += P(p[0], p[1]); });
+    h = pmwKopfVorne(0, vorne) + pmwKopfHinten(120, hinten);
+  } else if (id === 'b4') {
+    var v4 = '', h4 = '';
+    [[40,40],[52,34],[64,34],[76,40],[46,26],[60,24],[72,26]].forEach(function(p){ v4 += K(p[0], p[1]); });
+    for (y = 24; y <= 80; y += 14) for (x = 38; x <= 82; x += 14) h4 += K(x, y);
+    h4 += P(54,98) + P(66,98) + '<ellipse cx="22" cy="136" rx="11" ry="5"/><ellipse cx="98" cy="136" rx="11" ry="5"/>';
+    h = pmwKopfVorne(0, v4) + pmwKopfHinten(120, h4);
+  } else if (id === 'a1') {
+    var t = '';
+    [44,54,66,76].forEach(function(x0){ for (y = 94; y >= 22; y -= 9) t += '<path d="M'+(x0-3)+' '+y+' h6"/>'; });
+    h = pmwKopfHinten(60, t);
+  } else if (id === 'a2') {
+    var v2 = '', h2 = '';
+    for (i = 0; i < 9; i++) {
+      var a = Math.PI * (0.15 + 0.7 * i / 8), cx = 60 - 34 * Math.cos(a), cy = 52 - 30 * Math.sin(a);
+      v2 += '<path d="M'+cx.toFixed(1)+' '+cy.toFixed(1)+' l'+(-6*Math.cos(a)).toFixed(1)+' '+(-6*Math.sin(a)).toFixed(1)+'" stroke-width="2"/>';
+    }
+    for (y = 26; y <= 90; y += 8) h2 += '<path d="M54 '+y+' h12" stroke-width="2"/>';
+    [[12,138],[22,134],[32,130],[88,130],[98,134],[108,138]].forEach(function(p){ h2 += '<path d="M'+p[0]+' '+(p[1]-6)+' v6" stroke-width="2"/>'; });
+    h = pmwKopfVorne(0, v2) + pmwKopfHinten(120, h2);
+  } else if (id === 'a3') {
+    h = pmwKopfHinten(60, pmwZickzack(46,96,24,4) + pmwZickzack(60,98,16,4) + pmwZickzack(74,96,24,4));
+  } else if (id === 'r1') {
+    var v1 = '<ellipse cx="26" cy="56" rx="6" ry="13" transform="rotate(-10 26 56)"/><ellipse cx="94" cy="56" rx="6" ry="13" transform="rotate(10 94 56)"/>';
+    var h1 = '<ellipse cx="24" cy="66" rx="6" ry="12"/><ellipse cx="96" cy="66" rx="6" ry="12"/><ellipse cx="60" cy="104" rx="14" ry="6"/>';
+    h = pmwKopfVorne(0, v1) + pmwKopfHinten(120, h1);
+  } else if (id === 'r2') {
+    var vr = '<path d="M31 46 Q60 18 89 46" stroke-dasharray="3 3" transform="translate(0,-4)"/>';
+    var hr = '';
+    [[28,62],[92,62]].forEach(function(z){ hr += '<path d="M60 14 L'+z[0]+' '+z[1]+'" stroke-dasharray="3 3"/>';
+      for (i = 1; i <= 3; i++) hr += P(60 + (z[0]-60)*i/3.3, 14 + (z[1]-14)*i/3.3); });
+    [[50,98],[70,98]].forEach(function(z){ hr += '<path d="M60 14 L'+z[0]+' '+z[1]+'" stroke-dasharray="3 3"/>';
+      for (i = 1; i <= 4; i++) hr += P(60 + (z[0]-60)*i/4.2, 14 + (z[1]-14)*i/4.2); });
+    h = pmwKopfVorne(0, vr) + pmwKopfHinten(120, hr);
+  } else if (id === 'r3') {
+    var vw = '<path d="M36 40 q6 -6 12 0 t12 0 t12 0 t12 0"/><path d="M40 30 q5 -5 10 0 t10 0 t10 0 t10 0"/>';
+    var hw = '';
+    for (y = 28; y <= 84; y += 14) hw += '<path d="M34 '+y+' q6.5 -6 13 0 t13 0 t13 0 t13 0"/>';
+    hw += pmwPfeil('M46 100 q-10 20 -30 34') + pmwPfeil('M74 100 q10 20 30 34');
+    h = pmwKopfVorne(0, vw) + pmwKopfHinten(120, hw);
+  } else if (id === 'w1') {
+    h = pmwKopfOben(60,
+      '<path d="M44 30 L50 40 L38 50 L50 60 L38 70 L50 80 L38 90 L50 100 L42 112"/>' +
+      '<path d="M76 30 L70 40 L82 50 L70 60 L82 70 L70 80 L82 90 L70 100 L78 112"/>' +
+      pmwPfeil('M42 112 l0 10') + pmwPfeil('M78 112 l0 10'));
+  } else if (id === 'w2') {
+    var f = '';
+    [-30,-15,0,15,30].forEach(function(d){ f += pmwPfeil('M60 30 Q'+(60 + d*0.6)+' 70 '+(60 + d)+' 112'); });
+    h = pmwKopfOben(60, f);
+  } else if (id === 'w3') {
+    var g = '<path d="M60 24 V86" stroke-dasharray="3 3"/>' + K(60, 90);
+    for (y = 34; y <= 80; y += 11) g += '<path d="M50 '+(y-6)+' l-8 6 l8 6" stroke-width="1.6"/><path d="M70 '+(y-6)+' l8 6 l-8 6" stroke-width="1.6"/>';
+    h = pmwKopfOben(60, g);
+  } else if (id === 'w4') {
+    var wl = '';
+    for (y = 24; y <= 80; y += 14) wl += '<path d="M28 '+y+' q8 -8 16 0 t16 0 t16 0 t16 0"/>';
+    wl += pmwPfeil('M60 92 V136');
+    h = pmwKopfHinten(60, wl);
   }
-  if (id === 'zirkeln') {
-    h += '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 138" dur="7s" repeatCount="indefinite"/>';
-    [68,80,92,108,120,132].forEach(function(x){
-      h += '<g transform="translate('+x+',54)"><circle r="7" fill="none" stroke="'+PMW_SPUR+'" stroke-dasharray="2 2"/>' +
-        '<circle cx="4" r="4.5" fill="'+PMW_FARBE+'"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="0.9s" repeatCount="indefinite"/></circle></g>';
-    });
-    h += '</g>';
-    return pmwKopf(h, 'Zirkeln: Fingerkuppen kreisen Reihe für Reihe nach hinten');
-  }
-  if (id === 'kneten') {
-    [[48,'0 -12;0 12;0 -12'],[152,'0 12;0 -12;0 12']].forEach(function(seite){
-      var x = seite[0];
-      h += '<path d="M'+(x + (x < 100 ? 14 : -14))+' 98 L'+(x + (x < 100 ? 14 : -14))+' 146" stroke="'+PMW_SPUR+'" stroke-width="1.5" marker-start="url(#pmw-pfeil)" marker-end="url(#pmw-pfeil)"/>' +
-        '<g><animateTransform attributeName="transform" type="translate" values="'+seite[1]+'" dur="1.6s" repeatCount="indefinite"/>';
-      [100,114,128,142].forEach(function(y){ h += '<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+PMW_FARBE+'"/>'; });
-      h += '</g>';
-    });
-    h = '<defs><marker id="pmw-pfeil" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="'+PMW_SPUR+'"/></marker></defs>' + h;
-    return pmwKopf(h, 'Kneten: beide Hände verschieben die Kopfhaut gegengleich');
-  }
-  if (id === 'vibration') {
-    ['0s','0.6s'].forEach(function(b){
-      h += '<circle cx="100" cy="108" r="10" fill="none" stroke="'+PMW_SPUR+'" opacity="0">' +
-        '<animate attributeName="r" values="10;36" dur="1.2s" begin="'+b+'" repeatCount="indefinite"/>' +
-        '<animate attributeName="opacity" values=".8;0" dur="1.2s" begin="'+b+'" repeatCount="indefinite"/></circle>';
-    });
-    h += '<g><animateTransform attributeName="transform" type="translate" values="0 0;1.6 0;-1.6 .8;0 -.8;0 0" dur="0.18s" repeatCount="indefinite"/>';
-    [[88,96],[112,96],[88,120],[112,120]].forEach(function(p){ h += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="'+PMW_FARBE+'"/>'; });
-    h += '</g>';
-    return pmwKopf(h, 'Vibration: Fingerkuppen bleiben liegen und zittern fein');
-  }
-  // Druckpunkte
-  [[48,80,'Schläfe'],[152,80,'Schläfe'],[100,48,'Stirnmitte'],[80,194,''],[100,200,'Nacken'],[120,194,'']].forEach(function(p, i){
-    var b = (i * 0.5) + 's';
-    h += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="none" stroke="'+PMW_FARBE+'" opacity="0">' +
-      '<animate attributeName="r" values="5;14" dur="3s" begin="'+b+'" repeatCount="indefinite"/>' +
-      '<animate attributeName="opacity" values=".9;0" dur="3s" begin="'+b+'" repeatCount="indefinite"/></circle>' +
-      '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4.5" fill="'+PMW_FARBE+'"/>';
-    if (p[2]) h += '<text x="'+p[0]+'" y="'+(p[1] + (p[1] > 150 ? -10 : 16))+'" text-anchor="middle" font-size="8" fill="#2C2C2C">'+p[2]+'</text>';
+  return '<svg class="pm-svg" viewBox="0 0 '+w+' 150" style="max-width:320px" role="img" aria-label="Skizze">' +
+    '<defs><marker id="pmw-pfeil" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">' +
+    '<path d="M0 0 L10 5 L0 10 z" fill="'+PMW_LINIE+'"/></marker></defs>' + h + '</svg>';
+}
+
+function pmwListe(wie) {
+  return '<ul class="pm-liste">' + wie.map(function(x){ return '<li>'+x+'</li>'; }).join('') + '</ul>';
+}
+
+// ── Entspannungshaarwäsche ──
+function pmwWaesche() {
+  var html = '<div class="card"><div class="label">Entspannungshaarwäsche</div>' +
+    '<div class="pm-txt">Die zweite Wäsche machst du als Entspannungshaarwäsche in 4 Phasen. Merksatz: in Richtung Kontur mit Druck, in Richtung Oberkopf ohne Druck.</div></div>';
+  PMW_WAESCHE.forEach(function(ph, i){
+    html += '<div class="card"><div class="pm-schritt-titel" style="font-size:16px">'+(i+1)+'. '+ph.n+'</div>' +
+      pmwSkizze(ph.bild) + pmwListe(ph.wie) + '</div>';
   });
-  return pmwKopf(h, 'Druckpunkte an Schläfen, Stirnmitte und Nacken');
+  html += '<div style="font-size:11px;color:#7A7A70;text-align:center;margin-bottom:12px">Nach der Vorlage „Entspannungshaarwäsche“ von Wella System Professional</div>';
+  pmwSetze(html);
 }
 
+// ── Kopfmassage Schritt für Schritt ──
 function pmwMassage() {
-  var g = PMW_GRIFFE[PMW.griff];
-  var wahl = PMW_GRIFFE.map(function(x, i){
-    return '<button class="btn-toggle'+(i === PMW.griff ? ' ak' : '')+'" onclick="pmwGriff('+i+')">'+(i+1)+'. '+x.n+'</button>';
-  }).join('');
-  var html = '<div class="pm-griff-wahl">'+wahl+'</div>' +
+  var m = PMW_MASSAGEN[PMW.prog], id = m.folge[PMW.mi], ph = PMW_PHASEN[id], n = m.folge.length;
+  var html = '<div class="pm-wahl">' + Object.keys(PMW_MASSAGEN).map(function(k){
+    return '<button class="btn-toggle'+(PMW.prog === k ? ' ak' : '')+'" onclick="pmwProg(\''+k+'\')">'+PMW_MASSAGEN[k].n+'</button>';
+  }).join('') + '</div>' +
+  '<div class="fb-o" style="font-size:13px;line-height:1.5;margin:0 0 12px">'+m.info+'</div>' +
+  '<div class="pm-griff-wahl">' + m.folge.map(function(f, i){
+    return '<button class="btn-toggle'+(i === PMW.mi ? ' ak' : '')+'" onclick="pmwPhase('+i+')">'+PMW_PHASEN[f].k+'</button>';
+  }).join('') + '</div>' +
   '<div class="card">' +
-    '<div class="pm-schritt-titel" style="margin-bottom:2px">'+(PMW.griff+1)+'. '+g.n+'</div>' +
-    '<div style="font-size:13px;color:#7A7A70;margin-bottom:10px">'+g.fach+'</div>' +
-    pmwAnimation(g.id) +
-    '<div style="text-align:center;margin-bottom:6px"><button class="btn-ghost" id="pmw-pause" onclick="pmwPause()" style="padding:6px 12px;font-size:12px">'+(PMW.pause ? '▶ Abspielen' : '❚❚ Anhalten')+'</button></div>' +
-    '<div class="label" style="margin-top:8px">So geht’s</div><div class="pm-txt">'+g.wie+'</div>' +
-    '<dl class="pm-dl"><dt>Wirkung</dt><dd>'+g.wirkung+'</dd><dt>Druck</dt><dd>'+g.druck+'</dd><dt>Dauer</dt><dd>'+g.dauer+'</dd></dl>' +
-    '<div class="fb-r" style="font-size:13px;line-height:1.5"><strong>Typische Fehler:</strong> '+g.fehler+'</div>' +
+    '<div class="label">'+ph.z+' · Schritt '+(PMW.mi+1)+' von '+n+'</div>' +
+    '<div class="pm-schritt-titel">'+ph.n+'</div>' +
+    pmwSkizze(ph.bild) +
+    (ph.ziel ? '<div class="pm-txt" style="margin-top:8px"><strong>Ziel:</strong> '+ph.ziel+'</div>' : '') +
+    '<div class="label" style="margin-top:8px">Technik</div>' + pmwListe(ph.wie) +
+    '<div class="pm-zeile">' +
+      '<button class="btn-ghost" onclick="pmwPhase('+(PMW.mi-1)+')"'+(PMW.mi === 0 ? ' disabled style="opacity:.4"' : '')+'>← Zurück</button>' +
+      (PMW.mi < n-1 ? '<button class="btn-primary" onclick="pmwPhase('+(PMW.mi+1)+')">Weiter →</button>'
+                    : '<button class="btn-primary" onclick="pmwPhase(0)">Von vorne</button>') +
+    '</div>' +
   '</div>' +
   '<div class="card">' +
     '<div class="label">Regeln für jede Kopfmassage</div>' +
     '<ul class="pm-liste">' +
-      '<li>Reihenfolge: Streichen → Zirkeln → Kneten → Vibration → Druckpunkte → Streichen. Gesamt ca. 3–5 Minuten.</li>' +
-      '<li>Eine Hand bleibt immer am Kopf, der Kontakt reißt nie ab.</li>' +
       '<li>Mit den Fingerkuppen arbeiten, nie mit den Fingernägeln.</li>' +
-      '<li>Den Gast nach dem Druck fragen: „Ist Ihnen der Druck angenehm?“</li>' +
+      '<li>Fließend von einer Phase in die nächste übergehen, die Massage nicht abrupt abbrechen.</li>' +
+      '<li>Den Druck dem Wunsch des Gastes anpassen und nachfragen: „Ist Ihnen der Druck angenehm?“</li>' +
       '<li>Keine Massage bei Wunden, Entzündungen oder Kopfhauterkrankungen. Nach Farbe oder Blondierung nur sehr sanft.</li>' +
     '</ul>' +
   '</div>';
   pmwSetze(html);
-  var svg = document.getElementById('pmw-svg');
-  var ruhig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (ruhig && !PMW.pauseGewaehlt) PMW.pause = true;
-  if (svg && PMW.pause && svg.pauseAnimations) svg.pauseAnimations();
-  var btn = document.getElementById('pmw-pause');
-  if (btn) btn.textContent = PMW.pause ? '▶ Abspielen' : '❚❚ Anhalten';
 }
 
-function pmwGriff(i) { PMW.griff = i; pmwMassage(); }
-
-function pmwPause() {
-  var svg = document.getElementById('pmw-svg');
-  PMW.pause = !PMW.pause;
-  PMW.pauseGewaehlt = true;
-  if (svg && svg.pauseAnimations) { if (PMW.pause) svg.pauseAnimations(); else svg.unpauseAnimations(); }
-  document.getElementById('pmw-pause').textContent = PMW.pause ? '▶ Abspielen' : '❚❚ Anhalten';
-}
+function pmwProg(k) { PMW.prog = k; PMW.mi = 0; pmwMassage(); }
+function pmwPhase(i) { PMW.mi = Math.max(0, Math.min(PMW_MASSAGEN[PMW.prog].folge.length-1, i)); pmwMassage(); }
 
 // ── Ablauf-Check: Reihenfolge + Selbstcheck ──
 function pmwMischen() {
@@ -2307,6 +2462,275 @@ function pmfAntwort(gewusst) {
   PMF.um = false;
   pmfKarten();
 }
+</script>
+<script>
+// ── PRAXIS-MODUL 3: STRÄHNENTECHNIKEN ───────────────────────────
+var PMS_TECHNIKEN = [
+  {id:'folie', n:'Foliensträhnen', kurz:'klassisch, gleichmäßig, vom Ansatz',
+   wie:'Feine Abteilungen mit dem Stielkamm abteilen (Slicing oder Weaving), auf die Folie legen, Aufhellung bis nah an den Ansatz auftragen, Folie falten.',
+   wirkung:'Gleichmäßig verteilte, deutlich sichtbare Strähnen vom Ansatz bis in die Spitzen.',
+   passt:'Gäste, die viel Helligkeit wollen, auch auf kurzem Haar.',
+   wachsen:'Der Ansatz ist nach ca. 6–8 Wochen sichtbar.',
+   werkzeug:'Folie, Stielkamm, Pinsel, Abteilklammern', bild:{art:'streifen', breite:5, abstand:13, start:0, farbe:'#E9CF9A'}},
+  {id:'baby', n:'Babylights', kurz:'hauchfein, natürlich, sonnengeküsst',
+   wie:'Sehr feine Strähnchen mit Weaving auswählen, viele dünne Abteilungen in Folie. Wenig Kontrast zur Grundfarbe.',
+   wirkung:'Natürliche Aufhellung wie von der Sonne, die Strähnen sind kaum einzeln zu erkennen.',
+   passt:'Natürlicher Look, feines Haar, Gäste mit wenig Pflegezeit.',
+   wachsen:'Wächst sehr weich heraus.',
+   werkzeug:'Folie, Stielkamm, Pinsel', bild:{art:'streifen', breite:2, abstand:6, start:0, farbe:'#D6B98A'}},
+  {id:'balayage', n:'Balayage', kurz:'freihand gemalt, weicher Übergang',
+   wie:'Die Aufhellung wird freihand auf die Oberfläche der Strähnen gemalt („balayer“ = fegen), meist ohne Folie. Am Ansatz bleibt Naturfarbe.',
+   wirkung:'Weicher, natürlicher Verlauf, nach unten heller. Kein harter Ansatz.',
+   passt:'Mittellanges bis langes Haar, Gäste mit natürlichem, pflegeleichtem Wunsch.',
+   wachsen:'Wächst sehr weich heraus, Auffrischen oft erst nach 3–4 Monaten.',
+   werkzeug:'Pinsel, Palette oder Balayage-Brett, eventuell Watte oder Folie zum Abtrennen', bild:{art:'verlauf', breite:7, abstand:15, start:.38, farbe:'#E9CF9A'}},
+  {id:'foilyage', n:'Foilyage', kurz:'Balayage in Folie, heller',
+   wie:'Wie Balayage freihand gemalt, aber in Folie gepackt. Die Folie hält die Wärme, die Aufhellung wird stärker.',
+   wirkung:'Weicher Verlauf wie Balayage, aber deutlich heller und kräftiger.',
+   passt:'Dunkles Grundhaar oder Gäste, die viel Helligkeit mit weichem Ansatz wollen.',
+   wachsen:'Weicher Ansatz, länger haltbar als Foliensträhnen.',
+   werkzeug:'Folie, Pinsel, Stielkamm', bild:{art:'verlauf', breite:8, abstand:13, start:.25, farbe:'#F3E2B8'}},
+  {id:'face', n:'Face Framing', kurz:'Helligkeit vorne am Gesicht',
+   wie:'Nur die vorderen Partien rund ums Gesicht werden aufgehellt, oft breiter (auch „Money Piece“).',
+   wirkung:'Lässt das Gesicht strahlen, wenig Aufwand, viel Wirkung.',
+   passt:'Als Ergänzung zu Balayage oder als schnelle Auffrischung.',
+   wachsen:'Wächst gut heraus, lässt sich schnell nacharbeiten.',
+   werkzeug:'Folie oder freihand, Pinsel', bild:{art:'face', farbe:'#F3E2B8'}},
+  {id:'low', n:'Lowlights', kurz:'dunklere Strähnen für Tiefe',
+   wie:'Einzelne Strähnen werden dunkler gefärbt oder getönt, z. B. in Folie mit Coloration oder Tönung.',
+   wirkung:'Bringt Tiefe und Dimension in zu helles oder flach wirkendes Haar.',
+   passt:'Gäste mit viel Blond, die natürlicher wirken wollen, oder für den Übergang in Richtung Naturfarbe.',
+   wachsen:'Wächst unauffällig heraus.',
+   werkzeug:'Folie, Pinsel, Stielkamm', bild:{art:'streifen', breite:5, abstand:15, start:0, farbe:'#7A5236', basis:'#D9BC8C'}},
+  {id:'ombre', n:'Ombré / Sombré', kurz:'Verlauf dunkel → hell',
+   wie:'Die Längen und Spitzen werden flächig aufgehellt, der Übergang wird verwischt. Sombré („soft ombré“) hat einen weicheren, längeren Übergang.',
+   wirkung:'Gleichmäßiger Farbverlauf von dunkel oben nach hell unten.',
+   passt:'Langes Haar, Gäste, die den Ansatz natürlich lassen wollen.',
+   wachsen:'Kein sichtbarer Ansatz, wächst sehr lange gut heraus.',
+   werkzeug:'Pinsel, Schale, eventuell Toupierkamm für den Übergang', bild:{art:'ombre', farbe:'#EBD3A2'}}
+];
+
+var PMS_RICHTUNG = {
+  horizontal:{n:'horizontal', grad:0, w:'Ruhige, gleichmäßige Verteilung. Klassisch für Foliensträhnen am Hinterkopf und für kürzeres Haar. Bei groben Strähnen kann es streifig wirken.'},
+  vertikal:{n:'vertikal', grad:90, w:'Betont Länge und Fall. Die Strähnen laufen senkrecht und geben viel Bewegung, gut für langes, glattes Haar.'},
+  vorne:{n:'diagonal nach vorne', grad:-45, w:'Die Strähnen fallen Richtung Gesicht und rahmen es ein. Gut für Face Framing und Frisuren, die nach vorne fallen.'},
+  hinten:{n:'diagonal nach hinten', grad:45, w:'Die Strähnen fallen vom Gesicht weg nach hinten. Das öffnet das Gesicht und gibt einen weichen Übergang, gut für zurückgestylte Frisuren.'}
+};
+var PMS_DICKE = {
+  fein:{n:'fein', px:2.5, w:'Natürlich und sonnengeküsst, wächst weich heraus.'},
+  mittel:{n:'mittel', px:5, w:'Gut sichtbare, klassische Strähnen.'},
+  grob:{n:'grob', px:9, w:'Starker Kontrast und Blockeffekt, der Ansatz wächst deutlich heraus.'}
+};
+var PMS_ABSTAND = {
+  eng:{n:'eng', px:14, w:'Mehr Haar wird hell, der Gesamteindruck wird heller.'},
+  weit:{n:'weit', px:26, w:'Mehr Grundfarbe bleibt, der Kontrast wird stärker.'}
+};
+var PMS_ART = {
+  slicing:{n:'Slicing', w:'Eine ganze, dünne Scheibe wird abgeteilt und aufgehellt. Ergibt einen flächigen, kräftigen Effekt.'},
+  weaving:{n:'Weaving', w:'Mit dem Stielkamm werden einzelne Strähnchen aus der Abteilung „ausgewebt“. Feiner und natürlicher, weil sich Naturhaar dazwischen mischt.'}
+};
+
+var PMS_QUIZ = [
+  {f:'Ein Gast wünscht sich einen natürlichen, sonnengeküssten Look. Die Strähnen sollen kaum einzeln sichtbar sein und weich herauswachsen.', o:['Foliensträhnen','Babylights','Lowlights','Ombré'], r:1, e:'Babylights sind hauchfeine Strähnchen mit wenig Kontrast und wachsen sehr weich heraus.'},
+  {f:'Die Aufhellung wird freihand auf die Oberfläche der Strähnen gemalt, meist ohne Folie. Am Ansatz bleibt Naturfarbe.', o:['Balayage','Foliensträhnen','Babylights','Lowlights'], r:0, e:'Balayage kommt vom französischen „balayer“ = fegen: freihand gemalt, weicher Übergang.'},
+  {f:'Wie Balayage gemalt, aber in Folie gepackt, damit das Ergebnis heller wird. Wie heißt die Technik?', o:['Ombré','Face Framing','Foilyage','Sombré'], r:2, e:'Foilyage = Balayage + Folie. Die Folie hält die Wärme, die Aufhellung wird stärker.'},
+  {f:'Ein Gast hat sehr viel Blond, das Haar wirkt flach. Was bringt Tiefe hinein?', o:['Mehr Babylights','Lowlights','Face Framing','Eine Blondierung'], r:1, e:'Lowlights sind dunklere Strähnen. Sie geben zu hellem Haar Tiefe und Dimension.'},
+  {f:'Nur die Partien rund ums Gesicht werden aufgehellt. Wie heißt das?', o:['Face Framing','Ombré','Babylights','Weaving'], r:0, e:'Face Framing (auch „Money Piece“) lässt das Gesicht strahlen, mit wenig Aufwand.'},
+  {f:'Oben dunkel, unten hell, mit gleichmäßigem Übergang über die Längen.', o:['Balayage','Lowlights','Ombré','Foliensträhnen'], r:2, e:'Ombré ist ein Farbverlauf von dunkel nach hell. Sombré ist die weichere Variante.'},
+  {f:'Du teilst die Abteilungen diagonal nach vorne ab. Wie fallen die Strähnen?', o:['Vom Gesicht weg nach hinten','Richtung Gesicht, sie rahmen es ein','Waagrecht, ganz gleichmäßig','Das macht keinen Unterschied'], r:1, e:'Diagonal nach vorne fallen die Strähnen ins Gesicht. Diagonal nach hinten öffnen sie das Gesicht.'},
+  {f:'Was ist der Unterschied zwischen Weaving und Slicing?', o:['Weaving webt einzelne Strähnchen aus der Abteilung, Slicing nimmt eine ganze dünne Scheibe','Weaving ist ohne Folie, Slicing mit Folie','Slicing ist nur für Lowlights','Es gibt keinen Unterschied'], r:0, e:'Weaving wirkt feiner und natürlicher, Slicing flächiger und kräftiger.'},
+  {f:'Grobe Strähnen mit weitem Abstand ergeben …', o:['einen sehr natürlichen Look','einen starken Kontrast','ein gleichmäßig helles Ergebnis','gar keinen sichtbaren Effekt'], r:1, e:'Viel Grundfarbe zwischen breiten hellen Strähnen ergibt starken Kontrast und einen Blockeffekt.'}
+];
+
+var PMS = {tab:'technik', tech:0, richtung:'horizontal', dicke:'mittel', abstand:'eng', art:'slicing', quiz:[], qi:0, richtig:0, beantwortet:false};
+
+function pmStraehnenOeffnen() {
+  zeige('pm-straehnen');
+  pmStraehnenTab(PMS.tab);
+}
+
+function pmStraehnenTab(tab) {
+  PMS.tab = tab;
+  ['technik','abteilen','quiz'].forEach(function(t){
+    document.getElementById('pms-tab-'+t).classList.toggle('ak', t === tab);
+  });
+  if (tab === 'technik') pmsTechnik();
+  if (tab === 'abteilen') pmsAbteilen();
+  if (tab === 'quiz') pmsQuiz();
+}
+
+function pmsSetze(html) { document.getElementById('pms-inhalt').innerHTML = html; }
+
+// ── Techniken mit Skizze (Kopf von vorne) ──
+var PMS_HAAR = 'M100 16 C54 16 36 50 36 92 L30 212 L170 212 L164 92 C164 50 146 16 100 16 Z';
+
+function pmsBild(b) {
+  var basis = b.basis || '#5A3A2A', h = '';
+  h += '<defs><clipPath id="pms-clip"><path d="'+PMS_HAAR+'"/></clipPath>' +
+    '<linearGradient id="pms-verlauf" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="'+b.farbe+'" stop-opacity="0"/>' +
+      '<stop offset="'+(b.start || 0)+'" stop-color="'+b.farbe+'" stop-opacity="0"/>' +
+      '<stop offset="1" stop-color="'+b.farbe+'" stop-opacity="1"/></linearGradient>' +
+    '<linearGradient id="pms-ombre" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="'+basis+'"/><stop offset=".42" stop-color="'+basis+'"/>' +
+      '<stop offset=".78" stop-color="'+b.farbe+'"/><stop offset="1" stop-color="'+b.farbe+'"/></linearGradient></defs>';
+  h += '<path d="'+PMS_HAAR+'" fill="'+(b.art === 'ombre' ? 'url(#pms-ombre)' : basis)+'"/>';
+  h += '<g clip-path="url(#pms-clip)">';
+  if (b.art === 'streifen' || b.art === 'verlauf') {
+    var fill = b.art === 'verlauf' ? 'url(#pms-verlauf)' : b.farbe;
+    for (var x = 32; x < 170; x += b.abstand) {
+      var w = b.art === 'verlauf' ? b.breite * (0.7 + ((x * 7) % 5) / 8) : b.breite;
+      h += '<rect x="'+x+'" y="10" width="'+w.toFixed(1)+'" height="210" fill="'+fill+'"/>';
+    }
+  }
+  if (b.art === 'face') {
+    h += '<path d="M72 48 Q60 120 52 212 L68 212 Q74 130 84 52 Z" fill="'+b.farbe+'"/>' +
+         '<path d="M128 48 Q140 120 148 212 L132 212 Q126 130 116 52 Z" fill="'+b.farbe+'"/>';
+  }
+  h += '</g>';
+  // Gesicht und Hals liegen über dem Haar
+  h += '<rect x="86" y="128" width="28" height="70" fill="#EBD3BC"/>' +
+       '<ellipse cx="100" cy="94" rx="33" ry="44" fill="#F1DFCC"/>' +
+       '<path d="M68 70 Q100 40 132 70 Q120 52 100 50 Q80 52 68 70 Z" fill="'+basis+'" opacity=".9"/>';
+  return '<svg class="pm-svg" viewBox="0 0 200 220" role="img" aria-label="Skizze des Ergebnisses">'+h+'</svg>';
+}
+
+function pmsTechnik() {
+  var t = PMS_TECHNIKEN[PMS.tech];
+  var wahl = PMS_TECHNIKEN.map(function(x, i){
+    return '<button class="btn-toggle'+(i === PMS.tech ? ' ak' : '')+'" onclick="pmsTech('+i+')">'+x.n+'</button>';
+  }).join('');
+  var html = '<div class="pm-griff-wahl">'+wahl+'</div>' +
+  '<div class="card">' +
+    '<div class="pm-schritt-titel" style="margin-bottom:2px">'+t.n+'</div>' +
+    '<div style="font-size:13px;color:#7A7A70;margin-bottom:10px">'+t.kurz+'</div>' +
+    pmsBild(t.bild) +
+    '<div class="label" style="margin-top:8px">So geht’s</div><div class="pm-txt">'+t.wie+'</div>' +
+    '<dl class="pm-dl"><dt>Wirkung</dt><dd>'+t.wirkung+'</dd><dt>Passt für</dt><dd>'+t.passt+'</dd>' +
+      '<dt>Auswachsen</dt><dd>'+t.wachsen+'</dd><dt>Werkzeug</dt><dd>'+t.werkzeug+'</dd></dl>' +
+  '</div>' +
+  '<div class="card"><div class="label">Auf einen Blick</div><table class="pm-tab">' +
+    '<tr><th>Technik</th><th>Ansatz</th><th>Kontrast</th></tr>' +
+    '<tr><td>Folie</td><td>ab Ansatz</td><td>deutlich</td></tr>' +
+    '<tr><td>Babylights</td><td>ab Ansatz</td><td>sehr gering</td></tr>' +
+    '<tr><td>Balayage</td><td>weich, Naturfarbe</td><td>mittel</td></tr>' +
+    '<tr><td>Foilyage</td><td>weich, Naturfarbe</td><td>hoch</td></tr>' +
+    '<tr><td>Face Framing</td><td>nur vorne</td><td>mittel bis hoch</td></tr>' +
+    '<tr><td>Lowlights</td><td>ab Ansatz, dunkler</td><td>mittel</td></tr>' +
+    '<tr><td>Ombré</td><td>kein Ansatz</td><td>hoch, als Verlauf</td></tr>' +
+  '</table></div>';
+  pmsSetze(html);
+}
+
+function pmsTech(i) { PMS.tech = i; pmsTechnik(); }
+
+// ── Abteil-Visualisierer (Kopf im Profil, Gesicht links) ──
+function pmsKopfProfil() {
+  var r = PMS_RICHTUNG[PMS.richtung], d = PMS_DICKE[PMS.dicke], a = PMS_ABSTAND[PMS.abstand];
+  var h = '<defs><clipPath id="pms-kappe"><path d="M52 92 C48 40 92 14 132 22 C176 30 196 72 188 118 C184 150 166 172 150 182 L142 176 C138 162 136 150 134 142 C132 120 120 110 106 106 C88 102 70 97 52 92 Z"/></clipPath></defs>';
+  // Kopf
+  h += '<path d="M52 92 C48 40 92 14 132 22 C176 30 196 72 188 118 C184 150 166 172 150 182 L148 210 L98 210 L100 186 C84 186 70 176 66 162 L58 160 C54 150 60 146 56 140 L46 132 C44 126 50 120 52 116 C50 108 52 100 52 92 Z" fill="#F1DFCC" stroke="#C8C4BC"/>';
+  // Haarkappe
+  h += '<path d="M52 92 C48 40 92 14 132 22 C176 30 196 72 188 118 C184 150 166 172 150 182 L142 176 C138 162 136 150 134 142 C132 120 120 110 106 106 C88 102 70 97 52 92 Z" fill="#5A3A2A"/>';
+  // Ohr
+  h += '<ellipse cx="124" cy="132" rx="9" ry="14" fill="#EBD3BC" stroke="#C8C4BC"/>';
+  // Abteilungen und Strähnen, parallel gedreht
+  h += '<g clip-path="url(#pms-kappe)"><g transform="rotate('+r.grad+' 120 96)">';
+  for (var y = -140; y < 340; y += a.px) {
+    h += '<line x1="-120" y1="'+y+'" x2="360" y2="'+y+'" stroke="#C4B86A" stroke-width=".8" stroke-dasharray="3 3" opacity=".8"/>';
+    var strich = PMS.art === 'weaving' ? ' stroke-dasharray="5 3"' : '';
+    h += '<line x1="-120" y1="'+(y + a.px/2)+'" x2="360" y2="'+(y + a.px/2)+'" stroke="#EBD3A2" stroke-width="'+d.px+'"'+strich+'/>';
+  }
+  h += '</g></g>';
+  h += '<text x="20" y="104" font-size="9" fill="#7A7A70">Gesicht</text><text x="178" y="200" font-size="9" fill="#7A7A70" text-anchor="end">Nacken</text>';
+  return '<svg class="pm-svg" viewBox="0 0 210 214" role="img" aria-label="Kopf im Profil mit Abteilungen '+r.n+'">'+h+'</svg>';
+}
+
+function pmsMuster() {
+  // So wirkt es im fallenden Haar: Strähnenbreite und Abstand als Haarprobe
+  var d = PMS_DICKE[PMS.dicke], a = PMS_ABSTAND[PMS.abstand], h = '';
+  h += '<rect x="0" y="0" width="220" height="60" rx="6" fill="#5A3A2A"/>';
+  var abst = a.px * 0.9, breite = d.px * 1.3;
+  for (var x = 6; x < 214; x += abst) {
+    if (PMS.art === 'weaving') {
+      h += '<rect x="'+x.toFixed(1)+'" y="0" width="'+(breite*0.45).toFixed(1)+'" height="60" fill="#EBD3A2"/>' +
+           '<rect x="'+(x + breite*0.7).toFixed(1)+'" y="0" width="'+(breite*0.45).toFixed(1)+'" height="60" fill="#EBD3A2"/>';
+    } else {
+      h += '<rect x="'+x.toFixed(1)+'" y="0" width="'+breite.toFixed(1)+'" height="60" fill="#EBD3A2"/>';
+    }
+  }
+  return '<svg viewBox="0 0 220 60" style="display:block;width:100%;max-width:300px;margin:6px auto 0;border-radius:6px" role="img" aria-label="Haarprobe mit Strähnen">'+h+'</svg>';
+}
+
+function pmsWahl(feld, wert) { PMS[feld] = wert; pmsAbteilen(); }
+
+function pmsKnoepfe(feld, daten) {
+  return '<div class="pm-wahl">' + Object.keys(daten).map(function(k){
+    return '<button class="btn-toggle'+(PMS[feld] === k ? ' ak' : '')+'" onclick="pmsWahl(\''+feld+'\',\''+k+'\')">'+daten[k].n+'</button>';
+  }).join('') + '</div>';
+}
+
+function pmsAbteilen() {
+  var r = PMS_RICHTUNG[PMS.richtung];
+  var html = '<div class="card">' +
+    pmsKopfProfil() +
+    '<div style="text-align:center;font-size:12px;color:#7A7A70;margin-bottom:12px">Abteilung '+r.n+' ('+Math.abs(r.grad)+'°)</div>' +
+    '<div class="label">Richtung der Abteilung</div>' + pmsKnoepfe('richtung', PMS_RICHTUNG) +
+    '<div class="label">Strähnenbreite</div>' + pmsKnoepfe('dicke', PMS_DICKE) +
+    '<div class="label">Abstand</div>' + pmsKnoepfe('abstand', PMS_ABSTAND) +
+    '<div class="label">Abteiltechnik</div>' + pmsKnoepfe('art', PMS_ART) +
+  '</div>' +
+  '<div class="card">' +
+    '<div class="label">So wirkt es im fallenden Haar</div>' + pmsMuster() +
+    '<ul class="pm-liste" style="margin-top:12px">' +
+      '<li><strong>'+r.n+':</strong> '+r.w+'</li>' +
+      '<li><strong>'+PMS_DICKE[PMS.dicke].n+':</strong> '+PMS_DICKE[PMS.dicke].w+'</li>' +
+      '<li><strong>Abstand '+PMS_ABSTAND[PMS.abstand].n+':</strong> '+PMS_ABSTAND[PMS.abstand].w+'</li>' +
+      '<li><strong>'+PMS_ART[PMS.art].n+':</strong> '+PMS_ART[PMS.art].w+'</li>' +
+    '</ul>' +
+  '</div>';
+  pmsSetze(html);
+}
+
+// ── Quiz ──
+function pmsQuizNeu() {
+  PMS.quiz = PMS_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; });
+  PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false;
+}
+
+function pmsQuiz() {
+  if (!PMS.quiz.length) pmsQuizNeu();
+  var n = PMS.quiz.length, html;
+  if (PMS.qi >= n) {
+    html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMS.richtig === n ? '🎉' : '✨')+'</div>' +
+      '<div class="pm-schritt-titel">'+PMS.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-txt">'+(PMS.richtig === n ? 'Du kennst alle Techniken!' : 'Schau dir die Techniken nochmal an und versuch es erneut.')+'</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="pmsQuizNeu();pmsQuiz()">Nochmal</button></div></div>';
+    pmsSetze(html); return;
+  }
+  var q = PMS_QUIZ[PMS.quiz[PMS.qi]];
+  html = '<div class="card"><div class="label">Frage '+(PMS.qi+1)+' von '+n+' · '+PMS.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
+    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmsAntwort('+i+')">'+o+'</button>'; }).join('') +
+    '<div id="pms-fb"></div></div>';
+  pmsSetze(html);
+}
+
+function pmsAntwort(i) {
+  if (PMS.beantwortet) return;
+  PMS.beantwortet = true;
+  var q = PMS_QUIZ[PMS.quiz[PMS.qi]], ok = i === q.r;
+  if (ok) PMS.richtig++;
+  document.querySelectorAll('#pms-inhalt .opt-btn').forEach(function(b, j){
+    b.disabled = true;
+    if (j === q.r) b.classList.add('ric');
+    else if (j === i) b.classList.add('fal');
+  });
+  document.getElementById('pms-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+    '<div class="pm-zeile"><button class="btn-primary" onclick="pmsWeiter()">Weiter →</button></div>';
+}
+
+function pmsWeiter() { PMS.qi++; PMS.beantwortet = false; pmsQuiz(); }
 </script>
 <script>
 // ── Wörni / Claude – sicherer Proxy ──
