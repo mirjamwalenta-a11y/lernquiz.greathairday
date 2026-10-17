@@ -498,10 +498,10 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Mischung &amp; Einwirkzeit, Oxidanten, Lernkarten</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" disabled>
+  <button class="nav-card pm-modul" onclick="pmStraehnenOeffnen()">
     <div class="nav-icon" style="margin:0">✨</div>
     <div>
-      <div class="pm-lj">2. Lehrjahr</div><span class="pm-bald">kommt bald</span>
+      <div class="pm-lj">2. Lehrjahr</div>
       <div class="nav-title">Strähnentechniken</div>
       <div class="nav-desc">Techniken im Überblick, Abteilwinkel</div>
     </div>
@@ -543,6 +543,20 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pmf-tab-karten" onclick="pmFarbeTab('karten')">Lernkarten</button>
   </div>
   <div id="pmf-inhalt"></div>
+</div>
+
+<!-- ── MODUL 3: STRÄHNENTECHNIKEN ── -->
+<div id="p-pm-straehnen" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">2. Lehrjahr · Praxis-Modul</div>
+  <h1>Strähnentechniken</h1>
+  <p class="sub">Welche Technik, welche Abteilung, welche Wirkung.</p>
+  <div class="pm-tabs">
+    <button class="btn-toggle" id="pms-tab-technik" onclick="pmStraehnenTab('technik')">Techniken</button>
+    <button class="btn-toggle" id="pms-tab-abteilen" onclick="pmStraehnenTab('abteilen')">Abteilen</button>
+    <button class="btn-toggle" id="pms-tab-quiz" onclick="pmStraehnenTab('quiz')">Quiz</button>
+  </div>
+  <div id="pms-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -2307,6 +2321,275 @@ function pmfAntwort(gewusst) {
   PMF.um = false;
   pmfKarten();
 }
+</script>
+<script>
+// ── PRAXIS-MODUL 3: STRÄHNENTECHNIKEN ───────────────────────────
+var PMS_TECHNIKEN = [
+  {id:'folie', n:'Foliensträhnen', kurz:'klassisch, gleichmäßig, vom Ansatz',
+   wie:'Feine Abteilungen mit dem Stielkamm abteilen (Slicing oder Weaving), auf die Folie legen, Aufhellung bis nah an den Ansatz auftragen, Folie falten.',
+   wirkung:'Gleichmäßig verteilte, deutlich sichtbare Strähnen vom Ansatz bis in die Spitzen.',
+   passt:'Gäste, die viel Helligkeit wollen, auch auf kurzem Haar.',
+   wachsen:'Der Ansatz ist nach ca. 6–8 Wochen sichtbar.',
+   werkzeug:'Folie, Stielkamm, Pinsel, Abteilklammern', bild:{art:'streifen', breite:5, abstand:13, start:0, farbe:'#E9CF9A'}},
+  {id:'baby', n:'Babylights', kurz:'hauchfein, natürlich, sonnengeküsst',
+   wie:'Sehr feine Strähnchen mit Weaving auswählen, viele dünne Abteilungen in Folie. Wenig Kontrast zur Grundfarbe.',
+   wirkung:'Natürliche Aufhellung wie von der Sonne, die Strähnen sind kaum einzeln zu erkennen.',
+   passt:'Natürlicher Look, feines Haar, Gäste mit wenig Pflegezeit.',
+   wachsen:'Wächst sehr weich heraus.',
+   werkzeug:'Folie, Stielkamm, Pinsel', bild:{art:'streifen', breite:2, abstand:6, start:0, farbe:'#D6B98A'}},
+  {id:'balayage', n:'Balayage', kurz:'freihand gemalt, weicher Übergang',
+   wie:'Die Aufhellung wird freihand auf die Oberfläche der Strähnen gemalt („balayer“ = fegen), meist ohne Folie. Am Ansatz bleibt Naturfarbe.',
+   wirkung:'Weicher, natürlicher Verlauf, nach unten heller. Kein harter Ansatz.',
+   passt:'Mittellanges bis langes Haar, Gäste mit natürlichem, pflegeleichtem Wunsch.',
+   wachsen:'Wächst sehr weich heraus, Auffrischen oft erst nach 3–4 Monaten.',
+   werkzeug:'Pinsel, Palette oder Balayage-Brett, eventuell Watte oder Folie zum Abtrennen', bild:{art:'verlauf', breite:7, abstand:15, start:.38, farbe:'#E9CF9A'}},
+  {id:'foilyage', n:'Foilyage', kurz:'Balayage in Folie, heller',
+   wie:'Wie Balayage freihand gemalt, aber in Folie gepackt. Die Folie hält die Wärme, die Aufhellung wird stärker.',
+   wirkung:'Weicher Verlauf wie Balayage, aber deutlich heller und kräftiger.',
+   passt:'Dunkles Grundhaar oder Gäste, die viel Helligkeit mit weichem Ansatz wollen.',
+   wachsen:'Weicher Ansatz, länger haltbar als Foliensträhnen.',
+   werkzeug:'Folie, Pinsel, Stielkamm', bild:{art:'verlauf', breite:8, abstand:13, start:.25, farbe:'#F3E2B8'}},
+  {id:'face', n:'Face Framing', kurz:'Helligkeit vorne am Gesicht',
+   wie:'Nur die vorderen Partien rund ums Gesicht werden aufgehellt, oft breiter (auch „Money Piece“).',
+   wirkung:'Lässt das Gesicht strahlen, wenig Aufwand, viel Wirkung.',
+   passt:'Als Ergänzung zu Balayage oder als schnelle Auffrischung.',
+   wachsen:'Wächst gut heraus, lässt sich schnell nacharbeiten.',
+   werkzeug:'Folie oder freihand, Pinsel', bild:{art:'face', farbe:'#F3E2B8'}},
+  {id:'low', n:'Lowlights', kurz:'dunklere Strähnen für Tiefe',
+   wie:'Einzelne Strähnen werden dunkler gefärbt oder getönt, z. B. in Folie mit Coloration oder Tönung.',
+   wirkung:'Bringt Tiefe und Dimension in zu helles oder flach wirkendes Haar.',
+   passt:'Gäste mit viel Blond, die natürlicher wirken wollen, oder für den Übergang in Richtung Naturfarbe.',
+   wachsen:'Wächst unauffällig heraus.',
+   werkzeug:'Folie, Pinsel, Stielkamm', bild:{art:'streifen', breite:5, abstand:15, start:0, farbe:'#7A5236', basis:'#D9BC8C'}},
+  {id:'ombre', n:'Ombré / Sombré', kurz:'Verlauf dunkel → hell',
+   wie:'Die Längen und Spitzen werden flächig aufgehellt, der Übergang wird verwischt. Sombré („soft ombré“) hat einen weicheren, längeren Übergang.',
+   wirkung:'Gleichmäßiger Farbverlauf von dunkel oben nach hell unten.',
+   passt:'Langes Haar, Gäste, die den Ansatz natürlich lassen wollen.',
+   wachsen:'Kein sichtbarer Ansatz, wächst sehr lange gut heraus.',
+   werkzeug:'Pinsel, Schale, eventuell Toupierkamm für den Übergang', bild:{art:'ombre', farbe:'#EBD3A2'}}
+];
+
+var PMS_RICHTUNG = {
+  horizontal:{n:'horizontal', grad:0, w:'Ruhige, gleichmäßige Verteilung. Klassisch für Foliensträhnen am Hinterkopf und für kürzeres Haar. Bei groben Strähnen kann es streifig wirken.'},
+  vertikal:{n:'vertikal', grad:90, w:'Betont Länge und Fall. Die Strähnen laufen senkrecht und geben viel Bewegung, gut für langes, glattes Haar.'},
+  vorne:{n:'diagonal nach vorne', grad:-45, w:'Die Strähnen fallen Richtung Gesicht und rahmen es ein. Gut für Face Framing und Frisuren, die nach vorne fallen.'},
+  hinten:{n:'diagonal nach hinten', grad:45, w:'Die Strähnen fallen vom Gesicht weg nach hinten. Das öffnet das Gesicht und gibt einen weichen Übergang, gut für zurückgestylte Frisuren.'}
+};
+var PMS_DICKE = {
+  fein:{n:'fein', px:2.5, w:'Natürlich und sonnengeküsst, wächst weich heraus.'},
+  mittel:{n:'mittel', px:5, w:'Gut sichtbare, klassische Strähnen.'},
+  grob:{n:'grob', px:9, w:'Starker Kontrast und Blockeffekt, der Ansatz wächst deutlich heraus.'}
+};
+var PMS_ABSTAND = {
+  eng:{n:'eng', px:14, w:'Mehr Haar wird hell, der Gesamteindruck wird heller.'},
+  weit:{n:'weit', px:26, w:'Mehr Grundfarbe bleibt, der Kontrast wird stärker.'}
+};
+var PMS_ART = {
+  slicing:{n:'Slicing', w:'Eine ganze, dünne Scheibe wird abgeteilt und aufgehellt. Ergibt einen flächigen, kräftigen Effekt.'},
+  weaving:{n:'Weaving', w:'Mit dem Stielkamm werden einzelne Strähnchen aus der Abteilung „ausgewebt“. Feiner und natürlicher, weil sich Naturhaar dazwischen mischt.'}
+};
+
+var PMS_QUIZ = [
+  {f:'Ein Gast wünscht sich einen natürlichen, sonnengeküssten Look. Die Strähnen sollen kaum einzeln sichtbar sein und weich herauswachsen.', o:['Foliensträhnen','Babylights','Lowlights','Ombré'], r:1, e:'Babylights sind hauchfeine Strähnchen mit wenig Kontrast und wachsen sehr weich heraus.'},
+  {f:'Die Aufhellung wird freihand auf die Oberfläche der Strähnen gemalt, meist ohne Folie. Am Ansatz bleibt Naturfarbe.', o:['Balayage','Foliensträhnen','Babylights','Lowlights'], r:0, e:'Balayage kommt vom französischen „balayer“ = fegen: freihand gemalt, weicher Übergang.'},
+  {f:'Wie Balayage gemalt, aber in Folie gepackt, damit das Ergebnis heller wird. Wie heißt die Technik?', o:['Ombré','Face Framing','Foilyage','Sombré'], r:2, e:'Foilyage = Balayage + Folie. Die Folie hält die Wärme, die Aufhellung wird stärker.'},
+  {f:'Ein Gast hat sehr viel Blond, das Haar wirkt flach. Was bringt Tiefe hinein?', o:['Mehr Babylights','Lowlights','Face Framing','Eine Blondierung'], r:1, e:'Lowlights sind dunklere Strähnen. Sie geben zu hellem Haar Tiefe und Dimension.'},
+  {f:'Nur die Partien rund ums Gesicht werden aufgehellt. Wie heißt das?', o:['Face Framing','Ombré','Babylights','Weaving'], r:0, e:'Face Framing (auch „Money Piece“) lässt das Gesicht strahlen, mit wenig Aufwand.'},
+  {f:'Oben dunkel, unten hell, mit gleichmäßigem Übergang über die Längen.', o:['Balayage','Lowlights','Ombré','Foliensträhnen'], r:2, e:'Ombré ist ein Farbverlauf von dunkel nach hell. Sombré ist die weichere Variante.'},
+  {f:'Du teilst die Abteilungen diagonal nach vorne ab. Wie fallen die Strähnen?', o:['Vom Gesicht weg nach hinten','Richtung Gesicht, sie rahmen es ein','Waagrecht, ganz gleichmäßig','Das macht keinen Unterschied'], r:1, e:'Diagonal nach vorne fallen die Strähnen ins Gesicht. Diagonal nach hinten öffnen sie das Gesicht.'},
+  {f:'Was ist der Unterschied zwischen Weaving und Slicing?', o:['Weaving webt einzelne Strähnchen aus der Abteilung, Slicing nimmt eine ganze dünne Scheibe','Weaving ist ohne Folie, Slicing mit Folie','Slicing ist nur für Lowlights','Es gibt keinen Unterschied'], r:0, e:'Weaving wirkt feiner und natürlicher, Slicing flächiger und kräftiger.'},
+  {f:'Grobe Strähnen mit weitem Abstand ergeben …', o:['einen sehr natürlichen Look','einen starken Kontrast','ein gleichmäßig helles Ergebnis','gar keinen sichtbaren Effekt'], r:1, e:'Viel Grundfarbe zwischen breiten hellen Strähnen ergibt starken Kontrast und einen Blockeffekt.'}
+];
+
+var PMS = {tab:'technik', tech:0, richtung:'horizontal', dicke:'mittel', abstand:'eng', art:'slicing', quiz:[], qi:0, richtig:0, beantwortet:false};
+
+function pmStraehnenOeffnen() {
+  zeige('pm-straehnen');
+  pmStraehnenTab(PMS.tab);
+}
+
+function pmStraehnenTab(tab) {
+  PMS.tab = tab;
+  ['technik','abteilen','quiz'].forEach(function(t){
+    document.getElementById('pms-tab-'+t).classList.toggle('ak', t === tab);
+  });
+  if (tab === 'technik') pmsTechnik();
+  if (tab === 'abteilen') pmsAbteilen();
+  if (tab === 'quiz') pmsQuiz();
+}
+
+function pmsSetze(html) { document.getElementById('pms-inhalt').innerHTML = html; }
+
+// ── Techniken mit Skizze (Kopf von vorne) ──
+var PMS_HAAR = 'M100 16 C54 16 36 50 36 92 L30 212 L170 212 L164 92 C164 50 146 16 100 16 Z';
+
+function pmsBild(b) {
+  var basis = b.basis || '#5A3A2A', h = '';
+  h += '<defs><clipPath id="pms-clip"><path d="'+PMS_HAAR+'"/></clipPath>' +
+    '<linearGradient id="pms-verlauf" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="'+b.farbe+'" stop-opacity="0"/>' +
+      '<stop offset="'+(b.start || 0)+'" stop-color="'+b.farbe+'" stop-opacity="0"/>' +
+      '<stop offset="1" stop-color="'+b.farbe+'" stop-opacity="1"/></linearGradient>' +
+    '<linearGradient id="pms-ombre" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="'+basis+'"/><stop offset=".42" stop-color="'+basis+'"/>' +
+      '<stop offset=".78" stop-color="'+b.farbe+'"/><stop offset="1" stop-color="'+b.farbe+'"/></linearGradient></defs>';
+  h += '<path d="'+PMS_HAAR+'" fill="'+(b.art === 'ombre' ? 'url(#pms-ombre)' : basis)+'"/>';
+  h += '<g clip-path="url(#pms-clip)">';
+  if (b.art === 'streifen' || b.art === 'verlauf') {
+    var fill = b.art === 'verlauf' ? 'url(#pms-verlauf)' : b.farbe;
+    for (var x = 32; x < 170; x += b.abstand) {
+      var w = b.art === 'verlauf' ? b.breite * (0.7 + ((x * 7) % 5) / 8) : b.breite;
+      h += '<rect x="'+x+'" y="10" width="'+w.toFixed(1)+'" height="210" fill="'+fill+'"/>';
+    }
+  }
+  if (b.art === 'face') {
+    h += '<path d="M72 48 Q60 120 52 212 L68 212 Q74 130 84 52 Z" fill="'+b.farbe+'"/>' +
+         '<path d="M128 48 Q140 120 148 212 L132 212 Q126 130 116 52 Z" fill="'+b.farbe+'"/>';
+  }
+  h += '</g>';
+  // Gesicht und Hals liegen über dem Haar
+  h += '<rect x="86" y="128" width="28" height="70" fill="#EBD3BC"/>' +
+       '<ellipse cx="100" cy="94" rx="33" ry="44" fill="#F1DFCC"/>' +
+       '<path d="M68 70 Q100 40 132 70 Q120 52 100 50 Q80 52 68 70 Z" fill="'+basis+'" opacity=".9"/>';
+  return '<svg class="pm-svg" viewBox="0 0 200 220" role="img" aria-label="Skizze des Ergebnisses">'+h+'</svg>';
+}
+
+function pmsTechnik() {
+  var t = PMS_TECHNIKEN[PMS.tech];
+  var wahl = PMS_TECHNIKEN.map(function(x, i){
+    return '<button class="btn-toggle'+(i === PMS.tech ? ' ak' : '')+'" onclick="pmsTech('+i+')">'+x.n+'</button>';
+  }).join('');
+  var html = '<div class="pm-griff-wahl">'+wahl+'</div>' +
+  '<div class="card">' +
+    '<div class="pm-schritt-titel" style="margin-bottom:2px">'+t.n+'</div>' +
+    '<div style="font-size:13px;color:#7A7A70;margin-bottom:10px">'+t.kurz+'</div>' +
+    pmsBild(t.bild) +
+    '<div class="label" style="margin-top:8px">So geht’s</div><div class="pm-txt">'+t.wie+'</div>' +
+    '<dl class="pm-dl"><dt>Wirkung</dt><dd>'+t.wirkung+'</dd><dt>Passt für</dt><dd>'+t.passt+'</dd>' +
+      '<dt>Auswachsen</dt><dd>'+t.wachsen+'</dd><dt>Werkzeug</dt><dd>'+t.werkzeug+'</dd></dl>' +
+  '</div>' +
+  '<div class="card"><div class="label">Auf einen Blick</div><table class="pm-tab">' +
+    '<tr><th>Technik</th><th>Ansatz</th><th>Kontrast</th></tr>' +
+    '<tr><td>Folie</td><td>ab Ansatz</td><td>deutlich</td></tr>' +
+    '<tr><td>Babylights</td><td>ab Ansatz</td><td>sehr gering</td></tr>' +
+    '<tr><td>Balayage</td><td>weich, Naturfarbe</td><td>mittel</td></tr>' +
+    '<tr><td>Foilyage</td><td>weich, Naturfarbe</td><td>hoch</td></tr>' +
+    '<tr><td>Face Framing</td><td>nur vorne</td><td>mittel bis hoch</td></tr>' +
+    '<tr><td>Lowlights</td><td>ab Ansatz, dunkler</td><td>mittel</td></tr>' +
+    '<tr><td>Ombré</td><td>kein Ansatz</td><td>hoch, als Verlauf</td></tr>' +
+  '</table></div>';
+  pmsSetze(html);
+}
+
+function pmsTech(i) { PMS.tech = i; pmsTechnik(); }
+
+// ── Abteil-Visualisierer (Kopf im Profil, Gesicht links) ──
+function pmsKopfProfil() {
+  var r = PMS_RICHTUNG[PMS.richtung], d = PMS_DICKE[PMS.dicke], a = PMS_ABSTAND[PMS.abstand];
+  var h = '<defs><clipPath id="pms-kappe"><path d="M52 92 C48 40 92 14 132 22 C176 30 196 72 188 118 C184 150 166 172 150 182 L142 176 C138 162 136 150 134 142 C132 120 120 110 106 106 C88 102 70 97 52 92 Z"/></clipPath></defs>';
+  // Kopf
+  h += '<path d="M52 92 C48 40 92 14 132 22 C176 30 196 72 188 118 C184 150 166 172 150 182 L148 210 L98 210 L100 186 C84 186 70 176 66 162 L58 160 C54 150 60 146 56 140 L46 132 C44 126 50 120 52 116 C50 108 52 100 52 92 Z" fill="#F1DFCC" stroke="#C8C4BC"/>';
+  // Haarkappe
+  h += '<path d="M52 92 C48 40 92 14 132 22 C176 30 196 72 188 118 C184 150 166 172 150 182 L142 176 C138 162 136 150 134 142 C132 120 120 110 106 106 C88 102 70 97 52 92 Z" fill="#5A3A2A"/>';
+  // Ohr
+  h += '<ellipse cx="124" cy="132" rx="9" ry="14" fill="#EBD3BC" stroke="#C8C4BC"/>';
+  // Abteilungen und Strähnen, parallel gedreht
+  h += '<g clip-path="url(#pms-kappe)"><g transform="rotate('+r.grad+' 120 96)">';
+  for (var y = -140; y < 340; y += a.px) {
+    h += '<line x1="-120" y1="'+y+'" x2="360" y2="'+y+'" stroke="#C4B86A" stroke-width=".8" stroke-dasharray="3 3" opacity=".8"/>';
+    var strich = PMS.art === 'weaving' ? ' stroke-dasharray="5 3"' : '';
+    h += '<line x1="-120" y1="'+(y + a.px/2)+'" x2="360" y2="'+(y + a.px/2)+'" stroke="#EBD3A2" stroke-width="'+d.px+'"'+strich+'/>';
+  }
+  h += '</g></g>';
+  h += '<text x="20" y="104" font-size="9" fill="#7A7A70">Gesicht</text><text x="178" y="200" font-size="9" fill="#7A7A70" text-anchor="end">Nacken</text>';
+  return '<svg class="pm-svg" viewBox="0 0 210 214" role="img" aria-label="Kopf im Profil mit Abteilungen '+r.n+'">'+h+'</svg>';
+}
+
+function pmsMuster() {
+  // So wirkt es im fallenden Haar: Strähnenbreite und Abstand als Haarprobe
+  var d = PMS_DICKE[PMS.dicke], a = PMS_ABSTAND[PMS.abstand], h = '';
+  h += '<rect x="0" y="0" width="220" height="60" rx="6" fill="#5A3A2A"/>';
+  var abst = a.px * 0.9, breite = d.px * 1.3;
+  for (var x = 6; x < 214; x += abst) {
+    if (PMS.art === 'weaving') {
+      h += '<rect x="'+x.toFixed(1)+'" y="0" width="'+(breite*0.45).toFixed(1)+'" height="60" fill="#EBD3A2"/>' +
+           '<rect x="'+(x + breite*0.7).toFixed(1)+'" y="0" width="'+(breite*0.45).toFixed(1)+'" height="60" fill="#EBD3A2"/>';
+    } else {
+      h += '<rect x="'+x.toFixed(1)+'" y="0" width="'+breite.toFixed(1)+'" height="60" fill="#EBD3A2"/>';
+    }
+  }
+  return '<svg viewBox="0 0 220 60" style="display:block;width:100%;max-width:300px;margin:6px auto 0;border-radius:6px" role="img" aria-label="Haarprobe mit Strähnen">'+h+'</svg>';
+}
+
+function pmsWahl(feld, wert) { PMS[feld] = wert; pmsAbteilen(); }
+
+function pmsKnoepfe(feld, daten) {
+  return '<div class="pm-wahl">' + Object.keys(daten).map(function(k){
+    return '<button class="btn-toggle'+(PMS[feld] === k ? ' ak' : '')+'" onclick="pmsWahl(\''+feld+'\',\''+k+'\')">'+daten[k].n+'</button>';
+  }).join('') + '</div>';
+}
+
+function pmsAbteilen() {
+  var r = PMS_RICHTUNG[PMS.richtung];
+  var html = '<div class="card">' +
+    pmsKopfProfil() +
+    '<div style="text-align:center;font-size:12px;color:#7A7A70;margin-bottom:12px">Abteilung '+r.n+' ('+Math.abs(r.grad)+'°)</div>' +
+    '<div class="label">Richtung der Abteilung</div>' + pmsKnoepfe('richtung', PMS_RICHTUNG) +
+    '<div class="label">Strähnenbreite</div>' + pmsKnoepfe('dicke', PMS_DICKE) +
+    '<div class="label">Abstand</div>' + pmsKnoepfe('abstand', PMS_ABSTAND) +
+    '<div class="label">Abteiltechnik</div>' + pmsKnoepfe('art', PMS_ART) +
+  '</div>' +
+  '<div class="card">' +
+    '<div class="label">So wirkt es im fallenden Haar</div>' + pmsMuster() +
+    '<ul class="pm-liste" style="margin-top:12px">' +
+      '<li><strong>'+r.n+':</strong> '+r.w+'</li>' +
+      '<li><strong>'+PMS_DICKE[PMS.dicke].n+':</strong> '+PMS_DICKE[PMS.dicke].w+'</li>' +
+      '<li><strong>Abstand '+PMS_ABSTAND[PMS.abstand].n+':</strong> '+PMS_ABSTAND[PMS.abstand].w+'</li>' +
+      '<li><strong>'+PMS_ART[PMS.art].n+':</strong> '+PMS_ART[PMS.art].w+'</li>' +
+    '</ul>' +
+  '</div>';
+  pmsSetze(html);
+}
+
+// ── Quiz ──
+function pmsQuizNeu() {
+  PMS.quiz = PMS_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; });
+  PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false;
+}
+
+function pmsQuiz() {
+  if (!PMS.quiz.length) pmsQuizNeu();
+  var n = PMS.quiz.length, html;
+  if (PMS.qi >= n) {
+    html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMS.richtig === n ? '🎉' : '✨')+'</div>' +
+      '<div class="pm-schritt-titel">'+PMS.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-txt">'+(PMS.richtig === n ? 'Du kennst alle Techniken!' : 'Schau dir die Techniken nochmal an und versuch es erneut.')+'</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="pmsQuizNeu();pmsQuiz()">Nochmal</button></div></div>';
+    pmsSetze(html); return;
+  }
+  var q = PMS_QUIZ[PMS.quiz[PMS.qi]];
+  html = '<div class="card"><div class="label">Frage '+(PMS.qi+1)+' von '+n+' · '+PMS.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
+    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmsAntwort('+i+')">'+o+'</button>'; }).join('') +
+    '<div id="pms-fb"></div></div>';
+  pmsSetze(html);
+}
+
+function pmsAntwort(i) {
+  if (PMS.beantwortet) return;
+  PMS.beantwortet = true;
+  var q = PMS_QUIZ[PMS.quiz[PMS.qi]], ok = i === q.r;
+  if (ok) PMS.richtig++;
+  document.querySelectorAll('#pms-inhalt .opt-btn').forEach(function(b, j){
+    b.disabled = true;
+    if (j === q.r) b.classList.add('ric');
+    else if (j === i) b.classList.add('fal');
+  });
+  document.getElementById('pms-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+    '<div class="pm-zeile"><button class="btn-primary" onclick="pmsWeiter()">Weiter →</button></div>';
+}
+
+function pmsWeiter() { PMS.qi++; PMS.beantwortet = false; pmsQuiz(); }
 </script>
 <script>
 // ── Wörni / Claude – sicherer Proxy ──
