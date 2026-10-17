@@ -51,6 +51,41 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .lernplan-box{background:#2C2C2C;border-radius:8px;padding:16px;color:#F7F5F0;font-size:13px;line-height:1.7;white-space:pre-wrap}
 .fortschritt-tipps{background:#2C2C2C;border-radius:8px;padding:16px;color:#F7F5F0;font-size:13px;line-height:1.7;white-space:pre-wrap}
 .fuss{text-align:center;color:#C8C4BC;font-size:11px;margin-top:2rem}
+/* ── Praxis-Module ── */
+.pm-modul{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.pm-modul:disabled{cursor:default;opacity:.55}
+.pm-modul:disabled:hover{border-color:#E2DDD5}
+.pm-lj{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F;background:#EAF0EE;border-radius:4px;padding:2px 6px;margin-bottom:4px}
+.pm-bald{display:inline-block;font-size:10px;color:#7A7A70;border:1px solid #C8C4BC;border-radius:4px;padding:1px 6px;margin-left:6px}
+.pm-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pm-tabs .btn-toggle{flex:1;min-width:0;padding:8px 4px;font-size:12px}
+.pm-punkte{display:flex;gap:4px;margin-bottom:14px}
+.pm-punkt{flex:1;height:4px;border-radius:2px;background:#E2DDD5}
+.pm-punkt.ak{background:#5B7B6F}
+.pm-pflicht{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8B7535;background:#FDF6E3;border:1px solid #C4B86A;border-radius:4px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+.pm-schritt-titel{font-size:18px;font-weight:600;color:#1C1C1A;margin-bottom:12px}
+.pm-txt{font-size:14px;color:#2C2C2C;line-height:1.6;margin-bottom:12px}
+.pm-zeile{display:flex;gap:8px;margin-top:12px}
+.pm-zeile button{flex:1}
+.pm-wahl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pm-wahl .btn-toggle{flex:1 1 30%}
+.pm-skala{position:relative;height:18px;border-radius:9px;background:linear-gradient(90deg,#8DB6D9,#EAF0EE 45%,#E8B07A 75%,#C44030);margin:22px 0 6px}
+.pm-band{position:absolute;top:-4px;bottom:-4px;border:3px solid #1C1C1A;border-radius:10px;background:rgba(255,255,255,.35)}
+.pm-skala-lab{display:flex;justify-content:space-between;font-size:11px;color:#7A7A70}
+.pm-grad{font-size:28px;font-weight:600;color:#1C1C1A;margin:6px 0 2px}
+.pm-liste{margin:6px 0 0 18px;font-size:13px;color:#2C2C2C;line-height:1.6}
+.pm-svg{display:block;width:100%;max-width:260px;margin:0 auto 6px}
+.pm-griff-wahl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pm-griff-wahl .btn-toggle{flex:0 0 auto}
+.pm-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px;line-height:1.5;margin-top:10px}
+.pm-dl dt{font-weight:600;color:#7A7A70}
+.pm-dl dd{color:#2C2C2C}
+.pm-chip{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border:1.5px solid #E2DDD5;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;font-family:system-ui;color:#1C1C1A}
+.pm-chip.ric{border-color:#5B7B6F;background:#EAF0EE}
+.pm-chip.fal{border-color:#C44030;background:#FDECEA}
+.pm-chip small{display:block;color:#C44030;font-size:12px;margin-top:2px}
+.pm-check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#2C2C2C;padding:8px 0;border-bottom:1px solid #F0ECE5;cursor:pointer}
+.pm-check input{width:18px;height:18px;flex:0 0 auto;margin-top:1px;accent-color:#5B7B6F}
 </style>
 </head>
 <body>
@@ -107,6 +142,13 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <div>
       <div class="nav-title">Mein Fortschritt</div>
       <div class="nav-desc">Lernstand ansehen</div>
+    </div>
+  </button>
+  <button class="nav-card" onclick="zeige('praxis')" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+    <div class="nav-icon" style="margin:0">💆</div>
+    <div>
+      <div class="nav-title">Praxis-Module</div>
+      <div class="nav-desc">Haarwäsche &amp; Kopfmassage, Farbe, Strähnen, Hochstecken</div>
     </div>
   </button>
   <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261006c'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
@@ -406,6 +448,61 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <div id="tipp-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
     <button class="btn-primary" onclick="adminTippSpeichern()">Speichern</button>
   </div>
+</div>
+
+<!-- ── PRAXIS-MODULE ── -->
+<div id="p-praxis" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Praxis</div>
+  <h1>Praxis-Module</h1>
+  <p class="sub">Schritt für Schritt üben, was du am Gast brauchst.</p>
+  <button class="nav-card pm-modul" onclick="pmWaschOeffnen()">
+    <div class="nav-icon" style="margin:0">💆</div>
+    <div>
+      <div class="pm-lj">1. Lehrjahr</div>
+      <div class="nav-title">Haarwäsche &amp; Kopfmassage</div>
+      <div class="nav-desc">Ablauf, Wassertemperatur, Massagegriffe, Ablauf-Check</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" disabled>
+    <div class="nav-icon" style="margin:0">🎨</div>
+    <div>
+      <div class="pm-lj">1. Lehrjahr</div><span class="pm-bald">kommt bald</span>
+      <div class="nav-title">Farbtechniken</div>
+      <div class="nav-desc">Einwirkzeit-Rechner, Oxidanten-Karten</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" disabled>
+    <div class="nav-icon" style="margin:0">✨</div>
+    <div>
+      <div class="pm-lj">2. Lehrjahr</div><span class="pm-bald">kommt bald</span>
+      <div class="nav-title">Strähnentechniken</div>
+      <div class="nav-desc">Techniken im Überblick, Abteilwinkel</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" disabled>
+    <div class="nav-icon" style="margin:0">👑</div>
+    <div>
+      <div class="pm-lj">3. Lehrjahr</div><span class="pm-bald">kommt bald</span>
+      <div class="nav-title">Hochstecken nach Gesichtsform</div>
+      <div class="nav-desc">Volumen, Do's &amp; Don'ts, Styling-Guides</div>
+    </div>
+  </button>
+</div>
+
+<!-- ── MODUL 1: HAARWÄSCHE & KOPFMASSAGE ── -->
+<div id="p-pm-wasch" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">1. Lehrjahr · Praxis-Modul</div>
+  <h1>Haarwäsche &amp; Kopfmassage</h1>
+  <p class="sub">Vom Waschplatz bis zum Turban.</p>
+  <div class="pm-tabs">
+    <button class="btn-toggle" id="pmw-tab-ablauf" onclick="pmWaschTab('ablauf')">Ablauf</button>
+    <button class="btn-toggle" id="pmw-tab-temp" onclick="pmWaschTab('temp')">Temperatur</button>
+    <button class="btn-toggle" id="pmw-tab-massage" onclick="pmWaschTab('massage')">Massage</button>
+    <button class="btn-toggle" id="pmw-tab-check" onclick="pmWaschTab('check')">Check</button>
+  </div>
+  <div id="pmw-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -1479,6 +1576,393 @@ window.addEventListener('DOMContentLoaded', function(){
     console.log('Lerntool bereit');
   });
 });
+</script>
+<script>
+// ── PRAXIS-MODUL 1: HAARWÄSCHE & KOPFMASSAGE ────────────────────
+// Reine Lerninhalte, nichts wird in Supabase gespeichert. Der Selbstcheck
+// merkt sich die Häkchen nur im Browser dieses Geräts.
+var PMW_SCHRITTE = [
+  {i:'🪑',t:'Gast zum Waschplatz begleiten',
+   was:'Gast an den Waschplatz begleiten, Brille und Ohrringe abnehmen lassen (oder fragen), Sitzhöhe und Nackenbecken einstellen.',
+   warum:'Der Gast soll entspannt liegen. Der Nacken liegt frei im Becken, ohne Druck am Beckenrand.',
+   achtung:'Bei Nacken- oder Rückenbeschwerden nachfragen und ein Nackenpolster verwenden.'},
+  {i:'🧣',t:'Schutz anlegen',
+   was:'Umhang anlegen, Handtuch bzw. Nackenschutz um den Hals legen und den Kragen abdecken.',
+   warum:'Die Kleidung bleibt trocken und es läuft kein Wasser in den Nacken.'},
+  {i:'🪮',t:'Haare durchbürsten',p:true,
+   was:'Haare vor der Wäsche durchbürsten, bei langem Haar von den Spitzen zum Ansatz hin. Dabei die Kopfhaut ansehen.',
+   warum:'Knoten lösen sich trocken leichter als nass, Stylingreste und Staub werden gelockert. Du siehst Wunden, Schuppen oder andere Auffälligkeiten, bevor du nass arbeitest.',
+   achtung:'Wunden, Entzündungen oder Kopfhautveränderungen? Keine Massage, und kurz der zuständigen Stylistin Bescheid geben.'},
+  {i:'🌡',t:'Wassertemperatur prüfen',
+   was:'Wasser im Becken laufen lassen, am Handgelenk oder an der Innenseite des Unterarms testen. Dann den Gast fragen: „Ist die Temperatur angenehm?“',
+   warum:'Deine Hand ist weniger empfindlich als die Kopfhaut. Erst testen, dann an den Kopf.',
+   achtung:'Die Temperatur kann sich während des Waschens ändern. Die freie Hand fühlt immer mit.'},
+  {i:'💧',t:'Haare gründlich nass machen',
+   was:'Vom Haaransatz an der Stirn nach hinten nässen. Die freie Hand schirmt Gesicht und Ohren ab. Hinterkopf und Nacken nicht vergessen.',
+   warum:'Nur durchnässtes Haar schäumt gleichmäßig, und das Shampoo verteilt sich bis an die Kopfhaut.'},
+  {i:'🫧',t:'Erste Wäsche',p:true,
+   was:'Shampoo in den Handflächen verteilen, auf die Kopfhaut auftragen, kurz einschäumen und ausspülen.',
+   warum:'Grundsätzlich wird zweimal gewaschen. Die erste Wäsche löst Talg, Stylingprodukte und Schmutz. Dass sie wenig schäumt, ist normal.'},
+  {i:'💆',t:'Zweite Wäsche mit Kopfmassage',p:true,
+   was:'Shampoo passend zu Haar und Kopfhaut auftragen, einschäumen und dabei massieren (siehe „Massage“). Danach gründlich ausspülen, bis das Wasser klar ist, besonders im Nacken und hinter den Ohren.',
+   warum:'Erst jetzt schäumt das Shampoo richtig und reinigt die Kopfhaut. Shampooreste machen das Haar stumpf und können die Kopfhaut reizen.'},
+  {i:'🧴',t:'Pflege auftragen und ausspülen',
+   was:'Wasser leicht ausdrücken, Spülung oder Kur in Längen und Spitzen einarbeiten, mit einem grobzinkigen Kamm verteilen. Einwirkzeit laut Produkt, dann etwas kühler ausspülen.',
+   warum:'Pflege gehört dorthin, wo das Haar strapaziert ist. Auf der Kopfhaut beschwert sie und fettet nach. Kühleres Wasser zum Schluss lässt die Schuppenschicht glatter anliegen.',
+   achtung:'Ausnahme: Kopfhautpflege (z. B. Tonic oder Serum) gehört gezielt auf die Kopfhaut.'},
+  {i:'🧖',t:'Turban wickeln',p:true,
+   was:'Haar sanft ausdrücken, nicht rubbeln. Handtuch als Turban um den Kopf wickeln und dem Gast beim Aufrichten helfen.',
+   warum:'Rubbeln raut die nasse, empfindliche Schuppenschicht auf. Der Turban hält das Wasser von Gesicht und Nacken fern.'},
+  {i:'🧽',t:'Waschplatz aufräumen',
+   was:'Haare aus dem Becken entfernen, Becken und Armatur reinigen, Produkte zurückstellen, Handtücher in die Wäsche.',
+   warum:'Hygiene, und der nächste Gast kommt an einen sauberen Platz.'}
+];
+
+var PMW_TEMP_SCHRITT = {
+  vor:   {n:'Wäsche & Shampoo', lo:36, hi:38, w:'Lauwarmes Wasser löst Talg und Stylingreste, ohne die Kopfhaut zu reizen.'},
+  farbe: {n:'Farbe ausspülen',  lo:33, hi:35, w:'Nach der Farbe ist die Kopfhaut empfindlicher. Zu heißes Wasser lässt außerdem Farbe ausbluten.'},
+  pflege:{n:'Pflege / letzter Spülgang', lo:30, hi:33, w:'Kühleres Wasser zum Schluss lässt die Schuppenschicht glatter anliegen, das Haar glänzt mehr.'}
+};
+var PMW_TEMP_HAUT = {
+  normal:    {n:'normal', d:0},
+  empfindlich:{n:'empfindlich', d:-2, w:'Empfindliche Kopfhaut reagiert auf Wärme schnell mit Rötung und Juckreiz.'},
+  fettig:    {n:'fettig', d:-1, w:'Heißes Wasser regt die Talgdrüsen an, die Kopfhaut fettet schneller nach.'},
+  trocken:   {n:'trocken', d:-1, w:'Heißes Wasser entzieht der Kopfhaut zusätzlich Fett und Feuchtigkeit.'}
+};
+var PMW_TEMP_HAAR = {
+  natur:    {n:'naturbelassen', d:0},
+  gefaerbt: {n:'gefärbt/getönt', d:-1, w:'Wärme öffnet die Schuppenschicht, Farbpigmente waschen schneller aus.'},
+  blondiert:{n:'blondiert/strapaziert', d:-2, w:'Blondiertes Haar ist porös, Hitze strapaziert es zusätzlich.'}
+};
+
+var PMW_GRIFFE = [
+  {id:'streichen', n:'Streichen', fach:'Effleurage',
+   wie:'Finger leicht gespreizt, die ganzen Fingerflächen liegen auf. Lange, ruhige Züge vom Stirnansatz über den Oberkopf zum Nacken, die Hände wechseln sich ab.',
+   wirkung:'Beruhigt, baut Vertrauen auf und verteilt das Shampoo. Damit beginnt und endet jede Massage.',
+   druck:'leicht', dauer:'ca. 30 Sekunden am Anfang und am Ende',
+   fehler:'Kurze, hektische Züge. Hände abheben und den Kontakt verlieren.'},
+  {id:'zirkeln', n:'Zirkeln', fach:'Fingerkuppen kreisen',
+   wie:'Die Fingerkuppen beider Hände setzen am Stirnansatz auf und kreisen klein. Die Kopfhaut wird verschoben, nicht gerieben. Reihe für Reihe nach hinten bis zum Nacken, danach über die Schläfen und hinter den Ohren.',
+   wirkung:'Fördert die Durchblutung und reinigt die Kopfhaut gründlich.',
+   druck:'mittel', dauer:'1–2 Minuten',
+   fehler:'Mit den Fingernägeln arbeiten. Die Haare mitkreisen lassen (verfilzt langes Haar). Zu schnell werden.'},
+  {id:'kneten', n:'Kneten', fach:'Petrissage, Kopfhaut verschieben',
+   wie:'Die Hände mit gespreizten Fingern seitlich anlegen. Die Kopfhaut gegengleich verschieben: eine Hand nach vorne, die andere nach hinten.',
+   wirkung:'Lockert die Kopfhaut und löst Verspannungen.',
+   druck:'mittel', dauer:'ca. 1 Minute',
+   fehler:'Haare einklemmen oder daran ziehen. Zu kräftig an den Schläfen arbeiten.'},
+  {id:'vibration', n:'Vibration', fach:'feines Zittern',
+   wie:'Die Fingerkuppen ruhig auflegen und aus dem Unterarm ein feines, schnelles Zittern erzeugen. Die Finger bleiben an derselben Stelle. Gut am Oberkopf und am Hinterkopf.',
+   wirkung:'Sehr entspannend, löst leichte Verspannungen.',
+   druck:'leicht', dauer:'20–30 Sekunden pro Stelle',
+   fehler:'Die Finger rutschen über die Kopfhaut. Zu grob, das wird zum Rütteln.'},
+  {id:'druck', n:'Druckpunkte', fach:'sanfter Punktdruck',
+   wie:'Mit den Fingerkuppen langsam Druck aufbauen, 3–5 Sekunden halten und langsam lösen. An den Schläfen, an der Stirnmitte am Haaransatz und entlang des Schädelrands im Nacken.',
+   wirkung:'Löst Spannung. Ein angenehmer Abschluss vor dem letzten Streichen.',
+   druck:'leicht bis mittel, langsam steigern', dauer:'ca. 1 Minute',
+   fehler:'Ruckartig drücken oder loslassen. Druck auf die weiche Halsseite: tabu.'}
+];
+
+var PMW_SELBST = [
+  'Haare vor der Wäsche durchgebürstet',
+  'Kopfhaut angesehen',
+  'Wassertemperatur am Handgelenk getestet',
+  'Gast nach der Temperatur gefragt',
+  'Gesicht und Ohren mit der Hand abgeschirmt',
+  'Zweimal gewaschen',
+  'Bei der Massage nach dem Druck gefragt',
+  'Eine Hand hatte immer Kontakt zum Kopf',
+  'Shampoo vollständig ausgespült (Nacken, hinter den Ohren)',
+  'Pflege nur in Längen und Spitzen',
+  'Turban gewickelt, nicht gerubbelt',
+  'Waschplatz sauber hinterlassen'
+];
+var PMW_SELBST_KEY = 'pm_wasch_selbstcheck';
+
+var PMW = {tab:'ablauf', idx:0, schritt:'vor', haut:'normal', haar:'natur', griff:0, pause:false, pool:[], wahl:[], geprueft:false};
+
+function pmWaschOeffnen() {
+  zeige('pm-wasch');
+  pmWaschTab(PMW.tab);
+}
+
+function pmWaschTab(tab) {
+  PMW.tab = tab;
+  ['ablauf','temp','massage','check'].forEach(function(t){
+    document.getElementById('pmw-tab-'+t).classList.toggle('ak', t === tab);
+  });
+  if (tab === 'ablauf') pmwAblauf();
+  if (tab === 'temp') pmwTemp();
+  if (tab === 'massage') pmwMassage();
+  if (tab === 'check') pmwCheck();
+}
+
+function pmwSetze(html) { document.getElementById('pmw-inhalt').innerHTML = html; }
+
+// ── Ablauf Schritt für Schritt ──
+function pmwAblauf() {
+  var s = PMW_SCHRITTE[PMW.idx], n = PMW_SCHRITTE.length;
+  var punkte = PMW_SCHRITTE.map(function(_, i){ return '<div class="pm-punkt'+(i <= PMW.idx ? ' ak' : '')+'"></div>'; }).join('');
+  var html = '<div class="card">' +
+    '<div class="pm-punkte">'+punkte+'</div>' +
+    '<div class="label">Schritt '+(PMW.idx+1)+' von '+n+'</div>' +
+    '<div class="pm-schritt-titel">'+s.i+' '+s.t+(s.p ? '<span class="pm-pflicht">Pflicht</span>' : '')+'</div>' +
+    '<div class="label">Was du machst</div><div class="pm-txt">'+s.was+'</div>' +
+    '<div class="label">Warum</div><div class="pm-txt">'+s.warum+'</div>' +
+    (s.achtung ? '<div class="fb-o" style="font-size:13px;line-height:1.5"><strong>Achtung:</strong> '+s.achtung+'</div>' : '') +
+    '<div class="pm-zeile">' +
+      '<button class="btn-ghost" onclick="pmwSchritt(-1)"'+(PMW.idx === 0 ? ' disabled style="opacity:.4"' : '')+'>← Zurück</button>' +
+      (PMW.idx < n-1
+        ? '<button class="btn-primary" onclick="pmwSchritt(1)">Weiter →</button>'
+        : '<button class="btn-primary" onclick="pmWaschTab(\'check\')">Zum Ablauf-Check →</button>') +
+    '</div></div>';
+  pmwSetze(html);
+}
+
+function pmwSchritt(d) {
+  PMW.idx = Math.max(0, Math.min(PMW_SCHRITTE.length-1, PMW.idx + d));
+  pmwAblauf();
+}
+
+// ── Wassertemperatur-Optimierer ──
+function pmwTempWahl(feld, wert) { PMW[feld] = wert; pmwTemp(); }
+
+function pmwTempKnoepfe(feld, daten) {
+  return '<div class="pm-wahl">' + Object.keys(daten).map(function(k){
+    return '<button class="btn-toggle'+(PMW[feld] === k ? ' ak' : '')+'" onclick="pmwTempWahl(\''+feld+'\',\''+k+'\')">'+daten[k].n+'</button>';
+  }).join('') + '</div>';
+}
+
+function pmwTemp() {
+  var s = PMW_TEMP_SCHRITT[PMW.schritt], h = PMW_TEMP_HAUT[PMW.haut], a = PMW_TEMP_HAAR[PMW.haar];
+  var d = Math.max(-3, h.d + a.d);
+  var lo = Math.max(28, s.lo + d), hi = Math.max(lo + 2, s.hi + d);
+  var MIN = 25, MAX = 42;
+  var links = (lo - MIN) / (MAX - MIN) * 100, breite = (hi - lo) / (MAX - MIN) * 100;
+  var gruende = [s.w];
+  if (h.w) gruende.push(h.w);
+  if (a.w) gruende.push(a.w);
+  var html = '<div class="card">' +
+    '<div class="label">Was machst du gerade?</div>' + pmwTempKnoepfe('schritt', PMW_TEMP_SCHRITT) +
+    '<div class="label">Kopfhaut</div>' + pmwTempKnoepfe('haut', PMW_TEMP_HAUT) +
+    '<div class="label">Haar</div>' + pmwTempKnoepfe('haar', PMW_TEMP_HAAR) +
+  '</div>' +
+  '<div class="card">' +
+    '<div class="label">Empfohlene Wassertemperatur</div>' +
+    '<div class="pm-grad">'+lo+'–'+hi+' °C</div>' +
+    '<div style="font-size:13px;color:#7A7A70">'+(hi <= 33 ? 'kühl bis lauwarm' : 'lauwarm')+'</div>' +
+    '<div class="pm-skala"><div class="pm-band" style="left:'+links+'%;width:'+breite+'%"></div></div>' +
+    '<div class="pm-skala-lab"><span>'+MIN+' °C kalt</span><span>Körpertemperatur ca. 37 °C</span><span>'+MAX+' °C heiß</span></div>' +
+    '<div class="label" style="margin-top:16px">Warum</div>' +
+    '<ul class="pm-liste">'+gruende.map(function(g){ return '<li>'+g+'</li>'; }).join('')+'</ul>' +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:14px">Immer zuerst am Handgelenk testen und den Gast fragen: „Ist die Temperatur angenehm?“ Die Werte sind Richtwerte, das Empfinden des Gastes geht vor.</div>' +
+  '</div>';
+  pmwSetze(html);
+}
+
+// ── Massagegriffe mit Animation ──
+var PMW_FARBE = '#5B7B6F', PMW_SPUR = '#C4B86A';
+
+function pmwKopf(innen, label) {
+  return '<svg class="pm-svg" id="pmw-svg" viewBox="0 0 200 236" role="img" aria-label="'+label+'">' +
+    '<text x="100" y="11" text-anchor="middle" font-size="9" fill="#7A7A70">Stirn (vorne)</text>' +
+    '<ellipse cx="31" cy="122" rx="7" ry="15" fill="#EFE7DC" stroke="#C8C4BC"/>' +
+    '<ellipse cx="169" cy="122" rx="7" ry="15" fill="#EFE7DC" stroke="#C8C4BC"/>' +
+    '<path d="M92 38 L100 19 L108 38" fill="#EFE7DC" stroke="#C8C4BC"/>' +
+    '<ellipse cx="100" cy="122" rx="68" ry="88" fill="#F3EEE6" stroke="#C8C4BC" stroke-width="1.5"/>' +
+    '<path d="M100 36 L100 208" stroke="#E2DDD5" stroke-dasharray="3 4"/>' +
+    innen +
+    '<text x="100" y="230" text-anchor="middle" font-size="9" fill="#7A7A70">Nacken (hinten)</text>' +
+  '</svg>';
+}
+
+function pmwAnimation(id) {
+  var h = '';
+  if (id === 'streichen') {
+    ['M78 50 Q70 122 80 198','M100 44 L100 204','M122 50 Q130 122 120 198'].forEach(function(p, i){
+      var b = (i * 0.4) + 's';
+      h += '<path d="'+p+'" fill="none" stroke="'+PMW_SPUR+'" stroke-dasharray="4 4"/>' +
+        '<ellipse rx="10" ry="5" fill="'+PMW_FARBE+'" opacity="0">' +
+          '<animateMotion path="'+p+'" dur="2.4s" begin="'+b+'" repeatCount="indefinite"/>' +
+          '<animate attributeName="opacity" values="0;.9;.9;0" dur="2.4s" begin="'+b+'" repeatCount="indefinite"/>' +
+        '</ellipse>';
+    });
+    return pmwKopf(h, 'Streichen: lange Züge von der Stirn zum Nacken');
+  }
+  if (id === 'zirkeln') {
+    h += '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 138" dur="7s" repeatCount="indefinite"/>';
+    [68,80,92,108,120,132].forEach(function(x){
+      h += '<g transform="translate('+x+',54)"><circle r="7" fill="none" stroke="'+PMW_SPUR+'" stroke-dasharray="2 2"/>' +
+        '<circle cx="4" r="4.5" fill="'+PMW_FARBE+'"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="0.9s" repeatCount="indefinite"/></circle></g>';
+    });
+    h += '</g>';
+    return pmwKopf(h, 'Zirkeln: Fingerkuppen kreisen Reihe für Reihe nach hinten');
+  }
+  if (id === 'kneten') {
+    [[48,'0 -12;0 12;0 -12'],[152,'0 12;0 -12;0 12']].forEach(function(seite){
+      var x = seite[0];
+      h += '<path d="M'+(x + (x < 100 ? 14 : -14))+' 98 L'+(x + (x < 100 ? 14 : -14))+' 146" stroke="'+PMW_SPUR+'" stroke-width="1.5" marker-start="url(#pmw-pfeil)" marker-end="url(#pmw-pfeil)"/>' +
+        '<g><animateTransform attributeName="transform" type="translate" values="'+seite[1]+'" dur="1.6s" repeatCount="indefinite"/>';
+      [100,114,128,142].forEach(function(y){ h += '<circle cx="'+x+'" cy="'+y+'" r="5" fill="'+PMW_FARBE+'"/>'; });
+      h += '</g>';
+    });
+    h = '<defs><marker id="pmw-pfeil" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="'+PMW_SPUR+'"/></marker></defs>' + h;
+    return pmwKopf(h, 'Kneten: beide Hände verschieben die Kopfhaut gegengleich');
+  }
+  if (id === 'vibration') {
+    ['0s','0.6s'].forEach(function(b){
+      h += '<circle cx="100" cy="108" r="10" fill="none" stroke="'+PMW_SPUR+'" opacity="0">' +
+        '<animate attributeName="r" values="10;36" dur="1.2s" begin="'+b+'" repeatCount="indefinite"/>' +
+        '<animate attributeName="opacity" values=".8;0" dur="1.2s" begin="'+b+'" repeatCount="indefinite"/></circle>';
+    });
+    h += '<g><animateTransform attributeName="transform" type="translate" values="0 0;1.6 0;-1.6 .8;0 -.8;0 0" dur="0.18s" repeatCount="indefinite"/>';
+    [[88,96],[112,96],[88,120],[112,120]].forEach(function(p){ h += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="'+PMW_FARBE+'"/>'; });
+    h += '</g>';
+    return pmwKopf(h, 'Vibration: Fingerkuppen bleiben liegen und zittern fein');
+  }
+  // Druckpunkte
+  [[48,80,'Schläfe'],[152,80,'Schläfe'],[100,48,'Stirnmitte'],[80,194,''],[100,200,'Nacken'],[120,194,'']].forEach(function(p, i){
+    var b = (i * 0.5) + 's';
+    h += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="5" fill="none" stroke="'+PMW_FARBE+'" opacity="0">' +
+      '<animate attributeName="r" values="5;14" dur="3s" begin="'+b+'" repeatCount="indefinite"/>' +
+      '<animate attributeName="opacity" values=".9;0" dur="3s" begin="'+b+'" repeatCount="indefinite"/></circle>' +
+      '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4.5" fill="'+PMW_FARBE+'"/>';
+    if (p[2]) h += '<text x="'+p[0]+'" y="'+(p[1] + (p[1] > 150 ? -10 : 16))+'" text-anchor="middle" font-size="8" fill="#2C2C2C">'+p[2]+'</text>';
+  });
+  return pmwKopf(h, 'Druckpunkte an Schläfen, Stirnmitte und Nacken');
+}
+
+function pmwMassage() {
+  var g = PMW_GRIFFE[PMW.griff];
+  var wahl = PMW_GRIFFE.map(function(x, i){
+    return '<button class="btn-toggle'+(i === PMW.griff ? ' ak' : '')+'" onclick="pmwGriff('+i+')">'+(i+1)+'. '+x.n+'</button>';
+  }).join('');
+  var html = '<div class="pm-griff-wahl">'+wahl+'</div>' +
+  '<div class="card">' +
+    '<div class="pm-schritt-titel" style="margin-bottom:2px">'+(PMW.griff+1)+'. '+g.n+'</div>' +
+    '<div style="font-size:13px;color:#7A7A70;margin-bottom:10px">'+g.fach+'</div>' +
+    pmwAnimation(g.id) +
+    '<div style="text-align:center;margin-bottom:6px"><button class="btn-ghost" id="pmw-pause" onclick="pmwPause()" style="padding:6px 12px;font-size:12px">'+(PMW.pause ? '▶ Abspielen' : '❚❚ Anhalten')+'</button></div>' +
+    '<div class="label" style="margin-top:8px">So geht’s</div><div class="pm-txt">'+g.wie+'</div>' +
+    '<dl class="pm-dl"><dt>Wirkung</dt><dd>'+g.wirkung+'</dd><dt>Druck</dt><dd>'+g.druck+'</dd><dt>Dauer</dt><dd>'+g.dauer+'</dd></dl>' +
+    '<div class="fb-r" style="font-size:13px;line-height:1.5"><strong>Typische Fehler:</strong> '+g.fehler+'</div>' +
+  '</div>' +
+  '<div class="card">' +
+    '<div class="label">Regeln für jede Kopfmassage</div>' +
+    '<ul class="pm-liste">' +
+      '<li>Reihenfolge: Streichen → Zirkeln → Kneten → Vibration → Druckpunkte → Streichen. Gesamt ca. 3–5 Minuten.</li>' +
+      '<li>Eine Hand bleibt immer am Kopf, der Kontakt reißt nie ab.</li>' +
+      '<li>Mit den Fingerkuppen arbeiten, nie mit den Fingernägeln.</li>' +
+      '<li>Den Gast nach dem Druck fragen: „Ist Ihnen der Druck angenehm?“</li>' +
+      '<li>Keine Massage bei Wunden, Entzündungen oder Kopfhauterkrankungen. Nach Farbe oder Blondierung nur sehr sanft.</li>' +
+    '</ul>' +
+  '</div>';
+  pmwSetze(html);
+  var svg = document.getElementById('pmw-svg');
+  var ruhig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (ruhig && !PMW.pauseGewaehlt) PMW.pause = true;
+  if (svg && PMW.pause && svg.pauseAnimations) svg.pauseAnimations();
+  var btn = document.getElementById('pmw-pause');
+  if (btn) btn.textContent = PMW.pause ? '▶ Abspielen' : '❚❚ Anhalten';
+}
+
+function pmwGriff(i) { PMW.griff = i; pmwMassage(); }
+
+function pmwPause() {
+  var svg = document.getElementById('pmw-svg');
+  PMW.pause = !PMW.pause;
+  PMW.pauseGewaehlt = true;
+  if (svg && svg.pauseAnimations) { if (PMW.pause) svg.pauseAnimations(); else svg.unpauseAnimations(); }
+  document.getElementById('pmw-pause').textContent = PMW.pause ? '▶ Abspielen' : '❚❚ Anhalten';
+}
+
+// ── Ablauf-Check: Reihenfolge + Selbstcheck ──
+function pmwMischen() {
+  var p = PMW_SCHRITTE.map(function(_, i){ return i; });
+  do { p.sort(function(){ return Math.random() - .5; }); } while (p.every(function(v, i){ return v === i; }));
+  PMW.pool = p; PMW.wahl = []; PMW.geprueft = false;
+}
+
+function pmwCheck() {
+  if (!PMW.pool.length && !PMW.wahl.length) pmwMischen();
+  var html = '<div class="card">' +
+    '<div class="label">Ablauf-Check</div>' +
+    '<div class="pm-txt">Tippe die Schritte in der richtigen Reihenfolge an. Tippst du einen gewählten Schritt nochmal an, kommt er zurück.</div>';
+  if (PMW.wahl.length) {
+    html += '<div class="label">Deine Reihenfolge</div>';
+    PMW.wahl.forEach(function(s, pos){
+      var kl = '', hinweis = '';
+      if (PMW.geprueft) {
+        kl = s === pos ? ' ric' : ' fal';
+        if (s !== pos) hinweis = '<small>Richtig an dieser Stelle: '+PMW_SCHRITTE[pos].t+'</small>';
+      }
+      html += '<button class="pm-chip'+kl+'" onclick="pmwZurueck('+pos+')"'+(PMW.geprueft ? ' disabled' : '')+'>'+(pos+1)+'. '+PMW_SCHRITTE[s].t+hinweis+'</button>';
+    });
+  }
+  if (PMW.pool.length) {
+    html += '<div class="label" style="margin-top:12px">Noch einzuordnen</div>';
+    PMW.pool.forEach(function(s){
+      html += '<button class="pm-chip" onclick="pmwWaehle('+s+')">'+PMW_SCHRITTE[s].t+'</button>';
+    });
+  }
+  if (PMW.geprueft) {
+    var richtig = PMW.wahl.filter(function(s, pos){ return s === pos; }).length;
+    var alle = richtig === PMW_SCHRITTE.length;
+    html += '<div class="'+(alle ? 'fb-g' : 'fb-o')+'" style="font-size:14px"><strong>'+richtig+' von '+PMW_SCHRITTE.length+' an der richtigen Stelle.</strong> '+(alle ? 'Super, der Ablauf sitzt!' : 'Schau dir die markierten Schritte im Tab „Ablauf“ nochmal an.')+'</div>';
+    html += '<div class="pm-zeile"><button class="btn-primary" onclick="pmwMischen();pmwCheck()">Nochmal üben</button></div>';
+  } else if (!PMW.pool.length) {
+    html += '<div class="pm-zeile"><button class="btn-primary" onclick="PMW.geprueft=true;pmwCheck()">Prüfen</button></div>';
+  }
+  html += '</div>';
+
+  var haken = pmwSelbstLaden();
+  html += '<div class="card">' +
+    '<div class="label">Selbstcheck nach einer Wäsche am Gast</div>' +
+    '<div class="pm-txt">Hake ab, was du bei deiner letzten Haarwäsche geschafft hast. Die Häkchen bleiben nur auf diesem Gerät.</div>' +
+    PMW_SELBST.map(function(t, i){
+      return '<label class="pm-check"><input type="checkbox" onchange="pmwSelbst('+i+',this.checked)"'+(haken[i] ? ' checked' : '')+'><span>'+t+'</span></label>';
+    }).join('') +
+    '<div id="pmw-selbst-stand" style="font-size:13px;color:#5B7B6F;font-weight:600;margin-top:12px"></div>' +
+    '<div class="pm-zeile"><button class="btn-ghost" onclick="pmwSelbstLeeren()">Neue Wäsche, Häkchen leeren</button></div>' +
+  '</div>';
+  pmwSetze(html);
+  pmwSelbstStand();
+}
+
+function pmwWaehle(s) {
+  PMW.pool = PMW.pool.filter(function(x){ return x !== s; });
+  PMW.wahl.push(s);
+  pmwCheck();
+}
+
+function pmwZurueck(pos) {
+  PMW.pool.push(PMW.wahl[pos]);
+  PMW.wahl.splice(pos, 1);
+  pmwCheck();
+}
+
+function pmwSelbstLaden() {
+  try { return JSON.parse(localStorage.getItem(PMW_SELBST_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function pmwSelbst(i, an) {
+  var haken = pmwSelbstLaden();
+  if (an) haken[i] = true; else delete haken[i];
+  try { localStorage.setItem(PMW_SELBST_KEY, JSON.stringify(haken)); } catch(e) {}
+  pmwSelbstStand(haken);
+}
+
+function pmwSelbstStand(haken) {
+  haken = haken || pmwSelbstLaden();
+  var n = Object.keys(haken).length;
+  var el = document.getElementById('pmw-selbst-stand');
+  if (el) el.textContent = n + ' von ' + PMW_SELBST.length + ' erledigt' + (n === PMW_SELBST.length ? ' – perfekte Wäsche!' : '');
+}
+
+function pmwSelbstLeeren() {
+  try { localStorage.removeItem(PMW_SELBST_KEY); } catch(e) {}
+  pmwCheck();
+}
 </script>
 <script>
 // ── Wörni / Claude – sicherer Proxy ──
