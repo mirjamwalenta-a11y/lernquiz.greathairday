@@ -521,6 +521,14 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Naturpigmente, Farbkreis, Kontraste, Diagnose, Produktwahl</div>
     </div>
   </button>
+  <button class="nav-card pm-modul" onclick="pmWissenOeffnen()">
+    <div class="nav-icon" style="margin:0">🔬</div>
+    <div>
+      <div class="pm-lj">1. – 3. Lehrjahr</div>
+      <div class="nav-title">Haar &amp; Farbe: Wissen</div>
+      <div class="nav-desc">Haarzyklus, Pigmente, Warm-Kalt-Gesetz, Dominanz, Farbcodes, Pigmentierung, Farbabzug</div>
+    </div>
+  </button>
   <button class="nav-card pm-modul" onclick="pmHochOeffnen()">
     <div class="nav-icon" style="margin:0">👑</div>
     <div>
@@ -607,6 +615,24 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pmh-tab-quiz" onclick="pmHochTab('quiz')">Quiz</button>
   </div>
   <div id="pmh-inhalt"></div>
+</div>
+
+<!-- ── MODUL 6: HAAR & FARBE – WISSEN ── -->
+<div id="p-pm-wissen" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">1. – 3. Lehrjahr · Praxis-Modul</div>
+  <h1>Haar &amp; Farbe: Wissen</h1>
+  <p class="sub">Wie Haar aufgebaut ist und wie Farbe darin wirkt.</p>
+  <div class="pm-tabs pm-tabs-viele">
+    <button class="btn-toggle" id="pmx-tab-haar" onclick="pmWissenTab('haar')">Haar</button>
+    <button class="btn-toggle" id="pmx-tab-warmkalt" onclick="pmWissenTab('warmkalt')">Warm-Kalt</button>
+    <button class="btn-toggle" id="pmx-tab-dominanz" onclick="pmWissenTab('dominanz')">Dominanz</button>
+    <button class="btn-toggle" id="pmx-tab-codes" onclick="pmWissenTab('codes')">Farbcodes</button>
+    <button class="btn-toggle" id="pmx-tab-pigment" onclick="pmWissenTab('pigment')">Pigmentieren</button>
+    <button class="btn-toggle" id="pmx-tab-abzug" onclick="pmWissenTab('abzug')">Farbabzug</button>
+    <button class="btn-toggle" id="pmx-tab-quiz" onclick="pmWissenTab('quiz')">Quiz</button>
+  </div>
+  <div id="pmx-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -3188,6 +3214,11 @@ function pmcProdukte() {
     '<div class="label" style="margin-top:12px">Einsatz</div>' + pmcPunkte(p.einsatz) +
     '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">'+p.plus+'</div>' +
     '<div style="font-size:11px;color:#7A7A70;margin-top:8px">Angaben abhängig von Produkt und Hersteller.</div></div>' +
+    '<div class="card"><div class="label">Produktwahl nach Aufhellsprung</div>' +
+      '<div class="pm-txt">Zuerst überlegen: Wie viele Tonhöhen muss ich aufhellen? Ist das Haar natur oder schon gefärbt bzw. aufgehellt, und wie stark ist es sensibilisiert?</div>' +
+      '<table class="pm-tab"><tr><th>Aufhellung</th><th>Produkt</th></tr>' +
+        '<tr><td>bis 3 TH</td><td>Oxidative Haarfarbe</td></tr><tr><td>4–5 TH</td><td>Hellerfärber, nur auf Naturhaar (meist ab Naturton 6)</td></tr><tr><td>über 5 TH</td><td>Blondierung</td></tr></table>' +
+      '<div style="font-size:12px;color:#7A7A70;margin-top:8px">Die Produktwahl hängt immer auch vom gewünschten Endergebnis ab.</div></div>' +
     '<div class="card"><div class="label">Was steckt in der Tube?</div>' +
       '<div class="pm-misch" style="align-items:flex-end">' +
         pmcTube('Tönung', [['Neben',22,'#7C4F9E'],['Haupt',40,'#3F4F9E'],['Natur',14,'#4E2E1E']]) +
@@ -3390,6 +3421,365 @@ function pmhAntwort(i) {
   });
   document.getElementById('pmh-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMH.qi++;PMH.beantwortet=false;pmhQuiz()">Weiter →</button></div>';
+}
+</script>
+<script>
+// ── PRAXIS-MODUL 6: HAAR & FARBE – WISSEN ───────────────────────
+// Inhalte nach den Colorist-Unterlagen des Salons, in eigenen Worten und
+// mit eigenen Skizzen. Teil „Haar“ 1. Lehrjahr, Teil „Farbe“ 2. + 3. Lehrjahr.
+var PMX = {tab:'haar', haar:'zyklus', phase:0, hell:0, nt:6, ziel:7, art:'warm', mixA:'Rot', mixB:'Gelb', komp:0, kompAntwort:null,
+           code:'7,21', basis:6, pZiel:5, pArt:'kuehl', quiz:[], qi:0, richtig:0, beantwortet:false};
+
+var PMX_PHASEN = [
+  {n:'Anagen', f:'#C8312B', k:'Wachstumsphase', p:['Die Haarwurzel ist aktiv und gut versorgt.','Aktive Pigmente färben das Haar.','Das Haar wächst. Hier sind ca. 85 % aller Haare.']},
+  {n:'Katagen', f:'#3F6FB5', k:'Übergangsphase', p:['Die Pigmentbildung hört auf.','Das Haar wächst nicht mehr.','Nur ca. 1 % der Haare sind gerade in dieser Phase.']},
+  {n:'Telogen', f:'#3E8E5A', k:'Ruhephase', p:['Der Follikel löst sich von der Blutversorgung.','Das Haar fällt aus, oft beim Waschen oder Kämmen.','Ca. 14 % der Haare.']},
+  {n:'Neogen', f:'#7C4F9E', k:'Schlafphase', p:['Der Follikel ist kurz inaktiv.','Danach beginnt ein neues Haar mit der Wachstumsphase.']}
+];
+
+var PMX_WARM = ['Rot','Orange','Gelb'], PMX_KUEHL = ['Blau','Violett','Grün'];
+var PMX_FARBEN = {Rot:'#B8282A', Orange:'#E07A2E', Gelb:'#E3B23C', Blau:'#3F6FB5', Violett:'#7C4F9E', 'Grün':'#5E9B45'};
+var PMX_STAERKE = {Rot:3, Orange:2, Gelb:1, Blau:3, Violett:2, 'Grün':1};
+
+var PMX_KOMP = [
+  {von:'Asch / Gold', zu:'Gold', ok:false, w:'Asch (Blau) ist dominanter als Gold und bleibt im Haar sichtbar. Erst den Aschanteil entfernen.'},
+  {von:'Asch', zu:'Irisé', ok:true, w:'Kompatibel, abhängig von der Tonhöhe. Beides sind kühle Reflexe.'},
+  {von:'Kupfer', zu:'Rouge', ok:true, w:'Kompatibel: Rot ist dominanter als Kupfer und setzt sich durch.'},
+  {von:'Rouge / Kupfer', zu:'Gold', ok:false, w:'Rot und Kupfer sind dominanter als Gold. Gold würde nicht sichtbar.'},
+  {von:'Rouge', zu:'Kupfer', ok:false, w:'Rot ist dominanter als Kupfer. Erst das Rot entfernen (Farbabzug oder Blondierwäsche), dann wird Kupfer sichtbar.'},
+  {von:'Verde', zu:'Kupfer', ok:false, w:'Grün und Kupfer (Orange) arbeiten gegeneinander, das Ergebnis wird trüb.'},
+  {von:'Irisé', zu:'Gold', ok:false, w:'Violett und Gelb sind Gegenfarben, sie neutralisieren sich. Gold wird nicht sichtbar.'}
+];
+
+var PMX_REFLEX = {
+  '0':['Natur','#8A6A4A'], '1':['Asch (Blau)','#3F6FB5'], '2':['Irisé (Violett)','#7C4F9E'], '3':['Gold (Gelb)','#E3B23C'],
+  '4':['Kupfer (Orange)','#E07A2E'], '5':['Mahagoni (Rotviolett)','#7A2A3A'], '6':['Rot','#B8282A']
+};
+var PMX_BUCHST = {N:'0', A:'1', B:'1', V:'2', G:'3', K:'4', C:'4', M:'5', R:'6'};
+
+var PMX_RUECK = {
+  10:['TH 8 Gelb','TH 8 Gelb / Orange'], 9:['TH 8 Gelb','TH 8 Gelb / Orange'], 8:['TH 8 Orange / Gelb','TH 7 Gelb / Orange'],
+  7:['TH 7 Orange','TH 6 Gelb / Orange'], 6:['TH 6 Gelb / Orange','TH 6 Orange'], 5:['TH 6 Orange / Rot','TH 6 Rot / Orange'], 4:['TH 5 Orange','TH 5 Orange / Rot']
+};
+
+var PMX_QUIZ = [
+  {f:'In welcher Phase befinden sich normalerweise ca. 85 % aller Haare?', o:['Anagen (Wachstum)','Katagen (Übergang)','Telogen (Ruhe)','Neogen (Schlaf)'], r:0, e:'Ca. 85 % wachsen, ca. 1 % sind im Übergang, ca. 14 % in der Ruhephase.'},
+  {f:'Blondiertes Haar fühlt sich trocken an. Was braucht es vor allem?', o:['Viel Feuchtigkeit','Aufbauprodukte, denn es ist innen geschädigt','Gar nichts','Mehr Hitze'], r:1, e:'Blondiertes Haar ist hydrophil und nimmt viel Wasser auf. Es ist innen geschädigt, nicht automatisch trocken.'},
+  {f:'In welcher Reihenfolge werden die natürlichen Pigmente aufgehellt?', o:['Gelb, Rot, Blau','Blau, Rot, Gelb','Rot, Blau, Gelb','Alle gleichzeitig'], r:1, e:'Zuerst der blaue Mantel des Eumelanins, dann Rot, zuletzt Gelb. Dazwischen erscheint Orange.'},
+  {f:'Was unterscheidet Pheomelanin von Eumelanin?', o:['Es hat keine blaue Hülle, nur Rot und Gelb','Es ist größer','Es ist nur in schwarzem Haar','Es lässt sich am schnellsten aufhellen'], r:0, e:'Pheomelanin besteht aus Rot und Gelb, ist klein und verstreut und braucht länger zum Aufhellen.'},
+  {f:'Warum braucht hell gewordenes und gefärbtes Haar UV-Schutz?', o:['Weil künstliche Farbe den natürlichen Schutz nicht ersetzt','Damit es schneller wächst','Gar nicht','Damit die Farbe dunkler wird'], r:0, e:'Mit weniger natürlichen Pigmenten sinkt der Eigenschutz. Ohne Schutz wird das Haar trockener und spröder.'},
+  {f:'Naturton 4, Wunsch: intensives Kupfer auf Tonhöhe 6. Bis wohin muss das Naturpigment aufgehellt werden?', o:['Auf 6','Auf 7 bis 8','Auf 10','Gar nicht'], r:1, e:'Warmer Ton: ½ bis 1½ Tonhöhen heller als die Zieltonhöhe, also 7 bis 8.'},
+  {f:'Für einen kühlen Farbton muss das Naturpigment wie viel heller sein als die Zieltonhöhe?', o:['½ bis 1½ Tonhöhen','1½ bis 2½ Tonhöhen','Genau gleich','4 Tonhöhen'], r:1, e:'Jedes Haar hat warme Naturpigmente. Für kühle Töne muss mehr Untergrund weg.'},
+  {f:'In welcher Tonhöhe neutralisierst du den Untergrund?', o:['2 Tonhöhen dunkler','In derselben Tonhöhe wie das Naturpigmentbild','Immer in Tonhöhe 10','Egal'], r:1, e:'Beispiel: Naturpigmentbild 9 (hell Gelb) mit Violett in Tonhöhe 9 neutralisieren.'},
+  {f:'Welche Farbe ist die dominanteste im warmen Bereich?', o:['Gelb','Orange','Rot','Alle gleich'], r:2, e:'Rot setzt sich gegen Orange und Gelb durch, Orange gegen Gelb.'},
+  {f:'Gefärbtes Rot soll zu einem reinen Kupfer werden. Was ist nötig?', o:['Einfach Kupfer darüber färben','Zuerst das dominante Rot entfernen, dann Kupfer','Mit Asch mischen','Nichts, das geht direkt'], r:1, e:'Eine dominante Farbe im Haar muss erst entfernt werden (Farbabzug oder Blondierwäsche).'},
+  {f:'Was bedeutet die Farbnummer 7,21?', o:['Tonhöhe 7, Hauptreflex Violett, Nebenreflex Blau','Tonhöhe 2, Reflex 71','21 % Oxidant','Tonhöhe 7, 21 Minuten'], r:0, e:'Vor dem Komma die Tonhöhe, dann Hauptreflex (stärker) und Nebenreflex (schwächer). Nummern sind herstellerabhängig.'},
+  {f:'Warum ist Pink auf dunklem Haar kaum zu sehen?', o:['Weil es nicht hält','Weil dunkles Haar zu wenig transparent ist','Weil Pink sich auflöst','Weil das Licht fehlt'], r:1, e:'Viel Pigment im Haar lässt kaum Licht durch. Erst auf hellerem, transparentem Haar wird Pink sichtbar.'},
+  {f:'Wann brauchst du eine Vorpigmentierung?', o:['Immer beim Tönen','Wenn das Haar um mehr als 4 Tonhöhen dunkler gefärbt wird','Bei Naturhaar','Nur bei Herren'], r:1, e:'Das fehlende Naturpigmentbild muss mit warmen Pigmenten wieder aufgebaut werden.'},
+  {f:'Mit welchen Reflexen wird rückpigmentiert?', o:['Asch und Matt','Gold, Kupfer, Rot (oder Mischungen daraus)','Nur Violett','Warme und kühle gemischt'], r:1, e:'Kühle Reflexe und Mischungen aus warm und kühl eignen sich nicht, das Ergebnis wird transparent oder grünstichig.'},
+  {f:'Was macht ein saurer (reduktiver) Farbabzug?', o:['Er hellt Naturpigment auf','Er reduziert nur künstliche Farbstoffe, am besten bei frisch gefärbtem Haar','Er färbt dunkler','Er ist für Naturhaar gedacht'], r:1, e:'Er dreht den Färbeprozess um und greift das Naturpigment nicht an. Danach eine Kontrollspülung machen.'},
+  {f:'Warum gelingen klare Blondtöne eher mit niedrigem Oxidant?', o:['Das stimmt nicht','Langsamer, aber gründlicher Pigmentabbau, weniger Stress für Haar und Kopfhaut','Weil es schneller geht','Weil es billiger ist'], r:1, e:'Wie Traktor gegen Sportwagen: Der langsame Traktor erntet das Feld gründlicher ab.'}
+];
+
+function pmWissenOeffnen() { zeige('pm-wissen'); pmWissenTab(PMX.tab); }
+
+function pmWissenTab(tab) {
+  PMX.tab = tab;
+  ['haar','warmkalt','dominanz','codes','pigment','abzug','quiz'].forEach(function(t){
+    document.getElementById('pmx-tab-'+t).classList.toggle('ak', t === tab);
+  });
+  ({haar:pmxHaar, warmkalt:pmxWarmKalt, dominanz:pmxDominanz, codes:pmxCodes, pigment:pmxPigment, abzug:pmxAbzug, quiz:pmxQuiz})[tab]();
+}
+
+function pmxSetze(html) { document.getElementById('pmx-inhalt').innerHTML = html; }
+function pmxPunkte(p) { return '<ul class="pm-liste">' + p.map(function(x){ return '<li>'+x+'</li>'; }).join('') + '</ul>'; }
+function pmxMerke(t) { return '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px"><strong>Merke:</strong> '+t+'</div>'; }
+function pmxLj(t) { return '<div class="pm-lj" style="margin-bottom:10px">'+t+'</div>'; }
+function pmxChips(liste, aktiv, fn) {
+  return '<div class="pm-griff-wahl">' + liste.map(function(x){
+    return '<button class="btn-toggle'+(x[0] === aktiv ? ' ak' : '')+'" onclick="'+fn+'(\''+x[0]+'\')">'+x[1]+'</button>';
+  }).join('') + '</div>';
+}
+
+// ── Haar (1. Lehrjahr) ──
+function pmxFollikel(i, aktiv) {
+  var f = PMX_PHASEN[i].f, x = 20 + i * 70, s = '';
+  s += '<g opacity="'+(aktiv ? 1 : .45)+'" onclick="PMX.phase='+i+';pmxHaar()" style="cursor:pointer">';
+  var tiefe = [96, 80, 64, 44][i];
+  s += '<path d="M'+(x+18)+' 30 L'+(x+18)+' '+tiefe+' Q'+(x+30)+' '+(tiefe+14)+' '+(x+42)+' '+tiefe+' L'+(x+42)+' 30" fill="#F4D7CC" stroke="#C8807A"/>';
+  if (i === 0) s += '<ellipse cx="'+(x+30)+'" cy="'+(tiefe-2)+'" rx="7" ry="8" fill="#5A3A2A"/><path d="M'+(x+30)+' '+(tiefe-6)+' Q'+(x+28)+' 10 '+(x+36)+' -18" stroke="#2C1C14" stroke-width="3.5" fill="none"/>';
+  if (i === 1) s += '<ellipse cx="'+(x+30)+'" cy="'+(tiefe-2)+'" rx="5" ry="6" fill="#B89A80"/><path d="M'+(x+30)+' '+(tiefe-6)+' Q'+(x+28)+' 10 '+(x+34)+' -18" stroke="#2C1C14" stroke-width="3" fill="none"/>';
+  if (i === 2) s += '<circle cx="'+(x+30)+'" cy="'+(tiefe-6)+'" r="4" fill="#fff" stroke="#A89F92"/><path d="M'+(x+30)+' '+(tiefe-10)+' Q'+(x+40)+' 0 '+(x+50)+' -14" stroke="#2C1C14" stroke-width="2.5" fill="none"/>';
+  if (i === 3) s += '<circle cx="'+(x+30)+'" cy="'+(tiefe-4)+'" r="3" fill="'+f+'"/>';
+  s += '<text x="'+(x+30)+'" y="132" font-size="10" text-anchor="middle" font-weight="700" fill="'+f+'">'+PMX_PHASEN[i].n+'</text></g>';
+  return s;
+}
+
+function pmxEumelanin(hell) {
+  // hell 0–100: Blau verschwindet zuerst, dann Rot (über Orange), dann Gelb
+  var a = Math.max(0, 1 - hell / 33), r = Math.max(0, 1 - Math.max(0, hell - 33) / 33), g = Math.max(.08, 1 - Math.max(0, hell - 66) / 40);
+  var rot = hell > 40 ? '#E07A2E' : '#C8312B';
+  return '<svg viewBox="0 0 120 120" style="width:130px;display:block;margin:0 auto" role="img" aria-label="Eumelanin">' +
+    '<circle cx="60" cy="60" r="54" fill="#3F6FB5" opacity="'+a.toFixed(2)+'"/>' +
+    '<circle cx="60" cy="60" r="40" fill="'+rot+'" opacity="'+r.toFixed(2)+'"/>' +
+    '<circle cx="60" cy="60" r="20" fill="#E3B23C" opacity="'+g.toFixed(2)+'"/>' +
+    '<circle cx="60" cy="60" r="54" fill="none" stroke="#C8C4BC" stroke-dasharray="3 3"/></svg>';
+}
+
+function pmxHaar() {
+  var html = pmxLj('1. Lehrjahr') + pmxChips([['zyklus','Haarzyklus'],['struktur','Struktur'],['pigmente','Natürliche Farbe'],['weiss','Weißes Haar']], PMX.haar, 'pmxHaarTeil');
+  if (PMX.haar === 'zyklus') {
+    var p = PMX_PHASEN[PMX.phase];
+    html += '<div class="card"><div class="pm-schritt-titel">Der Haarzyklus</div>' +
+      '<div class="pm-txt">Jedes Haar durchläuft vier Phasen. Weil jeder Follikel in einer anderen Phase ist, bleibt die Haarmenge gleich und es entstehen keine kahlen Stellen. Tippe eine Phase an.</div>' +
+      '<svg viewBox="0 -24 300 164" style="display:block;width:100%;max-width:340px;margin:0 auto" role="img" aria-label="Haarzyklus">' +
+        '<rect x="0" y="22" width="300" height="12" fill="#F4D7CC"/><path d="M0 22 Q37 14 75 22 T150 22 T225 22 T300 22" fill="#E8B4A0"/>' +
+        [0,1,2,3].map(function(i){ return pmxFollikel(i, i === PMX.phase); }).join('') +
+        '<path d="M0 112 Q75 104 150 112 T300 112" stroke="#C8312B" fill="none"/><path d="M0 116 Q75 108 150 116 T300 116" stroke="#3F6FB5" fill="none"/></svg>' +
+      '<div class="pm-schritt-titel" style="font-size:16px;color:'+p.f+';margin-top:6px">'+p.n+' · '+p.k+'</div>' + pmxPunkte(p.p) +
+      pmxMerke('Sind wesentlich weniger als 85 % der Haare in der Wachstumsphase, liegt eine Störung vor (Haarausfall). Ursachen können z. B. Krankheit oder Hormone sein.') + '</div>' +
+      '<div class="card"><div class="label">Haartypen</div><div class="pm-txt">Haar ist nicht gleich Haar. Medizinisch gilt nur das Haar am Oberkopf (denk an die Hufeisen-Abteilung beim Schneiden) als Kopfhaar. Alles darunter zählt schon zum Körperhaar. Körperhaar ist kräftiger, robuster und meist stärker pigmentiert.</div></div>';
+  }
+  if (PMX.haar === 'struktur') {
+    html += '<div class="card"><div class="pm-schritt-titel">Innen und außen</div>' +
+      '<div class="label">Die innere Struktur</div><div class="pm-txt">Sie bestimmt die Eigenschaften des Haares, über das Gleichgewicht aus Proteinen und Feuchtigkeit.</div>' +
+      '<dl class="pm-dl"><dt>hydrophil</dt><dd>wasseranziehend: proteinarmes Haar</dd><dt>hydrophob</dt><dd>wasserabweisend: feuchtigkeitsarmes Haar, oft strohig, stumpf, borstig, schwer zu frisieren</dd></dl>' +
+      '<div class="label" style="margin-top:12px">Die äußere Schicht</div><div class="pm-txt">Sie bestimmt Aussehen, Haargefühl, Glanz und Kämmbarkeit. Sie entscheidet mit, wie lange eine Farbe hält und wie gut sich das Haar föhnen und glätten lässt. Ist sie beschädigt, fühlt sich das Haar trocken an, obwohl es genug Feuchtigkeit hat.</div>' +
+      pmxMerke('Blondiertes oder heller gefärbtes Haar ist <strong>nicht</strong> automatisch trocken. Es ist innen geschädigt, stark hydrophil und nimmt viel Wasser auf. Es braucht Aufbauprodukte, keine zusätzliche Feuchtigkeit. Darum braucht es auch länger zum Trocknen.') + '</div>';
+  }
+  if (PMX.haar === 'pigmente') {
+    html += '<div class="card"><div class="pm-schritt-titel">Die natürliche Haarfarbe</div>' +
+      '<div class="pm-txt">Melanozyten in der Haarpapille bilden die Pigmente (Melanin) und geben sie ins wachsende Haar. Die Schuppenschicht ist fast farblos, die Pigmente schimmern durch.</div>' +
+      '<div id="pmx-pig"></div>' +
+      '<input class="pm-range" type="range" min="0" max="100" step="1" value="'+PMX.hell+'" oninput="PMX.hell=+this.value;pmxPigBild()" aria-label="Aufhellung">' +
+      '<div class="pm-txt" id="pmx-pig-txt" style="margin-top:6px"></div>' +
+      pmxMerke('Jede Aufhellung hellt zuerst Blau, dann Rot, dann Gelb auf. Was übrig bleibt (Rot, Orange, Gelb), ist das Naturpigmentbild: die Grundlage jeder neuen Haarfarbe.') + '</div>';
+  }
+  if (PMX.haar === 'weiss') {
+    html += '<div class="card"><div class="pm-schritt-titel">Weißes Haar</div>' +
+      '<div class="pm-txt">Haare haben zwei Speicher für Melanin: einen an der Haarwurzel mit aktiven Pigmenten und einen im Mittelteil des Follikels mit „schlafenden“ Melanozyten. In der Wachstumsphase wandern die schlafenden zur Wurzel und werden aktiv.</div>' +
+      '<div class="pm-txt">Der Vorrat ist begrenzt und wird mit den Jahren kleiner. Das Haar wird heller und heller. Ist der Speicher leer, wird das Haar transparent: weißes Haar.</div>' +
+      pmxMerke('Weißes Haar ist nicht immer ganz ohne Pigment. Es enthält oft winzige Lufteinschlüsse, die das Einfärben erschweren.') +
+      pmxMerke('Je heller das Haar, desto weniger schützt es sich selbst vor UV-Strahlung. Künstliche Farbe ersetzt diesen Schutz nicht, er muss mit Produkten von außen kommen. Sonst wird das Haar trockener, spröder und störrischer.') + '</div>';
+  }
+  pmxSetze(html);
+  if (PMX.haar === 'pigmente') pmxPigBild();
+}
+
+function pmxPigBild() {
+  var h = PMX.hell, rot = h > 40 ? '#E07A2E' : '#C8312B';
+  var r = Math.max(0, 1 - Math.max(0, h - 33) / 33).toFixed(2), g = Math.max(.08, 1 - Math.max(0, h - 66) / 40).toFixed(2);
+  document.getElementById('pmx-pig').innerHTML = '<div class="pm-misch"><div>'+pmxEumelanin(h)+'<b style="font-size:14px">Eumelanin</b><small>blauer Mantel, rote Hülle, gelber Kern. Groß, gibt Tiefe, eher am Rand.</small></div>' +
+    '<div><svg viewBox="0 0 120 120" style="width:96px;display:block;margin:12px auto 18px"><circle cx="60" cy="60" r="40" fill="'+rot+'" opacity="'+r+'"/><circle cx="60" cy="60" r="20" fill="#E3B23C" opacity="'+g+'"/><circle cx="60" cy="60" r="40" fill="none" stroke="#C8C4BC" stroke-dasharray="3 3"/></svg><b style="font-size:14px">Pheomelanin</b><small>nur Rot und Gelb, klein und verstreut, mehr in hellen Naturtönen.</small></div></div>' +
+    '<div class="label" style="margin-top:12px">Aufhellung: '+h+' %</div>';
+  document.getElementById('pmx-pig-txt').innerHTML = h < 33 ? 'Zuerst wird der <strong>blaue</strong> Mantel aufgehellt.' : h < 66 ? 'Danach die <strong>rote</strong> Hülle. Ist sie fast weg, erscheint <strong>Orange</strong> (Rot + Gelb).' : 'Zuletzt bleibt <strong>Gelb</strong>, es wird immer zarter.';
+}
+function pmxHaarTeil(k) { PMX.haar = k; pmxHaar(); }
+
+// ── Warm-Kalt-Gesetz ──
+function pmxStufen(feld, wert, min, max) {
+  return '<div class="pm-stepper"><button onclick="PMX.'+feld+'=Math.max('+min+',PMX.'+feld+'-1);pmxWarmKalt()" aria-label="weniger">−</button><span>'+wert+'</span><button onclick="PMX.'+feld+'=Math.min('+max+',PMX.'+feld+'+1);pmxWarmKalt()" aria-label="mehr">+</button></div>';
+}
+function pmxPig(th) { return typeof PMC_PIGMENT !== 'undefined' ? PMC_PIGMENT[Math.max(1, Math.min(10, th)) - 1] : null; }
+
+function pmxWarmKalt() {
+  var nt = PMX.nt, z = PMX.ziel, warm = PMX.art === 'warm';
+  var von = Math.min(10, z + (warm ? .5 : 1.5)), bis = Math.min(10, z + (warm ? 1.5 : 2.5));
+  var noetig = Math.min(10, Math.ceil(von)), sprung = noetig - nt;
+  var prod, oxi = '';
+  if (sprung <= 0) prod = 'Keine Aufhellung nötig: Ton in Ton oder dunkler, z. B. mit Tönung oder Haarfarbe mit niedrigem Oxidant.';
+  else if (sprung <= 3) { prod = 'Oxidative Haarfarbe (bis 3 Tonhöhen Aufhellung).'; oxi = ['','3 %','6 %','9 %'][sprung]; }
+  else if (sprung <= 5) prod = nt >= 6 ? 'Hellerfärber (4–5 Tonhöhen, nur auf Naturhaar, meist 9–12 %).' : 'Eigentlich Hellerfärber, aber die gängigen Produkte erst ab Naturton 6. Bei Naturton '+nt+' eher Blondierung.';
+  else prod = 'Blondierung (mehr als 5 Tonhöhen Aufhellung).';
+  var pz = pmxPig(z), pn = pmxPig(noetig);
+  var html = '<div class="card">' + pmxLj('2. + 3. Lehrjahr') +
+    '<div class="pm-schritt-titel">Warm-Kalt-Gesetz</div>' +
+    '<div class="pm-txt">Ein künstlicher Reflex strahlt nur, wenn genug Naturpigment abgebaut ist. Für <strong>warme</strong> Töne muss das Naturpigment ½–1½ Tonhöhen heller sein als die Zieltonhöhe, für <strong>kühle</strong> 1½–2½.</div>' +
+    '<div class="label">Naturton</div>' + pmxStufen('nt', nt, 1, 10) +
+    '<div class="label">Zieltonhöhe</div>' + pmxStufen('ziel', z, 1, 10) +
+    '<div class="label">Reflex</div><div class="pm-wahl">' +
+      '<button class="btn-toggle'+(warm ? ' ak' : '')+'" onclick="PMX.art=\'warm\';pmxWarmKalt()">☀️ warm (Gold, Kupfer, Rot)</button>' +
+      '<button class="btn-toggle'+(!warm ? ' ak' : '')+'" onclick="PMX.art=\'kuehl\';pmxWarmKalt()">❄️ kühl (Asch, Irisé, Matt)</button></div></div>';
+  html += '<div class="card"><div class="label">Ergebnis</div>' +
+    '<div class="pm-grad">Naturpigment auf '+(von === bis ? von : (von % 1 ? Math.floor(von)+'½' : von)+'–'+(bis % 1 ? Math.floor(bis)+'½' : bis))+'</div>' +
+    '<div style="font-size:13px;color:#7A7A70">also mindestens bis Tonhöhe '+noetig+(pn ? ' ('+pn.u+')' : '')+' aufhellen</div>' +
+    '<dl class="pm-dl" style="margin-top:12px"><dt>Aufhellsprung</dt><dd>'+(sprung > 0 ? sprung+' Tonhöhe'+(sprung > 1 ? 'n' : '') : 'keiner')+'</dd>' +
+      '<dt>Produkt</dt><dd>'+prod+(oxi ? ' Oxidant ca. '+oxi+'.' : '')+'</dd>' +
+      (pn ? '<dt>Neutralisieren</dt><dd>Untergrund '+pn.u+' mit '+pn.g+' in Tonhöhe '+noetig+'</dd>' : '') + '</dl>';
+  if (pz && sprung > 0) html += '<div class="fb-r" style="font-size:13px;line-height:1.5;margin-top:10px"><strong>So nicht:</strong> nur bis Tonhöhe '+z+' aufhellen. Dann liegt noch '+pz.u+' im Haar, der Reflex hat keinen Platz und wirkt '+(warm ? 'stumpf statt strahlend.' : 'nicht so kühl wie gewünscht, das Gelb schlägt durch.')+'</div>' +
+    '<div class="fb-g" style="font-size:13px;line-height:1.5"><strong>So gerne:</strong> auf Tonhöhe '+noetig+' aufhellen, dann strahlt der '+(warm ? 'warme' : 'kühle')+' Reflex in voller Kraft.</div>';
+  if (z + (warm ? 1.5 : 2.5) > 10) html += '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">Tonhöhe 10 ist das hellste Naturpigmentbild. Je heller das Naturpigmentbild, desto kühler das Ergebnis, aber desto kürzer kann der Reflex halten.</div>';
+  html += '<div style="font-size:11px;color:#7A7A70;margin-top:8px">Richtwerte, sie variieren leicht je nach Hersteller. Haarfarbe hellt nur Naturhaar auf, nie gefärbtes Haar.</div></div>';
+  html += '<div class="card"><div class="label">Das Gesetz garantiert</div>' + pmxPunkte(['die perfekte Neutralisation des Naturpigmentbildes','die volle Farbbrillanz','die Haltbarkeit der neuen Farbe']) +
+    '<div class="label" style="margin-top:12px">Haltbarkeit</div><div class="pm-txt">Ist das Naturpigmentbild zu dunkel, fehlt Platz für künstliches Pigment. Ist es zu hell, finden die Pigmente keinen Halt und das Ergebnis wird transparent. Beispiel: Für ein intensives Rot auf Tonhöhe 6 ist das Naturpigmentbild 7 (Gelb-Orange) ideal, 9 oder 10 wären zu hell.</div>' +
+    pmxMerke('Kühle Haarfarben wirken immer satter und dunkler als warme, darauf in der Beratung hinweisen. Kühle Töne halten meist kürzer, warme Pigmente sind dominanter.') + '</div>';
+  pmxSetze(html);
+}
+
+// ── Dominanz und Sichtbarkeit ──
+function pmxKleck(f, txt) { return '<div><span style="display:block;width:44px;height:44px;border-radius:50%;margin:0 auto 4px;background:'+f+'"></span><small>'+txt+'</small></div>'; }
+
+function pmxDominanz() {
+  var a = PMX.mixA, b = PMX.mixB, gleich = (PMX_WARM.indexOf(a) >= 0) === (PMX_WARM.indexOf(b) >= 0), sieger;
+  if (a === b) sieger = a; else sieger = PMX_STAERKE[a] >= PMX_STAERKE[b] ? a : b;
+  function knoepfe(feld) {
+    return '<div class="pm-wahl">' + PMX_WARM.concat(PMX_KUEHL).map(function(f){
+      return '<button class="btn-toggle'+(PMX[feld] === f ? ' ak' : '')+'" onclick="PMX.'+feld+'=\''+f+'\';pmxDominanz()" style="border-left:6px solid '+PMX_FARBEN[f]+'">'+f+'</button>';
+    }).join('') + '</div>';
+  }
+  var html = '<div class="card">' + pmxLj('2. + 3. Lehrjahr') + '<div class="pm-schritt-titel">Dominanz von Farben</div>' +
+    '<div class="pm-txt">Nicht jede Farbe ist gleich stark. Mischt man eine stärkere mit einer schwächeren, ist die stärkere am meisten sichtbar.</div>' +
+    '<div class="label">Farbe 1</div>' + knoepfe('mixA') + '<div class="label">Farbe 2</div>' + knoepfe('mixB');
+  if (!gleich) html += '<div class="fb-o" style="font-size:13px;line-height:1.5">Warm und kühl: Die Dominanz vergleicht man innerhalb des warmen bzw. kühlen Bereichs. Liegen die Farben im Farbkreis gegenüber (Rot-Grün, Orange-Blau, Gelb-Violett), neutralisieren sie sich.</div>';
+  else html += '<div class="pm-misch">' + pmxKleck(PMX_FARBEN[a], a) + '<i>+</i>' + pmxKleck(PMX_FARBEN[b], b) + '<i>=</i>' + pmxKleck(PMX_FARBEN[sieger], sieger + (a !== b ? ' dominiert' : '')) + '</div>';
+  html += pmxPunkte(['<strong>Warm:</strong> Rot ist am dominantesten, dann Orange (enthält schon Rot), Gelb ist am schwächsten.','<strong>Kühl:</strong> Blau ist am dominantesten und die einzige reine kühle Farbe. Grün und Violett sind Mischungen mit einem warmen Anteil. Zwischen Grün und Violett setzt sich Violett durch.','Naturpigmente sind meist dominanter als künstliche und fester im Haar gebunden.']) + '</div>';
+  var k = PMX_KOMP[PMX.komp];
+  html += '<div class="card"><div class="label">Gefärbtes Haar umfärben: geht das?</div>' +
+    '<div class="pm-txt">Eine fertige Haarfarbe mischt sich nicht einfach mit neuer Farbe, wie Saft mit einer Plastikpflanze. Ist eine dominante Farbe im Haar, muss sie zuerst raus.</div>' +
+    '<div class="pm-griff-wahl">' + PMX_KOMP.map(function(x, i){ return '<button class="btn-toggle'+(i === PMX.komp ? ' ak' : '')+'" onclick="PMX.komp='+i+';PMX.kompAntwort=null;pmxDominanz()">'+x.von+' → '+x.zu+'</button>'; }).join('') + '</div>' +
+    '<div class="pm-schritt-titel" style="font-size:15px">Vorhanden: '+k.von+' · Wunsch: '+k.zu+'</div>';
+  if (PMX.kompAntwort === null) html += '<div class="pm-zeile"><button class="btn-ghost" onclick="PMX.kompAntwort=true;pmxDominanz()">✓ kompatibel</button><button class="btn-ghost" onclick="PMX.kompAntwort=false;pmxDominanz()">✗ nicht kompatibel</button></div>';
+  else html += '<div class="'+(PMX.kompAntwort === k.ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(PMX.kompAntwort === k.ok ? 'Richtig! ' : 'Nicht ganz. ')+(k.ok ? 'Kompatibel.' : 'Nicht kompatibel.')+'</strong> '+k.w+'</div>';
+  html += pmxMerke('Befindet sich eine dominante Farbe im Haar, muss sie entfernt werden, bevor eine schwächere sichtbar wird (Farbabzug oder Blondierwäsche). Immer abhängig von der Tonhöhe.') + '</div>';
+  html += '<div class="card"><div class="label">Warum sieht man manche Farben nicht?</div>' +
+    '<div class="pm-txt">Je mehr Pigment im Haar, desto weniger Licht kommt durch. Ein Pink liegt auch auf dunklem Haar, das Auge sieht es nur nicht. Schieb die Tonhöhe der Basis.</div>' +
+    '<div class="label" id="pmx-basis-lab"></div>' +
+    '<input class="pm-range" type="range" min="1" max="10" step="1" value="'+PMX.basis+'" oninput="PMX.basis=+this.value;pmxBasisBild()" aria-label="Tonhöhe der Basis">' +
+    '<div id="pmx-basis"></div>' +
+    pmxMerke('Auf sehr hellem Haar werden sogar Pastelltöne sichtbar. Das Naturpigmentbild kann den Ton verändern, z. B. Pink + Orange.') + '</div>';
+  pmxSetze(html);
+  pmxBasisBild();
+}
+
+function pmxBasisBild() {
+  var b2 = pmxPig(PMX.basis), sicht = PMX.basis >= 8 ? 1 : PMX.basis === 7 ? .25 : 0, f = b2 ? b2.haar : '#777';
+  document.getElementById('pmx-basis-lab').textContent = 'Basis: Tonhöhe ' + PMX.basis + (b2 ? ' (' + b2.n + ')' : '');
+  document.getElementById('pmx-basis').innerHTML = '<div class="pm-misch" style="margin-top:8px">' + pmxKleck(f, 'Basis') + '<i>+</i>' + pmxKleck('#E0207A', 'Pink') + '<i>=</i>' +
+    '<div><span style="display:block;width:44px;height:44px;border-radius:50%;margin:0 auto 4px;background:'+f+';box-shadow:inset 0 0 0 44px rgba(224,32,122,'+(sicht * .75).toFixed(2)+')"></span><small>'+(sicht ? (sicht < 1 ? 'kaum sichtbar' : 'sichtbar') : 'unsichtbar')+'</small></div></div>';
+}
+
+// ── Farbcodes ──
+function pmxDecode(c) {
+  c = (c || '').trim().toUpperCase().replace(/\s+/g, '');
+  var m = c.match(/^(\d{1,2})(?:[,.\/](\d{0,2})|([A-Z]{1,2}))?$/);
+  if (!m) return null;
+  var th = +m[1]; if (th < 1 || th > 12) return null;
+  var refl = [];
+  if (m[2]) refl = m[2].split('');
+  else if (m[3]) refl = m[3].split('').map(function(b){ return PMX_BUCHST[b] || '?'; });
+  return {th:th, refl:refl, buchst:!!m[3], roh:m[3] || m[2] || ''};
+}
+
+function pmxCodes() {
+  var html = '<div class="card">' + pmxLj('2. + 3. Lehrjahr') + '<div class="pm-schritt-titel">Farbcodes lesen</div>' +
+    '<div class="pm-txt">Hersteller ordnen ihre Farben nach Tonhöhe und Reflex. Vor dem Komma steht die Tonhöhe (1 = Schwarz bis 10 = Hell-Lichtblond), danach Hauptreflex und Nebenreflex, als Zahl oder Buchstabe.</div>' +
+    '<input id="pmx-code" type="text" inputmode="text" autocomplete="off" value="'+PMX.code.replace(/"/g, '')+'" oninput="PMX.code=this.value;pmxCodeErg()" placeholder="z. B. 7,21 oder 7VB" style="font-size:18px;text-align:center;margin-bottom:8px">' +
+    '<div class="pm-wahl">' + ['6,0','7,21','8,13','5,4','7VB','9,1'].map(function(x){ return '<button class="btn-toggle" onclick="PMX.code=\''+x+'\';pmxCodes()">'+x+'</button>'; }).join('') + '</div>' +
+    '<div id="pmx-code-erg"></div></div>' +
+    '<div class="card"><div class="label">So ist die Tube aufgebaut</div>' + pmxPunkte(['<strong>Grundton (1–10):</strong> schafft die Farbtiefe und deckt weißes Haar. Je höher die Zahl, desto heller.','<strong>Hauptreflex (1. Stelle nach dem Komma):</strong> der größte Reflexanteil, z. B. Blau neutralisiert Orange.','<strong>Nebenreflex (2. Stelle):</strong> immer schwächer, z. B. Violett neutralisiert Gelb.','<strong>Naturton</strong> (z. B. 6,0): viel Grundton, kaum Reflex, mehr Deckkraft bei weißem Haar. <strong>Modeton</strong> (z. B. 6,46): mehr Reflex.']) +
+    pmxMerke('Die Reflexnummern sind herstellerabhängig. Hier gilt die L’Oréal-Nummerierung (z. B. Majirel). Bei Matt- oder Mokka-Tönen (,7 / ,8) die Farbkarte der Linie prüfen.') + '</div>';
+  pmxSetze(html);
+  pmxCodeErg();
+}
+
+function pmxCodeErg() {
+  var d = pmxDecode(PMX.code), el = document.getElementById('pmx-code-erg');
+  if (!el) return;
+  if (!d) { el.innerHTML = '<div class="fb-o" style="font-size:13px">Schreibe eine Tonhöhe und Reflexe, z. B. 7,21 oder 7VB.</div>'; return; }
+  var p = pmxPig(Math.min(10, d.th));
+  var rows = '<dt>Tonhöhe</dt><dd>'+d.th+(p ? ' · '+p.n : '')+'</dd>';
+  if (!d.refl.length) rows += '<dt>Reflex</dt><dd>kein Reflex angegeben (reiner Naturton)</dd>';
+  d.refl.forEach(function(r, i){
+    var info = PMX_REFLEX[r];
+    var name = info ? info[0] : (r === '7' || r === '8' ? 'je nach Linie (z. B. Matt oder Mokka), Farbkarte prüfen' : 'unbekannt');
+    rows += '<dt>'+(i === 0 ? 'Hauptreflex' : 'Nebenreflex')+'</dt><dd>'+(info ? '<span style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px;background:'+info[1]+'"></span>' : '')+name+(i > 0 ? ' (schwächer)' : '')+'</dd>';
+  });
+  if (d.refl.length === 2 && d.refl[0] === '0') rows += '<dt>Hinweis</dt><dd>,0x heißt: Naturton mit leichtem Reflex.</dd>';
+  var tube = '<svg viewBox="0 0 80 150" style="width:70px;float:right;margin:0 0 6px 10px" aria-hidden="true"><rect x="10" y="6" width="60" height="14" fill="#fff" stroke="#C8C4BC"/>';
+  var y = 20, teile = [];
+  if (d.refl[1]) teile.push([PMX_REFLEX[d.refl[1]] ? PMX_REFLEX[d.refl[1]][1] : '#bbb', 16]);
+  if (d.refl[0]) teile.push([PMX_REFLEX[d.refl[0]] ? PMX_REFLEX[d.refl[0]][1] : '#bbb', d.refl[0] === '0' ? 8 : 34]);
+  var rest = 104 - teile.reduce(function(s, t){ return s + t[1]; }, 0);
+  teile.push([p ? p.haar : '#4E2E1E', rest]);
+  teile.forEach(function(t){ tube += '<rect x="10" y="'+y+'" width="60" height="'+t[1]+'" fill="'+t[0]+'"/>'; y += t[1]; });
+  tube += '<rect x="26" y="'+y+'" width="28" height="10" fill="#2C2C2C"/></svg>';
+  el.innerHTML = '<div style="overflow:hidden">'+tube+'<dl class="pm-dl">'+rows+'</dl></div>';
+}
+
+// ── Vor- und Nachpigmentierung ──
+function pmxPigment() {
+  var z = PMX.pZiel, k = PMX.pArt === 'kuehl', w = PMX_RUECK[z];
+  var html = '<div class="card">' + pmxLj('2. + 3. Lehrjahr') + '<div class="pm-schritt-titel">Nachpigmentierung</div>' +
+    '<div class="pm-txt">Einlagern von Gold-, Orange- oder Rotpigmenten, um eine verblasste Farbe aufzufrischen oder zu helle Längen und Spitzen anzugleichen. So wird das Farbbild gleichmäßig und haltbar.</div>' +
+    '<div class="label">Beispiel 1: leicht verblasst</div><div class="pm-txt">Blondkundin, sonst Tonhöhe 8 golden, nach dem Sommer am Meer: 4 cm Naturansatz, Längen 9, Spitzen noch heller. Ansatz wie gewohnt färben, die Längen mit direktziehenden Pigmenten, saurer Tönung oder Intensivtönung angleichen, z. B. Tonhöhe 9 Gelb (kühler) oder Gelb-Orange (wärmer). Danach eventuell mattieren.</div>' +
+    '<div class="label">Beispiel 2: stark verblasst</div><div class="pm-txt">5 cm Naturansatz in Tonhöhe 6, Längen durch Blondierung auf 9: drei Tonhöhen Unterschied. Direktziehende Pigmente reichen nicht, sie bringen keine Tiefe und waschen aus. Besser eine Intensivtönung, nur mit Reflexnuance (kein Grundton), z. B. Tonhöhe 7 Gelb-Orange. Für kühlere Wünsche 1–2 cm Gold in derselben oder 1 Tonhöhe heller dazugeben.</div>' +
+    pmxMerke('Bei strapaziertem Haar immer ein sehr schonendes Produkt wählen. Herstellerhinweise beachten.') + '</div>';
+  html += '<div class="card"><div class="pm-schritt-titel">Vorpigmentierung</div>' +
+    '<div class="pm-txt">Wird Haar um <strong>mehr als 4 Tonhöhen dunkler</strong> gefärbt, fehlt das Naturpigmentbild der Zieltonhöhe. Es muss mit warmen Pigmenten wieder aufgebaut werden. Zuerst die hellen Längen mit einer warmen Reflexnuance einfärben, abspülen, shampoonieren, föhnen. Dann die Wunschnuance auftragen.</div>' +
+    '<div class="label">Zieltonhöhe: '+z+'</div>' +
+    '<div class="pm-wahl">' + [4,5,6,7,8,9,10].map(function(t){ return '<button class="btn-toggle'+(t === z ? ' ak' : '')+'" onclick="PMX.pZiel='+t+';pmxPigment()" style="flex:1 1 12%">'+t+'</button>'; }).join('') + '</div>' +
+    '<div class="pm-wahl"><button class="btn-toggle'+(k ? ' ak' : '')+'" onclick="PMX.pArt=\'kuehl\';pmxPigment()">❄️ kühler Wunsch</button><button class="btn-toggle'+(!k ? ' ak' : '')+'" onclick="PMX.pArt=\'warm\';pmxPigment()">☀️ warmer Wunsch</button></div>' +
+    '<div class="pm-grad" style="font-size:22px">Vorpigmentieren mit '+(k ? w[0] : w[1])+'</div>' +
+    '<div style="font-size:11px;color:#7A7A70">abhängig von Produkt und Hersteller</div>' +
+    pmxMerke('Rückpigmentiert wird nur mit Gold, Kupfer oder Rot (Mischungen daraus sind erlaubt). Kühle Reflexe und Mischungen aus warm und kühl eignen sich nicht: Das Ergebnis hält nicht und wird transparent bis grünstichig.') +
+    pmxMerke('Keine Angst vor dem Zwischenergebnis: Wie beim Aufhellen läuft auch das Rückpigmentieren über Gold-, Kupfer- oder Rot-Untergründe.') + '</div>';
+  pmxSetze(html);
+}
+
+// ── Farbabzug ──
+function pmxAbzug() {
+  var html = '<div class="card">' + pmxLj('2. + 3. Lehrjahr') + '<div class="pm-schritt-titel">Farbabzüge</div>' +
+    '<div class="pm-txt">Ein Farbabzug korrigiert chemisch erstellte Haarfarben. Man unterscheidet zwei Arten.</div></div>' +
+    '<div class="card"><div class="label">Alkalischer (oxidativer) Abzug</div>' +
+    '<div class="pm-txt">Mit Blondiermittel oder speziellen Produkten. Sollen nur die künstlichen Reflexe heraus, z. B. für eine bessere Neutralisation, reicht eine <strong>Blondierwäsche (Farbreinigung)</strong>: Blondierpulver mit Shampoo, Wasser und eventuell Pflege angerührt.</div>' +
+    '<dl class="pm-dl"><dt>Farbreinigung</dt><dd>ca. 30 ml Wasser + 2 Pumphübe neutrales Shampoo + 1 Messlöffel Blondierpulver + ½ Löffel neutrale Kur</dd>' +
+    '<dt>Wirkung</dt><dd>zieht vor allem die Reflexnuancen heraus, das Naturpigment wird nur minimal aufgehellt</dd>' +
+    '<dt>Tiefenreinigung</dt><dd>zusätzlich ca. 30 ml Oxidant 6 % oder 9 %: hellt Reflexe und Naturpigment auf</dd></dl>' +
+    '<div class="fb-r" style="font-size:13px;line-height:1.5;margin-top:10px"><strong>Einwirkzeit nur unter ständiger Beobachtung!</strong></div></div>' +
+    '<div class="card"><div class="label">Saurer (reduktiver) Abzug</div>' +
+    pmxPunkte(['Funktioniert nur bei <strong>frisch</strong> gefärbtem Haar. Ältere Färbungen lassen sich damit nicht entfernen.','Wirkstoff ist ein Reduktionsmittel, eine Säure macht es wirksam.','Die künstlichen Farbstoffe werden wieder zu Farbvorstufen zurückgeführt, der Färbeprozess wird umgedreht.','Reagiert nur mit künstlichen Pigmenten, das Naturpigment wird nicht aufgehellt.','Danach gründlich mit klarem Wasser spülen und meist eine <strong>Kontrollspülung</strong> mit 1–2 % Oxidant machen. Sonst kann das Haar durch Luftsauerstoff nachdunkeln.']) + '</div>' +
+    '<div class="card"><div class="label">H₂O₂ beim Blondieren</div>' +
+    '<div class="pm-txt">Höhere Konzentration hellt schneller auf, aber der Pigmentabbau wird schlampiger und Haar und Kopfhaut werden stärker belastet. Stell dir ein reifes Maisfeld vor: Ein Traktor mit 20 km/h (3 %) braucht länger, erntet aber fast alles. Ein Sportwagen mit 200 km/h (12 %) ist schnell, lässt aber viel stehen.</div>' +
+    pmxMerke('Klare, stabile Blondtöne gelingen mit niedrigerer Sauerstoffkonzentration.') + '</div>' +
+    pmxMerke('Ein Farbabzug ist zur Korrektur gefärbter Haare gedacht, nicht zum Aufhellen von Naturhaar. Er belastet die Haarstruktur, vorher immer prüfen, ob die Haarqualität das zulässt.');
+  pmxSetze(html);
+}
+
+// ── Quiz (10 zufällige Fragen) ──
+function pmxQuizNeu() {
+  PMX.quiz = PMX_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
+  PMX.qi = 0; PMX.richtig = 0; PMX.beantwortet = false;
+}
+
+function pmxQuiz() {
+  if (!PMX.quiz.length) pmxQuizNeu();
+  var n = PMX.quiz.length, html;
+  if (PMX.qi >= n) {
+    html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMX.richtig === n ? '🎉' : '✨')+'</div>' +
+      '<div class="pm-schritt-titel">'+PMX.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="pmxQuizNeu();pmxQuiz()">Nochmal</button></div></div>';
+    pmxSetze(html); return;
+  }
+  var q = PMX_QUIZ[PMX.quiz[PMX.qi]];
+  html = '<div class="card"><div class="label">Frage '+(PMX.qi+1)+' von '+n+' · '+PMX.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
+    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmxAntwort('+i+')">'+o+'</button>'; }).join('') +
+    '<div id="pmx-fb"></div></div>';
+  pmxSetze(html);
+}
+
+function pmxAntwort(i) {
+  if (PMX.beantwortet) return;
+  PMX.beantwortet = true;
+  var q = PMX_QUIZ[PMX.quiz[PMX.qi]], ok = i === q.r;
+  if (ok) PMX.richtig++;
+  document.querySelectorAll('#pmx-inhalt .opt-btn').forEach(function(b, j){
+    b.disabled = true;
+    if (j === q.r) b.classList.add('ric');
+    else if (j === i) b.classList.add('fal');
+  });
+  document.getElementById('pmx-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+    '<div class="pm-zeile"><button class="btn-primary" onclick="PMX.qi++;PMX.beantwortet=false;pmxQuiz()">Weiter →</button></div>';
 }
 </script>
 <script>
