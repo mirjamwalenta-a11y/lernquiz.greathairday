@@ -509,6 +509,14 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Balayage-Alphabet, Abteilungen, Formen, Passée-Planer</div>
     </div>
   </button>
+  <button class="nav-card pm-modul" onclick="pmColoristOeffnen()">
+    <div class="nav-icon" style="margin:0">🎨</div>
+    <div>
+      <div class="pm-lj">2. + 3. Lehrjahr</div>
+      <div class="nav-title">Colorist: Farbe verstehen</div>
+      <div class="nav-desc">Naturpigmente, Farbkreis, Kontraste, Diagnose, Produktwahl</div>
+    </div>
+  </button>
   <button class="nav-card pm-modul" disabled>
     <div class="nav-icon" style="margin:0">👑</div>
     <div>
@@ -564,6 +572,23 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pms-tab-quiz" onclick="pmStraehnenTab('quiz')">Quiz</button>
   </div>
   <div id="pms-inhalt"></div>
+</div>
+
+<!-- ── MODUL 4: COLORIST ── -->
+<div id="p-pm-colorist" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">2. + 3. Lehrjahr · Praxis-Modul</div>
+  <h1>Colorist: Farbe verstehen</h1>
+  <p class="sub">Farbenlehre, Diagnose und das richtige Produkt.</p>
+  <div class="pm-tabs pm-tabs-viele">
+    <button class="btn-toggle" id="pmc-tab-pigment" onclick="pmColoristTab('pigment')">Pigmente</button>
+    <button class="btn-toggle" id="pmc-tab-kontrast" onclick="pmColoristTab('kontrast')">Kontraste</button>
+    <button class="btn-toggle" id="pmc-tab-diagnose" onclick="pmColoristTab('diagnose')">Diagnose</button>
+    <button class="btn-toggle" id="pmc-tab-produkte" onclick="pmColoristTab('produkte')">Produkte</button>
+    <button class="btn-toggle" id="pmc-tab-trainer" onclick="pmColoristTab('trainer')">Trainer</button>
+    <button class="btn-toggle" id="pmc-tab-quiz" onclick="pmColoristTab('quiz')">Quiz</button>
+  </div>
+  <div id="pmc-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -2859,6 +2884,364 @@ function pmsAntwort(i) {
 }
 
 function pmsWeiter() { PMS.qi++; PMS.beantwortet = false; pmsQuiz(); }
+</script>
+<script>
+// ── PRAXIS-MODUL 4: COLORIST – FARBE VERSTEHEN (2. + 3. LEHRJAHR) ──
+// Inhalte nach den Schulungsunterlagen des Salons, in eigenen Worten und
+// mit eigenen Skizzen. Werte variieren je nach Hersteller.
+var PMC_PIGMENT = [
+  {th:1, n:'Schwarz', haar:'#1A1210', u:'sehr dunkles Rot', uf:'#4A1410', g:'Grün'},
+  {th:2, n:'Schwarzbraun', haar:'#2A1A14', u:'dunkles Rot', uf:'#6E1A14', g:'Grün'},
+  {th:3, n:'Dunkelbraun', haar:'#3B2318', u:'Rot', uf:'#9C1F18', g:'Grün'},
+  {th:4, n:'Mittelbraun', haar:'#4E2E1E', u:'intensives Rot', uf:'#C0231A', g:'Grün'},
+  {th:5, n:'Hellbraun', haar:'#643C24', u:'Orangerot', uf:'#D6401C', g:'Blau-Grün'},
+  {th:6, n:'Dunkelblond', haar:'#7D5030', u:'Orange', uf:'#E46A1E', g:'Blau'},
+  {th:7, n:'Mittelblond', haar:'#9A6A40', u:'Gelborange', uf:'#EF9A24', g:'Blau-Violett'},
+  {th:8, n:'Hellblond', haar:'#B88B58', u:'leuchtendes Gelb', uf:'#F2C12A', g:'Violett'},
+  {th:9, n:'Sehr hellblond', haar:'#D2AD78', u:'helles Gelb', uf:'#F4D65A', g:'Violett'},
+  {th:10, n:'Hell-Lichtblond', haar:'#E6CC9C', u:'zartes Gelb', uf:'#F6E6A0', g:'Violett'}
+];
+var PMC_GEGEN = {'Grün':'#5E9B45', 'Blau':'#3F6FB5', 'Violett':'#7C4F9E', 'Blau-Grün':'#3F8C8C', 'Blau-Violett':'#5A5BA8'};
+
+var PMC_KREIS = [
+  {n:'Blau', r:'Asch', f:'#3F6FB5', x:100, y:28, gegen:3},
+  {n:'Grün', r:'Verde / Matt', f:'#5E9B45', x:162, y:64, gegen:4},
+  {n:'Gelb', r:'Gold', f:'#E3B23C', x:162, y:136, gegen:5},
+  {n:'Orange', r:'Kupfer', f:'#E07A2E', x:100, y:172, gegen:0},
+  {n:'Rot', r:'Rouge', f:'#C8312B', x:38, y:136, gegen:1},
+  {n:'Violett', r:'Irisé', f:'#7C4F9E', x:38, y:64, gegen:2}
+];
+
+var PMC_KONTRASTE = [
+  {n:'Hell-Dunkel', a:'#1C1C1A', i:'#FFFFFF', b:'#FFFFFF', j:'#1C1C1A',
+   t:'Schwarz und Weiß sind die stärksten Gegensätze. Helle Flächen treten optisch hervor und wirken offen, dunkle treten zurück (wie beim Make-up).',
+   haar:'Blonde Strähnen in dunklem Haar oder dunkle in hellem Haar geben Höhen und Tiefen.'},
+  {n:'Komplementär', a:'#D63A2A', i:'#4E7A2E',
+   t:'Farben, die sich im Farbkreis gegenüberliegen, neutralisieren sich beim Mischen. Nebeneinander steigern sie sich zu höchster Leuchtkraft.',
+   haar:'Rotes Haar wirkt mit grüner Kleidung noch kräftiger.'},
+  {n:'Simultan', a:'#D63A2A', i:'#8A8A8A', b:'#E8CF2A', j:'#8A8A8A',
+   t:'Das Auge gibt Farben nicht originalgetreu wieder, es verstärkt Unterschiede. Dieselbe Farbe wirkt auf hellem Grund dunkler als auf dunklem Grund.',
+   haar:'Dieselbe Strähnenfarbe wirkt je nach Grundfarbe heller oder dunkler.'},
+  {n:'Warm-Kalt', a:'#D63A2A', i:'#3F6FB5',
+   t:'Warm und kalt ist eine Empfindung. Der Kontrast wirkt am stärksten, wenn die Farben gleich hell sind.',
+   haar:'Auf einer einheitlich blonden Basis ergeben kühle und warme Nuancen eine sehr kontrastreiche Haarfarbe.'},
+  {n:'Bunt-Unbunt', a:'#1C1C1A', i:'#D63A2A',
+   t:'Eine bunte Farbe auf Schwarz, Weiß oder Grau wirkt viel leuchtender. Das Umfeld bestimmt, wie hell oder dunkel wir eine Farbe sehen.',
+   haar:'Rote Strähnen auf dunklem Haar strahlen besonders.'}
+];
+
+var PMC_DIAGNOSE = [
+  {n:'Kopfhaut', teil:'kopfhaut',
+   p:['Kopfhaut genau ansehen: Schuppen (trocken oder fettig), Rötungen, trockene oder verletzte Stellen, eventuell Läuse?',
+      'Den Gast nach Juckreiz, Rieselschuppen oder anderen Beschwerden fragen und gleich passende Pflege als Lösung anbieten.'],
+   merke:'Colorieren und Blondieren nur auf intakter, gesunder Kopfhaut!'},
+  {n:'Ansatz', teil:'ansatz',
+   p:['<strong>Naturton:</strong> immer mit der Naturtonleiste bestimmen. Kurze Ansätze und Licht täuschen stark. Der Naturton entscheidet über Produkt und Oxidant (z. B. Hellerfärbung ab Naturton 6, bei 5 noch vermeiden).',
+      '<strong>Länge des Naturansatzes:</strong> ideal höchstens 3 cm. Ist er länger, wie bei einer Erstcoloration arbeiten.',
+      '<strong>Weißanteil:</strong> bestimmt, welches Produkt deckt (siehe Tabelle).'],
+   merke:'In der Kontur ist der Weißanteil oft höher als am restlichen Kopf. Dann mit unterschiedlichen Rezepturen arbeiten.',
+   weiss:true},
+  {n:'Mittelstück', teil:'mittel',
+   p:['Das Mittelstück ist meist der Bereich, wo zuletzt Farbe aufgetragen wurde. Es kann schmal sein oder fast über die ganze Länge gehen, und es muss nicht immer vorhanden sein.',
+      'Es bestimmt jeden weiteren Schritt. Bei Fehlern ist meist das Mittelstück schuld: Ansätze wirken heller, oder ein Balken bleibt sichtbar.'],
+   merke:'Haarfarbe hellt Haarfarbe nicht auf! Gefärbtes Haar (auch hellergefärbtes) wird mit Haarfarbe nur dunkler, nie heller. Künstliche Pigmente hellt nur Blondierung auf.'},
+  {n:'Längen & Spitzen', teil:'laengen',
+   p:['Letzten Farbton und sichtbare Reflexe erkennen (blau, mokka, rot, kupfer …), mit dem Auge oder mit der Farbkarte. Aufzeichnungen zum letzten Termin helfen.',
+      'Helligkeit oder Tiefe der Längen bestimmen. Daran orientiert sich die Farbtiefe am Ansatz.',
+      'Haarqualität prüfen.'],
+   merke:'Ansätze niemals heller als Längen und Spitzen!'}
+];
+
+var PMC_WEISS = [
+  ['0 %','keine bis kaum weiße Haare'],
+  ['30 %','hohe Deckkraft, meist auch mit Intensivtönung möglich'],
+  ['50 %','volle Deckkraft mit oxidativer Haarfarbe, je nach Produkt schon Naturton plus Reflexnuance nötig'],
+  ['70–100 %','volle Deckkraft nur mit oxidativer Haarfarbe (Naturton plus Reflexnuance)']
+];
+
+var PMC_PRODUKTE = [
+  {n:'Saure Tönung', tiefe:'oberflaeche', ph:'leicht sauer', h2o2:'niedrig (ca. 1,3–4,5 %)', hell:'kaum', deck:'gering',
+   einsatz:['Ton in Ton, Reflexe auffrischen','Neutralisieren, vor- und nachpigmentieren','bis 2 Tonhöhen dunkler','nach Blondierung, Dauerwelle oder chemischer Glättung'],
+   plus:'Schuppenschicht bleibt fast geschlossen: sehr schonend, Extraglanz.'},
+  {n:'Intensivtönung', tiefe:'schuppe', ph:'mild alkalisch', h2o2:'niedrig (ca. 1,3–4,5 %)', hell:'bis ca. 2,5 Tonhöhen', deck:'ca. 30–70 % Weißabdeckung',
+   einsatz:['Ton in Ton, nach Dauerwelle, Glättung oder Blondierung','Neutralisieren, Reflexe auffrischen','bis 3 Tonhöhen dunkler'],
+   plus:'Haltbarer als klassische Tönung, schonender als Haarfarbe, kaum Nachwuchseffekt.'},
+  {n:'Oxidative Haarfarbe', tiefe:'tief', ph:'alkalisch', h2o2:'3 %, 6 % oder 9 %', hell:'meist bis 3 Tonhöhen', deck:'100 % Weißabdeckung',
+   einsatz:['starke Aufhellung ab 2 Tonhöhen','starke Einlagerung künstlicher Pigmente','starker Ausgleich zwischen Pigmentstufen','100 % Weißabdeckung'],
+   plus:'Mehr Grundton, weniger Reflex. Nur wenn nötig, danach immer ein saurer Abschluss. Bei gefärbten Längen: Ansatz oxidativ, Längen mit Tönung.'},
+  {n:'Hellerfärber', tiefe:'tief', ph:'stark alkalisch', h2o2:'9 % oder 12 %', hell:'bis ca. 5 Tonhöhen', deck:'für Blond ab Tonhöhe 9',
+   einsatz:['Blondergebnisse auf Naturhaar ab Naturton 6','Aufhellen und Neutralisieren in einem Schritt'],
+   plus:'Nur auf Naturhaar, nicht zum Mattieren. Dick auftragen, nicht pinseln, und die volle Einwirkzeit lassen: Die Nuancierung passiert erst am Schluss.'},
+  {n:'Blondierung', tiefe:'tief', ph:'alkalisch', h2o2:'laut Hersteller', hell:'bis 9 Tonhöhen', deck:'keine',
+   einsatz:['starke Aufhellung','hellt auch künstliche Pigmente auf'],
+   plus:'Beim Abbau entstehen Zwischentöne (rotbraun, orangerot, gelb). Es bleiben Hohlräume zurück, deshalb ist blondiertes Haar porös. Produkte ohne Quellung nie auf der Kopfhaut! Je mehr Produkt, desto mehr Aufhellung.'}
+];
+
+var PMC_WUENSCHE = [
+  {w:'100 % Weißhaarabdeckung', r:['ox']},
+  {w:'Ton-in-Ton-Färbung', r:['int','sauer']},
+  {w:'Sanftes Auffrischen von Längen und Spitzen', r:['sauer']},
+  {w:'Aufhellung um mehr als 2,5 Tonhöhen', r:['ox']},
+  {w:'Färben nach einer Dauerwelle', r:['sauer']},
+  {w:'Neutralisation nach einer Blondierung', r:['sauer']},
+  {w:'Ausgleich nach einer Blondierung', r:['ox','int']},
+  {w:'50 % Weißhaarabdeckung', r:['int']},
+  {w:'Nachpigmentierung', r:['sauer']},
+  {w:'Neutralisation nach Blondiersträhnen', r:['int','sauer']}
+];
+var PMC_PROD3 = {ox:'Oxidative Haarfarbe', int:'Intensivtönung', sauer:'Saure Tönung'};
+
+var PMC_QUIZ = [
+  {f:'Welchen Untergrund hat Naturton 6 (Dunkelblond)?', o:['Gelb','Orange','Rot','Violett'], r:1, e:'Tonhöhe 6 hat einen orangen Untergrund. Die Gegenfarbe ist Blau.'},
+  {f:'Welche Gegenfarbe neutralisiert einen gelben Untergrund (Tonhöhe 8–10)?', o:['Grün','Blau','Violett','Rot'], r:2, e:'Gelb und Violett liegen sich im Farbkreis gegenüber.'},
+  {f:'Welche Reflexbezeichnung gehört zu Blau?', o:['Gold','Kupfer','Asch','Irisé'], r:2, e:'Blau = Asch, Violett = Irisé, Gelb = Gold, Orange = Kupfer, Rot = Rouge, Grün = Verde/Matt.'},
+  {f:'Was ergibt Rot + Grün?', o:['Orange','Neutral','Violett','Gelb'], r:1, e:'Gegenfarben im Farbkreis neutralisieren sich.'},
+  {f:'Warum sieht ein Blond zuhause bläulich aus, im Salon aber nicht?', o:['Die Farbe ist ausgewaschen','Das Licht zuhause ist kühler und verstärkt blaue Pigmente','Das Shampoo ist schuld','Das Auge täuscht sich immer'], r:1, e:'Kühles Licht mit viel Blauanteil macht blaue Pigmente sichtbarer, warmes Licht nicht.'},
+  {f:'Wie wirken dunkle Haarfarben?', o:['Leichter und voluminöser','Drückender, sie können Volumen reduzieren','Immer jünger','Gar nicht anders als helle'], r:1, e:'Helle Farben wirken leichter und voluminöser, dunkle drückender.'},
+  {f:'Wie lang darf der Naturansatz idealerweise höchstens sein?', o:['1 cm','3 cm','6 cm','Egal'], r:1, e:'Ideal sind höchstens 3 cm. Ist er länger, wie bei einer Erstcoloration arbeiten.'},
+  {f:'Kann eine Haarfarbe bereits gefärbtes Haar aufhellen?', o:['Ja, mit 12 %','Nein, Haarfarbe hellt Haarfarbe nicht auf','Ja, mit Hellerfärber','Ja, mit längerer Einwirkzeit'], r:1, e:'Künstliche Pigmente hellt nur Blondierung auf. Mit Haarfarbe wird gefärbtes Haar nur dunkler.'},
+  {f:'Wo findest du oft den höchsten Weißanteil?', o:['Im Nacken','In der Kontur','Am Oberkopf','In den Spitzen'], r:1, e:'In der Kontur ist der Weißanteil oft am höchsten. Dann unterschiedliche Rezepturen verwenden.'},
+  {f:'Welche Regel gilt für Ansatz und Längen?', o:['Ansatz immer heller als die Längen','Ansätze niemals heller als Längen und Spitzen','Beides immer gleich','Die Längen immer dunkler färben'], r:1, e:'Ansätze dürfen nie heller werden als Längen und Spitzen.'},
+  {f:'Welches Produkt bringt 100 % Weißhaarabdeckung?', o:['Saure Tönung','Intensivtönung','Oxidative Haarfarbe','Pflegespülung'], r:2, e:'Volle Weißhaarabdeckung schafft nur oxidative Haarfarbe.'},
+  {f:'Worauf darf ein Hellerfärber angewendet werden?', o:['Auf blondiertem Haar','Nur auf Naturhaar','Auf gefärbten Längen','Zum Mattieren nach Blondierung'], r:1, e:'Hellerfärber nur auf Naturhaar, sonst drohen starke Schäden. Nicht zum Mattieren.'},
+  {f:'Was gilt für Blondierungen ohne Quellung?', o:['Ideal auf der Kopfhaut','Nie auf der Kopfhaut, gut für Strähnentechniken','Nur für Männer','Nur mit 3 %'], r:1, e:'Die Quellung schützt die Kopfhaut bei der Anwendung am Ansatz. Ohne Quellung nur für Strähnen.'},
+  {f:'Was braucht Haar nach einer alkalischen Farbbehandlung?', o:['Einen sauren Abschluss','Noch mehr Alkali','Eine Dauerwelle','Nichts'], r:0, e:'Mit Alkali behandeltes Haar braucht immer einen sauren Abschluss.'},
+  {f:'Warum ist eine Tönung reflexreicher als eine Haarfarbe?', o:['Sie hat mehr Naturton','Sie hat weniger Naturton und mehr Reflexpigmente','Sie ist stärker alkalisch','Sie hat mehr Oxidant'], r:1, e:'Tönungen bringen wenig Naturton und viel Reflex, Haarfarben mehr Grundton für Ausgleich und Weißabdeckung.'}
+];
+
+var PMC = {tab:'pigment', th:6, kreis:0, kontrast:0, dia:0, prod:0, wi:0, wahl:{}, geprueft:false, quiz:[], qi:0, richtig:0, beantwortet:false};
+
+function pmColoristOeffnen() {
+  zeige('pm-colorist');
+  pmColoristTab(PMC.tab);
+}
+
+function pmColoristTab(tab) {
+  PMC.tab = tab;
+  ['pigment','kontrast','diagnose','produkte','trainer','quiz'].forEach(function(t){
+    document.getElementById('pmc-tab-'+t).classList.toggle('ak', t === tab);
+  });
+  ({pigment:pmcPigment, kontrast:pmcKontrast, diagnose:pmcDiagnose, produkte:pmcProdukte, trainer:pmcTrainer, quiz:pmcQuiz})[tab]();
+}
+
+function pmcSetze(html) { document.getElementById('pmc-inhalt').innerHTML = html; }
+function pmcPunkte(p) { return '<ul class="pm-liste">' + p.map(function(x){ return '<li>'+x+'</li>'; }).join('') + '</ul>'; }
+function pmcMerke(t) { return '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px"><strong>Merke:</strong> '+t+'</div>'; }
+
+// ── Naturpigmentbild und Farbkreis ──
+function pmcPigment() {
+  var p = PMC_PIGMENT[PMC.th - 1];
+  var leiste = PMC_PIGMENT.map(function(x){
+    return '<button onclick="PMC.th='+x.th+';pmcPigment()" aria-label="Tonhöhe '+x.th+'" style="flex:1;height:44px;border:'+(x.th === PMC.th ? '3px solid #1C1C1A' : '1px solid #E2DDD5')+';border-radius:6px;background:'+x.haar+';color:'+(x.th > 6 ? '#1C1C1A' : '#fff')+';font-weight:700;font-size:13px;cursor:pointer;padding:0">'+x.th+'</button>';
+  }).join('');
+  var html = '<div class="card"><div class="label">Naturpigmentbild</div>' +
+    '<div class="pm-txt">Tippe eine Tonhöhe an. Beim Aufhellen kommt der Untergrund zum Vorschein, die Gegenfarbe neutralisiert ihn.</div>' +
+    '<div style="display:flex;gap:3px;margin-bottom:14px">'+leiste+'</div>' +
+    '<div class="pm-misch">' +
+      '<div><span style="display:block;height:46px;border-radius:6px;background:'+p.haar+'"></span><b style="font-size:15px;margin-top:6px">'+p.th+' · '+p.n+'</b><small>Tonhöhe</small></div><i>→</i>' +
+      '<div><span style="display:block;height:46px;border-radius:6px;background:'+p.uf+'"></span><b style="font-size:15px;margin-top:6px">'+p.u+'</b><small>Untergrund</small></div><i>←</i>' +
+      '<div><span style="display:block;height:46px;border-radius:6px;background:'+PMC_GEGEN[p.g]+'"></span><b style="font-size:15px;margin-top:6px">'+p.g+'</b><small>Gegenfarbe</small></div>' +
+    '</div><div style="font-size:11px;color:#7A7A70;margin-top:6px">Farben schematisch, sie variieren je nach Hersteller.</div></div>';
+  html += '<div class="card"><div class="label">Farbkreis</div><div class="pm-txt">Tippe eine Farbe an: Ihre Gegenfarbe liegt genau gegenüber. Zusammen ergeben sie Neutral.</div>' + pmcFarbkreis() + '</div>';
+  html += '<div class="card"><div class="label">Farben sehen</div>' + pmcPunkte([
+    'Das Haar ist wie ein fast farbloser „Schlauch“, gefüllt mit natürlichen Pigmenten. Um sie aufzuhellen, öffnet ein Alkali die Schuppenschicht (Quellung). Auch warmes Wasser lässt das Haar minimal quellen.',
+    'Um Farben zu sehen, braucht es Licht, gesunde Augen und einen Gegenstand. Ein Teil des Lichts wird geschluckt, ein Teil zurückgeworfen. Das, was zurückkommt, sehen wir als Farbe.',
+    'Schwarz schluckt alle Farben, Weiß wirft alle zurück.',
+    'Sonnenlicht enthält alle Farben (Regenbogen). Kunstlicht kann mehr Blau (wirkt kühl) oder mehr Gelb (wirkt warm) enthalten. Deshalb sieht dieselbe Haarfarbe in jedem Licht anders aus.']) +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px"><strong>Beispiel:</strong> Ein Gast findet sein neues Blond zuhause bläulich, im Salon sieht es niemand. Das Licht im Badezimmer ist sehr kühl und verstärkt die blauen Pigmente. In wärmerem Licht fällt das nicht auf.</div>' +
+    '<div class="label" style="margin-top:12px">Farbwirkung</div>' +
+    pmcPunkte(['Helle Haarfarben wirken leichter und lassen einen Schnitt voluminöser wirken.','Dunkle Haarfarben wirken drückender und können Volumen wegnehmen.']) + '</div>';
+  pmcSetze(html);
+}
+
+function pmcFarbkreis() {
+  var a = PMC_KREIS[PMC.kreis], g = PMC_KREIS[a.gegen], s = '';
+  s += '<line x1="'+a.x+'" y1="'+a.y+'" x2="'+g.x+'" y2="'+g.y+'" stroke="#1C1C1A" stroke-width="2" stroke-dasharray="4 3"/>';
+  PMC_KREIS.forEach(function(k, i){
+    var aktiv = i === PMC.kreis || i === a.gegen;
+    s += '<g onclick="PMC.kreis='+i+';pmcPigment()" style="cursor:pointer">' +
+      '<circle cx="'+k.x+'" cy="'+k.y+'" r="'+(aktiv ? 22 : 18)+'" fill="'+k.f+'" stroke="'+(aktiv ? '#1C1C1A' : '#fff')+'" stroke-width="3"/>' +
+      '<text x="'+k.x+'" y="'+(k.y + (k.y > 100 ? 36 : -28))+'" font-size="10" text-anchor="middle" fill="#1C1C1A" font-weight="600">'+k.n+'</text></g>';
+  });
+  s += '<circle cx="100" cy="100" r="18" fill="#B89A72"/><text x="100" y="104" font-size="8" text-anchor="middle" fill="#fff">Neutral</text>';
+  return '<svg viewBox="0 -12 200 224" style="display:block;width:100%;max-width:260px;margin:0 auto" role="img" aria-label="Farbkreis">'+s+'</svg>' +
+    '<div class="pm-txt" style="text-align:center;margin-top:6px"><strong>'+a.n+'</strong> ('+a.r+') + <strong>'+g.n+'</strong> ('+g.r+') = Neutral</div>';
+}
+
+// ── Kontraste ──
+function pmcQuadrat(aussen, innen) {
+  return '<svg viewBox="0 0 100 100" style="width:100%;max-width:120px;display:block;margin:0 auto" aria-hidden="true">' +
+    '<rect x="2" y="2" width="96" height="96" fill="'+aussen+'" stroke="#C8C4BC"/><rect x="28" y="28" width="44" height="44" fill="'+innen+'"/></svg>';
+}
+
+function pmcKontrast() {
+  var k = PMC_KONTRASTE[PMC.kontrast];
+  var bild = k.b ? '<div class="pm-misch"><div>'+pmcQuadrat(k.a, k.i)+'</div><div>'+pmcQuadrat(k.b, k.j)+'</div></div>'
+                 : '<div style="max-width:160px;margin:0 auto">'+pmcQuadrat(k.a, k.i)+'</div>';
+  var html = '<div class="pm-griff-wahl">' + PMC_KONTRASTE.map(function(x, i){
+      return '<button class="btn-toggle'+(i === PMC.kontrast ? ' ak' : '')+'" onclick="PMC.kontrast='+i+';pmcKontrast()">'+x.n+'</button>';
+    }).join('') + '</div>' +
+    '<div class="card"><div class="pm-schritt-titel">'+k.n+'-Kontrast</div>' + bild +
+    '<div class="pm-txt" style="margin-top:12px">'+k.t+'</div>' +
+    '<div class="fb-g" style="font-size:13px;line-height:1.5"><strong>Im Salon:</strong> '+k.haar+'</div></div>';
+  pmcSetze(html);
+}
+
+// ── Diagnose an der Haarsträhne ──
+function pmcStraehne(teil, variante) {
+  var m = '#9A6A40', ansatz = '#3B2A20', laenge = '#E8CFA8';
+  if (variante === 'balken') m = '#6A4430';
+  if (variante === 'loesung1') { ansatz = '#7A5A40'; m = '#806048'; }
+  if (variante === 'loesung2') m = '#D9BE96';
+  var h = '<defs><linearGradient id="pmc-l'+(variante||'')+'" x1="0" x2="1"><stop offset="0" stop-color="'+laenge+'"/><stop offset="1" stop-color="#F4E8D4"/></linearGradient></defs>';
+  h += '<path d="M14 30 Q4 46 14 62 L14 30 Z" fill="#E8B4A0"/>' +
+    '<rect x="14" y="32" width="46" height="28" fill="'+ansatz+'"/>' +
+    '<rect x="60" y="32" width="'+(variante === 'balken' || variante === 'loesung1' || variante === 'loesung2' ? 30 : 14)+'" height="28" fill="'+m+'"/>' +
+    '<path d="M'+(variante === 'balken' || variante === 'loesung1' || variante === 'loesung2' ? 90 : 74)+' 32 L300 44 L300 48 L'+(variante === 'balken' || variante === 'loesung1' || variante === 'loesung2' ? 90 : 74)+' 60 Z" fill="url(#pmc-l'+(variante||'')+')"/>';
+  var mark = {kopfhaut:[4,14], ansatz:[14,60], mittel:[60,74], laengen:[74,300]}[teil];
+  if (mark) h += '<path d="M'+mark[0]+' 24 V18 H'+mark[1]+' V24" fill="none" stroke="#C8312B" stroke-width="2"/>';
+  if (variante === 'loesung2') h += '<path d="M75 6 V24" stroke="#8E1A14" stroke-width="3" marker-end="url(#pmc-pf)"/><defs><marker id="pmc-pf" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#8E1A14"/></marker></defs>';
+  return '<svg viewBox="0 0 310 70" style="display:block;width:100%;max-width:340px;margin:4px auto 8px" role="img" aria-label="Haarsträhne von Ansatz bis Spitze">'+h+'</svg>';
+}
+
+function pmcDiagnose() {
+  var d = PMC_DIAGNOSE[PMC.dia], n = PMC_DIAGNOSE.length;
+  var punkte = PMC_DIAGNOSE.map(function(_, i){ return '<div class="pm-punkt'+(i <= PMC.dia ? ' ak' : '')+'"></div>'; }).join('');
+  var html = '<div class="card"><div class="label">Haardetektiv · Diagnose Schritt für Schritt</div>' +
+    '<div class="pm-txt">Die Diagnose ist neben der Beratung das Herzstück jeder neuen Haarfarbe. Hier sprichst du auch schon Pflege und passende Produkte an.</div></div>' +
+    '<div class="card"><div class="pm-punkte">'+punkte+'</div>' +
+    '<div class="label">Schritt '+(PMC.dia+1)+' von '+n+'</div>' +
+    '<div class="pm-schritt-titel">'+d.n+'</div>' + pmcStraehne(d.teil) + pmcPunkte(d.p);
+  if (d.weiss) html += '<table class="pm-tab" style="margin-top:10px"><tr><th>Weißanteil</th><th>Was deckt?</th></tr>' +
+    PMC_WEISS.map(function(w){ return '<tr><td>'+w[0]+'</td><td>'+w[1]+'</td></tr>'; }).join('') + '</table>' +
+    '<div style="font-size:11px;color:#7A7A70;margin-top:6px">Variiert je nach Hersteller, immer die Herstellerangaben beachten.</div>';
+  html += pmcMerke(d.merke) +
+    '<div class="pm-zeile"><button class="btn-ghost" onclick="PMC.dia=Math.max(0,PMC.dia-1);pmcDiagnose()"'+(PMC.dia === 0 ? ' disabled style="opacity:.4"' : '')+'>← Zurück</button>' +
+    (PMC.dia < n-1 ? '<button class="btn-primary" onclick="PMC.dia++;pmcDiagnose()">Weiter →</button>' : '<button class="btn-primary" onclick="PMC.dia=0;pmcDiagnose()">Von vorne</button>') + '</div></div>';
+  html += '<div class="card"><div class="label">Fallbeispiel: der Balken</div>' + pmcStraehne(null, 'balken') +
+    '<div class="pm-txt">Eine Blond-Kundin war zwischendurch bei einem anderen Friseur. Dort ist ein dunklerer Balken entstanden, z. B. weil die Farbe zu dünn aufgetragen wurde. Jetzt soll sie wieder ihr schönes Blond bekommen.</div>' +
+    '<div class="fb-r" style="font-size:13px;line-height:1.5"><strong>Funktioniert nicht:</strong> die alte Rezeptur nochmal. Der Ansatz würde so hell wie die Längen, aber der Balken bliebe dunkler und sichtbar, denn Haarfarbe hellt Haarfarbe nicht auf.</div>' +
+    '<div class="label" style="margin-top:12px">Lösung 1</div>' + pmcStraehne(null, 'loesung1') +
+    '<div class="pm-txt">Den Ansatz über den Oxidanten nur bis zur Tonhöhe des Balkens aufhellen. Die Nuance so wählen, dass Ansatz und Balken neutralisiert werden. Dafür die Ansatzfarbe über den Balken schattieren oder danach mit einer Tönung angleichen. Das Ergebnis wirkt dunkler.</div>' +
+    '<div class="label">Lösung 2</div>' + pmcStraehne(null, 'loesung2') +
+    '<div class="pm-txt">Zuerst den Balken gezielt blondieren und so Helligkeit schaffen. Das ist sehr genaue Arbeit, je schmaler der Balken, desto mühsamer. Danach Ansatz und Balken neu einfärben.</div>' +
+    '<div style="font-size:11px;color:#7A7A70">Es gibt noch weitere Lösungswege.</div></div>';
+  pmcSetze(html);
+}
+
+// ── Farbprodukte im Vergleich ──
+function pmcQuerschnitt(tiefe) {
+  var s = '<circle cx="50" cy="50" r="44" fill="#E8D3B0" stroke="#A89F92"/><circle cx="50" cy="50" r="34" fill="#D9824A"/>';
+  for (var y = 22; y <= 78; y += 9) for (var x = 22; x <= 78; x += 9) {
+    if ((x-50)*(x-50) + (y-50)*(y-50) < 30*30) s += '<ellipse cx="'+x+'" cy="'+y+'" rx="4" ry="3" fill="#E9A070" stroke="#C06A3A" stroke-width=".6"/>';
+  }
+  s += '<circle cx="50" cy="50" r="3" fill="#F4E8D4"/>';
+  var punkte = [];
+  for (var a = 0; a < 360; a += 18) {
+    var rad = a * Math.PI / 180;
+    punkte.push([50 + 42 * Math.cos(rad), 50 + 42 * Math.sin(rad)]);
+    if (tiefe !== 'oberflaeche') punkte.push([50 + 37 * Math.cos(rad + .15), 50 + 37 * Math.sin(rad + .15)]);
+    if (tiefe === 'tief') { punkte.push([50 + 26 * Math.cos(rad + .3), 50 + 26 * Math.sin(rad + .3)]); punkte.push([50 + 14 * Math.cos(rad * 2), 50 + 14 * Math.sin(rad * 2)]); }
+  }
+  if (tiefe === 'oberflaeche') punkte = punkte.filter(function(_, i){ return i % 2 === 0; });
+  punkte.forEach(function(p){ s += '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4" fill="#2B4C9A"/>'; });
+  return '<svg viewBox="0 0 100 100" style="width:110px;display:block;margin:0 auto" role="img" aria-label="Haarquerschnitt">'+s+'</svg>';
+}
+
+function pmcTube(name, teile) {
+  var y = 30, s = '<rect x="10" y="10" width="60" height="20" fill="#fff" stroke="#C8C4BC"/>';
+  teile.forEach(function(t){
+    var hgt = t[1] * 1.4;
+    s += '<rect x="10" y="'+y+'" width="60" height="'+hgt+'" fill="'+t[2]+'"/><text x="40" y="'+(y + hgt/2 + 3)+'" font-size="8" fill="#fff" text-anchor="middle">'+t[0]+'</text>';
+    y += hgt;
+  });
+  s += '<rect x="26" y="'+y+'" width="28" height="12" fill="#2C2C2C"/>';
+  return '<div><svg viewBox="0 0 80 '+(y + 16)+'" style="width:80px;display:block;margin:0 auto" aria-hidden="true">'+s+'</svg><b style="font-size:13px">'+name+'</b></div>';
+}
+
+function pmcProdukte() {
+  var p = PMC_PRODUKTE[PMC.prod];
+  var html = '<div class="pm-griff-wahl">' + PMC_PRODUKTE.map(function(x, i){
+      return '<button class="btn-toggle'+(i === PMC.prod ? ' ak' : '')+'" onclick="PMC.prod='+i+';pmcProdukte()">'+x.n+'</button>';
+    }).join('') + '</div>' +
+    '<div class="card"><div class="pm-schritt-titel">'+p.n+'</div>' + pmcQuerschnitt(p.tiefe) +
+    '<div style="text-align:center;font-size:11px;color:#7A7A70;margin:4px 0 10px">Blaue Punkte = Farbpigmente: '+({oberflaeche:'an der Oberfläche und in der obersten Schuppenschicht', schuppe:'in der Schuppenschicht und in der Haarfaser', tief:'bis tief in die Haarfaser'})[p.tiefe]+'</div>' +
+    '<dl class="pm-dl"><dt>pH-Bereich</dt><dd>'+p.ph+'</dd><dt>Oxidant</dt><dd>'+p.h2o2+'</dd><dt>Aufhellung</dt><dd>'+p.hell+'</dd><dt>Deckkraft</dt><dd>'+p.deck+'</dd></dl>' +
+    '<div class="label" style="margin-top:12px">Einsatz</div>' + pmcPunkte(p.einsatz) +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">'+p.plus+'</div>' +
+    '<div style="font-size:11px;color:#7A7A70;margin-top:8px">Angaben abhängig von Produkt und Hersteller.</div></div>' +
+    '<div class="card"><div class="label">Was steckt in der Tube?</div>' +
+      '<div class="pm-misch" style="align-items:flex-end">' +
+        pmcTube('Tönung', [['Neben',22,'#7C4F9E'],['Haupt',40,'#3F4F9E'],['Natur',14,'#4E2E1E']]) +
+        pmcTube('Haarfarbe', [['Neben',12,'#7C4F9E'],['Haupt',22,'#3F4F9E'],['Natur',42,'#4E2E1E']]) +
+        pmcTube('Hellerfärber', [['Neben',22,'#7C4F9E'],['Haupt',46,'#3F4F9E'],['Natur',6,'#4E2E1E']]) +
+      '</div>' +
+      pmcPunkte(['<strong>Tönung:</strong> wenig Naturton, viel Reflex. Schonender, reflexreicher, wäscht sich sanft aus, deckt Weiß weniger.','<strong>Haarfarbe:</strong> viel Naturton, weniger Reflex. Hellt stärker auf, mehr Ausgleich und Weißabdeckung.','<strong>Hellerfärber:</strong> kaum Naturton (ca. 10), viel Reflex, der in den letzten Minuten der Einwirkzeit nuanciert.']) +
+    '</div>';
+  pmcSetze(html);
+}
+
+// ── Trainer: Kundenwunsch → Produkt ──
+function pmcTrainer() {
+  var w = PMC_WUENSCHE[PMC.wi], n = PMC_WUENSCHE.length;
+  var html = '<div class="card"><div class="label">Kundenwunsch '+(PMC.wi+1)+' von '+n+'</div>' +
+    '<div class="pm-schritt-titel">'+w.w+'</div>' +
+    '<div class="pm-txt">Welches Produkt ist am haarschonendsten passend? Es kann mehr als eines richtig sein.</div>';
+  Object.keys(PMC_PROD3).forEach(function(k){
+    var kl = '';
+    if (PMC.geprueft) kl = w.r.indexOf(k) >= 0 ? ' ric' : (PMC.wahl[k] ? ' fal' : '');
+    else if (PMC.wahl[k]) kl = ' ric';
+    html += '<button class="opt-btn'+kl+'" onclick="pmcWaehle(\''+k+'\')"'+(PMC.geprueft ? ' disabled' : '')+'>'+(PMC.wahl[k] ? '☑ ' : '☐ ')+PMC_PROD3[k]+'</button>';
+  });
+  if (PMC.geprueft) {
+    var ok = Object.keys(PMC_PROD3).every(function(k){ return !!PMC.wahl[k] === (w.r.indexOf(k) >= 0); });
+    html += '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> Empfohlen: '+w.r.map(function(k){ return PMC_PROD3[k]; }).join(' oder ')+'.</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.wi=(PMC.wi+1)%'+n+';PMC.wahl={};PMC.geprueft=false;pmcTrainer()">Nächster Wunsch →</button></div>';
+  } else {
+    html += '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.geprueft=true;pmcTrainer()">Prüfen</button></div>';
+  }
+  html += '<div style="font-size:11px;color:#7A7A70;margin-top:10px">Auswahl nach dem Grundsatz „so haarschonend wie möglich“. Manche Wünsche lassen sich auch mit einem anderen Produkt erfüllen.</div></div>';
+  pmcSetze(html);
+}
+
+function pmcWaehle(k) { if (PMC.wahl[k]) delete PMC.wahl[k]; else PMC.wahl[k] = true; pmcTrainer(); }
+
+// ── Quiz (10 zufällige Fragen) ──
+function pmcQuizNeu() {
+  PMC.quiz = PMC_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
+  PMC.qi = 0; PMC.richtig = 0; PMC.beantwortet = false;
+}
+
+function pmcQuiz() {
+  if (!PMC.quiz.length) pmcQuizNeu();
+  var n = PMC.quiz.length, html;
+  if (PMC.qi >= n) {
+    html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMC.richtig === n ? '🎉' : '✨')+'</div>' +
+      '<div class="pm-schritt-titel">'+PMC.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="pmcQuizNeu();pmcQuiz()">Nochmal</button></div></div>';
+    pmcSetze(html); return;
+  }
+  var q = PMC_QUIZ[PMC.quiz[PMC.qi]];
+  html = '<div class="card"><div class="label">Frage '+(PMC.qi+1)+' von '+n+' · '+PMC.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
+    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmcAntwort('+i+')">'+o+'</button>'; }).join('') +
+    '<div id="pmc-fb"></div></div>';
+  pmcSetze(html);
+}
+
+function pmcAntwort(i) {
+  if (PMC.beantwortet) return;
+  PMC.beantwortet = true;
+  var q = PMC_QUIZ[PMC.quiz[PMC.qi]], ok = i === q.r;
+  if (ok) PMC.richtig++;
+  document.querySelectorAll('#pmc-inhalt .opt-btn').forEach(function(b, j){
+    b.disabled = true;
+    if (j === q.r) b.classList.add('ric');
+    else if (j === i) b.classList.add('fal');
+  });
+  document.getElementById('pmc-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+    '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.qi++;PMC.beantwortet=false;pmcQuiz()">Weiter →</button></div>';
+}
 </script>
 <script>
 // ── Wörni / Claude – sicherer Proxy ──
