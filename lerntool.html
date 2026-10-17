@@ -86,6 +86,32 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .pm-chip small{display:block;color:#C44030;font-size:12px;margin-top:2px}
 .pm-check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#2C2C2C;padding:8px 0;border-bottom:1px solid #F0ECE5;cursor:pointer}
 .pm-check input{width:18px;height:18px;flex:0 0 auto;margin-top:1px;accent-color:#5B7B6F}
+.pm-stepper{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pm-stepper button{width:40px;height:40px;border-radius:8px;border:1px solid #C8C4BC;background:#fff;font-size:20px;color:#5B7B6F;cursor:pointer}
+.pm-stepper span{font-size:20px;font-weight:600;color:#1C1C1A;min-width:70px;text-align:center}
+.pm-misch{display:flex;align-items:stretch;gap:6px;text-align:center;margin:8px 0 4px}
+.pm-misch div{flex:1;background:#F7F5F0;border-radius:8px;padding:10px 4px}
+.pm-misch b{display:block;font-size:20px;color:#1C1C1A}
+.pm-misch small{font-size:11px;color:#7A7A70}
+.pm-misch i{align-self:center;font-style:normal;color:#7A7A70;font-size:18px}
+.pm-zeit{position:relative;margin:8px 0 0 6px;padding-left:18px;border-left:2px solid #C8C4BC}
+.pm-zeit div{position:relative;font-size:13px;color:#2C2C2C;line-height:1.5;padding-bottom:12px}
+.pm-zeit div:before{content:"";position:absolute;left:-24px;top:4px;width:10px;height:10px;border-radius:50%;background:#5B7B6F}
+.pm-zeit b{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F}
+.pm-timer{font-size:34px;font-weight:600;color:#1C1C1A;text-align:center;font-variant-numeric:tabular-nums}
+.pm-tab{width:100%;border-collapse:collapse;font-size:13px}
+.pm-tab th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;padding:6px 4px;border-bottom:1px solid #E2DDD5}
+.pm-tab td{padding:8px 4px;border-bottom:1px solid #F0ECE5;vertical-align:top;color:#2C2C2C}
+.pm-tab td:first-child{font-weight:700;white-space:nowrap;color:#1C1C1A}
+.pm-karte{perspective:900px;height:230px;margin-bottom:12px;cursor:pointer}
+.pm-karte-in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.pm-karte.um .pm-karte-in{transform:rotateY(180deg)}
+.pm-seite{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;padding:20px;display:flex;flex-direction:column;justify-content:center;text-align:center;border:1px solid #E2DDD5;background:#fff}
+.pm-seite.hinten{transform:rotateY(180deg);background:#EAF0EE;border-color:#5B7B6F}
+.pm-seite .label{margin-bottom:10px}
+.pm-seite p{font-size:16px;line-height:1.5;color:#1C1C1A}
+.pm-seite.hinten p{font-size:14px}
+@media (prefers-reduced-motion: reduce){.pm-karte-in{transition:none}}
 </style>
 </head>
 <body>
@@ -464,12 +490,12 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Ablauf, Wassertemperatur, Massagegriffe, Ablauf-Check</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" disabled>
+  <button class="nav-card pm-modul" onclick="pmFarbeOeffnen()">
     <div class="nav-icon" style="margin:0">🎨</div>
     <div>
-      <div class="pm-lj">1. Lehrjahr</div><span class="pm-bald">kommt bald</span>
+      <div class="pm-lj">1. Lehrjahr</div>
       <div class="nav-title">Farbtechniken</div>
-      <div class="nav-desc">Einwirkzeit-Rechner, Oxidanten-Karten</div>
+      <div class="nav-desc">Mischung &amp; Einwirkzeit, Oxidanten, Lernkarten</div>
     </div>
   </button>
   <button class="nav-card pm-modul" disabled>
@@ -503,6 +529,20 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pmw-tab-check" onclick="pmWaschTab('check')">Check</button>
   </div>
   <div id="pmw-inhalt"></div>
+</div>
+
+<!-- ── MODUL 2: FARBTECHNIKEN ── -->
+<div id="p-pm-farbe" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">1. Lehrjahr · Praxis-Modul</div>
+  <h1>Farbtechniken</h1>
+  <p class="sub">Mischen, einwirken lassen, Oxidanten verstehen.</p>
+  <div class="pm-tabs">
+    <button class="btn-toggle" id="pmf-tab-rechner" onclick="pmFarbeTab('rechner')">Rechner</button>
+    <button class="btn-toggle" id="pmf-tab-oxi" onclick="pmFarbeTab('oxi')">Oxidanten</button>
+    <button class="btn-toggle" id="pmf-tab-karten" onclick="pmFarbeTab('karten')">Lernkarten</button>
+  </div>
+  <div id="pmf-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -1962,6 +2002,310 @@ function pmwSelbstStand(haken) {
 function pmwSelbstLeeren() {
   try { localStorage.removeItem(PMW_SELBST_KEY); } catch(e) {}
   pmwCheck();
+}
+</script>
+<script>
+// ── PRAXIS-MODUL 2: FARBTECHNIKEN ───────────────────────────────
+// Rechner mit den L'Oréal-Professionnel-Linien des Salons. Werte aus den
+// Herstellerseiten bzw. Händlerangaben (Stand Oktober 2026), im Salon gilt
+// immer die Packungsbeilage. Oxidanten-Übersicht und Lernkarten sind
+// allgemeines Fachwissen.
+var PMF_PRODUKTE = {
+  maj: {n:'Majirel', voll:'Majirel · permanente Coloration', stoff:'Farbcreme', ratio:1.5, zeit:35, situation:true,
+        entw:'Oxydant Creme', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100}, ansatz:30,
+        ziele:{dunkler:{n:'Ton in Ton / dunkler', oxi:'6 % (20 Vol)'},
+               h2:{n:'bis 2 Stufen heller', oxi:'6 % (20 Vol)', heller:true},
+               h3:{n:'bis 3 Stufen heller', oxi:'9 % (30 Vol)', heller:true}},
+        hinweis:'Grauabdeckung mit 6 % (20 Vol). Einwirkzeit ohne Wärme.'},
+  inoa:{n:'iNOA', voll:'iNOA · ammoniakfreie Coloration', stoff:'Farbcreme', ratio:1, zeit:35, situation:true,
+        entw:'iNOA Oxydant', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100}, ansatz:30,
+        ziele:{dunkler:{n:'Ton in Ton / dunkler', oxi:'3 % (10 Vol)'},
+               h1:{n:'bis 1 Stufe heller', oxi:'3 % (10 Vol)', heller:true},
+               h2:{n:'bis 2 Stufen heller', oxi:'6 % (20 Vol)', heller:true},
+               h3:{n:'bis 3 Stufen heller', oxi:'9 % (30 Vol)', heller:true}},
+        hinweis:'Nur mit iNOA Oxydant mischen. Grauabdeckung mit 6 % (20 Vol). Einwirkzeit ohne Wärme.'},
+  hl:  {n:'High Lift', voll:'Majirel High Lift · Spezialblond', stoff:'Farbcreme', ratio:2, zeit:50, situation:true,
+        entw:'Oxydant Creme', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100}, ansatz:30,
+        ziele:{max:{n:'max. Aufhellung (Basis 5–6)', oxi:'12 % (40 Vol)', heller:true},
+               neutral:{n:'neutralisieren (Basis 6–9)', oxi:'9 % (30 Vol)', heller:true}},
+        hinweis:'Hellt nur naturbelassenes Haar auf (bis ca. 4 Stufen). Farbe hellt keine Farbe auf.'},
+  dia: {n:'Dia Light', voll:'Dia Light · saure Glanztönung (demipermanent)', stoff:'Tönungscreme', ratio:1.5, zeit:20,
+        entw:'Diactivateur', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100},
+        ziele:{blond:{n:'blond / tonen', oxi:'6 Vol (1,8 %)'},
+               dunkel:{n:'brünett / dunkler', oxi:'9 Vol (2,7 %)'}},
+        hinweis:'Dia Light hellt nicht auf. Einwirkzeit je nach Ziel: Glanz ca. 5 Min, Tonen nach dem Blondieren ca. 10 Min, volle Farbe bis 20 Min.'},
+  bl:  {n:'Blond Studio', voll:'Blond Studio 9 · Aufhellpulver mit Oil Developer', stoff:'Pulver', zeit:50,
+        entw:'Oil Developer', mengen:{kurz:20, mittel:30, lang:40, sehrlang:60},
+        ziele:{folie:{n:'Folie / Foilyage', oxi:'6 % (20 Vol) oder 9 % (30 Vol)', ratio:1.5, heller:true},
+               frei:{n:'Freihand / Balayage', oxi:'6 % (20 Vol) oder 9 % (30 Vol)', ratio:1, heller:true}},
+        hinweis:'Nach Sichtkontrolle, höchstens 50 Min, keine Wärme. Auf der Kopfhaut nur nach Rücksprache mit deiner Stylistin.'}
+};
+var PMF_LAENGE = {kurz:'kurz', mittel:'mittel', lang:'lang', sehrlang:'sehr lang'};
+
+var PMF_KARTEN = [
+  {v:'Was ist ein Oxidant?', h:'Ein Entwickler mit Wasserstoffperoxid (H₂O₂), als Creme oder Flüssigkeit. Er liefert den Sauerstoff für die Oxidation.'},
+  {v:'Welche zwei Aufgaben hat der Oxidant in der Coloration?', h:'1. Er hellt das natürliche Melanin auf.<br>2. Er entwickelt die kleinen Farbvorstufen zu großen Farbmolekülen.'},
+  {v:'Wofür nimmst du 3 % (10 Vol)?', h:'Ton in Ton, dunkler färben, tönen, pigmentieren. Er hellt kaum auf.'},
+  {v:'Wofür nimmst du 6 % (20 Vol)?', h:'Bis ca. 1 Stufe heller und für die Grauabdeckung. Bei Blondierung: die Stärke für den Ansatz auf der Kopfhaut.'},
+  {v:'Wofür nimmst du 9 % (30 Vol)?', h:'Ca. 2 Stufen heller. Bei Blondierung: in der Folie, ohne Kontakt zur Kopfhaut.'},
+  {v:'Wofür nimmst du 12 % (40 Vol)?', h:'Ca. 3 Stufen heller und für Hochlift. Die stärkste Belastung für Haar und Kopfhaut.'},
+  {v:'3 %, 6 %, 9 %, 12 % in Vol?', h:'3 % = 10 Vol<br>6 % = 20 Vol<br>9 % = 30 Vol<br>12 % = 40 Vol'},
+  {v:'Was macht das Alkalisierungsmittel (z. B. Ammoniak) in der Farbe?', h:'Es lässt das Haar quellen und öffnet die Schuppenschicht. Außerdem aktiviert es das Wasserstoffperoxid.'},
+  {v:'Welchen pH-Wert hat der Oxidant, und warum?', h:'Er ist sauer (ca. pH 3–4). So bleibt das Wasserstoffperoxid stabil und zerfällt nicht in der Flasche.'},
+  {v:'Wie lagerst du Oxidant richtig?', h:'Kühl, dunkel und gut verschlossen. Licht und Wärme zersetzen das H₂O₂, dann wirkt es schwächer. Reste nie zurück in die Flasche.'},
+  {v:'Warum mischst du nicht in einer Metallschale?', h:'Metall beschleunigt die Zersetzung des Wasserstoffperoxids, die Reaktion wird unkontrolliert. Nimm eine Kunststoffschale.'},
+  {v:'Was passiert, wenn du zu viel Oxidant in die Farbe gibst?', h:'Die Farbe wird verdünnt: weniger Deckkraft und schlechtere Grauabdeckung, das Ergebnis wird oft heller und wärmer als geplant.'},
+  {v:'Warum mischst du die Farbe erst kurz vor dem Auftragen?', h:'Die Reaktion beginnt sofort beim Mischen. Später verliert die Mischung an Wirkung. Reste werden entsorgt.'},
+  {v:'Erstfärbung heller: Warum zuerst Längen und Spitzen?', h:'Am Ansatz wirkt die Körperwärme, dort reagiert die Farbe schneller („heißer Ansatz“). Darum kommt der Ansatz später, sonst wird er heller als die Längen.'},
+  {v:'Kann Coloration eine vorhandene Farbe aufhellen?', h:'Nein. Farbe hellt keine Farbe auf. Künstliche Pigmente entfernt man nur mit Blondierung oder Farbabzug.'},
+  {v:'Welche Schutzmaßnahmen gelten beim Färben?', h:'Handschuhe tragen, Allergietest nach Herstellerangabe, Haut am Haaransatz schützen, nicht bei verletzter oder entzündeter Kopfhaut färben.'}
+];
+
+var PMF = {tab:'rechner', produkt:'maj', ziel:'dunkler', situation:'ansatz', laenge:'mittel', menge:null,
+           deck:[], gewusst:0, um:false, timer:null};
+
+function pmFarbeOeffnen() {
+  zeige('pm-farbe');
+  pmFarbeTab(PMF.tab);
+}
+
+function pmFarbeTab(tab) {
+  PMF.tab = tab;
+  ['rechner','oxi','karten'].forEach(function(t){
+    document.getElementById('pmf-tab-'+t).classList.toggle('ak', t === tab);
+  });
+  if (tab === 'rechner') pmfRechner();
+  if (tab === 'oxi') pmfOxi();
+  if (tab === 'karten') pmfKarten();
+}
+
+function pmfSetze(html) { document.getElementById('pmf-inhalt').innerHTML = html; }
+
+// ── Mischungs- und Einwirkzeit-Rechner ──
+function pmfWahl(feld, wert) {
+  PMF[feld] = wert;
+  if (feld === 'produkt') PMF.ziel = Object.keys(PMF_PRODUKTE[wert].ziele)[0];
+  PMF.menge = null;
+  pmfRechner();
+}
+
+function pmfMenge(d) {
+  PMF.menge = Math.max(5, Math.min(200, pmfBerechne().menge + d));
+  pmfRechner();
+}
+
+function pmfKnoepfe(feld, daten) {
+  return '<div class="pm-wahl">' + Object.keys(daten).map(function(k){
+    var n = typeof daten[k] === 'string' ? daten[k] : daten[k].n;
+    return '<button class="btn-toggle'+(PMF[feld] === k ? ' ak' : '')+'" onclick="pmfWahl(\''+feld+'\',\''+k+'\')">'+n+'</button>';
+  }).join('') + '</div>';
+}
+
+function pmfZahl(x) { return String(x).replace('.', ','); }
+
+function pmfBerechne() {
+  var p = PMF_PRODUKTE[PMF.produkt], z = p.ziele[PMF.ziel], r = {p:p, z:z};
+  var ansatz = p.situation && PMF.situation === 'ansatz';
+  r.ansatz = ansatz;
+  r.ratio = z.ratio || p.ratio;
+  r.menge = PMF.menge || (ansatz ? p.ansatz : p.mengen[PMF.laenge]);
+  r.oxiMenge = Math.round(r.menge * r.ratio);
+  r.zeit = p.zeit;
+
+  var bl = PMF.produkt === 'bl', T = r.zeit, ph = [];
+  var ende = bl ? 'Spätestens jetzt ausspülen, dann Nachbehandlung (saure Pflege schließt die Schuppenschicht).'
+                : 'Emulgieren (mit wenig Wasser einmassieren), gründlich ausspülen, Nachbehandlung.';
+  if (bl) {
+    ph.push({m:0, t:'Strähnen auftragen ('+z.n+'). Nicht auf die Kopfhaut.'});
+    ph.push({m:10, t:'Sichtkontrolle, danach alle 5–10 Minuten wiederholen.'});
+    ph.push({m:T, t:ende});
+  } else if (ansatz) {
+    ph.push({m:0, t:'Ansatz auftragen, nur das nachgewachsene Haar. Nicht überlappen.'});
+    ph.push({m:T-10, t:'Längen prüfen: Sind sie verblasst, nach Anleitung mit dem Rest auffrischen.'});
+    ph.push({m:T, t:ende});
+  } else if (z.heller) {
+    ph.push({m:0, t:'Längen und Spitzen auftragen, 1–2 cm Abstand zum Ansatz lassen.'});
+    ph.push({m:15, t:'Ansatz auftragen. Er reagiert durch die Körperwärme schneller („heißer Ansatz“).'});
+    ph.push({m:15+T, t:ende});
+  } else {
+    ph.push({m:0, t:'Vom Ansatz bis in die Spitzen in einem Arbeitsgang auftragen.'});
+    ph.push({m:T, t:ende});
+  }
+  r.phasen = ph;
+  r.gesamt = ph[ph.length-1].m;
+  return r;
+}
+
+function pmfRechner() {
+  var p = PMF_PRODUKTE[PMF.produkt], r = pmfBerechne();
+  var html = '<div class="card">' +
+    '<div class="label">Was trägst du auf?</div>' + pmfKnoepfe('produkt', PMF_PRODUKTE) +
+    '<div style="font-size:12px;color:#7A7A70;margin:-6px 0 14px">L’Oréal Professionnel '+p.voll+'</div>' +
+    '<div class="label">'+(PMF.produkt === 'bl' ? 'Technik' : 'Ziel')+'</div>' + pmfKnoepfe('ziel', p.ziele);
+  if (p.situation) html += '<div class="label">Situation</div>' + pmfKnoepfe('situation', {ansatz:'Ansatzbehandlung', erst:'Erstbehandlung'});
+  if (!r.ansatz) html += '<div class="label">Haarlänge</div>' + pmfKnoepfe('laenge', PMF_LAENGE);
+  html += '<div class="label">Menge '+p.stoff+'</div>' +
+    '<div class="pm-stepper"><button onclick="pmfMenge(-5)" aria-label="5 g weniger">−</button><span>'+r.menge+' g</span><button onclick="pmfMenge(5)" aria-label="5 g mehr">+</button></div>' +
+  '</div>';
+
+  html += '<div class="card">' +
+    '<div class="label">Mischung · Verhältnis 1 : '+pmfZahl(r.ratio)+'</div>' +
+    '<div class="pm-misch"><div><b>'+r.menge+' g</b><small>'+p.stoff+'</small></div><i>+</i>' +
+      '<div><b>'+r.oxiMenge+' g</b><small>'+p.entw+'</small></div><i>=</i>' +
+      '<div><b>'+(r.menge + r.oxiMenge)+' g</b><small>Mischung</small></div></div>' +
+    '<dl class="pm-dl"><dt>Entwickler</dt><dd>'+p.entw+' '+r.z.oxi+'</dd>' +
+      '<dt>Einwirkzeit</dt><dd>'+(PMF.produkt === 'bl' ? 'nach Sichtkontrolle, bis '+r.zeit+' Min' : (PMF.produkt === 'dia' ? 'bis ' : '')+r.zeit+' Min')+(r.gesamt !== r.zeit ? ' (gesamt mit Auftragen: '+r.gesamt+' Min)' : '')+'</dd></dl>' +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5">'+p.hinweis+'</div>' +
+  '</div>';
+
+  html += '<div class="card"><div class="label">Auftragsplan</div><div class="pm-zeit">' +
+    r.phasen.map(function(ph){ return '<div><b>'+ph.m+' Min</b>'+ph.t+'</div>'; }).join('') +
+    '</div><div id="pmf-timer-box"></div></div>';
+
+  html += '<div class="fb-o" style="font-size:13px;line-height:1.6;margin-bottom:12px"><strong>Packungsbeilage geht vor.</strong> Die Werte stammen von L’Oréal Professionnel (Stand Oktober 2026). Weicht die Anleitung auf eurer Packung ab, gilt die Packung. Im Zweifel fragst du deine Stylistin.<br>' +
+    'Immer: Handschuhe, Allergietest 48 Stunden vorher nach Herstellerangabe, Kunststoffschale, erst kurz vor dem Auftragen mischen, Reste entsorgen.</div>';
+  pmfSetze(html);
+  pmfTimerZeigen();
+}
+
+// ── Einwirkzeit-Timer ──
+function pmfTimerStart() {
+  var r = pmfBerechne();
+  PMF.timer = {start:Date.now(), ende:Date.now() + r.gesamt*60000, phasen:r.phasen, name:r.p.n, fertig:false};
+  if (!PMF.timerIv) PMF.timerIv = setInterval(pmfTimerZeigen, 1000);
+  pmfTimerZeigen();
+}
+
+function pmfTimerStopp() {
+  PMF.timer = null;
+  clearInterval(PMF.timerIv); PMF.timerIv = null;
+  pmfTimerZeigen();
+}
+
+function pmfTimerZeigen() {
+  var box = document.getElementById('pmf-timer-box');
+  var t = PMF.timer;
+  if (t && !t.fertig && Date.now() >= t.ende) {
+    t.fertig = true;
+    clearInterval(PMF.timerIv); PMF.timerIv = null;
+    try { if (navigator.vibrate) navigator.vibrate([300,150,300]); } catch(e) {}
+  }
+  if (!box) return;
+  if (!t) {
+    box.innerHTML = '<div class="pm-zeile"><button class="btn-primary" onclick="pmfTimerStart()">⏱ Timer starten ('+pmfBerechne().gesamt+' Min)</button></div>';
+    return;
+  }
+  var vorbei = Math.floor((Date.now() - t.start) / 60000);
+  var rest = Math.max(0, Math.ceil((t.ende - Date.now()) / 1000));
+  var jetzt = t.phasen[0];
+  t.phasen.forEach(function(ph){ if (vorbei >= ph.m) jetzt = ph; });
+  var naechste = t.phasen.filter(function(ph){ return ph.m > vorbei; })[0];
+  var mm = Math.floor(rest / 60), ss = rest % 60;
+  box.innerHTML = '<div style="border-top:1px solid #E2DDD5;margin-top:4px;padding-top:14px">' +
+    '<div class="label" style="text-align:center">Timer · '+t.name+'</div>' +
+    '<div class="pm-timer">'+(t.fertig ? 'Fertig!' : mm+':'+(ss < 10 ? '0' : '')+ss)+'</div>' +
+    '<div class="'+(t.fertig ? 'fb-g' : 'fb-o')+'" style="font-size:13px;line-height:1.5"><strong>Jetzt:</strong> '+(t.fertig ? t.phasen[t.phasen.length-1].t : jetzt.t) +
+      (!t.fertig && naechste ? '<br><span style="color:#7A7A70">Bei '+naechste.m+' Min: '+naechste.t+'</span>' : '')+'</div>' +
+    '<div class="pm-zeile"><button class="btn-ghost" onclick="pmfTimerStopp()">'+(t.fertig ? 'Schließen' : 'Timer stoppen')+'</button></div>' +
+  '</div>';
+}
+
+// ── Oxidanten-Übersicht ──
+function pmfStrang(schritt) {
+  var h = '<svg viewBox="0 0 240 70" style="display:block;width:100%;max-width:300px;margin:4px auto 8px" role="img" aria-label="Haar im Längsschnitt, Schritt '+schritt+'">' +
+    '<rect x="10" y="24" width="220" height="22" rx="4" fill="#EFE7DC" stroke="#C8C4BC"/>';
+  var heb = schritt === 3 ? 2 : 9;
+  for (var x = 14; x < 226; x += 14) {
+    h += '<path d="M'+x+' 24 L'+(x+14)+' '+(24-heb)+'" stroke="#A89F92" stroke-width="1.5" fill="none"/>' +
+         '<path d="M'+x+' 46 L'+(x+14)+' '+(46+heb)+'" stroke="#A89F92" stroke-width="1.5" fill="none"/>';
+  }
+  var mel = [[30,32],[58,38],[86,30],[114,37],[142,32],[170,38],[198,31],[215,37]];
+  mel.forEach(function(m, i){
+    if (schritt === 1 || i % 2 === 0) h += '<circle cx="'+m[0]+'" cy="'+m[1]+'" r="2.5" fill="'+(schritt === 1 ? '#5A3A2A' : '#B08A6A')+'"/>';
+  });
+  if (schritt === 2) {
+    [[40,8],[75,62],[120,6],[160,64],[200,9]].forEach(function(d){ h += '<circle cx="'+d[0]+'" cy="'+d[1]+'" r="2" fill="#C4B86A"/>'; });
+    [[52,30],[100,40],[150,29],[188,41]].forEach(function(d){ h += '<circle cx="'+d[0]+'" cy="'+d[1]+'" r="2" fill="#C4B86A"/>'; });
+  }
+  if (schritt === 3) {
+    [[44,35],[96,34],[128,36],[180,34],[208,35]].forEach(function(d){ h += '<circle cx="'+d[0]+'" cy="'+d[1]+'" r="5.5" fill="#A0522D"/>'; });
+  }
+  return h + '</svg>';
+}
+
+function pmfOxi() {
+  var html = '<div class="card"><div class="label">Oxidant-Stärken</div>' +
+    '<table class="pm-tab"><tr><th>Stärke</th><th>Vol</th><th>Wofür</th></tr>' +
+      '<tr><td>3 %</td><td>10</td><td>Ton in Ton, dunkler, Tönen, Pigmentieren</td></tr>' +
+      '<tr><td>6 %</td><td>20</td><td>bis ca. 1 Stufe heller, Grauabdeckung; Blondierung am Ansatz</td></tr>' +
+      '<tr><td>9 %</td><td>30</td><td>ca. 2 Stufen heller; Blondierung in Folie</td></tr>' +
+      '<tr><td>12 %</td><td>40</td><td>ca. 3 Stufen heller, Hochlift; stärkste Belastung</td></tr>' +
+    '</table>' +
+    '<div style="font-size:12px;color:#7A7A70;margin-top:10px">Je höher der Prozentwert, desto stärker die Aufhellung und desto größer die Belastung für Haar und Kopfhaut.</div>' +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">Das ist das allgemeine Schema aus der Berufsschule. Im Salon gilt die Anleitung der Farblinie, z. B. färbt Majirel auch Ton in Ton und dunkler mit 6 % (20 Vol). Siehe Rechner.</div></div>';
+  html += '<div class="card"><div class="label">So wirkt eine Oxidationsfarbe</div>' +
+    '<div class="pm-schritt-titel" style="font-size:15px;margin:8px 0 0">1. Haar quillt auf</div>' + pmfStrang(1) +
+    '<div class="pm-txt">Das Alkalisierungsmittel (z. B. Ammoniak) lässt das Haar quellen, die Schuppenschicht öffnet sich.</div>' +
+    '<div class="pm-schritt-titel" style="font-size:15px;margin:8px 0 0">2. Aufhellen und eindringen</div>' + pmfStrang(2) +
+    '<div class="pm-txt">Die kleinen Farbvorstufen (gelb) dringen ein. Das Wasserstoffperoxid hellt das natürliche Melanin (braun) auf.</div>' +
+    '<div class="pm-schritt-titel" style="font-size:15px;margin:8px 0 0">3. Farbe entwickelt sich</div>' + pmfStrang(3) +
+    '<div class="pm-txt">Durch die Oxidation verbinden sich die Vorstufen zu großen Farbmolekülen. Sie passen nicht mehr hinaus und bleiben im Haar. Eine saure Nachbehandlung schließt die Schuppenschicht.</div></div>';
+  html += '<div class="card"><div class="label">Fachbegriffe</div><dl class="pm-dl">' +
+    '<dt>H₂O₂</dt><dd>Wasserstoffperoxid, der Wirkstoff im Oxidant</dd>' +
+    '<dt>Oxidation</dt><dd>chemische Reaktion mit Sauerstoff</dd>' +
+    '<dt>pH-Wert</dt><dd>Oxidant sauer (stabil), Farbcreme alkalisch, die Mischung ist alkalisch</dd>' +
+    '<dt>Emulgieren</dt><dd>Farbe vor dem Ausspülen mit wenig Wasser einmassieren, löst Farbreste von der Kopfhaut</dd>' +
+    '<dt>Vol</dt><dd>Volumen: wie viel Liter Sauerstoff 1 Liter Oxidant freisetzt (6 % = 20 Vol)</dd>' +
+  '</dl></div>';
+  pmfSetze(html);
+}
+
+// ── Lernkarten ──
+function pmfMischen() {
+  PMF.deck = PMF_KARTEN.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; });
+  PMF.gewusst = 0; PMF.um = false;
+}
+
+function pmfKarten() {
+  if (!PMF.deck.length && !PMF.gewusst) pmfMischen();
+  var n = PMF_KARTEN.length, html;
+  if (!PMF.deck.length) {
+    html = '<div class="card" style="text-align:center"><div style="font-size:40px">🎉</div>' +
+      '<div class="pm-schritt-titel">Alle '+n+' Karten gewusst!</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="pmfMischen();pmfKarten()">Nochmal von vorne</button></div></div>';
+    pmfSetze(html); return;
+  }
+  var k = PMF_KARTEN[PMF.deck[0]];
+  html = '<div style="font-size:13px;color:#5B7B6F;font-weight:600;margin-bottom:8px">'+PMF.gewusst+' von '+n+' gewusst · noch '+PMF.deck.length+' im Stapel</div>' +
+    '<div class="pm-karte'+(PMF.um ? ' um' : '')+'" onclick="pmfUmdrehen()" role="button" tabindex="0" aria-label="Karte umdrehen">' +
+      '<div class="pm-karte-in">' +
+        '<div class="pm-seite"><div class="label">Frage</div><p>'+k.v+'</p><div style="font-size:12px;color:#7A7A70;margin-top:14px">Tippen zum Umdrehen</div></div>' +
+        '<div class="pm-seite hinten"><div class="label">Antwort</div><p>'+k.h+'</p></div>' +
+      '</div></div>';
+  html += pmfKartenKnoepfe();
+  pmfSetze(html);
+}
+
+function pmfKartenKnoepfe() {
+  return PMF.um
+    ? '<div class="pm-zeile"><button class="btn-ghost" onclick="pmfAntwort(false)">↺ Nochmal</button><button class="btn-primary" onclick="pmfAntwort(true)">✓ Gewusst</button></div>'
+    : '<div class="pm-zeile"><button class="btn-primary" onclick="pmfUmdrehen()">Antwort zeigen</button></div>';
+}
+
+function pmfUmdrehen() {
+  var el = document.querySelector('.pm-karte');
+  PMF.um = !PMF.um;
+  if (el) el.classList.toggle('um', PMF.um);
+  // Knöpfe passend zur Seite neu zeichnen, die Karte selbst bleibt für die Animation stehen
+  var z = document.querySelector('#pmf-inhalt .pm-zeile');
+  if (z) z.outerHTML = pmfKartenKnoepfe();
+}
+
+function pmfAntwort(gewusst) {
+  var k = PMF.deck.shift();
+  if (gewusst) PMF.gewusst++; else PMF.deck.push(k);
+  PMF.um = false;
+  pmfKarten();
 }
 </script>
 <script>
