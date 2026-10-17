@@ -62,6 +62,10 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .pm-tabs-viele .btn-toggle{flex:1 1 30%}
 .pm-range{padding:0;border:none;background:none;accent-color:#5B7B6F;height:28px}
 .pm-misch svg{display:block;margin:0 auto 4px}
+.pmh-fotos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pmh-fotos figure{margin:0}
+.pmh-fotos img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:8px;background:#E2DDD5}
+.pmh-fotos figcaption{font-size:12px;line-height:1.4;color:#2C2C2C;margin-top:6px}
 .pm-punkte{display:flex;gap:4px;margin-bottom:14px}
 .pm-punkt{flex:1;height:4px;border-radius:2px;background:#E2DDD5}
 .pm-punkt.ak{background:#5B7B6F}
@@ -517,12 +521,12 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Naturpigmente, Farbkreis, Kontraste, Diagnose, Produktwahl</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" disabled>
+  <button class="nav-card pm-modul" onclick="pmHochOeffnen()">
     <div class="nav-icon" style="margin:0">👑</div>
     <div>
-      <div class="pm-lj">3. Lehrjahr</div><span class="pm-bald">kommt bald</span>
+      <div class="pm-lj">3. Lehrjahr</div>
       <div class="nav-title">Hochstecken nach Gesichtsform</div>
-      <div class="nav-desc">Volumen, Do's &amp; Don'ts, Styling-Guides</div>
+      <div class="nav-desc">Rund, eckig, oval, herzförmig: Varianten, Do's &amp; Don'ts, Styling-Guides</div>
     </div>
   </button>
 </div>
@@ -589,6 +593,20 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pmc-tab-quiz" onclick="pmColoristTab('quiz')">Quiz</button>
   </div>
   <div id="pmc-inhalt"></div>
+</div>
+
+<!-- ── MODUL 5: HOCHSTECKEN ── -->
+<div id="p-pm-hoch" class="page">
+  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <div class="tag">3. Lehrjahr · Praxis-Modul</div>
+  <h1>Hochstecken nach Gesichtsform</h1>
+  <p class="sub">Welche Hochsteckfrisur zu welcher Gesichtsform passt, und wie sie entsteht.</p>
+  <div class="pm-tabs">
+    <button class="btn-toggle" id="pmh-tab-form" onclick="pmHochTab('form')">Gesichtsform</button>
+    <button class="btn-toggle" id="pmh-tab-frisuren" onclick="pmHochTab('frisuren')">Styling-Guides</button>
+    <button class="btn-toggle" id="pmh-tab-quiz" onclick="pmHochTab('quiz')">Quiz</button>
+  </div>
+  <div id="pmh-inhalt"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -3241,6 +3259,137 @@ function pmcAntwort(i) {
   });
   document.getElementById('pmc-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.qi++;PMC.beantwortet=false;pmcQuiz()">Weiter →</button></div>';
+}
+</script>
+<script>
+// ── PRAXIS-MODUL 5: HOCHSTECKEN NACH GESICHTSFORM (3. LEHRJAHR) ─────
+// Gesichtsformen und Frisur-Varianten nach der Bildvorlage des Salons
+// (bilder/hochstecken/, je Form Variante A und B).
+var PMH_FORMEN = [
+  {id:'rund', n:'Rund', ziel:'Das Gesicht optisch strecken und die Konturen weicher machen.',
+   var:[{bild:'rund-a', t:'Dutt (Top Knot)', w:'Streckender Effekt, das Gesicht wirkt optisch länger.'},
+        {bild:'rund-b', t:'Seitlicher Dutt auf Wangenhöhe', w:'Bricht die Symmetrie und sorgt für weiche Konturen.'}],
+   dos:['Höhe am Oberkopf, z. B. mit einem Top Knot.','Asymmetrie: seitlich gesetzter Dutt, Seitenscheitel.','Ein paar gelöste, weiche Strähnen am Gesicht.'],
+   donts:['Streng symmetrische, runde Formen rund ums Gesicht.','Flach anliegender Oberkopf ohne Höhe.']},
+  {id:'eckig', n:'Eckig', ziel:'Die kantigen Linien an Stirn und Kiefer weicher wirken lassen.',
+   var:[{bild:'eckig-a', t:'Soft Top Knot', w:'Lockere Struktur, wirkt weniger hart als ein strenger Dutt.'},
+        {bild:'eckig-b', t:'Tief sitzender Chignon auf Kinnhöhe', w:'Gleicht die eckige Kieferpartie aus.'}],
+   dos:['Lockere, weiche Struktur statt glatter Strenge.','Gelöste Strähnen an Schläfen und Kiefer.','Chignon tief, etwa auf Kinnhöhe.'],
+   donts:['Streng glatt zurückgekämmt, harter, strenger Dutt.','Gerade, kantige Linien und Scheitel.']},
+  {id:'oval', n:'Oval', ziel:'Die ausgewogenen Proportionen zeigen. Fast jede Hochsteckfrisur passt.',
+   var:[{bild:'oval-a', t:'Dutt (Top Knot)', w:'Universell passend, zeigt die ausgewogene Gesichtsform.'},
+        {bild:'oval-b', t:'Tief sitzender Chignon auf Kinnhöhe', w:'Eleganter, klassischer Look.'}],
+   dos:['Gesicht ruhig freilegen, die Proportionen dürfen sich zeigen.','Hoch oder tief, streng oder locker: nach Anlass und Typ wählen.'],
+   donts:['Nichts übertreiben, was die Balance stört.']},
+  {id:'herz', n:'Herzförmig', ziel:'Die breite Stirn ausgleichen und die Kinn- und Kieferpartie betonen.',
+   var:[{bild:'herz-a', t:'Voluminöser Top Knot', w:'Gleicht die Stirnbreite aus, mit weichen Konturen durch gelöste Strähnen.'},
+        {bild:'herz-b', t:'Tiefer, weicher Chignon', w:'Bietet Fülle am Kiefer und mildert die Stirn.'}],
+   dos:['Weiche, gelöste Strähnen an Stirn und Schläfen.','Fülle auf Kiefer- und Kinnhöhe, z. B. mit einem tiefen Chignon.'],
+   donts:['Straff und glatt zurück mit ganz freier, betonter Stirn.']}
+];
+
+var PMH_FRISUREN = {
+  topknot:{n:'Dutt (Top Knot)', bilder:['rund-a','oval-a'], formen:['Rund','Oval'], wirkung:'Höhe am Oberkopf, streckt das Gesicht.',
+    schritte:['Haar föhnen und griffig machen (Volumen- oder Texturspray).','Haar glatt nach oben kämmen, Oberkopf eventuell am Ansatz leicht toupieren.','Pferdeschwanz hoch am Oberkopf mit einem Gummi fixieren.','Längen eindrehen und um die Basis legen (eventuell über einen Haar-Donut).','Mit U-Nadeln in der Basis feststecken, Enden verstecken.','Glatt finishen, Haarspray.']},
+  soft:{n:'Soft / voluminöser Top Knot', bilder:['eckig-a','herz-a'], formen:['Eckig','Herzförmig'], wirkung:'Höhe mit lockerer Struktur, weiche Konturen.',
+    schritte:['Struktur geben: Textur- oder Salzspray, Längen mit dem Lockenstab wellen.','Haar mit den Fingern locker nach oben nehmen, nicht glatt kämmen.','Oberkopf leicht antoupieren für Volumen.','Lockeren Zopf binden, Längen locker um die Basis legen.','Mit Nadeln feststecken, Knoten etwas auseinanderzupfen.','Weiche Strähnen an Stirn, Schläfen und Nacken lösen.']},
+  chignon:{n:'Tiefer Chignon (seitlich, Kinnhöhe)', bilder:['eckig-b','oval-b','herz-b','rund-b'], formen:['Eckig','Oval','Herzförmig','Rund (seitlich auf Wangenhöhe)'], wirkung:'Fülle tief am Kiefer oder seitlich, elegant und weich.',
+    schritte:['Längen mit dem Lockenstab wellen, Haar griffig machen.','Mittelscheitel oder Seitenscheitel ziehen, Oberkopf glatt halten.','Haar seitlich tief zusammennehmen, etwa auf Kinnhöhe (bei rundem Gesicht auf Wangenhöhe).','Längen in Partien eindrehen und zu einem weichen Knoten feststecken.','Mit U-Nadeln und Klemmnadeln fixieren, Nadeln im Haar verstecken.','Einzelne gewellte Strähnen am Gesicht lösen, Haarspray.']}
+};
+
+var PMH_QUIZ = [
+  {f:'Welche Wirkung hat ein Top Knot bei einem runden Gesicht?', o:['Das Gesicht wirkt breiter','Er streckt, das Gesicht wirkt optisch länger','Er betont das Kinn','Keine'], r:1, e:'Die Höhe am Oberkopf streckt das runde Gesicht.'},
+  {f:'Warum passt bei einem runden Gesicht auch ein seitlicher Dutt auf Wangenhöhe?', o:['Er macht das Gesicht runder','Er bricht die Symmetrie und sorgt für weiche Konturen','Er versteckt die Ohren','Er gibt Höhe'], r:1, e:'Die Asymmetrie lockert die runde Form auf.'},
+  {f:'Wie gleichst du eine eckige Kieferpartie aus?', o:['Streng glatt zurück','Mit einem tief sitzenden Chignon auf Kinnhöhe oder einem lockeren Soft Top Knot','Mit einem sehr strengen, hohen Dutt','Gar nicht'], r:1, e:'Weiche Struktur und Fülle auf Kinnhöhe nehmen die Härte aus dem Kiefer.'},
+  {f:'Was ist der Unterschied zwischen einem Soft Top Knot und einem strengen Dutt?', o:['Keiner','Der Soft Top Knot hat lockere Struktur und wirkt weniger hart','Der Soft Top Knot sitzt im Nacken','Der strenge Dutt ist immer voluminöser'], r:1, e:'Locker und strukturiert statt glatt und streng.'},
+  {f:'Welche Gesichtsform verträgt fast jede Hochsteckfrisur?', o:['Rund','Eckig','Oval','Herzförmig'], r:2, e:'Das ovale Gesicht ist ausgewogen, Top Knot und Chignon passen beide.'},
+  {f:'Herzförmiges Gesicht: Was gleicht die breite Stirn aus?', o:['Straff zurück mit freier Stirn','Weiche, gelöste Strähnen und Fülle am Kiefer, z. B. ein tiefer, weicher Chignon','Nur ein glatter Mittelscheitel','Gar nichts'], r:1, e:'Weiche Strähnen mildern die Stirn, Fülle am Kiefer gleicht das schmale Kinn aus.'},
+  {f:'Was bedeutet die Gesichtsform in der Beratung?', o:['Sie bestimmt die Frisur eindeutig','Sie ist ein Ausgangspunkt, dazu kommen Haarstruktur, Dichte, Anlass und Wunsch','Sie ist unwichtig','Sie gilt nur für Kurzhaar'], r:1, e:'Keine Patentrezepte: Gesichtsform, Haar, Person und Anlass ergeben gemeinsam die Empfehlung.'},
+  {f:'Wie bereitest du frisch gewaschenes, glattes Haar für eine Hochsteckfrisur vor?', o:['Gar nicht','Griffig machen, z. B. mit Textur- oder Volumenspray, eventuell Lockenstab','Mit Öl glatt machen','Nass hochstecken'], r:1, e:'Hochsteckfrisuren halten in griffigem Haar viel besser.'},
+  {f:'Wie steckst du Haarnadeln richtig?', o:['Sichtbar von außen','Im Haar versteckt, in die feste Basis, U-Nadeln in den Knoten','Nur eine Nadel pro Frisur','Quer über den Scheitel'], r:1, e:'Nadeln verschwinden im Haar und greifen in die feste Basis.'}
+];
+
+var PMH = {tab:'form', form:0, fr:'topknot', quiz:[], qi:0, richtig:0, beantwortet:false};
+
+function pmHochOeffnen() { zeige('pm-hoch'); pmHochTab(PMH.tab); }
+
+function pmHochTab(tab) {
+  PMH.tab = tab;
+  ['form','frisuren','quiz'].forEach(function(t){ document.getElementById('pmh-tab-'+t).classList.toggle('ak', t === tab); });
+  ({form:pmhForm, frisuren:pmhFrisuren, quiz:pmhQuiz})[tab]();
+}
+
+function pmhSetze(html) { document.getElementById('pmh-inhalt').innerHTML = html; }
+function pmhPunkte(p) { return '<ul class="pm-liste">' + p.map(function(x){ return '<li>'+x+'</li>'; }).join('') + '</ul>'; }
+function pmhFoto(bild, titel) { return '<img src="bilder/hochstecken/'+bild+'.jpg" alt="'+titel+'" loading="lazy">'; }
+
+function pmhForm() {
+  var F = PMH_FORMEN[PMH.form];
+  var html = '<div class="pm-griff-wahl">' + PMH_FORMEN.map(function(x, i){
+      return '<button class="btn-toggle'+(i === PMH.form ? ' ak' : '')+'" onclick="PMH.form='+i+';pmhForm()">'+x.n+'</button>';
+    }).join('') + '</div>' +
+    '<div class="card"><div class="pm-schritt-titel">Gesichtsform '+F.n+'</div>' +
+    '<div class="pm-txt"><strong>Ziel:</strong> '+F.ziel+'</div>' +
+    '<div class="pmh-fotos">' + F.var.map(function(v, i){
+      return '<figure>'+pmhFoto(v.bild, F.n+' '+'AB'[i]+': '+v.t)+'<figcaption><b>'+F.n+' '+'AB'[i]+'</b><br>'+v.t+' – '+v.w+'</figcaption></figure>';
+    }).join('') + '</div>' +
+    '<div class="fb-g" style="font-size:13px;line-height:1.5;margin-top:12px"><strong>Do\'s</strong>'+pmhPunkte(F.dos)+'</div>' +
+    '<div class="fb-r" style="font-size:13px;line-height:1.5"><strong>Don\'ts</strong>'+pmhPunkte(F.donts)+'</div>' +
+    '</div>' +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-bottom:12px"><strong>Keine Patentrezepte:</strong> Die Gesichtsform ist ein Ausgangspunkt. Immer mitdenken: Haarstruktur, Dichte, Wirbel, Anlass, Kleid und Wunsch des Gastes. Mehr dazu in der <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/beratung-formwirkung.html" style="color:#5B7B6F">Beratung &amp; Formwirkung</a>.</div>';
+  pmhSetze(html);
+}
+
+function pmhFrisuren() {
+  var keys = Object.keys(PMH_FRISUREN), f = PMH_FRISUREN[PMH.fr];
+  var html = '<div class="pm-griff-wahl">' + keys.map(function(k){
+      return '<button class="btn-toggle'+(k === PMH.fr ? ' ak' : '')+'" onclick="PMH.fr=\''+k+'\';pmhFrisuren()">'+PMH_FRISUREN[k].n+'</button>';
+    }).join('') + '</div>' +
+    '<div class="card"><div class="pm-schritt-titel">'+f.n+'</div>' +
+    '<div class="pmh-fotos">' + f.bilder.slice(0, 2).map(function(b){ return '<figure>'+pmhFoto(b, f.n)+'</figure>'; }).join('') + '</div>' +
+    '<div class="pm-txt" style="margin-top:10px"><strong>Wirkung:</strong> '+f.wirkung+'</div>' +
+    '<dl class="pm-dl"><dt>Passt zu</dt><dd>'+f.formen.join(', ')+'</dd></dl>' +
+    '<div class="label" style="margin-top:12px">Schritt für Schritt</div>' +
+    '<ol class="pm-liste">' + f.schritte.map(function(x){ return '<li>'+x+'</li>'; }).join('') + '</ol></div>' +
+    '<div class="card"><div class="label">Werkzeug</div>' + pmhPunkte(['Stielkamm, Toupierkamm oder Toupierbürste','Haargummis, Haar-Donut oder Haarpolster','U-Nadeln (Haarnadeln) und Klemmnadeln (Bobby Pins)','Lockenstab, Textur- oder Volumenspray, Haarspray']) +
+    '<div class="label" style="margin-top:12px">Grundregeln</div>' + pmhPunkte(['Haar griffig vorbereiten, frisch gewaschenes Haar hält schlechter.','Erst eine feste Grundlage schaffen (Zopfbasis).','Nadeln im Haar verstecken und in die Basis stecken.','Zwischendurch von allen Seiten im Spiegel kontrollieren.','Anlass, Kleid, Brille und Haardichte beim Planen mitdenken.']) + '</div>';
+  pmhSetze(html);
+}
+
+function pmhQuizNeu() {
+  PMH.quiz = PMH_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; });
+  PMH.qi = 0; PMH.richtig = 0; PMH.beantwortet = false;
+}
+
+function pmhQuiz() {
+  if (!PMH.quiz.length) pmhQuizNeu();
+  var n = PMH.quiz.length, html;
+  if (PMH.qi >= n) {
+    html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMH.richtig === n ? '🎉' : '✨')+'</div>' +
+      '<div class="pm-schritt-titel">'+PMH.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-zeile"><button class="btn-primary" onclick="pmhQuizNeu();pmhQuiz()">Nochmal</button></div></div>';
+    pmhSetze(html); return;
+  }
+  var q = PMH_QUIZ[PMH.quiz[PMH.qi]];
+  html = '<div class="card"><div class="label">Frage '+(PMH.qi+1)+' von '+n+' · '+PMH.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
+    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmhAntwort('+i+')">'+o+'</button>'; }).join('') +
+    '<div id="pmh-fb"></div></div>';
+  pmhSetze(html);
+}
+
+function pmhAntwort(i) {
+  if (PMH.beantwortet) return;
+  PMH.beantwortet = true;
+  var q = PMH_QUIZ[PMH.quiz[PMH.qi]], ok = i === q.r;
+  if (ok) PMH.richtig++;
+  document.querySelectorAll('#pmh-inhalt .opt-btn').forEach(function(b, j){
+    b.disabled = true;
+    if (j === q.r) b.classList.add('ric');
+    else if (j === i) b.classList.add('fal');
+  });
+  document.getElementById('pmh-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+    '<div class="pm-zeile"><button class="btn-primary" onclick="PMH.qi++;PMH.beantwortet=false;pmhQuiz()">Weiter →</button></div>';
 }
 </script>
 <script>
