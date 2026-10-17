@@ -2006,32 +2006,39 @@ function pmwSelbstLeeren() {
 </script>
 <script>
 // ── PRAXIS-MODUL 2: FARBTECHNIKEN ───────────────────────────────
-// Lernwerte aus dem Fachunterricht, keine Herstellerangaben. Im Salon gilt
-// immer die Anleitung des verwendeten Produkts.
-var PMF_OXI = {3:'3 % (10 Vol)', 6:'6 % (20 Vol)', 9:'9 % (30 Vol)', 12:'12 % (40 Vol)'};
-
+// Rechner mit den L'Oréal-Professionnel-Linien des Salons. Werte aus den
+// Herstellerseiten bzw. Händlerangaben (Stand Oktober 2026), im Salon gilt
+// immer die Packungsbeilage. Oxidanten-Übersicht und Lernkarten sind
+// allgemeines Fachwissen.
 var PMF_PRODUKTE = {
-  col:{n:'Coloration', voll:'Oxidationshaarfarbe (permanent)', stoff:'Farbcreme', ratio:1,
-       mengen:{kurz:30, mittel:45, lang:60, sehrlang:90}, ansatz:30},
-  hl: {n:'Hochlift', voll:'Hochlift-Coloration (Spezialblond)', stoff:'Farbcreme', ratio:2, oxi:12, zeit:45,
-       mengen:{kurz:30, mittel:40, lang:60, sehrlang:80}, ansatz:30,
-       hinweis:'Hochlift hellt naturbelassenes Haar um ca. 4 Stufen auf. Bereits gefärbtes Haar hellt es nicht auf: Farbe hellt keine Farbe auf.'},
-  int:{n:'Intensivtönung', voll:'Intensivtönung (demipermanent)', stoff:'Tönungscreme', ratio:2, zeit:20,
-       oxiText:'niedrig, ca. 1,9–4 % laut Hersteller', mengen:{kurz:30, mittel:40, lang:60, sehrlang:80},
-       hinweis:'Eine Intensivtönung hellt nicht auf. Sie frischt Farbe auf, tönt oder deckt leichten Grauanteil.'},
-  bl: {n:'Blondierung', voll:'Blondierung (Aufhellpulver)', stoff:'Blondierpulver', ratio:2, zeit:50,
-       mengen:{kurz:20, mittel:30, lang:40, sehrlang:60}, ansatz:20,
-       hinweis:'Blondierung wirkt nach Sichtkontrolle: alle 5–10 Minuten eine Strähne prüfen, nie länger als die Höchstzeit des Herstellers.'}
-};
-var PMF_ZIEL_COL = {
-  dunkler:{n:'Ton in Ton / dunkler', oxi:3, heller:false},
-  h1:{n:'1 Stufe heller', oxi:6, heller:true},
-  h2:{n:'2 Stufen heller', oxi:9, heller:true},
-  h3:{n:'3 Stufen heller', oxi:12, heller:true}
-};
-var PMF_ZIEL_BL = {
-  kopfhaut:{n:'auf der Kopfhaut', oxi:6},
-  folie:{n:'in Folie, ohne Kopfhaut', oxi:9}
+  maj: {n:'Majirel', voll:'Majirel · permanente Coloration', stoff:'Farbcreme', ratio:1.5, zeit:35, situation:true,
+        entw:'Oxydant Creme', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100}, ansatz:30,
+        ziele:{dunkler:{n:'Ton in Ton / dunkler', oxi:'6 % (20 Vol)'},
+               h2:{n:'bis 2 Stufen heller', oxi:'6 % (20 Vol)', heller:true},
+               h3:{n:'bis 3 Stufen heller', oxi:'9 % (30 Vol)', heller:true}},
+        hinweis:'Grauabdeckung mit 6 % (20 Vol). Einwirkzeit ohne Wärme.'},
+  inoa:{n:'iNOA', voll:'iNOA · ammoniakfreie Coloration', stoff:'Farbcreme', ratio:1, zeit:35, situation:true,
+        entw:'iNOA Oxydant', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100}, ansatz:30,
+        ziele:{dunkler:{n:'Ton in Ton / dunkler', oxi:'3 % (10 Vol)'},
+               h1:{n:'bis 1 Stufe heller', oxi:'3 % (10 Vol)', heller:true},
+               h2:{n:'bis 2 Stufen heller', oxi:'6 % (20 Vol)', heller:true},
+               h3:{n:'bis 3 Stufen heller', oxi:'9 % (30 Vol)', heller:true}},
+        hinweis:'Nur mit iNOA Oxydant mischen. Grauabdeckung mit 6 % (20 Vol). Einwirkzeit ohne Wärme.'},
+  hl:  {n:'High Lift', voll:'Majirel High Lift · Spezialblond', stoff:'Farbcreme', ratio:2, zeit:50, situation:true,
+        entw:'Oxydant Creme', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100}, ansatz:30,
+        ziele:{max:{n:'max. Aufhellung (Basis 5–6)', oxi:'12 % (40 Vol)', heller:true},
+               neutral:{n:'neutralisieren (Basis 6–9)', oxi:'9 % (30 Vol)', heller:true}},
+        hinweis:'Hellt nur naturbelassenes Haar auf (bis ca. 4 Stufen). Farbe hellt keine Farbe auf.'},
+  dia: {n:'Dia Light', voll:'Dia Light · saure Glanztönung (demipermanent)', stoff:'Tönungscreme', ratio:1.5, zeit:20,
+        entw:'Diactivateur', mengen:{kurz:30, mittel:50, lang:75, sehrlang:100},
+        ziele:{blond:{n:'blond / tonen', oxi:'6 Vol (1,8 %)'},
+               dunkel:{n:'brünett / dunkler', oxi:'9 Vol (2,7 %)'}},
+        hinweis:'Dia Light hellt nicht auf. Einwirkzeit je nach Ziel: Glanz ca. 5 Min, Tonen nach dem Blondieren ca. 10 Min, volle Farbe bis 20 Min.'},
+  bl:  {n:'Blond Studio', voll:'Blond Studio 9 · Aufhellpulver mit Oil Developer', stoff:'Pulver', zeit:50,
+        entw:'Oil Developer', mengen:{kurz:20, mittel:30, lang:40, sehrlang:60},
+        ziele:{folie:{n:'Folie / Foilyage', oxi:'6 % (20 Vol) oder 9 % (30 Vol)', ratio:1.5, heller:true},
+               frei:{n:'Freihand / Balayage', oxi:'6 % (20 Vol) oder 9 % (30 Vol)', ratio:1, heller:true}},
+        hinweis:'Nach Sichtkontrolle, höchstens 50 Min, keine Wärme. Auf der Kopfhaut nur nach Rücksprache mit deiner Stylistin.'}
 };
 var PMF_LAENGE = {kurz:'kurz', mittel:'mittel', lang:'lang', sehrlang:'sehr lang'};
 
@@ -2054,7 +2061,7 @@ var PMF_KARTEN = [
   {v:'Welche Schutzmaßnahmen gelten beim Färben?', h:'Handschuhe tragen, Allergietest nach Herstellerangabe, Haut am Haaransatz schützen, nicht bei verletzter oder entzündeter Kopfhaut färben.'}
 ];
 
-var PMF = {tab:'rechner', produkt:'col', ziel:'h1', zielBl:'kopfhaut', grau:false, situation:'ansatz', laenge:'mittel', menge:null,
+var PMF = {tab:'rechner', produkt:'maj', ziel:'dunkler', situation:'ansatz', laenge:'mittel', menge:null,
            deck:[], gewusst:0, um:false, timer:null};
 
 function pmFarbeOeffnen() {
@@ -2077,6 +2084,7 @@ function pmfSetze(html) { document.getElementById('pmf-inhalt').innerHTML = html
 // ── Mischungs- und Einwirkzeit-Rechner ──
 function pmfWahl(feld, wert) {
   PMF[feld] = wert;
+  if (feld === 'produkt') PMF.ziel = Object.keys(PMF_PRODUKTE[wert].ziele)[0];
   PMF.menge = null;
   pmfRechner();
 }
@@ -2093,40 +2101,31 @@ function pmfKnoepfe(feld, daten) {
   }).join('') + '</div>';
 }
 
+function pmfZahl(x) { return String(x).replace('.', ','); }
+
 function pmfBerechne() {
-  var p = PMF_PRODUKTE[PMF.produkt], r = {p:p};
-  var ansatz = PMF.produkt !== 'int' && PMF.situation === 'ansatz';
+  var p = PMF_PRODUKTE[PMF.produkt], z = p.ziele[PMF.ziel], r = {p:p, z:z};
+  var ansatz = p.situation && PMF.situation === 'ansatz';
   r.ansatz = ansatz;
+  r.ratio = z.ratio || p.ratio;
   r.menge = PMF.menge || (ansatz ? p.ansatz : p.mengen[PMF.laenge]);
-  r.oxiMenge = r.menge * p.ratio;
-  if (PMF.produkt === 'col') {
-    var z = PMF_ZIEL_COL[PMF.ziel];
-    r.oxi = (PMF.grau && z.oxi < 6) ? 6 : z.oxi;
-    r.heller = z.heller;
-    r.zeit = PMF.grau ? 45 : 30;
-  } else if (PMF.produkt === 'bl') {
-    r.oxi = PMF_ZIEL_BL[PMF.zielBl].oxi;
-    r.heller = true;
-    r.zeit = p.zeit;
-  } else {
-    r.oxi = p.oxi;
-    r.heller = PMF.produkt === 'hl';
-    r.zeit = p.zeit;
-  }
-  r.oxiText = r.oxi ? PMF_OXI[r.oxi] : p.oxiText;
+  r.oxiMenge = Math.round(r.menge * r.ratio);
+  r.zeit = p.zeit;
 
   var bl = PMF.produkt === 'bl', T = r.zeit, ph = [];
   var ende = bl ? 'Spätestens jetzt ausspülen, dann Nachbehandlung (saure Pflege schließt die Schuppenschicht).'
                 : 'Emulgieren (mit wenig Wasser einmassieren), gründlich ausspülen, Nachbehandlung.';
-  if (ansatz) {
-    ph.push({m:0, t:'Ansatz auftragen, nur das nachgewachsene Haar. Nicht überlappen'+(bl ? ', sonst droht Haarbruch.' : '.')});
-    if (bl) ph.push({m:10, t:'Sichtkontrolle, danach alle 5–10 Minuten wiederholen.'});
-    else ph.push({m:T-10, t:'Längen prüfen: Sind sie verblasst, nach Herstellerangabe auffrischen.'});
+  if (bl) {
+    ph.push({m:0, t:'Strähnen auftragen ('+z.n+'). Nicht auf die Kopfhaut.'});
+    ph.push({m:10, t:'Sichtkontrolle, danach alle 5–10 Minuten wiederholen.'});
     ph.push({m:T, t:ende});
-  } else if (r.heller) {
+  } else if (ansatz) {
+    ph.push({m:0, t:'Ansatz auftragen, nur das nachgewachsene Haar. Nicht überlappen.'});
+    ph.push({m:T-10, t:'Längen prüfen: Sind sie verblasst, nach Anleitung mit dem Rest auffrischen.'});
+    ph.push({m:T, t:ende});
+  } else if (z.heller) {
     ph.push({m:0, t:'Längen und Spitzen auftragen, 1–2 cm Abstand zum Ansatz lassen.'});
     ph.push({m:15, t:'Ansatz auftragen. Er reagiert durch die Körperwärme schneller („heißer Ansatz“).'});
-    if (bl) ph.push({m:25, t:'Sichtkontrolle, danach alle 5–10 Minuten wiederholen.'});
     ph.push({m:15+T, t:ende});
   } else {
     ph.push({m:0, t:'Vom Ansatz bis in die Spitzen in einem Arbeitsgang auftragen.'});
@@ -2141,38 +2140,30 @@ function pmfRechner() {
   var p = PMF_PRODUKTE[PMF.produkt], r = pmfBerechne();
   var html = '<div class="card">' +
     '<div class="label">Was trägst du auf?</div>' + pmfKnoepfe('produkt', PMF_PRODUKTE) +
-    '<div style="font-size:12px;color:#7A7A70;margin:-6px 0 14px">'+p.voll+'</div>';
-  if (PMF.produkt === 'col') {
-    html += '<div class="label">Ziel</div>' + pmfKnoepfe('ziel', PMF_ZIEL_COL) +
-      '<div class="label">Grauanteil</div><div class="pm-wahl">' +
-        '<button class="btn-toggle'+(!PMF.grau ? ' ak' : '')+'" onclick="pmfWahl(\'grau\',false)">unter 50 %</button>' +
-        '<button class="btn-toggle'+(PMF.grau ? ' ak' : '')+'" onclick="pmfWahl(\'grau\',true)">über 50 %</button></div>';
-  }
-  if (PMF.produkt === 'bl') html += '<div class="label">Wo blondierst du?</div>' + pmfKnoepfe('zielBl', PMF_ZIEL_BL);
-  if (PMF.produkt !== 'int') html += '<div class="label">Situation</div>' + pmfKnoepfe('situation', {ansatz:'Ansatzbehandlung', erst:'Erstbehandlung'});
+    '<div style="font-size:12px;color:#7A7A70;margin:-6px 0 14px">L’Oréal Professionnel '+p.voll+'</div>' +
+    '<div class="label">'+(PMF.produkt === 'bl' ? 'Technik' : 'Ziel')+'</div>' + pmfKnoepfe('ziel', p.ziele);
+  if (p.situation) html += '<div class="label">Situation</div>' + pmfKnoepfe('situation', {ansatz:'Ansatzbehandlung', erst:'Erstbehandlung'});
   if (!r.ansatz) html += '<div class="label">Haarlänge</div>' + pmfKnoepfe('laenge', PMF_LAENGE);
   html += '<div class="label">Menge '+p.stoff+'</div>' +
     '<div class="pm-stepper"><button onclick="pmfMenge(-5)" aria-label="5 g weniger">−</button><span>'+r.menge+' g</span><button onclick="pmfMenge(5)" aria-label="5 g mehr">+</button></div>' +
   '</div>';
 
   html += '<div class="card">' +
-    '<div class="label">Mischung · Verhältnis 1 : '+p.ratio+'</div>' +
+    '<div class="label">Mischung · Verhältnis 1 : '+pmfZahl(r.ratio)+'</div>' +
     '<div class="pm-misch"><div><b>'+r.menge+' g</b><small>'+p.stoff+'</small></div><i>+</i>' +
-      '<div><b>'+r.oxiMenge+' g</b><small>Oxidant</small></div><i>=</i>' +
+      '<div><b>'+r.oxiMenge+' g</b><small>'+p.entw+'</small></div><i>=</i>' +
       '<div><b>'+(r.menge + r.oxiMenge)+' g</b><small>Mischung</small></div></div>' +
-    '<dl class="pm-dl"><dt>Oxidant</dt><dd>'+r.oxiText+'</dd>' +
-      '<dt>Einwirkzeit</dt><dd>'+(PMF.produkt === 'bl' ? 'nach Sichtkontrolle, max. '+r.zeit+' Min' : r.zeit+' Min')+(r.gesamt !== r.zeit ? ' (gesamt mit Auftragen: '+r.gesamt+' Min)' : '')+'</dd></dl>';
-  if (PMF.produkt === 'col' && PMF.grau && PMF.ziel === 'dunkler') html += '<div class="fb-o" style="font-size:13px;line-height:1.5">Bei viel Grau nimmst du auch für Ton in Ton 6 %, sonst deckt die Farbe nicht.</div>';
-  if (PMF.produkt === 'col' && PMF.ziel === 'h3') html += '<div class="fb-o" style="font-size:13px;line-height:1.5">Mehr als 3 Stufen heller schafft eine normale Coloration nicht. Dafür gibt es Hochlift oder Blondierung.</div>';
-  if (p.hinweis) html += '<div class="fb-o" style="font-size:13px;line-height:1.5">'+p.hinweis+'</div>';
-  html += '</div>';
+    '<dl class="pm-dl"><dt>Entwickler</dt><dd>'+p.entw+' '+r.z.oxi+'</dd>' +
+      '<dt>Einwirkzeit</dt><dd>'+(PMF.produkt === 'bl' ? 'nach Sichtkontrolle, bis '+r.zeit+' Min' : (PMF.produkt === 'dia' ? 'bis ' : '')+r.zeit+' Min')+(r.gesamt !== r.zeit ? ' (gesamt mit Auftragen: '+r.gesamt+' Min)' : '')+'</dd></dl>' +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5">'+p.hinweis+'</div>' +
+  '</div>';
 
   html += '<div class="card"><div class="label">Auftragsplan</div><div class="pm-zeit">' +
     r.phasen.map(function(ph){ return '<div><b>'+ph.m+' Min</b>'+ph.t+'</div>'; }).join('') +
     '</div><div id="pmf-timer-box"></div></div>';
 
-  html += '<div class="fb-o" style="font-size:13px;line-height:1.6;margin-bottom:12px"><strong>Lernwerte!</strong> Mischverhältnis, Oxidant und Einwirkzeit gelten im Salon immer laut Anleitung des Produkts, das ihr verwendet. Im Zweifel fragst du deine Stylistin.<br>' +
-    'Immer: Handschuhe, Allergietest nach Herstellerangabe, Kunststoffschale, erst kurz vor dem Auftragen mischen, Reste entsorgen.</div>';
+  html += '<div class="fb-o" style="font-size:13px;line-height:1.6;margin-bottom:12px"><strong>Packungsbeilage geht vor.</strong> Die Werte stammen von L’Oréal Professionnel (Stand Oktober 2026). Weicht die Anleitung auf eurer Packung ab, gilt die Packung. Im Zweifel fragst du deine Stylistin.<br>' +
+    'Immer: Handschuhe, Allergietest 48 Stunden vorher nach Herstellerangabe, Kunststoffschale, erst kurz vor dem Auftragen mischen, Reste entsorgen.</div>';
   pmfSetze(html);
   pmfTimerZeigen();
 }
@@ -2250,7 +2241,8 @@ function pmfOxi() {
       '<tr><td>9 %</td><td>30</td><td>ca. 2 Stufen heller; Blondierung in Folie</td></tr>' +
       '<tr><td>12 %</td><td>40</td><td>ca. 3 Stufen heller, Hochlift; stärkste Belastung</td></tr>' +
     '</table>' +
-    '<div style="font-size:12px;color:#7A7A70;margin-top:10px">Je höher der Prozentwert, desto stärker die Aufhellung und desto größer die Belastung für Haar und Kopfhaut.</div></div>';
+    '<div style="font-size:12px;color:#7A7A70;margin-top:10px">Je höher der Prozentwert, desto stärker die Aufhellung und desto größer die Belastung für Haar und Kopfhaut.</div>' +
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">Das ist das allgemeine Schema aus der Berufsschule. Im Salon gilt die Anleitung der Farblinie, z. B. färbt Majirel auch Ton in Ton und dunkler mit 6 % (20 Vol). Siehe Rechner.</div></div>';
   html += '<div class="card"><div class="label">So wirkt eine Oxidationsfarbe</div>' +
     '<div class="pm-schritt-titel" style="font-size:15px;margin:8px 0 0">1. Haar quillt auf</div>' + pmfStrang(1) +
     '<div class="pm-txt">Das Alkalisierungsmittel (z. B. Ammoniak) lässt das Haar quellen, die Schuppenschicht öffnet sich.</div>' +
