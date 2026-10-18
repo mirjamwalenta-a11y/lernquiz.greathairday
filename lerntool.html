@@ -62,6 +62,22 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 .pm-tabs-viele .btn-toggle{flex:1 1 30%}
 .pm-range{padding:0;border:none;background:none;accent-color:#5B7B6F;height:28px}
 .pm-misch svg{display:block;margin:0 auto 4px}
+.pmt-thema{padding:0;overflow:hidden}
+.pmt-kopf{display:flex;align-items:center;gap:12px;width:100%;padding:16px;background:none;border:none;cursor:pointer;font-family:system-ui;text-align:left}
+.pmt-icon{font-size:22px;width:28px;text-align:center}
+.pmt-name{flex:1;font-size:16px;font-weight:600;color:#1C1C1A}
+.pmt-zahl{font-size:12px;color:#5B7B6F;background:#EAF0EE;border-radius:10px;padding:2px 8px}
+.pmt-pfeil{color:#7A7A70;font-size:14px}
+.pmt-punkte{border-top:1px solid #E2DDD5;padding:6px 12px 10px}
+.pmt-punkt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 6px;background:none;border:none;border-bottom:1px solid #F0ECE5;cursor:pointer;font-size:14px;color:#1C1C1A;font-family:system-ui}
+.pmt-punkt:last-child{border-bottom:none}
+.pmt-punkt span{flex:1}
+.pmt-punkt small{display:block;font-size:11px;color:#7A7A70}
+.pmt-punkt em{font-style:normal;font-size:11px;color:#5B7B6F;white-space:nowrap}
+.pmt-punkt:hover{background:#F7F5F0}
+.pmt-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+#pmt-lj .btn-toggle{flex:1 1 0}
+.pmt-chips .btn-toggle{font-size:12px;padding:7px 10px}
 .pmh-fotos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pmh-fotos figure{margin:0}
 .pmh-fotos img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:8px;background:#E2DDD5}
@@ -133,6 +149,14 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div id="admin-hinweis" style="display:none;background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#2C2C2C">
     ✂ Du bist als Meisterin eingeloggt — <button onclick="zeige('admin')" style="background:none;border:none;color:#5B7B6F;font-size:13px;cursor:pointer;text-decoration:underline;font-family:system-ui;padding:0">Admin-Bereich öffnen</button>
   </div>
+
+  <button class="nav-card" onclick="pmtOeffnen()" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;border:2px solid #5B7B6F;background:#5B7B6F;color:#fff">
+    <div class="nav-icon" style="margin:0">🔎</div>
+    <div>
+      <div class="nav-title" style="color:#fff">Was trainieren wir heute?</div>
+      <div class="nav-desc" style="color:#EAF0EE">Alle Themen, Suche &amp; zuletzt geöffnet</div>
+    </div>
+  </button>
 
   <div class="card">
     <div class="label">Lehrjahr wählen</div>
@@ -541,7 +565,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── MODUL 1: HAARWÄSCHE & KOPFMASSAGE ── -->
 <div id="p-pm-wasch" class="page">
-  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <button class="back-btn" onclick="zeige(PM_ZURUECK)">← Zurück</button>
   <div class="tag">1. Lehrjahr · Praxis-Modul</div>
   <h1>Haarwäsche &amp; Kopfmassage</h1>
   <p class="sub">Vom Waschplatz bis zum Turban.</p>
@@ -557,7 +581,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── MODUL 2: FARBTECHNIKEN ── -->
 <div id="p-pm-farbe" class="page">
-  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <button class="back-btn" onclick="zeige(PM_ZURUECK)">← Zurück</button>
   <div class="tag">1. Lehrjahr · Praxis-Modul</div>
   <h1>Farbtechniken</h1>
   <p class="sub">Mischen, einwirken lassen, Oxidanten verstehen.</p>
@@ -571,7 +595,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── MODUL 3: STRÄHNENTECHNIKEN ── -->
 <div id="p-pm-straehnen" class="page">
-  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <button class="back-btn" onclick="zeige(PM_ZURUECK)">← Zurück</button>
   <div class="tag">2. Lehrjahr · Praxis-Modul</div>
   <h1>Strähnentechniken &amp; Balayage</h1>
   <p class="sub">Passées, Abteilungen, Übergänge und Platzierung.</p>
@@ -588,7 +612,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── MODUL 4: COLORIST ── -->
 <div id="p-pm-colorist" class="page">
-  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <button class="back-btn" onclick="zeige(PM_ZURUECK)">← Zurück</button>
   <div class="tag">2. + 3. Lehrjahr · Praxis-Modul</div>
   <h1>Colorist: Farbe verstehen</h1>
   <p class="sub">Farbenlehre, Diagnose und das richtige Produkt.</p>
@@ -605,7 +629,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── MODUL 5: HOCHSTECKEN ── -->
 <div id="p-pm-hoch" class="page">
-  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <button class="back-btn" onclick="zeige(PM_ZURUECK)">← Zurück</button>
   <div class="tag">3. Lehrjahr · Praxis-Modul</div>
   <h1>Hochstecken nach Gesichtsform</h1>
   <p class="sub">Welche Hochsteckfrisur zu welcher Gesichtsform passt, und wie sie entsteht.</p>
@@ -619,7 +643,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── MODUL 6: HAAR & FARBE – WISSEN ── -->
 <div id="p-pm-wissen" class="page">
-  <button class="back-btn" onclick="zeige('praxis')">← Praxis-Module</button>
+  <button class="back-btn" onclick="zeige(PM_ZURUECK)">← Zurück</button>
   <div class="tag">1. – 3. Lehrjahr · Praxis-Modul</div>
   <h1>Haar &amp; Farbe: Wissen</h1>
   <p class="sub">Wie Haar aufgebaut ist und wie Farbe darin wirkt.</p>
@@ -633,6 +657,18 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <button class="btn-toggle" id="pmx-tab-quiz" onclick="pmWissenTab('quiz')">Quiz</button>
   </div>
   <div id="pmx-inhalt"></div>
+</div>
+
+<!-- ── THEMEN-ÜBERSICHT ── -->
+<div id="p-themen" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Training</div>
+  <h1>Was trainieren wir heute?</h1>
+  <p class="sub">Thema aufklappen oder suchen, dann direkt loslegen.</p>
+  <input id="pmt-suche" type="search" autocomplete="off" placeholder="🔎 Suchen, z. B. Oxidant, Massage, Kupfer …" oninput="pmtSuche(this.value)" style="margin-bottom:10px;font-size:15px">
+  <div class="pm-wahl" id="pmt-lj"></div>
+  <div id="pmt-zuletzt"></div>
+  <div id="pmt-liste" style="margin-top:12px"></div>
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
@@ -3780,6 +3816,198 @@ function pmxAntwort(i) {
   });
   document.getElementById('pmx-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMX.qi++;PMX.beantwortet=false;pmxQuiz()">Weiter →</button></div>';
+}
+</script>
+<script>
+// ── THEMEN-ÜBERSICHT „Was trainieren wir heute?“ ─────────────────
+// Alle Lerninhalte nach Themen, mit Direktsprung in den richtigen Reiter.
+// „Zuletzt geöffnet“ und der Lehrjahr-Filter bleiben nur auf diesem Gerät.
+var PM_ZURUECK = 'praxis';
+var PMT_BASIS = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/';
+var PMT_KEY = 'pm_zuletzt', PMT_LJ_KEY = 'pm_themen_lj';
+
+function pmtWasch(tab, prog) { return function(){ PMW.tab = tab; if (prog) { PMW.prog = prog; PMW.mi = 0; } pmWaschOeffnen(); }; }
+function pmtFarbe(tab) { return function(){ PMF.tab = tab; pmFarbeOeffnen(); }; }
+function pmtStr(tab, saeule) { return function(){ PMS.tab = tab; if (saeule) PMS.saeule = saeule; pmStraehnenOeffnen(); }; }
+function pmtCol(tab) { return function(){ PMC.tab = tab; pmColoristOeffnen(); }; }
+function pmtWis(tab, haar) { return function(){ PMX.tab = tab; if (haar) PMX.haar = haar; pmWissenOeffnen(); }; }
+function pmtHoch(tab) { return function(){ PMH.tab = tab; pmHochOeffnen(); }; }
+function pmtSeite(s) { return function(){ zeige(s); }; }
+function pmtLink(pfad) { return function(){ window.location.href = PMT_BASIS + pfad; }; }
+
+var PMT_THEMEN = [
+  {i:'💆', n:'Waschen & Pflege', p:[
+    {n:'Waschablauf Schritt für Schritt', lj:[1], k:'haarwäsche ablauf turban durchbürsten', go:pmtWasch('ablauf')},
+    {n:'Wassertemperatur', lj:[1], k:'wasser temperatur grad kopfhaut', go:pmtWasch('temp')},
+    {n:'Entspannungshaarwäsche (4 Phasen)', lj:[1], k:'wäsche lockerung entspannung ausgleich ruhe wella', go:pmtWasch('waesche')},
+    {n:'Basismassage', lj:[1], k:'kopfmassage greifbewegung kreisen druckpunkt ausstreichen pflege', go:pmtWasch('massage','basis')},
+    {n:'Vitalisierende Massage', lj:[1], k:'kopfmassage anregend klopfen zickzack', go:pmtWasch('massage','vital')},
+    {n:'Beruhigende Massage', lj:[1], k:'kopfmassage handflächen streichen', go:pmtWasch('massage','ruhig')},
+    {n:'Entspannungsmassage (Wella)', lj:[1], k:'kopfmassage schwimmrichtung', go:pmtWasch('massage','wella')},
+    {n:'Ablauf-Check & Selbstcheck', lj:[1], k:'reihenfolge üben checkliste', go:pmtWasch('check')}
+  ]},
+  {i:'🔬', n:'Haar', p:[
+    {n:'Haarzyklus & Haartypen', lj:[1], k:'anagen katagen telogen neogen haarausfall kopfhaar körperhaar', go:pmtWis('haar','zyklus')},
+    {n:'Haarstruktur innen & außen', lj:[1], k:'hydrophil hydrophob trocken blondiert schuppenschicht', go:pmtWis('haar','struktur')},
+    {n:'Natürliche Haarfarbe (Melanin)', lj:[1], k:'eumelanin pheomelanin pigmente aufhellen melanozyten', go:pmtWis('haar','pigmente')},
+    {n:'Weißes Haar & UV-Schutz', lj:[1], k:'grau weiß melanozyten sonne uv', go:pmtWis('haar','weiss')}
+  ]},
+  {i:'🎨', n:'Farbe', p:[
+    {n:'Mischungs- & Einwirkzeit-Rechner (L’Oréal)', lj:[1], k:'majirel inoa dia light high lift blond studio mischung gramm timer passé', go:pmtFarbe('rechner')},
+    {n:'Oxidanten: Stärken & Wirkung', lj:[1], k:'oxidant wasserstoffperoxid h2o2 prozent vol', go:pmtFarbe('oxi')},
+    {n:'Farb-Lernkarten', lj:[1], k:'karteikarten oxidant flashcards', go:pmtFarbe('karten')},
+    {n:'Naturpigmente & Farbkreis', lj:[2,3], k:'tonhöhe untergrund gegenfarbe neutralisieren asch gold kupfer irisé licht', go:pmtCol('pigment')},
+    {n:'Kontraste', lj:[2,3], k:'hell dunkel komplementär simultan warm kalt bunt', go:pmtCol('kontrast')},
+    {n:'Warm-Kalt-Rechner', lj:[2,3], k:'warm kalt gesetz kühl aufhellen naturpigment zieltonhöhe haltbarkeit', go:pmtWis('warmkalt')},
+    {n:'Dominanz & Umfärben', lj:[2,3], k:'dominanz kompatibel rot kupfer transparent pink', go:pmtWis('dominanz')},
+    {n:'Farbcodes lesen', lj:[2,3], k:'farbnummer 7,21 tube hauptreflex nebenreflex naturton modeton', go:pmtWis('codes')},
+    {n:'Diagnose (Haardetektiv)', lj:[2,3], k:'kopfhaut ansatz weißanteil mittelstück balken längen', go:pmtCol('diagnose')},
+    {n:'Farbprodukte & Produktwahl', lj:[2,3], k:'tönung intensivtönung haarfarbe hellerfärber blondierung aufhellsprung', go:pmtCol('produkte')},
+    {n:'Trainer: Kundenwunsch → Produkt', lj:[2,3], k:'kundenwunsch produkt üben', go:pmtCol('trainer')},
+    {n:'Vor- & Nachpigmentierung', lj:[2,3], k:'rückpigmentieren dunkler färben verblasst', go:pmtWis('pigment')},
+    {n:'Farbabzug & H₂O₂ beim Blondieren', lj:[2,3], k:'farbreinigung blondierwäsche tiefenreinigung reduktiv sauer', go:pmtWis('abzug')},
+    {n:'Quiz: Colorist', lj:[2,3], k:'quiz farbe', go:pmtCol('quiz')},
+    {n:'Quiz: Haar & Farbe', lj:[1,2,3], k:'quiz haar farbe', go:pmtWis('quiz')}
+  ]},
+  {i:'✨', n:'Strähnen & Balayage', p:[
+    {n:'Balayage-Alphabet', lj:[2], k:'v a w babylights passée scheitel unterlegt strähnig flächig', go:pmtStr('alphabet')},
+    {n:'Abteilungen', lj:[2], k:'v-technik dachziegel toupieren zickzack fischgrät', go:pmtStr('pfeiler','abteilungen')},
+    {n:'Contouring', lj:[2], k:'gesicht kontur face framing', go:pmtStr('pfeiler','contouring')},
+    {n:'Übergänge', lj:[2], k:'einschattieren klumpen folie knicken', go:pmtStr('pfeiler','uebergaenge')},
+    {n:'Diagnose vor der Balayage', lj:[2], k:'grundfarbe balken', go:pmtStr('pfeiler','diagnose')},
+    {n:'Formen & Platzierung', lj:[2], k:'dreieck raute rechteck kreis stern x', go:pmtStr('formen')},
+    {n:'Passée-Planer', lj:[2], k:'passé passee dicke anzahl effekt', go:pmtStr('passee')},
+    {n:'Strähnentechniken im Überblick', lj:[2], k:'folie babylights foilyage lowlights ombré sombré', go:pmtStr('technik')},
+    {n:'Quiz: Strähnen', lj:[2], k:'quiz balayage', go:pmtStr('quiz')}
+  ]},
+  {i:'✂', n:'Schnitt', p:[
+    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261006a#formen')},
+    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261006a#winkel')},
+    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261006a#pony')},
+    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261006a#zeichnung')},
+    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261006a#quiz')},
+    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261006a#formwirkung')},
+    {n:'Schnittzeichnungs-Designer', lj:[1,2,3], k:'zeichnen designer', go:pmtLink('schnittdesigner.html?v=20260927f')}
+  ]},
+  {i:'👑', n:'Hochstecken & Styling', p:[
+    {n:'Gesichtsformen & passende Hochsteckfrisuren', lj:[3], k:'rund eckig oval herz dutt chignon top knot', go:pmtHoch('form')},
+    {n:'Styling-Guides', lj:[3], k:'hochstecken schritte nadeln dutt chignon', go:pmtHoch('frisuren')},
+    {n:'Quiz: Hochstecken', lj:[3], k:'quiz hochstecken', go:pmtHoch('quiz')}
+  ]},
+  {i:'🧰', n:'Werkzeug & Hygiene', p:[
+    {n:'Werkzeuge', lj:[1], k:'kamm bürste schere', go:pmtLink('werkzeugkunde.html?v=20260927f#werkzeuge')},
+    {n:'Aufbau der Schere', lj:[1], k:'schere', go:pmtLink('werkzeugkunde.html?v=20260927f#schere')},
+    {n:'Pflege & Hygiene', lj:[1], k:'desinfektion reinigung hygiene', go:pmtLink('werkzeugkunde.html?v=20260927f#hygiene')},
+    {n:'Spiel: Welches Werkzeug?', lj:[1], k:'spiel werkzeug', go:pmtLink('werkzeugkunde.html?v=20260927f#spiel')},
+    {n:'Wissens-Check Werkzeug', lj:[1], k:'quiz werkzeug', go:pmtLink('werkzeugkunde.html?v=20260927f#quiz')}
+  ]},
+  {i:'🎓', n:'Prüfung', p:[
+    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261006c')},
+    {n:'LAP-Vorbereitung', lj:[3], k:'lehrabschlussprüfung lap theorie praxis', go:pmtSeite('lap')}
+  ]},
+  {i:'🇬🇧', n:'Englisch im Salon', p:[
+    {n:'Fachvokabular Deutsch ↔ Englisch', lj:[1,2,3], k:'englisch vokabeln english', go:pmtLink('englisch-salon.html')}
+  ]},
+  {i:'📋', n:'Lernen & Fortschritt', p:[
+    {n:'Quiz starten', lj:[1,2,3], k:'quiz fragen', go:pmtSeite('quiz')},
+    {n:'Heute laut Lernplan', lj:[1,2,3], k:'heute plan', go:function(){ heuteOeffnen(); }},
+    {n:'Lernplan', lj:[1,2,3], k:'wochenplan', go:pmtSeite('lernplan')},
+    {n:'Lerntipps', lj:[1,2,3], k:'tipps', go:pmtSeite('fortschritt')},
+    {n:'Mein Fortschritt', lj:[1,2,3], k:'fortschritt lernstand', go:pmtSeite('progress')}
+  ]}
+];
+
+var PMT = {lj:'alle', suche:'', offen:{}};
+(function(){
+  PMT_THEMEN.forEach(function(t, ti){ t.p.forEach(function(p, pi){ p.id = ti + '-' + pi; p.thema = t; }); });
+  try { PMT.lj = localStorage.getItem(PMT_LJ_KEY) || 'alle'; } catch(e) {}
+})();
+
+var _zeigeOhneZurueck = zeige;
+zeige = function(seite) {
+  if (seite === 'praxis' || seite === 'themen') PM_ZURUECK = seite;
+  _zeigeOhneZurueck(seite);
+};
+
+function pmtOeffnen() { zeige('themen'); pmtZeichnen(); }
+
+function pmtPunkt(id) {
+  var a = id.split('-');
+  return PMT_THEMEN[+a[0]] && PMT_THEMEN[+a[0]].p[+a[1]];
+}
+
+function pmtZuletzt() {
+  try { return (JSON.parse(localStorage.getItem(PMT_KEY)) || []).filter(pmtPunkt); } catch(e) { return []; }
+}
+
+function pmtGo(id) {
+  var p = pmtPunkt(id);
+  if (!p) return;
+  var z = pmtZuletzt().filter(function(x){ return x !== id; });
+  z.unshift(id);
+  try { localStorage.setItem(PMT_KEY, JSON.stringify(z.slice(0, 5))); } catch(e) {}
+  if (PMT.lj !== 'alle') {
+    LEHRJAHR = PMT.lj;
+    document.querySelectorAll('#p-home .btn-lj').forEach(function(b, i){ b.classList.toggle('ak', String(i + 1) === PMT.lj); });
+  }
+  p.go();
+}
+
+function pmtPasst(p) {
+  if (PMT.lj !== 'alle' && p.lj.indexOf(+PMT.lj) < 0) return false;
+  var q = PMT.suche.trim().toLowerCase();
+  if (!q) return true;
+  var text = (p.n + ' ' + p.k + ' ' + p.thema.n).toLowerCase();
+  return q.split(/\s+/).every(function(w){ return text.indexOf(w) >= 0; });
+}
+
+function pmtZeile(p, mitThema) {
+  var lj = p.lj.length === 3 ? 'alle' : p.lj.join('.+') + '.';
+  return '<button class="pmt-punkt" onclick="pmtGo(\''+p.id+'\')"><span>'+(mitThema ? '<small>'+p.thema.i+' '+p.thema.n+'</small>' : '')+p.n+'</span><em>'+lj+' LJ</em></button>';
+}
+
+function pmtWahlLj(lj) {
+  PMT.lj = lj;
+  try { localStorage.setItem(PMT_LJ_KEY, lj); } catch(e) {}
+  pmtZeichnen();
+}
+
+function pmtSuche(wert) { PMT.suche = wert; pmtListe(); }
+
+function pmtZeichnen() {
+  var lj = [['alle','Alle'],['1','1. LJ'],['2','2. LJ'],['3','3. LJ']];
+  document.getElementById('pmt-lj').innerHTML = lj.map(function(x){
+    return '<button class="btn-toggle'+(PMT.lj === x[0] ? ' ak' : '')+'" onclick="pmtWahlLj(\''+x[0]+'\')">'+x[1]+'</button>';
+  }).join('');
+  var z = pmtZuletzt();
+  document.getElementById('pmt-zuletzt').innerHTML = z.length
+    ? '<div class="label">Zuletzt geöffnet</div><div class="pmt-chips">' + z.map(function(id){ var p = pmtPunkt(id); return '<button class="btn-toggle" onclick="pmtGo(\''+id+'\')">'+p.thema.i+' '+p.n+'</button>'; }).join('') + '</div>'
+    : '';
+  pmtListe();
+}
+
+function pmtListe() {
+  var el = document.getElementById('pmt-liste'), html = '';
+  if (PMT.suche.trim()) {
+    var treffer = [];
+    PMT_THEMEN.forEach(function(t){ t.p.forEach(function(p){ if (pmtPasst(p)) treffer.push(p); }); });
+    html = treffer.length
+      ? '<div class="card" style="padding:8px 12px"><div class="label" style="margin:8px 0">'+treffer.length+' Treffer</div>' + treffer.map(function(p){ return pmtZeile(p, true); }).join('') + '</div>'
+      : '<div class="card"><div class="pm-txt" style="margin:0">Nichts gefunden. Versuch ein anderes Wort, z. B. „Oxidant“, „Massage“ oder „Kupfer“.</div></div>';
+    el.innerHTML = html;
+    return;
+  }
+  PMT_THEMEN.forEach(function(t, ti){
+    var punkte = t.p.filter(pmtPasst);
+    if (!punkte.length) return;
+    var auf = !!PMT.offen[ti];
+    html += '<div class="card pmt-thema">' +
+      '<button class="pmt-kopf" onclick="PMT.offen['+ti+']=!PMT.offen['+ti+'];pmtListe()" aria-expanded="'+auf+'">' +
+        '<span class="pmt-icon">'+t.i+'</span><span class="pmt-name">'+t.n+'</span><span class="pmt-zahl">'+punkte.length+'</span><span class="pmt-pfeil">'+(auf ? '▴' : '▾')+'</span></button>' +
+      (auf ? '<div class="pmt-punkte">' + punkte.map(function(p){ return pmtZeile(p, false); }).join('') + '</div>' : '') +
+    '</div>';
+  });
+  el.innerHTML = html;
 }
 </script>
 <script>
