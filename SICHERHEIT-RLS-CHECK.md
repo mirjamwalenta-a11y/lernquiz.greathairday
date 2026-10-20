@@ -92,7 +92,8 @@ Rot mit „Secret SUPABASE_DB_URL fehlt“ = Schritt 3 fehlt.
 Rot mit „password authentication failed“ = Passwort im Secret passt nicht zum Konto (neu setzen, siehe Schritt 1).
 
 **Belege-App:** Sie hat ein eigenes Supabase-Projekt (`lpuxvvfrrcnbuzafscyk`) und ein eigenes Audit im Repo
-`belege.greathairday` (Secret `SUPABASE_DB_URL_BELEGE` dort). Dieses Audit hier prüft nur das gemeinsame Projekt.
+`belege.greathairday` (dort Secret `RLS_PRUEFUNG_PASSWORT` mit dem Passwort des Lese-Kontos `rls_pruefung` im
+Belege-Projekt; die Pooler-Adresse ermittelt der Workflow selbst). Eingerichtet und getestet am 2026-10-20. Dieses Audit hier prüft nur das gemeinsame Projekt.
 
 Das Audit ist nur das Sicherheitsnetz. Es ersetzt die Abschnitte 1 bis 3 nicht und prüft keine Policies, nur ob RLS an ist.
 
