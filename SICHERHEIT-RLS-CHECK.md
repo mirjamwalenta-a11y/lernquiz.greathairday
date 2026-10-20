@@ -27,13 +27,29 @@ Reine Lerninhalte ohne Supabase-Zugriff (statische Daten, `localStorage`) brauch
    ALTER TABLE public.beispiel ENABLE ROW LEVEL SECURITY;
    ```
    RLS ohne Policy sperrt erst einmal alles. Das ist der sichere Ausgangszustand.
+   **Seit 2026-10-30 gehören auch die `GRANT`s in diese Migration.** Supabase gibt neuen Tabellen in `public`
+   keine Data-API-Rechte mehr automatisch (auch nicht bei neuem Projekt, Preview-Branch oder `supabase db reset`).
+   Ohne Grant meldet die App „permission denied for table …“. Bestehende Tabellen sind nicht betroffen.
+   ```sql
+   -- Nur was die App braucht. Typisch: nur angemeldete Nutzer:innen, RLS entscheidet über die Zeilen.
+   GRANT SELECT, INSERT, UPDATE, DELETE ON public.beispiel TO authenticated;
+   GRANT SELECT, INSERT, UPDATE, DELETE ON public.beispiel TO service_role;
+   -- anon NUR, wenn eine anon-Policy begründet ist (Punkt 4), und nur die eine Aktion:
+   -- GRANT SELECT ON public.beispiel TO anon;
+   ```
+   - Die Vorlage aus der Supabase-Mail (`grant select … to anon`) **nicht** pauschal übernehmen. Grant und RLS
+     zusammen sind die Absicherung: Was `anon` nicht braucht, bekommt es gar nicht erst.
+   - Zugriff nur über eine `SECURITY DEFINER`-Funktion (z. B. `registrierung_vorgemerkt`, `app_rollen`)?
+     Dann keine Grants für `anon`/`authenticated`, nur `GRANT EXECUTE` auf die Funktion.
+   - Spalten mit `serial`/`identity` brauchen für `INSERT` ggf. zusätzlich
+     `GRANT USAGE ON SEQUENCE public.beispiel_id_seq TO authenticated;` (bei `uuid DEFAULT gen_random_uuid()` nicht).
 2. **Policies so eng wie möglich.** Muster aus `supabase/20260927_rls_lernquiz_schnuppertag.sql`:
    - Meisterin: `USING (public.ist_meisterin()) WITH CHECK (public.ist_meisterin())`
    - eigene Zeilen: über `auth.uid()`, z. B. `lehrlinge.user_id = auth.uid()`
    - Lesen für alle Angemeldeten nur bei Inhalten ohne persönliche Daten (z. B. Quizfragen)
 3. **Keine Sammel-Policy `auth.role() = 'authenticated'` zum Schreiben.** Policies sind ODER-verknüpft. Eine solche Policy öffnet die Tabelle für jedes Konto aller Apps im Projekt, auch für Test- und Lehrlingskonten.
 4. **Keine anon-Policy ohne Rückfrage.** Wenn ein Zugriff ohne Login nötig ist (z. B. Wochenquiz-Link), nur genau die eine Aktion freigeben und im Kommentar der Migration begründen.
-5. **Prüfen** (SQL-Editor), siehe Abschnitt 5: Die Tabelle taucht nicht unter „ohne RLS“ auf, und die Policies sind die erwarteten.
+5. **Prüfen** (SQL-Editor), siehe Abschnitt 5: Die Tabelle taucht nicht unter „ohne RLS“ auf, die Policies und die Grants sind die erwarteten.
 
 ## 3. Neuer Login-Weg, Sitzung, Rolle
 
@@ -93,6 +109,15 @@ ORDER BY 1, 2;
 SELECT policyname, cmd, roles, qual, with_check
 FROM pg_policies
 WHERE schemaname = 'public' AND tablename = '<tabelle>';
+```
+
+**Grants einer Tabelle** (wer darf über die Data API überhaupt zugreifen):
+```sql
+SELECT grantee, string_agg(privilege_type, ', ' ORDER BY privilege_type) AS rechte
+FROM information_schema.role_table_grants
+WHERE table_schema = 'public' AND table_name = '<tabelle>'
+  AND grantee IN ('anon', 'authenticated', 'service_role')
+GROUP BY grantee ORDER BY grantee;
 ```
 
 **Verdächtig breite Policies** (offen für anon oder für alle Angemeldeten ohne weitere Bedingung):

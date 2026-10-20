@@ -67,3 +67,12 @@ CREATE POLICY "nur_auth" ON schnuppertage FOR ALL TO authenticated USING (true) 
 CREATE POLICY "nur_auth" ON probezeiten FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "nur_auth" ON probezeit_wochen FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "nur_auth" ON probezeit_monats_feedback FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- ════════════════════════════════════════════════════════════
+--  Data-API-Rechte (seit 2026-10-30 von Supabase nicht mehr automatisch
+--  vergeben). Nur für angemeldete Nutzer:innen, kein anon. Die Zeilen
+--  regelt RLS (aktuelle Policies: supabase/20261010_rls_lernquiz_aktuell.sql).
+-- ════════════════════════════════════════════════════════════
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON schnuppertage, probezeiten, probezeit_wochen, probezeit_monats_feedback TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON schnuppertage, probezeiten, probezeit_wochen, probezeit_monats_feedback TO service_role;

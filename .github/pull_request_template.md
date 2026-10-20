@@ -28,7 +28,7 @@
 
 ## Sicherheits-Check (CLAUDE.md)
 
-- [ ] Keine neue Supabase-Tabelle **oder** RLS ist im selben PR aktiviert (keine anon-Policy ohne Rückfrage)
+- [ ] Keine neue Supabase-Tabelle **oder** RLS und die nötigen `GRANT`s sind im selben PR (keine anon-Policy und kein anon-Grant ohne Rückfrage)
 - [ ] Keine Zugangsdaten, privaten E-Mail-Adressen oder anderen persönlichen Daten in Code, Kommentaren, Doku oder `value="…"`
 - [ ] Rollenprüfungen (Chefin/Admin) serverseitig durchgesetzt, nicht nur per JS
 - [ ] Kein neuer Login- oder „Angemeldet bleiben“-Weg **oder** er nutzt ein zufälliges, ablaufendes Token
