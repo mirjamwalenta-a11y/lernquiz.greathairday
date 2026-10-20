@@ -61,7 +61,7 @@ Reine Lerninhalte ohne Supabase-Zugriff (statische Daten, `localStorage`) brauch
 
 ## 4. Automatisches RLS-Audit einrichten (einmalig)
 
-`.github/workflows/rls-audit.yml` prüft jeden Montag alle Tabellen im Projekt. Findet es eine Tabelle ohne RLS,
+`.github/workflows/rls-audit.yml` prüft jeden Montag alle Tabellen im gemeinsamen Projekt und, sobald eingerichtet, im Belege-Projekt. Findet es eine Tabelle ohne RLS,
 legt es ein GitHub-Issue mit dem Label `rls-audit` an. Ist schon eines offen, kommt ein Kommentar dazu. Sind wieder alle Tabellen
 abgesichert, schließt es das Issue.
 
@@ -90,6 +90,21 @@ postgresql://rls_pruefung.wrxlaltgtgkdomklgrlj:<PASSWORT>@aws-0-eu-west-1.pooler
 **Schritt 4 – Testlauf.** GitHub → *Actions* → *RLS-Audit* → *Run workflow*. Grün = alles abgesichert oder Issue angelegt.
 Rot mit „Secret SUPABASE_DB_URL fehlt“ = Schritt 3 fehlt.
 Rot mit „password authentication failed“ = Passwort im Secret passt nicht zum Konto (neu setzen, siehe Schritt 1).
+
+**Belege-Projekt (`lpuxvvfrrcnbuzafscyk`) zusätzlich einrichten.** Die Belege-App hat ein eigenes Supabase-Projekt.
+Dasselbe Audit prüft es mit, sobald das zweite Secret gesetzt ist. Bis dahin wird es mit einer Warnung übersprungen.
+1. Im **Belege-Projekt** (Supabase → Projekt wechseln) → SQL Editor: Schritt 1 von oben genauso ausführen, mit einem
+   **eigenen, neuen** Passwort (nicht dasselbe wie im gemeinsamen Projekt).
+2. Im Belege-Projekt → *Connect* → *Connection String* → *Method* **Session pooler** (Port 5432). Die Region im
+   Servernamen kann anders sein als beim gemeinsamen Projekt, deshalb die Adresse genau so übernehmen, wie Supabase
+   sie anzeigt. Benutzer und Passwort ersetzen:
+   ```
+   postgresql://rls_pruefung.lpuxvvfrrcnbuzafscyk:<PASSWORT>@<Server aus dem Connect-Fenster>:5432/postgres
+   ```
+3. GitHub → dieses Repo → *Settings* → *Secrets and variables* → *Actions* → *New repository secret*:
+   Name `SUPABASE_DB_URL_BELEGE`, Wert = URL aus Schritt 2.
+4. Testlauf wie in Schritt 4. Der Lauf hat jetzt zwei Teile, „Gemeinsames Projekt“ und „Belege-Projekt“. Funde im
+   Belege-Projekt kommen als eigenes Issue mit dem Label `rls-audit-belege`.
 
 Das Audit ist nur das Sicherheitsnetz. Es ersetzt die Abschnitte 1 bis 3 nicht und prüft keine Policies, nur ob RLS an ist.
 

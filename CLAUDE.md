@@ -59,7 +59,8 @@ etwas anderes war.
 ## Automatische Prüfung
 
 `.github/workflows/rls-audit.yml` prüft wöchentlich automatisch alle
-Tabellen im Supabase-Projekt auf fehlende RLS und legt bei einem Fund ein
+Tabellen im gemeinsamen Supabase-Projekt und im Belege-Projekt
+(`lpuxvvfrrcnbuzafscyk`, Secret `SUPABASE_DB_URL_BELEGE`) auf fehlende RLS und legt bei einem Fund ein
 GitHub-Issue an (Setup: `SUPABASE_DB_URL`-Secret, siehe
 `SICHERHEIT-RLS-CHECK.md`). Das ersetzt keine der obigen Regeln, ist aber
 das Sicherheitsnetz für den Fall, dass eine davon trotzdem übersehen wird.

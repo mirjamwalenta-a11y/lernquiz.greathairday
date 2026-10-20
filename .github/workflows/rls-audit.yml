@@ -1,11 +1,14 @@
-# RLS-Audit für das gemeinsame Supabase-Projekt (siehe CLAUDE.md und SICHERHEIT-RLS-CHECK.md)
+# RLS-Audit für die Supabase-Projekte (siehe CLAUDE.md und SICHERHEIT-RLS-CHECK.md)
 #
-# Prüft wöchentlich, ob es Tabellen ohne Row Level Security gibt.
-# Fund → GitHub-Issue mit Label „rls-audit“ (bzw. Kommentar, wenn schon eines offen ist).
+# Prüft wöchentlich, ob es Tabellen ohne Row Level Security gibt, und zwar in
+#   - dem gemeinsamen Projekt wrxlaltgtgkdomklgrlj (Secret SUPABASE_DB_URL, Issue-Label „rls-audit“)
+#   - dem Belege-Projekt lpuxvvfrrcnbuzafscyk (Secret SUPABASE_DB_URL_BELEGE, Issue-Label „rls-audit-belege“)
+# Fund → GitHub-Issue mit dem Label des Projekts (bzw. Kommentar, wenn schon eines offen ist).
 # Kein Fund und ein Issue ist noch offen → Issue wird mit Kommentar geschlossen.
 #
-# Setup: Repository-Secret SUPABASE_DB_URL mit der Verbindung des Lese-Kontos „rls_pruefung“
+# Setup: je Projekt ein Repository-Secret mit der Verbindung des Lese-Kontos „rls_pruefung“
 # über den Session Pooler. Anleitung in SICHERHEIT-RLS-CHECK.md, Abschnitt 4.
+# Fehlt das Belege-Secret noch, wird das Belege-Projekt mit einer Warnung übersprungen.
 
 name: RLS-Audit
 
@@ -24,19 +27,41 @@ concurrency:
 
 jobs:
   audit:
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Gemeinsames Projekt
+            secret: SUPABASE_DB_URL
+            label: rls-audit
+            titel: ""
+            pflicht: true
+          - name: Belege-Projekt
+            secret: SUPABASE_DB_URL_BELEGE
+            label: rls-audit-belege
+            titel: "Belege-Projekt: "
+            pflicht: false
     steps:
       - name: Tabellen ohne RLS suchen
         id: pruefung
         env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_DB_URL: ${{ secrets[matrix.secret] }}
+          SECRET_NAME: ${{ matrix.secret }}
+          PFLICHT: ${{ matrix.pflicht }}
           PGCONNECT_TIMEOUT: "20"
         run: |
           set -euo pipefail
           if [ -z "${SUPABASE_DB_URL}" ]; then
-            echo "::error::Secret SUPABASE_DB_URL fehlt. Das RLS-Audit läuft erst nach dem Setup (SICHERHEIT-RLS-CHECK.md, Abschnitt 4)."
-            exit 1
+            if [ "${PFLICHT}" = "true" ]; then
+              echo "::error::Secret ${SECRET_NAME} fehlt. Das RLS-Audit läuft erst nach dem Setup (SICHERHEIT-RLS-CHECK.md, Abschnitt 4)."
+              exit 1
+            fi
+            echo "::warning::Secret ${SECRET_NAME} fehlt, Projekt wird übersprungen (Setup: SICHERHEIT-RLS-CHECK.md, Abschnitt 4)."
+            echo "uebersprungen=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           command -v psql >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client; }
 
@@ -68,14 +93,17 @@ jobs:
           fi
 
       - name: Issue anlegen oder aktualisieren
+        if: steps.pruefung.outputs.uebersprungen != 'true'
         env:
+          LABEL: ${{ matrix.label }}
+          TITEL: ${{ matrix.titel }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           ANZAHL: ${{ steps.pruefung.outputs.anzahl }}
           LAUF: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
-          offen=$(gh issue list --label rls-audit --state open --json number --jq '.[0].number // empty')
+          offen=$(gh issue list --label "${LABEL}" --state open --json number --jq '.[0].number // empty')
 
           if [ "${ANZAHL}" -eq 0 ]; then
             if [ -n "${offen}" ]; then
@@ -85,7 +113,7 @@ jobs:
           fi
 
           {
-            echo "Das wöchentliche RLS-Audit hat **${ANZAHL} Tabelle(n) ohne Row Level Security** gefunden:"
+            echo "${TITEL}Das wöchentliche RLS-Audit hat **${ANZAHL} Tabelle(n) ohne Row Level Security** gefunden:"
             echo
             sed 's/^/- `/; s/$/`/' funde.txt
             echo
@@ -105,6 +133,6 @@ jobs:
           if [ -n "${offen}" ]; then
             gh issue comment "${offen}" --body-file bericht.md
           else
-            gh label create rls-audit --color B60205 --description "Fund aus dem automatischen RLS-Audit" --force
-            gh issue create --title "RLS-Audit: ${ANZAHL} Tabelle(n) ohne Row Level Security" --label rls-audit --body-file bericht.md
+            gh label create "${LABEL}" --color B60205 --description "Fund aus dem automatischen RLS-Audit" --force
+            gh issue create --title "RLS-Audit: ${TITEL}${ANZAHL} Tabelle(n) ohne Row Level Security" --label "${LABEL}" --body-file bericht.md
           fi
