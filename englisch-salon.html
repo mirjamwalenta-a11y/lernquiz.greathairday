@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Englisch im Salon · A Great Hair Day</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="quiz-verlauf.js?v=20261022a"></script>  <!-- Quiz-Ergebnis auch im Lernquiz-Verlauf speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <style>
@@ -1054,6 +1055,8 @@ function pruefeAntwort(gewaehlt,richtig,geklickt){
 function zeigeErgebnis(){
   // Verlauf in Supabase speichern
   speichereEnVerlauf(QuizRichtig, QuizFragen.length, AktKategorie, AktModusLabel);
+  // Auch im allgemeinen Verlauf/Kompetenzstand des Lernquiz zählen
+  if(window.ghdQuizSpeichern) ghdQuizSpeichern('Englisch im Salon', QuizRichtig, QuizFragen.length);
   // Session speichern & Streak berechnen
   var ergebnis=sessionAbgeschlossen();
   zeige('ergebnis');
