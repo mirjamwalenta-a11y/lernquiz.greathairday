@@ -228,12 +228,14 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
   .answers button{transition:border-color .15s,background .15s}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="quiz-verlauf.js?v=20261022a"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 </head>
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="back-link" href="lerntool.html?v=20261018a">← Lern-Tool</a>
+    <a class="back-link" href="lerntool.html?v=20261022a">← Lern-Tool</a>
     <nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
     <button class="profile-chip" id="profileChip" data-a="profiles" aria-label="Lernprofil wechseln"></button>
   </div>
@@ -1237,6 +1239,7 @@ function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
   return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.items.every(x=>x.q.type==='mc')?'richtig':'gewusst'}</h1>
   <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
+  <p class="small muted" id="zpSpeicher"></p>
   <div class="row"><button class="btn primary" data-a="quiz" data-cat="${QZ.cat||''}" data-type="${QZ.kind}">Noch eine Runde</button><button class="btn" data-a="quizend">Fertig</button></div></div>`;}
  const q=it.q;let body='';
  if(q.type==='mc'){body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}return `<button data-a="ans" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
@@ -1349,7 +1352,10 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!
   case 'ans':{const it=QZ.items[QZ.i];if(it.pick!=null)break;it.pick=+ds.k;it.res=it.opts[it.pick]===it.q.a?'yes':'no';grade(it.q.id,it.res);render();break;}
   case 'show': QZ.items[QZ.i].shown=true;render();break;
   case 'self':{const it=QZ.items[QZ.i];it.res=ds.r;grade(it.q.id,ds.r);render();break;}
-  case 'next': QZ.i++;if(QZ.i>=QZ.items.length&&QZ.kind==='sim')stopTimer();render();window.scrollTo(0,0);break;
+  case 'next': QZ.i++;if(QZ.i>=QZ.items.length&&QZ.kind==='sim')stopTimer();render();window.scrollTo(0,0);
+   // Fertige Runde im Verlauf des Lehrlings (Lernquiz) speichern
+   if(QZ.i>=QZ.items.length&&!QZ.gespeichert&&window.ghdQuizSpeichernAntworten){QZ.gespeichert=true;ghdQuizSpeichernAntworten(QZ.items.map(x=>({thema:'Zwischenprüfung',korrekt:x.res==='yes'})),'zpSpeicher');}
+   break;
   case 'case':{V.caseAns=V.caseAns||{};const st=V.caseAns[ds.c]=V.caseAns[ds.c]||{};st[ds.q]=ds.o;const c=CASES.find(x=>x.id===ds.c);if(c.q.every((qq,i)=>st[i]!=null)){D.cases[c.id]=c.q.every((qq,i)=>st[i]===qq[1]);save();}const y=window.scrollY;render();window.scrollTo(0,y);break;}
   case 'nsub': V.nsub=ds.s;render();break;
   case 'ordreset': V.ord={l:ds.l,seq:shuffle(ordItems(ds.l).map((x,k)=>k)),got:[],err:0,bad:null};{const y=window.scrollY;render();window.scrollTo(0,y);}break;

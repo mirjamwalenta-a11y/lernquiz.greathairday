@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lern-Tool · A Great Hair Day</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="quiz-verlauf.js?v=20261022a"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -208,7 +209,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Haarwäsche &amp; Kopfmassage, Farbe, Strähnen, Hochstecken</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261006c'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261022a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
     <div class="nav-icon" style="margin:0">🎓</div>
     <div>
       <div class="nav-title">Zwischenprüfung</div>
@@ -222,14 +223,14 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Fachvokabular Deutsch ↔ Englisch</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261006a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261022a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
     <div class="nav-icon" style="margin:0">✂</div>
     <div>
       <div class="nav-title">Schnittwerkstatt</div>
       <div class="nav-desc">Grundschnitte, Winkel, Schnittzeichnung &amp; Beratung/Formwirkung</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20260927f'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261022a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
     <div class="nav-icon" style="margin:0">🧰</div>
     <div>
       <div class="nav-title">Werkzeugkunde</div>
@@ -273,6 +274,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <h1>Quiz</h1>
 
   <div id="quiz-score" style="display:none" class="score-box"></div>
+  <div id="quiz-speicher" style="font-size:12px;margin-bottom:8px"></div>
 
   <div class="card">
     <div class="label">Thema</div>
@@ -1045,6 +1047,21 @@ function wahlLj(btn, lj) {
 }
 
 // ── QUIZ ────────────────────────────────────────────────────────
+// Antworten sammeln und je 10 Fragen als Durchlauf im Verlauf speichern
+// (Rest beim Themenwechsel bzw. beim nächsten Öffnen des Quiz).
+var QUIZ_PUFFER = [];
+function quizPufferSpeichern() {
+  if (!QUIZ_PUFFER.length || typeof ghdQuizSpeichernAntworten !== 'function') return;
+  ghdQuizSpeichernAntworten(QUIZ_PUFFER.splice(0), 'quiz-speicher');
+}
+
+// Abschluss eines Praxis-Modul-Quiz einmal pro Runde speichern
+function ltQuizEnde(st, thema, elId) {
+  if (st.gespeichert || typeof ghdQuizSpeichern !== 'function') return;
+  st.gespeichert = true;
+  ghdQuizSpeichern(thema, st.richtig, st.quiz.length, elId);
+}
+
 function quizInit() {
   var sel = document.getElementById('quiz-thema');
   sel.innerHTML = '';
@@ -1057,6 +1074,7 @@ function quizInit() {
 }
 
 function quizReset() {
+  quizPufferSpeichern();
   QUIZ_RICHTIG = 0; QUIZ_GESAMT = 0;
   document.getElementById('quiz-score').style.display = 'none';
   document.getElementById('quiz-bereich').innerHTML = '<button class="btn-primary" onclick="quizNeu()">Frage laden →</button>';
@@ -1088,6 +1106,8 @@ function quizPruefe(btn, gewaehlt, richtig, erklaerung) {
   QUIZ_GESAMT++;
   if (gewaehlt === richtig) QUIZ_RICHTIG++;
   var kor = gewaehlt === richtig;
+  QUIZ_PUFFER.push({thema:document.getElementById('quiz-thema').value, korrekt:kor});
+  if (QUIZ_PUFFER.length >= 10) quizPufferSpeichern();
   var fb = document.createElement('div');
   fb.className = kor ? 'fb-g' : 'fb-r';
   fb.innerHTML = '<strong style="color:'+(kor?'#2E7D5E':'#C44030')+'">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</strong><div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>';
@@ -1193,7 +1213,11 @@ async function progZeige() {
     }
   }
 
-  var themen = (THEMEN[PROG_LJ] || []).slice().sort(function(a,b){ return a.localeCompare(b,'de'); });
+  var themen = (THEMEN[PROG_LJ] || []).slice();
+  // Auch geübte Themen außerhalb des Lehrjahr-Plans zeigen (Praxis-Quizze,
+  // Schnittwerkstatt, Werkzeugkunde, Zwischenprüfung, Englisch …)
+  Object.keys(kompDaten).forEach(function(t){ if (themen.indexOf(t) < 0) themen.push(t); });
+  themen.sort(function(a,b){ return a.localeCompare(b,'de'); });
   liste.innerHTML = '';
 
   if (!lehrlingId) {
@@ -2928,7 +2952,7 @@ function pmsTech(i) { PMS.tech = i; pmsTechnik(); }
 // ── Quiz (10 zufällige Fragen) ──
 function pmsQuizNeu() {
   PMS.quiz = PMS_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
-  PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false;
+  PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false; PMS.gespeichert = false;
 }
 
 function pmsQuiz() {
@@ -2938,8 +2962,9 @@ function pmsQuiz() {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMS.richtig === n ? '🎉' : '✨')+'</div>' +
       '<div class="pm-schritt-titel">'+PMS.richtig+' von '+n+' richtig</div>' +
       '<div class="pm-txt">'+(PMS.richtig === n ? 'Super, das sitzt!' : 'Schau dir die Bereiche nochmal an und versuch es erneut.')+'</div>' +
+      '<div id="pms-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmsQuizNeu();pmsQuiz()">Nochmal</button></div></div>';
-    pmsSetze(html); return;
+    pmsSetze(html); ltQuizEnde(PMS, 'Balayage & Strähnen', 'pms-speicher'); return;
   }
   var q = PMS_QUIZ[PMS.quiz[PMS.qi]];
   html = '<div class="card"><div class="label">Frage '+(PMS.qi+1)+' von '+n+' · '+PMS.richtig+' richtig</div>' +
@@ -3294,7 +3319,7 @@ function pmcWaehle(k) { if (PMC.wahl[k]) delete PMC.wahl[k]; else PMC.wahl[k] = 
 // ── Quiz (10 zufällige Fragen) ──
 function pmcQuizNeu() {
   PMC.quiz = PMC_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
-  PMC.qi = 0; PMC.richtig = 0; PMC.beantwortet = false;
+  PMC.qi = 0; PMC.richtig = 0; PMC.beantwortet = false; PMC.gespeichert = false;
 }
 
 function pmcQuiz() {
@@ -3303,8 +3328,9 @@ function pmcQuiz() {
   if (PMC.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMC.richtig === n ? '🎉' : '✨')+'</div>' +
       '<div class="pm-schritt-titel">'+PMC.richtig+' von '+n+' richtig</div>' +
+      '<div id="pmc-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmcQuizNeu();pmcQuiz()">Nochmal</button></div></div>';
-    pmcSetze(html); return;
+    pmcSetze(html); ltQuizEnde(PMC, 'Farbenlehre & Coloration', 'pmc-speicher'); return;
   }
   var q = PMC_QUIZ[PMC.quiz[PMC.qi]];
   html = '<div class="card"><div class="label">Frage '+(PMC.qi+1)+' von '+n+' · '+PMC.richtig+' richtig</div>' +
@@ -3425,7 +3451,7 @@ function pmhFrisuren() {
 
 function pmhQuizNeu() {
   PMH.quiz = PMH_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; });
-  PMH.qi = 0; PMH.richtig = 0; PMH.beantwortet = false;
+  PMH.qi = 0; PMH.richtig = 0; PMH.beantwortet = false; PMH.gespeichert = false;
 }
 
 function pmhQuiz() {
@@ -3434,8 +3460,9 @@ function pmhQuiz() {
   if (PMH.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMH.richtig === n ? '🎉' : '✨')+'</div>' +
       '<div class="pm-schritt-titel">'+PMH.richtig+' von '+n+' richtig</div>' +
+      '<div id="pmh-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmhQuizNeu();pmhQuiz()">Nochmal</button></div></div>';
-    pmhSetze(html); return;
+    pmhSetze(html); ltQuizEnde(PMH, 'Hochsteckfrisuren', 'pmh-speicher'); return;
   }
   var q = PMH_QUIZ[PMH.quiz[PMH.qi]];
   html = '<div class="card"><div class="label">Frage '+(PMH.qi+1)+' von '+n+' · '+PMH.richtig+' richtig</div>' +
@@ -3784,7 +3811,7 @@ function pmxAbzug() {
 // ── Quiz (10 zufällige Fragen) ──
 function pmxQuizNeu() {
   PMX.quiz = PMX_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
-  PMX.qi = 0; PMX.richtig = 0; PMX.beantwortet = false;
+  PMX.qi = 0; PMX.richtig = 0; PMX.beantwortet = false; PMX.gespeichert = false;
 }
 
 function pmxQuiz() {
@@ -3793,8 +3820,9 @@ function pmxQuiz() {
   if (PMX.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMX.richtig === n ? '🎉' : '✨')+'</div>' +
       '<div class="pm-schritt-titel">'+PMX.richtig+' von '+n+' richtig</div>' +
+      '<div id="pmx-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmxQuizNeu();pmxQuiz()">Nochmal</button></div></div>';
-    pmxSetze(html); return;
+    pmxSetze(html); ltQuizEnde(PMX, 'Haar & Farbe', 'pmx-speicher'); return;
   }
   var q = PMX_QUIZ[PMX.quiz[PMX.qi]];
   html = '<div class="card"><div class="label">Frage '+(PMX.qi+1)+' von '+n+' · '+PMX.richtig+' richtig</div>' +
@@ -3881,12 +3909,12 @@ var PMT_THEMEN = [
     {n:'Quiz: Strähnen', lj:[2], k:'quiz balayage', go:pmtStr('quiz')}
   ]},
   {i:'✂', n:'Schnitt', p:[
-    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261006a#formen')},
-    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261006a#winkel')},
-    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261006a#pony')},
-    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261006a#zeichnung')},
-    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261006a#quiz')},
-    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261006a#formwirkung')},
+    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261022a#formen')},
+    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261022a#winkel')},
+    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261022a#pony')},
+    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261022a#zeichnung')},
+    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261022a#quiz')},
+    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261022a#formwirkung')},
     {n:'Schnittzeichnungs-Designer', lj:[1,2,3], k:'zeichnen designer', go:pmtLink('schnittdesigner.html?v=20260927f')}
   ]},
   {i:'👑', n:'Hochstecken & Styling', p:[
@@ -3895,14 +3923,14 @@ var PMT_THEMEN = [
     {n:'Quiz: Hochstecken', lj:[3], k:'quiz hochstecken', go:pmtHoch('quiz')}
   ]},
   {i:'🧰', n:'Werkzeug & Hygiene', p:[
-    {n:'Werkzeuge', lj:[1], k:'kamm bürste schere', go:pmtLink('werkzeugkunde.html?v=20260927f#werkzeuge')},
-    {n:'Aufbau der Schere', lj:[1], k:'schere', go:pmtLink('werkzeugkunde.html?v=20260927f#schere')},
-    {n:'Pflege & Hygiene', lj:[1], k:'desinfektion reinigung hygiene', go:pmtLink('werkzeugkunde.html?v=20260927f#hygiene')},
-    {n:'Spiel: Welches Werkzeug?', lj:[1], k:'spiel werkzeug', go:pmtLink('werkzeugkunde.html?v=20260927f#spiel')},
-    {n:'Wissens-Check Werkzeug', lj:[1], k:'quiz werkzeug', go:pmtLink('werkzeugkunde.html?v=20260927f#quiz')}
+    {n:'Werkzeuge', lj:[1], k:'kamm bürste schere', go:pmtLink('werkzeugkunde.html?v=20261022a#werkzeuge')},
+    {n:'Aufbau der Schere', lj:[1], k:'schere', go:pmtLink('werkzeugkunde.html?v=20261022a#schere')},
+    {n:'Pflege & Hygiene', lj:[1], k:'desinfektion reinigung hygiene', go:pmtLink('werkzeugkunde.html?v=20261022a#hygiene')},
+    {n:'Spiel: Welches Werkzeug?', lj:[1], k:'spiel werkzeug', go:pmtLink('werkzeugkunde.html?v=20261022a#spiel')},
+    {n:'Wissens-Check Werkzeug', lj:[1], k:'quiz werkzeug', go:pmtLink('werkzeugkunde.html?v=20261022a#quiz')}
   ]},
   {i:'🎓', n:'Prüfung', p:[
-    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261006c')},
+    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261022a')},
     {n:'LAP-Vorbereitung', lj:[3], k:'lehrabschlussprüfung lap theorie praxis', go:pmtSeite('lap')}
   ]},
   {i:'🇬🇧', n:'Englisch im Salon', p:[
