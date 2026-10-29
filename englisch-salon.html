@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Englisch im Salon · A Great Hair Day</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="quiz-verlauf.js?v=20261022a"></script>  <!-- Quiz-Ergebnis auch im Lernquiz-Verlauf speichern -->
+<script src="quiz-verlauf.js?v=20261029a"></script>  <!-- Quiz-Ergebnis auch im Lernquiz-Verlauf speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <style>
@@ -414,34 +414,34 @@ async function speichereEnVerlauf(richtig,gesamt,kategorie,modus){
 var FRAGEN = [
 // BEGRÜSSUNG
 {de:"Herzlich willkommen in unserem Salon!",en:"Welcome to our salon!",kontext:"Begrüßung beim Eintreten",tipp:"'Welcome' ist immer freundlich und reicht oft alleine.",kat:"begruessung"},
-{de:"Wie kann ich Ihnen heute helfen?",en:"How can I help you today?",kontext:"Eröffnungsfrage",tipp:"Immer mit 'today' — zeigt, dass du präsent bist.",kat:"begruessung"},
+{de:"Wie kann ich Ihnen heute helfen?",en:"How can I help you today?",kontext:"Eröffnungsfrage",tipp:"Immer mit 'today' — zeigt, dass du präsent bist.",kat:"begruessung",zf:[{f:"Der Gast antwortet: „Just a trim, please.“ Was möchte er?",o:["Nur die Spitzen nachschneiden","Eine komplett neue Frisur","Nur die Haare waschen lassen","Eine Farbauffrischung"],r:0,e:"„A trim“ heißt nachschneiden, also nur die Spitzen kürzen."}]},
 {de:"Bitte nehmen Sie Platz.",en:"Please have a seat.",kontext:"Beim Empfang",tipp:"'Have a seat' ist höflicher als 'Sit down'.",kat:"begruessung"},
 {de:"Einen Moment bitte, ich bin gleich bei Ihnen.",en:"One moment please, I'll be right with you.",kontext:"Wenn man kurz beschäftigt ist",tipp:"'I'll be right with you' zeigt Aufmerksamkeit trotz kurzer Wartezeit.",kat:"begruessung"},
 {de:"Möchten Sie während des Wartens einen Kaffee oder Tee?",en:"Would you like a coffee or tea while you wait?",kontext:"Kleiner Willkommensservice",tipp:"'While you wait' — freundliche Einladung zum Entspannen.",kat:"begruessung"},
-{de:"Haben Sie einen Termin?",en:"Do you have an appointment?",kontext:"Beim Eingang prüfen",tipp:"'Appointment' = der Termin. Auch: 'Do you have a booking?'",kat:"begruessung"},
+{de:"Haben Sie einen Termin?",en:"Do you have an appointment?",kontext:"Beim Eingang prüfen",tipp:"'Appointment' = der Termin. Auch: 'Do you have a booking?'",kat:"begruessung",zf:[{f:"Der Gast sagt: „No, I'm a walk-in.“ Was bedeutet das?",o:["Er kommt ohne Termin vorbei","Er ist zu Fuß gekommen","Er möchte sich nur kurz umsehen","Er hat seinen Termin verschoben"],r:0,e:"Ein „walk-in“ ist ein Gast ohne Termin. Dann: Platz anbieten und den schnellstmöglichen Termin anbieten."}]},
 {de:"Auf welchen Namen ist der Termin?",en:"What name is the appointment under?",kontext:"Im Terminbuch nachschauen",tipp:"'Under' wird bei Namen/Buchungen immer verwendet.",kat:"begruessung"},
 {de:"Schön, Sie wiederzusehen!",en:"Great to see you again!",kontext:"Stammkunde begrüßen",tipp:"Persönlich und warm — Stammkunden lieben das!",kat:"begruessung"},
 {de:"Darf ich Ihre Jacke nehmen?",en:"Can I take your jacket?",kontext:"Kunden empfangen",tipp:"Einfach aber sehr aufmerksam — macht einen professionellen Eindruck.",kat:"begruessung"},
 {de:"Kommen Sie bitte mit.",en:"Please follow me.",kontext:"Kunden zum Platz führen",tipp:"'Follow me' ist direkt und freundlich.",kat:"begruessung"},
 // BERATUNG
 {de:"Wie möchten Sie Ihre Haare heute gestaltet haben?",en:"How would you like your hair done today?",kontext:"Einstieg ins Beratungsgespräch",tipp:"Die wichtigste Frage im Beratungsgespräch — immer offen formulieren!",kat:"beratung"},
-{de:"Was stört Sie an Ihrem aktuellen Haarschnitt?",en:"What don't you like about your current haircut?",kontext:"Veränderungswunsch erfragen",tipp:"'What don't you like' — direkter Einstieg in den Verbesserungswunsch.",kat:"beratung"},
+{de:"Was stört Sie an Ihrem aktuellen Haarschnitt?",en:"What don't you like about your current haircut?",kontext:"Veränderungswunsch erfragen",tipp:"'What don't you like' — direkter Einstieg in den Verbesserungswunsch.",kat:"beratung",zf:[{f:"Die Kundin sagt: „It's too heavy at the back.“ Was meint sie?",o:["Hinten ist zu viel Gewicht – es soll leichter werden","Hinten ist es zu kurz geschnitten – es soll länger bleiben","Die Farbe ist hinten zu dunkel","Sie hat Kopfschmerzen am Hinterkopf"],r:0,e:"„Heavy“ heißt hier: zu viel Masse und Gewicht. Sie wünscht sich hinten mehr Leichtigkeit."}]},
 {de:"Wie lange haben Sie diesen Stil schon?",en:"How long have you had this style?",kontext:"Haargeschichte verstehen",tipp:"Gute Frage um zu verstehen ob der Kunde zufrieden war.",kat:"beratung"},
-{de:"Haben Sie ein Referenzbild dabei?",en:"Do you have a reference picture?",kontext:"Wunsch konkretisieren",tipp:"'Reference picture' sehr gebräuchlich. Auch: 'inspiration photo'.",kat:"beratung"},
+{de:"Haben Sie ein Referenzbild dabei?",en:"Do you have a reference picture?",kontext:"Wunsch konkretisieren",tipp:"'Reference picture' sehr gebräuchlich. Auch: 'inspiration photo'.",kat:"beratung",zf:[{f:"Die Kundin zeigt ein Foto: „I'd like this, but not so short.“ Was machst du?",o:["Nachfragen, wie lang es genau bleiben soll","Genau so schneiden wie auf dem Foto","Noch etwas kürzer als auf dem Foto schneiden","Das Foto zur Seite legen und frei schneiden"],r:0,e:"„Not so short“ = nicht so kurz. Wie viel länger, klärst du mit einer Rückfrage – am besten zeigen lassen."}]},
 {de:"Wie tragen Sie Ihre Haare normalerweise?",en:"How do you usually wear your hair?",kontext:"Alltag und Pflege erfragen",tipp:"'Usually' = normalerweise. Wichtig um realistische Empfehlungen zu geben.",kat:"beratung"},
-{de:"Wie viel Zeit investieren Sie morgens in Ihre Haare?",en:"How much time do you spend on your hair in the morning?",kontext:"Pflegeaufwand erfragen",tipp:"'Spend time on' = Zeit investieren für. Hilft bei der Schnitt-Empfehlung.",kat:"beratung"},
-{de:"Haben Sie Allergien, über die ich Bescheid wissen sollte?",en:"Do you have any allergies I should know about?",kontext:"Vor chemischen Behandlungen",tipp:"Sehr wichtig! Immer fragen vor Farbe oder Dauerwelle.",kat:"beratung"},
+{de:"Wie viel Zeit investieren Sie morgens in Ihre Haare?",en:"How much time do you spend on your hair in the morning?",kontext:"Pflegeaufwand erfragen",tipp:"'Spend time on' = Zeit investieren für. Hilft bei der Schnitt-Empfehlung.",kat:"beratung",zf:[{f:"Die Kundin antwortet: „Five minutes, max.“ Was empfiehlst du?",o:["Einen pflegeleichten Schnitt, der ohne viel Styling sitzt","Eine aufwendige Föhnfrisur mit der Rundbürste, jeden Morgen neu","Jeden Morgen Locken mit dem Lockenstab","Eine Hochsteckfrisur für jeden Tag"],r:0,e:"„Five minutes, max“ = höchstens fünf Minuten. Die Frisur muss also schnell und ohne viel Aufwand gehen."}]},
+{de:"Haben Sie Allergien, über die ich Bescheid wissen sollte?",en:"Do you have any allergies I should know about?",kontext:"Vor chemischen Behandlungen",tipp:"Sehr wichtig! Immer fragen vor Farbe oder Dauerwelle.",kat:"beratung",zf:[{f:"Die Kundin antwortet: „Yes, I reacted to hair dye once.“ Was tust du?",o:["Mit der Stylistin absprechen – vor einer Farbe braucht es einen Allergietest","Ganz normal färben, einmal ist keinmal","Einfach eine andere Farbmarke nehmen, dann reagiert die Haut sicher nicht mehr","Ihr ein Shampoo gegen Allergien empfehlen"],r:0,e:"„I reacted to hair dye“ = sie hatte schon einmal eine allergische Reaktion auf Haarfarbe. Vor jeder Farbe: patch test und mit der Stylistin besprechen."}]},
 {de:"Wie ist Ihr Haar normalerweise — fettig, trocken oder normal?",en:"How is your hair normally — oily, dry or normal?",kontext:"Haartyp einschätzen",tipp:"'Oily' = fettig, 'dry' = trocken — die drei Grundtypen auf Englisch.",kat:"beratung"},
-{de:"Haben Sie Ihr Haar zuletzt chemisch behandelt?",en:"Have you had any chemical treatments recently?",kontext:"Vorbehandlungen erfragen",tipp:"'Chemical treatments' = Farbe, Dauerwelle, Blondierung.",kat:"beratung"},
+{de:"Haben Sie Ihr Haar zuletzt chemisch behandelt?",en:"Have you had any chemical treatments recently?",kontext:"Vorbehandlungen erfragen",tipp:"'Chemical treatments' = Farbe, Dauerwelle, Blondierung.",kat:"beratung",zf:[{f:"Die Kundin sagt: „I had a perm two weeks ago.“ Was heißt das?",o:["Sie hatte vor zwei Wochen eine Dauerwelle","Sie hatte vor zwei Wochen eine Farbe","Sie möchte in zwei Wochen eine Dauerwelle","Sie war vor zwei Wochen zum Schneiden da"],r:0,e:"„Perm“ = Dauerwelle. Wichtig für die Planung: Das Haar ist chemisch vorbehandelt."}]},
 {de:"Ich empfehle Ihnen diese Behandlung.",en:"I would recommend this treatment for you.",kontext:"Empfehlung aussprechen",tipp:"'I would recommend' — höflicher als 'You should'. Klingt professionell.",kat:"beratung"},
 {de:"Was ist Ihr Budget für heute?",en:"What's your budget for today?",kontext:"Kostenrahmen klären",tipp:"Direkt aber wichtig — erspart Überraschungen an der Kasse.",kat:"beratung"},
 {de:"Ich erkläre Ihnen kurz was ich machen werde.",en:"Let me explain what I'm going to do.",kontext:"Vor Behandlungsbeginn",tipp:"'Let me explain' = erlauben Sie mir zu erklären. Sehr professionell!",kat:"beratung"},
 {de:"Haben Sie Erfahrungen mit dieser Behandlung?",en:"Have you had this treatment before?",kontext:"Erstmalige Behandlungen klären",tipp:"'Before' = früher. Wer keine Erfahrung hat, braucht mehr Erklärung.",kat:"beratung"},
 // WÄHREND DES SCHNITTS
-{de:"Wie kurz möchten Sie es?",en:"How short would you like it?",kontext:"Beim Schnitt",tipp:"Immer fragen! Lieber einmal zu viel als einen Fehler.",kat:"schnitt"},
+{de:"Wie kurz möchten Sie es?",en:"How short would you like it?",kontext:"Beim Schnitt",tipp:"Immer fragen! Lieber einmal zu viel als einen Fehler.",kat:"schnitt",zf:[{f:"Der Kunde sagt: „About an inch off, please.“ Wie viel schneidest du ungefähr ab?",o:["Etwa 2,5 cm","Etwa 1 cm","Etwa 5 cm","Etwa 10 cm"],r:0,e:"1 inch = 2,54 cm. „Off“ heißt ab, also so viel wegschneiden."}]},
 {de:"Soll ich die Spitzen stutzen oder mehr abschneiden?",en:"Shall I trim the ends or cut more off?",kontext:"Länge klären",tipp:"'Trim the ends' = nur Spitzen. 'Cut more off' = mehr abnehmen.",kat:"schnitt"},
-{de:"Wie fühlt sich das Wasser an? Zu heiß oder zu kalt?",en:"How's the water temperature? Too hot or too cold?",kontext:"Beim Haarewaschen",tipp:"Komfort-Frage — zeigt Aufmerksamkeit für den Kunden.",kat:"schnitt"},
-{de:"Ist der Druck in Ordnung für Sie?",en:"Is the pressure okay for you?",kontext:"Beim Kopfmassage",tipp:"'Pressure' = Druck. 'Okay for you' = für Sie angenehm.",kat:"schnitt"},
+{de:"Wie fühlt sich das Wasser an? Zu heiß oder zu kalt?",en:"How's the water temperature? Too hot or too cold?",kontext:"Beim Haarewaschen",tipp:"Komfort-Frage — zeigt Aufmerksamkeit für den Kunden.",kat:"schnitt",zf:[{f:"Der Gast sagt: „It's a bit too hot.“ Was machst du?",o:["Das Wasser etwas kühler stellen","Das Wasser noch etwas wärmer stellen","Schneller fertig waschen","Gleich mit dem Föhnen beginnen"],r:0,e:"„A bit too hot“ = etwas zu heiß. Also kühler stellen und nochmal nachfragen."}]},
+{de:"Ist der Druck in Ordnung für Sie?",en:"Is the pressure okay for you?",kontext:"Beim Kopfmassage",tipp:"'Pressure' = Druck. 'Okay for you' = für Sie angenehm.",kat:"schnitt",zf:[{f:"Der Gast sagt: „Could you be a bit gentler?“ Was wünscht er sich?",o:["Weniger Druck, sanfter massieren","Mehr Druck, kräftiger massieren","Dass du schneller fertig wirst","Wärmeres Wasser beim Waschen"],r:0,e:"„Gentler“ = sanfter. Also mit weniger Druck weitermachen."}]},
 {de:"Möchten Sie nach rechts oder links gescheitelt werden?",en:"Would you like it parted on the right or left?",kontext:"Scheitelrichtung",tipp:"'Parted' = gescheitelt. 'On the right/left' = auf der rechten/linken Seite.",kat:"schnitt"},
 {de:"Ich nehme hier etwas mehr weg.",en:"I'm going to take a little more off here.",kontext:"Nachkorrektur erklären",tipp:"'Take off' = abnehmen. 'A little more' beruhigt den Kunden.",kat:"schnitt"},
 {de:"Ist es so kurz genug?",en:"Is that short enough?",kontext:"Länge bestätigen lassen",tipp:"Immer zeigen und bestätigen lassen — bevor man zu viel abschneidet!",kat:"schnitt"},
@@ -451,13 +451,13 @@ var FRAGEN = [
 {de:"Ich wasche Ihnen jetzt die Haare.",en:"I'm going to wash your hair now.",kontext:"Ablauf erklären",tipp:"Immer ansagen was man als nächstes macht — der Kunde fühlt sich sicher.",kat:"schnitt"},
 {de:"Ich trage jetzt die Spülung auf.",en:"I'm going to apply the conditioner now.",kontext:"Beim Waschen",tipp:"'Apply' = auftragen. 'Conditioner' = Spülung/Pflegespülung.",kat:"schnitt"},
 // FARBE & BEHANDLUNG
-{de:"Wir müssen vorher einen Allergietest machen.",en:"We need to do a patch test first.",kontext:"Vor der Coloration",tipp:"'Patch test' = Allergietest. Immer erklären warum!",kat:"farbe"},
+{de:"Wir müssen vorher einen Allergietest machen.",en:"We need to do a patch test first.",kontext:"Vor der Coloration",tipp:"'Patch test' = Allergietest. Immer erklären warum!",kat:"farbe",zf:[{f:"Die Kundin fragt: „Why do I need a patch test?“ Welche Antwort passt?",o:["„To check that you're not allergic to the colour.“","„To check that the colour is the right shade.“","„Because it makes the colour last longer.“","„Because your hair is too long for the colour.“"],r:0,e:"Der patch test prüft, ob die Haut auf die Farbe allergisch reagiert."}]},
 {de:"Welche Farbe hatten Sie zuletzt?",en:"What colour did you have last time?",kontext:"Farbgeschichte",tipp:"'Last time' = beim letzten Mal. Wichtig für die Farbwahl.",kat:"farbe"},
 {de:"Ich mische jetzt die Farbe an.",en:"I'm mixing the colour now.",kontext:"Ablauf erklären",tipp:"'Mix' = anmischen. Kunden fragen gerne wie das funktioniert!",kat:"farbe"},
-{de:"Die Farbe muss jetzt 30 Minuten einwirken.",en:"The colour needs to develop for 30 minutes.",kontext:"Einwirkzeit erklären",tipp:"'Develop' = entwickeln/einwirken.",kat:"farbe"},
+{de:"Die Farbe muss jetzt 30 Minuten einwirken.",en:"The colour needs to develop for 30 minutes.",kontext:"Einwirkzeit erklären",tipp:"'Develop' = entwickeln/einwirken.",kat:"farbe",zf:[{f:"Die Kundin fragt: „Can we rinse it out after 15 minutes?“ Welche Antwort passt?",o:["„I'm afraid it needs the full 30 minutes to develop.“","„Yes, 15 minutes is always enough for colour.“","„Sure, then it will turn out even lighter.“","„No, it actually needs to develop overnight.“"],r:0,e:"Die Einwirkzeit muss eingehalten werden, sonst entwickelt sich die Farbe nicht richtig."}]},
 {de:"Möchten Sie Highlights oder eine Komplettfärbung?",en:"Would you like highlights or a full colour?",kontext:"Farbbehandlung klären",tipp:"'Highlights' = Strähnen. 'Full colour' = Komplettfärbung.",kat:"farbe"},
 {de:"Ich empfehle eine Pflegekur nach der Blondierung.",en:"I recommend a treatment after the bleaching.",kontext:"Pflegeempfehlung",tipp:"'Treatment' = Kur/intensive Pflege.",kat:"farbe"},
-{de:"Ihre Haare sind schon etwas strapaziert.",en:"Your hair is already a little damaged.",kontext:"Haarzustand erklären",tipp:"'Damaged' = strapaziert/beschädigt. Ehrlichkeit schützt das Haar.",kat:"farbe"},
+{de:"Ihre Haare sind schon etwas strapaziert.",en:"Your hair is already a little damaged.",kontext:"Haarzustand erklären",tipp:"'Damaged' = strapaziert/beschädigt. Ehrlichkeit schützt das Haar.",kat:"farbe",zf:[{f:"Die Kundin fragt: „Is my hair damaged?“ Du willst sagen: etwas strapaziert, eine Kur hilft. Welcher Satz passt?",o:["„It's a little damaged – a treatment would help.“","„It's completely ruined, nothing will help.“","„It's perfectly healthy, no treatment needed.“","„It's a little damaged – please wash it twice a day.“"],r:0,e:"Ehrlich, aber freundlich: „a little damaged“ und gleich eine Lösung anbieten."}]},
 {de:"Das Ergebnis sieht fantastisch aus!",en:"The result looks fantastic!",kontext:"Abschlusskompliment",tipp:"Echte Begeisterung überträgt sich — der Kunde strahlt mit!",kat:"farbe"},
 {de:"Ich spüle die Farbe jetzt aus.",en:"I'm going to rinse out the colour now.",kontext:"Ende der Einwirkzeit",tipp:"'Rinse out' = ausspülen.",kat:"farbe"},
 {de:"Ich trage jetzt die Blondierung auf.",en:"I'm going to apply the bleach now.",kontext:"Blondierungsbehandlung",tipp:"'Bleach' = Blondierungsmittel. 'Apply' = auftragen.",kat:"farbe"},
@@ -466,33 +466,33 @@ var FRAGEN = [
 // TERMINE
 {de:"Ich würde gerne einen Termin vereinbaren.",en:"I would like to make an appointment.",kontext:"Terminanfrage vom Kunden",tipp:"'Make an appointment' = klassisch. Auch: 'book an appointment'.",kat:"termin"},
 {de:"Wann passt es Ihnen?",en:"When would suit you?",kontext:"Terminvereinbarung",tipp:"'Would suit you' = würde Ihnen passen.",kat:"termin"},
-{de:"Wir sind leider heute ausgebucht.",en:"I'm afraid we're fully booked today.",kontext:"Keine freien Termine",tipp:"'I'm afraid' = leider. 'Fully booked' = ausgebucht.",kat:"termin"},
+{de:"Wir sind leider heute ausgebucht.",en:"I'm afraid we're fully booked today.",kontext:"Keine freien Termine",tipp:"'I'm afraid' = leider. 'Fully booked' = ausgebucht.",kat:"termin",zf:[{f:"Der Gast fragt: „Do you have anything tomorrow?“ Was möchte er wissen?",o:["Ob morgen noch ein Termin frei ist","Ob ihr morgen geöffnet habt","Ob er morgen etwas abholen kann","Ob er morgen etwas mitbringen soll"],r:0,e:"„Anything“ meint hier: irgendeinen freien Termin."}]},
 {de:"Kann ich Sie für nächsten Dienstag eintragen?",en:"Can I book you in for next Tuesday?",kontext:"Terminvorschlag",tipp:"'Book you in' = Sie eintragen. Sehr typisch in Salons.",kat:"termin"},
 {de:"Wie lange dauert eine Blondierung ungefähr?",en:"How long does a bleaching take approximately?",kontext:"Zeitfrage vom Kunden",tipp:"'Approximately' = ungefähr. 'It takes 2 hours' = es dauert 2 Stunden.",kat:"termin"},
 {de:"Ich muss meinen Termin leider absagen.",en:"I need to cancel my appointment, I'm afraid.",kontext:"Terminabsage",tipp:"'Cancel' = absagen. 'I'm afraid' zeigt dass es dem Kunden unangenehm ist.",kat:"termin"},
 {de:"Kann ich meinen Termin verschieben?",en:"Can I reschedule my appointment?",kontext:"Terminverschiebung",tipp:"'Reschedule' = verschieben/neu terminieren.",kat:"termin"},
-{de:"Bitte denken Sie daran, 24 Stunden vorher abzusagen.",en:"Please remember to cancel at least 24 hours in advance.",kontext:"Cancellation-Policy erklären",tipp:"'In advance' = im Voraus. 'At least' = mindestens.",kat:"termin"},
+{de:"Bitte denken Sie daran, 24 Stunden vorher abzusagen.",en:"Please remember to cancel at least 24 hours in advance.",kontext:"Cancellation-Policy erklären",tipp:"'In advance' = im Voraus. 'At least' = mindestens.",kat:"termin",zf:[{f:"Ein Gast ruft am Morgen an: „I can't make it today.“ Was heißt das?",o:["Er kann heute nicht kommen","Er kommt heute etwas später","Er möchte heute etwas anderes machen lassen","Er findet den Salon heute nicht"],r:0,e:"„I can't make it“ = ich schaffe es nicht, ich kann nicht kommen."}]},
 {de:"Um wie viel Uhr möchten Sie kommen?",en:"What time would you like to come?",kontext:"Uhrzeit erfragen",tipp:"'What time' = um wie viel Uhr.",kat:"termin"},
 {de:"Ich schicke Ihnen eine Terminerinnerung.",en:"I'll send you a reminder.",kontext:"Digitale Terminverwaltung",tipp:"'Reminder' = Erinnerung. Viele Kunden schätzen das sehr.",kat:"termin"},
 {de:"Ihr nächster Termin ist am Montag um 10 Uhr.",en:"Your next appointment is on Monday at 10 o'clock.",kontext:"Terminbestätigung",tipp:"Wochentage immer mit 'on', Uhrzeiten mit 'at'.",kat:"termin"},
 {de:"Wie lange waren Sie nicht mehr beim Friseur?",en:"How long has it been since your last haircut?",kontext:"Beim Erstbesuch oder langer Pause",tipp:"'How long has it been' = wie lange ist es her.",kat:"termin"},
 // VERABSCHIEDUNG
-{de:"Sind Sie mit dem Ergebnis zufrieden?",en:"Are you happy with the result?",kontext:"Wichtigste Abschlussfrage",tipp:"'Happy with' = zufrieden mit. Nie vergessen zu fragen!",kat:"verabschiedung"},
+{de:"Sind Sie mit dem Ergebnis zufrieden?",en:"Are you happy with the result?",kontext:"Wichtigste Abschlussfrage",tipp:"'Happy with' = zufrieden mit. Nie vergessen zu fragen!",kat:"verabschiedung",zf:[{f:"Die Kundin sagt: „It's lovely, but a bit shorter than I expected.“ Wie reagierst du?",o:["Nachfragen und zuhören – ganz zufrieden ist sie nicht","Dich freuen – sie findet es ja „lovely“","Gleich die Rechnung vorbereiten","Sagen, dass es bald nachwächst, und mit dem Föhnen weitermachen"],r:0,e:"Das „but“ ist wichtig: Sie ist nicht ganz zufrieden. Nachfragen, zuhören und ernst nehmen."}]},
 {de:"Ich empfehle dieses Pflegeprodukt für zu Hause.",en:"I recommend this care product for home use.",kontext:"Produktverkauf",tipp:"'For home use' = für die Heimanwendung.",kat:"verabschiedung"},
 {de:"Möchten Sie gleich den nächsten Termin ausmachen?",en:"Would you like to book your next appointment now?",kontext:"Nachbuchung",tipp:"'Book your next appointment now' — die beste Zeit ist direkt nach dem Termin!",kat:"verabschiedung"},
 {de:"Vielen Dank für Ihren Besuch!",en:"Thank you so much for coming!",kontext:"Verabschiedung",tipp:"'Thank you so much' — herzlicher als nur 'thank you'.",kat:"verabschiedung"},
 {de:"Bis zum nächsten Mal!",en:"See you next time!",kontext:"Freundlicher Abschied",tipp:"Kurz, warmherzig und einladend.",kat:"verabschiedung"},
 {de:"Ihre Haare sehen wunderschön aus!",en:"Your hair looks amazing!",kontext:"Abschlusskompliment",tipp:"'Amazing' ist enthusiastischer als 'nice'.",kat:"verabschiedung"},
 {de:"Das steht Ihnen sehr gut!",en:"It really suits you!",kontext:"Kompliment",tipp:"'Suit' = passen/stehen. 'Really' verstärkt das Kompliment.",kat:"verabschiedung"},
-{de:"Verwenden Sie bitte dieses Shampoo erst nach 48 Stunden.",en:"Please don't use shampoo for 48 hours after the treatment.",kontext:"Pflegehinweis nach Coloration",tipp:"Wichtiger Pflegehinweis nach der Behandlung.",kat:"verabschiedung"},
+{de:"Verwenden Sie bitte dieses Shampoo erst nach 48 Stunden.",en:"Please don't use shampoo for 48 hours after the treatment.",kontext:"Pflegehinweis nach Coloration",tipp:"Wichtiger Pflegehinweis nach der Behandlung.",kat:"verabschiedung",zf:[{f:"Die Kundin fragt: „When can I wash my hair?“ Welche Antwort passt?",o:["„Please wait 48 hours after the treatment.“","„You can wash it right away tonight.“","„Please never use shampoo again.“","„Please wait 48 minutes after the treatment.“"],r:0,e:"48 hours = 48 Stunden, nicht Minuten. So kann sich die Farbe setzen."}]},
 {de:"Schönen Tag noch!",en:"Have a lovely day!",kontext:"Herzlicher Abschluss",tipp:"'Lovely' klingt wärmer als 'nice'.",kat:"verabschiedung"},
 {de:"Kommen Sie bald wieder!",en:"Hope to see you again soon!",kontext:"Einladung zur Wiederkehr",tipp:"Zeigt echte Vorfreude auf den nächsten Besuch.",kat:"verabschiedung"},
 // FACHVOKABULAR
-{de:"der Haaransatz / die Wurzel",en:"the roots / the regrowth",kontext:"Colorationsbereich",tipp:"'Roots' = die Wurzeln. 'Regrowth' = nachwachsender Ansatz.",kat:"vokabular"},
+{de:"der Haaransatz / die Wurzel",en:"the roots / the regrowth",kontext:"Colorationsbereich",tipp:"'Roots' = die Wurzeln. 'Regrowth' = nachwachsender Ansatz.",kat:"vokabular",zf:[{f:"Die Kundin sagt: „My roots are showing.“ Was möchte sie wahrscheinlich?",o:["Den Ansatz nachfärben","Die Spitzen schneiden","Eine Dauerwelle","Eine Kopfmassage"],r:0,e:"„Roots are showing“ = der nachgewachsene Ansatz ist sichtbar, also Ansatzfarbe."}]},
 {de:"die Schläfen",en:"the temples",kontext:"Kopfpartie",tipp:"Wichtig beim Herrenschnitt — 'temple fade' ist eine beliebte Technik.",kat:"vokabular"},
-{de:"der Pony",en:"the fringe / the bangs",kontext:"Haarschnitt",tipp:"'Fringe' = britisch, 'bangs' = amerikanisch.",kat:"vokabular"},
+{de:"der Pony",en:"the fringe / the bangs",kontext:"Haarschnitt",tipp:"'Fringe' = britisch, 'bangs' = amerikanisch.",kat:"vokabular",zf:[{f:"Die Kundin sagt: „Just my fringe, please.“ Was schneidest du?",o:["Nur den Pony","Nur die Spitzen","Nur den Nacken","Nur die Seiten"],r:0,e:"„Fringe“ (britisch) oder „bangs“ (amerikanisch) = Pony."}]},
 {de:"die Haarspitzen",en:"the ends / the tips",kontext:"Haarlänge",tipp:"'Split ends' = Spliss. 'Trim the ends' = die Spitzen kürzen.",kat:"vokabular"},
-{de:"der Scheitel",en:"the parting",kontext:"Frisur",tipp:"'Parting on the left/right' = links/rechts gescheitelt.",kat:"vokabular"},
+{de:"der Scheitel",en:"the parting",kontext:"Frisur",tipp:"'Parting on the left/right' = links/rechts gescheitelt.",kat:"vokabular",zf:[{f:"Die Kundin sagt: „I usually wear a side parting.“ Was bedeutet das?",o:["Sie trägt einen Seitenscheitel","Sie trägt einen Mittelscheitel","Sie trägt seitlich einen Zopf","Sie trägt die Seiten kurz"],r:0,e:"„Side parting“ = Seitenscheitel, „centre parting“ = Mittelscheitel."}]},
 {de:"das Blondieren",en:"bleaching / lightening",kontext:"Chemische Behandlung",tipp:"'Bleaching' = chemisches Aufhellen. 'Lightening' klingt schonender.",kat:"vokabular"},
 {de:"die Strähnen / Highlights",en:"highlights",kontext:"Colorationstechnik",tipp:"Highlights = hellere Strähnen. Lowlights = dunklere Strähnen.",kat:"vokabular"},
 {de:"die Tönung",en:"toner / semi-permanent colour",kontext:"Farbbehandlung",tipp:"'Toner' = Tönung nach Blondierung.",kat:"vokabular"},
@@ -507,10 +507,10 @@ var FRAGEN = [
 {de:"der Föhn",en:"hairdryer / blow dryer",kontext:"Gerät",tipp:"'Blow dry' = föhnen. 'Can I blow dry your hair?'",kat:"vokabular"},
 {de:"das Glätteisen",en:"flat iron / hair straightener",kontext:"Styling-Gerät",tipp:"'Flat iron' = amerikanisch. 'Straighteners' = britisch.",kat:"vokabular"},
 {de:"der Lockenwickler",en:"roller / curler",kontext:"Styling",tipp:"'Roller' = Wickler. 'Curling iron' = Lockenstab.",kat:"vokabular"},
-{de:"der Spliss",en:"split ends",kontext:"Haarproblem",tipp:"'She has split ends' = Sie hat Spliss. Sehr häufig im Kundengespräch.",kat:"vokabular"},
+{de:"der Spliss",en:"split ends",kontext:"Haarproblem",tipp:"'She has split ends' = Sie hat Spliss. Sehr häufig im Kundengespräch.",kat:"vokabular",zf:[{f:"Die Kundin fragt: „Can a hair mask fix my split ends?“ Welche Antwort stimmt?",o:["„Only a cut removes them – a mask helps prevent new ones.“","„Yes, one mask will fix them completely.“","„Yes, if you leave the mask on overnight, they grow back together.“","„No, split ends can never be cut off.“"],r:0,e:"Spliss wächst nicht mehr zusammen. Nur Schneiden entfernt ihn, Pflege beugt neuem vor."}]},
 // BESCHWERDEN
 {de:"Es tut mir sehr leid, das war nicht meine Absicht.",en:"I'm so sorry, that wasn't my intention.",kontext:"Bei Missverständnissen",tipp:"Aufrichtige Entschuldigung ohne direkte Schuldzuweisung.",kat:"beschwerden"},
-{de:"Ich verstehe Ihre Enttäuschung.",en:"I understand your disappointment.",kontext:"Auf Beschwerden reagieren",tipp:"Zeigt dass man die Gefühle ernst nimmt.",kat:"beschwerden"},
+{de:"Ich verstehe Ihre Enttäuschung.",en:"I understand your disappointment.",kontext:"Auf Beschwerden reagieren",tipp:"Zeigt dass man die Gefühle ernst nimmt.",kat:"beschwerden",zf:[{f:"Die Kundin sagt: „This isn't what I asked for.“ Welcher Satz passt als erste Reaktion?",o:["„I'm so sorry – tell me what you'd like different.“","„That's exactly what you asked for.“","„It will look much better tomorrow.“","„Don't worry, you'll get used to it in a few days, I promise.“"],r:0,e:"Zuerst Bedauern zeigen und zuhören, dann gemeinsam eine Lösung finden."}]},
 {de:"Lassen Sie mich das sofort korrigieren.",en:"Let me fix that right away.",kontext:"Lösung anbieten",tipp:"'Fix' = reparieren/korrigieren. 'Right away' = sofort.",kat:"beschwerden"},
 {de:"Wie kann ich das für Sie in Ordnung bringen?",en:"How can I make this right for you?",kontext:"Lösungsfindung",tipp:"'Make this right' = das wieder gutmachen.",kat:"beschwerden"},
 {de:"Das entspricht leider nicht Ihren Erwartungen.",en:"This isn't quite what you were hoping for.",kontext:"Unzufriedenheit ansprechen",tipp:"Einfühlsam formuliert — klar ohne anklagend zu klingen.",kat:"beschwerden"},
@@ -993,8 +993,11 @@ function starteLernen(){
   zeige('quiz');zeigeFrage();
 }
 
+// Zusatzfragen (zf): kommen nach einer richtigen Übersetzung und prüfen, ob man
+// die Situation auch versteht – z. B. was die Antwort des Gastes bedeutet.
 function zeigeFrage(){
   var q=QuizFragen[QuizIdx];AktFrage=q;
+  if(q.zusatz){zeigeZusatzfrage(q);return;}
   var pool=getPool();
   document.getElementById('prog-fill').style.width=Math.round((QuizIdx/QuizFragen.length)*100)+'%';
   document.getElementById('quiz-nr').textContent='Frage '+(QuizIdx+1)+' von '+QuizFragen.length;
@@ -1020,8 +1023,35 @@ function zeigeFrage(){
   document.getElementById('quiz-btns').innerHTML='';
 }
 
+function zeigeZusatzfrage(q){
+  document.getElementById('prog-fill').style.width=Math.round((QuizIdx/QuizFragen.length)*100)+'%';
+  document.getElementById('quiz-nr').textContent='Frage '+(QuizIdx+1)+' von '+QuizFragen.length+' · Zusatzfrage';
+  document.getElementById('quiz-score-live').textContent='✓ '+QuizRichtig;
+  document.getElementById('frage-lang').textContent='🔎 Verstanden? Zusatzfrage';
+  document.getElementById('frage-txt').textContent=q.f;
+  document.getElementById('frage-kontext').textContent='📍 zu: '+q.haupt.en;
+  var richtig=q.o[q.r];
+  var optDiv=document.getElementById('optionen');
+  optDiv.innerHTML='';
+  shuffle(q.o).forEach(function(opt){
+    var btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=opt;
+    btn.addEventListener('click',function(){pruefeAntwort(opt,richtig,btn);});
+    optDiv.appendChild(btn);
+  });
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('feedback').innerHTML='';
+  document.getElementById('quiz-btns').innerHTML='';
+}
+
 function pruefeAntwort(gewaehlt,richtig,geklickt){
   var kor=gewaehlt===richtig;
+  var q=AktFrage;
+  if(kor&&!q.zusatz&&q.zf&&q.zf.length){
+    var zs=q.zf.map(function(z){return Object.assign({},z,{zusatz:true,haupt:q});});
+    QuizFragen.splice.apply(QuizFragen,[QuizIdx+1,0].concat(zs));
+  }
   if(kor) QuizRichtig++;
   document.getElementById('quiz-score-live').textContent='✓ '+QuizRichtig;
   document.querySelectorAll('.opt-btn').forEach(function(b){
@@ -1032,9 +1062,11 @@ function pruefeAntwort(gewaehlt,richtig,geklickt){
   var fb=document.getElementById('feedback');
   fb.className=kor?'fb-g':'fb-r';
   fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#5B7B6F':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
+    (q.zusatz?'<div class="muster-lab">Erklärung</div><div class="muster">'+q.e+'</div>':
     '<div class="muster-lab">Übersetzung</div>'+
     '<div class="muster">'+AktFrage.de+'<br><span style="color:#5B7B6F;font-weight:600">'+AktFrage.en+'</span>'+
-    (AktFrage.tipp?'<br><br><span style="color:#C4B86A;font-size:11px">💡 '+AktFrage.tipp+'</span>':'')+'</div>';
+    (AktFrage.tipp?'<br><br><span style="color:#C4B86A;font-size:11px">💡 '+AktFrage.tipp+'</span>':'')+'</div>'+
+    (kor&&q.zf&&q.zf.length?'<div style="font-size:12px;color:#5B7B6F;margin-top:8px">➜ Jetzt kommt eine Zusatzfrage: Verstehst du auch, was der Gast antwortet?</div>':''));
   fb.style.display='block';
   var btns=document.getElementById('quiz-btns');
   var nb=document.createElement('button');
