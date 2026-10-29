@@ -46,6 +46,7 @@ textarea{resize:vertical;margin-bottom:0}
 .badge{display:inline-block;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:700}
 .bmc{background:#8FAF7A22;color:#5A8A5A;border:1px solid #8FAF7A}
 .bof{background:#C4B86A22;color:#8A7A30;border:1px solid #C4B86A}
+.bzf{background:#5B7B6F22;color:#3D6B50;border:1px solid #5B7B6F}
 .opt{width:100%;padding:12px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;text-align:left;font-size:13px;cursor:pointer;margin-bottom:8px;font-family:system-ui;line-height:1.4;display:block}
 .opt.gew{border-color:#2C2C2C;background:#2C2C2C0D}
 .opt.ric{border-color:#6B8F71;background:#8FAF7A22;color:#3D6B50}
@@ -823,14 +824,14 @@ var FB={1:[
 {id:"1-en19",t:"mc",th:"Englisch im Salon",f:"Was bedeutet: 'I'd like a full colour change, can you do highlights and lowlights?'",o:["Ich möchte nur einen Schnitt","Ich möchte eine komplette Farbveränderung — können Sie Highlights und Lowlights machen?","Können Sie meine Haare waschen?","Ich hätte gerne eine Dauerwelle"],r:1,e:"Highlights = hellere Strähnen, Lowlights = dunklere Strähnen. Eine häufige Kombination!"},
 {id:"1-en20",t:"mc",th:"Englisch im Salon",f:"Wie sagt man auf Englisch: 'Ich werde das mit Ihnen besprechen bevor wir beginnen'?",o:["I will do it quickly","I'll discuss that with you before we start","We can start now","I think it looks fine"],r:1,e:"Professionelle Kommunikation — immer erst erklären, dann handeln!"},
 {id:"1-hw1",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wo prüfst du die Wassertemperatur, bevor das Wasser an den Kopf kommt?",o:["An den Fingerspitzen","Am Handgelenk oder an der Innenseite des Unterarms","Gar nicht – der Gast sagt schon Bescheid","Am Wasserhahn"],r:1,e:"Am Handgelenk oder Unterarm innen. Die Hand ist weniger empfindlich als die Kopfhaut. Danach den Gast fragen, ob die Temperatur angenehm ist."},
-{id:"1-hw2",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Welche Wassertemperatur ist für die normale Haarwäsche richtig?",o:["ca. 25–28 °C, kühl","ca. 36–38 °C, lauwarm","ca. 40–42 °C, warm","So heiß wie möglich"],r:1,e:"Lauwarm, etwa Körpertemperatur. Zu heißes Wasser reizt die Kopfhaut, regt die Talgdrüsen an und lässt Farbe ausbluten."},
-{id:"1-hw3",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Warum spülst du die Pflege zum Schluss etwas kühler aus?",o:["Damit der Gast munter wird","Die Schuppenschicht liegt glatter an, das Haar glänzt mehr","Weil warmes Wasser die Pflege zerstört","Um Wasser zu sparen"],r:1,e:"Kühleres Wasser lässt die Schuppenschicht glatter anliegen. Das Haar glänzt und lässt sich leichter kämmen."},
-{id:"1-hw4",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Womit arbeitest du bei der Kopfmassage?",o:["Mit den Fingernägeln","Mit den Fingerkuppen","Mit den Handballen","Mit einer Bürste"],r:1,e:"Immer mit den Fingerkuppen. Fingernägel kratzen die Kopfhaut und können sie verletzen."},
+{id:"1-hw2",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Welche Wassertemperatur ist für die normale Haarwäsche richtig?",o:["ca. 25–28 °C, kühl","ca. 36–38 °C, lauwarm","ca. 40–42 °C, warm","So heiß wie möglich"],r:1,e:"Lauwarm, etwa Körpertemperatur. Zu heißes Wasser reizt die Kopfhaut, regt die Talgdrüsen an und lässt Farbe ausbluten.",zf:[{t:"mc",f:"Eine Kundin hat frisch gefärbtes Kupferrot. Warum ist zu heißes Wasser bei ihr besonders schlecht?",o:["Die Farbe blutet stärker aus und verblasst schneller","Das Rot wird dadurch dunkler und intensiver","Heißes Wasser fixiert die Farbe zusätzlich","Bei gefärbtem Haar macht die Temperatur keinen Unterschied"],r:0,e:"Heißes Wasser öffnet die Schuppenschicht, die Farbpigmente werden ausgewaschen. Gerade Rottöne verblassen dadurch schnell."},{t:"of",f:"Was passiert an der Kopfhaut, wenn das Wasser zu heiß ist?",mb:[{begriffe:["reiz","rot","brenn","empfindlich","juck"],teilwort:true},{begriffe:["talg","fett"],teilwort:true}],ml:"Die Kopfhaut wird gereizt, und die Talgdrüsen werden angeregt. Das Haar fettet danach schneller nach."}]},
+{id:"1-hw3",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Warum spülst du die Pflege zum Schluss etwas kühler aus?",o:["Damit der Gast munter wird","Die Schuppenschicht liegt glatter an, das Haar glänzt mehr","Weil warmes Wasser die Pflege zerstört","Um Wasser zu sparen"],r:1,e:"Kühleres Wasser lässt die Schuppenschicht glatter anliegen. Das Haar glänzt und lässt sich leichter kämmen.",zf:[{t:"mc",f:"Was haben das kühlere Ausspülen und das sanfte Ausdrücken (statt Rubbeln) gemeinsam?",o:["Beides schont die Schuppenschicht: Sie bleibt glatt, das Haar glänzt","Beides spart Zeit am Waschplatz","Beides sorgt dafür, dass die Pflege tiefer einzieht","Beides ist nur bei sehr langem Haar nötig"],r:0,e:"Bei beidem geht es um die Schuppenschicht: Kühles Wasser lässt sie anliegen, Rubbeln würde sie aufrauen. Glatte Schuppenschicht = Glanz und gute Kämmbarkeit."}]},
+{id:"1-hw4",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Womit arbeitest du bei der Kopfmassage?",o:["Mit den Fingernägeln","Mit den Fingerkuppen","Mit den Handballen","Mit einer Bürste"],r:1,e:"Immer mit den Fingerkuppen. Fingernägel kratzen die Kopfhaut und können sie verletzen.",zf:[{t:"mc",f:"Ein Gast sagt: „Bitte richtig fest kratzen, das tut so gut!“ Was machst du?",o:["Mit den Fingernägeln kräftig kratzen, der Gast will es ja","Mit den Fingerkuppen kräftiger massieren, aber nicht kratzen","Eine Bürste nehmen und die Kopfhaut schrubben","Die Massage ganz weglassen"],r:1,e:"Auch auf Wunsch nicht mit den Nägeln: Sie können die Kopfhaut verletzen, kleine Wunden entzünden sich leicht und brennen bei einer späteren Farbe. Mit den Fingerkuppen kannst du trotzdem kräftiger massieren."}]},
 {id:"1-hw5",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Mit welcher Phase beginnt die Basismassage?",o:["Ausstreichgriff","Greifbewegung","Klopfmassage","Zickzack-Massage"],r:1,e:"Die Basismassage beginnt mit der Greifbewegung an der oberen Halswirbelsäule. Sie entspannt die Halsmuskulatur."},
 {id:"1-hw6",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wie setzt du die Finger bei den kreisenden Bewegungen der Basismassage auf?",o:["Flach mit der ganzen Hand","Steil auf die Kopfhaut","Mit den Handkanten","Mit den Fingernägeln"],r:1,e:"Die Finger werden steil aufgesetzt und massieren kreisend vom Nacken bis zur Stirnkontur und zurück."},
-{id:"1-hw7",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wohin gehört eine Spülung oder Kur?",o:["Auf die Kopfhaut","In Längen und Spitzen","Nur an den Ansatz","Überall gleichmäßig"],r:1,e:"In Längen und Spitzen, dort ist das Haar strapaziert. Auf der Kopfhaut beschwert Pflege und fettet nach. Ausnahme: spezielle Kopfhautpflege."},
-{id:"1-hw8",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wann darfst du KEINE Kopfmassage machen?",o:["Bei langem Haar","Bei Wunden oder Entzündungen der Kopfhaut","Bei der zweiten Wäsche","Wenn der Gast entspannt ist"],r:1,e:"Bei Wunden, Entzündungen oder Kopfhauterkrankungen wird nicht massiert. Nach Farbe oder Blondierung nur sehr sanft."},
-{id:"1-hw9",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Warum werden die Haare nach der Wäsche nicht trocken gerubbelt?",o:["Weil es zu lange dauert","Weil es die nasse Schuppenschicht aufraut","Weil das Handtuch sonst zu nass wird","Weil der Gast es nicht mag"],r:1,e:"Nasses Haar ist empfindlich. Rubbeln raut die Schuppenschicht auf. Deshalb sanft ausdrücken und einen Turban wickeln."},
+{id:"1-hw7",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wohin gehört eine Spülung oder Kur?",o:["Auf die Kopfhaut","In Längen und Spitzen","Nur an den Ansatz","Überall gleichmäßig"],r:1,e:"In Längen und Spitzen, dort ist das Haar strapaziert. Auf der Kopfhaut beschwert Pflege und fettet nach. Ausnahme: spezielle Kopfhautpflege.",zf:[{t:"mc",f:"Ein Gast hat feines Haar, das schnell fettet. Wohin gibst du die Spülung?",o:["Vor allem an den Ansatz, damit er mehr Volumen bekommt","In Längen und Spitzen, den Ansatz aussparen","Gleichmäßig überall, damit nichts vergessen wird","Gar nicht, feines Haar braucht nie Pflege"],r:1,e:"Gerade bei feinem, schnell fettendem Haar bleibt der Ansatz frei: Pflege auf der Kopfhaut beschwert das Haar und fettet nach."},{t:"mc",f:"Warum brauchen die Spitzen mehr Pflege als der Ansatz?",o:["Die Spitzen sind der älteste Teil des Haares und am stärksten strapaziert","In den Spitzen sitzen mehr Talgdrüsen","Die Spitzen sind dicker als der Ansatz","Am Ansatz kann Pflege gar nicht wirken"],r:0,e:"Die Spitzen haben schon viel Föhnen, Bürsten, Sonne und oft Chemie hinter sich. Den Ansatz versorgt zusätzlich der Talg der Kopfhaut."}]},
+{id:"1-hw8",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wann darfst du KEINE Kopfmassage machen?",o:["Bei langem Haar","Bei Wunden oder Entzündungen der Kopfhaut","Bei der zweiten Wäsche","Wenn der Gast entspannt ist"],r:1,e:"Bei Wunden, Entzündungen oder Kopfhauterkrankungen wird nicht massiert. Nach Farbe oder Blondierung nur sehr sanft.",zf:[{t:"mc",f:"Beim Durchbürsten siehst du eine kleine gerötete, nässende Stelle an der Kopfhaut. Was machst du?",o:["Ganz normal massieren, die Stelle ist ja klein","Nicht massieren, den Gast darauf ansprechen, die Stelle schonen und der Stylistin Bescheid geben","Die Stelle besonders gründlich waschen, damit sie sauber wird","Nichts sagen und einfach weiterarbeiten"],r:1,e:"Bei Wunden oder Entzündungen wird nicht massiert. Sprich den Gast höflich darauf an und gib der Stylistin Bescheid – vor allem, wenn danach noch eine Farbe oder Dauerwelle geplant ist."},{t:"of",f:"Warum darf man bei einer Entzündung der Kopfhaut nicht massieren?",mb:[{begriffe:["verschlimm","schmerz","reiz","verstärk","weh"],teilwort:true},{begriffe:["keim","bakter","ansteck","übertrag","ausbreit","verteil","infekt"],teilwort:true}],ml:"Die Massage reizt die entzündete Stelle zusätzlich und tut weh. Außerdem können Keime verteilt oder übertragen werden."}]},
+{id:"1-hw9",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Warum werden die Haare nach der Wäsche nicht trocken gerubbelt?",o:["Weil es zu lange dauert","Weil es die nasse Schuppenschicht aufraut","Weil das Handtuch sonst zu nass wird","Weil der Gast es nicht mag"],r:1,e:"Nasses Haar ist empfindlich. Rubbeln raut die Schuppenschicht auf. Deshalb sanft ausdrücken und einen Turban wickeln.",zf:[{t:"mc",f:"Warum ist nasses Haar empfindlicher als trockenes?",o:["Es ist gequollen, die Schuppenschicht steht leicht ab","Nasses Haar ist schwerer und reißt deshalb","Wasser löst das Keratin im Haar auf","Nasses Haar ist gar nicht empfindlicher"],r:0,e:"Nasses Haar quillt auf, die Schuppenschicht steht leicht ab. Reibung raut sie dann auf – das Haar wird stumpf und kann brechen."}]},
 {id:"1-hw10",t:"mc",th:"Haarwäsche & Kopfmassage",f:"Wie viele Druckpunkte gibt es bei der Greifbewegung auf jeder Seite?",o:["1","2","3","5"],r:2,e:"Auf jeder Seite der oberen Halswirbelsäule gibt es 3 Druckpunkte. Eine Hand stützt dabei die Stirn ab."},
 {id:"1-hw11",t:"of",th:"Haarwäsche & Kopfmassage",f:"Warum werden die Haare vor der Wäsche durchgebürstet?",mb:[{begriffe:["knoten","verknot","verfilz","entwirr"],teilwort:true},{begriffe:["styling","staub","schmutz","rückst"],teilwort:true},{begriffe:["kopfhaut","wunde","schuppen"],teilwort:true}],ml:"Trocken lösen sich Knoten leichter als nass, Stylingreste und Staub werden gelockert, und du siehst dir dabei die Kopfhaut an (Wunden, Schuppen, Auffälligkeiten)."},
 {id:"1-hw12",t:"of",th:"Haarwäsche & Kopfmassage",f:"Warum wird grundsätzlich zweimal gewaschen?",mb:[{begriffe:["talg","fett","styling","schmutz"],teilwort:true},{begriffe:["schäum","schaum","reinig","kopfhaut"],teilwort:true}],ml:"Die erste Wäsche löst Talg, Stylingprodukte und Schmutz. Erst bei der zweiten Wäsche schäumt das Shampoo richtig und reinigt die Kopfhaut gründlich."},
@@ -1315,12 +1316,50 @@ function starteQuiz(){
   QIDX=0;QANT=[];WIEDERHOLUNG=false;zeigeFrage();zeige('s-quiz');
 }
 
+// ── ZUSATZFRAGEN (Verständnis-Check) ─────────────────────────────────────────
+// Eine Frage kann in `zf` Zusatzfragen haben (gleiches Format wie normale
+// mc-/of-Fragen, nur ohne id/th). Sie kommen direkt nach der Hauptfrage –
+// aber nur, wenn die Hauptfrage richtig war. So zeigt sich, ob der Lehrling
+// die Antwort verstanden oder nur auswendig gelernt hat.
+function zusatzFragen(q){
+  var zf=q.zf||[];
+  return zf.map(function(z,i){
+    return Object.assign({},z,{id:q.id+'-z'+(i+1),th:q.th,haupt:q,znr:i+1,zanz:zf.length});
+  });
+}
+
+function nachAntwort(q,korrekt){
+  if(korrekt&&!q.haupt&&q.zf&&q.zf.length){
+    var zs=zusatzFragen(q);
+    QFRAGEN.splice.apply(QFRAGEN,[QIDX+1,0].concat(zs));
+  }
+}
+
+// Falsch beantwortete Fragen für die Wiederholung: bei einer falschen
+// Zusatzfrage wird die Hauptfrage wiederholt (die Zusatzfragen kommen dann neu).
+function wiederholFragen(){
+  var liste=[];
+  QANT.forEach(function(a){
+    if(a.korrekt) return;
+    var h=a.q.haupt||a.q;
+    if(liste.indexOf(h)<0) liste.push(h);
+  });
+  return liste;
+}
+
+function mischen(arr){
+  for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}
+  return arr;
+}
+
 function zeigeFrage(){
   var q=QFRAGEN[QIDX];
-  document.getElementById('prog').style.width=Math.round((QIDX/QFRAGEN.length)*100)+'%';
-  document.getElementById('q-nr').textContent='Frage '+(QIDX+1)+' von '+QFRAGEN.length;
-  document.getElementById('q-badge').innerHTML='<span class="badge '+(q.t==='mc'?'bmc':'bof')+'">'+(q.t==='mc'?'Multiple Choice':'Offene Frage')+'</span>';
-  document.getElementById('q-thema').textContent=q.th;
+  var haupt=QFRAGEN.filter(function(x){return !x.haupt;});
+  var nr=QFRAGEN.slice(0,QIDX+1).filter(function(x){return !x.haupt;}).length;
+  document.getElementById('prog').style.width=Math.round(((q.haupt?nr:nr-1)/haupt.length)*100)+'%';
+  document.getElementById('q-nr').textContent='Frage '+nr+' von '+haupt.length+(q.haupt?' · Zusatzfrage '+q.znr+'/'+q.zanz:'');
+  document.getElementById('q-badge').innerHTML=(q.haupt?'<span class="badge bzf">Verstanden?</span> ':'')+'<span class="badge '+(q.t==='mc'?'bmc':'bof')+'">'+(q.t==='mc'?'Multiple Choice':'Offene Frage')+'</span>';
+  document.getElementById('q-thema').textContent=q.haupt?(q.th+' · Zusatzfrage zu: „'+q.haupt.f+'“'):q.th;
   document.getElementById('q-txt').textContent=q.f;
   document.getElementById('q-feedback').style.display='none';
   document.getElementById('q-feedback').innerHTML='';
@@ -1328,10 +1367,14 @@ function zeigeFrage(){
   var btnDiv=document.getElementById('q-btns');
   antDiv.innerHTML='';btnDiv.innerHTML='';
   if(q.t==='mc'){
-    q.o.forEach(function(opt,i){
+    // Antworten bei jeder Anzeige neu mischen, damit man sich nicht die
+    // Position („ist eh immer B“) merken kann. data-orig = Index in q.o.
+    mischen(q.o.map(function(_,i){return i;})).forEach(function(i,pos){
+      var opt=q.o[i];
       var b=document.createElement('button');
       b.className='opt';
-      b.innerHTML='<b style="color:#9A9188;margin-right:8px">'+String.fromCharCode(65+i)+')</b>'+opt;
+      b.dataset.orig=i;
+      b.innerHTML='<b style="color:#9A9188;margin-right:8px">'+String.fromCharCode(65+pos)+')</b>'+opt;
       b.addEventListener('click',function(){
         document.querySelectorAll('.opt').forEach(function(x){x.className='opt';});
         b.className='opt gew';
@@ -1368,7 +1411,8 @@ function zeigeFrage(){
 function pruefeMC(gew){
   var q=QFRAGEN[QIDX];
   var kor=gew===q.r;
-  document.querySelectorAll('.opt').forEach(function(b,i){
+  document.querySelectorAll('.opt').forEach(function(b){
+    var i=Number(b.dataset.orig);
     b.disabled=true;
     if(i===q.r) b.className='opt ric';
     else if(i===gew&&!kor) b.className='opt fal';
@@ -1378,6 +1422,8 @@ function pruefeMC(gew){
   fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#3D6B50':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>';
   fb.style.display='block';
   QANT.push({q:q,korrekt:kor,punkte:kor?10:0});
+  if(kor&&q.zf&&q.zf.length&&!q.haupt) fb.innerHTML+=zusatzHinweis();
+  nachAntwort(q,kor);
   zeigeWeiter();
 }
 
@@ -1394,7 +1440,13 @@ function pruefeOffen(){
 
   var staerke=gesamt>0?(treffer+' von '+gesamt+' Punkten erreicht'):null;
   QANT.push({q:q,korrekt:punkte>=6,punkte:punkte});
+  nachAntwort(q,punkte>=6);
   zeigeOffen(punkte,null,staerke,q.ml);
+  if(punkte>=6&&q.zf&&q.zf.length&&!q.haupt) document.getElementById('q-feedback').innerHTML+=zusatzHinweis();
+}
+
+function zusatzHinweis(){
+  return '<div style="margin-top:10px;padding-top:8px;border-top:1px solid #0001;font-size:12px;color:#6B6560">➜ Jetzt kommt eine Zusatzfrage: Zeig, dass du auch verstanden hast, <i>warum</i>.</div>';
 }
 
 function zeigeOffen(punkte,hinweis,staerke,muster){
@@ -1425,7 +1477,7 @@ function zeigeWeiter(){
 
   // Button-Text je nach Situation
   var istLetzte=QIDX+1>=QFRAGEN.length;
-  var falsche=QANT.filter(function(a){return !a.korrekt;});
+  var falsche=wiederholFragen();
   if(!istLetzte){
     nb.textContent='Nächste Frage →';
   } else if(!WIEDERHOLUNG && falsche.length>0){
@@ -1442,7 +1494,7 @@ function zeigeWeiter(){
     } else if(!WIEDERHOLUNG && falsche.length>0){
       // Wiederholungsrunde starten
       WIEDERHOLUNG=true;
-      QFRAGEN=falsche.map(function(a){return a.q;}).sort(function(){return Math.random()-.5;});
+      QFRAGEN=mischen(falsche.slice());
       QIDX=0;
       // Info-Banner kurz anzeigen
       var banner=document.createElement('div');
@@ -1460,6 +1512,24 @@ function zeigeWeiter(){
   bd.appendChild(nb);
 }
 
+// Wie viele Zusatzfragen saßen – und bei welchen Hauptfragen war die Antwort
+// zwar richtig, die Zusatzfrage aber nicht (Hinweis auf „nur auswendig“)?
+function verstaendnisZusammenfassung(){
+  var zus=QANT.filter(function(a){return a.q.haupt;});
+  if(!zus.length) return '';
+  var zok=zus.filter(function(a){return a.korrekt;}).length;
+  var auswendig=[];
+  zus.forEach(function(a){if(!a.korrekt&&auswendig.indexOf(a.q.haupt)<0)auswendig.push(a.q.haupt);});
+  var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid #DDD8D0;font-size:12px;color:#2C2C2C">'+
+    '<b>Verständnis-Check:</b> '+zok+' von '+zus.length+' Zusatzfragen richtig</div>';
+  if(auswendig.length){
+    html+='<div style="font-size:12px;color:#8A7A30;margin-top:4px;line-height:1.45">Bei '+auswendig.length+
+      (auswendig.length===1?' Frage':' Fragen')+' war die Antwort richtig, die Zusatzfrage aber nicht. '+
+      'Hier sitzt die Antwort vielleicht nur auswendig – schau dir das Warum noch einmal an.</div>';
+  }
+  return html;
+}
+
 async function zeigeErgebnis(){
   zeige('s-ergebnis');
   var g=QANT.length;
@@ -1472,7 +1542,8 @@ async function zeigeErgebnis(){
   QANT.forEach(function(a){if(!a.korrekt&&schwach.indexOf(a.q.th)<0)schwach.push(a.q.th);});
   document.getElementById('score-box').innerHTML=
     '<div style="font-size:14px;color:'+col+';font-weight:700;margin-bottom:4px">'+note+'</div>'+
-    '<div style="font-size:12px;color:#6B6560">'+ok+' von '+g+' richtig · '+p+' von '+(g*10)+' Punkten</div>';
+    '<div style="font-size:12px;color:#6B6560">'+ok+' von '+g+' richtig · '+p+' von '+(g*10)+' Punkten</div>'+
+    verstaendnisZusammenfassung();
   var komp={};
   if(AKTLEHRLING){
     komp=await speichereKompetenz(AKTLEHRLING.id,QANT);
@@ -1484,9 +1555,9 @@ async function zeigeErgebnis(){
   var html=renderKompetenz(komp,themen);
   html+='<div class="lab" style="margin-bottom:8px;margin-top:4px">Einzelfragen</div>';
   QANT.forEach(function(a){
-    html+='<div class="karte" style="border-left:3px solid '+(a.korrekt?'#6B8F71':'#D4A97A')+';margin-bottom:8px">'+
+    html+='<div class="karte" style="border-left:3px solid '+(a.korrekt?'#6B8F71':'#D4A97A')+';margin-bottom:8px'+(a.q.haupt?';margin-left:18px':'')+'">'+
       '<div style="display:flex;justify-content:space-between;margin-bottom:3px">'+
-        '<div style="font-size:11px;color:#9A9188">'+a.q.th+'</div>'+
+        '<div style="font-size:11px;color:#9A9188">'+(a.q.haupt?'↳ Zusatzfrage · ':'')+a.q.th+'</div>'+
         '<div style="font-size:12px;font-weight:700;color:'+(a.korrekt?'#6B8F71':'#C44030')+'">'+
           (a.q.t==='mc'?(a.korrekt?'✓':'✗'):(a.punkte||0)+'/10')+'</div>'+
       '</div>'+
