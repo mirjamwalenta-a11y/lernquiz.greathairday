@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lern-Tool · A Great Hair Day</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="quiz-verlauf.js?v=20261029a"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
+<script src="quiz-verlauf.js?v=20261029b"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -43,6 +43,10 @@ textarea{resize:vertical}
 .opt-btn{width:100%;padding:11px 14px;text-align:left;border:1.5px solid #E2DDD5;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;font-family:system-ui;color:#1C1C1A;margin-bottom:8px}
 .opt-btn:disabled{cursor:default}
 .opt-btn.ric{border-color:#5B7B6F;background:#EAF0EE;color:#2C2C2C}
+.opt-btn.gew{border-color:#5B7B6F;box-shadow:0 0 0 1px #5B7B6F}
+.lt-pruef{flex:1;padding:11px;border-radius:6px;font-size:13px;font-family:system-ui;cursor:pointer;border:1px solid #5B7B6F;background:#fff;color:#5B7B6F}
+.lt-pruef.sicher{background:#5B7B6F;color:#fff}
+.lt-pruef:disabled{opacity:.45;cursor:default}
 .opt-btn.fal{border-color:#C44030;background:#FDECEA;color:#C44030}
 .page{display:none}.page.ak{display:block}
 .back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:12px}
@@ -1054,11 +1058,42 @@ function ltMischen(a) {
   for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
   return a;
 }
-// Buttons in gemischter Reihenfolge; fn bekommt den Original-Index der Antwort
+// Buttons in gemischter Reihenfolge. Ein Klick wählt nur aus; geprüft wird über
+// „Sicher – prüfen“ / „Geraten – prüfen“. fn bekommt (Original-Index, sicher).
 function ltOptionen(q, fn) {
   return ltMischen(q.o.map(function(_, i){ return i; })).map(function(i){
-    return '<button class="opt-btn" data-o="'+i+'" onclick="'+fn+'('+i+')">'+q.o[i]+'</button>';
-  }).join('');
+    return '<button class="opt-btn" data-o="'+i+'" onclick="ltWaehle(this,\''+fn+'\','+i+')">'+q.o[i]+'</button>';
+  }).join('') + ltSicherZeile();
+}
+// Wie sicher bist du? Richtig geraten zählt nicht als gewusst,
+// sicher und trotzdem falsch zeigt ein Missverständnis.
+function ltSicherZeile() {
+  return '<div class="lt-sicher"><div style="font-size:11px;color:#7A7A70;text-align:center;margin:2px 0 6px">Wie sicher bist du dir?</div>' +
+    '<div style="display:flex;gap:8px;margin-bottom:8px"><button class="lt-pruef sicher" disabled>Sicher – prüfen</button>' +
+    '<button class="lt-pruef" disabled>Geraten – prüfen</button></div></div>';
+}
+function ltWaehle(btn, fn, i) {
+  var box = btn.parentNode;
+  box.querySelectorAll('.opt-btn').forEach(function(b){ b.classList.remove('gew'); });
+  btn.classList.add('gew');
+  box.querySelectorAll('.lt-pruef').forEach(function(p){
+    p.disabled = false;
+    p.onclick = function(){
+      box.querySelectorAll('.lt-pruef').forEach(function(x){ x.disabled = true; });
+      var z = box.querySelector('.lt-sicher'); if (z) z.style.display = 'none';
+      window[fn](i, p.classList.contains('sicher'));
+    };
+  });
+}
+// Feedback-Kopf und Zusatztext je nach richtig/falsch und sicher/geraten
+function ltSicherFeedback(ok, sicher) {
+  var geraten = ok && !sicher, sf = !ok && sicher;
+  return {
+    klasse: geraten ? 'fb-o' : ok ? 'fb-g' : 'fb-r',
+    titel: geraten ? 'Richtig – aber geraten.' : sf ? 'Nicht ganz – obwohl du dir sicher warst.' : ok ? 'Richtig!' : 'Nicht ganz.',
+    zusatz: geraten ? '<div style="font-size:12px;color:#8A7A30;margin-top:6px">Lies dir die Erklärung gut durch – richtig geraten zählt noch nicht als gewusst.</div>' :
+            sf ? '<div style="font-size:12px;color:#C44030;margin-top:6px">Genau hier lohnt sich ein zweiter Blick: Was du sicher wusstest, stimmt so nicht.</div>' : ''
+  };
 }
 function ltMarkieren(sel, q, i) {
   document.querySelectorAll(sel + ' .opt-btn').forEach(function(b){
@@ -1089,10 +1124,20 @@ function quizPufferSpeichern() {
 }
 
 // Abschluss eines Praxis-Modul-Quiz einmal pro Runde speichern
+function ltSicherBilanz(st) {
+  var a = st.antworten || [], g = a.filter(function(x){ return x.geraten; }).length, sf = a.filter(function(x){ return x.sicherFalsch; }).length;
+  if (!g && !sf) return '';
+  return '<div style="font-size:12px;line-height:1.5;margin-top:6px">' +
+    (g ? '<div style="color:#8A7A30">'+g+'× richtig geraten – zählt noch nicht als gewusst</div>' : '') +
+    (sf ? '<div style="color:#C44030">'+sf+'× sicher, aber falsch – hier lohnt sich ein zweiter Blick</div>' : '') + '</div>';
+}
+
 function ltQuizEnde(st, thema, elId) {
-  if (st.gespeichert || typeof ghdQuizSpeichern !== 'function') return;
+  if (st.gespeichert || typeof ghdQuizSpeichernAntworten !== 'function') return;
   st.gespeichert = true;
-  ghdQuizSpeichern(thema, st.richtig, st.quiz.length, elId);
+  ghdQuizSpeichernAntworten((st.antworten || []).map(function(a){
+    return {thema:thema, korrekt:a.korrekt, geraten:a.geraten, sicherFalsch:a.sicherFalsch};
+  }), elId);
 }
 
 function quizInit() {
@@ -1124,26 +1169,32 @@ function quizNeu() {
   zeigeFrage(f);
 }
 
+var LT_FRAGE = null;
 function zeigeFrage(f) {
-  var html = '<p style="font-weight:600;color:#1C1C1A;line-height:1.5;font-size:15px;margin-bottom:14px">'+f.f+'</p>';
+  LT_FRAGE = f;
+  var html = '<p style="font-weight:600;color:#1C1C1A;line-height:1.5;font-size:15px;margin-bottom:14px">'+f.f+'</p><div>';
   ltMischen(f.o.map(function(_, i){ return i; })).forEach(function(i, pos){
-    html += '<button class="opt-btn" id="opt-'+i+'" onclick="quizPruefe(this,'+i+','+f.r+',\''+f.e.replace(/'/g,"\\'")+'\')">'+(String.fromCharCode(65+pos))+') '+f.o[i]+'</button>';
+    html += '<button class="opt-btn" id="opt-'+i+'" onclick="ltWaehle(this,\'quizPruefeAuswahl\','+i+')">'+(String.fromCharCode(65+pos))+') '+f.o[i]+'</button>';
   });
-  document.getElementById('quiz-bereich').innerHTML = html;
+  document.getElementById('quiz-bereich').innerHTML = html + ltSicherZeile() + '</div>';
+}
+function quizPruefeAuswahl(i, sicher) {
+  quizPruefe(document.getElementById('opt-'+i), i, LT_FRAGE.r, LT_FRAGE.e, sicher);
 }
 
-function quizPruefe(btn, gewaehlt, richtig, erklaerung) {
+function quizPruefe(btn, gewaehlt, richtig, erklaerung, sicher) {
   document.querySelectorAll('.opt-btn').forEach(function(b){ b.disabled = true; });
   document.getElementById('opt-'+richtig).classList.add('ric');
   if (gewaehlt !== richtig) { btn.classList.add('fal'); }
+  if (sicher === undefined) sicher = true;
+  var ok = gewaehlt === richtig, kor = ok && sicher, sfb = ltSicherFeedback(ok, sicher);
   QUIZ_GESAMT++;
-  if (gewaehlt === richtig) QUIZ_RICHTIG++;
-  var kor = gewaehlt === richtig;
-  QUIZ_PUFFER.push({thema:document.getElementById('quiz-thema').value, korrekt:kor});
+  if (kor) QUIZ_RICHTIG++;
+  QUIZ_PUFFER.push({thema:document.getElementById('quiz-thema').value, korrekt:kor, geraten:ok && !sicher, sicherFalsch:!ok && sicher});
   if (QUIZ_PUFFER.length >= 10) quizPufferSpeichern();
   var fb = document.createElement('div');
-  fb.className = kor ? 'fb-g' : 'fb-r';
-  fb.innerHTML = '<strong style="color:'+(kor?'#2E7D5E':'#C44030')+'">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</strong><div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>';
+  fb.className = sfb.klasse;
+  fb.innerHTML = '<strong style="color:'+(ok && sicher?'#2E7D5E':ok?'#8A7A30':'#C44030')+'">'+(kor?'✓ ':ok?'✓ ':'✗ ')+sfb.titel+'</strong>'+sfb.zusatz+'<div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>';
   var nb = document.createElement('button');
   nb.className = 'btn-primary';
   nb.style.marginTop = '10px';
@@ -2985,7 +3036,7 @@ function pmsTech(i) { PMS.tech = i; pmsTechnik(); }
 // ── Quiz (10 zufällige Fragen) ──
 function pmsQuizNeu() {
   PMS.quiz = ltMischen(PMS_QUIZ.slice()).slice(0, 10);
-  PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false; PMS.gespeichert = false;
+  PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false; PMS.gespeichert = false; PMS.antworten = [];
 }
 
 function pmsQuiz() {
@@ -2993,7 +3044,7 @@ function pmsQuiz() {
   var n = PMS.quiz.length, html;
   if (PMS.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMS.richtig === n ? '🎉' : '✨')+'</div>' +
-      '<div class="pm-schritt-titel">'+PMS.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-schritt-titel">'+PMS.richtig+' von '+n+' richtig</div>' + ltSicherBilanz(PMS) +
       '<div class="pm-txt">'+(PMS.richtig === n ? 'Super, das sitzt!' : 'Schau dir die Bereiche nochmal an und versuch es erneut.')+'</div>' +
       '<div id="pms-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmsQuizNeu();pmsQuiz()">Nochmal</button></div></div>';
@@ -3007,14 +3058,15 @@ function pmsQuiz() {
   pmsSetze(html);
 }
 
-function pmsAntwort(i) {
+function pmsAntwort(i, sicher) {
   if (PMS.beantwortet) return;
   PMS.beantwortet = true;
-  var q = PMS.quiz[PMS.qi], ok = i === q.r;
-  if (ok) PMS.richtig++;
+  var q = PMS.quiz[PMS.qi], ok = i === q.r, gewusst = ok && sicher, sfb = ltSicherFeedback(ok, sicher);
+  if (gewusst) PMS.richtig++;
+  PMS.antworten.push({korrekt:gewusst, geraten:ok && !sicher, sicherFalsch:!ok && sicher});
   ltMarkieren('#pms-inhalt', q, i);
-  var zusatz = ltZusatz(PMS, q, ok);
-  document.getElementById('pms-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
+  var zusatz = ltZusatz(PMS, q, gewusst);
+  document.getElementById('pms-fb').innerHTML = '<div class="'+sfb.klasse+'" style="font-size:13px;line-height:1.5"><strong>'+sfb.titel+'</strong> '+q.e+sfb.zusatz+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="pmsWeiter()">Weiter →</button></div>';
 }
 
@@ -3349,7 +3401,7 @@ function pmcWaehle(k) { if (PMC.wahl[k]) delete PMC.wahl[k]; else PMC.wahl[k] = 
 // ── Quiz (10 zufällige Fragen) ──
 function pmcQuizNeu() {
   PMC.quiz = ltMischen(PMC_QUIZ.slice()).slice(0, 10);
-  PMC.qi = 0; PMC.richtig = 0; PMC.beantwortet = false; PMC.gespeichert = false;
+  PMC.qi = 0; PMC.richtig = 0; PMC.beantwortet = false; PMC.gespeichert = false; PMC.antworten = [];
 }
 
 function pmcQuiz() {
@@ -3357,7 +3409,7 @@ function pmcQuiz() {
   var n = PMC.quiz.length, html;
   if (PMC.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMC.richtig === n ? '🎉' : '✨')+'</div>' +
-      '<div class="pm-schritt-titel">'+PMC.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-schritt-titel">'+PMC.richtig+' von '+n+' richtig</div>' + ltSicherBilanz(PMC) +
       '<div id="pmc-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmcQuizNeu();pmcQuiz()">Nochmal</button></div></div>';
     pmcSetze(html); ltQuizEnde(PMC, 'Farbenlehre & Coloration', 'pmc-speicher'); return;
@@ -3370,14 +3422,15 @@ function pmcQuiz() {
   pmcSetze(html);
 }
 
-function pmcAntwort(i) {
+function pmcAntwort(i, sicher) {
   if (PMC.beantwortet) return;
   PMC.beantwortet = true;
-  var q = PMC.quiz[PMC.qi], ok = i === q.r;
-  if (ok) PMC.richtig++;
+  var q = PMC.quiz[PMC.qi], ok = i === q.r, gewusst = ok && sicher, sfb = ltSicherFeedback(ok, sicher);
+  if (gewusst) PMC.richtig++;
+  PMC.antworten.push({korrekt:gewusst, geraten:ok && !sicher, sicherFalsch:!ok && sicher});
   ltMarkieren('#pmc-inhalt', q, i);
-  var zusatz = ltZusatz(PMC, q, ok);
-  document.getElementById('pmc-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
+  var zusatz = ltZusatz(PMC, q, gewusst);
+  document.getElementById('pmc-fb').innerHTML = '<div class="'+sfb.klasse+'" style="font-size:13px;line-height:1.5"><strong>'+sfb.titel+'</strong> '+q.e+sfb.zusatz+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.qi++;PMC.beantwortet=false;pmcQuiz()">Weiter →</button></div>';
 }
 </script>
@@ -3478,7 +3531,7 @@ function pmhFrisuren() {
 
 function pmhQuizNeu() {
   PMH.quiz = ltMischen(PMH_QUIZ.slice());
-  PMH.qi = 0; PMH.richtig = 0; PMH.beantwortet = false; PMH.gespeichert = false;
+  PMH.qi = 0; PMH.richtig = 0; PMH.beantwortet = false; PMH.gespeichert = false; PMH.antworten = [];
 }
 
 function pmhQuiz() {
@@ -3486,7 +3539,7 @@ function pmhQuiz() {
   var n = PMH.quiz.length, html;
   if (PMH.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMH.richtig === n ? '🎉' : '✨')+'</div>' +
-      '<div class="pm-schritt-titel">'+PMH.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-schritt-titel">'+PMH.richtig+' von '+n+' richtig</div>' + ltSicherBilanz(PMH) +
       '<div id="pmh-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmhQuizNeu();pmhQuiz()">Nochmal</button></div></div>';
     pmhSetze(html); ltQuizEnde(PMH, 'Hochsteckfrisuren', 'pmh-speicher'); return;
@@ -3499,14 +3552,15 @@ function pmhQuiz() {
   pmhSetze(html);
 }
 
-function pmhAntwort(i) {
+function pmhAntwort(i, sicher) {
   if (PMH.beantwortet) return;
   PMH.beantwortet = true;
-  var q = PMH.quiz[PMH.qi], ok = i === q.r;
-  if (ok) PMH.richtig++;
+  var q = PMH.quiz[PMH.qi], ok = i === q.r, gewusst = ok && sicher, sfb = ltSicherFeedback(ok, sicher);
+  if (gewusst) PMH.richtig++;
+  PMH.antworten.push({korrekt:gewusst, geraten:ok && !sicher, sicherFalsch:!ok && sicher});
   ltMarkieren('#pmh-inhalt', q, i);
-  var zusatz = ltZusatz(PMH, q, ok);
-  document.getElementById('pmh-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
+  var zusatz = ltZusatz(PMH, q, gewusst);
+  document.getElementById('pmh-fb').innerHTML = '<div class="'+sfb.klasse+'" style="font-size:13px;line-height:1.5"><strong>'+sfb.titel+'</strong> '+q.e+sfb.zusatz+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMH.qi++;PMH.beantwortet=false;pmhQuiz()">Weiter →</button></div>';
 }
 </script>
@@ -3835,7 +3889,7 @@ function pmxAbzug() {
 // ── Quiz (10 zufällige Fragen) ──
 function pmxQuizNeu() {
   PMX.quiz = ltMischen(PMX_QUIZ.slice()).slice(0, 10);
-  PMX.qi = 0; PMX.richtig = 0; PMX.beantwortet = false; PMX.gespeichert = false;
+  PMX.qi = 0; PMX.richtig = 0; PMX.beantwortet = false; PMX.gespeichert = false; PMX.antworten = [];
 }
 
 function pmxQuiz() {
@@ -3843,7 +3897,7 @@ function pmxQuiz() {
   var n = PMX.quiz.length, html;
   if (PMX.qi >= n) {
     html = '<div class="card" style="text-align:center"><div style="font-size:40px">'+(PMX.richtig === n ? '🎉' : '✨')+'</div>' +
-      '<div class="pm-schritt-titel">'+PMX.richtig+' von '+n+' richtig</div>' +
+      '<div class="pm-schritt-titel">'+PMX.richtig+' von '+n+' richtig</div>' + ltSicherBilanz(PMX) +
       '<div id="pmx-speicher" style="font-size:12px;margin-top:8px"></div>' +
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmxQuizNeu();pmxQuiz()">Nochmal</button></div></div>';
     pmxSetze(html); ltQuizEnde(PMX, 'Haar & Farbe', 'pmx-speicher'); return;
@@ -3856,14 +3910,15 @@ function pmxQuiz() {
   pmxSetze(html);
 }
 
-function pmxAntwort(i) {
+function pmxAntwort(i, sicher) {
   if (PMX.beantwortet) return;
   PMX.beantwortet = true;
-  var q = PMX.quiz[PMX.qi], ok = i === q.r;
-  if (ok) PMX.richtig++;
+  var q = PMX.quiz[PMX.qi], ok = i === q.r, gewusst = ok && sicher, sfb = ltSicherFeedback(ok, sicher);
+  if (gewusst) PMX.richtig++;
+  PMX.antworten.push({korrekt:gewusst, geraten:ok && !sicher, sicherFalsch:!ok && sicher});
   ltMarkieren('#pmx-inhalt', q, i);
-  var zusatz = ltZusatz(PMX, q, ok);
-  document.getElementById('pmx-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
+  var zusatz = ltZusatz(PMX, q, gewusst);
+  document.getElementById('pmx-fb').innerHTML = '<div class="'+sfb.klasse+'" style="font-size:13px;line-height:1.5"><strong>'+sfb.titel+'</strong> '+q.e+sfb.zusatz+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMX.qi++;PMX.beantwortet=false;pmxQuiz()">Weiter →</button></div>';
 }
 </script>
