@@ -1021,12 +1021,29 @@ var LABEL={sitzt:'sitzt ✓',teilweise:'teilweise sicher',unsicher:'unsicher'};
 var CFARBE={sitzt:'#6B8F71',teilweise:'#C4A830',unsicher:'#C44030'};
 var CBG={sitzt:'#8FAF7A22',teilweise:'#C4B86A22',unsicher:'#D4584820'};
 
+// Ein Thema „sitzt“ erst, wenn es auch nach ein paar Tagen noch gut läuft:
+// gut_seit = erster Tag der aktuellen Serie guter Runden, gut_am = letzte gute
+// Runde (eine schwache Runde setzt beide zurück). Zeilen ohne gut_am (vor der
+// Umstellung oder Spalte noch nicht angelegt) behalten die alte Regel.
+var SITZT_NACH_TAGEN=3;
+function heuteISO(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function tageZwischen(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);}
+function ueberTageBestaetigt(d){
+  if(!d||!d.gut_am) return true;
+  return !!d.gut_seit&&tageZwischen(d.gut_seit,d.gut_am)>=SITZT_NACH_TAGEN;
+}
+// Gut, aber noch nicht über mehrere Tage bestätigt: 'wartet' oder 'faellig'
+function wiederholStatus(d){
+  if(!d||!d.gut_am||!d.gut_seit||ueberTageBestaetigt(d)) return null;
+  return tageZwischen(d.gut_seit,heuteISO())>=SITZT_NACH_TAGEN?'faellig':'wartet';
+}
+
 function berechneStatus(d){
   if(!d||!d.durchlaeufe||d.durchlaeufe===0) return null;
   var g=d.richtig+d.falsch;
   if(g===0) return null;
   var q=d.richtig/g;
-  if(q>=0.80&&d.durchlaeufe>=2&&g>=4&&(d.letzte_runde==='gut'||d.letzte_runde==='sehrgut')) return 'sitzt';
+  if(q>=0.80&&d.durchlaeufe>=2&&g>=4&&(d.letzte_runde==='gut'||d.letzte_runde==='sehrgut')&&ueberTageBestaetigt(d)) return 'sitzt';
   if(d.richtig>=2&&q>=0.60) return 'teilweise';
   if(d.richtig>=3&&q>=0.50) return 'teilweise';
   return 'unsicher';
@@ -1054,6 +1071,9 @@ function renderKompetenz(kompdaten,themen){
     var prozent = gesamt>0 ? Math.round((richtig/gesamt)*100) : 0;
     var farbe = prozent>=80?'#5B7B6F':prozent>=50?'#C4B86A':prozent>0?'#D4957A':'#DDD8D0';
     var label = prozent>=80?'Gut ✓':prozent>=50?'Im Aufbau':prozent>0?'Üben':'–';
+    var ws = prozent>=80 ? wiederholStatus(d) : null;
+    if(ws==='wartet'){var rest=SITZT_NACH_TAGEN-tageZwischen(d.gut_seit,heuteISO());label='Gut – in '+rest+(rest===1?' Tag':' Tagen')+' nochmal prüfen';}
+    if(ws==='faellig'){label='Wiederholen fällig';farbe='#C4A830';}
     html+='<div style="margin-bottom:12px">'+
       '<div style="display:flex;justify-content:space-between;margin-bottom:3px;align-items:center">'+
         '<div style="font-size:12px;color:#2C2C2C">'+th+'</div>'+
@@ -1062,17 +1082,21 @@ function renderKompetenz(kompdaten,themen){
       '<div style="background:#E2DDD5;border-radius:4px;height:7px;overflow:hidden">'+
         '<div style="background:'+farbe+';height:100%;width:'+prozent+'%;border-radius:4px"></div>'+
       '</div>'+
-      (gesamt>0?'<div style="font-size:10px;color:#9A9188;margin-top:2px">'+richtig+'/'+gesamt+' richtig</div>':'')+
+      (gesamt>0?'<div style="font-size:10px;color:#9A9188;margin-top:2px">'+richtig+'/'+gesamt+' richtig'+
+        (d.geraten?' · '+d.geraten+'× richtig geraten':'')+'</div>':'')+
+      (d&&d.sicher_falsch?'<div style="font-size:10px;color:#C44030;margin-top:2px">⚠ '+d.sicher_falsch+'× sicher, aber falsch – hier steckt vermutlich ein Missverständnis</div>':'')+
     '</div>';
     var st=berechneStatus(d);
-    if(st==='unsicher'||st==='teilweise') fokus.push({th:th,st:st});
+    if(ws==='faellig') fokus.push({th:th,st:'faellig'});
+    else if(ws!=='wartet'&&(st==='unsicher'||st==='teilweise')) fokus.push({th:th,st:st});
   });
   html+='</div>';
   if(fokus.length){
     html+='<div style="background:#EDE8E0;border-radius:12px;padding:14px 16px;margin-bottom:16px">';
     html+='<div class="lab" style="margin-bottom:8px">Als Nächstes üben</div>';
-    fokus.sort(function(a,b){return a.st==='unsicher'?-1:1;});
-    fokus.forEach(function(x){html+='<div style="font-size:13px;color:#2C2C2C;margin-bottom:4px">→ '+x.th+'</div>';});
+    var rang={unsicher:0,teilweise:1,faellig:2};
+    fokus.sort(function(a,b){return rang[a.st]-rang[b.st];});
+    fokus.forEach(function(x){html+='<div style="font-size:13px;color:#2C2C2C;margin-bottom:4px">→ '+x.th+(x.st==='faellig'?' <span style="color:#9A9188;font-size:11px">(wiederholen, ob es noch sitzt)</span>':'')+'</div>';});
     html+='</div>';
   }
   return html;
@@ -1102,13 +1126,38 @@ async function ladeKompetenz(lehrlingId){
   return komp;
 }
 
+// Neue Kompetenz-Spalten (Migration 20261029_kompetenz_sicherheit_wiederholung.sql):
+// gute Runden über mehrere Tage und „geraten“/„sicher, aber falsch“.
+function kompetenzZusatz(alt,lr,geraten,sicherFalsch){
+  var heute=heuteISO(), gut=lr==='gut'||lr==='sehrgut';
+  return {
+    gut_seit: gut ? (alt.gut_seit||heute) : null,
+    gut_am:   gut ? heute : null,
+    geraten:  (alt.geraten||0)+geraten,
+    sicher_falsch: (alt.sicher_falsch||0)+sicherFalsch
+  };
+}
+// Ist die Migration noch nicht gelaufen, kennt die Tabelle die neuen Spalten
+// nicht – dann ohne sie speichern, damit der Fortschritt nicht verloren geht.
+async function kompetenzSchreiben(daten,id){
+  var res=id?await sb.from('kompetenz').update(daten).eq('id',id):await sb.from('kompetenz').insert(daten);
+  if(res.error&&/gut_seit|gut_am|geraten|sicher_falsch/.test(res.error.message||'')){
+    var ohne=Object.assign({},daten);
+    ['gut_seit','gut_am','geraten','sicher_falsch'].forEach(function(k){delete ohne[k];});
+    res=id?await sb.from('kompetenz').update(ohne).eq('id',id):await sb.from('kompetenz').insert(ohne);
+  }
+  return res;
+}
+
 async function speichereKompetenz(lehrlingId,antworten){
   if(!ISTMEISTERIN && !(AKTLEHRLING && AKTLEHRLING.id===lehrlingId)) return {};
   var runde={};
   antworten.forEach(function(a){
     var th=a.q.th;
-    if(!runde[th]) runde[th]={richtig:0,falsch:0};
+    if(!runde[th]) runde[th]={richtig:0,falsch:0,geraten:0,sicherFalsch:0};
     if(a.korrekt) runde[th].richtig++; else runde[th].falsch++;
+    if(a.geraten) runde[th].geraten++;
+    if(a.sicherFalsch) runde[th].sicherFalsch++;
   });
   var {data:bestehend}=await sb.from('kompetenz').select('*').eq('lehrling_id',lehrlingId);
   var existiert={};
@@ -1117,10 +1166,12 @@ async function speichereKompetenz(lehrlingId,antworten){
     var r=runde[th].richtig,f=runde[th].falsch,ges=r+f;
     var qr=ges>0?r/ges:0;
     var lr=qr===1.0?'sehrgut':qr>0.60?'gut':qr>=0.40?'gemischt':'falsch';
+    var alt=existiert[th]||{};
+    var zusatz=kompetenzZusatz(alt,lr,runde[th].geraten,runde[th].sicherFalsch);
     if(existiert[th]){
-      await sb.from('kompetenz').update({richtig:existiert[th].richtig+r,falsch:existiert[th].falsch+f,durchlaeufe:existiert[th].durchlaeufe+1,vorletzte_runde:existiert[th].letzte_runde,letzte_runde:lr}).eq('id',existiert[th].id);
+      await kompetenzSchreiben(Object.assign({richtig:alt.richtig+r,falsch:alt.falsch+f,durchlaeufe:alt.durchlaeufe+1,vorletzte_runde:alt.letzte_runde,letzte_runde:lr},zusatz),alt.id);
     } else {
-      await sb.from('kompetenz').insert({lehrling_id:lehrlingId,thema:th,richtig:r,falsch:f,durchlaeufe:1,letzte_runde:lr});
+      await kompetenzSchreiben(Object.assign({lehrling_id:lehrlingId,thema:th,richtig:r,falsch:f,durchlaeufe:1,letzte_runde:lr},zusatz),null);
     }
   }
   return await ladeKompetenz(lehrlingId);
@@ -1312,14 +1363,28 @@ function zeigeFrage(){
       b.addEventListener('click',function(){
         document.querySelectorAll('.opt').forEach(function(x){x.className='opt';});
         b.className='opt gew';
-        var pb=document.getElementById('btn-prüfe');
-        if(pb){pb.className='btn btn-d';pb.disabled=false;pb.onclick=function(){pruefeMC(i);};}
+        ['btn-sicher','btn-geraten'].forEach(function(id){
+          var pb=document.getElementById(id);
+          pb.className='btn btn-d';pb.disabled=false;pb.onclick=function(){pruefeMC(i,id==='btn-sicher');};
+        });
+        document.getElementById('btn-geraten').className='btn btn-h';
       });
       antDiv.appendChild(b);
     });
-    var pb=document.createElement('button');
-    pb.id='btn-prüfe';pb.className='btn btn-grau';pb.textContent='Antwort prüfen';pb.disabled=true;
-    btnDiv.appendChild(pb);
+    // Wie sicher bist du? Richtig geraten zählt nicht als gewusst,
+    // sicher und trotzdem falsch zeigt ein Missverständnis.
+    var hin=document.createElement('div');
+    hin.style.cssText='font-size:11px;color:#9A9188;margin:2px 0 8px;text-align:center';
+    hin.textContent='Wie sicher bist du dir?';
+    btnDiv.appendChild(hin);
+    var reihe=document.createElement('div');
+    reihe.style.cssText='display:flex;gap:8px';
+    [['btn-sicher','Sicher – prüfen'],['btn-geraten','Geraten – prüfen']].forEach(function(x){
+      var pb=document.createElement('button');
+      pb.id=x[0];pb.className='btn btn-grau';pb.textContent=x[1];pb.disabled=true;pb.style.flex='1';
+      reihe.appendChild(pb);
+    });
+    btnDiv.appendChild(reihe);
   } else {
     var ta=document.createElement('textarea');
     ta.rows=5;ta.placeholder='Schreib was du weißt…';ta.id='ta-antwort';
@@ -1342,9 +1407,10 @@ function zeigeFrage(){
   }
 }
 
-function pruefeMC(gew){
+function pruefeMC(gew,sicher){
   var q=QFRAGEN[QIDX];
   var kor=gew===q.r;
+  var geraten=kor&&!sicher, sicherFalsch=!kor&&sicher;
   document.querySelectorAll('.opt').forEach(function(b){
     var i=Number(b.dataset.orig);
     b.disabled=true;
@@ -1353,11 +1419,16 @@ function pruefeMC(gew){
   });
   var fb=document.getElementById('q-feedback');
   fb.className='fb '+(kor?'fb-g':'fb-r');
-  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#3D6B50':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>';
+  var titel=geraten?'✓ Richtig – aber geraten.':sicherFalsch?'✗ Nicht ganz – obwohl du dir sicher warst.':kor?'✓ Richtig!':'✗ Nicht ganz.';
+  var zusatzText=geraten?'<div style="font-size:12px;color:#8A7A30;margin-top:8px">Lies dir die Erklärung gut durch – die Frage kommt in der Wiederholung nochmal.</div>':
+    sicherFalsch?'<div style="font-size:12px;color:#C44030;margin-top:8px">Genau hier lohnt sich ein zweiter Blick: Was du sicher wusstest, stimmt so nicht.</div>':'';
+  fb.className='fb '+(geraten?'fb-o':kor?'fb-g':'fb-r');
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(geraten?'#8A7A30':kor?'#3D6B50':'#C44030')+';margin-bottom:6px">'+titel+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>'+zusatzText;
   fb.style.display='block';
-  QANT.push({q:q,korrekt:kor,punkte:kor?10:0});
-  if(kor&&q.zf&&q.zf.length&&!q.haupt) fb.innerHTML+=zusatzHinweis();
-  nachAntwort(q,kor);
+  // Richtig geraten zählt nicht als gewusst: halbe Punkte, kommt in die Wiederholung
+  QANT.push({q:q,korrekt:kor&&sicher,punkte:kor?(sicher?10:5):0,geraten:geraten,sicherFalsch:sicherFalsch});
+  if(kor&&sicher&&q.zf&&q.zf.length&&!q.haupt) fb.innerHTML+=zusatzHinweis();
+  nachAntwort(q,kor&&sicher);
   zeigeWeiter();
 }
 
@@ -1467,6 +1538,16 @@ function verstaendnisZusammenfassung(){
   return html;
 }
 
+function sicherheitZusammenfassung(){
+  var ger=QANT.filter(function(a){return a.geraten;}).length;
+  var sf=QANT.filter(function(a){return a.sicherFalsch;}).length;
+  if(!ger&&!sf) return '';
+  var html='<div style="margin-top:10px;padding-top:10px;border-top:1px solid #DDD8D0;font-size:12px;color:#2C2C2C;line-height:1.5">';
+  if(ger) html+='<div><b>Richtig geraten:</b> '+ger+' – zählt noch nicht als gewusst.</div>';
+  if(sf) html+='<div style="color:#C44030"><b>Sicher, aber falsch:</b> '+sf+' – schau dir diese Fragen unten genau an.</div>';
+  return html+'</div>';
+}
+
 async function zeigeErgebnis(){
   zeige('s-ergebnis');
   var g=QANT.length;
@@ -1480,7 +1561,7 @@ async function zeigeErgebnis(){
   document.getElementById('score-box').innerHTML=
     '<div style="font-size:14px;color:'+col+';font-weight:700;margin-bottom:4px">'+note+'</div>'+
     '<div style="font-size:12px;color:#6B6560">'+ok+' von '+g+' richtig · '+p+' von '+(g*10)+' Punkten</div>'+
-    verstaendnisZusammenfassung();
+    verstaendnisZusammenfassung()+sicherheitZusammenfassung();
   var komp={};
   if(AKTLEHRLING){
     komp=await speichereKompetenz(AKTLEHRLING.id,QANT);
@@ -1494,9 +1575,10 @@ async function zeigeErgebnis(){
   QANT.forEach(function(a){
     html+='<div class="karte" style="border-left:3px solid '+(a.korrekt?'#6B8F71':'#D4A97A')+';margin-bottom:8px'+(a.q.haupt?';margin-left:18px':'')+'">'+
       '<div style="display:flex;justify-content:space-between;margin-bottom:3px">'+
-        '<div style="font-size:11px;color:#9A9188">'+(a.q.haupt?'↳ Zusatzfrage · ':'')+a.q.th+'</div>'+
+        '<div style="font-size:11px;color:#9A9188">'+(a.q.haupt?'↳ Zusatzfrage · ':'')+a.q.th+
+          (a.geraten?' · <span style="color:#8A7A30">geraten</span>':'')+(a.sicherFalsch?' · <span style="color:#C44030;font-weight:700">sicher, aber falsch</span>':'')+'</div>'+
         '<div style="font-size:12px;font-weight:700;color:'+(a.korrekt?'#6B8F71':'#C44030')+'">'+
-          (a.q.t==='mc'?(a.korrekt?'✓':'✗'):(a.punkte||0)+'/10')+'</div>'+
+          (a.q.t==='mc'?(a.korrekt?'✓':a.geraten?'~':'✗'):(a.punkte||0)+'/10')+'</div>'+
       '</div>'+
       '<div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+a.q.f+'</div>'+
     '</div>';

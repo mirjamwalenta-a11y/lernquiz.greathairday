@@ -20,6 +20,22 @@
     if (el) { el.textContent = text; el.style.color = farbe; }
   }
 
+  function heute() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  // Ohne Migration 20261029_kompetenz_sicherheit_wiederholung.sql kennt die
+  // Tabelle gut_seit/gut_am noch nicht – dann ohne die beiden speichern.
+  async function schreiben(c, daten, id) {
+    var res = id ? await c.from('kompetenz').update(daten).eq('id', id) : await c.from('kompetenz').insert(daten);
+    if (res.error && /gut_seit|gut_am/.test(res.error.message || '')) {
+      delete daten.gut_seit; delete daten.gut_am;
+      res = id ? await c.from('kompetenz').update(daten).eq('id', id) : await c.from('kompetenz').insert(daten);
+    }
+    return res;
+  }
+
   // antworten: [{thema, korrekt}] – ein Eintrag pro beantworteter Frage
   async function speichern(antworten, elId) {
     if (!antworten || !antworten.length) return false;
@@ -47,10 +63,14 @@
       for (var th in runde) {
         var r = runde[th].richtig, f = runde[th].falsch, q = r / (r + f);
         var lr = q === 1 ? 'sehrgut' : q > 0.60 ? 'gut' : q >= 0.40 ? 'gemischt' : 'falsch';
+        // Wie im Lernquiz: gute Runden über mehrere Tage merken, damit ein
+        // Thema erst „sitzt“, wenn es auch ein paar Tage später noch klappt.
+        var alt = da[th] || {}, gut = lr === 'gut' || lr === 'sehrgut';
+        var tage = {gut_seit: gut ? (alt.gut_seit || heute()) : null, gut_am: gut ? heute() : null};
         if (da[th]) {
-          await c.from('kompetenz').update({richtig:da[th].richtig+r, falsch:da[th].falsch+f, durchlaeufe:da[th].durchlaeufe+1, vorletzte_runde:da[th].letzte_runde, letzte_runde:lr}).eq('id', da[th].id);
+          await schreiben(c, Object.assign({richtig:alt.richtig+r, falsch:alt.falsch+f, durchlaeufe:alt.durchlaeufe+1, vorletzte_runde:alt.letzte_runde, letzte_runde:lr}, tage), alt.id);
         } else {
-          await c.from('kompetenz').insert({lehrling_id:lid, thema:th, richtig:r, falsch:f, durchlaeufe:1, letzte_runde:lr});
+          await schreiben(c, Object.assign({lehrling_id:lid, thema:th, richtig:r, falsch:f, durchlaeufe:1, letzte_runde:lr}, tage), null);
         }
       }
       var v = await c.from('verlauf').insert({lehrling_id:lid, datum:new Date().toLocaleDateString('de-AT'), lehrjahr:l.data.lehrjahr || 1, richtig:ok, falsch:g-ok, gesamt:g, punkte:ok*10, schwach:schwach});
