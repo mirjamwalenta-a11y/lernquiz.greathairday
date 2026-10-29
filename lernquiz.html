@@ -490,16 +490,15 @@ function pruefeOffeneAntwort(antwortRoh, frage) {
     if (gefunden) treffer++;
   });
 
-  // Großzügigere Bewertung: bereits 50% Treffer = 7/10 (gut genug)
-  // Damit sinngemäß richtige Antworten nicht zu hart bestraft werden
-  var quote = gruppen.length > 0 ? treffer / gruppen.length : 0.5;
-  var punkte;
-  if (quote >= 0.75) punkte = 10;
-  else if (quote >= 0.5)  punkte = 7;
-  else if (quote >= 0.33) punkte = 5;
-  else if (quote >= 0.2)  punkte = 3;
-  else punkte = 1;
-  return { treffer: treffer, gesamt: gruppen.length, punkte: punkte };
+  // Als richtig zählt eine Antwort erst, wenn das Wesentliche drin ist:
+  // bei 1–2 Punkten alle, ab 3 Punkten mindestens zwei Drittel.
+  // Eine halbe Antwort („wegen dem Wasser“ statt „Wasser und Chemikalien“)
+  // reicht damit nicht mehr für „richtig“.
+  var gesamt = gruppen.length;
+  var benoetigt = gesamt <= 2 ? gesamt : Math.ceil(gesamt * 2 / 3);
+  var korrekt = treffer >= benoetigt;
+  var punkte = korrekt ? (treffer === gesamt ? 10 : 8) : Math.min(5, Math.round(10 * treffer / gesamt));
+  return { treffer: treffer, gesamt: gesamt, benoetigt: benoetigt, korrekt: korrekt, punkte: punkte };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -512,7 +511,7 @@ function pruefeOffeneAntwort(antwortRoh, frage) {
 //   mb: [{ begriffe:["schutzmantel","frisiermantel","umhang"], teilwort:true }]
 //
 // Fall B – Synonyme, kein Teilwort:
-//   mb: [{ begriffe:["desinfizieren","desinfektion","keime abtöten"], teilwort:false }]
+//   mb: [{ begriffe:["desinfizieren","desinfektion","keime abtöten"], teilwort:true }]
 //
 // Fall C – streng (Standard, wie bisher):
 //   mb: ["blondierung","melanin","oxidation"]  ← alte Schreibweise, funktioniert noch
@@ -522,61 +521,34 @@ var FB={1:[
 {id:"1-1",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Welche drei Hygieneebenen unterscheidet man im Friseursalon?",o:["Reinigen, Desinfizieren, Sterilisieren", "Waschen, Spülen, Trocknen", "Abwischen, Einsprühen, Abdecken", "Putzen, Desinfizieren, Lüften"],r:0,e:"Reinigen → Desinfizieren → Sterilisieren. Im Salon wird meist bis zur Desinfektion gearbeitet.",zf:[{t:"mc",f:"Ein Kamm ist mit Haaren und Haarspray verklebt. Was machst du zuerst?",o:["Erst reinigen (Haare und Rückstände entfernen), dann desinfizieren", "Direkt ins Desinfektionsmittel legen, das löst Haare und Spray mit", "Mit Desinfektionsspray einsprühen und kurz einwirken lassen", "Trocken abwischen und dann in die Schublade legen"],r:0,e:"Reinigen kommt vor dem Desinfizieren. Unter Schmutz und Rückständen sind Keime vor dem Desinfektionsmittel geschützt, es kann dort nicht richtig wirken."}]},
 {id:"1-2",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Kämme und Bürsten nach jedem Kunden desinfiziert werden?",
   // NEUE STRUKTUR: Synonyme pro Gruppe, teilwort:true wo sinnvoll
-  mb:[
-    {begriffe:["übertragung","ansteckung","weitergeben"], teilwort:false},
-    {begriffe:["pilze","pilzsporen","schimmelpilz"], teilwort:true},
-    {begriffe:["bakterien","keime","erreger"], teilwort:true},
-    {begriffe:["hauterkrankung","infektion","erkrankung"], teilwort:true},
-    {begriffe:["schutz","schützen","hygiene"], teilwort:false}
-  ],
+  mb:[{begriffe:["übertrag", "ansteck", "weitergeb", "verbreit"],teilwort:true},{begriffe:["bakter", "keim", "erreger", "pilz", "viren", "läuse"],teilwort:true},{begriffe:["erkrank", "infekt", "krankheit", "entzünd"],teilwort:true}],
   ml:"Kämme und Bürsten können Bakterien und Pilzsporen übertragen. Ohne Desinfektion besteht die Gefahr Hauterkrankungen weiterzugeben."},
 {id:"1-3",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was tust du sofort wenn du dich beim Schneiden schneidest?",o:["Kurz draufdrücken und dann einfach weiterschneiden", "Schnitt abspülen, Pflaster, Einmalhandschuh", "Pflaster drauf und ohne Handschuh weiterarbeiten", "Abbrechen und den Gast nach Hause schicken"],r:1,e:"Wunde reinigen, Pflaster, Einmalhandschuh – so schützt du dich und den Kunden.",zf:[{t:"mc",f:"Warum ziehst du nach dem Pflaster zusätzlich einen Einmalhandschuh an?",o:["Damit kein Blut zum Gast kommt und nichts in die Wunde gelangt", "Damit das Pflaster beim Haarewaschen nicht nass wird", "Weil die Wunde unter dem Handschuh schneller heilt", "Damit man die Schere mit dem Handschuh sicherer und fester halten kann"],r:0,e:"Der Handschuh schützt in beide Richtungen: den Gast vor deinem Blut und deine Wunde vor Keimen, Haaren und Produkten."}]},
 {id:"1-4",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Welche Schutzmaßnahmen trägst du beim Auftragen von Farbe?",
-  mb:[
-    {begriffe:["handschuhe","einmalhandschuhe","schutzhandschuhe"], teilwort:true},
-    {begriffe:["kittel","schutzkleidung","frisierkittel","umhang","schutzmantel","mantel"], teilwort:true},
-    {begriffe:["haut","hautschutz"], teilwort:false},
-    {begriffe:["allergie","reizung","schutz"], teilwort:false}
-  ],
+  mb:[{begriffe:["handschuh"],teilwort:true},{begriffe:["kittel", "schutzkleidung", "umhang", "mantel", "schürze"],teilwort:true}],
   ml:"Einmalhandschuhe und Friseurkittel. Farbe kann Hautreizungen oder Allergien verursachen."},
 {id:"1-5",t:"mc",th:"Werkzeugkunde",f:"Was ist der Unterschied zwischen Modellierschere und Effilierer?",o:["Gleiche Klingen, der Effilierer ist nur größer und schwerer", "Modellierschere glatt, Effilierer hat Zähne und dünnt aus", "Effilierer glatt, Modellierschere hat Zähne und dünnt aus", "Modellierschere für Damen, Effilierer nur für Herren"],r:1,e:"Modellierschere: glatte Klingen. Effilierer: gezahnte Klinge – entfernt Volumen."},
 {id:"1-6",t:"of",th:"Werkzeugkunde",f:"Wie pflegst du eine Haarschere richtig?",
-  mb:[
-    {begriffe:["ölen","einölen","schereöl","öl"], teilwort:true},
-    {begriffe:["reinigen","säubern","abwischen","desinfizieren","desinfektion"], teilwort:true},
-    {begriffe:["nicht fallenlassen","vorsicht","schonen"], teilwort:true},
-    {begriffe:["trocken","trocknen","abtrocknen"], teilwort:true},
-    {begriffe:["schleifen","schleifer","fachmann","profi"], teilwort:true}
-  ],
+  mb:[{begriffe:["öl"],teilwort:true},{begriffe:["reinig", "säuber", "abwisch", "putz", "desinfi"],teilwort:true},{begriffe:["trock"],teilwort:true},{begriffe:["fallen", "vorsicht", "schonen", "schleif", "fachmann"],teilwort:true}],
   ml:"Reinigen, trocken abwischen, mit Schereöl ölen. Nie fallenlassen. Beim Fachmann schleifen lassen."},
 {id:"1-7",t:"mc",th:"Haarkunde & Haarstruktur",f:"Aus welchen drei Schichten besteht ein Haar?",o:["Wurzel, Schaft, Spitze","Cuticula, Cortex, Medulla","Keratin, Melanin, Lipide","Schuppenschicht, Farbschicht, Kern"],r:1,e:"Cuticula (außen) → Cortex (Melanin) → Medulla (innen).",zf:[{t:"mc",f:"Eine Haarfarbe soll dauerhaft halten. In welche Schicht muss sie dafür eindringen?",o:["In den Cortex – dort sitzen auch die natürlichen Pigmente", "In die Cuticula – die äußerste Schicht, die man von außen sieht", "In die Medulla – den Kern ganz in der Mitte", "Gar nicht – sie legt sich als Film außen ums Haar"],r:0,e:"Dauerhafte (Oxidations-)Farbe dringt bis in den Cortex ein. Dort liegt auch das Melanin, das die natürliche Haarfarbe bestimmt."}]},
 {id:"1-8",t:"of",th:"Haarkunde & Haarstruktur",f:"Was bedeutet es wenn Haar porös ist?",
-  mb:[
-    {begriffe:["schuppenschicht","cuticula","oberhäutchen"], teilwort:true},
-    {begriffe:["geöffnet","beschädigt","aufgeraut"], teilwort:false},
-    {begriffe:["feuchtigkeit","wasser","nässe"], teilwort:false},
-    {begriffe:["trocken","spröde","stumpf"], teilwort:false}
-  ],
+  mb:[{begriffe:["schuppenschicht", "cuticula", "oberhäutchen"],teilwort:true},{begriffe:["geöffnet", "offen", "beschädigt", "aufgeraut", "rau", "kaputt", "geschädigt"],teilwort:true},{begriffe:["feucht", "wasser", "nässe", "aufsaug", "saugt"],teilwort:true}],
   ml:"Poröses Haar hat eine beschädigte Schuppenschicht. Saugt Wasser schnell auf, verliert es aber auch schnell."},
 {id:"1-9",t:"mc",th:"Hautkunde",f:"Welche Aussage über die Kopfhaut ist richtig?",o:["Wenige Haarfollikel und keine Talgdrüsen", "Viele Schweißdrüsen, aber keine Talgdrüsen", "Viele Haarfollikel und Talgdrüsen", "Sie erneuert sich nicht wie die übrige Haut"],r:2,e:"Die Kopfhaut hat viele Haarfollikel und Talgdrüsen."},
 {id:"1-10",t:"mc",th:"Farbenlehre & Coloration",f:"Welche drei Grundfarben gibt es?",o:["Rot, Grün, Blau","Rot, Gelb, Blau","Orange, Violett, Grün","Schwarz, Weiß, Grau"],r:1,e:"Rot, Gelb und Blau sind die drei Grundfarben."},
 {id:"1-11",t:"of",th:"Farbenlehre & Coloration",f:"Was passiert mit den Haarpigmenten beim Blondieren?",
-  mb:[
-    {begriffe:["melanin","pigment","farbpigment","haarpigment"], teilwort:true},
-    {begriffe:["aufhellen","aufgehellt","heller","aufgehellet"], teilwort:true},
-    {begriffe:["oxidation","oxidiert","wasserstoffperoxid","peroxid","h2o2","h2o"], teilwort:true},
-    {begriffe:["zerstört","zerstören","abgebaut","abbauen"], teilwort:true}
-  ],
+  mb:[{begriffe:["aufhell", "aufgehellt", "heller", "hell"],teilwort:true},{begriffe:["oxid", "peroxid", "h2o2", "wasserstoff", "blondier"],teilwort:true},{begriffe:["zerstör", "abgebaut", "abbau", "aufgelöst", "entfernt"],teilwort:true}],
   ml:"Wasserstoffperoxid zerstört die natürlichen Farbpigmente (Melanin). Je länger einwirkt, desto heller."},
 {id:"1-12",t:"mc",th:"Dauerwelle & Umformung",f:"Was macht das Wellemittel bei einer Dauerwelle?",o:["Färbt das Haar", "Bricht Disulfidbrücken auf", "Klebt Haare zusammen", "Macht Haar fester"],r:1,e:"Das Wellemittel löst die Schwefelbrücken. Das Haar nimmt die Form der Wickler an."},
 {id:"1-13",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Eine Kundin kommt zum ersten Mal. Wie läuft das Beratungsgespräch ab?",
   mb:[
-    {begriffe:["begrüßen","begrüßung","willkommen","hallo"], teilwort:false},
-    {begriffe:["wunsch","wünsche","vorhaben"], teilwort:false},
+    {begriffe:["begrüßen","begrüßung","willkommen","hallo"], teilwort:true},
+    {begriffe:["wunsch","wünsche","vorhaben"], teilwort:true},
     {begriffe:["haartyp","haarstruktur","haaranalyse","haarzustand"], teilwort:true},
-    {begriffe:["vorbehandlung","vorgeschichte","früher"], teilwort:false},
+    {begriffe:["vorbehandlung","vorgeschichte","früher"], teilwort:true},
     {begriffe:["alltag","lebensstil","pflege zuhause"], teilwort:true},
-    {begriffe:["pflege","pflegeprodukte","empfehlung"], teilwort:false}
+    {begriffe:["pflege","pflegeprodukte","empfehlung"], teilwort:true}
   ],
   ml:"Freundlich begrüßen. Fragen nach Wunsch, Vorbehandlungen und Pflege zuhause."},
 {id:"1-14",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Eine Kundin beschwert sich laut. Was ist der erste Schritt?",o:["Sofort erklären, warum sie unrecht hat", "Ruhig bleiben, zuhören, dann nachfragen", "Gleich die Chefin holen, ohne zuzuhören", "Sofort alles kostenlos anbieten"],r:1,e:"Ruhig bleiben und aktiv zuhören. Erst dann gemeinsam Lösung suchen."},
@@ -589,32 +561,23 @@ var FB={1:[
 {id:"1-21",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Farben entstehen durch Mischen von zwei Grundfarben?",o:["Weiß, Grau, Schwarz", "Orange, Grün, Violett", "Rosa, Türkis, Braun", "Gold, Silber, Kupfer"],r:1,e:"Rot+Gelb=Orange, Gelb+Blau=Grün, Rot+Blau=Violett."},
 {id:"1-22",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Welchen pH-Wert hat gesundes Haar?",o:["pH 7, also neutral wie Wasser", "pH 4,5–5,5, leicht sauer", "pH 8–9, leicht alkalisch", "pH 2–3, stark sauer"],r:1,e:"Gesundes Haar hat pH 4,5–5,5 – leicht sauer."},
 {id:"1-23",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist aktives Zuhören im Kundengespräch wichtig?",o:["Damit man schneller fertig wird und mehr Kunden schafft", "Verhindert Missverständnisse, schafft Vertrauen und ermöglicht individuellen Service", "Weil man dann selbst weniger reden und erklären muss", "Damit man dem Kunden im Gespräch schneller ein passendes Pflegeprodukt verkaufen kann"],r:1,e:"Aktives Zuhören: Nachfragen, zusammenfassen, Verständnis zeigen — so entstehen keine Fehler und der Kunde fühlt sich gut aufgehoben."},
-{id:"1-n1",t:"of",th:"Hautkunde",f:"Welche Aufgaben hat die Haut?",mb:["schutz","temperatur","fett","wasser","sinnesorgan"],ml:"Die Haut schützt den Körper vor äußeren Einflüssen, reguliert die Körpertemperatur, speichert Fett und Wasser und dient als Sinnesorgan."},
-{id:"1-n2",t:"of",th:"Hautkunde",f:"Warum ist gesunde Kopfhaut wichtig?",mb:["haarwachstum","krankheitserreger","grundlage","schutz"],ml:"Sie ist die Grundlage für gesundes Haarwachstum und schützt vor Krankheitserregern."},
-{id:"1-n3",t:"of",th:"Hautkunde",f:"Welche Funktion hat die Talgdrüse?",mb:["talg","geschmeidig","austrocknen","schutz"],ml:"Sie produziert Talg, der Haut und Haare geschmeidig hält und vor dem Austrocknen schützt."},
+{id:"1-n1",t:"of",th:"Hautkunde",f:"Welche Aufgaben hat die Haut?",mb:[{begriffe:["schutz", "schütz"],teilwort:true},{begriffe:["temperatur", "wärme", "kühl"],teilwort:true},{begriffe:["fett", "speicher"],teilwort:true},{begriffe:["sinn", "fühl", "tast", "spür"],teilwort:true}],ml:"Die Haut schützt den Körper vor äußeren Einflüssen, reguliert die Körpertemperatur, speichert Fett und Wasser und dient als Sinnesorgan."},
+{id:"1-n2",t:"of",th:"Hautkunde",f:"Warum ist gesunde Kopfhaut wichtig?",mb:[{begriffe:["wachs", "wächst"],teilwort:true},{begriffe:["erreger", "keim", "bakter", "pilz", "schütz", "schutz"],teilwort:true}],ml:"Sie ist die Grundlage für gesundes Haarwachstum und schützt vor Krankheitserregern."},
+{id:"1-n3",t:"of",th:"Hautkunde",f:"Welche Funktion hat die Talgdrüse?",mb:[{begriffe:["geschmeidig", "weich", "elastisch", "fettet"],teilwort:true},{begriffe:["austrock", "trocken", "schutz", "schütz"],teilwort:true}],ml:"Sie produziert Talg, der Haut und Haare geschmeidig hält und vor dem Austrocknen schützt."},
 {id:"1-n4",t:"mc",th:"Hautkunde",f:"Welche Aufgabe hat die Schweißdrüse?",o:["Talg produzieren und so die Haut weich und geschmeidig halten", "Körpertemperatur regulieren und Ausscheidung unterstützen", "Das Haarwachstum anregen und Haare festhalten", "Melanin bilden und die Haut vor Sonne schützen"],r:1,e:"Die Schweißdrüse reguliert die Körpertemperatur und unterstützt die Ausscheidung über den Schweiß."},
 {id:"1-n5",t:"of",th:"Hautkunde",f:"Was ist der Säureschutzmantel der Haut?",
-  mb:[
-    {begriffe:["schutzfilm","schutzmantel","film"], teilwort:true},
-    {begriffe:["ph","ph-wert","säure"], teilwort:false},
-    {begriffe:["5,5","4,5","sauer"], teilwort:false},
-    {begriffe:["krankheitserreger","keime","bakterien","schutz"], teilwort:true}
-  ],
+  mb:[{begriffe:["5,5", "4,5", "5", "sauer"],teilwort:true},{begriffe:["keim", "bakter", "erreger", "pilz", "abwehr", "abhält"],teilwort:true}],
   ml:"Ein natürlicher Schutzfilm der Haut mit einem pH-Wert von etwa 5,5, der Krankheitserreger abwehrt."},
 {id:"1-n6",t:"of",th:"Hautkunde",f:"Welche Ursachen können Schuppen haben?",
   mb:[
     {begriffe:["trocken","trockene","trockenheit","trockne"], teilwort:true},
-    {begriffe:["pilze","pilz","pilzbefall","fungus"], teilwort:false},
+    {begriffe:["pilze","pilz","pilzbefall","fungus"], teilwort:true},
     {begriffe:["pflegeprodukte","produkte","pflegefehler","falsche produkte","ungeeignet"], teilwort:true},
     {begriffe:["hauterkrankung","erkrankung","entzündung","entzündet","krankheit"], teilwort:true}
   ],
   ml:"Trockene Haut, Pilze, ungeeignete Pflegeprodukte oder Hauterkrankungen."},
 {id:"1-n7",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Aufgaben haben Haare?",
-  mb:[
-    {begriffe:["schutz","schützen","schützend"], teilwort:false},
-    {begriffe:["wärme","wärmeregulierung","temperatur","wärmen"], teilwort:false},
-    {begriffe:["ästhetisch","ästhetik","schönheit","optisch","aussehen","schön","dekoration"], teilwort:false}
-  ],
+  mb:[{begriffe:["schutz", "schütz"],teilwort:true},{begriffe:["wärme", "temperatur", "wärm"],teilwort:true},{begriffe:["ästhet", "schön", "optisch", "aussehen", "dekor"],teilwort:true}],
   ml:"Schutz, Wärmeregulierung und ästhetische Wirkung."},
 {id:"1-n8",t:"mc",th:"Haarkunde & Haarstruktur",f:"Welche Haarstrukturen gibt es?",o:["Glattes, welliges, lockiges und krauses Haar", "Feines, normales und grobes Haar", "Kurzes, mittellauges und langes Haar", "Trockenes, normales, fettiges und strapaziertes Haar"],r:0,e:"Die vier Haarstrukturen sind: glatt, wellig, lockig und kraus."},
 {id:"1-n9",t:"mc",th:"Haarkunde & Haarstruktur",f:"Wann ist Haarausfall normal?",o:["Bis zu 30 Haare pro Tag","Bis zu etwa 100 Haare pro Tag","Bis zu 300 Haare pro Tag","Gar kein Haarausfall ist normal"],r:1,e:"Bis zu etwa 100 Haare pro Tag gelten als normaler Haarausfall."},
@@ -622,12 +585,12 @@ var FB={1:[
   mb:[
     {begriffe:["aufspalten","aufgespalten","spalten","gespaltene","split"], teilwort:true},
     {begriffe:["haarspitzen","spitzen","haarende","ende"], teilwort:true},
-    {begriffe:["schädigung","schaden","beschädigt","kaputtgehen"], teilwort:false}
+    {begriffe:["schädigung","schaden","beschädigt","kaputtgehen"], teilwort:true}
   ],
   ml:"Das Aufspalten der Haarspitzen durch Schädigung."},
 {id:"1-n11",t:"mc",th:"Haarkunde & Haarstruktur",f:"Warum sollte nasses Haar vorsichtig gekämmt werden?",o:["Weil es dann schneller trocknet und kraus wird", "Weil es empfindlicher und leichter dehnbar ist", "Weil sich nasses Haar gar nicht kämmen lässt", "Weil sich nasses Haar beim Kämmen verfärbt"],r:1,e:"Nasses Haar ist durch Wasser gequollen und die Cuticula geöffnet — es ist empfindlicher und leichter dehnbar, daher vorsichtig kämmen."},
 {id:"1-n12",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was versteht man unter Haarporosität?",o:["Die Dicke des einzelnen Haares, also ob es fein, normal oder grob ist", "Die Anzahl der Haare pro Quadratzentimeter Kopfhaut", "Die Fähigkeit des Haares, Feuchtigkeit und Wirkstoffe aufzunehmen", "Die Form des Haares, also glatt, wellig oder lockig"],r:2,e:"Haarporosität beschreibt wie gut das Haar Feuchtigkeit und Wirkstoffe aufnehmen kann – bestimmt durch den Zustand der Schuppenschicht.",zf:[{t:"mc",f:"Poröses, blondiertes Haar und gesundes Naturhaar bekommen dieselbe Farbe. Was passiert beim porösen Haar eher?",o:["Es nimmt Farbe schneller und stärker auf und wäscht sich schneller aus", "Es nimmt kaum Farbe an, weil die Schuppenschicht ganz fest geschlossen ist", "Es wird genau gleich, Porosität spielt bei Farbe keine Rolle", "Es wird heller als geplant, weil es Pigmente abstößt"],r:0,e:"Poröses Haar saugt Wirkstoffe und Pigmente schnell auf, hält sie aber schlecht. Darum genau hinschauen und die Rezeptur anpassen."}]},
-{id:"1-n13",t:"of",th:"Farbenlehre & Coloration",f:"Was neutralisiert einen orangefarbenen Untergrundton?",mb:["blau","neutralisiert","orange"],ml:"Blau neutralisiert Orange."},
+{id:"1-n13",t:"of",th:"Farbenlehre & Coloration",f:"Was neutralisiert einen orangefarbenen Untergrundton?",mb:[{begriffe:["blau", "asch"],teilwort:true}],ml:"Blau neutralisiert Orange."},
 {id:"1-n14",t:"of",th:"Farbenlehre & Coloration",f:"Was ist eine Tönung?",mb:["nicht dauerhaft","auswäscht","haarwäschen"],ml:"Eine nicht dauerhafte Haarfarbe, die sich nach mehreren Haarwäschen auswäscht."},
 {id:"1-n15",t:"of",th:"Farbenlehre & Coloration",f:"Was ist Blondierung?",mb:["chemisch","aufhellung","haarpigment","natürlich"],ml:"Eine chemische Aufhellung des natürlichen Haarpigments."},
 {id:"1-n16",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was gehört zur öffentlichen Hygiene?",mb:["bevölkerung","trinkwasser","abfall","schutz"],ml:"Maßnahmen zum Schutz der Bevölkerung, z.B. Trinkwasserkontrolle und Abfallentsorgung."},
@@ -639,11 +602,7 @@ var FB={1:[
   ],
   ml:"Nach jedem Kunden oder mit einem hygienischen Einweg-Halskragen."},
 {id:"1-n18",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum dürfen benutzte Rasierklingen nicht wiederverwendet werden?",
-  mb:[
-    {begriffe:["verletzung","verletzungsgefahr","schnitt","schnittgefahr","wunde"], teilwort:true},
-    {begriffe:["infektion","infektionsgefahr","keime","übertragung","ansteckung"], teilwort:true},
-    {begriffe:["gefahr","gefährlich","hygiene","sicherheit"], teilwort:false}
-  ],
+  mb:[{begriffe:["verletz", "schnitt", "wunde"],teilwort:true},{begriffe:["infekt", "keim", "übertrag", "ansteck", "blut"],teilwort:true}],
   ml:"Wegen der Verletzungs- und Infektionsgefahr."},
 {id:"1-n19",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Wie entsorgt man Rasierklingen?",mb:["stichfest","sicherheitsbehälter"],ml:"In einem stichfesten Sicherheitsbehälter."},
 {id:"1-n20",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie begrüßt man einen Kunden richtig?",
@@ -655,10 +614,10 @@ var FB={1:[
   ml:"Freundlich, höflich und mit Blickkontakt."},
 {id:"1-n21",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was gehört zu einem professionellen Auftreten?",
   mb:[
-    {begriffe:["freundlichkeit","freundlich","nett"], teilwort:false},
-    {begriffe:["höflichkeit","höflich","respektvoll"], teilwort:false},
-    {begriffe:["erscheinungsbild","kleidung","gepflegt","sauber","outfit","äußeres"], teilwort:false},
-    {begriffe:["zuverlässigkeit","zuverlässig","pünktlich","körperhaltung","sprache","kommunikation"], teilwort:false}
+    {begriffe:["freundlichkeit","freundlich","nett"], teilwort:true},
+    {begriffe:["höflichkeit","höflich","respektvoll"], teilwort:true},
+    {begriffe:["erscheinungsbild","kleidung","gepflegt","sauber","outfit","äußeres"], teilwort:true},
+    {begriffe:["zuverlässigkeit","zuverlässig","pünktlich","körperhaltung","sprache","kommunikation"], teilwort:true}
   ],
   ml:"Freundlichkeit, Höflichkeit, gepflegtes Erscheinungsbild und Zuverlässigkeit."},
 {id:"1-n22",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet pH-Wert und welchen hat gesundes Haar?",mb:["sauer","neutral","alkalisch","4,5","5,5"],ml:"Der pH-Wert zeigt an ob eine Lösung sauer, neutral oder alkalisch ist. Gesundes Haar hat etwa pH 4,5 bis 5,5."},
@@ -666,21 +625,16 @@ var FB={1:[
 {id:"1-n24",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum ist Arbeitsschutz im Salon wichtig?",o:["Er schützt Mitarbeiter und Kunden vor Unfällen, Infektionen und gesundheitlichen Schäden", "Er spart dem Salon vor allem Kosten für neue Geräte und Material", "Er ist nur für Lehrlinge und neue Mitarbeiter wirklich wichtig", "Er sorgt vor allem dafür, dass der Salon ordentlich aussieht"],r:0,e:"Arbeitsschutz schützt alle im Salon — Mitarbeiter und Kunden — vor Unfällen, Infektionen und gesundheitlichen Schäden."},
 {id:"1-n25",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum ist eine gute Körperhaltung beim Friseur wichtig?",o:["Um Rücken- und Gelenkbeschwerden vorzubeugen","Um schneller arbeiten zu können","Wegen der Kleiderordnung","Um besser mit Kunden kommunizieren zu können"],r:0,e:"Eine gute Körperhaltung schützt vor Rücken- und Gelenkbeschwerden — ein häufiges Berufsproblem im Friseurhandwerk.",zf:[{t:"mc",f:"Der Gast sitzt sehr tief, und du musst dich beim Schneiden weit nach unten beugen. Was machst du?",o:["Den Stuhl auf eine Höhe einstellen, bei der du aufrecht arbeiten kannst", "So weiterarbeiten, es dauert ja nicht lange", "Den Gast bitten, sich gerader hinzusetzen", "In die Knie gehen und den ganzen Schnitt in dieser Haltung fertig machen"],r:0,e:"Den Stuhl an dich anpassen, nicht deinen Rücken an den Stuhl. Viele kleine Fehlhaltungen am Tag führen auf Dauer zu Beschwerden."}]},
 {id:"1-p1",t:"of",th:"Haarkunde & Haarstruktur",f:"Was bedeutet feines Haar?",
-  mb:[{begriffe:["kleiner durchmesser","dünner durchmesser","durchmesser","dünn","fein"], teilwort:true}],
+  mb:[{begriffe:["durchmesser", "dünn", "schmal", "schaft"],teilwort:true}],
   ml:"Das einzelne Haar hat einen kleinen Durchmesser."},
 {id:"1-p2",t:"of",th:"Haarkunde & Haarstruktur",f:"Wodurch kann Haar geschädigt werden?",
-  mb:[
-    {begriffe:["hitze","wärme","föhnen","glätten"], teilwort:false},
-    {begriffe:["chemisch","chemikalien","farbe","dauerwelle"], teilwort:false},
-    {begriffe:["uv","sonne","sonnenstrahlen"], teilwort:false},
-    {begriffe:["pflege","falsche pflege","pflegefehler"], teilwort:false}
-  ],
+  mb:[{begriffe:["hitze", "wärme", "föhn", "glätt", "heiß"],teilwort:true},{begriffe:["chemi", "farbe", "färb", "dauerwell", "blondier"],teilwort:true},{begriffe:["uv", "sonne"],teilwort:true},{begriffe:["pflege", "bürst", "rubbel", "kämm"],teilwort:true}],
   ml:"Durch Hitze, chemische Behandlungen, UV-Strahlen und falsche Pflege."},
 {id:"1-p3",t:"of",th:"Haarkunde & Haarstruktur",f:"Wie viele Haare hat ein Mensch durchschnittlich?",
   mb:[{begriffe:["80.000","100.000","150.000","80000","100000","150000"], teilwort:false}],
   ml:"Etwa 80.000 bis 150.000 Haare."},
 {id:"1-p4",t:"of",th:"Haarkunde & Haarstruktur",f:"Wie lange dauert die Wachstumsphase des Haares?",
-  mb:[{begriffe:["2","7","jahre","wachstum"], teilwort:false}],
+  mb:[{begriffe:["2", "zwei"],teilwort:true},{begriffe:["7", "sieben"],teilwort:true},{begriffe:["jahr"],teilwort:true}],
   ml:"Etwa 2 bis 7 Jahre."},
 {id:"1-p5",t:"of",th:"Farbenlehre & Coloration",f:"Welche warmen Farben gibt es?",
   mb:[
@@ -704,23 +658,18 @@ var FB={1:[
   ml:"Grün neutralisiert Rot."},
 {id:"1-p9",t:"of",th:"Farbenlehre & Coloration",f:"Warum wird Wasserstoffperoxid verwendet?",
   mb:[
-    {begriffe:["aufhellen","aufhellung","pigment"], teilwort:false},
-    {begriffe:["entwickeln","aktivieren","farbe entwickeln"], teilwort:false}
+    {begriffe:["aufhellen","aufhellung","pigment"], teilwort:true},
+    {begriffe:["entwickeln","aktivieren","farbe entwickeln"], teilwort:true}
   ],
   ml:"Zum Aufhellen des Naturpigments und Entwickeln der Haarfarbe."},
 {id:"1-p10",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet persönliche Hygiene?",
-  mb:[
-    {begriffe:["arbeitskleidung","kleidung","bekleidung","sauber","uniform","kittel"], teilwort:true},
-    {begriffe:["hände","gepflegte hände","handpflege"], teilwort:false},
-    {begriffe:["fingernägel","fingernagel","nägel","nagel"], teilwort:true},
-    {begriffe:["körperpflege","körperhygiene","hygiene","duschen","zähne","zähneputzen","pflege"], teilwort:true}
-  ],
+  mb:[{begriffe:["arbeitskleidung", "kleidung", "sauber", "uniform", "kittel"],teilwort:true},{begriffe:["hände", "handpflege", "hand"],teilwort:true},{begriffe:["nägel", "nagel"],teilwort:true},{begriffe:["körperpflege", "duschen", "zähne", "waschen", "deo", "geruch"],teilwort:true}],
   ml:"Saubere Arbeitskleidung, gepflegte Hände, kurze Fingernägel und tägliche Körperpflege."},
 {id:"1-p11",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Arbeitsgeräte gereinigt werden?",o:["Damit sie länger halten", "Um Krankheiten und Keime nicht zu übertragen", "Nur weil es gesetzlich so vorgeschrieben ist, sonst wäre es egal", "Damit sie besser aussehen"],r:1,e:"Saubere Arbeitsgeräte verhindern die Übertragung von Keimen, Bakterien und Pilzen von Kunde zu Kunde."},
 {id:"1-p12",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet gewerbliche Hygiene?",
   mb:[
-    {begriffe:["salon","reinigung","desinfektion"], teilwort:false},
-    {begriffe:["gesetzlich","vorschriften","hygienemaßnahmen"], teilwort:false}
+    {begriffe:["salon","reinigung","desinfektion"], teilwort:true},
+    {begriffe:["gesetzlich","vorschriften","hygienemaßnahmen"], teilwort:true}
   ],
   ml:"Hygienemaßnahmen im Salon wie Reinigung, Desinfektion und Einhaltung gesetzlicher Vorschriften."},
 {id:"1-p13",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum trägt man Handschuhe?",
@@ -732,23 +681,19 @@ var FB={1:[
 {id:"1-p14",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist ein Beratungsgespräch wichtig?",o:["Es ist nur bei Neukunden nötig, denn bei Stammkunden weiß man ohnehin, was sie wollen", "Damit die Wünsche des Kunden verstanden und Missverständnisse vermieden werden", "Damit man den Preis nennen und gleich kassieren kann", "Damit man dem Kunden möglichst viele Produkte verkauft"],r:1,e:"Das Beratungsgespräch klärt Kundenwunsch, Vorbehandlungen, Allergien und setzt realistische Erwartungen – Pflicht vor jeder Behandlung!"},
 {id:"1-p15",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist Körpersprache im Kundengespräch wichtig?",o:["Sie spielt kaum eine Rolle, denn entscheidend ist nur, was man mit Worten sagt", "Sie vermittelt Interesse, Freundlichkeit und Sicherheit — auch ohne Worte", "Sie ist nur bei Beschwerden wichtig, sonst nicht", "Sie ist nur beim ersten Besuch von Neukunden wichtig"],r:1,e:"Körpersprache macht einen Großteil der Kommunikation aus — Blickkontakt, offene Haltung und Mimik schaffen Vertrauen."},
 {id:"1-p16",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet aktives Zuhören?",
-  mb:[
-    {begriffe:["aufmerksam","zuhören","aufmerksamkeit"], teilwort:false},
-    {begriffe:["nachfragen","fragen","rückfragen"], teilwort:false},
-    {begriffe:["zusammenfassen","wiederholen","bestätigen"], teilwort:false}
-  ],
+  mb:[{begriffe:["aufmerksam", "konzentr", "blickkontakt", "interesse"],teilwort:true},{begriffe:["nachfrag", "frag", "rückfrag"],teilwort:true},{begriffe:["zusammenfass", "wiederhol", "bestätig"],teilwort:true}],
   ml:"Dem Kunden aufmerksam zuhören, nachfragen und das Gesagte zusammenfassen."},
 {id:"1-p17",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie reagiert man auf einen unzufriedenen Kunden?",
   mb:[
-    {begriffe:["ruhig","ruhig bleiben"], teilwort:false},
-    {begriffe:["verständnis","zuhören"], teilwort:false},
-    {begriffe:["lösung","gemeinsam"], teilwort:false}
+    {begriffe:["ruhig","ruhig bleiben"], teilwort:true},
+    {begriffe:["verständnis","zuhören"], teilwort:true},
+    {begriffe:["lösung","gemeinsam"], teilwort:true}
   ],
   ml:"Ruhig bleiben, Verständnis zeigen und gemeinsam nach einer Lösung suchen."},
 {id:"1-p18",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum sollte der Salon regelmäßig gelüftet werden?",
   mb:[
-    {begriffe:["dämpfe","gerüche","chemisch"], teilwort:false},
-    {begriffe:["frische luft","lüften","luft"], teilwort:false}
+    {begriffe:["dämpfe","gerüche","chemisch"], teilwort:true},
+    {begriffe:["frische luft","lüften","luft"], teilwort:true}
   ],
   ml:"Um Dämpfe und Gerüche zu reduzieren und für frische Luft zu sorgen."},
 {id:"1-p19",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Welche persönliche Schutzausrüstung wird im Salon verwendet?",
@@ -759,13 +704,10 @@ var FB={1:[
   ml:"Handschuhe und Schürzen."},
 {id:"1-p20",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Warum müssen elektrische Geräte regelmäßig überprüft werden?",o:["Zur Vermeidung von Stromunfällen und zur Gewährleistung der Betriebssicherheit", "Damit sie länger halten und im Salon besser aussehen", "Weil Kunden das bei jedem Besuch kontrollieren dürfen", "Das ist nur nötig, wenn ein Schaden schon sichtbar ist"],r:0,e:"Defekte Kabel oder Geräte können Stromunfälle verursachen — regelmäßige Prüfung ist Pflicht."},
 {id:"1-p21",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wann sollte ein Allergietest durchgeführt werden?",
-  mb:[
-    {begriffe:["erste coloration","erstmals","neu","erste"], teilwort:false},
-    {begriffe:["unsicherheit","unsicher","zweifel","vorsicht"], teilwort:false}
-  ],
+  mb:[{begriffe:["erst", "neu"],teilwort:true},{begriffe:["unsicher", "zweifel", "verdacht", "allerg", "reaktion"],teilwort:true}],
   ml:"Vor einer ersten Coloration oder wenn Unsicherheiten bestehen."},
 {id:"1-p22",t:"of",th:"Haarkunde & Haarstruktur",f:"Woraus besteht Keratin?",
-  mb:[{begriffe:["eiweiß","protein","aminosäure"], teilwort:false}],
+  mb:[{begriffe:["eiweiß","protein","aminosäure"], teilwort:true}],
   ml:"Aus Eiweiß (Protein)."},
 {id:"1-mc1",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was ist Keratin?",o:["Ein Farbpigment, das die Haarfarbe bestimmt", "Ein Strukturprotein, aus dem Haare bestehen", "Ein Pflegeöl, das die Talgdrüse bildet", "Der verdickte untere Teil der Haarwurzel"],r:1,e:"Keratin ist das Hauptprotein des Haares – es macht etwa 90% der Haarstruktur aus."},
 {id:"1-mc2",t:"mc",th:"Haarkunde & Haarstruktur",f:"Welche Haarschicht enthält die Farbpigmente?",o:["Cuticula","Medulla","Cortex","Haarwurzel"],r:2,e:"Der Cortex (Rinde) enthält Melanin – das Pigment das die Haarfarbe bestimmt."},
@@ -858,24 +800,20 @@ var FB={1:[
 ],2:[
 {id:"2-1",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was ist Kontaktdermatitis?",o:["Eine Haarerkrankung, bei der die Haare ausfallen", "Hautentzündung durch Kontakt mit Wasser, Chemikalien oder Handschuhen", "Eine Allergie, die nur beim Haareschneiden durch kleine Haarsplitter auftritt", "Eine Infektion durch verschmutzte Scheren und Kämme"],r:1,e:"Kontaktdermatitis: Hautentzündung durch Reizstoffe wie Farben oder Dauerwellenmittel."},
 {id:"2-2",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was ist der Unterschied zwischen Reinigung, Desinfektion und Sterilisation?",
-  mb:[
-    {begriffe:["reinigen","reinigung","schmutz entfernen"], teilwort:false},
-    {begriffe:["desinfizieren","desinfektion","keime abtöten","keime reduzieren"], teilwort:false},
-    {begriffe:["sterilisieren","sterilisation","alle keime","vollständig"], teilwort:false}
-  ],
+  mb:[{begriffe:["schmutz", "dreck", "sichtbar"],teilwort:true},{begriffe:["keim", "bakter", "erreger"],teilwort:true},{begriffe:["alle", "vollständig", "komplett", "100"],teilwort:true}],
   ml:"Reinigen: Schmutz entfernen. Desinfizieren: Keime abtöten. Sterilisieren: alle Keime vernichten."},
 {id:"2-3",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was bedeutet das GHS-Ausrufezeichen?",o:["Das Produkt ist besonders stark, wirksam und für Profis geprüft", "Kann Hautreizungen oder Gesundheitsschäden verursachen", "Das Produkt ist leicht entzündlich", "Das Produkt muss kühl gelagert werden"],r:1,e:"GHS07 warnt vor reizenden oder gesundheitsschädlichen Stoffen."},
 {id:"2-4",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Wie verhältst du dich bei einer allergischen Reaktion auf Haarfarbe?",
   mb:[
-    {begriffe:["sofort","abbrechen","stopp"], teilwort:false},
-    {begriffe:["abspülen","ausspülen","wasser abwaschen"], teilwort:false},
-    {begriffe:["meisterin","mirjam","informieren","melden"], teilwort:false},
-    {begriffe:["arzt","notruf","medizinisch"], teilwort:false}
+    {begriffe:["sofort","abbrechen","stopp"], teilwort:true},
+    {begriffe:["abspülen","ausspülen","wasser abwaschen"], teilwort:true},
+    {begriffe:["meisterin","mirjam","informieren","melden"], teilwort:true},
+    {begriffe:["arzt","notruf","medizinisch"], teilwort:true}
   ],
   ml:"Sofort abbrechen, mit Wasser abspülen, Mirjam informieren. Bei starker Reaktion Arzt rufen."},
 {id:"2-5",t:"mc",th:"Werkzeugkunde",f:"Welche Clipper-Größe ergibt die kürzeste Länge?",o:["Größe 8","Größe 4","Größe 1 (3mm)","Größe 0"],r:2,e:"Größe 1 = 3mm. Je kleiner die Zahl, desto kürzer."},
 {id:"2-6",t:"mc",th:"Haarkunde & Haarstruktur",f:"Was bestimmt die natürliche Haarfarbe?",o:["Stärke der Cuticula", "Melaninpigmente im Cortex", "Anzahl Haarfollikel", "Talgproduktion"],r:1,e:"Eumelanin (dunkel) und Phäomelanin (hell/rot) bestimmen die Farbe."},
-{id:"2-7",t:"of",th:"Haarkunde & Haarstruktur",f:"Eine Kundin hat feines Haar und möchte mehr Volumen. Was empfiehlst du?",mb:["stufig","volumen","föhnen","rundbürste","verdickend"],ml:"Stufiger Schnitt, Rundbürste beim Föhnen, Volumenmousse und volumenverdickende Produkte."},
+{id:"2-7",t:"of",th:"Haarkunde & Haarstruktur",f:"Eine Kundin hat feines Haar und möchte mehr Volumen. Was empfiehlst du?",mb:[{begriffe:["stuf"],teilwort:true},{begriffe:["rundbürst", "föhn", "über kopf", "ansatz"],teilwort:true},{begriffe:["mousse", "schaum", "verdick", "puder", "spray", "produkt"],teilwort:true}],ml:"Stufiger Schnitt, Rundbürste beim Föhnen, Volumenmousse und volumenverdickende Produkte."},
 {id:"2-8",t:"mc",th:"Hautkunde",f:"Welche Hautveränderungen sollte ein Friseur erkennen?",o:["Nur Schuppen, alles andere ist Sache des Arztes", "Schuppen, Rötungen, Ekzeme, Warzen, Entzündungen", "Nur Rötungen nach einer Farbbehandlung", "Nur Pigmentflecken und Muttermale"],r:1,e:"Bei auffälligen Veränderungen den Kunden zum Hautarzt schicken."},
 {id:"2-9",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet warm oder kalt in der Haarfarbe?",o:["Warm = mit Wärme gefärbt, Kalt = ohne Haube", "Warm = rot-goldene Anteile, Kalt = aschige blaue Anteile", "Warm = hält lange im Haar, Kalt = wäscht sich schnell wieder aus", "Warm = blaue Anteile, Kalt = rot-goldene Anteile"],r:1,e:"Warme Töne: rote/goldene Pigmente. Kühle Töne: aschige/blaue Pigmente."},
 {id:"2-10",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist eine Oxidationshaarfarbe?",o:["Farbe, die sich nach einigen Wäschen auswäscht", "Dauerhafte Farbe mit Wasserstoffperoxid", "Pflanzenfarbe, zum Beispiel aus Henna", "Spezielle Farbe nur für graues Haar"],r:1,e:"Dauerhaft, dringt mit H2O2 in den Cortex ein."},
@@ -890,13 +828,13 @@ var FB={1:[
 {id:"2-n4",t:"of",th:"Haarkunde & Haarstruktur",f:"Welche Haarstruktur eignet sich besonders gut für Dauerwellen?",mb:["gesund","elastisch","geschädigt"],ml:"Gesundes, elastisches und nicht zu stark geschädigtes Haar."},
 {id:"2-n5",t:"of",th:"Farbenlehre & Coloration",f:"Was versteht man unter dem Farbkreis?",mb:["grund","sekundär","komplementär","darstellung"],ml:"Eine Darstellung der Grund-, Sekundär- und Komplementärfarben."},
 {id:"2-n6",t:"of",th:"Farbenlehre & Coloration",f:"Warum werden Komplementärfarben beim Färben verwendet?",mb:["farbstiche","neutralisieren","unerwünschte"],ml:"Um unerwünschte Farbstiche zu neutralisieren."},
-{id:"2-n7",t:"of",th:"Farbenlehre & Coloration",f:"Was bedeutet Tonhöhe bei der Haarfarbe?",mb:["helligkeit","dunkelheit","haarfarbe"],ml:"Die Helligkeit oder Dunkelheit einer Haarfarbe."},
+{id:"2-n7",t:"of",th:"Farbenlehre & Coloration",f:"Was bedeutet Tonhöhe bei der Haarfarbe?",mb:[{begriffe:["hell", "dunkel"],teilwort:true}],ml:"Die Helligkeit oder Dunkelheit einer Haarfarbe."},
 {id:"2-n8",t:"of",th:"Farbenlehre & Coloration",f:"Was ist eine Nuance?",mb:["farbton","tonhöhe","innerhalb"],ml:"Der Farbton innerhalb einer Tonhöhe."},
-{id:"2-n9",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was ist der Unterschied zwischen Reinigen und Desinfizieren?",mb:["reinigen","schmutz","desinfizieren","keime"],ml:"Reinigen entfernt Schmutz, Desinfizieren reduziert oder tötet Keime."},
+{id:"2-n9",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Was ist der Unterschied zwischen Reinigen und Desinfizieren?",mb:[{begriffe:["schmutz", "dreck", "sichtbar"],teilwort:true},{begriffe:["keim", "bakter", "erreger", "abtöt"],teilwort:true}],ml:"Reinigen entfernt Schmutz, Desinfizieren reduziert oder tötet Keime."},
 {id:"2-n10",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum ist aktives Zuhören im Kundengespräch wichtig?",mb:["vertrauen","beratung","verbessert"],ml:"Es schafft Vertrauen und verbessert die Beratung."},
 {id:"2-n11",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Wie geht man mit einer Reklamation um?",mb:["ruhig","zuhören","verständnis","lösung"],ml:"Ruhig bleiben, zuhören, Verständnis zeigen und gemeinsam eine Lösung finden."},
 {id:"2-n12",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum empfiehlt man Pflegeprodukte nach der Behandlung?",mb:["ergebnis","schön","gesund","gepflegt"],ml:"Damit das Ergebnis länger schön bleibt und das Haar gesund gepflegt wird."},
-{id:"2-n13",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum dokumentiert man chemische Behandlungen?",mb:["sicher","geplant","spätere","behandlungen"],ml:"Damit spätere Behandlungen sicher geplant werden können."},
+{id:"2-n13",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum dokumentiert man chemische Behandlungen?",mb:[{begriffe:["später", "nächst", "wieder", "künftig", "nachvollzieh"],teilwort:true},{begriffe:["plan", "sicher", "rezept", "formel", "wiederhol", "gleich"],teilwort:true}],ml:"Damit spätere Behandlungen sicher geplant werden können."},
 {id:"2-n14",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Warum sollte man Fachbegriffe verständlich erklären?",mb:["nachvollziehen","beratung","kunde"],ml:"Damit der Kunde die Beratung nachvollziehen kann."},
 {id:"2-n15",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Welche Eigenschaften zeichnen einen guten Friseur aus?",mb:["freundlichkeit","geduld","fachwissen","kreativität","zuverlässigkeit"],ml:"Freundlichkeit, Geduld, Fachwissen, Kreativität und Zuverlässigkeit."},
 {id:"2-n16",t:"of",th:"Haarkunde & Haarstruktur",f:"Was versteht man unter Haarqualität?",mb:["zustand","gesundheit","festigkeit","elastizität"],ml:"Den Zustand des Haares hinsichtlich Gesundheit, Festigkeit und Elastizität."},
@@ -904,56 +842,52 @@ var FB={1:[
 {id:"2-n18",t:"of",th:"Haarkunde & Haarstruktur",f:"Warum ist Feuchtigkeit für das Haar wichtig?",mb:["elastizität","glanz","geschmeidigkeit"],ml:"Sie erhält Elastizität, Glanz und Geschmeidigkeit."},
 {id:"2-n19",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was ist das wichtigste Ziel jeder Friseurbehandlung?",mb:["gesund","schön","zufrieden","kunde"],ml:"Ein gesundes, schönes Ergebnis und ein zufriedener Kunde."},
 {id:"2-p1",t:"of",th:"Hautkunde",f:"Wann sollte ein Kunde an einen Hautarzt verwiesen werden?",
-  mb:[
-    {begriffe:["auffällig","veränderung","hautveränderung"], teilwort:false},
-    {begriffe:["entzündung","entzündet"], teilwort:false},
-    {begriffe:["ansteckend","infektion","erkrankung"], teilwort:false}
-  ],
+  mb:[{begriffe:["auffällig", "veränder"],teilwort:true},{begriffe:["entzünd"],teilwort:true},{begriffe:["ansteck", "infekt", "erkrank", "krank"],teilwort:true}],
   ml:"Bei auffälligen Hautveränderungen, Entzündungen oder ansteckenden Erkrankungen."},
 {id:"2-p2",t:"of",th:"Haarkunde & Haarstruktur",f:"Warum muss die Haarstruktur vor einer chemischen Behandlung beurteilt werden?",
   mb:[
-    {begriffe:["produkt","richtiges produkt","passend"], teilwort:false},
-    {begriffe:["einwirkzeit","einwirken","zeit"], teilwort:false}
+    {begriffe:["produkt","richtiges produkt","passend"], teilwort:true},
+    {begriffe:["einwirkzeit","einwirken","zeit"], teilwort:true}
   ],
   ml:"Damit das richtige Produkt und die passende Einwirkzeit gewählt werden."},
 {id:"2-p3",t:"of",th:"Farbenlehre & Coloration",f:"Welche Pigmente bestimmen die natürliche Haarfarbe?",
   mb:[
-    {begriffe:["eumelanin"], teilwort:false},
-    {begriffe:["phäomelanin","phaomelanin"], teilwort:false}
+    {begriffe:["eumelanin"], teilwort:true},
+    {begriffe:["phäomelanin","phaomelanin"], teilwort:true}
   ],
   ml:"Eumelanin (dunkel) und Phäomelanin (hell/rot)."},
 {id:"2-p4",t:"of",th:"Farbenlehre & Coloration",f:"Warum ist eine Haaranalyse vor dem Färben wichtig?",
   mb:[
-    {begriffe:["haarzustand","zustand"], teilwort:false},
-    {begriffe:["naturfarbe","naturhaarfarbe"], teilwort:false},
-    {begriffe:["risiken","risiko","gefahr"], teilwort:false}
+    {begriffe:["haarzustand","zustand"], teilwort:true},
+    {begriffe:["naturfarbe","naturhaarfarbe"], teilwort:true},
+    {begriffe:["risiken","risiko","gefahr"], teilwort:true}
   ],
   ml:"Um Haarzustand, Naturfarbe und mögliche Risiken zu beurteilen."},
 {id:"2-p5",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Warum müssen Handtücher nach jedem Kunden gewechselt werden?",
   mb:[
-    {begriffe:["keime","bakterien","übertragung"], teilwort:false},
-    {begriffe:["hygiene","sauber","verhindern"], teilwort:false}
+    {begriffe:["keime","bakterien","übertragung"], teilwort:true},
+    {begriffe:["hygiene","sauber","verhindern"], teilwort:true}
   ],
   ml:"Um die Übertragung von Keimen zu verhindern."},
 {id:"2-p6",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Wie werden Scheren und Kämme hygienisch aufbereitet?",
   mb:[
-    {begriffe:["reinigen","reinigung","säubern"], teilwort:false},
-    {begriffe:["desinfizieren","desinfektion"], teilwort:false},
-    {begriffe:["trocken","trocken lagern","lagern"], teilwort:false}
+    {begriffe:["reinigen","reinigung","säubern"], teilwort:true},
+    {begriffe:["desinfizieren","desinfektion"], teilwort:true},
+    {begriffe:["trocken","trocken lagern","lagern"], teilwort:true}
   ],
   ml:"Reinigen, gegebenenfalls desinfizieren und trocken lagern."},
 {id:"2-p7",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Welche Fragen stellt man bei einer Beratung?",
   mb:[
-    {begriffe:["wünsche","wunsch"], teilwort:false},
-    {begriffe:["behandlungen","vorbehandlung","bisherige"], teilwort:false},
-    {begriffe:["haarpflege","pflege"], teilwort:false},
-    {begriffe:["allergie","allergien","unverträglichkeit"], teilwort:false}
+    {begriffe:["wünsche","wunsch"], teilwort:true},
+    {begriffe:["behandlungen","vorbehandlung","bisherige"], teilwort:true},
+    {begriffe:["haarpflege","pflege"], teilwort:true},
+    {begriffe:["allergie","allergien","unverträglichkeit"], teilwort:true}
   ],
   ml:"Wünsche, bisherige Behandlungen, Haarpflege und Allergien."},
 {id:"2-p8",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet pH-Wert?",
   mb:[
-    {begriffe:["sauer","alkalisch","neutral"], teilwort:false},
-    {begriffe:["lösung","konzentration"], teilwort:false}
+    {begriffe:["sauer","alkalisch","neutral"], teilwort:true},
+    {begriffe:["lösung","konzentration"], teilwort:true}
   ],
   ml:"Er zeigt an, ob eine Lösung sauer, neutral oder alkalisch ist."},
 {id:"2-mc1",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist der Untergrundton bei dunkelbraunem Haar nach dem Blondieren?",o:["Gelb","Asch","Rot-Orange","Violett"],r:2,e:"Dunkles Haar enthält viel rotes Pigment – beim Aufhellen erscheint zuerst ein rot-oranger Untergrundton."},
@@ -995,30 +929,30 @@ var FB={1:[
 {id:"2-ba4",t:"mc",th:"Farbenlehre & Coloration",f:"Warum dürfen Zwischenfolien nicht geknickt werden?",o:["Weil geknickte Folien sonst reißen", "Weil sonst Balken und Flecken entstehen können", "Weil sich die Einwirkzeit sonst ungefähr verdoppelt", "Das ist egal, Hauptsache sie halten"],r:1,e:"Geknickte Zwischenfolien drücken Produkt ab und es entstehen Balken und Flecken. Zum Abdecken eine Folie darüberlegen oder zwei aufeinander."},
 {id:"2-ba5",t:"mc",th:"Farbenlehre & Coloration",f:"Die Ausgangsfarbe hat starke Farbbalken. Was empfiehlt sich vor der Balayage?",o:["Direkt Balayage setzen, die Balken fallen dann nicht auf", "Farbabzug und Grundfärbung auf ein einheitliches Farbbild, dann die Technik", "Nur die Spitzen aufhellen und den Rest so lassen", "Die Balken mit Lowlights überdecken"],r:1,e:"Perfekte Ergebnisse gibt es auf einheitlichen Grundfarben. Bei starken Farbbalken zuerst ein einheitliches Farbbild schaffen."},
 {id:"2-ba6",t:"mc",th:"Farbenlehre & Coloration",f:"Für wen eignet sich die Toupiertechnik bei Balayage besonders?",o:["Für Einsteiger und feines Haar", "Nur für dickes, krauses Haar", "Nur für Kurzhaar", "Für Lowlights"],r:0,e:"Die Toupiertechnik gibt weiche, hauchzarte Übergänge. Nur leicht antoupieren, nicht wie bei einer Hochsteckfrisur."},
-{id:"2-ba7",t:"of",th:"Farbenlehre & Coloration",f:"Was bedeutet beim Contouring „schräg zum Gesicht abteilen“, und was erreichst du damit?",mb:[{begriffe:["schräg","diagonal"],teilwort:true},{begriffe:["gesicht","kontur"],teilwort:true},{begriffe:["hell","strahl","licht"],teilwort:true}],ml:"Die Abteilungen laufen schräg zum Gesicht hin. So kommt die Helligkeit an die Gesichtskontur und das Gesicht wirkt strahlender."},
+{id:"2-ba7",t:"of",th:"Farbenlehre & Coloration",f:"Was bedeutet beim Contouring „schräg zum Gesicht abteilen“, und was erreichst du damit?",mb:[{begriffe:["hell", "strahl", "licht", "leucht"],teilwort:true},{begriffe:["kontur", "rahm", "betont"],teilwort:true}],ml:"Die Abteilungen laufen schräg zum Gesicht hin. So kommt die Helligkeit an die Gesichtskontur und das Gesicht wirkt strahlender."},
 {id:"2-co1",t:"mc",th:"Farbenlehre & Coloration",f:"Welchen Untergrund hat Tonhöhe 6 (Dunkelblond)?",o:["Gelb","Orange","Rot","Violett"],r:1,e:"Tonhöhe 6 hat einen orangen Untergrund, die Gegenfarbe ist Blau.",zf:[{t:"mc",f:"Du hellst Tonhöhe 6 auf und möchtest ein kühles Ergebnis. Welcher Reflex gehört in die Rezeptur?",o:["Asch (Blau), gegen den orangen Untergrund", "Gold (Gelb), für einen hellen Untergrund", "Kupfer (Orange), passend zum Untergrund", "Keiner – kühl entsteht beim Aufhellen von selbst"],r:0,e:"Beim Aufhellen kommt der orange Untergrund von Tonhöhe 6 zum Vorschein. Blau (Asch) neutralisiert ihn."}]},
 {id:"2-co2",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Gegenfarbe neutralisiert einen gelben Untergrund?",o:["Grün","Blau","Violett","Rot"],r:2,e:"Gelb und Violett liegen sich im Farbkreis gegenüber und neutralisieren sich."},
 {id:"2-co3",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Reflexbezeichnung gehört zu Blau?",o:["Gold","Kupfer","Asch","Irisé"],r:2,e:"Blau = Asch, Violett = Irisé, Gelb = Gold, Orange = Kupfer, Rot = Rouge, Grün = Verde/Matt."},
 {id:"2-co4",t:"mc",th:"Farbenlehre & Coloration",f:"Ein Gast findet sein Blond zuhause bläulich, im Salon nicht. Warum?",o:["Die Farbe hat sich zuhause nach ein paar Wäschen schon ausgewaschen", "Das Licht zuhause ist kühler und verstärkt blaue Pigmente", "Der Spiegel zuhause verfälscht alle Farben", "Das Auge täuscht sich zuhause immer"],r:1,e:"Kunstlicht mit viel Blauanteil macht blaue Pigmente sichtbarer, warmes Licht nicht."},
 {id:"2-co5",t:"mc",th:"Farbenlehre & Coloration",f:"Was beschreibt den Komplementärkontrast?",o:["Helle neben dunklen Farben wirken größer oder kleiner", "Gegenfarben nebeneinander steigern sich zu höchster Leuchtkraft", "Warme und kalte Farben nebeneinander wirken unruhig", "Gegenfarben miteinander gemischt ergeben eine besonders leuchtende Farbe"],r:1,e:"Gegenfarben im Farbkreis neutralisieren sich beim Mischen, nebeneinander leuchten sie besonders stark (z. B. rotes Haar und grüne Kleidung)."},
 {id:"2-wk1",t:"mc",th:"Farbenlehre & Coloration",f:"Naturton 4, Wunsch: intensives Kupfer auf Tonhöhe 6. Bis wohin muss das Naturpigment aufgehellt werden?",o:["Auf 6","Auf 7 bis 8","Auf 10","Gar nicht"],r:1,e:"Warm-Kalt-Gesetz: Für warme Töne ½ bis 1½ Tonhöhen heller als die Zieltonhöhe aufhellen."},
-{id:"2-wk2",t:"mc",th:"Farbenlehre & Coloration",f:"Um wie viel heller als die Zieltonhöhe muss das Naturpigment für einen kühlen Farbton sein?",o:["½ bis 1½ Tonhöhen","1½ bis 2½ Tonhöhen","Gleich hell","5 Tonhöhen"],r:1,e:"Jedes Haar hat warme Naturpigmente. Für kühle Töne muss mehr Untergrund abgebaut werden.",zf:[{t:"of",f:"Warum muss für einen kühlen Farbton stärker aufgehellt werden als für einen warmen?",mb:[{begriffe:["warm","rot","orange","gelb"],teilwort:true},{begriffe:["pigment","untergrund"],teilwort:true},{begriffe:["abbau","abgebaut","entfern","weg","durchschlag","schlägt durch","stör"],teilwort:true}],ml:"Jedes Haar hat warme Naturpigmente. Für einen kühlen Ton muss mehr von diesem warmen Untergrund abgebaut werden, sonst schlägt er durch und das Ergebnis wird nicht kühl."}]},
+{id:"2-wk2",t:"mc",th:"Farbenlehre & Coloration",f:"Um wie viel heller als die Zieltonhöhe muss das Naturpigment für einen kühlen Farbton sein?",o:["½ bis 1½ Tonhöhen","1½ bis 2½ Tonhöhen","Gleich hell","5 Tonhöhen"],r:1,e:"Jedes Haar hat warme Naturpigmente. Für kühle Töne muss mehr Untergrund abgebaut werden.",zf:[{t:"of",f:"Warum muss für einen kühlen Farbton stärker aufgehellt werden als für einen warmen?",mb:[{begriffe:["rot", "orange", "gelb", "untergrund", "naturpigment", "pigment"],teilwort:true},{begriffe:["abbau", "abgebaut", "entfern", "weg", "durchschlag", "schlägt durch", "stör"],teilwort:true}],ml:"Jedes Haar hat warme Naturpigmente. Für einen kühlen Ton muss mehr von diesem warmen Untergrund abgebaut werden, sonst schlägt er durch und das Ergebnis wird nicht kühl."}]},
 {id:"2-wk3",t:"mc",th:"Farbenlehre & Coloration",f:"Welche Farbe ist im warmen Bereich am dominantesten?",o:["Gelb","Orange","Rot","Alle gleich"],r:2,e:"Rot setzt sich gegen Orange und Gelb durch, Orange gegen Gelb."},
 {id:"2-wk4",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet die Farbnummer 7,21?",o:["Tonhöhe 7, Hauptreflex Violett, Nebenreflex Blau", "Tonhöhe 2, Hauptreflex 7, Nebenreflex Asch", "21 % Oxidant für Tonhöhe 7", "Tonhöhe 7, Hauptreflex Blau, Nebenreflex Violett"],r:0,e:"Vor dem Komma steht die Tonhöhe, danach Haupt- und (schwächerer) Nebenreflex. Die Nummern sind herstellerabhängig."}
 ],3:[
-{id:"3-1",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Erkläre den Begriff Infektionskette und wie du sie im Salon unterbrichst.",mb:["erreger","übertragungsweg","desinfektion","reinigung","unterbrechen"],ml:"Infektionskette: Erreger → Übertragungsweg → neuer Wirt. Unterbrechen durch Desinfektion und Einmalprodukte."},
+{id:"3-1",t:"of",th:"Hygiene & Schutzmaßnahmen",f:"Erkläre den Begriff Infektionskette und wie du sie im Salon unterbrichst.",mb:[{begriffe:["erreger", "keim", "bakter", "viren"],teilwort:true},{begriffe:["übertrag", "weg", "kontakt"],teilwort:true},{begriffe:["wirt", "mensch", "person", "nächst"],teilwort:true},{begriffe:["desinf", "reinig", "einmal", "handschuh", "hygiene"],teilwort:true}],ml:"Infektionskette: Erreger → Übertragungsweg → neuer Wirt. Unterbrechen durch Desinfektion und Einmalprodukte."},
 {id:"3-2",t:"mc",th:"Unfallverhütung & Arbeitssicherheit",f:"Was regelt die TRGS 530?",o:["Die erlaubten Öffnungszeiten im Friseurhandwerk", "Regeln für Gefahrstoffe im Friseurhandwerk", "Die Dauer der Ausbildung", "Die Mindestlöhne für Friseure"],r:1,e:"TRGS 530: Umgang mit Farben, Blondiermitteln und Dauerwellmitteln."},
 {id:"3-3",t:"mc",th:"Haarkunde & Haarstruktur",f:"Welche Haarstruktur hat das langsamste Farbaufnahmeverhalten?",o:["Feines, blondiertes und poröses Haar", "Mittelstarkes, braunes Naturhaar", "Grobes widerstandsfähiges graues Haar", "Lockiges Haar mit offener Schuppenschicht"],r:2,e:"Grobes graues Haar hat eine dichte Cuticula – Farbe dringt schwerer ein."},
-{id:"3-4",t:"of",th:"Haarkunde & Haarstruktur",f:"Erkläre den Haarwachstumszyklus (Anagen, Katagen, Telogen).",mb:["anagen","katagen","telogen","wachstum","ruhe","ausfall"],ml:"Anagen: Wachstum (2–7 Jahre). Katagen: Übergang. Telogen: Ruhe, Haar fällt aus."},
+{id:"3-4",t:"of",th:"Haarkunde & Haarstruktur",f:"Erkläre den Haarwachstumszyklus (Anagen, Katagen, Telogen).",mb:[{begriffe:["wachs", "wächst"],teilwort:true},{begriffe:["übergang", "rückbild", "abbau", "stopp"],teilwort:true},{begriffe:["ruhe", "ausfall", "fällt"],teilwort:true}],ml:"Anagen: Wachstum (2–7 Jahre). Katagen: Übergang. Telogen: Ruhe, Haar fällt aus."},
 {id:"3-5",t:"mc",th:"Hautkunde",f:"Was ist Seborrhoe?",o:["Eine Allergie gegen Haarfarbe", "Übermäßige Talgproduktion mit fettiger schuppiger Haut", "Ein Vitaminmangel, der Haarausfall auslöst", "Zu wenig Talg mit trockener, spannender und schuppiger Haut"],r:1,e:"Seborrhoe = übermäßige Talgproduktion. Ölige schuppige Kopfhaut."},
-{id:"3-6",t:"of",th:"Hautkunde",f:"Eine Kundin hat gerötete schuppige Kopfhaut. Kannst du ihr Haar färben?",mb:["nicht","abbrechen","arzt","reizung","informieren"],ml:"Nicht färben! Kundin zum Arzt schicken. Erst nach ärztlicher Freigabe weiterbehandeln."},
-{id:"3-7",t:"of",th:"Farbenlehre & Coloration",f:"Was ist Komplementärkontrast und wie nutzt du ihn bei Farbkorrekturen?",mb:["gegenfarbe","orange","blau","neutralisieren","farbrad"],ml:"Komplementärfarben neutralisieren sich. Orange → mit blau-aschigem Ton neutralisieren."},
+{id:"3-6",t:"of",th:"Hautkunde",f:"Eine Kundin hat gerötete schuppige Kopfhaut. Kannst du ihr Haar färben?",mb:[{begriffe:["nicht", "nein", "kein"],teilwort:true},{begriffe:["arzt", "ärzt", "dermatolog"],teilwort:true}],ml:"Nicht färben! Kundin zum Arzt schicken. Erst nach ärztlicher Freigabe weiterbehandeln."},
+{id:"3-7",t:"of",th:"Farbenlehre & Coloration",f:"Was ist Komplementärkontrast und wie nutzt du ihn bei Farbkorrekturen?",mb:[{begriffe:["gegenüber", "komplement", "gegenfarbe", "farbkreis", "farbrad"],teilwort:true},{begriffe:["neutral", "aufheb", "ausgleich"],teilwort:true},{begriffe:["blau", "asch", "violett", "grün"],teilwort:true}],ml:"Komplementärfarben neutralisieren sich. Orange → mit blau-aschigem Ton neutralisieren."},
 {id:"3-8",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet die '3' in einer Haarfarbe wie '6.3'?",o:["Oxidationsstufe","Reflexton Gold","Einwirkzeit","Stärke des Peroxids"],r:1,e:"Erste Zahl = Tiefe. Nach dem Punkt = Reflexton. 3=Gold, 1=Asch, 4=Kupfer."},
-{id:"3-9",t:"of",th:"Dauerwelle & Umformung",f:"Welche Faktoren bestimmen die Stärke einer Dauerwelle?",mb:["wickler","einwirkzeit","haarstruktur","mittel","fixierer"],ml:"Wicklerdurchmesser, Einwirkzeit, Stärke des Wellemittels, Haarstruktur und Fixierung."},
-{id:"3-10",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Nenne die 6 wichtigsten Punkte für das LAP-Beratungsgespräch.",mb:["wunsch","vorgeschichte","haaranalyse","pflege","produkt","nachtermin"],ml:"1) Kundenwunsch, 2) Haarvorgeschichte, 3) Haaranalyse, 4) Lebensstil, 5) Pflegeempfehlung, 6) Nachtermin."},
+{id:"3-9",t:"of",th:"Dauerwelle & Umformung",f:"Welche Faktoren bestimmen die Stärke einer Dauerwelle?",mb:[{begriffe:["wickler"],teilwort:true},{begriffe:["einwirk"],teilwort:true},{begriffe:["struktur", "haarzustand", "haarqualität", "porös", "fein", "dick"],teilwort:true},{begriffe:["mittel", "stärke", "konzentr"],teilwort:true},{begriffe:["fixier"],teilwort:true}],ml:"Wicklerdurchmesser, Einwirkzeit, Stärke des Wellemittels, Haarstruktur und Fixierung."},
+{id:"3-10",t:"of",th:"Beratungsgespräch & Kundenkommunikation",f:"Nenne die 6 wichtigsten Punkte für das LAP-Beratungsgespräch.",mb:[{begriffe:["wunsch"],teilwort:true},{begriffe:["vorgeschicht", "vorbehandl", "früher"],teilwort:true},{begriffe:["analyse", "haarzustand", "struktur", "diagnose"],teilwort:true},{begriffe:["lebensstil", "alltag", "beruf", "zeit"],teilwort:true},{begriffe:["pflege", "produkt", "empfehl"],teilwort:true},{begriffe:["nachtermin", "nächst", "termin", "wiederkomm"],teilwort:true}],ml:"1) Kundenwunsch, 2) Haarvorgeschichte, 3) Haaranalyse, 4) Lebensstil, 5) Pflegeempfehlung, 6) Nachtermin."},
 {id:"3-11",t:"mc",th:"Beratungsgespräch & Kundenkommunikation",f:"Was bedeutet Einwandbehandlung?",o:["Den Kunden unterbrechen und weiterreden", "Einwände ernst nehmen und entkräften", "Dem Kunden sagen, dass er falsch liegt", "Das Gespräch freundlich beenden"],r:1,e:"Einwand ernst nehmen, Nutzen erklären. Nie wegdiskutieren."},
 {id:"3-12",t:"mc",th:"Hygiene & Schutzmaßnahmen",f:"Was bedeutet RKI-gelistetes Desinfektionsmittel?",o:["Vom Radio und Fernsehen als Testsieger empfohlen", "Vom Robert Koch Institut geprüftes Mittel", "Besonders günstig im Großhandel", "Nur für Restaurants und Küchen"],r:1,e:"RKI-gelistete Mittel haben nachgewiesene Wirksamkeit."},
-{id:"3-13",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Was ist ein Sicherheitsdatenblatt?",mb:["gefahrstoff","inhaltsstoff","erste hilfe","lagerung","entsorgung"],ml:"Gibt Infos zu chemischen Produkten: Inhaltsstoffe, Gefahren, Erste-Hilfe, Lagerung, Entsorgung."},
+{id:"3-13",t:"of",th:"Unfallverhütung & Arbeitssicherheit",f:"Was ist ein Sicherheitsdatenblatt?",mb:[{begriffe:["gefahr"],teilwort:true},{begriffe:["inhaltsstoff", "inhalt", "zusammensetz"],teilwort:true},{begriffe:["erste hilfe", "notfall", "unfall"],teilwort:true},{begriffe:["lager"],teilwort:true},{begriffe:["entsorg"],teilwort:true}],ml:"Gibt Infos zu chemischen Produkten: Inhaltsstoffe, Gefahren, Erste-Hilfe, Lagerung, Entsorgung."},
 {id:"3-mc1",t:"mc",th:"Farbenlehre & Coloration",f:"Was versteht man unter einer Farbkorrektur?",o:["Die bestehende Haarfarbe einfach mit dem gleichen Ton auffrischen", "Unerwünschte Farbergebnisse wie Farbstiche korrigieren", "Eine ganz neue Farbe auf Naturhaar auftragen", "Graues Haar zum ersten Mal abdecken"],r:1,e:"Farbkorrekturen beseitigen Farbfehler – z.B. unerwünschte orange/rote Töne nach dem Blondieren."},
 {id:"3-mc2",t:"mc",th:"Farbenlehre & Coloration",f:"Was ist Ombré?",o:["Freihand gemalte Strähnen wie bei Balayage", "Gleichmäßiger Verlauf von dunkel nach hell", "Komplette Blondierung vom Ansatz an", "Feine Strähnen mit Folie ab dem Ansatz"],r:1,e:"Ombré = gleichmäßiger Farbverlauf dunkel→hell. Balayage ist freier und natürlicher – beides hat keinen harten Ansatz."},
 {id:"3-mc3",t:"mc",th:"Farbenlehre & Coloration",f:"Was bedeutet Tonhöhe 6 in der internationalen Farbskala?",o:["Sehr hell (fast weiß)","Mittelblond","Dunkelblond","Hellbraun"],r:2,e:"Skala 1–10: 1=Schwarz, 5=Hellbraun, 6=Dunkelblond, 7=Mittelblond, 10=Sehr hell."},
@@ -1046,7 +980,7 @@ var FB={1:[
 {id:"3-vp1",t:"mc",th:"Farbenlehre & Coloration",f:"Wann brauchst du eine Vorpigmentierung?",o:["Bei jeder Tönung, egal wie hell oder dunkel", "Wenn Haar um mehr als 4 Tonhöhen dunkler gefärbt wird", "Nur bei Naturhaar, das noch nie gefärbt wurde", "Wenn das Haar um mehrere Tonhöhen heller gefärbt werden soll"],r:1,e:"Das fehlende Naturpigmentbild der Zieltonhöhe muss mit warmen Pigmenten wieder aufgebaut werden."},
 {id:"3-vp2",t:"mc",th:"Farbenlehre & Coloration",f:"Mit welchen Reflexen wird rückpigmentiert?",o:["Asch und Matt","Gold, Kupfer oder Rot","Violett und Blau","Warm und kühl gemischt"],r:1,e:"Kühle Reflexe und Mischungen aus warm und kühl eignen sich nicht, das Ergebnis wird transparent oder grünstichig."},
 {id:"3-vp3",t:"mc",th:"Farbenlehre & Coloration",f:"Gefärbtes Rot soll zu einem reinen Kupfer werden. Was ist nötig?",o:["Einfach Kupfer darüber färben, das deckt das Rot", "Zuerst das dominante Rot entfernen (Farbabzug oder Blondierwäsche)", "Mit Asch mischen, damit das Rot verschwindet", "Gar nichts, Kupfer setzt sich gegen Rot durch"],r:1,e:"Eine dominante Farbe im Haar muss erst entfernt werden, bevor eine schwächere sichtbar wird."},
-{id:"3-vp4",t:"of",th:"Farbenlehre & Coloration",f:"Was ist der Unterschied zwischen einem alkalischen und einem sauren Farbabzug?",mb:[{begriffe:["blondier","alkal","oxidativ"],teilwort:true},{begriffe:["naturpigment","natürlich"],teilwort:true},{begriffe:["künstlich","frisch","reduk"],teilwort:true}],ml:"Der alkalische (oxidative) Abzug arbeitet mit Blondiermittel und kann auch das Naturpigment aufhellen. Der saure (reduktive) Abzug wirkt nur auf künstliche Pigmente, am besten bei frisch gefärbtem Haar, und hellt das Naturpigment nicht auf."}
+{id:"3-vp4",t:"of",th:"Farbenlehre & Coloration",f:"Was ist der Unterschied zwischen einem alkalischen und einem sauren Farbabzug?",mb:[{begriffe:["blondier", "oxidativ", "oxidier"],teilwort:true},{begriffe:["naturpigment", "natürlich"],teilwort:true},{begriffe:["künstlich", "frisch", "reduk"],teilwort:true}],ml:"Der alkalische (oxidative) Abzug arbeitet mit Blondiermittel und kann auch das Naturpigment aufhellen. Der saure (reduktive) Abzug wirkt nur auf künstliche Pigmente, am besten bei frisch gefärbtem Haar, und hellt das Naturpigment nicht auf."}
 ]};
 
 // ── BETRIEBSSYSTEM — A GREAT HAIR DAY ────────────────────────────────────────
@@ -1438,11 +1372,14 @@ function pruefeOffen(){
   var gesamt=ergebnis.gesamt;
   var punkte=ergebnis.punkte;
 
-  var staerke=gesamt>0?(treffer+' von '+gesamt+' Punkten erreicht'):null;
-  QANT.push({q:q,korrekt:punkte>=6,punkte:punkte});
-  nachAntwort(q,punkte>=6);
+  var kor=ergebnis.korrekt;
+  var fehlt=ergebnis.benoetigt-treffer;
+  var staerke=gesamt>0?(treffer+' von '+gesamt+' wichtigen Punkten genannt'+
+    (kor?'':' – für „richtig“ fehl'+(fehlt===1?'t noch 1 Punkt':'en noch '+fehlt+' Punkte'))):null;
+  QANT.push({q:q,korrekt:kor,punkte:punkte});
+  nachAntwort(q,kor);
   zeigeOffen(punkte,null,staerke,q.ml);
-  if(punkte>=6&&q.zf&&q.zf.length&&!q.haupt) document.getElementById('q-feedback').innerHTML+=zusatzHinweis();
+  if(kor&&q.zf&&q.zf.length&&!q.haupt) document.getElementById('q-feedback').innerHTML+=zusatzHinweis();
 }
 
 function zusatzHinweis(){
@@ -1460,7 +1397,7 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
   fb.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:8px">'+
     '<div style="font-weight:700;font-size:14px;color:#2C2C2C">'+note+'</div>'+
     '<div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:'+col+'">'+punkte+'/10</div>'+
-  '</div>'+(staerke?'<div style="font-size:12px;color:#3D6B50;margin-bottom:4px">✓ '+staerke+'</div>':'')+
+  '</div>'+(staerke?'<div style="font-size:12px;color:'+(punkte>=7?'#3D6B50':'#8A7A30')+';margin-bottom:4px">'+(punkte>=7?'✓ ':'')+staerke+'</div>':'')+
   '<div class="ml-box"><div class="ml-lab">Musterlösung</div><div class="ml-txt">'+muster+'</div></div>';
   fb.style.display='block';
   zeigeWeiter();
