@@ -142,6 +142,13 @@ select{width:100%;font:14px system-ui;padding:10px 12px;border-radius:6px;border
 .q button:disabled{cursor:default}
 .q button.right{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
 .q button.wrong{border-color:#C44030;background:#FDECEA;color:#C44030}
+.q button.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.q .sicher-frage{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 6px}
+.q .sicher-knoepfe{display:flex;gap:8px}
+.q button.pruef{flex:1;text-align:center;font-weight:600}
+.q button.pruef.s{background:var(--accent);border-color:var(--accent);color:#fff}
+.q .why.geraten{color:#8A6D12}
+.q .why.sicherfalsch{color:#C44030}
 .q .why{font-size:13px;color:var(--muted)}
 .score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .score .num{font-size:1.5rem;color:var(--accent)}
@@ -1146,24 +1153,41 @@ const QUIZ=[
   ['Was passiert, wenn der Kopf beim Schneiden seitlich geneigt ist?',['Die Seite, zu der der Kopf geneigt ist, wird kürzer','Nichts, die Linie bleibt gleich','Beide Seiten werden länger','Die Form wird gleichmäßig stufig'],0,'Deshalb beim Schneiden auf eine gerade Kopfhaltung achten.'],
   ['Wie wird bei der graduierten Form im Nacken abgeteilt?',['Waagrecht über den ganzen Kopf','Radial (Pivot) von einem Punkt am Hinterhauptbein','Nur senkrecht','Gar nicht'],1,'Im Nacken strahlen die Abteilungen von einem Punkt aus, so lässt sich die Graduierung sauber aufbauen.']
 ];
+// Antwort zuerst auswählen, dann „Sicher – prüfen“ / „Geraten – prüfen“.
+// Richtig geraten zählt nicht als gewusst, sicher und trotzdem falsch wird
+// markiert. Die Antworten werden bei jedem Durchgang neu gemischt.
 let answers={};
+function mischen(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function renderQuiz(){
   const box=$('#quizBox');box.innerHTML='';
   QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
-    d.innerHTML='<h3>'+(i+1)+'. '+q[0]+'</h3><div class="opts"></div><p class="why" hidden></p>';
-    const opts=d.querySelector('.opts'),why=d.querySelector('.why');
-    q[1].forEach((o,j)=>{const b=document.createElement('button');b.textContent=o;
-      b.onclick=()=>{answers[i]=j;opts.querySelectorAll('button').forEach((x,m)=>{x.disabled=true;if(m===q[2])x.classList.add('right');});if(j!==q[2])b.classList.add('wrong');why.hidden=false;why.textContent=(j===q[2]?'Richtig. ':'Nicht ganz. ')+q[3];score();};
+    d.innerHTML='<h3>'+(i+1)+'. '+q[0]+'</h3><div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef g">Geraten – prüfen</button></div></div><p class="why" hidden></p>';
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why'),sz=d.querySelector('.sicher');let wahl=null;
+    mischen(q[1].map((_,j)=>j)).forEach(j=>{const b=document.createElement('button');b.textContent=q[1][j];b.dataset.j=j;
+      b.onclick=()=>{wahl=j;opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sz.hidden=false;};
       opts.appendChild(b);});
+    sz.querySelectorAll('.pruef').forEach(p=>p.onclick=()=>{
+      if(wahl===null)return;
+      const sicher=p.classList.contains('s'),ok=wahl===q[2];
+      answers[i]={j:wahl,sicher};sz.hidden=true;
+      opts.querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.remove('sel');if(+x.dataset.j===q[2])x.classList.add('right');else if(+x.dataset.j===wahl)x.classList.add('wrong');});
+      why.hidden=false;
+      why.textContent=(ok&&!sicher?'Richtig – aber geraten. Richtig geraten zählt noch nicht als gewusst. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+q[3];
+      if(ok&&!sicher)why.classList.add('geraten');if(!ok&&sicher)why.classList.add('sicherfalsch');
+      score();});
     box.appendChild(d);});
   score();
 }
-function score(){const n=Object.keys(answers).length,r=Object.entries(answers).filter(([i,a])=>QUIZ[i][2]===a).length;
+function score(){const e=Object.entries(answers),n=e.length;
+  const r=e.filter(([i,a])=>QUIZ[i][2]===a.j&&a.sicher).length;
+  const ger=e.filter(([i,a])=>QUIZ[i][2]===a.j&&!a.sicher).length,sf=e.filter(([i,a])=>QUIZ[i][2]!==a.j&&a.sicher).length;
   $('#scoreOut').textContent=r+' / '+QUIZ.length;
-  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du kennst die Grundformen.':r>=QUIZ.length*.5?'Gute Basis. Schau dir das Winkel-Labor noch einmal an.':'Geh die Schnittzeichnung Schritt für Schritt durch und versuch es noch einmal.');
+  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du kennst die Grundformen.':r>=QUIZ.length*.5?'Gute Basis. Schau dir das Winkel-Labor noch einmal an.':'Geh die Schnittzeichnung Schritt für Schritt durch und versuch es noch einmal.')+
+    (ger?' '+ger+'× richtig geraten.':'')+(sf?' '+sf+'× sicher, aber falsch – schau dir diese Fragen nochmal an.':'');
   // Fertige Runde einmal im Verlauf des Lehrlings speichern
   if(n===0){quizGespeichert=false;$('#scoreSpeicher').textContent='';}
-  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichern){quizGespeichert=true;ghdQuizSpeichern('Haarschnitt Techniken',r,n,'scoreSpeicher');}
+  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichernAntworten){quizGespeichert=true;
+    ghdQuizSpeichernAntworten(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Haarschnitt Techniken',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
 }
 let quizGespeichert=false;
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
