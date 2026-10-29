@@ -656,7 +656,7 @@ var FACHFRAGEN = [
 // ════════════════════════════════════════════════════════
 // FACHQUIZ LOGIK
 // ════════════════════════════════════════════════════════
-var FQ_Fragen=[], FQ_Idx=0, FQ_Richtig=0, FQ_AktFrage=null;
+var FQ_Fragen=[], FQ_Idx=0, FQ_Richtig=0, FQ_AktFrage=null, FQ_Geraten=0, FQ_SicherFalsch=0;
 
 function starteFachquiz(){
   if(!IstMeisterin){zeige('home');return;}
@@ -664,7 +664,7 @@ function starteFachquiz(){
   var pool = thema==='alle' ? FACHFRAGEN.slice() : FACHFRAGEN.filter(function(f){return f.th===thema;});
   if(!pool.length){alert('Keine Fragen für dieses Thema gefunden.');return;}
   FQ_Fragen=shuffle(pool);
-  FQ_Idx=0; FQ_Richtig=0;
+  FQ_Idx=0; FQ_Richtig=0; FQ_Geraten=0; FQ_SicherFalsch=0;
   zeige('fachquiz');
   zeigeFachFrage();
 }
@@ -684,7 +684,7 @@ function zeigeFachFrage(){
     var btn=document.createElement('button');
     btn.className='opt-btn';
     btn.textContent=opt;
-    btn.addEventListener('click',function(){pruefeFachAntwort(opt,richtig,btn,alle);});
+    btn.addEventListener('click',function(){fqWaehle(btn,opt,richtig,alle);});
     optDiv.appendChild(btn);
   });
   document.getElementById('fq-feedback').style.display='none';
@@ -692,8 +692,23 @@ function zeigeFachFrage(){
   document.getElementById('fq-btns').innerHTML='';
 }
 
-function pruefeFachAntwort(gewaehlt,richtig,geklickt,alle){
-  var kor=gewaehlt===richtig;
+// Wie sicher bist du? – wie in der Vokabelübung: erst auswählen, dann prüfen.
+function fqWaehle(btn,opt,richtig,alle){
+  document.querySelectorAll('#fq-optionen .opt-btn').forEach(function(b){b.classList.remove('gew');});
+  btn.classList.add('gew');
+  var btns=document.getElementById('fq-btns');
+  btns.innerHTML='<div style="font-size:11px;color:#9A9188;text-align:center;margin:4px 0 6px">Wie sicher bist du dir?</div>'+
+    '<div style="display:flex;gap:8px"><button class="btn-primary" id="fq-sicher" style="flex:1">Sicher – prüfen</button>'+
+    '<button class="btn-ghost" id="fq-geraten" style="flex:1;margin:0">Geraten – prüfen</button></div>';
+  document.getElementById('fq-sicher').onclick=function(){pruefeFachAntwort(opt,richtig,btn,alle,true);};
+  document.getElementById('fq-geraten').onclick=function(){pruefeFachAntwort(opt,richtig,btn,alle,false);};
+}
+
+function pruefeFachAntwort(gewaehlt,richtig,geklickt,alle,sicher){
+  if(sicher===undefined) sicher=true;
+  var ok=gewaehlt===richtig, kor=ok&&sicher, geraten=ok&&!sicher, sicherFalsch=!ok&&sicher;
+  if(geraten) FQ_Geraten++;
+  if(sicherFalsch) FQ_SicherFalsch++;
   if(kor) FQ_Richtig++;
   document.getElementById('fq-score-live').textContent='✓ '+FQ_Richtig;
   document.querySelectorAll('#fq-optionen .opt-btn').forEach(function(b){
@@ -702,8 +717,9 @@ function pruefeFachAntwort(gewaehlt,richtig,geklickt,alle){
     else if(b===geklickt&&!kor) b.className='opt-btn fal';
   });
   var fb=document.getElementById('fq-feedback');
-  fb.className=kor?'fb-g':'fb-r';
-  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#5B7B6F':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
+  fb.className=geraten?'fb-o':kor?'fb-g':'fb-r';
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(geraten?'#8A7A30':kor?'#5B7B6F':'#C44030')+';margin-bottom:6px">'+
+    (geraten?'✓ Richtig – aber geraten.':sicherFalsch?'✗ Nicht ganz – obwohl du dir sicher warst.':kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
     '<div class="muster-lab">Erklärung</div>'+
     '<div class="muster">'+FQ_AktFrage.e+'</div>';
   fb.style.display='block';
@@ -725,7 +741,8 @@ function zeigeFachErgebnis(){
   var pct=Math.round((FQ_Richtig/g)*100);
   document.getElementById('fq-erg-zahl').textContent=FQ_Richtig+' / '+g;
   var note=pct>=90?'Ausgezeichnet! 🌟':pct>=70?'Sehr gut! 👏':pct>=50?'Gut — weiter üben! 💪':'Noch Luft nach oben! 🍀';
-  document.getElementById('fq-erg-sub').textContent=pct+'% richtig · '+note;
+  document.getElementById('fq-erg-sub').textContent=pct+'% richtig · '+note+
+    (FQ_Geraten?' · '+FQ_Geraten+'× richtig geraten':'')+(FQ_SicherFalsch?' · '+FQ_SicherFalsch+'× sicher, aber falsch':'');
   // Thema-Auswertung
   var thStats={};
   FQ_Fragen.forEach(function(q,i){
