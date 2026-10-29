@@ -26,17 +26,20 @@
   }
 
   // Ohne Migration 20261029_kompetenz_sicherheit_wiederholung.sql kennt die
-  // Tabelle gut_seit/gut_am noch nicht – dann ohne die beiden speichern.
+  // Tabelle die neuen Spalten noch nicht – dann ohne sie speichern.
+  var NEUE_SPALTEN = ['gut_seit', 'gut_am', 'geraten', 'sicher_falsch'];
   async function schreiben(c, daten, id) {
     var res = id ? await c.from('kompetenz').update(daten).eq('id', id) : await c.from('kompetenz').insert(daten);
-    if (res.error && /gut_seit|gut_am/.test(res.error.message || '')) {
-      delete daten.gut_seit; delete daten.gut_am;
+    if (res.error && /gut_seit|gut_am|geraten|sicher_falsch/.test(res.error.message || '')) {
+      NEUE_SPALTEN.forEach(function(k){ delete daten[k]; });
       res = id ? await c.from('kompetenz').update(daten).eq('id', id) : await c.from('kompetenz').insert(daten);
     }
     return res;
   }
 
-  // antworten: [{thema, korrekt}] – ein Eintrag pro beantworteter Frage
+  // antworten: [{thema, korrekt, geraten?, sicherFalsch?}] – ein Eintrag pro
+  // beantworteter Frage. geraten = richtig, aber „geraten“ angeklickt (zählt
+  // nicht als gewusst); sicherFalsch = „sicher“, aber falsch.
   async function speichern(antworten, elId) {
     if (!antworten || !antworten.length) return false;
     try {
@@ -51,7 +54,9 @@
 
       var runde = {}, ok = 0, schwach = [];
       antworten.forEach(function(a){
-        if (!runde[a.thema]) runde[a.thema] = {richtig:0, falsch:0};
+        if (!runde[a.thema]) runde[a.thema] = {richtig:0, falsch:0, geraten:0, sicherFalsch:0};
+        if (a.geraten) runde[a.thema].geraten++;
+        if (a.sicherFalsch) runde[a.thema].sicherFalsch++;
         if (a.korrekt) { runde[a.thema].richtig++; ok++; }
         else { runde[a.thema].falsch++; if (schwach.indexOf(a.thema) < 0) schwach.push(a.thema); }
       });
@@ -66,7 +71,8 @@
         // Wie im Lernquiz: gute Runden über mehrere Tage merken, damit ein
         // Thema erst „sitzt“, wenn es auch ein paar Tage später noch klappt.
         var alt = da[th] || {}, gut = lr === 'gut' || lr === 'sehrgut';
-        var tage = {gut_seit: gut ? (alt.gut_seit || heute()) : null, gut_am: gut ? heute() : null};
+        var tage = {gut_seit: gut ? (alt.gut_seit || heute()) : null, gut_am: gut ? heute() : null,
+                    geraten: (alt.geraten || 0) + runde[th].geraten, sicher_falsch: (alt.sicher_falsch || 0) + runde[th].sicherFalsch};
         if (da[th]) {
           await schreiben(c, Object.assign({richtig:alt.richtig+r, falsch:alt.falsch+f, durchlaeufe:alt.durchlaeufe+1, vorletzte_runde:alt.letzte_runde, letzte_runde:lr}, tage), alt.id);
         } else {
