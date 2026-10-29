@@ -155,6 +155,7 @@ table.hist.wrap td:first-child{width:36%}
 .answers button:hover:not(:disabled){border-color:var(--accent)}
 .answers button.right{border-color:var(--good);background:var(--good-soft)}
 .answers button.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.answers button.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .answers button:disabled{cursor:default}
 .explain{background:var(--accent-soft);border-radius:8px;padding:14px 16px}
 .progress-dots{display:flex;gap:4px}
@@ -1239,11 +1240,18 @@ function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
   return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.items.every(x=>x.q.type==='mc')?'richtig':'gewusst'}</h1>
   <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
+  ${(()=>{const g=QZ.items.filter(x=>x.geraten).length,sf=QZ.items.filter(x=>x.sicherFalsch).length;return g||sf?`<p class="small">${g?`<span style="color:var(--warn)">${g}× richtig geraten – kommt morgen wieder.</span> `:''}${sf?`<span style="color:var(--bad)">${sf}× sicher, aber falsch.</span>`:''}</p>`:'';})()}
   <p class="small muted" id="zpSpeicher"></p>
   <div class="row"><button class="btn primary" data-a="quiz" data-cat="${QZ.cat||''}" data-type="${QZ.kind}">Noch eine Runde</button><button class="btn" data-a="quizend">Fertig</button></div></div>`;}
  const q=it.q;let body='';
- if(q.type==='mc'){body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}return `<button data-a="ans" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
-  ${it.pick!=null?`<div class="explain"><strong>${it.res==='yes'?'Richtig!':'Leider falsch.'}</strong> ${it.res==='yes'?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
+ if(q.type==='mc'){
+  // Wie sicher bist du? Erst auswählen (sel), dann „Sicher“/„Geraten“ prüfen.
+  // Richtig geraten zählt als „Teilweise“ (kommt morgen wieder), sicher und falsch wird markiert.
+  const ok=it.pick!=null&&it.opts[it.pick]===q.a;
+  const titel=it.res==='yes'?'Richtig!':ok?'Richtig – aber geraten. Die Frage kommt morgen wieder.':it.sicherFalsch?'Leider falsch – obwohl du dir sicher warst.':'Leider falsch.';
+  body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}else if(k===it.sel)cls='sel';return `<button data-a="sel" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
+  ${it.pick==null&&it.sel!=null?`<div class="stack"><div class="small muted" style="text-align:center">Wie sicher bist du dir?</div><div class="row"><button class="btn primary" data-a="ans" data-s="1" style="flex:1">Sicher – prüfen</button><button class="btn" data-a="ans" data-s="0" style="flex:1">Geraten – prüfen</button></div></div>`:''}
+  ${it.pick!=null?`<div class="explain"><strong>${titel}</strong> ${ok?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
  else{body=it.shown?`<div class="model"><div class="eyebrow">${q.src==='katalog'?'Antwort laut Fragenkatalog':'Das sollte in deiner Antwort vorkommen'}</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
   ${it.res?`<button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:`<div class="stack"><div class="small muted">Wie gut war die Antwort?</div><div class="row"><button class="btn" data-a="self" data-r="yes" style="border-color:var(--good);color:var(--good)">Gewusst</button><button class="btn" data-a="self" data-r="part" style="border-color:var(--warn);color:var(--warn)">Teilweise</button><button class="btn" data-a="self" data-r="no" style="border-color:var(--bad);color:var(--bad)">Noch nicht</button></div></div>`}`
   :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
@@ -1349,12 +1357,15 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!
   case 'treset': if(T){stopTimer();T.remain=T.total;T.warned={};T.msg='';paintTimer();}break;
   case 'quiz': SIM=null;startQuiz(ds.cat,ds.type);break;
   case 'quizend': QZ=null;stopTimer();T=null;go('theorie');break;
-  case 'ans':{const it=QZ.items[QZ.i];if(it.pick!=null)break;it.pick=+ds.k;it.res=it.opts[it.pick]===it.q.a?'yes':'no';grade(it.q.id,it.res);render();break;}
+  case 'sel':{const it=QZ.items[QZ.i];if(it.pick!=null)break;it.sel=+ds.k;render();break;}
+  case 'ans':{const it=QZ.items[QZ.i];if(it.pick!=null||it.sel==null)break;it.pick=it.sel;
+   const ok=it.opts[it.pick]===it.q.a,sicher=ds.s==='1';
+   it.geraten=ok&&!sicher;it.sicherFalsch=!ok&&sicher;it.res=ok?(sicher?'yes':'part'):'no';grade(it.q.id,it.res);render();break;}
   case 'show': QZ.items[QZ.i].shown=true;render();break;
   case 'self':{const it=QZ.items[QZ.i];it.res=ds.r;grade(it.q.id,ds.r);render();break;}
   case 'next': QZ.i++;if(QZ.i>=QZ.items.length&&QZ.kind==='sim')stopTimer();render();window.scrollTo(0,0);
    // Fertige Runde im Verlauf des Lehrlings (Lernquiz) speichern
-   if(QZ.i>=QZ.items.length&&!QZ.gespeichert&&window.ghdQuizSpeichernAntworten){QZ.gespeichert=true;ghdQuizSpeichernAntworten(QZ.items.map(x=>({thema:'Zwischenprüfung',korrekt:x.res==='yes'})),'zpSpeicher');}
+   if(QZ.i>=QZ.items.length&&!QZ.gespeichert&&window.ghdQuizSpeichernAntworten){QZ.gespeichert=true;ghdQuizSpeichernAntworten(QZ.items.map(x=>({thema:'Zwischenprüfung',korrekt:x.res==='yes',geraten:!!x.geraten,sicherFalsch:!!x.sicherFalsch})),'zpSpeicher');}
    break;
   case 'case':{V.caseAns=V.caseAns||{};const st=V.caseAns[ds.c]=V.caseAns[ds.c]||{};st[ds.q]=ds.o;const c=CASES.find(x=>x.id===ds.c);if(c.q.every((qq,i)=>st[i]!=null)){D.cases[c.id]=c.q.every((qq,i)=>st[i]===qq[1]);save();}const y=window.scrollY;render();window.scrollTo(0,y);break;}
   case 'nsub': V.nsub=ds.s;render();break;

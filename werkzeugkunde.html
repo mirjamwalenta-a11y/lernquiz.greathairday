@@ -96,6 +96,13 @@ dd.safe{color:var(--warn)}
 .q button:disabled{cursor:default}
 .q button.right{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
 .q button.wrong{border-color:#C44030;background:#FDECEA;color:#C44030}
+.q button.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.q .sicher-frage{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 6px}
+.q .sicher-knoepfe{display:flex;gap:8px}
+.q button.pruef{flex:1;text-align:center;font-weight:600}
+.q button.pruef.s{background:var(--accent);border-color:var(--accent);color:#fff}
+.q .why.geraten{color:#8A6D12}
+.q .why.sicherfalsch{color:#C44030}
 .q .why{font-size:13px;color:var(--muted)}
 .score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .score .num{font:600 1.5rem var(--mono);color:var(--accent)}
@@ -364,21 +371,41 @@ const QUIZ=[
   ['Womit entwirrst du nasses, langes Haar?',['Stielkamm','Grobzahnkamm, von den Spitzen zum Ansatz','Skelettbürste','Rundbürste'],1,'Nasses Haar ist empfindlich, der Grobzahnkamm schont es.'],
   ['Warum sind Handschuhe bei Farbe Pflicht?',['Damit die Farbe besser hält','Zum Schutz vor Hautekzemen und Allergien','Wegen der Optik','Sind sie nicht'],1,'Friseurinnen haben ein hohes Risiko für Hauterkrankungen.']
 ];
+// Antwort zuerst auswählen, dann „Sicher – prüfen“ / „Geraten – prüfen“.
+// Richtig geraten zählt nicht als gewusst, sicher und trotzdem falsch wird
+// markiert. Die Antworten werden bei jedem Durchgang neu gemischt.
 let answers={};
+function mischen(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function renderQuiz(){
   const box=$('#quizBox');box.innerHTML='';
-  QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';d.innerHTML='<h3>'+(i+1)+'. '+q[0]+'</h3><div class="opts"></div><p class="why" hidden></p>';
-    const opts=d.querySelector('.opts'),why=d.querySelector('.why');
-    q[1].forEach((o,j)=>{const b=document.createElement('button');b.textContent=o;b.onclick=()=>{answers[i]=j;opts.querySelectorAll('button').forEach((x,m)=>{x.disabled=true;if(m===q[2])x.classList.add('right');});if(j!==q[2])b.classList.add('wrong');why.hidden=false;why.textContent=(j===q[2]?'Richtig. ':'Nicht ganz. ')+q[3];score();};opts.appendChild(b);});
+  QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
+    d.innerHTML='<h3>'+(i+1)+'. '+q[0]+'</h3><div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef g">Geraten – prüfen</button></div></div><p class="why" hidden></p>';
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why'),sz=d.querySelector('.sicher');let wahl=null;
+    mischen(q[1].map((_,j)=>j)).forEach(j=>{const b=document.createElement('button');b.textContent=q[1][j];b.dataset.j=j;
+      b.onclick=()=>{wahl=j;opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sz.hidden=false;};
+      opts.appendChild(b);});
+    sz.querySelectorAll('.pruef').forEach(p=>p.onclick=()=>{
+      if(wahl===null)return;
+      const sicher=p.classList.contains('s'),ok=wahl===q[2];
+      answers[i]={j:wahl,sicher};sz.hidden=true;
+      opts.querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.remove('sel');if(+x.dataset.j===q[2])x.classList.add('right');else if(+x.dataset.j===wahl)x.classList.add('wrong');});
+      why.hidden=false;
+      why.textContent=(ok&&!sicher?'Richtig – aber geraten. Richtig geraten zählt noch nicht als gewusst. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+q[3];
+      if(ok&&!sicher)why.classList.add('geraten');if(!ok&&sicher)why.classList.add('sicherfalsch');
+      score();});
     box.appendChild(d);});
   score();
 }
-function score(){const n=Object.keys(answers).length,r=Object.entries(answers).filter(([i,a])=>QUIZ[i][2]===a).length;
+function score(){const e=Object.entries(answers),n=e.length;
+  const r=e.filter(([i,a])=>QUIZ[i][2]===a.j&&a.sicher).length;
+  const ger=e.filter(([i,a])=>QUIZ[i][2]===a.j&&!a.sicher).length,sf=e.filter(([i,a])=>QUIZ[i][2]!==a.j&&a.sicher).length;
   $('#scoreOut').textContent=r+' / '+QUIZ.length;
-  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du kennst dein Werkzeug.':r>=QUIZ.length*.5?'Gute Basis. Schau dir Pflege & Hygiene noch einmal an.':'Geh die Werkzeuge in Teil 1 durch und versuch es noch einmal.');
+  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du kennst dein Werkzeug.':r>=QUIZ.length*.5?'Gute Basis. Schau dir Pflege & Hygiene noch einmal an.':'Geh die Werkzeuge in Teil 1 durch und versuch es noch einmal.')+
+    (ger?' '+ger+'× richtig geraten.':'')+(sf?' '+sf+'× sicher, aber falsch – schau dir diese Fragen nochmal an.':'');
   // Fertige Runde einmal im Verlauf des Lehrlings speichern
   if(n===0){quizGespeichert=false;$('#scoreSpeicher').textContent='';}
-  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichern){quizGespeichert=true;ghdQuizSpeichern('Werkzeugkunde',r,n,'scoreSpeicher');}
+  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichernAntworten){quizGespeichert=true;
+    ghdQuizSpeichernAntworten(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Werkzeugkunde',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
 }
 let quizGespeichert=false;
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
