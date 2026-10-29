@@ -1801,9 +1801,106 @@ function updateVerwListe(){
     var d=document.createElement('div');
     d.className='karte';
     d.style.cssText='border-left:3px solid '+(q.t==='mc'?'#8FAF7A':'#C4B86A')+';cursor:pointer;margin-bottom:8px';
-    d.innerHTML='<div style="font-size:10px;color:#9A9188;font-weight:700;margin-bottom:3px">'+(q.t==='mc'?'MC':'OFFEN')+' · #'+(i+1)+' · '+q.th+'</div><div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+q.f.substring(0,80)+(q.f.length>80?'…':'')+'</div>';
+    d.innerHTML='<div style="font-size:10px;color:#9A9188;font-weight:700;margin-bottom:3px">'+(q.t==='mc'?'MC':'OFFEN')+' · #'+(i+1)+' · '+q.th+(q.zf&&q.zf.length?' · <span style="color:#3D6B50">+'+q.zf.length+' Zusatzfrage'+(q.zf.length>1?'n':'')+'</span>':'')+'</div><div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+q.f.substring(0,80)+(q.f.length>80?'…':'')+'</div>';
     d.addEventListener('click',(function(idx){return function(){editiere(idx);};})(i));
     el.appendChild(d);
+  });
+}
+
+// ── ZUSATZFRAGEN IM EDITOR ───────────────────────────────────────────────────
+// EZF = Arbeitskopie der Zusatzfragen der gerade bearbeiteten Frage. Erst
+// beim Speichern wird sie in die Frage übernommen.
+var EZF=[];
+
+function escHtml(t){
+  return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Schlüsselbegriffe offener Fragen: eine Zeile = ein Punkt, Komma = gleichwertige
+// Varianten. Wird zu [{begriffe:[…],teilwort:true}] (siehe bewertungsGruppen).
+function mbZuText(mb){
+  return (mb||[]).map(function(g){return typeof g==='string'?g:(g.begriffe||[]).join(', ');}).join('\n');
+}
+function textZuMb(text){
+  return text.split('\n').map(function(z){
+    return z.split(',').map(function(b){return b.trim().toLowerCase();}).filter(Boolean);
+  }).filter(function(b){return b.length;}).map(function(b){return {begriffe:b,teilwort:true};});
+}
+
+function sammleZusatz(){
+  EZF.forEach(function(z,i){
+    var f=document.getElementById('zf-f'+i); if(f) z.f=f.value.trim();
+    if(z.t==='mc'){
+      z.o.forEach(function(_,k){var el=document.getElementById('zf-o'+i+'-'+k);if(el)z.o[k]=el.value.trim();});
+      var e=document.getElementById('zf-e'+i); if(e) z.e=e.value.trim();
+    } else {
+      var ml=document.getElementById('zf-ml'+i); if(ml) z.ml=ml.value.trim();
+      var mb=document.getElementById('zf-mb'+i); if(mb) z.mb=textZuMb(mb.value);
+    }
+  });
+}
+
+function pruefeZusatz(){
+  for(var i=0;i<EZF.length;i++){
+    var z=EZF[i],n='Zusatzfrage '+(i+1)+': ';
+    if(!z.f) return n+'Bitte eine Frage eingeben.';
+    if(z.t==='mc'&&z.o.some(function(o){return !o;})) return n+'Bitte alle vier Antworten ausfüllen.';
+    if(z.t==='of'&&!z.mb.length) return n+'Bitte mindestens einen Schlüsselbegriff eingeben.';
+    if(z.t==='of'&&!z.ml) return n+'Bitte eine Musterlösung eingeben.';
+  }
+  return '';
+}
+
+function renderZusatzEditor(){
+  var box=document.getElementById('e-zf');
+  if(!box) return;
+  var html='';
+  EZF.forEach(function(z,i){
+    html+='<div class="karte" style="border-left:3px solid #5B7B6F;margin-bottom:10px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+        '<div style="font-size:10px;font-weight:700;color:#3D6B50">ZUSATZFRAGE '+(i+1)+' · '+(z.t==='mc'?'MC':'OFFEN')+'</div>'+
+        '<button data-zf-weg="'+i+'" style="border:none;background:none;color:#C44030;font-size:12px;cursor:pointer;font-family:system-ui">Entfernen</button>'+
+      '</div>'+
+      '<textarea id="zf-f'+i+'" rows="2" placeholder="Frage, z. B. „Warum …?“ oder ein kurzer Praxisfall">'+escHtml(z.f)+'</textarea>';
+    if(z.t==='mc'){
+      z.o.forEach(function(opt,k){
+        var an=z.r===k;
+        html+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">'+
+          '<button data-zf-r="'+i+'-'+k+'" style="width:28px;height:28px;flex:none;border-radius:50%;border:2px solid '+(an?'#6B8F71':'#DDD8D0')+';background:'+(an?'#6B8F71':'white')+';color:'+(an?'white':'#ccc')+';cursor:pointer;font-weight:700;font-family:system-ui">✓</button>'+
+          '<input id="zf-o'+i+'-'+k+'" value="'+escHtml(opt)+'" placeholder="Antwort '+(k+1)+'" style="flex:1;margin:0"></div>';
+      });
+      html+='<div class="lab" style="margin-top:8px">Erklärung</div><textarea id="zf-e'+i+'" rows="2">'+escHtml(z.e)+'</textarea>';
+    } else {
+      html+='<div class="lab" style="margin-top:8px">Musterlösung</div><textarea id="zf-ml'+i+'" rows="2">'+escHtml(z.ml)+'</textarea>'+
+        '<div class="lab" style="margin-top:8px">Schlüsselbegriffe</div>'+
+        '<div style="font-size:11px;color:#9A9188;margin-bottom:4px">Eine Zeile pro Punkt, der in der Antwort vorkommen soll. Mit Komma gleichwertige Wörter oder Wortanfänge (z. B. „reiz, brenn, rot“).</div>'+
+        '<textarea id="zf-mb'+i+'" rows="3">'+escHtml(mbZuText(z.mb))+'</textarea>';
+    }
+    html+='</div>';
+  });
+  if(EZF.length<3){
+    html+='<div style="display:flex;gap:8px">'+
+      '<button class="btn btn-h" data-zf-neu="mc" style="flex:1;margin:0;font-size:12px;padding:10px">+ MC-Zusatzfrage</button>'+
+      '<button class="btn btn-h" data-zf-neu="of" style="flex:1;margin:0;font-size:12px;padding:10px">+ Offene Zusatzfrage</button></div>';
+  }
+  box.innerHTML=html;
+  box.querySelectorAll('[data-zf-r]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=b.dataset.zfR.split('-');sammleZusatz();EZF[+t[0]].r=+t[1];renderZusatzEditor();
+    });
+  });
+  box.querySelectorAll('[data-zf-weg]').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(!confirm('Zusatzfrage entfernen?'))return;
+      sammleZusatz();EZF.splice(+b.dataset.zfWeg,1);renderZusatzEditor();
+    });
+  });
+  box.querySelectorAll('[data-zf-neu]').forEach(function(b){
+    b.addEventListener('click',function(){
+      sammleZusatz();
+      EZF.push(b.dataset.zfNeu==='mc'?{t:'mc',f:'',o:['','','',''],r:0,e:''}:{t:'of',f:'',mb:[],ml:''});
+      renderZusatzEditor();
+    });
   });
 }
 
@@ -1826,8 +1923,13 @@ function editiere(idx){
     var mbAnzeige=Array.isArray(q.mb)&&q.mb.length&&typeof q.mb[0]==='object'?'[Neue Struktur – im Code bearbeiten]':((q.mb||[]).join(', '));
     html+='<div><div class="lab">Schlüsselbegriffe</div><input id="e-mb" value="'+mbAnzeige+'" style="margin:0"></div>';
   }
+  html+='<div style="margin-top:22px;padding-top:14px;border-top:1px solid #DDD8D0"><div class="lab">Zusatzfragen (Verständnis-Check)</div>'+
+    '<div style="font-size:12px;color:#6B6560;line-height:1.45;margin-bottom:10px">Kommen direkt nach dieser Frage, wenn sie richtig beantwortet wurde. Gut geeignet: „Warum?“-Fragen und kurze Praxisfälle.</div>'+
+    '<div id="e-zf"></div></div>';
   html+='<div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-g" id="e-save" style="flex:1">Speichern</button><button class="btn btn-r" id="e-del" style="flex:1">Löschen</button></div>';
   document.getElementById('ed-inhalt').innerHTML=html;
+  EZF=JSON.parse(JSON.stringify(q.zf||[]));
+  renderZusatzEditor();
   if(q.t==='mc'){
     [0,1,2,3].forEach(function(i){
       var b=document.getElementById('er'+i);
@@ -1844,6 +1946,10 @@ function editiere(idx){
     q2.f=document.getElementById('e-f').value;
     if(q2.t==='mc'){[0,1,2,3].forEach(function(i){var el2=document.getElementById('eo'+i);if(el2)q2.o[i]=el2.value;});var ee=document.getElementById('e-e');if(ee)q2.e=ee.value;}
     else{var ml=document.getElementById('e-ml');if(ml)q2.ml=ml.value;var mb=document.getElementById('e-mb');if(mb&&typeof q2.mb[0]==='string')q2.mb=mb.value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
+    sammleZusatz();
+    var zfFehler=pruefeZusatz();
+    if(zfFehler){alert(zfFehler);return;}
+    if(EZF.length) q2.zf=EZF; else delete q2.zf;
     // In Supabase speichern - async, dann navigieren
     var btn=document.getElementById('e-save');
     if(btn){btn.textContent='Wird gespeichert…';btn.disabled=true;btn.style.background='#9A9188';}
