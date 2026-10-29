@@ -1046,6 +1046,39 @@ function wahlLj(btn, lj) {
   btn.classList.add('ak');
 }
 
+// ── QUIZ-HILFEN: Antworten mischen, Zusatzfragen ─────────────────
+// Antworten werden bei jeder Anzeige gemischt (sonst merkt man sich „ist eh B“).
+// Fragen mit zf bekommen nach einer richtigen Antwort Zusatzfragen, die prüfen,
+// ob man es verstanden hat oder nur auswendig weiß.
+function ltMischen(a) {
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+// Buttons in gemischter Reihenfolge; fn bekommt den Original-Index der Antwort
+function ltOptionen(q, fn) {
+  return ltMischen(q.o.map(function(_, i){ return i; })).map(function(i){
+    return '<button class="opt-btn" data-o="'+i+'" onclick="'+fn+'('+i+')">'+q.o[i]+'</button>';
+  }).join('');
+}
+function ltMarkieren(sel, q, i) {
+  document.querySelectorAll(sel + ' .opt-btn').forEach(function(b){
+    var j = +b.dataset.o;
+    b.disabled = true;
+    if (j === q.r) b.classList.add('ric');
+    else if (j === i) b.classList.add('fal');
+  });
+}
+function ltZusatzKopf(q) {
+  return q.haupt ? '<div style="font-size:11px;color:#2E7D5E;font-weight:700;margin-bottom:6px">🔎 Verstanden? Zusatzfrage zu: „'+q.haupt.f+'“</div>' : '';
+}
+// Nach einer richtigen Antwort die Zusatzfragen direkt dahinter einreihen
+function ltZusatz(st, q, ok) {
+  if (!ok || q.haupt || !q.zf || !q.zf.length) return '';
+  var zs = q.zf.map(function(z){ return Object.assign({}, z, {haupt:q}); });
+  st.quiz.splice.apply(st.quiz, [st.qi + 1, 0].concat(zs));
+  return '<div style="font-size:12px;color:#2E7D5E;margin-top:8px">➜ Jetzt kommt eine Zusatzfrage: Zeig, dass du auch das Warum verstanden hast.</div>';
+}
+
 // ── QUIZ ────────────────────────────────────────────────────────
 // Antworten sammeln und je 10 Fragen als Durchlauf im Verlauf speichern
 // (Rest beim Themenwechsel bzw. beim nächsten Öffnen des Quiz).
@@ -1093,8 +1126,8 @@ function quizNeu() {
 
 function zeigeFrage(f) {
   var html = '<p style="font-weight:600;color:#1C1C1A;line-height:1.5;font-size:15px;margin-bottom:14px">'+f.f+'</p>';
-  f.o.forEach(function(opt, i){
-    html += '<button class="opt-btn" id="opt-'+i+'" onclick="quizPruefe(this,'+i+','+f.r+',\''+f.e.replace(/'/g,"\\'")+'\')">'+(String.fromCharCode(65+i))+') '+opt+'</button>';
+  ltMischen(f.o.map(function(_, i){ return i; })).forEach(function(i, pos){
+    html += '<button class="opt-btn" id="opt-'+i+'" onclick="quizPruefe(this,'+i+','+f.r+',\''+f.e.replace(/'/g,"\\'")+'\')">'+(String.fromCharCode(65+pos))+') '+f.o[i]+'</button>';
   });
   document.getElementById('quiz-bereich').innerHTML = html;
 }
@@ -2790,15 +2823,15 @@ var PMS_QUIZ = [
   {f:'Welche drei Grundpfeiler hat eine Balayage?', o:['Abteilungen, Contouring, Übergänge','Waschen, Färben, Föhnen','Folie, Haube, Pinsel','Ansatz, Länge, Spitze'], r:0, e:'Abteilungen, Contouring und Übergänge entscheiden über das Ergebnis.'},
   {f:'Wie dick sind Passées bei einer Balayage?', o:['0,1–0,2 cm','0,3–2 cm','3–5 cm','Das ganze Deckhaar'], r:1, e:'Passées sind 0,3 bis 2 cm dick. Für weiche Übergänge keine dicken Passées.'},
   {f:'Was gilt für die Anzahl der Passées?', o:['Je mehr Passées, desto größer der Effekt','Je weniger Passées, desto heller','Die Anzahl ist egal','Maximal drei Passées'], r:0, e:'Mehr Passées bedeuten mehr Helligkeit und einen größeren Effekt.'},
-  {f:'Für wen eignet sich die Toupiertechnik besonders?', o:['Für Balayage-Einsteiger und feines Haar','Nur für sehr dickes Haar','Nur für kurze Haare','Nur für Lowlights'], r:0, e:'Die Toupiertechnik gibt weiche, hauchzarte Übergänge und ist ideal für den Einstieg. Nur leicht toupieren!'},
+  {f:'Für wen eignet sich die Toupiertechnik besonders?', o:['Für Balayage-Einsteiger und feines Haar','Nur für sehr dickes Haar','Nur für kurze Haare','Nur für Lowlights'], r:0, e:'Die Toupiertechnik gibt weiche, hauchzarte Übergänge und ist ideal für den Einstieg. Nur leicht toupieren!', zf:[{f:"Wie fest toupierst du bei der Toupiertechnik?",o:["Nur leicht – für weiche, hauchzarte Übergänge","Kräftig, wie bei einer Hochsteckfrisur","Gar nicht, das Haar bleibt ganz glatt","So fest, dass die Strähne von allein steht"],r:0,e:"Nur leicht antoupieren. Zu festes Toupieren gibt harte Übergänge."}]},
   {f:'Worauf achtest du bei den Übergängen?', o:['Viel Produkt am Ansatz durchdrücken','Ansatz einschattieren, keine Klumpen oder Tropfen','Mit dem Kamm hart abgrenzen','Nur mit dicken Passées arbeiten'], r:1, e:'Ansatzfarben einschattieren, Produkte ineinanderarbeiten, keine Klumpen oder Tropfen, sonst entstehen Flecken und Balken.'},
-  {f:'Wohin kommt bei der Balayage mehr Produkt?', o:['An den Ansatz','In Längen und Spitzen','Gleichmäßig überall','Nur an die Übergänge'], r:1, e:'An den Schattierungen weniger Produkt, in Längen und Spitzen mehr. Mehr Helligkeit braucht mehr Produkt.'},
+  {f:'Wohin kommt bei der Balayage mehr Produkt?', o:['An den Ansatz','In Längen und Spitzen','Gleichmäßig überall','Nur an die Übergänge'], r:1, e:'An den Schattierungen weniger Produkt, in Längen und Spitzen mehr. Mehr Helligkeit braucht mehr Produkt.', zf:[{f:"Ein Gast möchte in den Spitzen deutlich heller werden. Was machst du dort?",o:["Mehr Produkt in Längen und Spitzen auftragen","Mehr Produkt direkt am Ansatz auftragen","Überall gleich wenig Produkt nehmen","Die Spitzen ganz ohne Produkt lassen"],r:0,e:"Mehr Helligkeit braucht mehr Produkt: an den Schattierungen weniger, in Längen und Spitzen mehr."}]},
   {f:'Was passiert, wenn Zwischenfolien geknickt werden?', o:['Nichts','Es können Balken und Flecken entstehen','Die Farbe wird gleichmäßiger','Die Einwirkzeit halbiert sich'], r:1, e:'Zwischenfolien nicht knicken. Zum Abdecken eine Folie darüberlegen oder zwei Folien aufeinander.'},
   {f:'Die Ausgangsfarbe hat starke Farbbalken. Was empfiehlt sich?', o:['Direkt Balayage setzen','Zuerst Farbabzug und eine einheitliche Grundfärbung, dann die Technik','Nur die Spitzen aufhellen','Mit Lowlights überdecken'], r:1, e:'Perfekte Ergebnisse gibt es auf einheitlichen Grundfarben. Bei Balken zuerst ein einheitliches Farbbild schaffen.'},
   {f:'Wofür ist die Rechteck-Form (T) besonders gut?', o:['Für Pony','Nur für Kurzhaar','Für den Nacken','Für Locken'], r:0, e:'Das Rechteck eignet sich für mittellanges und langes Haar und ist ideal mit Pony.'},
   {f:'Welche Form bringt schnelle Farbakzente am Oberkopf?', o:['Kreis','Stern','Zickzack','Dachziegel'], r:0, e:'Der Kreis am Oberkopf gibt schnelle Farbakzente.'},
   {f:'Was ist beim Contouring wichtig?', o:['Abteilungen schräg zum Gesicht, Helligkeit zum Gesicht hin','Abteilungen waagrecht im Nacken','Nur dunkle Farben am Gesicht','Nicht bis zur Kontur arbeiten'], r:0, e:'Schräg zum Gesicht abteilen, bis an die Kontur arbeiten, nach unten mehr Produkt.'},
-  {f:'Ein Gast wünscht sich einen natürlichen, sonnengeküssten Look mit weichem Auswachsen.', o:['Foliensträhnen','Babylights','Lowlights','Ombré'], r:1, e:'Babylights sind hauchfein, mit wenig Kontrast, und wachsen sehr weich heraus.'},
+  {f:'Ein Gast wünscht sich einen natürlichen, sonnengeküssten Look mit weichem Auswachsen.', o:['Foliensträhnen','Babylights','Lowlights','Ombré'], r:1, e:'Babylights sind hauchfein, mit wenig Kontrast, und wachsen sehr weich heraus.', zf:[{f:"Warum wachsen Babylights so weich heraus?",o:["Sie sind hauchfein und haben wenig Kontrast","Sie werden immer nur in die Spitzen gesetzt","Sie werden mit besonders starkem Oxidant gemacht","Sie waschen sich nach zwei Wochen wieder aus"],r:0,e:"Feine Strähnchen mit wenig Kontrast zur Grundfarbe – beim Nachwachsen fällt kein harter Ansatz auf."}]},
   {f:'Ein Gast hat sehr viel Blond, das Haar wirkt flach. Was bringt Tiefe hinein?', o:['Mehr Babylights','Lowlights','Face Framing','Eine Blondierung'], r:1, e:'Lowlights sind dunklere Strähnen. Sie geben Tiefe und Dimension.'},
   {f:'Was ist der Unterschied zwischen Weaving und Slicing?', o:['Weaving webt einzelne Strähnchen aus, Slicing nimmt eine ganze dünne Scheibe','Weaving ist ohne Folie, Slicing mit Folie','Slicing ist nur für Lowlights','Es gibt keinen Unterschied'], r:0, e:'Weaving wirkt feiner und natürlicher, Slicing flächiger und kräftiger.'},
   {f:'Technik vom Scheitel oder unterlegt: Was bedeutet „unterlegt“?', o:['Die Helligkeit beginnt erst weiter unten, der Ansatz bleibt dunkel','Die Folie liegt unter dem Haar','Es wird nur der Nacken gemacht','Das Produkt kommt auf die Kopfhaut'], r:0, e:'Vom Scheitel beginnt die Helligkeit am Ansatz, unterlegt erst weiter unten.'}
@@ -2951,7 +2984,7 @@ function pmsTech(i) { PMS.tech = i; pmsTechnik(); }
 
 // ── Quiz (10 zufällige Fragen) ──
 function pmsQuizNeu() {
-  PMS.quiz = PMS_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
+  PMS.quiz = ltMischen(PMS_QUIZ.slice()).slice(0, 10);
   PMS.qi = 0; PMS.richtig = 0; PMS.beantwortet = false; PMS.gespeichert = false;
 }
 
@@ -2966,10 +2999,10 @@ function pmsQuiz() {
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmsQuizNeu();pmsQuiz()">Nochmal</button></div></div>';
     pmsSetze(html); ltQuizEnde(PMS, 'Balayage & Strähnen', 'pms-speicher'); return;
   }
-  var q = PMS_QUIZ[PMS.quiz[PMS.qi]];
-  html = '<div class="card"><div class="label">Frage '+(PMS.qi+1)+' von '+n+' · '+PMS.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
-    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmsAntwort('+i+')">'+o+'</button>'; }).join('') +
+  var q = PMS.quiz[PMS.qi];
+  html = '<div class="card"><div class="label">Frage '+(PMS.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMS.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    ltOptionen(q, 'pmsAntwort') +
     '<div id="pms-fb"></div></div>';
   pmsSetze(html);
 }
@@ -2977,14 +3010,11 @@ function pmsQuiz() {
 function pmsAntwort(i) {
   if (PMS.beantwortet) return;
   PMS.beantwortet = true;
-  var q = PMS_QUIZ[PMS.quiz[PMS.qi]], ok = i === q.r;
+  var q = PMS.quiz[PMS.qi], ok = i === q.r;
   if (ok) PMS.richtig++;
-  document.querySelectorAll('#pms-inhalt .opt-btn').forEach(function(b, j){
-    b.disabled = true;
-    if (j === q.r) b.classList.add('ric');
-    else if (j === i) b.classList.add('fal');
-  });
-  document.getElementById('pms-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+  ltMarkieren('#pms-inhalt', q, i);
+  var zusatz = ltZusatz(PMS, q, ok);
+  document.getElementById('pms-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="pmsWeiter()">Weiter →</button></div>';
 }
 
@@ -3097,20 +3127,20 @@ var PMC_WUENSCHE = [
 var PMC_PROD3 = {ox:'Oxidative Haarfarbe', int:'Intensivtönung', sauer:'Saure Tönung'};
 
 var PMC_QUIZ = [
-  {f:'Welchen Untergrund hat Naturton 6 (Dunkelblond)?', o:['Gelb','Orange','Rot','Violett'], r:1, e:'Tonhöhe 6 hat einen orangen Untergrund. Die Gegenfarbe ist Blau.'},
+  {f:'Welchen Untergrund hat Naturton 6 (Dunkelblond)?', o:['Gelb','Orange','Rot','Violett'], r:1, e:'Tonhöhe 6 hat einen orangen Untergrund. Die Gegenfarbe ist Blau.', zf:[{f:"Du hellst Naturton 6 auf und willst ein kühles Ergebnis. Welcher Reflex gehört in die Rezeptur?",o:["Asch (Blau)","Gold (Gelb)","Kupfer (Orange)","Rouge (Rot)"],r:0,e:"Der Untergrund von Tonhöhe 6 ist Orange, die Gegenfarbe Blau – also Asch."}]},
   {f:'Welche Gegenfarbe neutralisiert einen gelben Untergrund (Tonhöhe 8–10)?', o:['Grün','Blau','Violett','Rot'], r:2, e:'Gelb und Violett liegen sich im Farbkreis gegenüber.'},
   {f:'Welche Reflexbezeichnung gehört zu Blau?', o:['Gold','Kupfer','Asch','Irisé'], r:2, e:'Blau = Asch, Violett = Irisé, Gelb = Gold, Orange = Kupfer, Rot = Rouge, Grün = Verde/Matt.'},
   {f:'Was ergibt Rot + Grün?', o:['Orange','Neutral','Violett','Gelb'], r:1, e:'Gegenfarben im Farbkreis neutralisieren sich.'},
   {f:'Warum sieht ein Blond zuhause bläulich aus, im Salon aber nicht?', o:['Die Farbe ist ausgewaschen','Das Licht zuhause ist kühler und verstärkt blaue Pigmente','Das Shampoo ist schuld','Das Auge täuscht sich immer'], r:1, e:'Kühles Licht mit viel Blauanteil macht blaue Pigmente sichtbarer, warmes Licht nicht.'},
   {f:'Wie wirken dunkle Haarfarben?', o:['Leichter und voluminöser','Drückender, sie können Volumen reduzieren','Immer jünger','Gar nicht anders als helle'], r:1, e:'Helle Farben wirken leichter und voluminöser, dunkle drückender.'},
-  {f:'Wie lang darf der Naturansatz idealerweise höchstens sein?', o:['1 cm','3 cm','6 cm','Egal'], r:1, e:'Ideal sind höchstens 3 cm. Ist er länger, wie bei einer Erstcoloration arbeiten.'},
+  {f:'Wie lang darf der Naturansatz idealerweise höchstens sein?', o:['1 cm','3 cm','6 cm','Egal'], r:1, e:'Ideal sind höchstens 3 cm. Ist er länger, wie bei einer Erstcoloration arbeiten.', zf:[{f:"Der Naturansatz ist 6 cm lang. Wie arbeitest du?",o:["Wie bei einer Erstcoloration","Wie bei einer normalen Ansatzfärbung","Nur die ersten 3 cm färben, den Rest nicht","Zuerst die Spitzen, den Ansatz gar nicht"],r:0,e:"Ist der Ansatz länger als 3 cm, arbeitest du wie bei einer Erstcoloration."}]},
   {f:'Kann eine Haarfarbe bereits gefärbtes Haar aufhellen?', o:['Ja, mit 12 %','Nein, Haarfarbe hellt Haarfarbe nicht auf','Ja, mit Hellerfärber','Ja, mit längerer Einwirkzeit'], r:1, e:'Künstliche Pigmente hellt nur Blondierung auf. Mit Haarfarbe wird gefärbtes Haar nur dunkler.'},
   {f:'Wo findest du oft den höchsten Weißanteil?', o:['Im Nacken','In der Kontur','Am Oberkopf','In den Spitzen'], r:1, e:'In der Kontur ist der Weißanteil oft am höchsten. Dann unterschiedliche Rezepturen verwenden.'},
   {f:'Welche Regel gilt für Ansatz und Längen?', o:['Ansatz immer heller als die Längen','Ansätze niemals heller als Längen und Spitzen','Beides immer gleich','Die Längen immer dunkler färben'], r:1, e:'Ansätze dürfen nie heller werden als Längen und Spitzen.'},
   {f:'Welches Produkt bringt 100 % Weißhaarabdeckung?', o:['Saure Tönung','Intensivtönung','Oxidative Haarfarbe','Pflegespülung'], r:2, e:'Volle Weißhaarabdeckung schafft nur oxidative Haarfarbe.'},
   {f:'Worauf darf ein Hellerfärber angewendet werden?', o:['Auf blondiertem Haar','Nur auf Naturhaar','Auf gefärbten Längen','Zum Mattieren nach Blondierung'], r:1, e:'Hellerfärber nur auf Naturhaar, sonst drohen starke Schäden. Nicht zum Mattieren.'},
   {f:'Was gilt für Blondierungen ohne Quellung?', o:['Ideal auf der Kopfhaut','Nie auf der Kopfhaut, gut für Strähnentechniken','Nur für Männer','Nur mit 3 %'], r:1, e:'Die Quellung schützt die Kopfhaut bei der Anwendung am Ansatz. Ohne Quellung nur für Strähnen.'},
-  {f:'Was braucht Haar nach einer alkalischen Farbbehandlung?', o:['Einen sauren Abschluss','Noch mehr Alkali','Eine Dauerwelle','Nichts'], r:0, e:'Mit Alkali behandeltes Haar braucht immer einen sauren Abschluss.'},
+  {f:'Was braucht Haar nach einer alkalischen Farbbehandlung?', o:['Einen sauren Abschluss','Noch mehr Alkali','Eine Dauerwelle','Nichts'], r:0, e:'Mit Alkali behandeltes Haar braucht immer einen sauren Abschluss.', zf:[{f:"Warum braucht Haar nach einer alkalischen Farbe einen sauren Abschluss?",o:["Er bringt den pH zurück, die Schuppenschicht schließt sich","Er hellt die Farbe danach noch etwas nach","Er öffnet die Schuppenschicht für die Pflege","Er ersetzt das gründliche Ausspülen der Farbe"],r:0,e:"Alkali lässt das Haar quellen. Der saure Abschluss stellt den leicht sauren pH wieder her und schließt die Schuppenschicht."}]},
   {f:'Warum ist eine Tönung reflexreicher als eine Haarfarbe?', o:['Sie hat mehr Naturton','Sie hat weniger Naturton und mehr Reflexpigmente','Sie ist stärker alkalisch','Sie hat mehr Oxidant'], r:1, e:'Tönungen bringen wenig Naturton und viel Reflex, Haarfarben mehr Grundton für Ausgleich und Weißabdeckung.'}
 ];
 
@@ -3318,7 +3348,7 @@ function pmcWaehle(k) { if (PMC.wahl[k]) delete PMC.wahl[k]; else PMC.wahl[k] = 
 
 // ── Quiz (10 zufällige Fragen) ──
 function pmcQuizNeu() {
-  PMC.quiz = PMC_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
+  PMC.quiz = ltMischen(PMC_QUIZ.slice()).slice(0, 10);
   PMC.qi = 0; PMC.richtig = 0; PMC.beantwortet = false; PMC.gespeichert = false;
 }
 
@@ -3332,10 +3362,10 @@ function pmcQuiz() {
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmcQuizNeu();pmcQuiz()">Nochmal</button></div></div>';
     pmcSetze(html); ltQuizEnde(PMC, 'Farbenlehre & Coloration', 'pmc-speicher'); return;
   }
-  var q = PMC_QUIZ[PMC.quiz[PMC.qi]];
-  html = '<div class="card"><div class="label">Frage '+(PMC.qi+1)+' von '+n+' · '+PMC.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
-    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmcAntwort('+i+')">'+o+'</button>'; }).join('') +
+  var q = PMC.quiz[PMC.qi];
+  html = '<div class="card"><div class="label">Frage '+(PMC.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMC.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    ltOptionen(q, 'pmcAntwort') +
     '<div id="pmc-fb"></div></div>';
   pmcSetze(html);
 }
@@ -3343,14 +3373,11 @@ function pmcQuiz() {
 function pmcAntwort(i) {
   if (PMC.beantwortet) return;
   PMC.beantwortet = true;
-  var q = PMC_QUIZ[PMC.quiz[PMC.qi]], ok = i === q.r;
+  var q = PMC.quiz[PMC.qi], ok = i === q.r;
   if (ok) PMC.richtig++;
-  document.querySelectorAll('#pmc-inhalt .opt-btn').forEach(function(b, j){
-    b.disabled = true;
-    if (j === q.r) b.classList.add('ric');
-    else if (j === i) b.classList.add('fal');
-  });
-  document.getElementById('pmc-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+  ltMarkieren('#pmc-inhalt', q, i);
+  var zusatz = ltZusatz(PMC, q, ok);
+  document.getElementById('pmc-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.qi++;PMC.beantwortet=false;pmcQuiz()">Weiter →</button></div>';
 }
 </script>
@@ -3391,15 +3418,15 @@ var PMH_FRISUREN = {
 };
 
 var PMH_QUIZ = [
-  {f:'Welche Wirkung hat ein Top Knot bei einem runden Gesicht?', o:['Das Gesicht wirkt breiter','Er streckt, das Gesicht wirkt optisch länger','Er betont das Kinn','Keine'], r:1, e:'Die Höhe am Oberkopf streckt das runde Gesicht.'},
+  {f:'Welche Wirkung hat ein Top Knot bei einem runden Gesicht?', o:['Das Gesicht wirkt breiter','Er streckt, das Gesicht wirkt optisch länger','Er betont das Kinn','Keine'], r:1, e:'Die Höhe am Oberkopf streckt das runde Gesicht.', zf:[{f:"Ein Gast mit langem, schmalem Gesicht wünscht sich einen sehr hohen Top Knot. Was bedenkst du?",o:["Er streckt das Gesicht noch mehr – lieber tiefer oder mit Fülle seitlich","Er macht das Gesicht runder, das passt gut","Er hat auf die Gesichtsform keine Wirkung","Er wirkt nur bei sehr kurzem Haar"],r:0,e:"Höhe am Oberkopf streckt. Beim runden Gesicht ist das erwünscht, beim langen Gesicht verstärkt es die Länge."}]},
   {f:'Warum passt bei einem runden Gesicht auch ein seitlicher Dutt auf Wangenhöhe?', o:['Er macht das Gesicht runder','Er bricht die Symmetrie und sorgt für weiche Konturen','Er versteckt die Ohren','Er gibt Höhe'], r:1, e:'Die Asymmetrie lockert die runde Form auf.'},
   {f:'Wie gleichst du eine eckige Kieferpartie aus?', o:['Streng glatt zurück','Mit einem tief sitzenden Chignon auf Kinnhöhe oder einem lockeren Soft Top Knot','Mit einem sehr strengen, hohen Dutt','Gar nicht'], r:1, e:'Weiche Struktur und Fülle auf Kinnhöhe nehmen die Härte aus dem Kiefer.'},
   {f:'Was ist der Unterschied zwischen einem Soft Top Knot und einem strengen Dutt?', o:['Keiner','Der Soft Top Knot hat lockere Struktur und wirkt weniger hart','Der Soft Top Knot sitzt im Nacken','Der strenge Dutt ist immer voluminöser'], r:1, e:'Locker und strukturiert statt glatt und streng.'},
   {f:'Welche Gesichtsform verträgt fast jede Hochsteckfrisur?', o:['Rund','Eckig','Oval','Herzförmig'], r:2, e:'Das ovale Gesicht ist ausgewogen, Top Knot und Chignon passen beide.'},
   {f:'Herzförmiges Gesicht: Was gleicht die breite Stirn aus?', o:['Straff zurück mit freier Stirn','Weiche, gelöste Strähnen und Fülle am Kiefer, z. B. ein tiefer, weicher Chignon','Nur ein glatter Mittelscheitel','Gar nichts'], r:1, e:'Weiche Strähnen mildern die Stirn, Fülle am Kiefer gleicht das schmale Kinn aus.'},
   {f:'Was bedeutet die Gesichtsform in der Beratung?', o:['Sie bestimmt die Frisur eindeutig','Sie ist ein Ausgangspunkt, dazu kommen Haarstruktur, Dichte, Anlass und Wunsch','Sie ist unwichtig','Sie gilt nur für Kurzhaar'], r:1, e:'Keine Patentrezepte: Gesichtsform, Haar, Person und Anlass ergeben gemeinsam die Empfehlung.'},
-  {f:'Wie bereitest du frisch gewaschenes, glattes Haar für eine Hochsteckfrisur vor?', o:['Gar nicht','Griffig machen, z. B. mit Textur- oder Volumenspray, eventuell Lockenstab','Mit Öl glatt machen','Nass hochstecken'], r:1, e:'Hochsteckfrisuren halten in griffigem Haar viel besser.'},
-  {f:'Wie steckst du Haarnadeln richtig?', o:['Sichtbar von außen','Im Haar versteckt, in die feste Basis, U-Nadeln in den Knoten','Nur eine Nadel pro Frisur','Quer über den Scheitel'], r:1, e:'Nadeln verschwinden im Haar und greifen in die feste Basis.'}
+  {f:'Wie bereitest du frisch gewaschenes, glattes Haar für eine Hochsteckfrisur vor?', o:['Gar nicht','Griffig machen, z. B. mit Textur- oder Volumenspray, eventuell Lockenstab','Mit Öl glatt machen','Nass hochstecken'], r:1, e:'Hochsteckfrisuren halten in griffigem Haar viel besser.', zf:[{f:"Warum hält eine Hochsteckfrisur in frisch gewaschenem, glattem Haar schlecht?",o:["Es ist glatt und rutschig – Nadeln finden keinen Halt","Es ist schwer, weil noch Wasser drin ist","Es hat am Ansatz viel zu viel Volumen","Frisch gewaschenes Haar ist zu kurz dafür"],r:0,e:"Glattes, frisch gewaschenes Haar ist rutschig. Erst griffig gemacht halten Nadeln und Strähnen."}]},
+  {f:'Wie steckst du Haarnadeln richtig?', o:['Sichtbar von außen','Im Haar versteckt, in die feste Basis, U-Nadeln in den Knoten','Nur eine Nadel pro Frisur','Quer über den Scheitel'], r:1, e:'Nadeln verschwinden im Haar und greifen in die feste Basis.', zf:[{f:"Warum steckst du die Nadeln in die feste Basis?",o:["Nur dort greifen sie und halten die Frisur","Damit man sie von außen gut sieht","Damit die Frisur lockerer und luftiger wirkt","Damit sie später leichter herausfallen"],r:0,e:"Die feste Basis gibt den Nadeln Halt – lose Strähnen allein halten nicht."}]}
 ];
 
 var PMH = {tab:'form', form:0, fr:'topknot', quiz:[], qi:0, richtig:0, beantwortet:false};
@@ -3450,7 +3477,7 @@ function pmhFrisuren() {
 }
 
 function pmhQuizNeu() {
-  PMH.quiz = PMH_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; });
+  PMH.quiz = ltMischen(PMH_QUIZ.slice());
   PMH.qi = 0; PMH.richtig = 0; PMH.beantwortet = false; PMH.gespeichert = false;
 }
 
@@ -3464,10 +3491,10 @@ function pmhQuiz() {
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmhQuizNeu();pmhQuiz()">Nochmal</button></div></div>';
     pmhSetze(html); ltQuizEnde(PMH, 'Hochsteckfrisuren', 'pmh-speicher'); return;
   }
-  var q = PMH_QUIZ[PMH.quiz[PMH.qi]];
-  html = '<div class="card"><div class="label">Frage '+(PMH.qi+1)+' von '+n+' · '+PMH.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
-    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmhAntwort('+i+')">'+o+'</button>'; }).join('') +
+  var q = PMH.quiz[PMH.qi];
+  html = '<div class="card"><div class="label">Frage '+(PMH.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMH.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    ltOptionen(q, 'pmhAntwort') +
     '<div id="pmh-fb"></div></div>';
   pmhSetze(html);
 }
@@ -3475,14 +3502,11 @@ function pmhQuiz() {
 function pmhAntwort(i) {
   if (PMH.beantwortet) return;
   PMH.beantwortet = true;
-  var q = PMH_QUIZ[PMH.quiz[PMH.qi]], ok = i === q.r;
+  var q = PMH.quiz[PMH.qi], ok = i === q.r;
   if (ok) PMH.richtig++;
-  document.querySelectorAll('#pmh-inhalt .opt-btn').forEach(function(b, j){
-    b.disabled = true;
-    if (j === q.r) b.classList.add('ric');
-    else if (j === i) b.classList.add('fal');
-  });
-  document.getElementById('pmh-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+  ltMarkieren('#pmh-inhalt', q, i);
+  var zusatz = ltZusatz(PMH, q, ok);
+  document.getElementById('pmh-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMH.qi++;PMH.beantwortet=false;pmhQuiz()">Weiter →</button></div>';
 }
 </script>
@@ -3528,17 +3552,17 @@ var PMX_RUECK = {
 var PMX_QUIZ = [
   {f:'In welcher Phase befinden sich normalerweise ca. 85 % aller Haare?', o:['Anagen (Wachstum)','Katagen (Übergang)','Telogen (Ruhe)','Neogen (Schlaf)'], r:0, e:'Ca. 85 % wachsen, ca. 1 % sind im Übergang, ca. 14 % in der Ruhephase.'},
   {f:'Blondiertes Haar fühlt sich trocken an. Was braucht es vor allem?', o:['Viel Feuchtigkeit','Aufbauprodukte, denn es ist innen geschädigt','Gar nichts','Mehr Hitze'], r:1, e:'Blondiertes Haar ist hydrophil und nimmt viel Wasser auf. Es ist innen geschädigt, nicht automatisch trocken.'},
-  {f:'In welcher Reihenfolge werden die natürlichen Pigmente aufgehellt?', o:['Gelb, Rot, Blau','Blau, Rot, Gelb','Rot, Blau, Gelb','Alle gleichzeitig'], r:1, e:'Zuerst der blaue Mantel des Eumelanins, dann Rot, zuletzt Gelb. Dazwischen erscheint Orange.'},
+  {f:'In welcher Reihenfolge werden die natürlichen Pigmente aufgehellt?', o:['Gelb, Rot, Blau','Blau, Rot, Gelb','Rot, Blau, Gelb','Alle gleichzeitig'], r:1, e:'Zuerst der blaue Mantel des Eumelanins, dann Rot, zuletzt Gelb. Dazwischen erscheint Orange.', zf:[{f:"Mittelbraunes Haar ist nach dem Aufhellen noch orange. Was heißt das?",o:["Das Rot ist noch nicht ganz abgebaut","Das Gelb ist schon komplett abgebaut","Das Blau ist noch vollständig da","Die Aufhellung ist überall fertig"],r:0,e:"Abgebaut wird Blau, dann Rot, zuletzt Gelb. Orange heißt: Rot ist noch da."}]},
   {f:'Was unterscheidet Pheomelanin von Eumelanin?', o:['Es hat keine blaue Hülle, nur Rot und Gelb','Es ist größer','Es ist nur in schwarzem Haar','Es lässt sich am schnellsten aufhellen'], r:0, e:'Pheomelanin besteht aus Rot und Gelb, ist klein und verstreut und braucht länger zum Aufhellen.'},
   {f:'Warum braucht hell gewordenes und gefärbtes Haar UV-Schutz?', o:['Weil künstliche Farbe den natürlichen Schutz nicht ersetzt','Damit es schneller wächst','Gar nicht','Damit die Farbe dunkler wird'], r:0, e:'Mit weniger natürlichen Pigmenten sinkt der Eigenschutz. Ohne Schutz wird das Haar trockener und spröder.'},
   {f:'Naturton 4, Wunsch: intensives Kupfer auf Tonhöhe 6. Bis wohin muss das Naturpigment aufgehellt werden?', o:['Auf 6','Auf 7 bis 8','Auf 10','Gar nicht'], r:1, e:'Warmer Ton: ½ bis 1½ Tonhöhen heller als die Zieltonhöhe, also 7 bis 8.'},
   {f:'Für einen kühlen Farbton muss das Naturpigment wie viel heller sein als die Zieltonhöhe?', o:['½ bis 1½ Tonhöhen','1½ bis 2½ Tonhöhen','Genau gleich','4 Tonhöhen'], r:1, e:'Jedes Haar hat warme Naturpigmente. Für kühle Töne muss mehr Untergrund weg.'},
   {f:'In welcher Tonhöhe neutralisierst du den Untergrund?', o:['2 Tonhöhen dunkler','In derselben Tonhöhe wie das Naturpigmentbild','Immer in Tonhöhe 10','Egal'], r:1, e:'Beispiel: Naturpigmentbild 9 (hell Gelb) mit Violett in Tonhöhe 9 neutralisieren.'},
-  {f:'Welche Farbe ist die dominanteste im warmen Bereich?', o:['Gelb','Orange','Rot','Alle gleich'], r:2, e:'Rot setzt sich gegen Orange und Gelb durch, Orange gegen Gelb.'},
+  {f:'Welche Farbe ist die dominanteste im warmen Bereich?', o:['Gelb','Orange','Rot','Alle gleich'], r:2, e:'Rot setzt sich gegen Orange und Gelb durch, Orange gegen Gelb.', zf:[{f:"Im Haar sind rote und gelbe Pigmente. Welche Farbe sieht man eher?",o:["Rot","Gelb","Beide gleich stark","Keine von beiden"],r:0,e:"Rot setzt sich gegen Orange und Gelb durch."}]},
   {f:'Gefärbtes Rot soll zu einem reinen Kupfer werden. Was ist nötig?', o:['Einfach Kupfer darüber färben','Zuerst das dominante Rot entfernen, dann Kupfer','Mit Asch mischen','Nichts, das geht direkt'], r:1, e:'Eine dominante Farbe im Haar muss erst entfernt werden (Farbabzug oder Blondierwäsche).'},
   {f:'Was bedeutet die Farbnummer 7,21?', o:['Tonhöhe 7, Hauptreflex Violett, Nebenreflex Blau','Tonhöhe 2, Reflex 71','21 % Oxidant','Tonhöhe 7, 21 Minuten'], r:0, e:'Vor dem Komma die Tonhöhe, dann Hauptreflex (stärker) und Nebenreflex (schwächer). Nummern sind herstellerabhängig.'},
   {f:'Warum ist Pink auf dunklem Haar kaum zu sehen?', o:['Weil es nicht hält','Weil dunkles Haar zu wenig transparent ist','Weil Pink sich auflöst','Weil das Licht fehlt'], r:1, e:'Viel Pigment im Haar lässt kaum Licht durch. Erst auf hellerem, transparentem Haar wird Pink sichtbar.'},
-  {f:'Wann brauchst du eine Vorpigmentierung?', o:['Immer beim Tönen','Wenn das Haar um mehr als 4 Tonhöhen dunkler gefärbt wird','Bei Naturhaar','Nur bei Herren'], r:1, e:'Das fehlende Naturpigmentbild muss mit warmen Pigmenten wieder aufgebaut werden.'},
+  {f:'Wann brauchst du eine Vorpigmentierung?', o:['Immer beim Tönen','Wenn das Haar um mehr als 4 Tonhöhen dunkler gefärbt wird','Bei Naturhaar','Nur bei Herren'], r:1, e:'Das fehlende Naturpigmentbild muss mit warmen Pigmenten wieder aufgebaut werden.', zf:[{f:"Blondes Haar (Tonhöhe 9) soll auf Tonhöhe 4. Warum reicht es nicht, einfach die dunkle Farbe aufzutragen?",o:["Die warmen Pigmente fehlen – es wird fahl oder grünstichig","Dunkle Farbe hält auf blondem Haar überhaupt nicht","Blondes Haar kann man nie dunkler färben","Die Farbe wird dann automatisch tiefschwarz"],r:0,e:"Bei mehr als 4 Tonhöhen dunkler fehlt das Naturpigmentbild. Ohne Vorpigmentierung wird das Ergebnis transparent oder grünstichig."}]},
   {f:'Mit welchen Reflexen wird rückpigmentiert?', o:['Asch und Matt','Gold, Kupfer, Rot (oder Mischungen daraus)','Nur Violett','Warme und kühle gemischt'], r:1, e:'Kühle Reflexe und Mischungen aus warm und kühl eignen sich nicht, das Ergebnis wird transparent oder grünstichig.'},
   {f:'Was macht ein saurer (reduktiver) Farbabzug?', o:['Er hellt Naturpigment auf','Er reduziert nur künstliche Farbstoffe, am besten bei frisch gefärbtem Haar','Er färbt dunkler','Er ist für Naturhaar gedacht'], r:1, e:'Er dreht den Färbeprozess um und greift das Naturpigment nicht an. Danach eine Kontrollspülung machen.'},
   {f:'Warum gelingen klare Blondtöne eher mit niedrigem Oxidant?', o:['Das stimmt nicht','Langsamer, aber gründlicher Pigmentabbau, weniger Stress für Haar und Kopfhaut','Weil es schneller geht','Weil es billiger ist'], r:1, e:'Wie Traktor gegen Sportwagen: Der langsame Traktor erntet das Feld gründlicher ab.'}
@@ -3810,7 +3834,7 @@ function pmxAbzug() {
 
 // ── Quiz (10 zufällige Fragen) ──
 function pmxQuizNeu() {
-  PMX.quiz = PMX_QUIZ.map(function(_, i){ return i; }).sort(function(){ return Math.random() - .5; }).slice(0, 10);
+  PMX.quiz = ltMischen(PMX_QUIZ.slice()).slice(0, 10);
   PMX.qi = 0; PMX.richtig = 0; PMX.beantwortet = false; PMX.gespeichert = false;
 }
 
@@ -3824,10 +3848,10 @@ function pmxQuiz() {
       '<div class="pm-zeile"><button class="btn-primary" onclick="pmxQuizNeu();pmxQuiz()">Nochmal</button></div></div>';
     pmxSetze(html); ltQuizEnde(PMX, 'Haar & Farbe', 'pmx-speicher'); return;
   }
-  var q = PMX_QUIZ[PMX.quiz[PMX.qi]];
-  html = '<div class="card"><div class="label">Frage '+(PMX.qi+1)+' von '+n+' · '+PMX.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+q.f+'</div>' +
-    q.o.map(function(o, i){ return '<button class="opt-btn" onclick="pmxAntwort('+i+')">'+o+'</button>'; }).join('') +
+  var q = PMX.quiz[PMX.qi];
+  html = '<div class="card"><div class="label">Frage '+(PMX.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMX.richtig+' richtig</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    ltOptionen(q, 'pmxAntwort') +
     '<div id="pmx-fb"></div></div>';
   pmxSetze(html);
 }
@@ -3835,14 +3859,11 @@ function pmxQuiz() {
 function pmxAntwort(i) {
   if (PMX.beantwortet) return;
   PMX.beantwortet = true;
-  var q = PMX_QUIZ[PMX.quiz[PMX.qi]], ok = i === q.r;
+  var q = PMX.quiz[PMX.qi], ok = i === q.r;
   if (ok) PMX.richtig++;
-  document.querySelectorAll('#pmx-inhalt .opt-btn').forEach(function(b, j){
-    b.disabled = true;
-    if (j === q.r) b.classList.add('ric');
-    else if (j === i) b.classList.add('fal');
-  });
-  document.getElementById('pmx-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+'</div>' +
+  ltMarkieren('#pmx-inhalt', q, i);
+  var zusatz = ltZusatz(PMX, q, ok);
+  document.getElementById('pmx-fb').innerHTML = '<div class="'+(ok ? 'fb-g' : 'fb-r')+'" style="font-size:13px;line-height:1.5"><strong>'+(ok ? 'Richtig!' : 'Nicht ganz.')+'</strong> '+q.e+zusatz+'</div>' +
     '<div class="pm-zeile"><button class="btn-primary" onclick="PMX.qi++;PMX.beantwortet=false;pmxQuiz()">Weiter →</button></div>';
 }
 </script>
