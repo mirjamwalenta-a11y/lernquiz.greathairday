@@ -615,7 +615,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 
   <!-- Detail-Panel (eingeblendet per JS) -->
   <div id="archiv-detail" style="display:none">
-    <button class="back-btn" onclick="document.getElementById('archiv-detail').style.display='none';document.getElementById('archiv-liste-wrap').style.display='block'">← Zurück zur Liste</button>
+    <button class="back-btn" onclick="document.getElementById('archiv-detail').style.display='none';document.getElementById('archiv-liste').style.display='block';renderArchivListe()">← Zurück zur Liste</button>
     <div id="archiv-detail-inhalt"></div>
   </div>
 </div>
@@ -2118,6 +2118,15 @@ function archivFilter(filter, btn) {
   renderArchivListe();
 }
 
+// Gesamtpunkte immer aus Wissen + Praktik berechnen — punkte_gesamt kann
+// veraltet sein (z. B. Test von Bewerber:in eingereicht, Praktik erst
+// danach im Archiv nachgetragen)
+function archivGesamt(s) {
+  var pd = s.punkte_detail || {};
+  if (pd.wissen == null && pd.praktik == null) return s.punkte_gesamt || 0;
+  return (pd.wissen||0) + (pd.praktik||0);
+}
+
 function renderArchivListe() {
   var liste = document.getElementById('archiv-liste');
   var daten = ARCHIV_DATA.filter(function(s){
@@ -2132,7 +2141,7 @@ function renderArchivListe() {
   daten.forEach(function(s) {
     var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
     var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
-    var note = getNoteText(s.punkte_gesamt||0);
+    var note = getNoteText(archivGesamt(s));
     var pd = s.punkte_detail || {};
     html += '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="zeigeBewerberDetail(\'' + s.id + '\')">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
@@ -2141,7 +2150,7 @@ function renderArchivListe() {
       '</div>' +
       '<div style="font-size:12px;color:#9A9A90;margin-top:2px">' + formatDatum(s.datum) + '</div>' +
       '<div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">' +
-        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + (s.punkte_gesamt||0) + ' Punkte gesamt</span>' +
+        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + archivGesamt(s) + ' Punkte gesamt</span>' +
         '<span style="font-size:12px;color:#7A7A70">Wissen: ' + (pd.wissen||0) + ' · Praktik: ' + (pd.praktik||0) + '</span>' +
         '<span style="font-size:12px;color:#9A9A90">' + note + '</span>' +
       '</div>' +
@@ -2158,7 +2167,8 @@ function zeigeBewerberDetail(id) {
   if (!s) return;
   var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
   var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
-  var note = getNoteText(s.punkte_gesamt||0);
+  var gesamt = archivGesamt(s);
+  var note = getNoteText(gesamt);
   var pd = s.punkte_detail || {};
   var werte = s.werte || {};
   var sl = ['','Selten','Manchmal','Oft','Meistens','Immer'];
@@ -2173,8 +2183,8 @@ function zeigeBewerberDetail(id) {
         '<span style="font-size:13px;font-weight:700;color:#5B7B6F">Entscheidung</span>' +
         '<span style="font-weight:700;color:' + entFarbe + '">' + entText + '</span>' +
       '</div>' +
-      '<div style="font-size:28px;font-weight:700;color:#5B7B6F;text-align:center;margin:4px 0">' + (s.punkte_gesamt||0) + ' Punkte</div>' +
-      '<div style="text-align:center;font-size:14px;color:#2C2C2C;font-weight:600">' + note + '</div>' +
+      '<div style="font-size:28px;font-weight:700;color:#5B7B6F;text-align:center;margin:4px 0" id="arch-kopf-punkte">' + gesamt + ' Punkte</div>' +
+      '<div style="text-align:center;font-size:14px;color:#2C2C2C;font-weight:600" id="arch-kopf-note">' + note + '</div>' +
     '</div>' +
 
     // Punkte-Aufschlüsselung
@@ -2185,7 +2195,7 @@ function zeigeBewerberDetail(id) {
         '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">🖐 Praktik gesamt</td><td style="text-align:right;font-weight:700;color:#5B7B6F" id="arch-praktik-total">' + (pd.praktik||0) + ' Pkt</td></tr>' +
         '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Geschicklichkeit</td><td style="text-align:right;color:#7A7A70" id="arch-gesch-total">' + (pd.geschicklichkeit||0) + ' Pkt</td></tr>' +
         '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Rollenspiel</td><td style="text-align:right;color:#7A7A70" id="arch-rp-total">' + (pd.rollenspiel||0) + ' Pkt</td></tr>' +
-        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#5B7B6F" id="arch-gesamt-total">' + (s.punkte_gesamt||0) + ' Pkt</td></tr>' +
+        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#5B7B6F" id="arch-gesamt-total">' + gesamt + ' Pkt</td></tr>' +
       '</table>' +
     '</div>' +
 
@@ -2235,7 +2245,7 @@ function zeigeBewerberDetail(id) {
         '</div>' +
       '</div>' +
 
-      '<button class="btn-primary" onclick="speicherePraktikPunkte(\'' + s.id + '\',' + (pd.wissen||0) + ')">💾 Praktik-Punkte speichern</button>' +
+      '<button class="btn-primary" onclick="speicherePraktikPunkte(\'' + s.id + '\')">💾 Praktik-Punkte speichern</button>' +
       '<div id="arch-praktik-ok" class="ok-box" style="margin-top:8px"></div>' +
       '<div id="arch-praktik-err" class="fehler-box" style="margin-top:8px"></div>' +
     '</div>';
@@ -2338,33 +2348,51 @@ function archSelectPts(key, val, btn, max) {
   if(el1) el1.textContent = praktik + ' Pkt';
   if(el2) el2.textContent = gesch + ' Pkt';
   if(el3) el3.textContent = rp + ' Pkt';
-  if(el4) el4.textContent = (parseInt(el4.dataset.wissen||0) + praktik) + ' Pkt';
+  if(el4) el4.textContent = (wissen + praktik) + ' Pkt';
+  archKopfAktualisieren(wissen + praktik);
 }
 
-async function speicherePraktikPunkte(id, wissen) {
+function archKopfAktualisieren(gesamt) {
+  var kopf = document.getElementById('arch-kopf-punkte');
+  var note = document.getElementById('arch-kopf-note');
+  if (kopf) kopf.textContent = gesamt + ' Punkte';
+  if (note) note.textContent = getNoteText(gesamt);
+}
+
+async function speicherePraktikPunkte(id) {
   if (!MEISTERIN_OK) return;
   var pts = window.ARCH_PTS || {};
   var gs1 = pts.gs1||0, gs2 = pts.gs2||0, gs3 = pts.gs3||0, rp = pts.rp||0;
   var gesch = gs1 + gs2 + gs3;
   var praktik = gesch + rp;
-  var gesamt = wissen + praktik;
   var okEl = document.getElementById('arch-praktik-ok');
   var errEl = document.getElementById('arch-praktik-err');
-  okEl.textContent = ''; errEl.textContent = '';
-  // punkte_detail aus Supabase lesen, dann mergen
-  var fetchRes = await supabase.from('schnuppertage').select('punkte_detail').eq('id', id).single();
-  var pd_alt = (fetchRes.data && fetchRes.data.punkte_detail) || {};
-  var pd_neu = Object.assign({}, pd_alt, { praktik: praktik, geschicklichkeit: gesch, rollenspiel: rp, gs1: gs1, gs2: gs2, gs3: gs3, rp: rp });
-  var res = await supabase.from('schnuppertage').update({
-    punkte_detail: pd_neu,
-    punkte_gesamt: gesamt
-  }).eq('id', id);
-  if (res.error) {
-    errEl.textContent = 'Fehler: ' + res.error.message;
-  } else {
-    okEl.textContent = '✓ Gespeichert! Gesamt: ' + gesamt + ' Punkte';
+  okEl.style.display = 'none'; errEl.style.display = 'none';
+  try {
+    // punkte_detail aus Supabase lesen, dann mergen
+    var fetchRes = await sb.from('schnuppertage').select('punkte_detail').eq('id', id).single();
+    if (fetchRes.error) throw fetchRes.error;
+    var pd_alt = fetchRes.data.punkte_detail || {};
+    var wissen = pd_alt.wissen||0;
+    var gesamt = wissen + praktik;
+    var pd_neu = Object.assign({}, pd_alt, { wissen: wissen, praktik: praktik, geschicklichkeit: gesch, rollenspiel: rp, gs1: gs1, gs2: gs2, gs3: gs3, rp: rp });
+    var res = await sb.from('schnuppertage').update({
+      punkte_detail: pd_neu,
+      punkte_gesamt: gesamt
+    }).eq('id', id).select('id');
+    if (res.error) throw res.error;
+    // Supabase meldet keinen Fehler, wenn RLS das Ändern still verhindert
+    if (!res.data || !res.data.length) throw new Error('Nicht gespeichert – keine Berechtigung (bitte neu einloggen).');
+    var s = ARCHIV_DATA.find(function(x){ return x.id == id; });
+    if (s) { s.punkte_detail = pd_neu; s.punkte_gesamt = gesamt; }
+    okEl.textContent = '✓ Gespeichert! Gesamt: ' + gesamt + ' Punkte (' + getNoteText(gesamt) + ')';
+    okEl.style.display = 'block';
     document.getElementById('arch-gesamt-total').textContent = gesamt + ' Pkt';
     document.getElementById('arch-praktik-total').textContent = praktik + ' Pkt';
+    archKopfAktualisieren(gesamt);
+  } catch (e) {
+    errEl.textContent = 'Fehler: ' + (e && e.message ? e.message : e);
+    errEl.style.display = 'block';
   }
 }
 
