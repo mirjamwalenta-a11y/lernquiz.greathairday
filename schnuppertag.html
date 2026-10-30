@@ -2379,8 +2379,10 @@ async function speicherePraktikPunkte(id) {
     var res = await sb.from('schnuppertage').update({
       punkte_detail: pd_neu,
       punkte_gesamt: gesamt
-    }).eq('id', id);
+    }).eq('id', id).select('id');
     if (res.error) throw res.error;
+    // Supabase meldet keinen Fehler, wenn RLS das Ändern still verhindert
+    if (!res.data || !res.data.length) throw new Error('Nicht gespeichert – keine Berechtigung (bitte neu einloggen).');
     var s = ARCHIV_DATA.find(function(x){ return x.id == id; });
     if (s) { s.punkte_detail = pd_neu; s.punkte_gesamt = gesamt; }
     okEl.textContent = '✓ Gespeichert! Gesamt: ' + gesamt + ' Punkte (' + getNoteText(gesamt) + ')';
