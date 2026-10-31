@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1c1917">
 <title>Schnittzeichnungs-Designer · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+
 <style>
 :root{
-  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#1C1C1A; --muted:#7A7A70; --line:#E2DDD5;
-  --accent:#5B7B6F; --accent-soft:#EAF0EE; --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --bg:#F8F4EA; --surface:#FFFFFF; --surface-2:#F0E9D8; --ink:#211D17; --muted:#6B6455; --line:#E4DBC5;
+  --accent:#896C32; --accent-soft:#F3EBD9; --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:16px}
 h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600;margin:0;text-wrap:balance}
@@ -31,28 +33,28 @@ header.top{padding-block:20px 14px;display:grid;gap:6px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:14px}
 .group{display:grid;gap:8px}
 .tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}
-.tb{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 4px 7px;display:grid;justify-items:center;gap:3px;cursor:pointer;font:600 11.5px system-ui;color:var(--ink);text-align:center;line-height:1.2}
+.tb{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 4px 7px;display:grid;justify-items:center;gap:3px;cursor:pointer;font:600 11.5px Poppins,system-ui;color:var(--ink);text-align:center;line-height:1.2}
 .tb svg{width:40px;height:28px}
 .tb:hover{border-color:var(--accent)}
 .tb[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
-.chip{appearance:none;border:1px solid #C8C4BC;background:transparent;color:var(--muted);font:600 12.5px system-ui;padding:7px 11px;border-radius:6px;cursor:pointer}
+.chip{appearance:none;border:1px solid #D9CDAE;background:transparent;color:var(--muted);font:600 12.5px Poppins,system-ui;padding:7px 11px;border-radius:6px;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.sw{appearance:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px 5px 6px;font:600 12px system-ui;cursor:pointer;color:var(--ink)}
+.sw{appearance:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px 5px 6px;font:600 12px Poppins,system-ui;cursor:pointer;color:var(--ink)}
 .sw i{width:16px;height:16px;border-radius:50%;display:inline-block}
 .sw[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
-.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 13px system-ui;padding:9px 13px;border-radius:6px;cursor:pointer}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 13px Poppins,system-ui;padding:9px 13px;border-radius:6px;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--accent)}
 .btn.warn{border-color:#C44030;color:#C44030;background:transparent}
 .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-input[type=text]{font:14px system-ui;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0;flex:1}
+input[type=text]{font:14px Poppins,system-ui;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0;flex:1}
 .check{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600}
 .check input{accent-color:var(--accent);width:17px;height:17px}
 .saved{list-style:none;margin:0;padding:0;display:grid;gap:4px}
 .saved li{display:flex;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:6px;font-size:13px}
 .saved li span{flex:1;min-width:0;overflow-wrap:anywhere}
 .saved small{color:var(--muted)}
-.mini{appearance:none;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 8px;font:600 12px system-ui;cursor:pointer;color:var(--ink)}
+.mini{appearance:none;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 8px;font:600 12px Poppins,system-ui;cursor:pointer;color:var(--ink)}
 #exportBox{display:grid;gap:8px}
 #exportBox img{width:100%;border:1px solid var(--line);border-radius:6px}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -108,7 +110,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
       <div class="group">
         <h3>Bearbeiten</h3>
         <div class="row">
-          <button class="tb" data-tool="erase" style="grid-auto-flow:column;padding:8px 10px"><svg viewBox="0 0 40 28"><path d="M8 20 L20 8 L30 18 L22 26 L12 26 Z" fill="#fff" stroke="#1C1C1A" stroke-width="2"/><path d="M14 14 L24 24" stroke="#C44030" stroke-width="2"/></svg>Linie löschen</button>
+          <button class="tb" data-tool="erase" style="grid-auto-flow:column;padding:8px 10px"><svg viewBox="0 0 40 28"><path d="M8 20 L20 8 L30 18 L22 26 L12 26 Z" fill="#fff" stroke="#211D17" stroke-width="2"/><path d="M14 14 L24 24" stroke="#C44030" stroke-width="2"/></svg>Linie löschen</button>
           <button class="btn ghost" id="undo">Rückgängig</button>
           <button class="btn warn" id="clear">Ansicht leeren</button>
         </div>
@@ -138,7 +140,7 @@ const f=n=>Math.round(n*10)/10;
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- Kopfvorlagen ---------- */
-const INK='#2C2C2C',SOFT='#9A9A90';
+const INK='#2C2C2C',SOFT='#A69C86';
 const SIDE_PATH='M150,345 L150,267 A100,100 0 1,1 280,135 C288,158 286,178 291,194 L309,222 L293,229 C297,240 295,250 289,257 C293,268 287,285 271,292 C257,298 243,296 233,290 L233,345';
 const SIDE_HL='M281,134 C272,150 263,160 258,172 C248,176 232,171 222,175 C212,170 198,172 193,188 C188,212 190,236 182,254 C174,264 162,268 151,267';
 const BACK_PATH='M150,345 L150,280 C130,270 116,252 110,228 C105,208 105,188 105,170 A90,100 0 0,1 285,170 C285,188 285,208 280,228 C274,252 260,270 240,280 L240,345';
@@ -154,7 +156,7 @@ const HEADS={
   side:g=>hp(SIDE_PATH)+ell(205,195,11,19)+'<path d="M266,178 q6,-3 12,0 M209,183 q-7,5 -3,12 q4,7 -2,13" fill="none" stroke="'+INK+'" stroke-width="1.5"/>'+(g?hl(SIDE_HL)+hl('M190,75 L190,40'):''),
   back:g=>ell(103,205,9,22)+ell(287,205,9,22)+hp(BACK_PATH)+(g?hl(BACK_HL)+hl('M195,70 L195,272'):''),
   front:g=>'<path d="M160,300 L158,345 M230,300 L232,345" stroke="'+INK+'" stroke-width="2" fill="none"/>'+ell(101,205,9,22)+ell(289,205,9,22)+hp(FRONT_PATH)+'<path d="M160,192 q10,-6 20,0 M210,192 q10,-6 20,0 M155,180 q13,-7 27,-1 M208,179 q14,-6 27,1 M195,202 L189,238 Q195,243 201,238 M180,266 Q195,274 210,266" fill="none" stroke="'+INK+'" stroke-width="1.6" stroke-linecap="round"/>'+(g?hl(FRONT_HL)+hl('M195,70 L195,300'):''),
-  top:g=>ell(111,205,7,18)+ell(279,205,7,18)+'<path d="M184,101 L195,84 L206,101" fill="#fff" stroke="'+INK+'" stroke-width="2"/>'+hp(TOP_PATH)+(g?hl(TOP_HL)+hl('M195,100 L195,300'):'')+'<text x="195" y="72" text-anchor="middle" font-family="system-ui" font-size="11" fill="'+SOFT+'">vorne (Gesicht)</text>'
+  top:g=>ell(111,205,7,18)+ell(279,205,7,18)+'<path d="M184,101 L195,84 L206,101" fill="#fff" stroke="'+INK+'" stroke-width="2"/>'+hp(TOP_PATH)+(g?hl(TOP_HL)+hl('M195,100 L195,300'):'')+'<text x="195" y="72" text-anchor="middle" font-family="Poppins,system-ui" font-size="11" fill="'+SOFT+'">vorne (Gesicht)</text>'
 };
 const VIEWS=[
   ['side','Profil rechts','-60 -10 510 450',g=>HEADS.side(g)],
@@ -163,12 +165,12 @@ const VIEWS=[
   ['front','Vorne','-60 -10 510 450',g=>HEADS.front(g)],
   ['top','Oben','-60 -10 510 450',g=>HEADS.top(g)],
   ['sheet','Blatt: 4 Ansichten','0 0 1020 900',g=>{
-    const cell=(x,y,inner,label)=>'<g transform="translate('+x+','+y+') scale(0.92)">'+inner+'</g><text x="'+(x+220)+'" y="'+(y+436)+'" text-anchor="middle" font-family="system-ui" font-size="13" fill="'+SOFT+'">'+label+'</text>';
-    return '<rect x="0" y="0" width="1020" height="900" fill="#fff"/>'+cell(60,10,HEADS.side(g),'Profil')+cell(560,10,HEADS.back(g),'Hinten')+cell(60,455,HEADS.front(g),'Vorne')+cell(560,455,HEADS.top(g),'Oben')+'<path d="M510 10 V890 M10 450 H1010" stroke="#E2DDD5" stroke-width="1.5"/>';}]
+    const cell=(x,y,inner,label)=>'<g transform="translate('+x+','+y+') scale(0.92)">'+inner+'</g><text x="'+(x+220)+'" y="'+(y+436)+'" text-anchor="middle" font-family="Poppins,system-ui" font-size="13" fill="'+SOFT+'">'+label+'</text>';
+    return '<rect x="0" y="0" width="1020" height="900" fill="#fff"/>'+cell(60,10,HEADS.side(g),'Profil')+cell(560,10,HEADS.back(g),'Hinten')+cell(60,455,HEADS.front(g),'Vorne')+cell(560,455,HEADS.top(g),'Oben')+'<path d="M510 10 V890 M10 450 H1010" stroke="#E4DBC5" stroke-width="1.5"/>';}]
 ];
 
 /* ---------- Werkzeuge ---------- */
-const TI=(d)=>'<svg viewBox="0 0 40 28" fill="none" stroke="#1C1C1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+const TI=(d)=>'<svg viewBox="0 0 40 28" fill="none" stroke="#211D17" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
 const TOOLS_LINES=[
   ['line','Gerade',TI('<path d="M6 22 L34 8"/>')],
   ['horiz','Waagrecht',TI('<path d="M5 14 H35"/>')],
@@ -187,7 +189,7 @@ const TOOLS_TEXT=[
   ['arrow','Pfeil mit Winkel',TI('<path d="M6 22 L30 8"/><path d="M22 7 L30 8 L27 15"/>')],
   ['text','Text',TI('<path d="M10 7 H30 M20 7 V23"/>')]
 ];
-const COLORS=[['#3D64A8','Abteilung'],['#B8336A','Winkel'],['#5B7B6F','Schnittlinie'],['#1C1C1A','Kontur'],['#8A5A33','Haar']];
+const COLORS=[['#3D64A8','Abteilung'],['#B8336A','Winkel'],['#896C32','Schnittlinie'],['#211D17','Kontur'],['#5C3A22','Haar']];
 const WIDTHS=[[1.5,'dünn'],[2.5,'mittel'],[4.5,'dick']];
 const HINTS={
   line:'Ziehen: gerade Linie in beliebiger Richtung.',horiz:'Ziehen: waagrechte Linie.',vert:'Ziehen: senkrechte Linie.',
@@ -216,7 +218,7 @@ function geom(s){
 function renderStroke(s,i){
   const st='stroke="'+s.c+'" stroke-width="'+s.w+'" fill="none" stroke-linecap="round" stroke-linejoin="round"'+(s.d?' stroke-dasharray="'+(s.w*3)+' '+(s.w*2.4)+'"':'');
   if(s.t==='free')return '<path d="M'+s.p.map(q=>f(q[0])+','+f(q[1])).join(' L')+'" '+st+'/>';
-  if(s.t==='text')return '<text x="'+f(s.p[0][0])+'" y="'+f(s.p[0][1])+'" font-family="system-ui" font-weight="600" font-size="'+(12+s.w*2)+'" fill="'+s.c+'">'+esc(s.txt)+'</text>';
+  if(s.t==='text')return '<text x="'+f(s.p[0][0])+'" y="'+f(s.p[0][1])+'" font-family="Poppins,system-ui" font-weight="600" font-size="'+(12+s.w*2)+'" fill="'+s.c+'">'+esc(s.txt)+'</text>';
   if(s.t==='scissors'){const [a,b]=s.p;const ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI;return '<g transform="translate('+f(a[0])+','+f(a[1])+') rotate('+f(ang)+') scale(1.4)" stroke="'+s.c+'" stroke-width="1.8" fill="none" stroke-linecap="round">'+SCIS+'</g>';}
   const G=geom(s),{a,b}=G;
   if(s.t==='curve'){const c=s.cp||[(a[0]+b[0])/2,(a[1]+b[1])/2];return '<path d="M'+f(a[0])+','+f(a[1])+' Q'+f(c[0])+','+f(c[1])+' '+f(b[0])+','+f(b[1])+'" '+st+'/>';}
@@ -234,7 +236,7 @@ function boardSVG(withUI){
   strokes().forEach((s,i)=>{h+=renderStroke(s,i);});
   if(drag&&drag.s)h+=renderStroke(drag.s,-1);
   if(withUI&&editCurve>=0&&strokes()[editCurve]){const s=strokes()[editCurve],c=s.cp||[(s.p[0][0]+s.p[1][0])/2,(s.p[0][1]+s.p[1][1])/2];
-    h+='<path d="M'+f(s.p[0][0])+','+f(s.p[0][1])+' L'+f(c[0])+','+f(c[1])+' L'+f(s.p[1][0])+','+f(s.p[1][1])+'" stroke="#9A9A90" stroke-dasharray="3 3" fill="none"/><circle cx="'+f(c[0])+'" cy="'+f(c[1])+'" r="10" fill="#EAF0EE" stroke="#5B7B6F" stroke-width="2"/>';}
+    h+='<path d="M'+f(s.p[0][0])+','+f(s.p[0][1])+' L'+f(c[0])+','+f(c[1])+' L'+f(s.p[1][0])+','+f(s.p[1][1])+'" stroke="#A69C86" stroke-dasharray="3 3" fill="none"/><circle cx="'+f(c[0])+'" cy="'+f(c[1])+'" r="10" fill="#F3EBD9" stroke="#896C32" stroke-width="2"/>';}
   return {vb:V[2],inner:h};
 }
 function redraw(){const b=boardSVG(true),svg=$('#board');svg.setAttribute('viewBox',b.vb);svg.innerHTML=b.inner;}
@@ -327,7 +329,7 @@ $('#name').value=store.cur.name||'';
 $('#export').onclick=()=>{
   const b=boardSVG(false),[x,y,w,h]=b.vb.split(' ').map(Number),scale=2;
   const title=$('#name').value.trim();
-  const svgStr='<svg xmlns="'+NS+'" viewBox="'+b.vb+'" width="'+w*scale+'" height="'+h*scale+'">'+b.inner+(title?'<text x="'+(x+12)+'" y="'+(y+h-10)+'" font-family="system-ui" font-size="15" font-weight="600" fill="#1C1C1A">'+esc(title)+'</text>':'')+'</svg>';
+  const svgStr='<svg xmlns="'+NS+'" viewBox="'+b.vb+'" width="'+w*scale+'" height="'+h*scale+'">'+b.inner+(title?'<text x="'+(x+12)+'" y="'+(y+h-10)+'" font-family="Poppins,system-ui" font-size="15" font-weight="600" fill="#211D17">'+esc(title)+'</text>':'')+'</svg>';
   const img=new Image();
   img.onload=()=>{const c=document.createElement('canvas');c.width=w*scale;c.height=h*scale;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
     const url=c.toDataURL('image/png');$('#exportImg').src=url;$('#exportBox').hidden=false;

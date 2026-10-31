@@ -7,17 +7,17 @@
 <title>Beratung &amp; Formwirkung · A Great Hair Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap">
 <style>
-/* Beratung & Formwirkung – Farben der Lernapp (vgl. schnittwerkstatt.html) */
+/* Beratung & Formwirkung – Farben der Lernapp: Creme/Gold */
 :root{
-  --bg:#F7F5F0;--surface:#FFFFFF;--surface-2:#FAF8F4;--ink:#1C1C1A;--muted:#66665E;--line:#E2DDD5;
-  --accent:#5B7B6F;--accent-ink:#FFFFFF;--accent-soft:#EAF0EE;--accent-hover:#4A665B;
-  --good:#2E7A4F;--good-soft:#E2F1E7;--bad:#B3362D;--bad-soft:#FBE6E3;
+  --bg:#F8F4EA;--surface:#FFFFFF;--surface-2:#FBF8F1;--ink:#211D17;--muted:#6B6455;--line:#E4DBC5;
+  --accent:#896C32;--accent-ink:#FFFFFF;--accent-soft:#F3EBD9;--accent-hover:#6E5527;
+  --good:#896C32;--good-soft:#F3EBD9;--bad:#B3362D;--bad-soft:#FBE6E3;
   --g-kopf:#E7E7EA;--g-kontur:#8C8C94;--g-haar:#8A8A92;--g-haar-kontur:#4C4C53;--g-hilfe:#A6A6AE;--g-flaeche:#EDEDF0;
-  --shadow:0 1px 2px rgba(28,28,26,.05),0 6px 18px -6px rgba(28,28,26,.10);
-  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
-  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --shadow:0 1px 2px rgba(33,29,23,.05),0 6px 18px -6px rgba(33,29,23,.10);
+  --f-display:Poppins,"Segoe UI",system-ui,sans-serif;
+  --f-body:Poppins,"Segoe UI",system-ui,-apple-system,sans-serif;
   --r:14px;--r-s:10px;
   --t-xs:.8125rem;--t-s:.9375rem;--t-m:1.0625rem;--t-l:1.25rem;--t-xl:1.5rem;--t-2xl:1.875rem;
   --ease:cubic-bezier(.16,1,.3,1);
@@ -25,18 +25,18 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme:dark;
-    --bg:#141614;--surface:#1D201E;--surface-2:#181B19;--ink:#ECEFEA;--muted:#A3AAA4;--line:#333934;
-    --accent:#93BFAE;--accent-ink:#10201A;--accent-soft:#25352F;--accent-hover:#A9CFC0;
-    --good:#6CC196;--good-soft:#1D3328;--bad:#EE8177;--bad-soft:#3E1F1C;
+    --bg:#17140F;--surface:#221E17;--surface-2:#1C1913;--ink:#F1EBDD;--muted:#B3A994;--line:#3D3528;
+    --accent:#D2B271;--accent-ink:#1E1609;--accent-soft:#3A2F1C;--accent-hover:#E0C48A;
+    --good:#D2B271;--good-soft:#3A2F1C;--bad:#EE8177;--bad-soft:#3E1F1C;
     --g-kopf:#3B3B41;--g-kontur:#8E8E97;--g-haar:#6E6E76;--g-haar-kontur:#B4B4BC;--g-hilfe:#74747C;--g-flaeche:#2C2C31;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -8px rgba(0,0,0,.5);
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#141614;--surface:#1D201E;--surface-2:#181B19;--ink:#ECEFEA;--muted:#A3AAA4;--line:#333934;
-  --accent:#93BFAE;--accent-ink:#10201A;--accent-soft:#25352F;--accent-hover:#A9CFC0;
-  --good:#6CC196;--good-soft:#1D3328;--bad:#EE8177;--bad-soft:#3E1F1C;
+  --bg:#17140F;--surface:#221E17;--surface-2:#1C1913;--ink:#F1EBDD;--muted:#B3A994;--line:#3D3528;
+  --accent:#D2B271;--accent-ink:#1E1609;--accent-soft:#3A2F1C;--accent-hover:#E0C48A;
+  --good:#D2B271;--good-soft:#3A2F1C;--bad:#EE8177;--bad-soft:#3E1F1C;
   --g-kopf:#3B3B41;--g-kontur:#8E8E97;--g-haar:#6E6E76;--g-haar-kontur:#B4B4BC;--g-hilfe:#74747C;--g-flaeche:#2C2C31;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -8px rgba(0,0,0,.5);
 }
@@ -765,7 +765,7 @@ wechsle aber nicht ohne Zustimmung.
     return '<svg viewBox="0 0 ' + W + ' ' + (H + fs * 2.2).toFixed(0) + '" role="img" aria-label="' + (label || VL_FIX[fall]) + '">' +
       '<rect width="' + W + '" height="' + (H + fs * 2.2).toFixed(0) + '" rx="18" fill="#efefed"/>' +
       '<image href="' + b.src + '" width="' + W + '" height="' + H + '"/>' +
-      '<text x="' + (W / 2) + '" y="' + (H + fs * 1.45).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="700" fill="#5B7B6F">' + VL_FIX[fall] + '</text></svg>';
+      '<text x="' + (W / 2) + '" y="' + (H + fs * 1.45).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="700" fill="#896C32">' + VL_FIX[fall] + '</text></svg>';
   }
 
   function fig(o){
@@ -1652,7 +1652,7 @@ wechsle aber nicht ohne Zustimmung.
     s += '<rect x="-40" y="-24" width="' + (W + 80) + '" height="' + (H + 48) + '" rx="10" fill="#fff"/>';
     s += '<image href="' + V[key] + '" x="0" y="0" width="' + W + '" height="' + H + '"/>';
     // Schnitt (fix): in jedem Bild derselbe
-    s += '<text x="' + (W / 2) + '" y="' + (H + 17) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#5B7B6F">Schnitt unverändert</text>';
+    s += '<text x="' + (W / 2) + '" y="' + (H + 17) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#896C32">Schnitt unverändert</text>';
     if (o.hilfe){
       var gy = H * P.grenze, yS = gy + 70, a = "#3b3b3b";
       var pf = function(zone, wert){
@@ -2312,10 +2312,10 @@ wechsle aber nicht ohne Zustimmung.
       var namen = {oben:"oben", mitte:"mitte", unten:"unten", kontur:"Kontur"};
       ["oben","mitte","unten","kontur"].forEach(function(z){
         var y = zonen[z], on = o.zone === z;
-        s += '<rect x="250" y="' + y[0] + '" width="226" height="' + (y[1] - y[0]) + '" rx="12" fill="' + (on ? '#5B7B6F' : 'transparent') + '" fill-opacity="' + (on ? '.3' : '0') + '"' +
+        s += '<rect x="250" y="' + y[0] + '" width="226" height="' + (y[1] - y[0]) + '" rx="12" fill="' + (on ? '#896C32' : 'transparent') + '" fill-opacity="' + (on ? '.3' : '0') + '"' +
              (o.zonenKey ? ' data-act="sbwahl" data-key="' + o.zonenKey + '" data-val="' + z + '" style="cursor:pointer"' : '') + '/>';
-        if (z !== "oben") s += '<path d="M270,' + y[0] + ' L476,' + y[0] + '" stroke="#5B7B6F" stroke-width="2.5" stroke-dasharray="7 6"/>';
-        s += '<text x="472" y="' + (y[0] + 26) + '" font-size="20" font-weight="700" fill="#4A665B" stroke="#fff" stroke-width="5" paint-order="stroke" text-anchor="end" pointer-events="none">' + namen[z] + '</text>';
+        if (z !== "oben") s += '<path d="M270,' + y[0] + ' L476,' + y[0] + '" stroke="#896C32" stroke-width="2.5" stroke-dasharray="7 6"/>';
+        s += '<text x="472" y="' + (y[0] + 26) + '" font-size="20" font-weight="700" fill="#6E5527" stroke="#fff" stroke-width="5" paint-order="stroke" text-anchor="end" pointer-events="none">' + namen[z] + '</text>';
       });
     }
     return s + '</svg>';
@@ -2429,7 +2429,7 @@ wechsle aber nicht ohne Zustimmung.
         '<h2>Modul ' + (m + 1) + ': ' + M.titel + '</h2>' +
         '<p class="sb-leit">' + M.leit + '</p>' +
         '<p class="note">' + M.info + '</p>' +
-        (m === 3 ? '<div class="callout"><p><strong>Symbole:</strong> dünne Linie = Abteilung · Strahl mit Gradzahl = Elevation · rote Strähne = Leitsträhne (Pfeil nach oben = mitwandernd, Schloss = feststehend) · dicke grüne Linie „G“ = Gewichtslinie · gestrichelt = Schnittlinie</p></div>' : '') +
+        (m === 3 ? '<div class="callout"><p><strong>Symbole:</strong> dünne Linie = Abteilung · Strahl mit Gradzahl = Elevation · rote Strähne = Leitsträhne (Pfeil nach oben = mitwandernd, Schloss = feststehend) · dicke goldene Linie „G“ = Gewichtslinie · gestrichelt = Schnittlinie</p></div>' : '') +
         (m === 4 ? sbSatz() : '') +
         M.fragen.map(function(f){ return sbFrage(m, f); }).join("") +
         (ok ? '<div class="callout good"><p><strong>Richtig.</strong> ' + sbF().warum[m] + '</p>' + (S.fehler[m] ? '<p class="note">Hier hattest du beim ersten Versuch einen Fehler. Jetzt steht die richtige Lösung da.</p>' : '') + '</div>' : '') +

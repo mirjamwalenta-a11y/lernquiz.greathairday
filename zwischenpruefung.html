@@ -7,14 +7,16 @@
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <meta name="theme-color" content="#1c1917">
 <title>Zwischenprüfung · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+
 <style>
 :root{
-  --bg:#F7F5F0; --surface:#FFFFFF; --surface-2:#EFEBE3; --ink:#1C1C1A; --muted:#7A7A70; --line:#E2DDD5;
-  --accent:#5B7B6F; --accent-ink:#FFFFFF; --accent-soft:#EAF0EE; --copper:#5B7B6F;
-  --good:#5B7B6F; --good-soft:#EAF0EE; --warn:#8A6D12; --warn-soft:#FDF6E3; --bad:#C44030; --bad-soft:#FDECEA;
+  --bg:#F8F4EA; --surface:#FFFFFF; --surface-2:#F0E9D8; --ink:#211D17; --muted:#6B6455; --line:#E4DBC5;
+  --accent:#896C32; --accent-ink:#FFFFFF; --accent-soft:#F3EBD9; --copper:#896C32;
+  --good:#896C32; --good-soft:#F3EBD9; --warn:#B4602A; --warn-soft:#FBEDE3; --bad:#C44030; --bad-soft:#FDECEA;
   --shadow:none;
-  --f-display:system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-display:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   color-scheme:light;
 }
@@ -31,7 +33,7 @@ a{color:var(--accent)}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
 
 .wrap{max-width:980px;margin:0 auto;padding-inline:16px}
-header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(247,245,240,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(248,244,234,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:16px;min-height:60px}
 .back-link{color:var(--muted);font-size:13px;text-decoration:none;white-space:nowrap}
 .back-link:hover{color:var(--accent)}
@@ -943,7 +945,7 @@ function paintTimer(){const el=$('#timer');if(!el||!T)return;const C=2*Math.PI*6
 /* ============================================================
    Selbst gezeichnete Schemas (Rasierzüge, Technikkopf)
    ============================================================ */
-const C_INK='#1C1C1A',C_MUT='#7A7A70',C_ACC='#5B7B6F',C_WARN='#8A6D12',C_RED='#C44030',C_BEARD='#EFEBE3',C_LINE='#C8C4BC';
+const C_INK='#211D17',C_MUT='#6B6455',C_ACC='#896C32',C_WARN='#B4602A',C_RED='#C44030',C_BEARD='#F0E9D8',C_LINE='#D9CDAE';
 let _uid=0;
 function mdefs(u){return `<defs>${[['a',C_ACC],['w',C_WARN],['k',C_INK],['r',C_RED]].map(([k,c])=>`<marker id="m${k}${u}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker>`).join('')}<clipPath id="hc${u}"><ellipse cx="120" cy="112" rx="68" ry="90"/></clipPath></defs>`;}
 const mir=pts=>pts.map(([x,y])=>[240-x,y]);
@@ -981,10 +983,10 @@ function faceSVG(o){const u=++_uid;const P=pts=>pts.map(p=>p.join(',')).join(' '
  (o.zones||[]).forEach(z=>{[z.z,z.z2].filter(Boolean).forEach(pp=>h+=`<polygon points="${P(pp)}" fill="${C_ACC}" fill-opacity=".28" stroke="${C_ACC}" stroke-width="1.5" stroke-linejoin="round"/>`);});
  (o.arrows||[]).forEach(([l,c])=>{const col={a:C_ACC,w:C_WARN,k:C_INK}[c];h+=`<line x1="${l[0]}" y1="${l[1]}" x2="${l[2]}" y2="${l[3]}" stroke="${col}" stroke-width="3.5" stroke-linecap="round" marker-end="url(#m${c}${u})"/>`;});
  (o.spann||[]).forEach(([x,y,dx,dy])=>{h+=`<line x1="${x}" y1="${y}" x2="${x+dx*15}" y2="${y+dy*15}" stroke="${C_RED}" stroke-width="2.5" marker-end="url(#mr${u})"/><circle cx="${x}" cy="${y}" r="5" fill="${C_RED}"/>`;});
- (o.nums||[]).forEach(([x,y,n])=>{h+=`<circle cx="${x}" cy="${y}" r="8" fill="${C_ACC}"/><text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">${n}</text>`;});
+ (o.nums||[]).forEach(([x,y,n])=>{h+=`<circle cx="${x}" cy="${y}" r="8" fill="${C_ACC}"/><text x="${x}" y="${y+3.5}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Poppins,system-ui,sans-serif">${n}</text>`;});
  if(o.extra)h+=o.extra(u);
  if(o.plain)return h+'</svg>';
- h+=`<text x="8" y="306" font-size="11" fill="${C_MUT}" font-family="system-ui,sans-serif">rechte Seite</text><text x="232" y="306" text-anchor="end" font-size="11" fill="${C_MUT}" font-family="system-ui,sans-serif">linke Seite</text></svg>`;
+ h+=`<text x="8" y="306" font-size="11" fill="${C_MUT}" font-family="Poppins,system-ui,sans-serif">rechte Seite</text><text x="232" y="306" text-anchor="end" font-size="11" fill="${C_MUT}" font-family="Poppins,system-ui,sans-serif">linke Seite</text></svg>`;
  return h;}
 function zugSVG(i,neutral){const d=ZD[i],g=ZUEGE[i][1];const c=neutral?'k':griffKey(g);
  return faceSVG({zones:[d],arrows:d.a.map(l=>[l,c]),spann:d.s,label:`${i+1}. Rasierzug: ${ZUEGE[i][0]}`});}
@@ -992,7 +994,7 @@ function zugOverviewSVG(){return faceSVG({zones:ZD,nums:ZD.map((d,i)=>{const c=d
 const zugLegend=`<div class="legend small"><span><i style="background:${C_ACC}"></i>Vorhandgriff</span><span><i style="background:${C_WARN}"></i>Rückhandgriff</span><span><i style="background:${C_INK}"></i>Griff je nach Seite</span><span><i class="dot" style="background:${C_RED}"></i>Hautspannung (Zugrichtung)</span></div>`;
 
 /* Technikkopf */
-const TX=(x,y,s,o='')=>`<text x="${x}" y="${y}" font-size="12" fill="${C_INK}" font-family="system-ui,sans-serif" ${o}>${s}</text>`;
+const TX=(x,y,s,o='')=>`<text x="${x}" y="${y}" font-size="12" fill="${C_INK}" font-family="Poppins,system-ui,sans-serif" ${o}>${s}</text>`;
 function wasserwelleSVG(){const u=++_uid;let h=`<svg class="dia" viewBox="0 0 330 236" role="img" aria-label="Schema handgelegte Wasserwellen mit Wellenkanten, Wellental und Wellenbreite">${mdefs(u)}`;
  const ys=[15,60,105,150,195];
  for(let i=0;i<10;i++){const x0=36+i*13;const P=ys.map((y,k)=>[x0+(k%2)*20,y]);const M=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
@@ -1143,7 +1145,7 @@ function nailLabels(list,hi,fs){fs=fs||12.5;const q=hi!=null;let h='';
 function nailSVG(hi){const q=hi!=null;const SK='#F2D6C3',SKS='#B98F78';
  return `<svg class="dia nail side" viewBox="40 0 600 290" role="img" aria-label="${q?'Nagel in der Seitenansicht, ein Teil ist markiert':'Aufbau des Nagels in der Seitenansicht, beschriftet'}"><g transform="translate(0,30) scale(1.4)">
  <path d="M10,62 L278,59 Q302,60 312,88 Q322,125 296,152 Q262,176 200,178 L10,178 Z" fill="${SK}" stroke="${SKS}" stroke-width="1.5"/>
- <path d="M60,100 L190,96 Q232,98 236,118 Q232,136 196,138 L60,140 Z" fill="#EFEBE3" stroke="${C_LINE}" stroke-width="1.2"/>
+ <path d="M60,100 L190,96 Q232,98 236,118 Q232,136 196,138 L60,140 Z" fill="#F0E9D8" stroke="${C_LINE}" stroke-width="1.2"/>
  <path d="M124,61 L280,58.5 Q292,59.5 297,66 L124,70 Z" fill="#E7A79D"/>
  <path d="M76,58 Q78,74 100,75 L124,72 L124,61 L84,62 Z" fill="#C8766C"/>
  <path d="M80,56 L278,52 Q306,51 324,58 L324,63 Q306,57 280,58 L84,62 Z" fill="#F8EEE6" stroke="${C_MUT}" stroke-width="1.2"/>
@@ -1155,7 +1157,7 @@ function nailSVG(hi){const q=hi!=null;const SK='#F2D6C3',SKS='#B98F78';
 function nailTopSVG(hi){const q=hi!=null;const SK='#F2D6C3',SKS='#B98F78';
  return `<svg class="dia nail top" viewBox="-55 0 500 256" role="img" aria-label="${q?'Nagel in der Vorderansicht, ein Teil ist markiert':'Aufbau des Nagels in der Vorderansicht, beschriftet'}"><g transform="translate(30,0)">
  <path d="M90,4 L90,190 Q90,250 150,250 Q210,250 210,190 L210,4 Z" fill="${SK}" stroke="${SKS}" stroke-width="1.5"/>
- <path d="M125,4 L175,4 L172,52 Q150,62 128,52 Z" fill="#EFEBE3" stroke="${C_LINE}" stroke-width="1.2"/>
+ <path d="M125,4 L175,4 L172,52 Q150,62 128,52 Z" fill="#F0E9D8" stroke="${C_LINE}" stroke-width="1.2"/>
  <path d="M114,96 Q150,58 186,96" fill="none" stroke="#C8766C" stroke-width="2" stroke-dasharray="4 3"/>
  <path d="M112,100 Q150,82 188,100 L188,200 Q150,214 112,200 Z" fill="#E7A79D" stroke="${C_MUT}" stroke-width="1.2"/>
  <path d="M112,200 Q150,214 188,200 Q188,236 150,236 Q112,236 112,200 Z" fill="#F8EEE6" stroke="${C_MUT}" stroke-width="1.2"/>
