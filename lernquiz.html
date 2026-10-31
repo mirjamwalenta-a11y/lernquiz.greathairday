@@ -1095,7 +1095,7 @@ function renderKompetenz(kompdaten,themen,gespr){
         '<div style="background:'+farbe+';height:100%;width:'+prozent+'%;border-radius:4px"></div>'+
       '</div>'+
       (gesamt>0?'<div style="font-size:10px;color:#9A9188;margin-top:2px">'+richtig+'/'+gesamt+' richtig'+
-        (d.geraten?' · '+d.geraten+'× richtig geraten':'')+'</div>':'')+
+        (d.geraten?' · '+d.geraten+'× richtig geraten':'')+(d.zusatz_falsch?' · '+d.zusatz_falsch+'× Warum-Frage falsch':'')+'</div>':'')+
       (d&&d.sicher_falsch?'<div style="font-size:10px;color:#C44030;margin-top:2px">⚠ '+d.sicher_falsch+'× sicher, aber falsch – hier steckt vermutlich ein Missverständnis</div>':'')+
       gespraechZeile(gespr[th])+
     '</div>';
@@ -1144,23 +1144,36 @@ async function ladeKompetenz(lehrlingId){
 
 // Neue Kompetenz-Spalten (Migration 20261029_kompetenz_sicherheit_wiederholung.sql):
 // gute Runden über mehrere Tage und „geraten“/„sicher, aber falsch“.
-function kompetenzZusatz(alt,lr,geraten,sicherFalsch){
+// Prüfhinweise (Migration 20261031_pruefhinweise.sql): falsche Zusatzfragen
+// und „sicher, aber falsch“ – insgesamt und seit dem letzten Prüfgespräch.
+function kompetenzZusatz(alt,lr,geraten,sicherFalsch,zusatzFalsch){
   var heute=heuteISO(), gut=lr==='gut'||lr==='sehrgut';
+  zusatzFalsch=zusatzFalsch||0;
   return {
     gut_seit: gut ? (alt.gut_seit||heute) : null,
     gut_am:   gut ? heute : null,
     geraten:  (alt.geraten||0)+geraten,
-    sicher_falsch: (alt.sicher_falsch||0)+sicherFalsch
+    sicher_falsch: (alt.sicher_falsch||0)+sicherFalsch,
+    zusatz_falsch: (alt.zusatz_falsch||0)+zusatzFalsch,
+    zusatz_falsch_offen: (alt.zusatz_falsch_offen||0)+zusatzFalsch,
+    sicher_falsch_offen: (alt.sicher_falsch_offen||0)+sicherFalsch
   };
 }
-// Ist die Migration noch nicht gelaufen, kennt die Tabelle die neuen Spalten
+// Ist eine Migration noch nicht gelaufen, kennt die Tabelle die neuen Spalten
 // nicht – dann ohne sie speichern, damit der Fortschritt nicht verloren geht.
+// Zuerst nur die Spalten von 20261031 weglassen, dann auch die von 20261029.
+var KOMP_SPALTEN_STUFEN=[
+  {muster:/zusatz_falsch|sicher_falsch_offen/,spalten:['zusatz_falsch','zusatz_falsch_offen','sicher_falsch_offen']},
+  {muster:/gut_seit|gut_am|geraten|sicher_falsch/,spalten:['gut_seit','gut_am','geraten','sicher_falsch']}
+];
 async function kompetenzSchreiben(daten,id){
-  var res=id?await sb.from('kompetenz').update(daten).eq('id',id):await sb.from('kompetenz').insert(daten);
-  if(res.error&&/gut_seit|gut_am|geraten|sicher_falsch/.test(res.error.message||'')){
-    var ohne=Object.assign({},daten);
-    ['gut_seit','gut_am','geraten','sicher_falsch'].forEach(function(k){delete ohne[k];});
-    res=id?await sb.from('kompetenz').update(ohne).eq('id',id):await sb.from('kompetenz').insert(ohne);
+  var d=Object.assign({},daten);
+  var res=id?await sb.from('kompetenz').update(d).eq('id',id):await sb.from('kompetenz').insert(d);
+  for(var i=0;i<KOMP_SPALTEN_STUFEN.length&&res.error;i++){
+    var st=KOMP_SPALTEN_STUFEN[i];
+    if(!st.muster.test(res.error.message||'')) continue;
+    st.spalten.forEach(function(k){delete d[k];});
+    res=id?await sb.from('kompetenz').update(d).eq('id',id):await sb.from('kompetenz').insert(d);
   }
   return res;
 }
@@ -1170,10 +1183,13 @@ async function speichereKompetenz(lehrlingId,antworten){
   var runde={};
   antworten.forEach(function(a){
     var th=a.q.th;
-    if(!runde[th]) runde[th]={richtig:0,falsch:0,geraten:0,sicherFalsch:0};
+    if(!runde[th]) runde[th]={richtig:0,falsch:0,geraten:0,sicherFalsch:0,zusatzFalsch:0};
     if(a.korrekt) runde[th].richtig++; else runde[th].falsch++;
     if(a.geraten) runde[th].geraten++;
     if(a.sicherFalsch) runde[th].sicherFalsch++;
+    // Zusatzfragen kommen nur nach richtiger Hauptfrage – falsch heißt: Antwort
+    // gewusst, das Warum nicht (Hinweis auf „nur auswendig“)
+    if(a.q.haupt&&!a.korrekt&&!a.geraten) runde[th].zusatzFalsch++;
   });
   var {data:bestehend}=await sb.from('kompetenz').select('*').eq('lehrling_id',lehrlingId);
   var existiert={};
@@ -1183,7 +1199,7 @@ async function speichereKompetenz(lehrlingId,antworten){
     var qr=ges>0?r/ges:0;
     var lr=qr===1.0?'sehrgut':qr>0.60?'gut':qr>=0.40?'gemischt':'falsch';
     var alt=existiert[th]||{};
-    var zusatz=kompetenzZusatz(alt,lr,runde[th].geraten,runde[th].sicherFalsch);
+    var zusatz=kompetenzZusatz(alt,lr,runde[th].geraten,runde[th].sicherFalsch,runde[th].zusatzFalsch);
     if(existiert[th]){
       await kompetenzSchreiben(Object.assign({richtig:alt.richtig+r,falsch:alt.falsch+f,durchlaeufe:alt.durchlaeufe+1,vorletzte_runde:alt.letzte_runde,letzte_runde:lr},zusatz),alt.id);
     } else {
@@ -1648,7 +1664,11 @@ async function ladeDashboard(){
       '<div style="font-size:11px;color:#9A9188;margin-top:2px">'+l.lehrjahr+'. Lehrjahr · '+letztes+'</div></div>'+
       '<div style="font-size:20px;color:#9A9188">›</div></div>';
   }
-  document.getElementById('dashboard-liste').innerHTML=html;
+  var hinweise=[];
+  try{ hinweise=await ladeAlleHinweise(lehrlinge); }catch(e){}
+  if(!hinweise.length) html='<div style="font-size:12px;color:#5B7B6F;margin-bottom:14px">✓ Keine Prüfhinweise – im Quiz ist gerade nichts auffällig.</div>'+html;
+  document.getElementById('dashboard-liste').innerHTML=hinweisBox(hinweise,true)+html;
+  hinweisKlicks(hinweise);
   lehrlinge.forEach(function(l){
     var el=document.getElementById('dl-'+l.id);
     if(el) el.addEventListener('click',function(){zeigeDetailLehrling(l);});
@@ -1667,7 +1687,8 @@ async function zeigeDetailLehrling(lehrling){
   Object.keys(komp).concat(Object.keys(gespr)).forEach(function(t){if(alleThemen.indexOf(t)<0)alleThemen.push(t);});
   var bekannt=alleThemen;
   var {data:verlauf}=await sb.from('verlauf').select('*').eq('lehrling_id',lehrling.id).order('erstellt_am',{ascending:false}).limit(10);
-  var html='<button class="btn btn-g" id="btn-pruef-start" style="margin-bottom:6px">🗣 Prüfgespräch starten</button>'+
+  var hinweise=pruefHinweise(komp,gespr).map(function(h){return {lehrling:lehrling,th:h.th,gruende:h.gruende,komp:komp,gespr:gespr};});
+  var html=hinweisBox(hinweise,false)+'<button class="btn btn-g" id="btn-pruef-start" style="margin-bottom:6px">🗣 Prüfgespräch starten</button>'+
     '<div style="font-size:11px;color:#9A9188;margin-bottom:18px;line-height:1.45">Der Lehrling erklärt Fragen in eigenen Worten – ohne Antwortauswahl. Du siehst die Musterlösung und hältst fest, ob es wirklich verstanden ist.</div>';
   if(bekannt.length) html+=renderKompetenz(komp,bekannt,gespr);
   else html+='<p style="color:#9A9188;font-size:13px;margin-bottom:16px">Noch kein Kompetenzstand vorhanden.</p>';
@@ -1691,6 +1712,7 @@ async function zeigeDetailLehrling(lehrling){
     '<button class="btn btn-r" id="btn-del-lehrling" style="flex:1;min-width:120px">✕ Löschen</button>'+
   '</div>';
   document.getElementById('detail-inhalt').innerHTML=html;
+  hinweisKlicks(hinweise);
   document.getElementById('btn-pruef-start').addEventListener('click',function(){
     zeigePruefStart(lehrling,komp,gespr);
   });
@@ -1772,6 +1794,93 @@ function gespraechListe(liste,titel){
     '</div>';
   });
   return html;
+}
+
+// ── PRÜFHINWEISE (Meisterin) ─────────────────────────────────────────────────
+// Wo das Quiz Unstimmigkeiten zeigt, soll die Meisterin im Gespräch nachprüfen.
+// Auslöser (Spalten aus supabase/20261031_pruefhinweise.sql):
+//   1. Thema „sitzt“, aber seit dem letzten Prüfgespräch >= 2 Zusatzfragen
+//      falsch, obwohl die Hauptfrage richtig war → vermutlich nur auswendig
+//   2. seit dem letzten Prüfgespräch >= 2× „sicher, aber falsch“
+//   3. Thema „sitzt“ seit über 4 Wochen und wurde nie im Gespräch geprüft
+// Ein gespeichertes Prüfgespräch zum Thema setzt 1 und 2 zurück.
+var HINWEIS_ZUSATZ_FALSCH=2, HINWEIS_SICHER_FALSCH=2, HINWEIS_NIE_GEPRUEFT_TAGE=28;
+// Zeilen von vor der „sitzt nach 3 Tagen“-Umstellung haben kein gut_seit
+var SITZT_SPAETESTENS_SEIT='2026-10-29';
+
+function pruefHinweise(komp,gespr){
+  var liste=[];
+  Object.keys(komp||{}).forEach(function(th){
+    var d=komp[th], st=berechneStatus(d), gruende=[];
+    var zf=d.zusatz_falsch_offen||0, sf=d.sicher_falsch_offen||0;
+    if(st==='sitzt'&&zf>=HINWEIS_ZUSATZ_FALSCH)
+      gruende.push('Quiz sagt „sitzt“, aber '+zf+'× die Warum-Frage falsch – vermutlich nur auswendig');
+    if(sf>=HINWEIS_SICHER_FALSCH)
+      gruende.push(sf+'× „sicher“ angegeben, aber falsch – vermutlich ein Missverständnis');
+    if(st==='sitzt'&&!(gespr&&gespr[th])){
+      var seit=d.gut_seit||SITZT_SPAETESTENS_SEIT, tage=tageZwischen(seit,heuteISO());
+      if(tage>HINWEIS_NIE_GEPRUEFT_TAGE) gruende.push('sitzt seit über '+Math.floor(tage/7)+' Wochen, aber noch nie im Gespräch geprüft');
+    }
+    if(gruende.length) liste.push({th:th,gruende:gruende,dringend:gruende.length>1||zf>=HINWEIS_ZUSATZ_FALSCH&&st==='sitzt'||sf>=HINWEIS_SICHER_FALSCH});
+  });
+  liste.sort(function(a,b){return (b.dringend-a.dringend)||(b.gruende.length-a.gruende.length)||a.th.localeCompare(b.th,'de');});
+  return liste;
+}
+
+// eintraege: [{lehrling, th, gruende, komp, gespr}] – mitName für die Übersicht
+function hinweisBox(eintraege,mitName){
+  if(!eintraege.length) return '';
+  var html='<div style="background:#D4584812;border:1.5px solid #C44030;border-radius:12px;padding:14px 16px;margin-bottom:18px">'+
+    '<div class="lab" style="color:#C44030;margin-bottom:10px">⚠️ Bitte nachprüfen</div>';
+  eintraege.forEach(function(e,i){
+    html+='<button data-hinweis="'+i+'" style="display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #E8D5CF;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-family:system-ui">'+
+      '<div style="font-size:13px;color:#2C2C2C;font-weight:700;margin-bottom:3px">'+(mitName?escHtml(e.lehrling.name)+' – ':'')+escHtml(e.th)+'</div>'+
+      e.gruende.map(function(g){return '<div style="font-size:11px;color:#6B6560;line-height:1.45">· '+escHtml(g)+'</div>';}).join('')+
+      '<div style="font-size:11px;color:#896C32;font-weight:700;margin-top:5px">🗣 Prüfgespräch zu diesem Thema starten →</div>'+
+    '</button>';
+  });
+  return html+'</div>';
+}
+
+function hinweisKlicks(eintraege){
+  document.querySelectorAll('[data-hinweis]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var e=eintraege[+b.dataset.hinweis];
+      zeigePruefStart(e.lehrling,e.komp,e.gespr);
+      pruefStarten([e.th]);
+    });
+  });
+}
+
+// Für die Übersicht: Hinweise aller aktiven Lehrlinge mit je zwei Abfragen
+async function ladeAlleHinweise(lehrlinge){
+  var aktiv=(lehrlinge||[]).filter(function(l){return l.aktiv!==false;});
+  if(!aktiv.length) return [];
+  var ids=aktiv.map(function(l){return l.id;});
+  var kRes=await sb.from('kompetenz').select('*').in('lehrling_id',ids);
+  var gRes={data:[]};
+  try{ gRes=await sb.from('pruefgespraeche').select('lehrling_id,thema,ergebnis,datum,erstellt_am').in('lehrling_id',ids).order('erstellt_am',{ascending:false}); }catch(e){}
+  var out=[];
+  aktiv.forEach(function(l){
+    var komp={};
+    (kRes.data||[]).forEach(function(r){if(r.lehrling_id===l.id)komp[r.thema]=r;});
+    var gespr=gespraechProThema((gRes.error?[]:(gRes.data||[])).filter(function(g){return g.lehrling_id===l.id;}));
+    pruefHinweise(komp,gespr).forEach(function(h){out.push({lehrling:l,th:h.th,gruende:h.gruende,dringend:h.dringend,komp:komp,gespr:gespr});});
+  });
+  out.sort(function(a,b){return b.dringend-a.dringend;});
+  return out;
+}
+
+// Nach einem Prüfgespräch: Zähler „seit dem letzten Gespräch“ der geprüften Themen auf 0
+async function hinweiseZuruecksetzen(lehrlingId,themen,komp){
+  for(var i=0;i<themen.length;i++){
+    var d=komp&&komp[themen[i]];
+    if(!d||!d.id||!(d.zusatz_falsch_offen||d.sicher_falsch_offen)) continue;
+    try{
+      var res=await sb.from('kompetenz').update({zusatz_falsch_offen:0,sicher_falsch_offen:0}).eq('id',d.id);
+      if(!res.error){d.zusatz_falsch_offen=0;d.sicher_falsch_offen=0;}
+    }catch(e){}
+  }
 }
 
 function alleFragenPool(){
@@ -1901,7 +2010,11 @@ async function pruefSpeichern(){
     return {lehrling_id:PG.lehrling.id,thema:e.q.th,frage_id:e.q.id||null,frage:e.q.f,ergebnis:e.ergebnis,notiz:e.notiz||null,datum:heuteISO()};
   });
   var res=await sb.from('pruefgespraeche').insert(zeilen);
-  return res.error||null;
+  if(res.error) return res.error;
+  var themen=[];
+  PG.erg.forEach(function(e){if(themen.indexOf(e.q.th)<0)themen.push(e.q.th);});
+  await hinweiseZuruecksetzen(PG.lehrling.id,themen,PG.komp);
+  return null;
 }
 
 async function pruefAbschliessen(){
@@ -2280,7 +2393,7 @@ window.addEventListener('DOMContentLoaded',function(){
   });
   document.getElementById('btn-lehrling-neu').addEventListener('click',function(){zeige('s-neu-lehrling');});
   document.getElementById('btn-fragen-verw').addEventListener('click',zeigeVerw);
-  document.getElementById('btn-detail-back').addEventListener('click',function(){zeige('s-dashboard');});
+  document.getElementById('btn-detail-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('btn-pruef-back').addEventListener('click',pruefZurueck);
   document.getElementById('btn-neu-speichern').addEventListener('click',speichereNeuenLehrling);
   document.getElementById('btn-neu-back').addEventListener('click',function(){zeige('s-dashboard');});
