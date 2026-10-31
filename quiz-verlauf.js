@@ -25,13 +25,18 @@
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
 
-  // Ohne Migration 20261029_kompetenz_sicherheit_wiederholung.sql kennt die
-  // Tabelle die neuen Spalten noch nicht – dann ohne sie speichern.
-  var NEUE_SPALTEN = ['gut_seit', 'gut_am', 'geraten', 'sicher_falsch'];
+  // Ohne Migration 20261031_pruefhinweise.sql bzw.
+  // 20261029_kompetenz_sicherheit_wiederholung.sql kennt die Tabelle die
+  // neuen Spalten noch nicht – dann ohne sie speichern (neueste zuerst weglassen).
+  var STUFEN = [
+    {muster: /sicher_falsch_offen/, spalten: ['sicher_falsch_offen']},
+    {muster: /gut_seit|gut_am|geraten|sicher_falsch/, spalten: ['gut_seit', 'gut_am', 'geraten', 'sicher_falsch']}
+  ];
   async function schreiben(c, daten, id) {
     var res = id ? await c.from('kompetenz').update(daten).eq('id', id) : await c.from('kompetenz').insert(daten);
-    if (res.error && /gut_seit|gut_am|geraten|sicher_falsch/.test(res.error.message || '')) {
-      NEUE_SPALTEN.forEach(function(k){ delete daten[k]; });
+    for (var i = 0; i < STUFEN.length && res.error; i++) {
+      if (!STUFEN[i].muster.test(res.error.message || '')) continue;
+      STUFEN[i].spalten.forEach(function(k){ delete daten[k]; });
       res = id ? await c.from('kompetenz').update(daten).eq('id', id) : await c.from('kompetenz').insert(daten);
     }
     return res;
@@ -72,7 +77,8 @@
         // Thema erst „sitzt“, wenn es auch ein paar Tage später noch klappt.
         var alt = da[th] || {}, gut = lr === 'gut' || lr === 'sehrgut';
         var tage = {gut_seit: gut ? (alt.gut_seit || heute()) : null, gut_am: gut ? heute() : null,
-                    geraten: (alt.geraten || 0) + runde[th].geraten, sicher_falsch: (alt.sicher_falsch || 0) + runde[th].sicherFalsch};
+                    geraten: (alt.geraten || 0) + runde[th].geraten, sicher_falsch: (alt.sicher_falsch || 0) + runde[th].sicherFalsch,
+                    sicher_falsch_offen: (alt.sicher_falsch_offen || 0) + runde[th].sicherFalsch};
         if (da[th]) {
           await schreiben(c, Object.assign({richtig:alt.richtig+r, falsch:alt.falsch+f, durchlaeufe:alt.durchlaeufe+1, vorletzte_runde:alt.letzte_runde, letzte_runde:lr}, tage), alt.id);
         } else {
