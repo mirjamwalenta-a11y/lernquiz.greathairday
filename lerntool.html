@@ -8,136 +8,138 @@
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lern-Tool · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="quiz-verlauf.js?v=20261029b"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;min-height:100dvh}
-body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+body{background:#F8F4EA;font-family:Poppins,system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
 .wrap{max-width:580px;margin:0 auto;min-height:100dvh}
-.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
-.card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
-.btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
-.btn-primary:disabled{background:#9A9A90;cursor:default}
-.btn-ghost{padding:10px 16px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
-.btn-toggle{padding:8px 14px;border-radius:6px;font-size:13px;cursor:pointer;font-family:system-ui;border:1px solid #C8C4BC;background:transparent;color:#7A7A70}
-.btn-toggle.ak{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
-.btn-lj{flex:1;padding:10px 4px;border-radius:8px;font-size:12px;cursor:pointer;font-family:system-ui;font-weight:600;text-align:center;border:2px solid #E2DDD5;background:#fff;color:#7A7A70}
-.btn-lj.ak{border-color:#5B7B6F;background:#EAF0EE;color:#2C2C2C}
-select,textarea,input{width:100%;border:1px solid #E2DDD5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none}
+.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6B6455;margin-bottom:8px}
+.card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:20px;margin-bottom:12px}
+.btn-primary{width:100%;padding:12px;background:#896C32;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui}
+.btn-primary:disabled{background:#9A9180;cursor:default}
+.btn-ghost{padding:10px 16px;background:transparent;color:#896C32;border:1px solid #896C32;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui}
+.btn-toggle{padding:8px 14px;border-radius:6px;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;border:1px solid #D9CDAE;background:transparent;color:#6B6455}
+.btn-toggle.ak{background:#896C32;color:#fff;border-color:#896C32}
+.btn-lj{flex:1;padding:10px 4px;border-radius:8px;font-size:12px;cursor:pointer;font-family:Poppins,system-ui;font-weight:600;text-align:center;border:2px solid #E4DBC5;background:#fff;color:#6B6455}
+.btn-lj.ak{border-color:#896C32;background:#F3EBD9;color:#2C2C2C}
+select,textarea,input{width:100%;border:1px solid #E4DBC5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:Poppins,system-ui;background:#F8F4EA;color:#211D17;outline:none}
 textarea{resize:vertical}
-.fb-g{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px;margin-top:10px}
+.fb-g{background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:14px;margin-top:10px}
 .fb-r{background:#FDECEA;border:1px solid #C44030;border-radius:8px;padding:14px;margin-top:10px}
 .fb-o{background:#FDF6E3;border:1px solid #C4B86A;border-radius:8px;padding:14px;margin-top:10px}
-.muster{background:#2C2C2C;border-radius:6px;padding:12px;margin-top:8px;font-size:13px;color:#F7F5F0;line-height:1.6}
-.muster-lab{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
-.score-box{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#5B7B6F;font-weight:600}
-.lap-info{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;color:#5B7B6F}
+.muster{background:#2C2C2C;border-radius:6px;padding:12px;margin-top:8px;font-size:13px;color:#F8F4EA;line-height:1.6}
+.muster-lab{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#896C32;margin-bottom:4px}
+.score-box{background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#896C32;font-weight:600}
+.lap-info{background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;color:#896C32}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.nav-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:18px 14px;text-align:left;cursor:pointer;transition:border-color 0.15s;width:100%}
-.nav-card:hover{border-color:#5B7B6F}
+.nav-card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:18px 14px;text-align:left;cursor:pointer;transition:border-color 0.15s;width:100%}
+.nav-card:hover{border-color:#896C32}
 .nav-icon{font-size:1.5rem;margin-bottom:6px}
-.nav-title{font-weight:600;color:#1C1C1A;font-size:14px}
-.nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
-.opt-btn{width:100%;padding:11px 14px;text-align:left;border:1.5px solid #E2DDD5;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;font-family:system-ui;color:#1C1C1A;margin-bottom:8px}
+.nav-title{font-weight:600;color:#211D17;font-size:14px}
+.nav-desc{color:#6B6455;font-size:12px;margin-top:2px}
+.opt-btn{width:100%;padding:11px 14px;text-align:left;border:1.5px solid #E4DBC5;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;color:#211D17;margin-bottom:8px}
 .opt-btn:disabled{cursor:default}
-.opt-btn.ric{border-color:#5B7B6F;background:#EAF0EE;color:#2C2C2C}
-.opt-btn.gew{border-color:#5B7B6F;box-shadow:0 0 0 1px #5B7B6F}
-.lt-pruef{flex:1;padding:11px;border-radius:6px;font-size:13px;font-family:system-ui;cursor:pointer;border:1px solid #5B7B6F;background:#fff;color:#5B7B6F}
-.lt-pruef.sicher{background:#5B7B6F;color:#fff}
+.opt-btn.ric{border-color:#896C32;background:#F3EBD9;color:#2C2C2C}
+.opt-btn.gew{border-color:#896C32;box-shadow:0 0 0 1px #896C32}
+.lt-pruef{flex:1;padding:11px;border-radius:6px;font-size:13px;font-family:Poppins,system-ui;cursor:pointer;border:1px solid #896C32;background:#fff;color:#896C32}
+.lt-pruef.sicher{background:#896C32;color:#fff}
 .lt-pruef:disabled{opacity:.45;cursor:default}
 .opt-btn.fal{border-color:#C44030;background:#FDECEA;color:#C44030}
 .page{display:none}.page.ak{display:block}
-.back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:12px}
-.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
-h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
-.sub{color:#7A7A70;font-size:14px;margin-bottom:20px}
-.lernplan-box{background:#2C2C2C;border-radius:8px;padding:16px;color:#F7F5F0;font-size:13px;line-height:1.7;white-space:pre-wrap}
-.fortschritt-tipps{background:#2C2C2C;border-radius:8px;padding:16px;color:#F7F5F0;font-size:13px;line-height:1.7;white-space:pre-wrap}
-.fuss{text-align:center;color:#C8C4BC;font-size:11px;margin-top:2rem}
+.back-btn{background:none;border:none;color:#6B6455;cursor:pointer;font-size:13px;padding:0;margin-bottom:12px}
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#896C32;margin-bottom:4px}
+h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
+.sub{color:#6B6455;font-size:14px;margin-bottom:20px}
+.lernplan-box{background:#2C2C2C;border-radius:8px;padding:16px;color:#F8F4EA;font-size:13px;line-height:1.7;white-space:pre-wrap}
+.fortschritt-tipps{background:#2C2C2C;border-radius:8px;padding:16px;color:#F8F4EA;font-size:13px;line-height:1.7;white-space:pre-wrap}
+.fuss{text-align:center;color:#D9CDAE;font-size:11px;margin-top:2rem}
 /* ── Praxis-Module ── */
 .pm-modul{display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .pm-modul:disabled{cursor:default;opacity:.55}
-.pm-modul:disabled:hover{border-color:#E2DDD5}
-.pm-lj{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F;background:#EAF0EE;border-radius:4px;padding:2px 6px;margin-bottom:4px}
-.pm-bald{display:inline-block;font-size:10px;color:#7A7A70;border:1px solid #C8C4BC;border-radius:4px;padding:1px 6px;margin-left:6px}
+.pm-modul:disabled:hover{border-color:#E4DBC5}
+.pm-lj{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#896C32;background:#F3EBD9;border-radius:4px;padding:2px 6px;margin-bottom:4px}
+.pm-bald{display:inline-block;font-size:10px;color:#6B6455;border:1px solid #D9CDAE;border-radius:4px;padding:1px 6px;margin-left:6px}
 .pm-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .pm-tabs .btn-toggle{flex:1;min-width:0;padding:8px 4px;font-size:12px}
 .pm-tabs-viele .btn-toggle{flex:1 1 30%}
-.pm-range{padding:0;border:none;background:none;accent-color:#5B7B6F;height:28px}
+.pm-range{padding:0;border:none;background:none;accent-color:#896C32;height:28px}
 .pm-misch svg{display:block;margin:0 auto 4px}
 .pmt-thema{padding:0;overflow:hidden}
-.pmt-kopf{display:flex;align-items:center;gap:12px;width:100%;padding:16px;background:none;border:none;cursor:pointer;font-family:system-ui;text-align:left}
+.pmt-kopf{display:flex;align-items:center;gap:12px;width:100%;padding:16px;background:none;border:none;cursor:pointer;font-family:Poppins,system-ui;text-align:left}
 .pmt-icon{font-size:22px;width:28px;text-align:center}
-.pmt-name{flex:1;font-size:16px;font-weight:600;color:#1C1C1A}
-.pmt-zahl{font-size:12px;color:#5B7B6F;background:#EAF0EE;border-radius:10px;padding:2px 8px}
-.pmt-pfeil{color:#7A7A70;font-size:14px}
-.pmt-punkte{border-top:1px solid #E2DDD5;padding:6px 12px 10px}
-.pmt-punkt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 6px;background:none;border:none;border-bottom:1px solid #F0ECE5;cursor:pointer;font-size:14px;color:#1C1C1A;font-family:system-ui}
+.pmt-name{flex:1;font-size:16px;font-weight:600;color:#211D17}
+.pmt-zahl{font-size:12px;color:#896C32;background:#F3EBD9;border-radius:10px;padding:2px 8px}
+.pmt-pfeil{color:#6B6455;font-size:14px}
+.pmt-punkte{border-top:1px solid #E4DBC5;padding:6px 12px 10px}
+.pmt-punkt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 6px;background:none;border:none;border-bottom:1px solid #F0ECE5;cursor:pointer;font-size:14px;color:#211D17;font-family:Poppins,system-ui}
 .pmt-punkt:last-child{border-bottom:none}
 .pmt-punkt span{flex:1}
-.pmt-punkt small{display:block;font-size:11px;color:#7A7A70}
-.pmt-punkt em{font-style:normal;font-size:11px;color:#5B7B6F;white-space:nowrap}
-.pmt-punkt:hover{background:#F7F5F0}
+.pmt-punkt small{display:block;font-size:11px;color:#6B6455}
+.pmt-punkt em{font-style:normal;font-size:11px;color:#896C32;white-space:nowrap}
+.pmt-punkt:hover{background:#F8F4EA}
 .pmt-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
 #pmt-lj .btn-toggle{flex:1 1 0}
 .pmt-chips .btn-toggle{font-size:12px;padding:7px 10px}
 .pmh-fotos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pmh-fotos figure{margin:0}
-.pmh-fotos img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:8px;background:#E2DDD5}
+.pmh-fotos img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:8px;background:#E4DBC5}
 .pmh-fotos figcaption{font-size:12px;line-height:1.4;color:#2C2C2C;margin-top:6px}
 .pm-punkte{display:flex;gap:4px;margin-bottom:14px}
-.pm-punkt{flex:1;height:4px;border-radius:2px;background:#E2DDD5}
-.pm-punkt.ak{background:#5B7B6F}
+.pm-punkt{flex:1;height:4px;border-radius:2px;background:#E4DBC5}
+.pm-punkt.ak{background:#896C32}
 .pm-pflicht{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8B7535;background:#FDF6E3;border:1px solid #C4B86A;border-radius:4px;padding:2px 6px;margin-left:6px;vertical-align:middle}
-.pm-schritt-titel{font-size:18px;font-weight:600;color:#1C1C1A;margin-bottom:12px}
+.pm-schritt-titel{font-size:18px;font-weight:600;color:#211D17;margin-bottom:12px}
 .pm-txt{font-size:14px;color:#2C2C2C;line-height:1.6;margin-bottom:12px}
 .pm-zeile{display:flex;gap:8px;margin-top:12px}
 .pm-zeile button{flex:1}
 .pm-wahl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .pm-wahl .btn-toggle{flex:1 1 30%}
-.pm-skala{position:relative;height:18px;border-radius:9px;background:linear-gradient(90deg,#8DB6D9,#EAF0EE 45%,#E8B07A 75%,#C44030);margin:22px 0 6px}
-.pm-band{position:absolute;top:-4px;bottom:-4px;border:3px solid #1C1C1A;border-radius:10px;background:rgba(255,255,255,.35)}
-.pm-skala-lab{display:flex;justify-content:space-between;font-size:11px;color:#7A7A70}
-.pm-grad{font-size:28px;font-weight:600;color:#1C1C1A;margin:6px 0 2px}
+.pm-skala{position:relative;height:18px;border-radius:9px;background:linear-gradient(90deg,#8DB6D9,#F3EBD9 45%,#E8B07A 75%,#C44030);margin:22px 0 6px}
+.pm-band{position:absolute;top:-4px;bottom:-4px;border:3px solid #211D17;border-radius:10px;background:rgba(255,255,255,.35)}
+.pm-skala-lab{display:flex;justify-content:space-between;font-size:11px;color:#6B6455}
+.pm-grad{font-size:28px;font-weight:600;color:#211D17;margin:6px 0 2px}
 .pm-liste{margin:6px 0 0 18px;font-size:13px;color:#2C2C2C;line-height:1.6}
 .pm-svg{display:block;width:100%;max-width:260px;margin:0 auto 6px}
 .pm-griff-wahl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .pm-griff-wahl .btn-toggle{flex:0 0 auto}
 .pm-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px;line-height:1.5;margin-top:10px}
-.pm-dl dt{font-weight:600;color:#7A7A70}
+.pm-dl dt{font-weight:600;color:#6B6455}
 .pm-dl dd{color:#2C2C2C}
-.pm-chip{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border:1.5px solid #E2DDD5;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;font-family:system-ui;color:#1C1C1A}
-.pm-chip.ric{border-color:#5B7B6F;background:#EAF0EE}
+.pm-chip{display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border:1.5px solid #E4DBC5;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;color:#211D17}
+.pm-chip.ric{border-color:#896C32;background:#F3EBD9}
 .pm-chip.fal{border-color:#C44030;background:#FDECEA}
 .pm-chip small{display:block;color:#C44030;font-size:12px;margin-top:2px}
 .pm-check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#2C2C2C;padding:8px 0;border-bottom:1px solid #F0ECE5;cursor:pointer}
-.pm-check input{width:18px;height:18px;flex:0 0 auto;margin-top:1px;accent-color:#5B7B6F}
+.pm-check input{width:18px;height:18px;flex:0 0 auto;margin-top:1px;accent-color:#896C32}
 .pm-stepper{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.pm-stepper button{width:40px;height:40px;border-radius:8px;border:1px solid #C8C4BC;background:#fff;font-size:20px;color:#5B7B6F;cursor:pointer}
-.pm-stepper span{font-size:20px;font-weight:600;color:#1C1C1A;min-width:70px;text-align:center}
+.pm-stepper button{width:40px;height:40px;border-radius:8px;border:1px solid #D9CDAE;background:#fff;font-size:20px;color:#896C32;cursor:pointer}
+.pm-stepper span{font-size:20px;font-weight:600;color:#211D17;min-width:70px;text-align:center}
 .pm-misch{display:flex;align-items:stretch;gap:6px;text-align:center;margin:8px 0 4px}
-.pm-misch div{flex:1;background:#F7F5F0;border-radius:8px;padding:10px 4px}
-.pm-misch b{display:block;font-size:20px;color:#1C1C1A}
-.pm-misch small{font-size:11px;color:#7A7A70}
-.pm-misch i{align-self:center;font-style:normal;color:#7A7A70;font-size:18px}
-.pm-zeit{position:relative;margin:8px 0 0 6px;padding-left:18px;border-left:2px solid #C8C4BC}
+.pm-misch div{flex:1;background:#F8F4EA;border-radius:8px;padding:10px 4px}
+.pm-misch b{display:block;font-size:20px;color:#211D17}
+.pm-misch small{font-size:11px;color:#6B6455}
+.pm-misch i{align-self:center;font-style:normal;color:#6B6455;font-size:18px}
+.pm-zeit{position:relative;margin:8px 0 0 6px;padding-left:18px;border-left:2px solid #D9CDAE}
 .pm-zeit div{position:relative;font-size:13px;color:#2C2C2C;line-height:1.5;padding-bottom:12px}
-.pm-zeit div:before{content:"";position:absolute;left:-24px;top:4px;width:10px;height:10px;border-radius:50%;background:#5B7B6F}
-.pm-zeit b{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F}
-.pm-timer{font-size:34px;font-weight:600;color:#1C1C1A;text-align:center;font-variant-numeric:tabular-nums}
+.pm-zeit div:before{content:"";position:absolute;left:-24px;top:4px;width:10px;height:10px;border-radius:50%;background:#896C32}
+.pm-zeit b{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#896C32}
+.pm-timer{font-size:34px;font-weight:600;color:#211D17;text-align:center;font-variant-numeric:tabular-nums}
 .pm-tab{width:100%;border-collapse:collapse;font-size:13px}
-.pm-tab th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;padding:6px 4px;border-bottom:1px solid #E2DDD5}
+.pm-tab th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B6455;padding:6px 4px;border-bottom:1px solid #E4DBC5}
 .pm-tab td{padding:8px 4px;border-bottom:1px solid #F0ECE5;vertical-align:top;color:#2C2C2C}
-.pm-tab td:first-child{font-weight:700;white-space:nowrap;color:#1C1C1A}
+.pm-tab td:first-child{font-weight:700;white-space:nowrap;color:#211D17}
 .pm-karte{perspective:900px;height:230px;margin-bottom:12px;cursor:pointer}
 .pm-karte-in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
 .pm-karte.um .pm-karte-in{transform:rotateY(180deg)}
-.pm-seite{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;padding:20px;display:flex;flex-direction:column;justify-content:center;text-align:center;border:1px solid #E2DDD5;background:#fff}
-.pm-seite.hinten{transform:rotateY(180deg);background:#EAF0EE;border-color:#5B7B6F}
+.pm-seite{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:10px;padding:20px;display:flex;flex-direction:column;justify-content:center;text-align:center;border:1px solid #E4DBC5;background:#fff}
+.pm-seite.hinten{transform:rotateY(180deg);background:#F3EBD9;border-color:#896C32}
 .pm-seite .label{margin-bottom:10px}
-.pm-seite p{font-size:16px;line-height:1.5;color:#1C1C1A}
+.pm-seite p{font-size:16px;line-height:1.5;color:#211D17}
 .pm-seite.hinten p{font-size:14px}
 @media (prefers-reduced-motion: reduce){.pm-karte-in{transition:none}}
 </style>
@@ -147,19 +149,19 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
 <!-- ── HOME ── -->
 <div id="p-home" class="page ak">
-  <button onclick="window.location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html')" style="background:none;border:none;color:#7A7A70;font-size:13px;cursor:pointer;font-family:system-ui;padding:0;margin-bottom:12px;display:inline-block">← Zurück zum Lernquiz</button>
+  <button onclick="window.location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html')" style="background:none;border:none;color:#6B6455;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;padding:0;margin-bottom:12px;display:inline-block">← Zurück zum Lernquiz</button>
   <div class="tag">greathairday · Wien</div>
   <h1>Lern-Tool ✂</h1>
   <p class="sub">Für Ronya — Lehrlings-Begleitung</p>
-  <div id="admin-hinweis" style="display:none;background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#2C2C2C">
-    ✂ Du bist als Meisterin eingeloggt — <button onclick="zeige('admin')" style="background:none;border:none;color:#5B7B6F;font-size:13px;cursor:pointer;text-decoration:underline;font-family:system-ui;padding:0">Admin-Bereich öffnen</button>
+  <div id="admin-hinweis" style="display:none;background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#2C2C2C">
+    ✂ Du bist als Meisterin eingeloggt — <button onclick="zeige('admin')" style="background:none;border:none;color:#896C32;font-size:13px;cursor:pointer;text-decoration:underline;font-family:Poppins,system-ui;padding:0">Admin-Bereich öffnen</button>
   </div>
 
-  <button class="nav-card" onclick="pmtOeffnen()" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;border:2px solid #5B7B6F;background:#5B7B6F;color:#fff">
+  <button class="nav-card" onclick="pmtOeffnen()" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;border:2px solid #896C32;background:#896C32;color:#fff">
     <div class="nav-icon" style="margin:0">🔎</div>
     <div>
       <div class="nav-title" style="color:#fff">Was trainieren wir heute?</div>
-      <div class="nav-desc" style="color:#EAF0EE">Alle Themen, Suche &amp; zuletzt geöffnet</div>
+      <div class="nav-desc" style="color:#F3EBD9">Alle Themen, Suche &amp; zuletzt geöffnet</div>
     </div>
   </button>
 
@@ -173,7 +175,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   </div>
 
   <div class="grid2">
-    <button class="nav-card" onclick="heuteOeffnen()" style="grid-column:1/-1;border-color:#5B7B6F;background:#EAF0EE">
+    <button class="nav-card" onclick="heuteOeffnen()" style="grid-column:1/-1;border-color:#896C32;background:#F3EBD9">
       <div class="nav-icon">📋</div>
       <div class="nav-title">Heute laut Lernplan</div>
       <div class="nav-desc">Direkt einsteigen</div>
@@ -206,42 +208,42 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <div class="nav-desc">Lernstand ansehen</div>
     </div>
   </button>
-  <button class="nav-card" onclick="zeige('praxis')" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="zeige('praxis')" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
     <div class="nav-icon" style="margin:0">💆</div>
     <div>
       <div class="nav-title">Praxis-Module</div>
       <div class="nav-desc">Haarwäsche &amp; Kopfmassage, Farbe, Strähnen, Hochstecken</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261029a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261029a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
     <div class="nav-icon" style="margin:0">🎓</div>
     <div>
       <div class="nav-title">Zwischenprüfung</div>
       <div class="nav-desc">Praxis mit Prüfungszeit, Fachgespräch, Hautdiagnose &amp; Prüfungstag</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
     <div class="nav-icon" style="margin:0">🇬🇧</div>
     <div>
       <div class="nav-title">Englisch im Salon</div>
       <div class="nav-desc">Fachvokabular Deutsch ↔ Englisch</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261029a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261029a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
     <div class="nav-icon" style="margin:0">✂</div>
     <div>
       <div class="nav-title">Schnittwerkstatt</div>
       <div class="nav-desc">Grundschnitte, Winkel, Schnittzeichnung &amp; Beratung/Formwirkung</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261029a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261029a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
     <div class="nav-icon" style="margin:0">🧰</div>
     <div>
       <div class="nav-title">Werkzeugkunde</div>
       <div class="nav-desc">Scheren, Kämme, Geräte, Pflege &amp; Hygiene</div>
     </div>
   </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20260927f'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#5B7B6F;background:#EAF0EE">
+  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20260927f'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
     <div class="nav-icon" style="margin:0">✎</div>
     <div>
       <div class="nav-title">Schnittzeichnungs-Designer</div>
@@ -258,16 +260,16 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 
   <div class="card">
     <div class="label">Thema</div>
-    <div id="heute-thema" style="font-size:16px;font-weight:600;color:#1C1C1A;margin-bottom:16px"></div>
+    <div id="heute-thema" style="font-size:16px;font-weight:600;color:#211D17;margin-bottom:16px"></div>
     <div class="label">Dauer</div>
-    <div id="heute-dauer" style="font-size:14px;color:#1C1C1A;margin-bottom:16px"></div>
+    <div id="heute-dauer" style="font-size:14px;color:#211D17;margin-bottom:16px"></div>
     <div class="label">Lerntipp</div>
-    <div id="heute-tipp" style="font-size:13px;color:#1C1C1A;line-height:1.6;background:#EAF0EE;border-radius:6px;padding:12px;margin-bottom:20px"></div>
+    <div id="heute-tipp" style="font-size:13px;color:#211D17;line-height:1.6;background:#F3EBD9;border-radius:6px;padding:12px;margin-bottom:20px"></div>
     <button class="btn-primary" onclick="heuteStarten()">Jetzt starten →</button>
     <div id="heute-verschieben-wrap" style="margin-top:10px;text-align:center">
-      <button id="heute-verschieben-btn" onclick="heuteVerschieben()" style="background:none;border:none;color:#7A7A70;font-size:13px;cursor:pointer;text-decoration:underline;font-family:system-ui">Später — in 1 Stunde</button>
+      <button id="heute-verschieben-btn" onclick="heuteVerschieben()" style="background:none;border:none;color:#6B6455;font-size:13px;cursor:pointer;text-decoration:underline;font-family:Poppins,system-ui">Später — in 1 Stunde</button>
     </div>
-    <div id="heute-msg" style="display:none;font-size:13px;color:#5B7B6F;text-align:center;margin-top:10px"></div>
+    <div id="heute-msg" style="display:none;font-size:13px;color:#896C32;text-align:center;margin-top:10px"></div>
   </div>
 </div>
 
@@ -373,7 +375,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   </div>
   <div id="lap-ergebnis" style="display:none" class="card">
     <div class="label" id="lap-typ-label"></div>
-    <p id="lap-frage" style="font-weight:600;color:#1C1C1A;line-height:1.6;font-size:15px;margin-bottom:14px"></p>
+    <p id="lap-frage" style="font-weight:600;color:#211D17;line-height:1.6;font-size:15px;margin-bottom:14px"></p>
     <div class="muster" id="lap-antwort" style="display:none">
       <div class="muster-lab">Musterlösung</div>
       <div id="lap-antwort-txt"></div>
@@ -404,10 +406,10 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 <div id="p-admin" class="page">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
-    <button onclick="adminLogout()" style="background:none;border:1.5px solid #E2DDD5;border-radius:6px;padding:6px 12px;font-size:12px;color:#7A7A70;cursor:pointer;font-family:system-ui">Abmelden</button>
+    <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
   </div>
   <p class="sub">Hallo Mirjam</p>
-  <div id="admin-sync-status" style="font-size:12px;color:#5B7B6F;margin-bottom:12px"></div>
+  <div id="admin-sync-status" style="font-size:12px;color:#896C32;margin-bottom:12px"></div>
   <div class="grid2">
     <button class="nav-card" onclick="zeige('admin-quiz')"><div class="nav-icon">?</div><div class="nav-title">Quiz-Fragen</div><div class="nav-desc">Fragen bearbeiten</div></button>
     <button class="nav-card" onclick="zeige('admin-lap')"><div class="nav-icon">&#127891;</div><div class="nav-title">LAP-Fragen</div><div class="nav-desc">Pruefungsfragen</div></button>
@@ -446,10 +448,10 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     <div class="label">Richtige Antwort</div>
     <select id="qe-richtig" style="margin-bottom:14px"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
     <div class="label">Erklaerung</div><textarea id="qe-erkl" rows="3" style="margin-bottom:14px"></textarea>
-    <div id="qedit-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
+    <div id="qedit-status" style="font-size:12px;color:#896C32;margin-bottom:8px"></div>
     <div style="display:flex;gap:8px">
       <button class="btn-primary" onclick="adminQuizSpeichern()" style="flex:1">Speichern</button>
-      <button onclick="adminQuizLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui">Loeschen</button>
+      <button onclick="adminQuizLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui">Loeschen</button>
     </div>
   </div>
 </div>
@@ -474,10 +476,10 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div class="card">
     <div class="label">Frage</div><textarea id="le-frage" rows="4" style="margin-bottom:14px"></textarea>
     <div class="label">Musterloesung</div><textarea id="le-antwort" rows="6" style="margin-bottom:14px"></textarea>
-    <div id="lapedit-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
+    <div id="lapedit-status" style="font-size:12px;color:#896C32;margin-bottom:8px"></div>
     <div style="display:flex;gap:8px">
       <button class="btn-primary" onclick="adminLapSpeichern()" style="flex:1">Speichern</button>
-      <button onclick="adminLapLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui">Loeschen</button>
+      <button onclick="adminLapLoeschen()" style="flex:1;padding:12px;background:#FDECEA;color:#C44030;border:1.5px solid #C44030;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui">Loeschen</button>
     </div>
   </div>
 </div>
@@ -497,7 +499,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
       <option value="2">2 Stunden</option><option value="3">3 Stunden</option><option value="5" selected>5 Stunden</option><option value="7">7 Stunden</option><option value="10">10 Stunden</option>
     </select>
     <div class="label">Plan-Inhalt</div><textarea id="alp-inhalt" rows="10" style="margin-bottom:14px"></textarea>
-    <div id="lp-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
+    <div id="lp-status" style="font-size:12px;color:#896C32;margin-bottom:8px"></div>
     <button class="btn-primary" onclick="adminLpSpeichern()">Speichern</button>
   </div>
 </div>
@@ -508,7 +510,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div class="card">
     <div class="label">Thema</div><select id="at-thema" onchange="adminTippLade()" style="margin-bottom:14px"></select>
     <div class="label">Tipp-Text</div><textarea id="at-inhalt" rows="10" style="margin-bottom:14px"></textarea>
-    <div id="tipp-status" style="font-size:12px;color:#5B7B6F;margin-bottom:8px"></div>
+    <div id="tipp-status" style="font-size:12px;color:#896C32;margin-bottom:8px"></div>
     <button class="btn-primary" onclick="adminTippSpeichern()">Speichern</button>
   </div>
 </div>
@@ -678,7 +680,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 </div>
 
 <div class="fuss">greathairday.at · Rechte Wienzeile 47 · 1050 Wien<br>
-<button onclick="zeige('mlogin')" style="background:none;border:none;color:#C8C4BC;font-size:11px;cursor:pointer;text-decoration:underline;margin-top:6px;font-family:system-ui">Meisterin-Login</button>
+<button onclick="zeige('mlogin')" style="background:none;border:none;color:#D9CDAE;font-size:11px;cursor:pointer;text-decoration:underline;margin-top:6px;font-family:Poppins,system-ui">Meisterin-Login</button>
 </div>
 </div>
 
@@ -1068,7 +1070,7 @@ function ltOptionen(q, fn) {
 // Wie sicher bist du? Richtig geraten zählt nicht als gewusst,
 // sicher und trotzdem falsch zeigt ein Missverständnis.
 function ltSicherZeile() {
-  return '<div class="lt-sicher"><div style="font-size:11px;color:#7A7A70;text-align:center;margin:2px 0 6px">Wie sicher bist du dir?</div>' +
+  return '<div class="lt-sicher"><div style="font-size:11px;color:#6B6455;text-align:center;margin:2px 0 6px">Wie sicher bist du dir?</div>' +
     '<div style="display:flex;gap:8px;margin-bottom:8px"><button class="lt-pruef sicher" disabled>Sicher – prüfen</button>' +
     '<button class="lt-pruef" disabled>Geraten – prüfen</button></div></div>';
 }
@@ -1104,14 +1106,14 @@ function ltMarkieren(sel, q, i) {
   });
 }
 function ltZusatzKopf(q) {
-  return q.haupt ? '<div style="font-size:11px;color:#2E7D5E;font-weight:700;margin-bottom:6px">🔎 Verstanden? Zusatzfrage zu: „'+q.haupt.f+'“</div>' : '';
+  return q.haupt ? '<div style="font-size:11px;color:#6E5527;font-weight:700;margin-bottom:6px">🔎 Verstanden? Zusatzfrage zu: „'+q.haupt.f+'“</div>' : '';
 }
 // Nach einer richtigen Antwort die Zusatzfragen direkt dahinter einreihen
 function ltZusatz(st, q, ok) {
   if (!ok || q.haupt || !q.zf || !q.zf.length) return '';
   var zs = q.zf.map(function(z){ return Object.assign({}, z, {haupt:q}); });
   st.quiz.splice.apply(st.quiz, [st.qi + 1, 0].concat(zs));
-  return '<div style="font-size:12px;color:#2E7D5E;margin-top:8px">➜ Jetzt kommt eine Zusatzfrage: Zeig, dass du auch das Warum verstanden hast.</div>';
+  return '<div style="font-size:12px;color:#6E5527;margin-top:8px">➜ Jetzt kommt eine Zusatzfrage: Zeig, dass du auch das Warum verstanden hast.</div>';
 }
 
 // ── QUIZ ────────────────────────────────────────────────────────
@@ -1162,7 +1164,7 @@ function quizNeu() {
   var thema = document.getElementById('quiz-thema').value;
   var pool = FRAGEN[thema] || [];
   if (!pool.length) {
-    document.getElementById('quiz-bereich').innerHTML = '<p style="color:#7A7A70;font-size:13px">Für dieses Thema sind noch keine Fragen hinterlegt.</p><button class="btn-ghost" onclick="quizReset()" style="margin-top:10px">Anderes Thema</button>';
+    document.getElementById('quiz-bereich').innerHTML = '<p style="color:#6B6455;font-size:13px">Für dieses Thema sind noch keine Fragen hinterlegt.</p><button class="btn-ghost" onclick="quizReset()" style="margin-top:10px">Anderes Thema</button>';
     return;
   }
   var f = pool[Math.floor(Math.random() * pool.length)];
@@ -1172,7 +1174,7 @@ function quizNeu() {
 var LT_FRAGE = null;
 function zeigeFrage(f) {
   LT_FRAGE = f;
-  var html = '<p style="font-weight:600;color:#1C1C1A;line-height:1.5;font-size:15px;margin-bottom:14px">'+f.f+'</p><div>';
+  var html = '<p style="font-weight:600;color:#211D17;line-height:1.5;font-size:15px;margin-bottom:14px">'+f.f+'</p><div>';
   ltMischen(f.o.map(function(_, i){ return i; })).forEach(function(i, pos){
     html += '<button class="opt-btn" id="opt-'+i+'" onclick="ltWaehle(this,\'quizPruefeAuswahl\','+i+')">'+(String.fromCharCode(65+pos))+') '+f.o[i]+'</button>';
   });
@@ -1194,7 +1196,7 @@ function quizPruefe(btn, gewaehlt, richtig, erklaerung, sicher) {
   if (QUIZ_PUFFER.length >= 10) quizPufferSpeichern();
   var fb = document.createElement('div');
   fb.className = sfb.klasse;
-  fb.innerHTML = '<strong style="color:'+(ok && sicher?'#2E7D5E':ok?'#8A7A30':'#C44030')+'">'+(kor?'✓ ':ok?'✓ ':'✗ ')+sfb.titel+'</strong>'+sfb.zusatz+'<div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>';
+  fb.innerHTML = '<strong style="color:'+(ok && sicher?'#6E5527':ok?'#8A7A30':'#C44030')+'">'+(kor?'✓ ':ok?'✓ ':'✗ ')+sfb.titel+'</strong>'+sfb.zusatz+'<div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>';
   var nb = document.createElement('button');
   nb.className = 'btn-primary';
   nb.style.marginTop = '10px';
@@ -1275,7 +1277,7 @@ function progLjWahl(lj, btn) {
 
 async function progZeige() {
   var liste = document.getElementById('prog-liste');
-  liste.innerHTML = '<div style="color:#7A7A70;font-size:13px">Wird geladen…</div>';
+  liste.innerHTML = '<div style="color:#6B6455;font-size:13px">Wird geladen…</div>';
 
   // Lehrling-ID aus Supabase Auth holen
   var session = await sb2.auth.getSession();
@@ -1305,7 +1307,7 @@ async function progZeige() {
   liste.innerHTML = '';
 
   if (!lehrlingId) {
-    liste.innerHTML = '<div style="color:#7A7A70;font-size:13px">Bitte im Lernquiz einloggen um den Fortschritt zu sehen.</div>';
+    liste.innerHTML = '<div style="color:#6B6455;font-size:13px">Bitte im Lernquiz einloggen um den Fortschritt zu sehen.</div>';
     return;
   }
 
@@ -1314,17 +1316,17 @@ async function progZeige() {
     var gesamt = d ? (d.richtig + d.falsch) : 0;
     var richtig = d ? d.richtig : 0;
     var prozent = gesamt > 0 ? Math.round((richtig / gesamt) * 100) : 0;
-    var farbe = prozent >= 80 ? '#5B7B6F' : prozent >= 50 ? '#C4B86A' : prozent > 0 ? '#D4957A' : '#DDD8D0';
+    var farbe = prozent >= 80 ? '#896C32' : prozent >= 50 ? '#C4B86A' : prozent > 0 ? '#D4957A' : '#DDD8D0';
     var label = prozent >= 80 ? 'Gut ✓' : prozent >= 50 ? 'Im Aufbau' : prozent > 0 ? 'Üben' : 'Noch nicht geübt';
 
     var div = document.createElement('div');
     div.style.cssText = 'margin-bottom:14px';
     div.innerHTML =
       '<div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">' +
-        '<span style="font-size:13px;color:#1C1C1A">'+t+'</span>' +
+        '<span style="font-size:13px;color:#211D17">'+t+'</span>' +
         '<span style="font-size:11px;color:'+farbe+';font-weight:600">'+label+'</span>' +
       '</div>' +
-      '<div style="background:#E2DDD5;border-radius:4px;height:8px;overflow:hidden">' +
+      '<div style="background:#E4DBC5;border-radius:4px;height:8px;overflow:hidden">' +
         '<div style="background:'+farbe+';height:100%;width:'+prozent+'%;border-radius:4px;transition:width 0.4s"></div>' +
       '</div>' +
       (gesamt > 0 ? '<div style="font-size:11px;color:#9A9188;margin-top:3px">'+richtig+' von '+gesamt+' Fragen richtig</div>' : '');
@@ -1621,14 +1623,14 @@ function adminQuizLadeThema() {
   var liste = document.getElementById('aq-liste');
   liste.innerHTML = '';
   if (!pool.length) {
-    liste.innerHTML = '<p style="color:#7A7A70;font-size:13px;padding:10px 0">Noch keine Fragen.</p>';
+    liste.innerHTML = '<p style="color:#6B6455;font-size:13px;padding:10px 0">Noch keine Fragen.</p>';
     return;
   }
   pool.forEach(function(f, i){
     var d = document.createElement('div');
     d.className = 'card';
-    d.style.cssText = 'cursor:pointer;border-left:3px solid #5B7B6F;margin-bottom:8px';
-    d.innerHTML = '<div style="font-size:10px;color:#7A7A70;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'...':'')+'</div>';
+    d.style.cssText = 'cursor:pointer;border-left:3px solid #896C32;margin-bottom:8px';
+    d.innerHTML = '<div style="font-size:10px;color:#6B6455;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'...':'')+'</div>';
     d.addEventListener('click',(function(idx){ return function(){ adminQuizEdit(thema,idx); }; })(i));
     liste.appendChild(d);
   });
@@ -1731,8 +1733,8 @@ function adminLapListe() {
   pool.forEach(function(f,i){
     var d = document.createElement('div');
     d.className = 'card';
-    d.style.cssText = 'cursor:pointer;border-left:3px solid #5B7B6F;margin-bottom:8px';
-    d.innerHTML = '<div style="font-size:10px;color:#7A7A70;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'...':'')+'</div>';
+    d.style.cssText = 'cursor:pointer;border-left:3px solid #896C32;margin-bottom:8px';
+    d.innerHTML = '<div style="font-size:10px;color:#6B6455;font-weight:700;margin-bottom:4px">Frage #'+(i+1)+'</div><div style="font-size:13px;line-height:1.4">'+f.f.substring(0,90)+(f.f.length>90?'...':'')+'</div>';
     d.addEventListener('click',(function(idx){ return function(){ adminLapEdit(idx); }; })(i));
     liste.appendChild(d);
   });
@@ -2100,7 +2102,7 @@ function pmwTemp() {
   '<div class="card">' +
     '<div class="label">Empfohlene Wassertemperatur</div>' +
     '<div class="pm-grad">'+lo+'–'+hi+' °C</div>' +
-    '<div style="font-size:13px;color:#7A7A70">'+(hi <= 33 ? 'kühl bis lauwarm' : 'lauwarm')+'</div>' +
+    '<div style="font-size:13px;color:#6B6455">'+(hi <= 33 ? 'kühl bis lauwarm' : 'lauwarm')+'</div>' +
     '<div class="pm-skala"><div class="pm-band" style="left:'+links+'%;width:'+breite+'%"></div></div>' +
     '<div class="pm-skala-lab"><span>'+MIN+' °C kalt</span><span>Körpertemperatur ca. 37 °C</span><span>'+MAX+' °C heiß</span></div>' +
     '<div class="label" style="margin-top:16px">Warum</div>' +
@@ -2111,7 +2113,7 @@ function pmwTemp() {
 }
 
 // ── Skizzen: schwarze Strichzeichnungen im Stil der Vorlagen ──
-var PMW_LINIE = '#1C1C1A';
+var PMW_LINIE = '#211D17';
 
 function pmwKopfHinten(x, innen) {
   var L = PMW_LINIE;
@@ -2141,8 +2143,8 @@ function pmwKopfOben(x, innen) {
     '<ellipse cx="60" cy="74" rx="40" ry="52"/>' +
     '<path d="M55 23 l5 -9 l5 9"/>' +
     '<path d="M20 66 q-7 8 0 16"/><path d="M100 66 q7 8 0 16"/>' +
-    '<text x="60" y="8" font-size="8" fill="#7A7A70" stroke="none" text-anchor="middle">Stirn</text>' +
-    '<text x="60" y="140" font-size="8" fill="#7A7A70" stroke="none" text-anchor="middle">Nacken</text>' +
+    '<text x="60" y="8" font-size="8" fill="#6B6455" stroke="none" text-anchor="middle">Stirn</text>' +
+    '<text x="60" y="140" font-size="8" fill="#6B6455" stroke="none" text-anchor="middle">Nacken</text>' +
     innen + '</g>';
 }
 
@@ -2249,7 +2251,7 @@ function pmwWaesche() {
     html += '<div class="card"><div class="pm-schritt-titel" style="font-size:16px">'+(i+1)+'. '+ph.n+'</div>' +
       pmwSkizze(ph.bild) + pmwListe(ph.wie) + '</div>';
   });
-  html += '<div style="font-size:11px;color:#7A7A70;text-align:center;margin-bottom:12px">Nach der Vorlage „Entspannungshaarwäsche“ von Wella System Professional</div>';
+  html += '<div style="font-size:11px;color:#6B6455;text-align:center;margin-bottom:12px">Nach der Vorlage „Entspannungshaarwäsche“ von Wella System Professional</div>';
   pmwSetze(html);
 }
 
@@ -2336,7 +2338,7 @@ function pmwCheck() {
     PMW_SELBST.map(function(t, i){
       return '<label class="pm-check"><input type="checkbox" onchange="pmwSelbst('+i+',this.checked)"'+(haken[i] ? ' checked' : '')+'><span>'+t+'</span></label>';
     }).join('') +
-    '<div id="pmw-selbst-stand" style="font-size:13px;color:#5B7B6F;font-weight:600;margin-top:12px"></div>' +
+    '<div id="pmw-selbst-stand" style="font-size:13px;color:#896C32;font-weight:600;margin-top:12px"></div>' +
     '<div class="pm-zeile"><button class="btn-ghost" onclick="pmwSelbstLeeren()">Neue Wäsche, Häkchen leeren</button></div>' +
   '</div>';
   pmwSetze(html);
@@ -2514,7 +2516,7 @@ function pmfRechner() {
   var p = PMF_PRODUKTE[PMF.produkt], r = pmfBerechne();
   var html = '<div class="card">' +
     '<div class="label">Was trägst du auf?</div>' + pmfKnoepfe('produkt', PMF_PRODUKTE) +
-    '<div style="font-size:12px;color:#7A7A70;margin:-6px 0 14px">L’Oréal Professionnel '+p.voll+'</div>' +
+    '<div style="font-size:12px;color:#6B6455;margin:-6px 0 14px">L’Oréal Professionnel '+p.voll+'</div>' +
     '<div class="label">'+(PMF.produkt === 'bl' ? 'Technik' : 'Ziel')+'</div>' + pmfKnoepfe('ziel', p.ziele);
   if (p.situation) html += '<div class="label">Situation</div>' + pmfKnoepfe('situation', {ansatz:'Ansatzbehandlung', erst:'Erstbehandlung'});
   if (!r.ansatz) html += '<div class="label">Haarlänge</div>' + pmfKnoepfe('laenge', PMF_LAENGE);
@@ -2575,11 +2577,11 @@ function pmfTimerZeigen() {
   t.phasen.forEach(function(ph){ if (vorbei >= ph.m) jetzt = ph; });
   var naechste = t.phasen.filter(function(ph){ return ph.m > vorbei; })[0];
   var mm = Math.floor(rest / 60), ss = rest % 60;
-  box.innerHTML = '<div style="border-top:1px solid #E2DDD5;margin-top:4px;padding-top:14px">' +
+  box.innerHTML = '<div style="border-top:1px solid #E4DBC5;margin-top:4px;padding-top:14px">' +
     '<div class="label" style="text-align:center">Timer · '+t.name+'</div>' +
     '<div class="pm-timer">'+(t.fertig ? 'Fertig!' : mm+':'+(ss < 10 ? '0' : '')+ss)+'</div>' +
     '<div class="'+(t.fertig ? 'fb-g' : 'fb-o')+'" style="font-size:13px;line-height:1.5"><strong>Jetzt:</strong> '+(t.fertig ? t.phasen[t.phasen.length-1].t : jetzt.t) +
-      (!t.fertig && naechste ? '<br><span style="color:#7A7A70">Bei '+naechste.m+' Min: '+naechste.t+'</span>' : '')+'</div>' +
+      (!t.fertig && naechste ? '<br><span style="color:#6B6455">Bei '+naechste.m+' Min: '+naechste.t+'</span>' : '')+'</div>' +
     '<div class="pm-zeile"><button class="btn-ghost" onclick="pmfTimerStopp()">'+(t.fertig ? 'Schließen' : 'Timer stoppen')+'</button></div>' +
   '</div>';
 }
@@ -2587,7 +2589,7 @@ function pmfTimerZeigen() {
 // ── Oxidanten-Übersicht ──
 function pmfStrang(schritt) {
   var h = '<svg viewBox="0 0 240 70" style="display:block;width:100%;max-width:300px;margin:4px auto 8px" role="img" aria-label="Haar im Längsschnitt, Schritt '+schritt+'">' +
-    '<rect x="10" y="24" width="220" height="22" rx="4" fill="#EFE7DC" stroke="#C8C4BC"/>';
+    '<rect x="10" y="24" width="220" height="22" rx="4" fill="#EFE7DC" stroke="#D9CDAE"/>';
   var heb = schritt === 3 ? 2 : 9;
   for (var x = 14; x < 226; x += 14) {
     h += '<path d="M'+x+' 24 L'+(x+14)+' '+(24-heb)+'" stroke="#A89F92" stroke-width="1.5" fill="none"/>' +
@@ -2615,7 +2617,7 @@ function pmfOxi() {
       '<tr><td>9 %</td><td>30</td><td>ca. 2 Stufen heller; Blondierung in Folie</td></tr>' +
       '<tr><td>12 %</td><td>40</td><td>ca. 3 Stufen heller, Hochlift; stärkste Belastung</td></tr>' +
     '</table>' +
-    '<div style="font-size:12px;color:#7A7A70;margin-top:10px">Je höher der Prozentwert, desto stärker die Aufhellung und desto größer die Belastung für Haar und Kopfhaut.</div>' +
+    '<div style="font-size:12px;color:#6B6455;margin-top:10px">Je höher der Prozentwert, desto stärker die Aufhellung und desto größer die Belastung für Haar und Kopfhaut.</div>' +
     '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">Das ist das allgemeine Schema aus der Berufsschule. Im Salon gilt die Anleitung der Farblinie, z. B. färbt Majirel auch Ton in Ton und dunkler mit 6 % (20 Vol). Siehe Rechner.</div></div>';
   html += '<div class="card"><div class="label">So wirkt eine Oxidationsfarbe</div>' +
     '<div class="pm-schritt-titel" style="font-size:15px;margin:8px 0 0">1. Haar quillt auf</div>' + pmfStrang(1) +
@@ -2650,10 +2652,10 @@ function pmfKarten() {
     pmfSetze(html); return;
   }
   var k = PMF_KARTEN[PMF.deck[0]];
-  html = '<div style="font-size:13px;color:#5B7B6F;font-weight:600;margin-bottom:8px">'+PMF.gewusst+' von '+n+' gewusst · noch '+PMF.deck.length+' im Stapel</div>' +
+  html = '<div style="font-size:13px;color:#896C32;font-weight:600;margin-bottom:8px">'+PMF.gewusst+' von '+n+' gewusst · noch '+PMF.deck.length+' im Stapel</div>' +
     '<div class="pm-karte'+(PMF.um ? ' um' : '')+'" onclick="pmfUmdrehen()" role="button" tabindex="0" aria-label="Karte umdrehen">' +
       '<div class="pm-karte-in">' +
-        '<div class="pm-seite"><div class="label">Frage</div><p>'+k.v+'</p><div style="font-size:12px;color:#7A7A70;margin-top:14px">Tippen zum Umdrehen</div></div>' +
+        '<div class="pm-seite"><div class="label">Frage</div><p>'+k.v+'</p><div style="font-size:12px;color:#6B6455;margin-top:14px">Tippen zum Umdrehen</div></div>' +
         '<div class="pm-seite hinten"><div class="label">Antwort</div><p>'+k.h+'</p></div>' +
       '</div></div>';
   html += pmfKartenKnoepfe();
@@ -2687,7 +2689,7 @@ function pmfAntwort(gewusst) {
 // Darstellung angelehnt an die Schulungsunterlagen des Salons (Passée-Dreiecke,
 // Hinterkopf mit roten Abteilungslinien, Formen auf dem Kopf von oben).
 // Skizzen und Texte sind selbst erstellt, nichts ist aus den Unterlagen kopiert.
-var PMS_F = {braun:'#8E4B2A', hell:'#ECE6DC', hellplus:'#F7F2E7', rot:'#C8312B', blau:'#4F9ED6', linie:'#1C1C1A'};
+var PMS_F = {braun:'#8E4B2A', hell:'#ECE6DC', hellplus:'#F7F2E7', rot:'#C8312B', blau:'#4F9ED6', linie:'#211D17'};
 var PMS_ID = 0;
 function pmsUid() { return 'pms' + (++PMS_ID); }
 
@@ -2726,7 +2728,7 @@ function pmsDreieck(art, o) {
   }
   if (o.wolke) h += '<g fill="'+F.braun+'"><circle cx="44" cy="12" r="12"/><circle cx="62" cy="8" r="14"/><circle cx="80" cy="14" r="12"/><circle cx="54" cy="24" r="11"/><circle cx="72" cy="26" r="11"/></g>';
   var inhalt = '<defs>'+defs+'</defs><g clip-path="url(#'+id+'c)">'+h+'</g>';
-  if (o.flecken) inhalt += '<g fill="#fff" stroke="#C8C4BC"><ellipse cx="40" cy="30" rx="4" ry="3"/><ellipse cx="46" cy="44" rx="3" ry="4"/><ellipse cx="88" cy="32" rx="3" ry="4"/></g>';
+  if (o.flecken) inhalt += '<g fill="#fff" stroke="#D9CDAE"><ellipse cx="40" cy="30" rx="4" ry="3"/><ellipse cx="46" cy="44" rx="3" ry="4"/><ellipse cx="88" cy="32" rx="3" ry="4"/></g>';
   if (o.kreuz) inhalt += '<path d="M26 40 L74 84 M74 40 L26 84" stroke="'+F.rot+'" stroke-width="7" stroke-linecap="round"/>';
   if (o.x !== undefined) return '<svg x="'+o.x+'" y="'+o.y+'" width="'+o.w+'" height="'+(o.w * 170 / 120)+'" viewBox="0 0 120 170">'+inhalt+'</svg>';
   return '<svg viewBox="0 0 120 170" style="width:'+(o.breite || 120)+'px;height:auto" role="img" aria-label="Passée-Skizze">'+inhalt+'</svg>';
@@ -2821,7 +2823,7 @@ function pmsKopfOben(id) {
       '<path d="M100 14 C150 14 168 52 166 100 C164 140 150 170 128 192 Q116 204 110 214 Q100 222 90 214 Q84 204 72 192 C50 170 36 140 34 100 C32 52 50 14 100 14 Z"/>' +
       '<path d="M36 94 q-10 6 -6 24 q2 10 8 16"/><path d="M164 94 q10 6 6 24 q-2 10 -8 16"/>' +
       '<path d="M40 152 Q70 140 100 154 Q130 140 160 152" stroke-dasharray="5 4"/>' +
-    '</g><text x="100" y="226" font-size="8" fill="#7A7A70" text-anchor="middle">Gesicht</text></svg>';
+    '</g><text x="100" y="226" font-size="8" fill="#6B6455" text-anchor="middle">Gesicht</text></svg>';
 }
 
 function pmsKontur() {
@@ -3013,11 +3015,11 @@ function pmsPasseeErgebnis() {
   document.getElementById('pms-l-anzahl').textContent = 'Anzahl Passées: ' + n;
   document.getElementById('pms-passee-erg').innerHTML =
     pmsDreieck('streifen', {breite:160, n:n, b:d * 9.6, start:PMS.unterlegt ? .28 : 0}) +
-    '<div class="pm-grad">'+(anteil >= 100 ? 'fast alles' : 'ca. '+anteil+' %')+' hell</div><div style="font-size:13px;color:#7A7A70">Effekt: '+effekt+'</div>' +
+    '<div class="pm-grad">'+(anteil >= 100 ? 'fast alles' : 'ca. '+anteil+' %')+' hell</div><div style="font-size:13px;color:#6B6455">Effekt: '+effekt+'</div>' +
     '<div class="pm-txt" style="text-align:left;margin-top:12px"><strong>Wirkung:</strong> '+art+'.</div>' +
     (anteil >= 80 ? '<div class="fb-o" style="text-align:left;font-size:13px;line-height:1.5">Die Passées liegen so dicht, dass kaum Grundfarbe dazwischen bleibt. Das Ergebnis wird flächig statt strähnig.</div>' : '') +
     '<div style="text-align:left">' + pmsPunkte(['Je mehr Passées, desto größer der Effekt.','Passées sind 0,3–2 cm dick. Für weiche Übergänge keine dicken Passées.','Bei dünnen Passées reicht die Ansatzfarbe auf einer Seite.']) + '</div>' +
-    '<div style="font-size:11px;color:#7A7A70;margin-top:8px">Der Prozentwert ist eine Vorstellungshilfe, kein Messwert.</div>';
+    '<div style="font-size:11px;color:#6B6455;margin-top:8px">Der Prozentwert ist eine Vorstellungshilfe, kein Messwert.</div>';
 }
 
 // ── Techniken im Überblick ──
@@ -3026,7 +3028,7 @@ function pmsTechnik() {
   var bild = t.bild === 'kontur' ? pmsKontur() : '<div style="text-align:center">' + pmsDreieck(t.bild[0], Object.assign({breite:130}, t.bild[1])) + '</div>';
   var html = pmsChips(PMS_TECHNIKEN, PMS.tech, 'pmsTech') +
   '<div class="card"><div class="pm-schritt-titel" style="margin-bottom:2px">'+t.n+'</div>' +
-    '<div style="font-size:13px;color:#7A7A70;margin-bottom:10px">'+t.kurz+'</div>' + bild +
+    '<div style="font-size:13px;color:#6B6455;margin-bottom:10px">'+t.kurz+'</div>' + bild +
     '<div class="label" style="margin-top:10px">So geht’s</div><div class="pm-txt">'+t.wie+'</div>' +
     '<dl class="pm-dl"><dt>Wirkung</dt><dd>'+t.wirkung+'</dd><dt>Auswachsen</dt><dd>'+t.wachsen+'</dd></dl></div>';
   pmsSetze(html);
@@ -3052,7 +3054,7 @@ function pmsQuiz() {
   }
   var q = PMS.quiz[PMS.qi];
   html = '<div class="card"><div class="label">Frage '+(PMS.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMS.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#211D17">'+ltZusatzKopf(q)+q.f+'</div>' +
     ltOptionen(q, 'pmsAntwort') +
     '<div id="pms-fb"></div></div>';
   pmsSetze(html);
@@ -3100,7 +3102,7 @@ var PMC_KREIS = [
 ];
 
 var PMC_KONTRASTE = [
-  {n:'Hell-Dunkel', a:'#1C1C1A', i:'#FFFFFF', b:'#FFFFFF', j:'#1C1C1A',
+  {n:'Hell-Dunkel', a:'#211D17', i:'#FFFFFF', b:'#FFFFFF', j:'#211D17',
    t:'Schwarz und Weiß sind die stärksten Gegensätze. Helle Flächen treten optisch hervor und wirken offen, dunkle treten zurück (wie beim Make-up).',
    haar:'Blonde Strähnen in dunklem Haar oder dunkle in hellem Haar geben Höhen und Tiefen.'},
   {n:'Komplementär', a:'#D63A2A', i:'#4E7A2E',
@@ -3112,7 +3114,7 @@ var PMC_KONTRASTE = [
   {n:'Warm-Kalt', a:'#D63A2A', i:'#3F6FB5',
    t:'Warm und kalt ist eine Empfindung. Der Kontrast wirkt am stärksten, wenn die Farben gleich hell sind.',
    haar:'Auf einer einheitlich blonden Basis ergeben kühle und warme Nuancen eine sehr kontrastreiche Haarfarbe.'},
-  {n:'Bunt-Unbunt', a:'#1C1C1A', i:'#D63A2A',
+  {n:'Bunt-Unbunt', a:'#211D17', i:'#D63A2A',
    t:'Eine bunte Farbe auf Schwarz, Weiß oder Grau wirkt viel leuchtender. Das Umfeld bestimmt, wie hell oder dunkel wir eine Farbe sehen.',
    haar:'Rote Strähnen auf dunklem Haar strahlen besonders.'}
 ];
@@ -3219,7 +3221,7 @@ function pmcMerke(t) { return '<div class="fb-o" style="font-size:13px;line-heig
 function pmcPigment() {
   var p = PMC_PIGMENT[PMC.th - 1];
   var leiste = PMC_PIGMENT.map(function(x){
-    return '<button onclick="PMC.th='+x.th+';pmcPigment()" aria-label="Tonhöhe '+x.th+'" style="flex:1;height:44px;border:'+(x.th === PMC.th ? '3px solid #1C1C1A' : '1px solid #E2DDD5')+';border-radius:6px;background:'+x.haar+';color:'+(x.th > 6 ? '#1C1C1A' : '#fff')+';font-weight:700;font-size:13px;cursor:pointer;padding:0">'+x.th+'</button>';
+    return '<button onclick="PMC.th='+x.th+';pmcPigment()" aria-label="Tonhöhe '+x.th+'" style="flex:1;height:44px;border:'+(x.th === PMC.th ? '3px solid #211D17' : '1px solid #E4DBC5')+';border-radius:6px;background:'+x.haar+';color:'+(x.th > 6 ? '#211D17' : '#fff')+';font-weight:700;font-size:13px;cursor:pointer;padding:0">'+x.th+'</button>';
   }).join('');
   var html = '<div class="card"><div class="label">Naturpigmentbild</div>' +
     '<div class="pm-txt">Tippe eine Tonhöhe an. Beim Aufhellen kommt der Untergrund zum Vorschein, die Gegenfarbe neutralisiert ihn.</div>' +
@@ -3228,7 +3230,7 @@ function pmcPigment() {
       '<div><span style="display:block;height:46px;border-radius:6px;background:'+p.haar+'"></span><b style="font-size:15px;margin-top:6px">'+p.th+' · '+p.n+'</b><small>Tonhöhe</small></div><i>→</i>' +
       '<div><span style="display:block;height:46px;border-radius:6px;background:'+p.uf+'"></span><b style="font-size:15px;margin-top:6px">'+p.u+'</b><small>Untergrund</small></div><i>←</i>' +
       '<div><span style="display:block;height:46px;border-radius:6px;background:'+PMC_GEGEN[p.g]+'"></span><b style="font-size:15px;margin-top:6px">'+p.g+'</b><small>Gegenfarbe</small></div>' +
-    '</div><div style="font-size:11px;color:#7A7A70;margin-top:6px">Farben schematisch, sie variieren je nach Hersteller.</div></div>';
+    '</div><div style="font-size:11px;color:#6B6455;margin-top:6px">Farben schematisch, sie variieren je nach Hersteller.</div></div>';
   html += '<div class="card"><div class="label">Farbkreis</div><div class="pm-txt">Tippe eine Farbe an: Ihre Gegenfarbe liegt genau gegenüber. Zusammen ergeben sie Neutral.</div>' + pmcFarbkreis() + '</div>';
   html += '<div class="card"><div class="label">Farben sehen</div>' + pmcPunkte([
     'Das Haar ist wie ein fast farbloser „Schlauch“, gefüllt mit natürlichen Pigmenten. Um sie aufzuhellen, öffnet ein Alkali die Schuppenschicht (Quellung). Auch warmes Wasser lässt das Haar minimal quellen.',
@@ -3243,12 +3245,12 @@ function pmcPigment() {
 
 function pmcFarbkreis() {
   var a = PMC_KREIS[PMC.kreis], g = PMC_KREIS[a.gegen], s = '';
-  s += '<line x1="'+a.x+'" y1="'+a.y+'" x2="'+g.x+'" y2="'+g.y+'" stroke="#1C1C1A" stroke-width="2" stroke-dasharray="4 3"/>';
+  s += '<line x1="'+a.x+'" y1="'+a.y+'" x2="'+g.x+'" y2="'+g.y+'" stroke="#211D17" stroke-width="2" stroke-dasharray="4 3"/>';
   PMC_KREIS.forEach(function(k, i){
     var aktiv = i === PMC.kreis || i === a.gegen;
     s += '<g onclick="PMC.kreis='+i+';pmcPigment()" style="cursor:pointer">' +
-      '<circle cx="'+k.x+'" cy="'+k.y+'" r="'+(aktiv ? 22 : 18)+'" fill="'+k.f+'" stroke="'+(aktiv ? '#1C1C1A' : '#fff')+'" stroke-width="3"/>' +
-      '<text x="'+k.x+'" y="'+(k.y + (k.y > 100 ? 36 : -28))+'" font-size="10" text-anchor="middle" fill="#1C1C1A" font-weight="600">'+k.n+'</text></g>';
+      '<circle cx="'+k.x+'" cy="'+k.y+'" r="'+(aktiv ? 22 : 18)+'" fill="'+k.f+'" stroke="'+(aktiv ? '#211D17' : '#fff')+'" stroke-width="3"/>' +
+      '<text x="'+k.x+'" y="'+(k.y + (k.y > 100 ? 36 : -28))+'" font-size="10" text-anchor="middle" fill="#211D17" font-weight="600">'+k.n+'</text></g>';
   });
   s += '<circle cx="100" cy="100" r="18" fill="#B89A72"/><text x="100" y="104" font-size="8" text-anchor="middle" fill="#fff">Neutral</text>';
   return '<svg viewBox="0 -12 200 224" style="display:block;width:100%;max-width:260px;margin:0 auto" role="img" aria-label="Farbkreis">'+s+'</svg>' +
@@ -3258,7 +3260,7 @@ function pmcFarbkreis() {
 // ── Kontraste ──
 function pmcQuadrat(aussen, innen) {
   return '<svg viewBox="0 0 100 100" style="width:100%;max-width:120px;display:block;margin:0 auto" aria-hidden="true">' +
-    '<rect x="2" y="2" width="96" height="96" fill="'+aussen+'" stroke="#C8C4BC"/><rect x="28" y="28" width="44" height="44" fill="'+innen+'"/></svg>';
+    '<rect x="2" y="2" width="96" height="96" fill="'+aussen+'" stroke="#D9CDAE"/><rect x="28" y="28" width="44" height="44" fill="'+innen+'"/></svg>';
 }
 
 function pmcKontrast() {
@@ -3301,7 +3303,7 @@ function pmcDiagnose() {
     '<div class="pm-schritt-titel">'+d.n+'</div>' + pmcStraehne(d.teil) + pmcPunkte(d.p);
   if (d.weiss) html += '<table class="pm-tab" style="margin-top:10px"><tr><th>Weißanteil</th><th>Was deckt?</th></tr>' +
     PMC_WEISS.map(function(w){ return '<tr><td>'+w[0]+'</td><td>'+w[1]+'</td></tr>'; }).join('') + '</table>' +
-    '<div style="font-size:11px;color:#7A7A70;margin-top:6px">Variiert je nach Hersteller, immer die Herstellerangaben beachten.</div>';
+    '<div style="font-size:11px;color:#6B6455;margin-top:6px">Variiert je nach Hersteller, immer die Herstellerangaben beachten.</div>';
   html += pmcMerke(d.merke) +
     '<div class="pm-zeile"><button class="btn-ghost" onclick="PMC.dia=Math.max(0,PMC.dia-1);pmcDiagnose()"'+(PMC.dia === 0 ? ' disabled style="opacity:.4"' : '')+'>← Zurück</button>' +
     (PMC.dia < n-1 ? '<button class="btn-primary" onclick="PMC.dia++;pmcDiagnose()">Weiter →</button>' : '<button class="btn-primary" onclick="PMC.dia=0;pmcDiagnose()">Von vorne</button>') + '</div></div>';
@@ -3312,7 +3314,7 @@ function pmcDiagnose() {
     '<div class="pm-txt">Den Ansatz über den Oxidanten nur bis zur Tonhöhe des Balkens aufhellen. Die Nuance so wählen, dass Ansatz und Balken neutralisiert werden. Dafür die Ansatzfarbe über den Balken schattieren oder danach mit einer Tönung angleichen. Das Ergebnis wirkt dunkler.</div>' +
     '<div class="label">Lösung 2</div>' + pmcStraehne(null, 'loesung2') +
     '<div class="pm-txt">Zuerst den Balken gezielt blondieren und so Helligkeit schaffen. Das ist sehr genaue Arbeit, je schmaler der Balken, desto mühsamer. Danach Ansatz und Balken neu einfärben.</div>' +
-    '<div style="font-size:11px;color:#7A7A70">Es gibt noch weitere Lösungswege.</div></div>';
+    '<div style="font-size:11px;color:#6B6455">Es gibt noch weitere Lösungswege.</div></div>';
   pmcSetze(html);
 }
 
@@ -3336,7 +3338,7 @@ function pmcQuerschnitt(tiefe) {
 }
 
 function pmcTube(name, teile) {
-  var y = 30, s = '<rect x="10" y="10" width="60" height="20" fill="#fff" stroke="#C8C4BC"/>';
+  var y = 30, s = '<rect x="10" y="10" width="60" height="20" fill="#fff" stroke="#D9CDAE"/>';
   teile.forEach(function(t){
     var hgt = t[1] * 1.4;
     s += '<rect x="10" y="'+y+'" width="60" height="'+hgt+'" fill="'+t[2]+'"/><text x="40" y="'+(y + hgt/2 + 3)+'" font-size="8" fill="#fff" text-anchor="middle">'+t[0]+'</text>';
@@ -3352,16 +3354,16 @@ function pmcProdukte() {
       return '<button class="btn-toggle'+(i === PMC.prod ? ' ak' : '')+'" onclick="PMC.prod='+i+';pmcProdukte()">'+x.n+'</button>';
     }).join('') + '</div>' +
     '<div class="card"><div class="pm-schritt-titel">'+p.n+'</div>' + pmcQuerschnitt(p.tiefe) +
-    '<div style="text-align:center;font-size:11px;color:#7A7A70;margin:4px 0 10px">Blaue Punkte = Farbpigmente: '+({oberflaeche:'an der Oberfläche und in der obersten Schuppenschicht', schuppe:'in der Schuppenschicht und in der Haarfaser', tief:'bis tief in die Haarfaser'})[p.tiefe]+'</div>' +
+    '<div style="text-align:center;font-size:11px;color:#6B6455;margin:4px 0 10px">Blaue Punkte = Farbpigmente: '+({oberflaeche:'an der Oberfläche und in der obersten Schuppenschicht', schuppe:'in der Schuppenschicht und in der Haarfaser', tief:'bis tief in die Haarfaser'})[p.tiefe]+'</div>' +
     '<dl class="pm-dl"><dt>pH-Bereich</dt><dd>'+p.ph+'</dd><dt>Oxidant</dt><dd>'+p.h2o2+'</dd><dt>Aufhellung</dt><dd>'+p.hell+'</dd><dt>Deckkraft</dt><dd>'+p.deck+'</dd></dl>' +
     '<div class="label" style="margin-top:12px">Einsatz</div>' + pmcPunkte(p.einsatz) +
     '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">'+p.plus+'</div>' +
-    '<div style="font-size:11px;color:#7A7A70;margin-top:8px">Angaben abhängig von Produkt und Hersteller.</div></div>' +
+    '<div style="font-size:11px;color:#6B6455;margin-top:8px">Angaben abhängig von Produkt und Hersteller.</div></div>' +
     '<div class="card"><div class="label">Produktwahl nach Aufhellsprung</div>' +
       '<div class="pm-txt">Zuerst überlegen: Wie viele Tonhöhen muss ich aufhellen? Ist das Haar natur oder schon gefärbt bzw. aufgehellt, und wie stark ist es sensibilisiert?</div>' +
       '<table class="pm-tab"><tr><th>Aufhellung</th><th>Produkt</th></tr>' +
         '<tr><td>bis 3 TH</td><td>Oxidative Haarfarbe</td></tr><tr><td>4–5 TH</td><td>Hellerfärber, nur auf Naturhaar (meist ab Naturton 6)</td></tr><tr><td>über 5 TH</td><td>Blondierung</td></tr></table>' +
-      '<div style="font-size:12px;color:#7A7A70;margin-top:8px">Die Produktwahl hängt immer auch vom gewünschten Endergebnis ab.</div></div>' +
+      '<div style="font-size:12px;color:#6B6455;margin-top:8px">Die Produktwahl hängt immer auch vom gewünschten Endergebnis ab.</div></div>' +
     '<div class="card"><div class="label">Was steckt in der Tube?</div>' +
       '<div class="pm-misch" style="align-items:flex-end">' +
         pmcTube('Tönung', [['Neben',22,'#7C4F9E'],['Haupt',40,'#3F4F9E'],['Natur',14,'#4E2E1E']]) +
@@ -3392,7 +3394,7 @@ function pmcTrainer() {
   } else {
     html += '<div class="pm-zeile"><button class="btn-primary" onclick="PMC.geprueft=true;pmcTrainer()">Prüfen</button></div>';
   }
-  html += '<div style="font-size:11px;color:#7A7A70;margin-top:10px">Auswahl nach dem Grundsatz „so haarschonend wie möglich“. Manche Wünsche lassen sich auch mit einem anderen Produkt erfüllen.</div></div>';
+  html += '<div style="font-size:11px;color:#6B6455;margin-top:10px">Auswahl nach dem Grundsatz „so haarschonend wie möglich“. Manche Wünsche lassen sich auch mit einem anderen Produkt erfüllen.</div></div>';
   pmcSetze(html);
 }
 
@@ -3416,7 +3418,7 @@ function pmcQuiz() {
   }
   var q = PMC.quiz[PMC.qi];
   html = '<div class="card"><div class="label">Frage '+(PMC.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMC.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#211D17">'+ltZusatzKopf(q)+q.f+'</div>' +
     ltOptionen(q, 'pmcAntwort') +
     '<div id="pmc-fb"></div></div>';
   pmcSetze(html);
@@ -3509,7 +3511,7 @@ function pmhForm() {
     '<div class="fb-g" style="font-size:13px;line-height:1.5;margin-top:12px"><strong>Do\'s</strong>'+pmhPunkte(F.dos)+'</div>' +
     '<div class="fb-r" style="font-size:13px;line-height:1.5"><strong>Don\'ts</strong>'+pmhPunkte(F.donts)+'</div>' +
     '</div>' +
-    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-bottom:12px"><strong>Keine Patentrezepte:</strong> Die Gesichtsform ist ein Ausgangspunkt. Immer mitdenken: Haarstruktur, Dichte, Wirbel, Anlass, Kleid und Wunsch des Gastes. Mehr dazu in der <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/beratung-formwirkung.html" style="color:#5B7B6F">Beratung &amp; Formwirkung</a>.</div>';
+    '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-bottom:12px"><strong>Keine Patentrezepte:</strong> Die Gesichtsform ist ein Ausgangspunkt. Immer mitdenken: Haarstruktur, Dichte, Wirbel, Anlass, Kleid und Wunsch des Gastes. Mehr dazu in der <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/beratung-formwirkung.html" style="color:#896C32">Beratung &amp; Formwirkung</a>.</div>';
   pmhSetze(html);
 }
 
@@ -3546,7 +3548,7 @@ function pmhQuiz() {
   }
   var q = PMH.quiz[PMH.qi];
   html = '<div class="card"><div class="label">Frage '+(PMH.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMH.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#211D17">'+ltZusatzKopf(q)+q.f+'</div>' +
     ltOptionen(q, 'pmhAntwort') +
     '<div id="pmh-fb"></div></div>';
   pmhSetze(html);
@@ -3664,7 +3666,7 @@ function pmxEumelanin(hell) {
     '<circle cx="60" cy="60" r="54" fill="#3F6FB5" opacity="'+a.toFixed(2)+'"/>' +
     '<circle cx="60" cy="60" r="40" fill="'+rot+'" opacity="'+r.toFixed(2)+'"/>' +
     '<circle cx="60" cy="60" r="20" fill="#E3B23C" opacity="'+g.toFixed(2)+'"/>' +
-    '<circle cx="60" cy="60" r="54" fill="none" stroke="#C8C4BC" stroke-dasharray="3 3"/></svg>';
+    '<circle cx="60" cy="60" r="54" fill="none" stroke="#D9CDAE" stroke-dasharray="3 3"/></svg>';
 }
 
 function pmxHaar() {
@@ -3711,7 +3713,7 @@ function pmxPigBild() {
   var h = PMX.hell, rot = h > 40 ? '#E07A2E' : '#C8312B';
   var r = Math.max(0, 1 - Math.max(0, h - 33) / 33).toFixed(2), g = Math.max(.08, 1 - Math.max(0, h - 66) / 40).toFixed(2);
   document.getElementById('pmx-pig').innerHTML = '<div class="pm-misch"><div>'+pmxEumelanin(h)+'<b style="font-size:14px">Eumelanin</b><small>blauer Mantel, rote Hülle, gelber Kern. Groß, gibt Tiefe, eher am Rand.</small></div>' +
-    '<div><svg viewBox="0 0 120 120" style="width:96px;display:block;margin:12px auto 18px"><circle cx="60" cy="60" r="40" fill="'+rot+'" opacity="'+r+'"/><circle cx="60" cy="60" r="20" fill="#E3B23C" opacity="'+g+'"/><circle cx="60" cy="60" r="40" fill="none" stroke="#C8C4BC" stroke-dasharray="3 3"/></svg><b style="font-size:14px">Pheomelanin</b><small>nur Rot und Gelb, klein und verstreut, mehr in hellen Naturtönen.</small></div></div>' +
+    '<div><svg viewBox="0 0 120 120" style="width:96px;display:block;margin:12px auto 18px"><circle cx="60" cy="60" r="40" fill="'+rot+'" opacity="'+r+'"/><circle cx="60" cy="60" r="20" fill="#E3B23C" opacity="'+g+'"/><circle cx="60" cy="60" r="40" fill="none" stroke="#D9CDAE" stroke-dasharray="3 3"/></svg><b style="font-size:14px">Pheomelanin</b><small>nur Rot und Gelb, klein und verstreut, mehr in hellen Naturtönen.</small></div></div>' +
     '<div class="label" style="margin-top:12px">Aufhellung: '+h+' %</div>';
   document.getElementById('pmx-pig-txt').innerHTML = h < 33 ? 'Zuerst wird der <strong>blaue</strong> Mantel aufgehellt.' : h < 66 ? 'Danach die <strong>rote</strong> Hülle. Ist sie fast weg, erscheint <strong>Orange</strong> (Rot + Gelb).' : 'Zuletzt bleibt <strong>Gelb</strong>, es wird immer zarter.';
 }
@@ -3743,14 +3745,14 @@ function pmxWarmKalt() {
       '<button class="btn-toggle'+(!warm ? ' ak' : '')+'" onclick="PMX.art=\'kuehl\';pmxWarmKalt()">❄️ kühl (Asch, Irisé, Matt)</button></div></div>';
   html += '<div class="card"><div class="label">Ergebnis</div>' +
     '<div class="pm-grad">Naturpigment auf '+(von === bis ? von : (von % 1 ? Math.floor(von)+'½' : von)+'–'+(bis % 1 ? Math.floor(bis)+'½' : bis))+'</div>' +
-    '<div style="font-size:13px;color:#7A7A70">also mindestens bis Tonhöhe '+noetig+(pn ? ' ('+pn.u+')' : '')+' aufhellen</div>' +
+    '<div style="font-size:13px;color:#6B6455">also mindestens bis Tonhöhe '+noetig+(pn ? ' ('+pn.u+')' : '')+' aufhellen</div>' +
     '<dl class="pm-dl" style="margin-top:12px"><dt>Aufhellsprung</dt><dd>'+(sprung > 0 ? sprung+' Tonhöhe'+(sprung > 1 ? 'n' : '') : 'keiner')+'</dd>' +
       '<dt>Produkt</dt><dd>'+prod+(oxi ? ' Oxidant ca. '+oxi+'.' : '')+'</dd>' +
       (pn ? '<dt>Neutralisieren</dt><dd>Untergrund '+pn.u+' mit '+pn.g+' in Tonhöhe '+noetig+'</dd>' : '') + '</dl>';
   if (pz && sprung > 0) html += '<div class="fb-r" style="font-size:13px;line-height:1.5;margin-top:10px"><strong>So nicht:</strong> nur bis Tonhöhe '+z+' aufhellen. Dann liegt noch '+pz.u+' im Haar, der Reflex hat keinen Platz und wirkt '+(warm ? 'stumpf statt strahlend.' : 'nicht so kühl wie gewünscht, das Gelb schlägt durch.')+'</div>' +
     '<div class="fb-g" style="font-size:13px;line-height:1.5"><strong>So gerne:</strong> auf Tonhöhe '+noetig+' aufhellen, dann strahlt der '+(warm ? 'warme' : 'kühle')+' Reflex in voller Kraft.</div>';
   if (z + (warm ? 1.5 : 2.5) > 10) html += '<div class="fb-o" style="font-size:13px;line-height:1.5;margin-top:10px">Tonhöhe 10 ist das hellste Naturpigmentbild. Je heller das Naturpigmentbild, desto kühler das Ergebnis, aber desto kürzer kann der Reflex halten.</div>';
-  html += '<div style="font-size:11px;color:#7A7A70;margin-top:8px">Richtwerte, sie variieren leicht je nach Hersteller. Haarfarbe hellt nur Naturhaar auf, nie gefärbtes Haar.</div></div>';
+  html += '<div style="font-size:11px;color:#6B6455;margin-top:8px">Richtwerte, sie variieren leicht je nach Hersteller. Haarfarbe hellt nur Naturhaar auf, nie gefärbtes Haar.</div></div>';
   html += '<div class="card"><div class="label">Das Gesetz garantiert</div>' + pmxPunkte(['die perfekte Neutralisation des Naturpigmentbildes','die volle Farbbrillanz','die Haltbarkeit der neuen Farbe']) +
     '<div class="label" style="margin-top:12px">Haltbarkeit</div><div class="pm-txt">Ist das Naturpigmentbild zu dunkel, fehlt Platz für künstliches Pigment. Ist es zu hell, finden die Pigmente keinen Halt und das Ergebnis wird transparent. Beispiel: Für ein intensives Rot auf Tonhöhe 6 ist das Naturpigmentbild 7 (Gelb-Orange) ideal, 9 oder 10 wären zu hell.</div>' +
     pmxMerke('Kühle Haarfarben wirken immer satter und dunkler als warme, darauf in der Beratung hinweisen. Kühle Töne halten meist kürzer, warme Pigmente sind dominanter.') + '</div>';
@@ -3836,7 +3838,7 @@ function pmxCodeErg() {
     rows += '<dt>'+(i === 0 ? 'Hauptreflex' : 'Nebenreflex')+'</dt><dd>'+(info ? '<span style="display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px;background:'+info[1]+'"></span>' : '')+name+(i > 0 ? ' (schwächer)' : '')+'</dd>';
   });
   if (d.refl.length === 2 && d.refl[0] === '0') rows += '<dt>Hinweis</dt><dd>,0x heißt: Naturton mit leichtem Reflex.</dd>';
-  var tube = '<svg viewBox="0 0 80 150" style="width:70px;float:right;margin:0 0 6px 10px" aria-hidden="true"><rect x="10" y="6" width="60" height="14" fill="#fff" stroke="#C8C4BC"/>';
+  var tube = '<svg viewBox="0 0 80 150" style="width:70px;float:right;margin:0 0 6px 10px" aria-hidden="true"><rect x="10" y="6" width="60" height="14" fill="#fff" stroke="#D9CDAE"/>';
   var y = 20, teile = [];
   if (d.refl[1]) teile.push([PMX_REFLEX[d.refl[1]] ? PMX_REFLEX[d.refl[1]][1] : '#bbb', 16]);
   if (d.refl[0]) teile.push([PMX_REFLEX[d.refl[0]] ? PMX_REFLEX[d.refl[0]][1] : '#bbb', d.refl[0] === '0' ? 8 : 34]);
@@ -3861,7 +3863,7 @@ function pmxPigment() {
     '<div class="pm-wahl">' + [4,5,6,7,8,9,10].map(function(t){ return '<button class="btn-toggle'+(t === z ? ' ak' : '')+'" onclick="PMX.pZiel='+t+';pmxPigment()" style="flex:1 1 12%">'+t+'</button>'; }).join('') + '</div>' +
     '<div class="pm-wahl"><button class="btn-toggle'+(k ? ' ak' : '')+'" onclick="PMX.pArt=\'kuehl\';pmxPigment()">❄️ kühler Wunsch</button><button class="btn-toggle'+(!k ? ' ak' : '')+'" onclick="PMX.pArt=\'warm\';pmxPigment()">☀️ warmer Wunsch</button></div>' +
     '<div class="pm-grad" style="font-size:22px">Vorpigmentieren mit '+(k ? w[0] : w[1])+'</div>' +
-    '<div style="font-size:11px;color:#7A7A70">abhängig von Produkt und Hersteller</div>' +
+    '<div style="font-size:11px;color:#6B6455">abhängig von Produkt und Hersteller</div>' +
     pmxMerke('Rückpigmentiert wird nur mit Gold, Kupfer oder Rot (Mischungen daraus sind erlaubt). Kühle Reflexe und Mischungen aus warm und kühl eignen sich nicht: Das Ergebnis hält nicht und wird transparent bis grünstichig.') +
     pmxMerke('Keine Angst vor dem Zwischenergebnis: Wie beim Aufhellen läuft auch das Rückpigmentieren über Gold-, Kupfer- oder Rot-Untergründe.') + '</div>';
   pmxSetze(html);
@@ -3904,7 +3906,7 @@ function pmxQuiz() {
   }
   var q = PMX.quiz[PMX.qi];
   html = '<div class="card"><div class="label">Frage '+(PMX.qi+1)+' von '+n+(q.haupt?' · Zusatzfrage':'')+' · '+PMX.richtig+' richtig</div>' +
-    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#1C1C1A">'+ltZusatzKopf(q)+q.f+'</div>' +
+    '<div class="pm-txt" style="font-size:15px;font-weight:600;color:#211D17">'+ltZusatzKopf(q)+q.f+'</div>' +
     ltOptionen(q, 'pmxAntwort') +
     '<div id="pmx-fb"></div></div>';
   pmxSetze(html);

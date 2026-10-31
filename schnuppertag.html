@@ -5,6 +5,8 @@
   <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Schnuppertag · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+
   <meta name="theme-color" content="#1c1917">
   <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,62 +14,62 @@
   <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;min-height:100dvh}
-body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+body{background:#F8F4EA;font-family:Poppins,system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
 .wrap{max-width:580px;margin:0 auto}
-.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
-.card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
-.card-green{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px;margin-bottom:12px}
+.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6B6455;margin-bottom:8px}
+.card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:20px;margin-bottom:12px}
+.card-green{background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:14px;margin-bottom:12px}
 .card-amber{background:#FDF6E3;border:1px solid #C4A830;border-radius:8px;padding:14px;margin-bottom:12px}
-.btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:4px}
-.btn-primary:disabled{background:#9A9A90;cursor:default}
-.btn-ghost{padding:10px 16px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui}
-.btn-danger{width:100%;padding:10px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:4px}
-.btn-sec{width:100%;padding:10px;background:#fff;color:#2C2C2C;border:1px solid #C8C4BC;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;margin-top:6px}
-.btn-sm{padding:6px 12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui}
-.btn-sm-ghost{padding:6px 12px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui}
-.btn-sm-danger{padding:6px 12px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui}
-select,textarea,input[type=text],input[type=date],input[type=email],input[type=password]{width:100%;border:1px solid #E2DDD5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none}
+.btn-primary{width:100%;padding:12px;background:#896C32;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;margin-top:4px}
+.btn-primary:disabled{background:#9A9180;cursor:default}
+.btn-ghost{padding:10px 16px;background:transparent;color:#896C32;border:1px solid #896C32;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui}
+.btn-danger{width:100%;padding:10px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;margin-top:4px}
+.btn-sec{width:100%;padding:10px;background:#fff;color:#2C2C2C;border:1px solid #D9CDAE;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;margin-top:6px}
+.btn-sm{padding:6px 12px;background:#896C32;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:Poppins,system-ui}
+.btn-sm-ghost{padding:6px 12px;background:transparent;color:#896C32;border:1px solid #896C32;border-radius:6px;font-size:12px;cursor:pointer;font-family:Poppins,system-ui}
+.btn-sm-danger{padding:6px 12px;background:#C44030;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:Poppins,system-ui}
+select,textarea,input[type=text],input[type=date],input[type=email],input[type=password]{width:100%;border:1px solid #E4DBC5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:Poppins,system-ui;background:#F8F4EA;color:#211D17;outline:none}
 textarea{resize:vertical}
-input[type=range]{width:100%;accent-color:#5B7B6F}
+input[type=range]{width:100%;accent-color:#896C32}
 .page{display:none}.page.ak{display:block}
-.back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:14px;font-family:system-ui}
-.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
-h1{font-size:24px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
-.sub{color:#7A7A70;font-size:14px;margin-bottom:20px}
+.back-btn{background:none;border:none;color:#6B6455;cursor:pointer;font-size:13px;padding:0;margin-bottom:14px;font-family:Poppins,system-ui}
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#896C32;margin-bottom:4px}
+h1{font-size:24px;font-weight:600;color:#211D17;margin-bottom:4px}
+.sub{color:#6B6455;font-size:14px;margin-bottom:20px}
 .pts-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.pts-btn{padding:6px 12px;border-radius:6px;border:1px solid #C8C4BC;background:#fff;cursor:pointer;font-size:13px;font-family:system-ui;color:#5A5550}
-.pts-btn.sel{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
-.reveal-btn{padding:6px 12px;border-radius:6px;border:1px solid #C8C4BC;background:transparent;cursor:pointer;font-size:12px;color:#7A7A70;font-family:system-ui;margin-top:8px}
-.answer-reveal{margin-top:8px;padding:10px 12px;background:#EAF0EE;border-radius:6px;font-size:13px;color:#2C2C2C;display:none}
+.pts-btn{padding:6px 12px;border-radius:6px;border:1px solid #D9CDAE;background:#fff;cursor:pointer;font-size:13px;font-family:Poppins,system-ui;color:#5A5550}
+.pts-btn.sel{background:#896C32;color:#fff;border-color:#896C32}
+.reveal-btn{padding:6px 12px;border-radius:6px;border:1px solid #D9CDAE;background:transparent;cursor:pointer;font-size:12px;color:#6B6455;font-family:Poppins,system-ui;margin-top:8px}
+.answer-reveal{margin-top:8px;padding:10px 12px;background:#F3EBD9;border-radius:6px;font-size:13px;color:#2C2C2C;display:none}
 .answer-reveal.show{display:block}
-.q-text{font-size:14px;color:#1C1C1A;margin-bottom:8px;line-height:1.5;font-weight:600}
-.q-pts{font-size:11px;color:#5B7B6F;font-weight:700;background:#EAF0EE;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px}
-.section-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;margin:20px 0 10px;border-bottom:1px solid #E2DDD5;padding-bottom:6px}
+.q-text{font-size:14px;color:#211D17;margin-bottom:8px;line-height:1.5;font-weight:600}
+.q-pts{font-size:11px;color:#896C32;font-weight:700;background:#F3EBD9;padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.section-head{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6B6455;margin:20px 0 10px;border-bottom:1px solid #E4DBC5;padding-bottom:6px}
 .slider-poles{display:flex;justify-content:space-between;font-size:11px;color:#B0A898;margin-top:3px}
-.slider-val{font-size:13px;font-weight:700;color:#5B7B6F;min-width:80px;text-align:right}
+.slider-val{font-size:13px;font-weight:700;color:#896C32;min-width:80px;text-align:right}
 .werte-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
 .tab-nav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.tab-btn{padding:7px 13px;border-radius:6px;border:1px solid #C8C4BC;background:#fff;cursor:pointer;font-size:12px;font-family:system-ui;color:#5A5550;font-weight:600}
-.tab-btn.ak{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.tab-btn{padding:7px 13px;border-radius:6px;border:1px solid #D9CDAE;background:#fff;cursor:pointer;font-size:12px;font-family:Poppins,system-ui;color:#5A5550;font-weight:600}
+.tab-btn.ak{background:#896C32;color:#fff;border-color:#896C32}
 .fehler-box{background:#FDECEA;border:1px solid #C44030;border-radius:6px;padding:10px 12px;color:#C44030;font-size:13px;margin-bottom:12px;display:none}
-.ok-box{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:6px;padding:10px 12px;color:#2C2C2C;font-size:13px;margin-bottom:12px;display:none}
-.note-bar{height:8px;background:#E2DDD5;border-radius:4px;overflow:hidden;margin-top:4px}
-.note-fill{height:100%;background:#5B7B6F;border-radius:4px;transition:width .4s}
-.probezeit-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:16px;margin-bottom:10px;cursor:pointer}
-.probezeit-card:hover{border-color:#5B7B6F}
-.woche-header{background:#EAF0EE;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:12px;font-weight:700;color:#5B7B6F}
+.ok-box{background:#F3EBD9;border:1px solid #896C32;border-radius:6px;padding:10px 12px;color:#2C2C2C;font-size:13px;margin-bottom:12px;display:none}
+.note-bar{height:8px;background:#E4DBC5;border-radius:4px;overflow:hidden;margin-top:4px}
+.note-fill{height:100%;background:#896C32;border-radius:4px;transition:width .4s}
+.probezeit-card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:16px;margin-bottom:10px;cursor:pointer}
+.probezeit-card:hover{border-color:#896C32}
+.woche-header{background:#F3EBD9;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:12px;font-weight:700;color:#896C32}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.nav-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:18px 14px;text-align:left;cursor:pointer;width:100%}
-.nav-card:hover{border-color:#5B7B6F}
+.nav-card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:18px 14px;text-align:left;cursor:pointer;width:100%}
+.nav-card:hover{border-color:#896C32}
 .nav-icon{font-size:1.4rem;margin-bottom:6px}
-.nav-title{font-weight:600;color:#1C1C1A;font-size:14px}
-.nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
-.laden{text-align:center;padding:30px;color:#9A9A90;font-size:13px}
-.fuss{text-align:center;color:#C8C4BC;font-size:11px;margin-top:2rem;padding-bottom:1rem}
+.nav-title{font-weight:600;color:#211D17;font-size:14px}
+.nav-desc{color:#6B6455;font-size:12px;margin-top:2px}
+.laden{text-align:center;padding:30px;color:#9A9180;font-size:13px}
+.fuss{text-align:center;color:#D9CDAE;font-size:11px;margin-top:2rem;padding-bottom:1rem}
 /* Lehrlings-Modus */
-.lehrling-banner{background:#2C2C2C;color:#F7F5F0;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;display:none}
-.lehrling-banner strong{color:#8FAF7A}
+.lehrling-banner{background:#2C2C2C;color:#F8F4EA;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.5;display:none}
+.lehrling-banner strong{color:#D2B271}
 body.lehrling-modus .reveal-btn{display:none!important}
 body.lehrling-modus .pts-row{display:none!important}
 body.lehrling-modus #tab-auswertung .card:last-child{display:none!important}
@@ -86,33 +88,33 @@ body.lehrling-modus #schnell-speichern-box{display:none!important}
 .nur-meisterin{display:none!important}
 body.meisterin-ok .nur-meisterin{display:block!important}
 /* Quiz-Stil */
-.quiz-frage{border-left:3px solid #5B7B6F;padding-left:12px;margin-bottom:16px}
-.quiz-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #E2DDD5;border-radius:6px;margin-bottom:6px;cursor:pointer;font-size:14px;background:#fff}
-.quiz-option:hover{border-color:#5B7B6F;background:#EAF0EE}
-.quiz-option.richtig{background:#EAF0EE;border-color:#5B7B6F;color:#2C4A38}
+.quiz-frage{border-left:3px solid #896C32;padding-left:12px;margin-bottom:16px}
+.quiz-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #E4DBC5;border-radius:6px;margin-bottom:6px;cursor:pointer;font-size:14px;background:#fff}
+.quiz-option:hover{border-color:#896C32;background:#F3EBD9}
+.quiz-option.richtig{background:#F3EBD9;border-color:#896C32;color:#5A4520}
 .quiz-option.falsch{background:#FDECEA;border-color:#C44030;color:#C44030}
-.quiz-option input{accent-color:#5B7B6F}
+.quiz-option input{accent-color:#896C32}
 /* Lernziele */
 .ziel-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0EDE8}
 .ziel-row:last-child{border-bottom:none}
-.ziel-check{width:20px;height:20px;border-radius:4px;border:2px solid #C8C4BC;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px}
-.ziel-check.ok{background:#5B7B6F;border-color:#5B7B6F;color:#fff}
-.ziel-text{font-size:13px;color:#1C1C1A;flex:1;line-height:1.4}
-.ziel-text.erledigt{text-decoration:line-through;color:#9A9A90}
+.ziel-check{width:20px;height:20px;border-radius:4px;border:2px solid #D9CDAE;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px}
+.ziel-check.ok{background:#896C32;border-color:#896C32;color:#fff}
+.ziel-text{font-size:13px;color:#211D17;flex:1;line-height:1.4}
+.ziel-text.erledigt{text-decoration:line-through;color:#9A9180}
 /* Abzeichen */
 .abzeichen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
-.abzeichen{text-align:center;padding:10px 6px;border-radius:8px;border:1px solid #E2DDD5;background:#fff}
-.abzeichen.erreicht{background:#EAF0EE;border-color:#5B7B6F}
+.abzeichen{text-align:center;padding:10px 6px;border-radius:8px;border:1px solid #E4DBC5;background:#fff}
+.abzeichen.erreicht{background:#F3EBD9;border-color:#896C32}
 .abzeichen-icon{font-size:1.4rem;display:block;margin-bottom:3px}
-.abzeichen-label{font-size:10px;color:#7A7A70;line-height:1.3}
-.abzeichen.erreicht .abzeichen-label{color:#5B7B6F;font-weight:700}
+.abzeichen-label{font-size:10px;color:#6B6455;line-height:1.3}
+.abzeichen.erreicht .abzeichen-label{color:#896C32;font-weight:700}
 /* Fragen-Editor */
-.frage-editor-card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:14px;margin-bottom:10px}
-.frage-editor-card:hover{border-color:#C8C4BC}
-.frage-nr{font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9A90;text-transform:uppercase;margin-bottom:6px}
+.frage-editor-card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:14px;margin-bottom:10px}
+.frage-editor-card:hover{border-color:#D9CDAE}
+.frage-nr{font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9180;text-transform:uppercase;margin-bottom:6px}
 .editor-row{display:flex;gap:8px;align-items:flex-start}
 /* Quiz-Ergebnis */
-.ergebnis-kreis{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;font-weight:700;background:#EAF0EE;color:#5B7B6F;border:3px solid #5B7B6F}
+.ergebnis-kreis{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:20px;font-weight:700;background:#F3EBD9;color:#896C32;border:3px solid #896C32}
   </style>
 </head>
 <body>
@@ -120,7 +122,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 
 <!-- ── HOME ── -->
 <div id="p-home" class="page ak">
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html" style="background:none;border:none;color:#7A7A70;font-size:13px;cursor:pointer;font-family:system-ui;padding:0;margin-bottom:14px;display:inline-block;text-decoration:none">← Zurück zum Lernquiz</a>
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html" style="background:none;border:none;color:#6B6455;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;padding:0;margin-bottom:14px;display:inline-block;text-decoration:none">← Zurück zum Lernquiz</a>
   <div class="tag">A Great Hair Day · Wien</div>
   <h1>Schnuppertag ✂</h1>
   <p class="sub">Lehrlings-Auswahl & Probezeit</p>
@@ -131,9 +133,9 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <div id="lehrling-link-box" class="card-green" style="margin-bottom:16px">
     <div class="label">Lehrlings-Modus</div>
     <div style="font-size:13px;color:#2C2C2C;margin-bottom:10px;line-height:1.5">Öffne diesen Link auf einem zweiten Gerät und gib ihn dem Lehrling — ohne Lösungen und ohne Auswertung.</div>
-    <div style="background:#fff;border:1px solid #C8C4BC;border-radius:6px;padding:10px 12px;font-size:12px;color:#5B7B6F;word-break:break-all;margin-bottom:10px" id="lehrling-url"></div>
+    <div style="background:#fff;border:1px solid #D9CDAE;border-radius:6px;padding:10px 12px;font-size:12px;color:#896C32;word-break:break-all;margin-bottom:10px" id="lehrling-url"></div>
     <button class="btn-sec" style="margin-top:0" onclick="kopiereLink()">📋 Link kopieren</button>
-    <div id="kopiert-msg" style="display:none;font-size:12px;color:#5B7B6F;margin-top:6px;text-align:center">✓ Link kopiert!</div>
+    <div id="kopiert-msg" style="display:none;font-size:12px;color:#896C32;margin-top:6px;text-align:center">✓ Link kopiert!</div>
   </div>
 
   <div class="grid2" style="margin-bottom:10px">
@@ -169,8 +171,8 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <button class="btn-primary" onclick="loginMeisterin()">Einloggen →</button>
   </div>
   <div id="home-logout-box" style="display:none;margin-top:16px;text-align:center">
-    <span style="font-size:13px;color:#5B7B6F;font-weight:600" id="home-user-name"></span>
-    <button onclick="logout()" style="background:none;border:none;color:#9A9A90;font-size:12px;cursor:pointer;font-family:system-ui;margin-left:12px;text-decoration:underline">Abmelden</button>
+    <span style="font-size:13px;color:#896C32;font-weight:600" id="home-user-name"></span>
+    <button onclick="logout()" style="background:none;border:none;color:#9A9180;font-size:12px;cursor:pointer;font-family:Poppins,system-ui;margin-left:12px;text-decoration:underline">Abmelden</button>
   </div>
   <div class="fuss">Mirjam Walenta · A Great Hair Day · Wien</div>
 </div>
@@ -190,10 +192,10 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 
   <!-- Lehrling: Name eingeben -->
   <div id="lehrling-name-box" style="display:none;margin-bottom:16px">
-    <div class="card" style="border-color:#5B7B6F;border-width:2px">
+    <div class="card" style="border-color:#896C32;border-width:2px">
       <div class="label">Dein Name</div>
       <input type="text" autocomplete="off" id="lehrling-name-input" placeholder="Vor- und Nachname" oninput="syncLehrlingName(this.value)">
-      <div style="font-size:11px;color:#9A9A90;margin-top:6px">Wird nur für die Auswertung verwendet.</div>
+      <div style="font-size:11px;color:#9A9180;margin-top:6px">Wird nur für die Auswertung verwendet.</div>
     </div>
   </div>
 
@@ -293,7 +295,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 
     <div class="section-head">Chefin-Beurteilung der Werte</div>
     <div class="card">
-      <div style="font-size:13px;color:#7A7A70;margin-bottom:14px">Deine eigene Einschätzung — unabhängig von der Selbsteinschätzung des Lehrlings.</div>
+      <div style="font-size:13px;color:#6B6455;margin-bottom:14px">Deine eigene Einschätzung — unabhängig von der Selbsteinschätzung des Lehrlings.</div>
       <div style="margin-bottom:16px">
         <div class="werte-row"><span style="font-size:14px;font-weight:600">😊 Freundlichkeit & Offenheit</span><span class="slider-val" id="cv1">Manchmal</span></div>
         <input type="range" min="1" max="5" value="3" oninput="updateSlider('cv1',this.value)">
@@ -334,7 +336,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 
     <!-- Lehrlings-Abschicken Button (nur im Lehrlings-Modus) -->
     <div id="lehrling-abschicken-box" style="display:none;margin-top:12px">
-      <div class="card" style="border-color:#5B7B6F;border-width:2px">
+      <div class="card" style="border-color:#896C32;border-width:2px">
         <div class="label" style="margin-bottom:8px">Test abschicken</div>
         <div style="font-size:13px;color:#2C2C2C;margin-bottom:12px;line-height:1.5">
           Wenn du alle Fragen beantwortet hast, schick deinen Test ab. Mirjam sieht das Ergebnis dann in ihrem System.
@@ -351,7 +353,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <!-- AUSWERTUNG TAB -->
   <div id="tab-auswertung" style="display:none">
     <div id="auto-auswertung-box" class="card" style="margin-bottom:12px">
-      <div style="font-size:13px;color:#7A7A70;margin-bottom:12px">Die Wissensfragen werden automatisch ausgewertet. Praktische Übungen (Geschicklichkeit & Rollenspiel) bewertest du selbst.</div>
+      <div style="font-size:13px;color:#6B6455;margin-bottom:12px">Die Wissensfragen werden automatisch ausgewertet. Praktische Übungen (Geschicklichkeit & Rollenspiel) bewertest du selbst.</div>
       <button class="btn-primary" onclick="autoAuswerten()" id="btn-auto-auswerten">🔍 Automatisch auswerten</button>
     </div>
 
@@ -360,11 +362,11 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <div class="label">Bewerber speichern</div>
       <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
         <div style="flex:1;min-width:140px">
-          <div style="font-size:11px;color:#7A7A70;margin-bottom:4px">Name</div>
+          <div style="font-size:11px;color:#6B6455;margin-bottom:4px">Name</div>
           <input type="text" autocomplete="off" id="bewerber-name-schnell" placeholder="z.B. Lisa Müller" oninput="document.getElementById('bewerber-name').value=this.value">
         </div>
         <div style="flex:1;min-width:130px">
-          <div style="font-size:11px;color:#7A7A70;margin-bottom:4px">Datum</div>
+          <div style="font-size:11px;color:#6B6455;margin-bottom:4px">Datum</div>
           <input type="date" id="bewerber-datum-schnell" oninput="document.getElementById('bewerber-datum').value=this.value">
         </div>
       </div>
@@ -382,13 +384,13 @@ body.meisterin-ok .nur-meisterin{display:block!important}
     <div id="ergebnis-box" style="display:none">
       <div class="card" style="background:#2C2C2C;border-color:#2C2C2C">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:13px;color:#9A9A90;font-weight:700;letter-spacing:1px;text-transform:uppercase">Gesamtergebnis</span>
-          <span id="erg-gesamt-zahl" style="font-size:28px;font-weight:700;color:#8FAF7A"></span>
+          <span style="font-size:13px;color:#9A9180;font-weight:700;letter-spacing:1px;text-transform:uppercase">Gesamtergebnis</span>
+          <span id="erg-gesamt-zahl" style="font-size:28px;font-weight:700;color:#D2B271"></span>
         </div>
         <div style="background:#3C3C3C;border-radius:4px;height:10px;overflow:hidden;margin-bottom:10px">
-          <div id="erg-bar" style="height:100%;background:#8FAF7A;border-radius:4px;transition:width .6s"></div>
+          <div id="erg-bar" style="height:100%;background:#D2B271;border-radius:4px;transition:width .6s"></div>
         </div>
-        <div id="erg-note" style="font-size:18px;font-weight:700;color:#F7F5F0"></div>
+        <div id="erg-note" style="font-size:18px;font-weight:700;color:#F8F4EA"></div>
       </div>
 
       <div class="card" style="padding:14px">
@@ -447,11 +449,11 @@ body.meisterin-ok .nur-meisterin{display:block!important}
       <div class="section-head">Notenskala</div>
       <div class="card" style="padding:14px">
         <table style="width:100%;font-size:13px;border-collapse:collapse">
-          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#C44030">5 — Ungenügend</td><td style="text-align:right;color:#9A9A90">≤ 11 Pkt</td></tr>
-          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#C4A830">4 — Verbesserungswürdig</td><td style="text-align:right;color:#9A9A90">12–17 Pkt</td></tr>
-          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#5B7B6F">3 — Befriedigend</td><td style="text-align:right;color:#9A9A90">18–23 Pkt</td></tr>
-          <tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;font-weight:700;color:#3D6B50">2 — Gut</td><td style="text-align:right;color:#9A9A90">24–28 Pkt</td></tr>
-          <tr><td style="padding:6px 0;font-weight:700;color:#2C4A38">1 — Sehr gut</td><td style="text-align:right;color:#9A9A90">ab 29 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0;font-weight:700;color:#C44030">5 — Ungenügend</td><td style="text-align:right;color:#9A9180">≤ 11 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0;font-weight:700;color:#C4A830">4 — Verbesserungswürdig</td><td style="text-align:right;color:#9A9180">12–17 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0;font-weight:700;color:#896C32">3 — Befriedigend</td><td style="text-align:right;color:#9A9180">18–23 Pkt</td></tr>
+          <tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0;font-weight:700;color:#6E5527">2 — Gut</td><td style="text-align:right;color:#9A9180">24–28 Pkt</td></tr>
+          <tr><td style="padding:6px 0;font-weight:700;color:#5A4520">1 — Sehr gut</td><td style="text-align:right;color:#9A9180">ab 29 Pkt</td></tr>
         </table>
       </div>
     </div>
@@ -593,7 +595,7 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   </div>
 
   <button class="btn-danger" onclick="loescheProbezeit()" style="margin-top:16px">🗑️ Probezeit löschen</button>
-  <div style="font-size:11px;color:#9A9A90;text-align:center;margin-top:6px">Löschen kann nicht rückgängig gemacht werden.</div>
+  <div style="font-size:11px;color:#9A9180;text-align:center;margin-top:6px">Löschen kann nicht rückgängig gemacht werden.</div>
 </div>
 
 <!-- ── ARCHIV ── -->
@@ -801,8 +803,8 @@ function renderWissenFragen() {
 
   // Praktik-Hinweis
   html += '<div class="section-head">Geschicklichkeit & Rollenspiel — 17 Punkte (praktisch)</div>';
-  html += '<div class="card" style="background:#F7F5F0;border-style:dashed">' +
-    '<div style="font-size:13px;color:#7A7A70;line-height:1.6">' +
+  html += '<div class="card" style="background:#F8F4EA;border-style:dashed">' +
+    '<div style="font-size:13px;color:#6B6455;line-height:1.6">' +
     '🖐 <strong>Praktische Übungen</strong> — diese bewertest du als Ausbilderin im Tab <strong>Auswertung</strong> nach der Durchführung:<br><br>' +
     '· Haarschnitt mit Papierschere (4 Pkt)<br>· Knoten binden (2 Pkt)<br>· Farbmischung Wasserfarben (5 Pkt)<br>· Rollenspiel Kundenberatung (6 Pkt)' +
     '</div></div>';
@@ -922,8 +924,8 @@ function autoAuswerten() {
     // Farbgebung der Eingabefelder
     var inputEl = document.getElementById('ant-' + f.id);
     if (inputEl) {
-      inputEl.style.borderColor = punkte >= f.punkte ? '#5B7B6F' : punkte > 0 ? '#C4A830' : '#C44030';
-      inputEl.style.background = punkte >= f.punkte ? '#EAF0EE' : punkte > 0 ? '#FDF6E3' : '#FDECEA';
+      inputEl.style.borderColor = punkte >= f.punkte ? '#896C32' : punkte > 0 ? '#C4A830' : '#C44030';
+      inputEl.style.background = punkte >= f.punkte ? '#F3EBD9' : punkte > 0 ? '#FDF6E3' : '#FDECEA';
     }
   });
 
@@ -932,16 +934,16 @@ function autoAuswerten() {
   Object.keys(katsErg).forEach(function(kat) {
     var p = katsErg[kat].p, max = katsErg[kat].max;
     var pct = max > 0 ? Math.round((p/max)*100) : 0;
-    var col = pct >= 75 ? '#5B7B6F' : pct >= 50 ? '#C4A830' : '#C44030';
+    var col = pct >= 75 ? '#896C32' : pct >= 50 ? '#C4A830' : '#C44030';
     det += '<div style="margin-bottom:10px">' +
       '<div style="display:flex;justify-content:space-between;margin-bottom:3px">' +
         '<span style="font-size:13px">' + kat + '</span>' +
         '<span style="font-size:13px;font-weight:700;color:' + col + '">' + p + ' / ' + max + '</span>' +
       '</div>' +
-      '<div style="background:#E2DDD5;border-radius:3px;height:6px"><div style="background:' + col + ';height:100%;width:' + pct + '%;border-radius:3px"></div></div>' +
+      '<div style="background:#E4DBC5;border-radius:3px;height:6px"><div style="background:' + col + ';height:100%;width:' + pct + '%;border-radius:3px"></div></div>' +
     '</div>';
   });
-  det += '<div style="font-size:12px;color:#9A9A90;margin-top:6px">Geschicklichkeit & Rollenspiel → unten bewerten</div>';
+  det += '<div style="font-size:12px;color:#9A9180;margin-top:6px">Geschicklichkeit & Rollenspiel → unten bewerten</div>';
   document.getElementById('erg-details').innerHTML = det;
 
   var wissenPkt = Object.values(AUTO_PUNKTE).reduce(function(s,x){ return s + x.punkte; }, 0);
@@ -949,7 +951,7 @@ function autoAuswerten() {
 
   document.getElementById('ergebnis-box').style.display = 'block';
   document.getElementById('auto-auswertung-box').innerHTML =
-    '<div style="font-size:13px;color:#5B7B6F;font-weight:600">✓ Automatisch ausgewertet — Wissensfragen: ' + wissenPkt + ' Punkt(e)</div>' +
+    '<div style="font-size:13px;color:#896C32;font-weight:600">✓ Automatisch ausgewertet — Wissensfragen: ' + wissenPkt + ' Punkt(e)</div>' +
     '<button class="btn-sec" style="margin-top:8px" onclick="autoAuswerten()">↻ Neu auswerten</button>';
 
   window.scrollTo(0, document.getElementById('ergebnis-box').offsetTop - 20);
@@ -963,9 +965,9 @@ function aktualisiereGesamt() {
 
 function zeigeGesamt(gesamt) {
   var note, farbe, barColor;
-  if (gesamt >= 29) { note = '1 — Sehr gut ✦'; farbe = '#2C4A38'; barColor = '#5B7B6F'; }
-  else if (gesamt >= 24) { note = '2 — Gut'; farbe = '#3D6B50'; barColor = '#8FAF7A'; }
-  else if (gesamt >= 18) { note = '3 — Befriedigend'; farbe = '#5B7B6F'; barColor = '#C4B86A'; }
+  if (gesamt >= 29) { note = '1 — Sehr gut ✦'; farbe = '#5A4520'; barColor = '#896C32'; }
+  else if (gesamt >= 24) { note = '2 — Gut'; farbe = '#6E5527'; barColor = '#D2B271'; }
+  else if (gesamt >= 18) { note = '3 — Befriedigend'; farbe = '#896C32'; barColor = '#C4B86A'; }
   else if (gesamt >= 12) { note = '4 — Verbesserungswürdig'; farbe = '#C4A830'; barColor = '#C4A830'; }
   else { note = '5 — Ungenügend'; farbe = '#C44030'; barColor = '#C44030'; }
 
@@ -998,23 +1000,23 @@ function renderFragenEditor() {
   var liste = fragen.filter(function(f){ return f.kat === EDITOR_KAT; });
   var html = '';
   if (!liste.length) {
-    html = '<div class="laden" style="color:#9A9A90">Noch keine Fragen in dieser Kategorie.</div>';
+    html = '<div class="laden" style="color:#9A9180">Noch keine Fragen in dieser Kategorie.</div>';
   }
   liste.forEach(function(f, i) {
     html += '<div class="frage-editor-card" id="editor-card-' + f.id + '">' +
       '<div class="frage-nr">Frage ' + (i+1) + ' · ' + f.punkte + ' Punkt' + (f.punkte > 1 ? 'e' : '') + '</div>' +
       '<div class="editor-row">' +
         '<div style="flex:1">' +
-          '<div style="font-size:14px;font-weight:600;color:#1C1C1A;margin-bottom:4px">' + f.text + '</div>' +
-          '<div style="font-size:12px;color:#5B7B6F">✓ ' + f.antwort + '</div>' +
-          '<div style="font-size:11px;color:#9A9A90;margin-top:2px">Keywords: ' + (f.keywords||[]).join(', ') + '</div>' +
+          '<div style="font-size:14px;font-weight:600;color:#211D17;margin-bottom:4px">' + f.text + '</div>' +
+          '<div style="font-size:12px;color:#896C32">✓ ' + f.antwort + '</div>' +
+          '<div style="font-size:11px;color:#9A9180;margin-top:2px">Keywords: ' + (f.keywords||[]).join(', ') + '</div>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:6px;margin-left:10px">' +
           '<button class="btn-sm" onclick="editiereFrageForm(\'' + f.id + '\')">✏️</button>' +
           '<button class="btn-sm-danger" onclick="loescheFrage(\'' + f.id + '\')">🗑️</button>' +
         '</div>' +
       '</div>' +
-      '<div id="edit-form-' + f.id + '" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #E2DDD5">' +
+      '<div id="edit-form-' + f.id + '" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #E4DBC5">' +
         '<div class="label">Frage</div>' +
         '<textarea rows="2" id="ef-text-' + f.id + '" style="margin-bottom:8px">' + f.text + '</textarea>' +
         '<div class="label">Richtige Antwort</div>' +
@@ -1262,19 +1264,19 @@ async function ladeProbezeiten() {
 
   var { data, error } = await sb.from('probezeiten').select('*').order('erstellt_am', { ascending: false });
   if (error || !data || !data.length) {
-    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Probezeiten angelegt.</div>'; return;
+    liste.innerHTML = '<div class="laden" style="color:#9A9180">Noch keine Probezeiten angelegt.</div>'; return;
   }
 
   var html = '';
   data.forEach(function(pz) {
-    var statusFarbe = pz.status === 'bestanden' ? '#3D6B50' : pz.status === 'abgebrochen' ? '#C44030' : '#C4A830';
+    var statusFarbe = pz.status === 'bestanden' ? '#6E5527' : pz.status === 'abgebrochen' ? '#C44030' : '#C4A830';
     var statusText = pz.status === 'bestanden' ? '✓ Lehrvertrag' : pz.status === 'abgebrochen' ? '✗ Abgebrochen' : '● Läuft';
     html += '<div class="probezeit-card" onclick="oeffneProbezeit(' + JSON.stringify(pz).replace(/"/g,'&quot;') + ')">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
-        '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + pz.name + '</div>' +
+        '<div style="font-size:16px;font-weight:600;color:#211D17">' + pz.name + '</div>' +
         '<div style="font-size:12px;font-weight:700;color:' + statusFarbe + '">' + statusText + '</div>' +
       '</div>' +
-      '<div style="font-size:12px;color:#9A9A90;margin-top:3px">Beginn: ' + formatDatum(pz.beginn) + ' · Feedback: ' + (pz.wochentag||'—') + '</div>' +
+      '<div style="font-size:12px;color:#9A9180;margin-top:3px">Beginn: ' + formatDatum(pz.beginn) + ' · Feedback: ' + (pz.wochentag||'—') + '</div>' +
     '</div>';
   });
   liste.innerHTML = html;
@@ -1293,7 +1295,7 @@ function oeffneProbezeit(pz) {
 var MONAT_ZIELE_DEFAULT = {
   1: {
     titel: 'Monat 1 — Ankommen & Kundenkontakt',
-    farbe: '#5B7B6F',
+    farbe: '#896C32',
     ziele: [
       { id:'m1z1', text:'Kunden herzlich begrüßen' },
       { id:'m1z2', text:'Kaffee / Getränke anbieten' },
@@ -1321,7 +1323,7 @@ var MONAT_ZIELE_DEFAULT = {
   },
   3: {
     titel: 'Monat 3 — Selbstständigkeit & Strähnen',
-    farbe: '#3D6B50',
+    farbe: '#6E5527',
     ziele: [
       { id:'m3z1', text:'Farbe auftragen selbstständig' },
       { id:'m3z2', text:'Kopfwäsche selbstständig' },
@@ -1644,15 +1646,15 @@ async function renderWochenquizUebersicht() {
     var erg = ergMap[w];
     var monat = Math.ceil(w/4);
     var status = erg ? (erg.richtig + '/' + erg.gesamt + ' richtig') : 'Offen';
-    var statusFarbe = !erg ? '#9A9A90' : erg.richtig >= 2 ? '#5B7B6F' : '#C44030';
+    var statusFarbe = !erg ? '#9A9180' : erg.richtig >= 2 ? '#896C32' : '#C44030';
     var istIndividuell = individuelleWochen[w];
     html += '<div class="card" style="padding:12px 14px;margin-bottom:8px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
         '<div onclick="oeffneWochenquiz(' + w + ',' + (erg ? 'true' : 'false') + ')" style="flex:1;cursor:pointer">' +
-          '<div style="font-weight:600;font-size:14px;color:#1C1C1A">Woche ' + w +
-            (istIndividuell ? ' <span style="font-size:10px;background:#EAF0EE;color:#5B7B6F;padding:2px 6px;border-radius:10px;vertical-align:middle">Individuell</span>' : '') +
+          '<div style="font-weight:600;font-size:14px;color:#211D17">Woche ' + w +
+            (istIndividuell ? ' <span style="font-size:10px;background:#F3EBD9;color:#896C32;padding:2px 6px;border-radius:10px;vertical-align:middle">Individuell</span>' : '') +
           '</div>' +
-          '<div style="font-size:12px;color:#9A9A90">Monat ' + monat + '</div>' +
+          '<div style="font-size:12px;color:#9A9180">Monat ' + monat + '</div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:10px">' +
           '<div style="font-size:13px;font-weight:700;color:' + statusFarbe + '">' + status + '</div>' +
@@ -1689,18 +1691,18 @@ async function oeffneWochenquiz(woche, bereitsGemacht) {
       var pct = Math.round((erg.richtig/erg.gesamt)*100);
       var html = '<button class="btn-sec" style="margin-bottom:12px" onclick="renderWochenquizUebersicht()">← Zurück</button>' +
         '<div style="text-align:center;margin-bottom:16px">' +
-          '<div class="ergebnis-kreis" style="border-color:' + (pct>=66?'#5B7B6F':'#C44030') + ';color:' + (pct>=66?'#5B7B6F':'#C44030') + '">' + erg.richtig + '/' + erg.gesamt + '</div>' +
-          '<div style="font-size:14px;font-weight:600;color:#1C1C1A">Woche ' + woche + ' — Ergebnis</div>' +
-          '<div style="font-size:13px;color:#7A7A70">' + (pct>=66 ? '✓ Gut gemacht!' : 'Noch Übung nötig') + '</div>' +
+          '<div class="ergebnis-kreis" style="border-color:' + (pct>=66?'#896C32':'#C44030') + ';color:' + (pct>=66?'#896C32':'#C44030') + '">' + erg.richtig + '/' + erg.gesamt + '</div>' +
+          '<div style="font-size:14px;font-weight:600;color:#211D17">Woche ' + woche + ' — Ergebnis</div>' +
+          '<div style="font-size:13px;color:#6B6455">' + (pct>=66 ? '✓ Gut gemacht!' : 'Noch Übung nötig') + '</div>' +
         '</div>';
       if (erg.antworten) {
         fragen.forEach(function(fq, i) {
           var gewaehlt = parseInt(erg.antworten[i]);
           var ok = gewaehlt === fq.richtig;
-          html += '<div class="card" style="padding:14px;border-left:3px solid ' + (ok?'#5B7B6F':'#C44030') + '">' +
+          html += '<div class="card" style="padding:14px;border-left:3px solid ' + (ok?'#896C32':'#C44030') + '">' +
             '<div style="font-size:13px;font-weight:600;margin-bottom:8px">' + fq.frage + '</div>' +
             fq.optionen.map(function(o, oi) {
-              var col = oi === fq.richtig ? '#5B7B6F' : (oi === gewaehlt && !ok ? '#C44030' : '#9A9A90');
+              var col = oi === fq.richtig ? '#896C32' : (oi === gewaehlt && !ok ? '#C44030' : '#9A9180');
               return '<div style="font-size:13px;color:' + col + ';padding:4px 0">' + (oi === fq.richtig ? '✓ ' : (oi === gewaehlt && !ok ? '✗ ' : '  ')) + o + '</div>';
             }).join('') +
           '</div>';
@@ -1722,7 +1724,7 @@ async function oeffneWochenquiz(woche, bereitsGemacht) {
   fragen.forEach(function(fq, i) {
     html += '<div class="card" style="padding:14px;margin-bottom:10px">' +
       '<div class="quiz-frage">' +
-        '<div style="font-size:13px;color:#9A9A90;margin-bottom:4px">Frage ' + (i+1) + '</div>' +
+        '<div style="font-size:13px;color:#9A9180;margin-bottom:4px">Frage ' + (i+1) + '</div>' +
         '<div style="font-size:14px;font-weight:600;margin-bottom:10px">' + fq.frage + '</div>' +
         fq.optionen.map(function(o, oi) {
           return '<label class="quiz-option" id="qo-' + i + '-' + oi + '">' +
@@ -1793,9 +1795,9 @@ async function quizAbgeben(woche) {
   if (ergBox) {
     ergBox.style.display = 'block';
     ergBox.innerHTML = '<div class="card" style="margin-top:12px;text-align:center;padding:16px">' +
-      '<div class="ergebnis-kreis" style="border-color:' + (pct>=66?'#5B7B6F':'#C44030') + ';color:' + (pct>=66?'#5B7B6F':'#C44030') + '">' + richtig + '/' + gesamt + '</div>' +
-      '<div style="font-size:15px;font-weight:700;color:#1C1C1A">' + (pct>=66 ? '🎉 Super gemacht!' : '📚 Weiter üben!') + '</div>' +
-      '<div style="font-size:13px;color:#7A7A70;margin-top:4px">' + richtig + ' von ' + gesamt + ' richtig</div>' +
+      '<div class="ergebnis-kreis" style="border-color:' + (pct>=66?'#896C32':'#C44030') + ';color:' + (pct>=66?'#896C32':'#C44030') + '">' + richtig + '/' + gesamt + '</div>' +
+      '<div style="font-size:15px;font-weight:700;color:#211D17">' + (pct>=66 ? '🎉 Super gemacht!' : '📚 Weiter üben!') + '</div>' +
+      '<div style="font-size:13px;color:#6B6455;margin-top:4px">' + richtig + ' von ' + gesamt + ' richtig</div>' +
     '</div>';
   }
   var btn = document.getElementById('quiz-abgabe-btn');
@@ -1860,7 +1862,7 @@ function renderQuizEditorUI() {
   fragen.forEach(function(fq, i) {
     html += '<div class="card" style="padding:14px;margin-bottom:10px" id="qe-card-' + i + '">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
-        '<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70">Frage ' + (i+1) + '</div>' +
+        '<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6B6455">Frage ' + (i+1) + '</div>' +
         (fragen.length > 1 ? '<button class="btn-sm-danger" onclick="quizEditorFrageLoeschen(' + i + ')" style="font-size:11px;padding:4px 8px">− entfernen</button>' : '') +
       '</div>' +
 
@@ -1871,13 +1873,13 @@ function renderQuizEditorUI() {
       fq.optionen.map(function(o, oi) {
         var istRichtig = oi === fq.richtig;
         return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
-          '<div style="width:22px;height:22px;border-radius:50%;border:2px solid ' + (istRichtig?'#5B7B6F':'#C8C4BC') + ';background:' + (istRichtig?'#5B7B6F':'#fff') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:' + (istRichtig?'#fff':'#C8C4BC') + ';flex-shrink:0" ' +
+          '<div style="width:22px;height:22px;border-radius:50%;border:2px solid ' + (istRichtig?'#896C32':'#D9CDAE') + ';background:' + (istRichtig?'#896C32':'#fff') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:' + (istRichtig?'#fff':'#D9CDAE') + ';flex-shrink:0" ' +
             'onclick="quizEditorSetRichtig(' + i + ',' + oi + ')" title="Als richtige Antwort markieren">' + (istRichtig?'✓':'') + '</div>' +
           '<input type="text" id="qe-opt-' + i + '-' + oi + '" value="' + (o||'').replace(/"/g,'&quot;') + '" placeholder="Option ' + String.fromCharCode(65+oi) + '" style="margin-bottom:0">' +
         '</div>';
       }).join('') +
 
-      '<div style="font-size:11px;color:#5B7B6F;margin-top:4px">● = richtige Antwort — tippe darauf um sie zu ändern</div>' +
+      '<div style="font-size:11px;color:#896C32;margin-top:4px">● = richtige Antwort — tippe darauf um sie zu ändern</div>' +
     '</div>';
   });
 
@@ -2001,9 +2003,9 @@ function renderWocheForm(woche, monat, data) {
     html += '<div style="margin-bottom:12px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">' +
         '<span style="font-size:13px">' + labels[i] + '</span>' +
-        '<span style="font-size:12px;color:#9A9A90">1–5</span>' +
+        '<span style="font-size:12px;color:#9A9180">1–5</span>' +
       '</div>' +
-      '<input type="range" min="0" max="5" value="' + val + '" id="w' + woche + '-' + f + '" style="accent-color:#5B7B6F">' +
+      '<input type="range" min="0" max="5" value="' + val + '" id="w' + woche + '-' + f + '" style="accent-color:#896C32">' +
     '</div>';
   });
   html += '<div class="label" style="margin-top:4px">Notiz</div>' +
@@ -2038,7 +2040,7 @@ async function speichereWoche(woche, monat) {
   }
   if (!error) {
     var btn = document.querySelector('[onclick="speichereWoche(' + woche + ',' + monat + ')"]');
-    if (btn) { btn.textContent = '✓ Gespeichert'; btn.style.color = '#5B7B6F'; setTimeout(function(){ btn.textContent = 'Woche ' + woche + ' speichern'; btn.style.color = ''; }, 2000); }
+    if (btn) { btn.textContent = '✓ Gespeichert'; btn.style.color = '#896C32'; setTimeout(function(){ btn.textContent = 'Woche ' + woche + ' speichern'; btn.style.color = ''; }, 2000); }
   }
 }
 
@@ -2104,7 +2106,7 @@ async function ladeArchiv() {
 
   var { data, error } = await sb.from('schnuppertage').select('*').order('datum', { ascending: false });
   if (error || !data || !data.length) {
-    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Schnuppertage gespeichert.</div>';
+    liste.innerHTML = '<div class="laden" style="color:#9A9180">Noch keine Schnuppertage gespeichert.</div>';
     return;
   }
   ARCHIV_DATA = data;
@@ -2134,27 +2136,27 @@ function renderArchivListe() {
     return s.entscheidung === ARCHIV_FILTER;
   });
   if (!daten.length) {
-    liste.innerHTML = '<div class="laden" style="color:#9A9A90">Keine Bewerber in dieser Kategorie.</div>';
+    liste.innerHTML = '<div class="laden" style="color:#9A9180">Keine Bewerber in dieser Kategorie.</div>';
     return;
   }
   var html = '<div id="archiv-liste-wrap">';
   daten.forEach(function(s) {
-    var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
+    var entFarbe = s.entscheidung === 'ja' ? '#6E5527' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
     var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
     var note = getNoteText(archivGesamt(s));
     var pd = s.punkte_detail || {};
     html += '<div class="card" style="margin-bottom:10px;cursor:pointer" onclick="zeigeBewerberDetail(\'' + s.id + '\')">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
-        '<div style="font-size:16px;font-weight:600;color:#1C1C1A">' + s.name + '</div>' +
+        '<div style="font-size:16px;font-weight:600;color:#211D17">' + s.name + '</div>' +
         '<div style="font-size:12px;font-weight:700;color:' + entFarbe + '">' + entText + '</div>' +
       '</div>' +
-      '<div style="font-size:12px;color:#9A9A90;margin-top:2px">' + formatDatum(s.datum) + '</div>' +
+      '<div style="font-size:12px;color:#9A9180;margin-top:2px">' + formatDatum(s.datum) + '</div>' +
       '<div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">' +
-        '<span style="font-size:13px;color:#5B7B6F;font-weight:600">' + archivGesamt(s) + ' Punkte gesamt</span>' +
-        '<span style="font-size:12px;color:#7A7A70">Wissen: ' + (pd.wissen||0) + ' · Praktik: ' + (pd.praktik||0) + '</span>' +
-        '<span style="font-size:12px;color:#9A9A90">' + note + '</span>' +
+        '<span style="font-size:13px;color:#896C32;font-weight:600">' + archivGesamt(s) + ' Punkte gesamt</span>' +
+        '<span style="font-size:12px;color:#6B6455">Wissen: ' + (pd.wissen||0) + ' · Praktik: ' + (pd.praktik||0) + '</span>' +
+        '<span style="font-size:12px;color:#9A9180">' + note + '</span>' +
       '</div>' +
-      '<div style="font-size:11px;color:#C8C4BC;margin-top:6px;text-align:right">Tippen für Details →</div>' +
+      '<div style="font-size:11px;color:#D9CDAE;margin-top:6px;text-align:right">Tippen für Details →</div>' +
     '</div>';
   });
   html += '</div>';
@@ -2165,7 +2167,7 @@ function zeigeBewerberDetail(id) {
   if (!MEISTERIN_OK) return;
   var s = ARCHIV_DATA.find(function(x){ return x.id == id; });
   if (!s) return;
-  var entFarbe = s.entscheidung === 'ja' ? '#3D6B50' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
+  var entFarbe = s.entscheidung === 'ja' ? '#6E5527' : s.entscheidung === 'nein' ? '#C44030' : '#C4A830';
   var entText = s.entscheidung === 'ja' ? '✓ Probezeit' : s.entscheidung === 'nein' ? '✗ Nicht geeignet' : '? Offen';
   var gesamt = archivGesamt(s);
   var note = getNoteText(gesamt);
@@ -2180,10 +2182,10 @@ function zeigeBewerberDetail(id) {
     // Entscheidung + Gesamtergebnis
     '<div class="card-green" style="margin-bottom:12px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
-        '<span style="font-size:13px;font-weight:700;color:#5B7B6F">Entscheidung</span>' +
+        '<span style="font-size:13px;font-weight:700;color:#896C32">Entscheidung</span>' +
         '<span style="font-weight:700;color:' + entFarbe + '">' + entText + '</span>' +
       '</div>' +
-      '<div style="font-size:28px;font-weight:700;color:#5B7B6F;text-align:center;margin:4px 0" id="arch-kopf-punkte">' + gesamt + ' Punkte</div>' +
+      '<div style="font-size:28px;font-weight:700;color:#896C32;text-align:center;margin:4px 0" id="arch-kopf-punkte">' + gesamt + ' Punkte</div>' +
       '<div style="text-align:center;font-size:14px;color:#2C2C2C;font-weight:600" id="arch-kopf-note">' + note + '</div>' +
     '</div>' +
 
@@ -2191,18 +2193,18 @@ function zeigeBewerberDetail(id) {
     '<div class="section-head">Punkte-Aufschlüsselung</div>' +
     '<div class="card" style="padding:14px;margin-bottom:12px">' +
       '<table style="width:100%;font-size:13px;border-collapse:collapse">' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">📚 Wissen</td><td style="text-align:right;font-weight:700;color:#5B7B6F">' + (pd.wissen||0) + ' Pkt</td></tr>' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0">🖐 Praktik gesamt</td><td style="text-align:right;font-weight:700;color:#5B7B6F" id="arch-praktik-total">' + (pd.praktik||0) + ' Pkt</td></tr>' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Geschicklichkeit</td><td style="text-align:right;color:#7A7A70" id="arch-gesch-total">' + (pd.geschicklichkeit||0) + ' Pkt</td></tr>' +
-        '<tr style="border-bottom:1px solid #E2DDD5"><td style="padding:6px 0;padding-left:16px;color:#7A7A70">· Rollenspiel</td><td style="text-align:right;color:#7A7A70" id="arch-rp-total">' + (pd.rollenspiel||0) + ' Pkt</td></tr>' +
-        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#5B7B6F" id="arch-gesamt-total">' + gesamt + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0">📚 Wissen</td><td style="text-align:right;font-weight:700;color:#896C32">' + (pd.wissen||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0">🖐 Praktik gesamt</td><td style="text-align:right;font-weight:700;color:#896C32" id="arch-praktik-total">' + (pd.praktik||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0;padding-left:16px;color:#6B6455">· Geschicklichkeit</td><td style="text-align:right;color:#6B6455" id="arch-gesch-total">' + (pd.geschicklichkeit||0) + ' Pkt</td></tr>' +
+        '<tr style="border-bottom:1px solid #E4DBC5"><td style="padding:6px 0;padding-left:16px;color:#6B6455">· Rollenspiel</td><td style="text-align:right;color:#6B6455" id="arch-rp-total">' + (pd.rollenspiel||0) + ' Pkt</td></tr>' +
+        '<tr><td style="padding:6px 0;font-weight:700">Gesamt</td><td style="text-align:right;font-weight:700;font-size:15px;color:#896C32" id="arch-gesamt-total">' + gesamt + ' Pkt</td></tr>' +
       '</table>' +
     '</div>' +
 
     // Praktische Übungen nachbewerten
     '<div class="section-head">Praktische Übungen — Bewertung nachtragen</div>' +
     '<div class="card" style="margin-bottom:12px">' +
-      '<div style="font-size:13px;color:#7A7A70;margin-bottom:14px">Hier kannst du die Punktzahl für die praktischen Übungen eintragen oder korrigieren.</div>' +
+      '<div style="font-size:13px;color:#6B6455;margin-bottom:14px">Hier kannst du die Punktzahl für die praktischen Übungen eintragen oder korrigieren.</div>' +
 
       '<div style="margin-bottom:14px">' +
         '<div style="font-size:13px;font-weight:600;margin-bottom:6px">✂ Haarschnitt mit Papierschere (max. 4 Pkt)</div>' +
@@ -2263,7 +2265,7 @@ function zeigeBewerberDetail(id) {
     werteMap.forEach(function(w,i){
       var val = parseInt(werte[w[0]])||0;
       var label = sl[val] || val;
-      var farbe = val >= 4 ? '#3D6B50' : val >= 3 ? '#5B7B6F' : val <= 1 ? '#C44030' : '#C4A830';
+      var farbe = val >= 4 ? '#6E5527' : val >= 3 ? '#896C32' : val <= 1 ? '#C44030' : '#C4A830';
       html += '<tr style="border-bottom:1px solid #F0EDE8"><td style="padding:6px 0">' + w[1] + '</td>' +
         '<td style="text-align:right;font-weight:700;color:' + farbe + '">' + label + '</td></tr>';
     });
@@ -2280,8 +2282,8 @@ function zeigeBewerberDetail(id) {
     oqKeys.forEach(function(k, i){
       if (werte[k] && werte[k].trim()) {
         html += '<div style="margin-bottom:10px">' +
-          '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#7A7A70;margin-bottom:3px">' + oqLabels[i] + '</div>' +
-          '<div style="font-size:13px;color:#1C1C1A;line-height:1.5;background:#F7F5F0;padding:8px 10px;border-radius:6px">' + (werte[k]||'—') + '</div>' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6B6455;margin-bottom:3px">' + oqLabels[i] + '</div>' +
+          '<div style="font-size:13px;color:#211D17;line-height:1.5;background:#F8F4EA;padding:8px 10px;border-radius:6px">' + (werte[k]||'—') + '</div>' +
         '</div>';
       }
     });
@@ -2292,7 +2294,7 @@ function zeigeBewerberDetail(id) {
   if (werte.notizen && werte.notizen.trim()) {
     html += '<div class="section-head">Notizen der Ausbilderin</div>' +
       '<div class="card" style="padding:14px;margin-bottom:12px">' +
-        '<div style="font-size:13px;color:#1C1C1A;line-height:1.6;white-space:pre-wrap">' + werte.notizen + '</div>' +
+        '<div style="font-size:13px;color:#211D17;line-height:1.6;white-space:pre-wrap">' + werte.notizen + '</div>' +
       '</div>';
   }
 
@@ -2310,7 +2312,7 @@ function zeigeBewerberDetail(id) {
 
     // Löschen
     '<button class="btn-danger" onclick="loescheBewerber(\'' + s.id + '\',\'' + s.name.replace(/'/g,"\\'") + '\')">🗑️ Bewerber löschen</button>' +
-    '<div style="font-size:11px;color:#9A9A90;text-align:center;margin-top:6px">Löschen kann nicht rückgängig gemacht werden.</div>';
+    '<div style="font-size:11px;color:#9A9180;text-align:center;margin-top:6px">Löschen kann nicht rückgängig gemacht werden.</div>';
 
   var detailEl = document.getElementById('archiv-detail');
   var listeEl = document.getElementById('archiv-liste');
@@ -2513,10 +2515,10 @@ async function lehrlingAbschicken() {
     testZuruecksetzen();
 
     // Erfolgs-Anzeige
-    okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#5B7B6F">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>' +
+    okEl.innerHTML = '✓ Dein Test wurde übermittelt!<br><span style="font-size:12px;color:#896C32">Mirjam meldet sich bei dir. Danke für deinen Schnuppertag! ✂</span>' +
       '<button class="btn-sec" style="margin-top:10px" onclick="testZuruecksetzen();window.scrollTo(0,0)">Neuer Test für die nächste Person</button>';
     okEl.style.display = 'block';
-    if (btn) { btn.disabled = true; btn.textContent = '✓ Übermittelt'; btn.style.background = '#9A9A90'; }
+    if (btn) { btn.disabled = true; btn.textContent = '✓ Übermittelt'; btn.style.background = '#9A9180'; }
     window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
   }
 }
@@ -2705,7 +2707,7 @@ function renderLzeInhalt(monat) {
   if (!div) return;
 
   if (!mInfo || !mInfo.ziele.length) {
-    div.innerHTML = '<div class="laden" style="color:#9A9A90">Noch keine Aufgaben — unten hinzufügen.</div>';
+    div.innerHTML = '<div class="laden" style="color:#9A9180">Noch keine Aufgaben — unten hinzufügen.</div>';
     return;
   }
 
@@ -2713,13 +2715,13 @@ function renderLzeInhalt(monat) {
   mInfo.ziele.forEach(function(z) {
     html += '<div class="frage-editor-card">' +
       '<div class="editor-row">' +
-        '<div style="flex:1;font-size:14px;color:#1C1C1A">' + z.text + '</div>' +
+        '<div style="flex:1;font-size:14px;color:#211D17">' + z.text + '</div>' +
         '<div style="display:flex;gap:6px;margin-left:10px;flex-shrink:0">' +
           '<button class="btn-sm" data-edit="' + z.id + '" data-monat="' + monat + '" onclick="lzeEditToggle(this)">✏️</button>' +
           '<button class="btn-sm-danger" data-del="' + z.id + '" data-monat="' + monat + '" onclick="lzeLoeschen(this)">🗑️</button>' +
         '</div>' +
       '</div>' +
-      '<div id="lze-edit-' + z.id + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #E2DDD5">' +
+      '<div id="lze-edit-' + z.id + '" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #E4DBC5">' +
         '<input type="text" id="lze-input-' + z.id + '" value="' + z.text.replace(/"/g, '&quot;') + '" style="margin-bottom:8px">' +
         '<div style="display:flex;gap:8px">' +
           '<button class="btn-sm" data-save="' + z.id + '" data-monat="' + monat + '" onclick="lzeSpeichern(this)">✓ Speichern</button>' +

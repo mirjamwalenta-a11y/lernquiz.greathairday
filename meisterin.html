@@ -5,6 +5,8 @@
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js" data-schluessel="m_eingeloggt"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meisterin · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+
 <meta name="theme-color" content="#1c1917">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -12,82 +14,82 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;min-height:100dvh}
-body{background:#F7F5F0;font-family:system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
+body{background:#F8F4EA;font-family:Poppins,system-ui,sans-serif;min-height:100dvh;padding:1.5rem 1rem}
 .wrap{max-width:580px;margin:0 auto;min-height:100dvh}
 .page{display:none}.page.ak{display:block}
-.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#7A7A70;margin-bottom:8px}
-.card{background:#fff;border:1px solid #E2DDD5;border-radius:8px;padding:20px;margin-bottom:12px}
-.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
-h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
-.sub{color:#7A7A70;font-size:14px;margin-bottom:20px}
-.back-btn{background:none;border:none;color:#7A7A70;cursor:pointer;font-size:13px;padding:0;margin-bottom:16px;display:block}
-.btn-primary{width:100%;padding:12px;background:#5B7B6F;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;font-weight:600}
-.btn-ghost{padding:10px;background:transparent;color:#5B7B6F;border:1px solid #5B7B6F;border-radius:6px;font-size:14px;cursor:pointer;font-family:system-ui;width:100%;margin-bottom:8px}
-.btn-toggle{flex:1;padding:9px 6px;border-radius:6px;font-size:12px;cursor:pointer;font-family:system-ui;border:1.5px solid #E2DDD5;background:#fff;color:#7A7A70;text-align:center;font-weight:600}
-.btn-toggle.ak{background:#5B7B6F;color:#fff;border-color:#5B7B6F}
+.label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6B6455;margin-bottom:8px}
+.card{background:#fff;border:1px solid #E4DBC5;border-radius:8px;padding:20px;margin-bottom:12px}
+.tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#896C32;margin-bottom:4px}
+h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
+.sub{color:#6B6455;font-size:14px;margin-bottom:20px}
+.back-btn{background:none;border:none;color:#6B6455;cursor:pointer;font-size:13px;padding:0;margin-bottom:16px;display:block}
+.btn-primary{width:100%;padding:12px;background:#896C32;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;font-weight:600}
+.btn-ghost{padding:10px;background:transparent;color:#896C32;border:1px solid #896C32;border-radius:6px;font-size:14px;cursor:pointer;font-family:Poppins,system-ui;width:100%;margin-bottom:8px}
+.btn-toggle{flex:1;padding:9px 6px;border-radius:6px;font-size:12px;cursor:pointer;font-family:Poppins,system-ui;border:1.5px solid #E4DBC5;background:#fff;color:#6B6455;text-align:center;font-weight:600}
+.btn-toggle.ak{background:#896C32;color:#fff;border-color:#896C32}
 /* NAV */
-.nav-card{background:#fff;border:1.5px solid #E2DDD5;border-radius:10px;padding:18px 16px;text-align:left;cursor:pointer;transition:border-color 0.15s;width:100%;margin-bottom:10px;display:flex;align-items:center;gap:14px}
-.nav-card:hover{border-color:#5B7B6F;background:#F7FBF9}
+.nav-card{background:#fff;border:1.5px solid #E4DBC5;border-radius:10px;padding:18px 16px;text-align:left;cursor:pointer;transition:border-color 0.15s;width:100%;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.nav-card:hover{border-color:#896C32;background:#FBF8F1}
 .nav-card.dunkel{background:#2C2C2C;border-color:#2C2C2C}
-.nav-card.dunkel:hover{background:#3a3a3a;border-color:#5B7B6F}
+.nav-card.dunkel:hover{background:#3a3a3a;border-color:#896C32}
 .nav-icon{font-size:1.6rem;flex-shrink:0}
-.nav-title{font-weight:600;color:#1C1C1A;font-size:15px}
-.nav-title-w{font-weight:600;color:#F7F5F0;font-size:15px}
-.nav-desc{color:#7A7A70;font-size:12px;margin-top:2px}
-.nav-desc-w{color:#9A9A90;font-size:12px;margin-top:2px}
+.nav-title{font-weight:600;color:#211D17;font-size:15px}
+.nav-title-w{font-weight:600;color:#F8F4EA;font-size:15px}
+.nav-desc{color:#6B6455;font-size:12px;margin-top:2px}
+.nav-desc-w{color:#9A9180;font-size:12px;margin-top:2px}
 /* STREAK */
-.streak-bar{background:#fff;border:1px solid #E2DDD5;border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.streak-bar{background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
 .streak-feuer{font-size:28px}
 .streak-info{flex:1}
 .streak-zahl{font-size:20px;font-weight:700;color:#C4830A}
-.streak-text{font-size:11px;color:#7A7A70;margin-top:1px}
-.streak-gesamt{font-size:11px;color:#9A9A90;text-align:right;white-space:nowrap}
+.streak-text{font-size:11px;color:#6B6455;margin-top:1px}
+.streak-gesamt{font-size:11px;color:#9A9180;text-align:right;white-space:nowrap}
 /* BADGES */
 .badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
-.badge-item{text-align:center;padding:10px 4px;border-radius:8px;border:1.5px solid #E2DDD5;background:#fff}
+.badge-item{text-align:center;padding:10px 4px;border-radius:8px;border:1.5px solid #E4DBC5;background:#fff}
 .badge-item.frei{border-color:#C4A830;background:#FDF6E3}
 .badge-icon{font-size:22px;margin-bottom:4px}
-.badge-name{font-size:9px;font-weight:700;color:#7A7A70;text-transform:uppercase;letter-spacing:0.5px;line-height:1.3}
+.badge-name{font-size:9px;font-weight:700;color:#6B6455;text-transform:uppercase;letter-spacing:0.5px;line-height:1.3}
 .badge-item.frei .badge-name{color:#8A7020}
 .badge-item.locked{opacity:0.35;filter:grayscale(1)}
 /* QUIZ */
-.prog-wrap{height:4px;background:#E2DDD5;border-radius:2px;margin-bottom:16px}
-.prog-fill{height:4px;background:#5B7B6F;border-radius:2px;transition:width 0.3s}
+.prog-wrap{height:4px;background:#E4DBC5;border-radius:2px;margin-bottom:16px}
+.prog-fill{height:4px;background:#896C32;border-radius:2px;transition:width 0.3s}
 .frage-box{background:#2C2C2C;border-radius:10px;padding:20px;margin-bottom:14px}
-.frage-lang{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#5B7B6F;margin-bottom:8px;font-weight:700}
-.frage-txt{font-size:16px;color:#F7F5F0;line-height:1.55;font-weight:500}
-.frage-meta{font-size:11px;color:#9A9A90;margin-top:8px;font-style:italic}
-.opt-btn{width:100%;padding:12px 14px;text-align:left;border:1.5px solid #E2DDD5;border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:system-ui;color:#1C1C1A;margin-bottom:8px;transition:all 0.15s;line-height:1.4}
+.frage-lang{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#896C32;margin-bottom:8px;font-weight:700}
+.frage-txt{font-size:16px;color:#F8F4EA;line-height:1.55;font-weight:500}
+.frage-meta{font-size:11px;color:#9A9180;margin-top:8px;font-style:italic}
+.opt-btn{width:100%;padding:12px 14px;text-align:left;border:1.5px solid #E4DBC5;border-radius:8px;background:#fff;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;color:#211D17;margin-bottom:8px;transition:all 0.15s;line-height:1.4}
 .opt-btn:disabled{cursor:default}
-.opt-btn.ric{border-color:#5B7B6F;background:#EAF0EE;color:#2C2C2C;font-weight:600}
+.opt-btn.ric{border-color:#896C32;background:#F3EBD9;color:#2C2C2C;font-weight:600}
 .opt-btn.fal{border-color:#C44030;background:#FDECEA;color:#C44030}
-.fb-g{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px;margin-top:6px}
+.fb-g{background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:14px;margin-top:6px}
 .fb-r{background:#FDECEA;border:1px solid #C44030;border-radius:8px;padding:14px;margin-top:6px}
-.muster{background:#2C2C2C;border-radius:6px;padding:12px;margin-top:8px;font-size:13px;color:#F7F5F0;line-height:1.6}
-.muster-lab{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5B7B6F;margin-bottom:4px}
+.muster{background:#2C2C2C;border-radius:6px;padding:12px;margin-top:8px;font-size:13px;color:#F8F4EA;line-height:1.6}
+.muster-lab{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#896C32;margin-bottom:4px}
 /* SCORE */
-.score-box{background:#EAF0EE;border:1px solid #5B7B6F;border-radius:8px;padding:14px 16px;margin-bottom:12px}
-.score-zahl{font-size:36px;font-weight:700;color:#5B7B6F;text-align:center;margin-bottom:4px}
-.score-sub{font-size:13px;color:#5B7B6F;text-align:center}
+.score-box{background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.score-zahl{font-size:36px;font-weight:700;color:#896C32;text-align:center;margin-bottom:4px}
+.score-sub{font-size:13px;color:#896C32;text-align:center}
 /* KARTEIKARTEN */
 .karte-vorder{background:#2C2C2C;border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px}
-.karte-hint{font-size:11px;color:#9A9A90;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
-.karte-wort{font-size:20px;font-weight:600;color:#F7F5F0;line-height:1.4}
-.karte-kontext{font-size:12px;color:#7A7A70;margin-top:10px;font-style:italic}
-.karte-rueck{background:#EAF0EE;border:1.5px solid #5B7B6F;border-radius:10px;padding:20px;text-align:center;margin-bottom:12px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.karte-hint{font-size:11px;color:#9A9180;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.karte-wort{font-size:20px;font-weight:600;color:#F8F4EA;line-height:1.4}
+.karte-kontext{font-size:12px;color:#6B6455;margin-top:10px;font-style:italic}
+.karte-rueck{background:#F3EBD9;border:1.5px solid #896C32;border-radius:10px;padding:20px;text-align:center;margin-bottom:12px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .karte-uebersetzung{font-size:18px;font-weight:600;color:#2C2C2C}
-.karte-tipp{font-size:12px;color:#5B7B6F;margin-top:6px;line-height:1.5}
+.karte-tipp{font-size:12px;color:#896C32;margin-top:6px;line-height:1.5}
 .karte-row{display:flex;gap:8px;margin-bottom:12px}
-.btn-kannte{flex:1;padding:11px;border:none;border-radius:8px;background:#5B7B6F;color:#fff;font-size:13px;cursor:pointer;font-family:system-ui;font-weight:600}
-.btn-nochmal{flex:1;padding:11px;border:1.5px solid #C44030;border-radius:8px;background:#fff;color:#C44030;font-size:13px;cursor:pointer;font-family:system-ui;font-weight:600}
+.btn-kannte{flex:1;padding:11px;border:none;border-radius:8px;background:#896C32;color:#fff;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;font-weight:600}
+.btn-nochmal{flex:1;padding:11px;border:1.5px solid #C44030;border-radius:8px;background:#fff;color:#C44030;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;font-weight:600}
 /* PIN */
 .pin-page{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:2rem 1rem}
-.pin-box{background:#fff;border:1px solid #E2DDD5;border-radius:14px;width:min(90vw,340px);padding:32px 24px;text-align:center}
+.pin-box{background:#fff;border:1px solid #E4DBC5;border-radius:14px;width:min(90vw,340px);padding:32px 24px;text-align:center}
 .pin-logo{font-size:42px;margin-bottom:12px}
 .pin-titel{font-size:20px;font-weight:700;color:#2C2C2C;margin-bottom:4px}
-.pin-sub{font-size:12px;color:#7A7A70;margin-bottom:20px}
-.pin-input{width:100%;border:1.5px solid #E2DDD5;border-radius:8px;padding:13px;font-size:22px;text-align:center;letter-spacing:8px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none;margin-bottom:12px}
-.pin-input:focus{border-color:#5B7B6F}
+.pin-sub{font-size:12px;color:#6B6455;margin-bottom:20px}
+.pin-input{width:100%;border:1.5px solid #E4DBC5;border-radius:8px;padding:13px;font-size:22px;text-align:center;letter-spacing:8px;font-family:Poppins,system-ui;background:#F8F4EA;color:#211D17;outline:none;margin-bottom:12px}
+.pin-input:focus{border-color:#896C32}
 .pin-feld{font-size:15px;letter-spacing:0;text-align:left}
 .pin-fehler{font-size:12px;color:#C44030;margin-bottom:10px;min-height:16px}
 /* POPUP */
@@ -99,11 +101,11 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 @keyframes spBounce{from{transform:scale(0)}to{transform:scale(1)}}
 .sp-titel{font-size:22px;font-weight:700;color:#2C2C2C;margin-bottom:6px}
 .sp-sub{font-size:13px;color:#5A5550;line-height:1.6;margin-bottom:20px}
-.sp-btn{padding:11px 28px;background:#5B7B6F;color:#fff;border:none;border-radius:8px;font-family:system-ui;font-size:13px;font-weight:700;cursor:pointer}
+.sp-btn{padding:11px 28px;background:#896C32;color:#fff;border:none;border-radius:8px;font-family:Poppins,system-ui;font-size:13px;font-weight:700;cursor:pointer}
 .sp-konf{position:absolute;border-radius:2px;pointer-events:none}
 @keyframes spkf{0%{opacity:1;transform:translateY(-10px) rotate(0)}100%{opacity:0;transform:translateY(110px) rotate(400deg)}}
 /* THEMA CHIP */
-.thema-sel{width:100%;border:1px solid #E2DDD5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#F7F5F0;color:#1C1C1A;outline:none;margin-bottom:14px}
+.thema-sel{width:100%;border:1px solid #E4DBC5;border-radius:6px;padding:10px 12px;font-size:14px;font-family:Poppins,system-ui;background:#F8F4EA;color:#211D17;outline:none;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -158,7 +160,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div class="card">
     <div class="label" style="margin-bottom:12px">Meine Abzeichen</div>
     <div class="badge-grid" id="badge-grid"></div>
-    <div style="font-size:11px;color:#9A9A90;margin-top:10px;text-align:center" id="naechstes-badge"></div>
+    <div style="font-size:11px;color:#9A9180;margin-top:10px;text-align:center" id="naechstes-badge"></div>
   </div>
 
   <!-- Navigation -->
@@ -170,7 +172,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     </div>
   </button>
 
-  <button class="nav-card" onclick="zeige('fach')" style="border-color:#5B7B6F">
+  <button class="nav-card" onclick="zeige('fach')" style="border-color:#896C32">
     <div class="nav-icon">📚</div>
     <div>
       <div class="nav-title">Fachfragen üben</div>
@@ -199,7 +201,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
     </div>
   </button>
 
-  <button class="back-btn" style="text-align:center;width:100%;margin-top:16px;color:#C8C4BC" onclick="pinAbmelden()">Abmelden</button>
+  <button class="back-btn" style="text-align:center;width:100%;margin-top:16px;color:#D9CDAE" onclick="pinAbmelden()">Abmelden</button>
 </div>
 
 <!-- ══════════════════════════════════════════════════ -->
@@ -214,7 +216,7 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
   <div id="env-lehrling-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
 
   <div id="env-inhalt">
-    <div style="text-align:center;padding:40px 0;color:#9A9A90;font-size:13px">Wird geladen…</div>
+    <div style="text-align:center;padding:40px 0;color:#9A9180;font-size:13px">Wird geladen…</div>
   </div>
 </div>
 
@@ -323,9 +325,9 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 <div id="p-quiz" class="page">
   <button class="back-btn" id="quiz-back-btn">← Zurück</button>
   <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-  <div style="font-size:12px;color:#9A9A90;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+  <div style="font-size:12px;color:#9A9180;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
     <span id="quiz-nr">Frage 1</span>
-    <span id="quiz-thema-label" style="color:#5B7B6F;font-weight:600;font-size:11px;text-align:center;flex:1;padding:0 8px"></span>
+    <span id="quiz-thema-label" style="color:#896C32;font-weight:600;font-size:11px;text-align:center;flex:1;padding:0 8px"></span>
     <span id="quiz-score-live">✓ 0</span>
   </div>
   <div class="frage-box">
@@ -344,14 +346,14 @@ h1{font-size:26px;font-weight:600;color:#1C1C1A;margin-bottom:4px}
 <div id="p-karte" class="page">
   <button class="back-btn" onclick="zeige('englisch')">← Zurück</button>
   <div class="prog-wrap"><div class="prog-fill" id="karte-prog" style="width:0%"></div></div>
-  <div style="font-size:12px;color:#9A9A90;margin-bottom:12px;display:flex;justify-content:space-between">
+  <div style="font-size:12px;color:#9A9180;margin-bottom:12px;display:flex;justify-content:space-between">
     <span id="karte-nr"></span><span id="karte-rest"></span>
   </div>
   <div class="karte-vorder" id="karte-vorder" onclick="karteUmdrehen()">
     <div class="karte-hint" id="karte-hint-v"></div>
     <div class="karte-wort" id="karte-de"></div>
     <div class="karte-kontext" id="karte-kontext-v"></div>
-    <div style="margin-top:16px;font-size:11px;color:#5B7B6F">Tippen zum Umdrehen ↓</div>
+    <div style="margin-top:16px;font-size:11px;color:#896C32">Tippen zum Umdrehen ↓</div>
   </div>
   <div class="karte-rueck" id="karte-rueck" style="display:none">
     <div class="karte-hint" id="karte-hint-r"></div>
@@ -424,7 +426,7 @@ var EnVerlaufAktLehrling=null;
 
 async function ladeEnVerlauf(){
   zeige('en-verlauf');
-  document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:40px 0;color:#9A9A90;font-size:13px">Wird geladen…</div>';
+  document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:40px 0;color:#9A9180;font-size:13px">Wird geladen…</div>';
   document.getElementById('env-lehrling-tabs').innerHTML='';
   if(!sb_m){
     document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:20px;color:#C44030;font-size:13px">Keine Verbindung zu Supabase.</div>';
@@ -434,7 +436,7 @@ async function ladeEnVerlauf(){
     // Alle Lehrlinge laden
     var {data:lehrlinge}=await sb_m.from('lehrlinge').select('id,name,lehrjahr').order('name');
     if(!lehrlinge||!lehrlinge.length){
-      document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:20px;color:#9A9A90;font-size:13px">Noch keine Daten vorhanden.</div>';
+      document.getElementById('env-inhalt').innerHTML='<div style="text-align:center;padding:20px;color:#9A9180;font-size:13px">Noch keine Daten vorhanden.</div>';
       return;
     }
     // Tabs erstellen
@@ -459,7 +461,7 @@ async function ladeEnVerlauf(){
 
 async function zeigeEnVerlaufFuer(lehrling){
   var inhalt=document.getElementById('env-inhalt');
-  inhalt.innerHTML='<div style="text-align:center;padding:20px;color:#9A9A90;font-size:13px">Lade '+lehrling.name+'…</div>';
+  inhalt.innerHTML='<div style="text-align:center;padding:20px;color:#9A9180;font-size:13px">Lade '+lehrling.name+'…</div>';
   try{
     var {data:sessions}=await sb_m.from('en_verlauf')
       .select('*')
@@ -468,7 +470,7 @@ async function zeigeEnVerlaufFuer(lehrling){
       .limit(20);
 
     if(!sessions||!sessions.length){
-      inhalt.innerHTML='<div class="card"><p style="font-size:13px;color:#9A9A90;text-align:center">'+lehrling.name+' hat noch keine Englisch-Sessions.</p></div>';
+      inhalt.innerHTML='<div class="card"><p style="font-size:13px;color:#9A9180;text-align:center">'+lehrling.name+' hat noch keine Englisch-Sessions.</p></div>';
       return;
     }
 
@@ -489,9 +491,9 @@ async function zeigeEnVerlaufFuer(lehrling){
     html+='<div class="card">';
     html+='<div class="label" style="margin-bottom:10px">'+lehrling.name+' · '+lehrling.lehrjahr+'. Lehrjahr</div>';
     html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px">';
-    html+='<div style="text-align:center;background:#EAF0EE;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#5B7B6F">'+gesamt+'</div><div style="font-size:10px;color:#7A7A70;margin-top:2px">Sessions</div></div>';
-    html+='<div style="text-align:center;background:#EAF0EE;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#5B7B6F">'+avgPct+'%</div><div style="font-size:10px;color:#7A7A70;margin-top:2px">Ø Richtig</div></div>';
-    html+='<div style="text-align:center;background:#EAF0EE;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#5B7B6F">'+(besteSession.prozent||0)+'%</div><div style="font-size:10px;color:#7A7A70;margin-top:2px">Beste</div></div>';
+    html+='<div style="text-align:center;background:#F3EBD9;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#896C32">'+gesamt+'</div><div style="font-size:10px;color:#6B6455;margin-top:2px">Sessions</div></div>';
+    html+='<div style="text-align:center;background:#F3EBD9;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#896C32">'+avgPct+'%</div><div style="font-size:10px;color:#6B6455;margin-top:2px">Ø Richtig</div></div>';
+    html+='<div style="text-align:center;background:#F3EBD9;border-radius:8px;padding:12px 4px"><div style="font-size:22px;font-weight:700;color:#896C32">'+(besteSession.prozent||0)+'%</div><div style="font-size:10px;color:#6B6455;margin-top:2px">Beste</div></div>';
     html+='</div></div>';
 
     // Kategorien
@@ -502,8 +504,8 @@ async function zeigeEnVerlaufFuer(lehrling){
         var avg=Math.round(katStats[k].pct/katStats[k].sessions);
         var balken=Math.max(4,avg);
         html+='<div style="margin-bottom:10px">';
-        html+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#2C2C2C;margin-bottom:4px"><span>'+k+'</span><span style="color:#5B7B6F;font-weight:600">'+avg+'% · '+katStats[k].sessions+' Sessions</span></div>';
-        html+='<div style="height:6px;background:#E2DDD5;border-radius:3px"><div style="height:6px;background:#5B7B6F;border-radius:3px;width:'+balken+'%"></div></div>';
+        html+='<div style="display:flex;justify-content:space-between;font-size:12px;color:#2C2C2C;margin-bottom:4px"><span>'+k+'</span><span style="color:#896C32;font-weight:600">'+avg+'% · '+katStats[k].sessions+' Sessions</span></div>';
+        html+='<div style="height:6px;background:#E4DBC5;border-radius:3px"><div style="height:6px;background:#896C32;border-radius:3px;width:'+balken+'%"></div></div>';
         html+='</div>';
       });
       html+='</div>';
@@ -512,10 +514,10 @@ async function zeigeEnVerlaufFuer(lehrling){
     // Letzte Sessions
     html+='<div class="card"><div class="label" style="margin-bottom:10px">Letzte Sessions</div>';
     sessions.forEach(function(s){
-      var farbe=s.prozent>=80?'#5B7B6F':s.prozent>=60?'#C4A830':'#C44030';
-      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #E2DDD5;">';
+      var farbe=s.prozent>=80?'#896C32':s.prozent>=60?'#C4A830':'#C44030';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #E4DBC5;">';
       html+='<div><div style="font-size:12px;font-weight:600;color:#2C2C2C">'+( s.kategorie||'Alle')+' · '+(s.modus||'Quiz')+'</div>';
-      html+='<div style="font-size:11px;color:#9A9A90;margin-top:2px">'+s.datum+' · '+s.richtig+'/'+s.gesamt+' richtig</div></div>';
+      html+='<div style="font-size:11px;color:#9A9180;margin-top:2px">'+s.datum+' · '+s.richtig+'/'+s.gesamt+' richtig</div></div>';
       html+='<div style="font-size:18px;font-weight:700;color:'+farbe+'">'+s.prozent+'%</div>';
       html+='</div>';
     });
@@ -718,7 +720,7 @@ function spSchliessen(){
 function konfetti(){
   var box=document.getElementById('sp-box');
   box.querySelectorAll('.sp-konf').forEach(function(e){ if(e.parentNode) e.parentNode.removeChild(e); });
-  var farben=['#5B7B6F','#C4A830','#E2DDD5','#2C2C2C','#F7F5F0'];
+  var farben=['#896C32','#C4A830','#E4DBC5','#2C2C2C','#F8F4EA'];
   for(var i=0;i<18;i++){
     var el=document.createElement('div'); el.className='sp-konf';
     var d=(0.7+Math.random()*1).toFixed(2), dl=(Math.random()*0.4).toFixed(2), sz=(4+Math.random()*7).toFixed(1);
@@ -1031,8 +1033,8 @@ function pruefeQuizAntwort(gewaehlt,richtig,kor,erklaerung){
   });
   var fb=document.getElementById('feedback');
   fb.className=kor?'fb-g':'fb-r';
-  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#5B7B6F':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
-    (Q_Modus==='en'?'<div class="muster-lab">Übersetzung</div><div class="muster">'+Q_AktFrage.de+'<br><span style="color:#5B7B6F;font-weight:600">'+Q_AktFrage.en+'</span>'+(erklaerung?'<br><br><span style="color:#C4B86A;font-size:11px">'+erklaerung+'</span>':'')+'</div>':
+  fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(kor?'#896C32':'#C44030')+';margin-bottom:6px">'+(kor?'✓ Richtig!':'✗ Nicht ganz.')+'</div>'+
+    (Q_Modus==='en'?'<div class="muster-lab">Übersetzung</div><div class="muster">'+Q_AktFrage.de+'<br><span style="color:#896C32;font-weight:600">'+Q_AktFrage.en+'</span>'+(erklaerung?'<br><br><span style="color:#C4B86A;font-size:11px">'+erklaerung+'</span>':'')+'</div>':
     '<div class="muster-lab">Erklärung</div><div class="muster">'+erklaerung+'</div>');
   fb.style.display='block';
   var btns=document.getElementById('quiz-btns');
