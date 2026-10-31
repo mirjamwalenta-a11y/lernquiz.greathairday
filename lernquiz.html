@@ -1778,7 +1778,8 @@ function gespraechZeile(g){
   var txt=g.ergebnis==='verstanden'?'Im Prüfgespräch bestätigt':
           g.ergebnis==='teilweise'?'Im Prüfgespräch teilweise erklärt':
           'Im Prüfgespräch nicht erklärt – das Quiz-Ergebnis allein reicht hier nicht';
-  return '<div style="font-size:10px;color:'+PG_FARBE[g.ergebnis]+';margin-top:2px;font-weight:700">🗣 '+txt+' · '+datumDE(g.datum)+'</div>';
+  return '<div style="font-size:10px;color:'+PG_FARBE[g.ergebnis]+';margin-top:2px;font-weight:700">🗣 '+txt+' · '+datumDE(g.datum)+
+    (wiederPruefenFaellig(g)?' – nach 3 Monaten wieder prüfen':'')+'</div>';
 }
 
 function gespraechListe(liste,titel){
@@ -1806,13 +1807,20 @@ function gespraechListe(liste,titel){
 //   3. Thema „sitzt“ seit über 4 Wochen und wurde nie im Gespräch geprüft
 // Ein gespeichertes Prüfgespräch zum Thema setzt 1 und 2 zurück.
 var HINWEIS_ZUSATZ_FALSCH=2, HINWEIS_SICHER_FALSCH=2, HINWEIS_NIE_GEPRUEFT_TAGE=28;
+// 4. Im Prüfgespräch bestätigt, aber vor über 3 Monaten → nochmal prüfen, ob es
+//    auch langfristig sitzt (ein neues Gespräch zum Thema setzt das zurück)
+var HINWEIS_WIEDER_PRUEFEN_TAGE=90;
+function wiederPruefenFaellig(g){
+  return !!(g&&g.ergebnis==='verstanden'&&g.datum&&tageZwischen(String(g.datum).slice(0,10),heuteISO())>=HINWEIS_WIEDER_PRUEFEN_TAGE);
+}
 // Zeilen von vor der „sitzt nach 3 Tagen“-Umstellung haben kein gut_seit
 var SITZT_SPAETESTENS_SEIT='2026-10-29';
 
 function pruefHinweise(komp,gespr){
-  var liste=[];
-  Object.keys(komp||{}).forEach(function(th){
-    var d=komp[th], st=berechneStatus(d), gruende=[];
+  var liste=[], themen=Object.keys(komp||{});
+  Object.keys(gespr||{}).forEach(function(th){if(themen.indexOf(th)<0)themen.push(th);});
+  themen.forEach(function(th){
+    var d=(komp&&komp[th])||{}, st=berechneStatus(d), gruende=[];
     var zf=d.zusatz_falsch_offen||0, sf=d.sicher_falsch_offen||0;
     if(st==='sitzt'&&zf>=HINWEIS_ZUSATZ_FALSCH)
       gruende.push('Quiz sagt „sitzt“, aber '+zf+'× die Warum-Frage falsch – vermutlich nur auswendig');
@@ -1822,6 +1830,8 @@ function pruefHinweise(komp,gespr){
       var seit=d.gut_seit||SITZT_SPAETESTENS_SEIT, tage=tageZwischen(seit,heuteISO());
       if(tage>HINWEIS_NIE_GEPRUEFT_TAGE) gruende.push('sitzt seit über '+Math.floor(tage/7)+' Wochen, aber noch nie im Gespräch geprüft');
     }
+    if(wiederPruefenFaellig(gespr&&gespr[th]))
+      gruende.push('im Prüfgespräch bestätigt am '+datumDE(gespr[th].datum)+' – nach 3 Monaten wieder prüfen, ob es noch sitzt');
     if(gruende.length) liste.push({th:th,gruende:gruende,dringend:gruende.length>1||zf>=HINWEIS_ZUSATZ_FALSCH&&st==='sitzt'||sf>=HINWEIS_SICHER_FALSCH});
   });
   liste.sort(function(a,b){return (b.dringend-a.dringend)||(b.gruende.length-a.gruende.length)||a.th.localeCompare(b.th,'de');});
@@ -1907,6 +1917,7 @@ function zeigePruefStart(lehrling,komp,gespr){
     var st=berechneStatus(PG.komp[th]), g=PG.gespr[th];
     if(g&&g.ergebnis==='nicht') return 0;
     if(st==='sitzt'&&!(g&&g.ergebnis==='verstanden')) return 1;
+    if(wiederPruefenFaellig(g)) return 1.5;
     if(st==='teilweise') return 2;
     if(st) return 3;
     return 4;
@@ -1924,6 +1935,7 @@ function zeigePruefStart(lehrling,komp,gespr){
     var st=berechneStatus(PG.komp[th]), g=PG.gespr[th], p=prio(th);
     var info=p===0?'<span style="color:#C44030">im letzten Gespräch nicht erklärt – nochmal prüfen</span>':
              p===1?'<span style="color:#896C32">Vorschlag: laut Quiz sitzt, noch nicht im Gespräch bestätigt</span>':
+             p===1.5?'<span style="color:#896C32">Vorschlag: vor über 3 Monaten bestätigt – wieder prüfen</span>':
              st?('Quiz: '+LABEL[st]):'im Quiz noch nicht geübt';
     if(g&&p!==0) info+=' · 🗣 '+PG_LABEL[g.ergebnis]+' am '+datumDE(g.datum);
     html+='<button class="mod-b" data-pg-thema="'+i+'"><div class="mod-t">'+escHtml(th)+'</div><div class="mod-i">'+info+'</div></button>';
