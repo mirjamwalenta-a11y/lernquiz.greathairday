@@ -1070,8 +1070,8 @@ function trend(alt,neu){
 }
 
 // gespr (optional): Thema → letztes Prüfgespräch {ergebnis, datum}, siehe gespraechProThema()
-function renderKompetenz(kompdaten,themen,gespr){
-  gespr=gespr||{};
+function renderKompetenz(kompdaten,themen,gespr,praxis){
+  gespr=gespr||{};praxis=praxis||{};
   var html='<div style="margin-bottom:20px">';
   html+='<div class="lab" style="margin-bottom:10px">Fortschritt pro Thema</div>';
   var fokus=[];
@@ -1098,10 +1098,11 @@ function renderKompetenz(kompdaten,themen,gespr){
       (gesamt>0?'<div style="font-size:10px;color:#9A9188;margin-top:2px">'+richtig+'/'+gesamt+' richtig'+
         (d.geraten?' · '+d.geraten+'× richtig geraten':'')+(d.zusatz_falsch?' · '+d.zusatz_falsch+'× Warum-Frage falsch':'')+'</div>':'')+
       (d&&d.sicher_falsch?'<div style="font-size:10px;color:#C44030;margin-top:2px">⚠ '+d.sicher_falsch+'× sicher, aber falsch – hier steckt vermutlich ein Missverständnis</div>':'')+
-      gespraechZeile(gespr[th])+
+      gespraechZeile(gespr[th])+praxisZeile(praxis[th])+
     '</div>';
     var st=berechneStatus(d);
     if(gespr[th]&&gespr[th].ergebnis==='nicht') fokus.push({th:th,st:'gespraech'});
+    else if(praxis[th]&&praxis[th].ergebnis==='nicht') fokus.push({th:th,st:'praxis'});
     else if(ws==='faellig') fokus.push({th:th,st:'faellig'});
     else if(ws!=='wartet'&&(st==='unsicher'||st==='teilweise')) fokus.push({th:th,st:st});
   });
@@ -1109,11 +1110,12 @@ function renderKompetenz(kompdaten,themen,gespr){
   if(fokus.length){
     html+='<div style="background:#EDE8E0;border-radius:12px;padding:14px 16px;margin-bottom:16px">';
     html+='<div class="lab" style="margin-bottom:8px">Als Nächstes üben</div>';
-    var rang={gespraech:-1,unsicher:0,teilweise:1,faellig:2};
+    var rang={gespraech:-1,praxis:-1,unsicher:0,teilweise:1,faellig:2};
     fokus.sort(function(a,b){return rang[a.st]-rang[b.st];});
     fokus.forEach(function(x){html+='<div style="font-size:13px;color:#2C2C2C;margin-bottom:4px">→ '+x.th+
       (x.st==='faellig'?' <span style="color:#9A9188;font-size:11px">(wiederholen, ob es noch sitzt)</span>':'')+
-      (x.st==='gespraech'?' <span style="color:#C44030;font-size:11px">(im Prüfgespräch noch nicht erklärt)</span>':'')+'</div>';});
+      (x.st==='gespraech'?' <span style="color:#C44030;font-size:11px">(im Prüfgespräch noch nicht erklärt)</span>':'')+
+      (x.st==='praxis'?' <span style="color:#C44030;font-size:11px">(in der Praxis noch nicht sicher)</span>':'')+'</div>';});
     html+='</div>';
   }
   return html;
@@ -1625,13 +1627,13 @@ async function zeigeVerlauf(){
   var komp=await ladeKompetenz(AKTLEHRLING.id);
   var alleThemen=['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Dauerwelle & Umformung','Beratungsgespräch & Kundenkommunikation','Haarwäsche & Kopfmassage','Hochsteckfrisuren','Englisch im Salon'];
   var gliste=await ladeGespraeche(AKTLEHRLING.id);
-  var gespr=gespraechProThema(gliste);
-  Object.keys(komp).concat(Object.keys(gespr)).forEach(function(t){if(alleThemen.indexOf(t)<0)alleThemen.push(t);});
-  var bekannt=alleThemen.filter(function(t){return (komp[t]&&berechneStatus(komp[t]))||gespr[t];});
+  var gespr=gespraechProThema(gliste), praxis=praxisProThema(gliste);
+  Object.keys(komp).concat(Object.keys(gespr),Object.keys(praxis)).forEach(function(t){if(alleThemen.indexOf(t)<0)alleThemen.push(t);});
+  var bekannt=alleThemen.filter(function(t){return (komp[t]&&berechneStatus(komp[t]))||gespr[t]||praxis[t];});
   var {data:verlauf}=await sb.from('verlauf').select('*').eq('lehrling_id',AKTLEHRLING.id).order('erstellt_am',{ascending:false}).limit(20);
   var html='';
-  if(bekannt.length) html+=renderKompetenz(komp,bekannt,gespr);
-  html+=gespraechListe(gliste,'Prüfgespräche mit der Meisterin');
+  if(bekannt.length) html+=renderKompetenz(komp,bekannt,gespr,praxis);
+  html+=gespraechListe(gliste,'Prüfgespräche und Praxis-Checks mit der Meisterin');
   if(verlauf&&verlauf.length){
     html+='<div class="lab" style="margin-bottom:8px">Durchläufe</div>';
     verlauf.forEach(function(v){
@@ -1683,17 +1685,21 @@ async function zeigeDetailLehrling(lehrling){
   document.getElementById('detail-inhalt').innerHTML='<div class="laden">Wird geladen…</div>';
   var komp=await ladeKompetenz(lehrling.id);
   var gliste=await ladeGespraeche(lehrling.id);
-  var gespr=gespraechProThema(gliste);
+  var gespr=gespraechProThema(gliste), praxis=praxisProThema(gliste);
   var alleThemen=['Balayage & Strähnen','Beratungsgespräch & Kundenkommunikation','Betriebskunde & Recht','Colorationsgrundlagen','Dauerwelle & Umformung','Englisch im Salon','Fachkunde Chemie','Farbenlehre & Coloration','Haarkunde & Haarstruktur','Haarschnitt Techniken','Hautkunde','Herrenservice','Hygiene & Schutzmaßnahmen','Kopfhautpflege','Kundenkommunikation Fortgeschritten','Kundenberatung','LAP-Vorbereitung','Pflegeprodukte & Wirkstoffe','Salon-Organisation','Umformungen Fortgeschritten','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde'];
-  Object.keys(komp).concat(Object.keys(gespr)).forEach(function(t){if(alleThemen.indexOf(t)<0)alleThemen.push(t);});
+  Object.keys(komp).concat(Object.keys(gespr),Object.keys(praxis)).forEach(function(t){if(alleThemen.indexOf(t)<0)alleThemen.push(t);});
   var bekannt=alleThemen;
   var {data:verlauf}=await sb.from('verlauf').select('*').eq('lehrling_id',lehrling.id).order('erstellt_am',{ascending:false}).limit(10);
   var hinweise=pruefHinweise(komp,gespr).map(function(h){return {lehrling:lehrling,th:h.th,gruende:h.gruende,komp:komp,gespr:gespr};});
-  var html=hinweisBox(hinweise,false)+'<button class="btn btn-g" id="btn-pruef-start" style="margin-bottom:6px">🗣 Prüfgespräch starten</button>'+
-    '<div style="font-size:11px;color:#9A9188;margin-bottom:18px;line-height:1.45">Der Lehrling erklärt Fragen in eigenen Worten – ohne Antwortauswahl. Du siehst die Musterlösung und hältst fest, ob es wirklich verstanden ist.</div>';
-  if(bekannt.length) html+=renderKompetenz(komp,bekannt,gespr);
+  var html=hinweisBox(hinweise,false)+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">'+
+      '<button class="btn btn-g" id="btn-pruef-start" style="flex:1;min-width:150px;margin:0">🗣 Prüfgespräch</button>'+
+      '<button class="btn btn-g" id="btn-praxis-start" style="flex:1;min-width:150px;margin:0">✂ Praxis-Check</button>'+
+    '</div>'+
+    '<div style="font-size:11px;color:#9A9188;margin-bottom:18px;line-height:1.45">Prüfgespräch: Der Lehrling erklärt in eigenen Worten. Praxis-Check: Du schaust bei einer echten Behandlung zu und hakst ab.</div>';
+  if(bekannt.length) html+=renderKompetenz(komp,bekannt,gespr,praxis);
   else html+='<p style="color:#9A9188;font-size:13px;margin-bottom:16px">Noch kein Kompetenzstand vorhanden.</p>';
-  html+=gespraechListe(gliste,'Prüfgespräche');
+  html+=gespraechListe(gliste,'Prüfgespräche und Praxis-Checks');
   if(verlauf&&verlauf.length){
     html+='<div class="lab" style="margin-bottom:8px">Letzte Durchläufe</div>';
     verlauf.forEach(function(v){
@@ -1716,6 +1722,9 @@ async function zeigeDetailLehrling(lehrling){
   hinweisKlicks(hinweise);
   document.getElementById('btn-pruef-start').addEventListener('click',function(){
     zeigePruefStart(lehrling,komp,gespr);
+  });
+  document.getElementById('btn-praxis-start').addEventListener('click',function(){
+    zeigePraxisStart(lehrling);
   });
   document.getElementById('btn-edit-lehrling').addEventListener('click',function(){
     zeigeEditLehrling(lehrling);
@@ -1757,9 +1766,12 @@ async function ladeGespraeche(lehrlingId){
 
 // Pro Thema das letzte Gespräch (alle Fragen dieses Tages zum Thema, das
 // schwächste Ergebnis zählt – eine nicht erklärte Frage reicht für „nicht“).
-function gespraechProThema(liste){
+// art: 'gespraech' (Standard) oder 'praxis' – Zeilen ohne art sind Gespräche.
+function gespraechProThema(liste,art){
+  art=art||'gespraech';
   var rang={nicht:0,teilweise:1,verstanden:2}, out={};
   (liste||[]).forEach(function(g){
+    if((g.art||'gespraech')!==art) return;
     var o=out[g.thema];
     if(!o) out[g.thema]={ergebnis:g.ergebnis,datum:g.datum};
     else if(o.datum===g.datum&&rang[g.ergebnis]<rang[o.ergebnis]) o.ergebnis=g.ergebnis;
@@ -1788,14 +1800,199 @@ function gespraechListe(liste,titel){
   liste.slice(0,15).forEach(function(g){
     html+='<div class="karte" style="border-left:3px solid '+PG_FARBE[g.ergebnis]+';margin-bottom:8px">'+
       '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:3px">'+
-        '<div style="font-size:11px;color:#9A9188">'+datumDE(g.datum)+' · '+escHtml(g.thema)+'</div>'+
-        '<div style="font-size:11px;font-weight:700;color:'+PG_FARBE[g.ergebnis]+';white-space:nowrap">'+PG_LABEL[g.ergebnis]+'</div>'+
+        '<div style="font-size:11px;color:#9A9188">'+(g.art==='praxis'?'✂ ':'🗣 ')+datumDE(g.datum)+' · '+escHtml(g.thema)+'</div>'+
+        '<div style="font-size:11px;font-weight:700;color:'+PG_FARBE[g.ergebnis]+';white-space:nowrap">'+(g.art==='praxis'?PX_LABEL:PG_LABEL)[g.ergebnis]+'</div>'+
       '</div>'+
       '<div style="font-size:12px;color:#2C2C2C;line-height:1.4">'+escHtml(g.frage)+'</div>'+
+      (g.art==='praxis'&&Array.isArray(g.checkliste)&&g.checkliste.length?
+        '<div style="font-size:11px;color:#6B6560;margin-top:3px">'+g.checkliste.filter(function(c){return c.ok;}).length+' von '+g.checkliste.length+' Punkten richtig'+
+        g.checkliste.filter(function(c){return !c.ok;}).map(function(c){return '<div style="color:#C44030">✗ '+escHtml(c.punkt)+'</div>';}).join('')+'</div>':'')+
       (g.notiz?'<div style="font-size:12px;color:#6B6560;margin-top:4px;font-style:italic">„'+escHtml(g.notiz)+'“</div>':'')+
     '</div>';
   });
   return html;
+}
+
+// ── PRAXIS-CHECK (Meisterin) ─────────────────────────────────────────────────
+// Die Meisterin beobachtet eine echte Behandlung (am Gast oder Modell) und hakt
+// ab, was der Lehrling richtig macht. Gespeichert in public.pruefgespraeche mit
+// art='praxis' und der Checkliste (supabase/20261031_praxis_check.sql) –
+// dieselbe RLS wie beim Prüfgespräch. Die Checklisten sind ein Vorschlag;
+// eigene Punkte lassen sich beim Check ergänzen.
+var PX_LABEL={verstanden:'sicher gemacht',teilweise:'teilweise sicher',nicht:'noch nicht sicher'};
+var PX_BEHANDLUNGEN=[
+  {id:'farbe',name:'Farbe (Ansatz oder komplett)',th:'Farbenlehre & Coloration',punkte:[
+    'Wunsch geklärt und nach Veränderungen gefragt (Allergien, Medikamente, Haut)',
+    'Karteikarte vorher angeschaut',
+    'Halskrause, Umhang und Handschuhe',
+    'Farbe und Oxidant richtig abgewogen (Mischverhältnis)',
+    'Sauber abgeteilt und zügig aufgetragen',
+    'Haut am Haaransatz sauber gehalten',
+    'Einwirkzeit eingehalten und kontrolliert',
+    'Gründlich ausgespült, Nachbehandlung/Pflege',
+    'Karteikarte ausgefüllt (Formel, Oxidant, Zeit, Ergebnis)']},
+  {id:'blond',name:'Blondierung / Strähnen',th:'Farbenlehre & Coloration',punkte:[
+    'Haarzustand vorher geprüft',
+    'Halskrause, Umhang und Handschuhe',
+    'Richtig angemischt',
+    'Saubere Abteilungen, passende Technik',
+    'Aufhellung zwischendurch kontrolliert',
+    'Gründlich ausgespült, getönt/neutralisiert',
+    'Aufbaupflege',
+    'Karteikarte ausgefüllt']},
+  {id:'waesche',name:'Haarwäsche & Massage',th:'Haarwäsche & Kopfmassage',punkte:[
+    'Vor der Wäsche durchgebürstet und Kopfhaut angesehen',
+    'Gast bequem gelagert, Nacken abgestützt',
+    'Wassertemperatur am Handgelenk geprüft und nachgefragt',
+    'Zweimal gewaschen',
+    'Massage mit Fingerkuppen, ruhig und gleichmäßig',
+    'Kein Wasser in Gesicht oder Kragen',
+    'Turban angelegt']},
+  {id:'schnitt',name:'Haarschnitt',th:'Haarschnitt Techniken',punkte:[
+    'Wunsch zusammengefasst und Länge abgestimmt',
+    'Sauberes, desinfiziertes Werkzeug',
+    'Saubere Abteilungen',
+    'Länge und Form regelmäßig kontrolliert (beide Seiten gleich)',
+    'Gast zwischendurch einbezogen',
+    'Spiegel von allen Seiten gezeigt und nachgefragt',
+    'Arbeitsplatz aufgeräumt, Haare entfernt']},
+  {id:'foehnen',name:'Föhnen & Styling',th:'Styling & Finish',punkte:[
+    'Hitzeschutz verwendet',
+    'Haar vorgetrocknet und abgeteilt',
+    'Föhn in Wuchsrichtung, nicht zu nah an der Kopfhaut',
+    'Passende Bürste und Technik',
+    'Styling-Produkt passend und sparsam',
+    'Spiegel von allen Seiten gezeigt']},
+  {id:'empfang',name:'Empfang, Beratung & Verabschiedung',th:'Beratungsgespräch & Kundenkommunikation',punkte:[
+    'Gast mit Blickkontakt und Lächeln begrüßt',
+    'Jacke abgenommen, Getränk angeboten',
+    'Offene Fragen gestellt und zugehört',
+    'Fachbegriffe verständlich erklärt',
+    'Pflege-Empfehlung mit Nutzen erklärt',
+    'Betrag zweimal kontrolliert',
+    'Zur Rezeption begleitet und verabschiedet',
+    'Nachtermin angeboten']}
+];
+var PX={lehrling:null,b:null,punkte:[],gespeichert:false};
+
+function praxisProThema(liste){ return gespraechProThema(liste,'praxis'); }
+
+function praxisZeile(p){
+  if(!p) return '';
+  var txt=p.ergebnis==='verstanden'?'In der Praxis sicher gemacht':
+          p.ergebnis==='teilweise'?'In der Praxis teilweise sicher':
+          'In der Praxis noch nicht sicher';
+  return '<div style="font-size:10px;color:'+PG_FARBE[p.ergebnis]+';margin-top:2px;font-weight:700">✂ '+txt+' · '+datumDE(p.datum)+'</div>';
+}
+
+function zeigePraxisStart(lehrling){
+  if(!ISTMEISTERIN) return;
+  PX={lehrling:lehrling,b:null,punkte:[],gespeichert:false};
+  // Die Seite s-pruef und ihr Zurück-Knopf werden mit dem Prüfgespräch geteilt
+  PG={lehrling:lehrling,komp:{},gespr:{},themen:[],pool:[],fragen:[],idx:0,erg:[],gespeichert:true,offen:false};
+  document.getElementById('pruef-titel').textContent='Praxis-Check · '+lehrling.name;
+  var html='<div class="karte" style="font-size:13px;color:#2C2C2C;line-height:1.5;margin-bottom:16px">'+
+    'Du schaust bei einer echten Behandlung zu und hakst ab, was '+escHtml(lehrling.name)+' richtig macht. '+
+    'Eigene Punkte kannst du ergänzen. Am Ende entscheidest du, wie sicher die Behandlung war.</div>'+
+    '<div class="lab" style="margin-bottom:8px">Welche Behandlung?</div>';
+  PX_BEHANDLUNGEN.forEach(function(b,i){
+    html+='<button class="mod-b" data-px="'+i+'"><div class="mod-t">'+escHtml(b.name)+'</div><div class="mod-i">'+b.punkte.length+' Punkte · zählt zu: '+escHtml(b.th)+'</div></button>';
+  });
+  document.getElementById('pruef-inhalt').innerHTML=html;
+  document.querySelectorAll('[data-px]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var b=PX_BEHANDLUNGEN[+btn.dataset.px];
+      PX.b=b;PX.punkte=b.punkte.map(function(t){return {punkt:t,ok:null};});
+      zeigePraxisListe();
+    });
+  });
+  zeige('s-pruef');
+}
+
+function pxVorschlag(){
+  var bew=PX.punkte.filter(function(p){return p.ok!==null;});
+  if(!bew.length) return null;
+  var ok=bew.filter(function(p){return p.ok;}).length, q=ok/bew.length;
+  return q===1?'verstanden':q>=0.7?'teilweise':'nicht';
+}
+
+function zeigePraxisListe(){
+  var html='<div class="meta"><span>'+escHtml(PX.b.name)+'</span><span>'+escHtml(PX.b.th)+'</span></div>'+
+    '<div style="font-size:11px;color:#9A9188;margin-bottom:10px">Tippe ✓ wenn richtig gemacht, ✗ wenn nicht. Was nicht vorkam, einfach offen lassen.</div>';
+  PX.punkte.forEach(function(p,i){
+    var rand=p.ok===true?'#896C32':p.ok===false?'#C44030':'#DDD8D0';
+    html+='<div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid '+rand+';border-radius:10px;padding:8px 10px;margin-bottom:6px">'+
+      '<div style="flex:1;font-size:13px;color:#2C2C2C;line-height:1.35">'+escHtml(p.punkt)+'</div>'+
+      '<button data-px-ok="'+i+'" style="width:40px;height:36px;border-radius:8px;border:1.5px solid #896C32;font-size:16px;cursor:pointer;background:'+(p.ok===true?'#896C32':'#fff')+';color:'+(p.ok===true?'#fff':'#896C32')+'">✓</button>'+
+      '<button data-px-nok="'+i+'" style="width:40px;height:36px;border-radius:8px;border:1.5px solid #C44030;font-size:16px;cursor:pointer;background:'+(p.ok===false?'#C44030':'#fff')+';color:'+(p.ok===false?'#fff':'#C44030')+'">✗</button>'+
+    '</div>';
+  });
+  html+='<div style="display:flex;gap:8px;margin:8px 0 14px"><input id="px-neu" placeholder="Eigenen Punkt ergänzen" style="margin:0;flex:1">'+
+    '<button class="btn btn-h" id="px-neu-btn" style="width:auto;margin:0;padding:8px 14px">+</button></div>';
+  var v=pxVorschlag();
+  html+='<div class="lab">Notiz (optional – sieht auch der Lehrling)</div>'+
+    '<textarea id="px-notiz" rows="2" placeholder="z. B. Abteilungen sauber, Einwirkzeit vergessen"></textarea>'+
+    '<div class="lab" style="margin-top:14px">Wie sicher war die Behandlung?'+(v?' <span style="text-transform:none;letter-spacing:0;color:#896C32">Vorschlag: '+PX_LABEL[v]+'</span>':'')+'</div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+      '<button class="btn btn-g" data-px-erg="verstanden" style="flex:1;min-width:96px;margin:0;padding-left:6px;padding-right:6px">✓ Sicher</button>'+
+      '<button class="btn btn-h" data-px-erg="teilweise" style="flex:1;min-width:96px;margin:0;padding-left:6px;padding-right:6px;color:#8A7A30">~ Teilweise</button>'+
+      '<button class="btn btn-r" data-px-erg="nicht" style="flex:1;min-width:96px;margin:0;padding-left:6px;padding-right:6px">✗ Noch nicht</button>'+
+    '</div>';
+  var notizAlt=document.getElementById('px-notiz');
+  var notiz=notizAlt?notizAlt.value:'';
+  document.getElementById('pruef-inhalt').innerHTML=html;
+  document.getElementById('px-notiz').value=notiz;
+  function setze(i,wert){
+    var n=document.getElementById('px-notiz').value;
+    PX.punkte[i].ok=PX.punkte[i].ok===wert?null:wert;
+    zeigePraxisListe();
+    document.getElementById('px-notiz').value=n;
+  }
+  document.querySelectorAll('[data-px-ok]').forEach(function(b){b.addEventListener('click',function(){setze(+b.dataset.pxOk,true);});});
+  document.querySelectorAll('[data-px-nok]').forEach(function(b){b.addEventListener('click',function(){setze(+b.dataset.pxNok,false);});});
+  document.getElementById('px-neu-btn').addEventListener('click',function(){
+    var t=document.getElementById('px-neu').value.trim();
+    if(!t) return;
+    PX.punkte.push({punkt:t,ok:null});
+    zeigePraxisListe();
+  });
+  document.querySelectorAll('[data-px-erg]').forEach(function(b){
+    b.addEventListener('click',function(){pruefPraxisSpeichern(b.dataset.pxErg,document.getElementById('px-notiz').value.trim());});
+  });
+}
+
+async function pruefPraxisSpeichern(ergebnis,notiz){
+  document.getElementById('pruef-inhalt').innerHTML='<div class="laden">Wird gespeichert…</div>';
+  var liste=PX.punkte.filter(function(p){return p.ok!==null;});
+  var res=await sb.from('pruefgespraeche').insert({lehrling_id:PX.lehrling.id,art:'praxis',thema:PX.b.th,frage_id:'praxis-'+PX.b.id,
+    frage:'Praxis-Check: '+PX.b.name,ergebnis:ergebnis,notiz:notiz||null,checkliste:liste,datum:heuteISO()});
+  var fehler=res.error;
+  PX.gespeichert=!fehler;
+  var ok=liste.filter(function(p){return p.ok;}).length;
+  var html='<div class="score-box"><div style="font-size:15px;color:'+PG_FARBE[ergebnis]+';font-weight:700;margin-bottom:4px">'+escHtml(PX.b.name)+': '+PX_LABEL[ergebnis]+'</div>'+
+    '<div style="font-size:12px;color:#6B6560">'+ok+' von '+liste.length+' Punkten richtig gemacht</div></div>';
+  if(fehler){
+    var fehlt=/art|checkliste|column|schema cache|pruefgespraeche/i.test(fehler.message||'');
+    html+='<div class="fehler-box" style="display:block">Nicht gespeichert: '+escHtml(fehlt?'Bitte zuerst supabase/20261031_praxis_check.sql im Supabase SQL-Editor ausführen.':(fehler.message||String(fehler)))+'</div>'+
+      '<button class="btn btn-d" id="px-nochmal">Erneut speichern</button>';
+  } else {
+    html+='<div style="font-size:12px;color:#5B7B6F;margin-bottom:12px">✓ Gespeichert – '+escHtml(PX.lehrling.name)+' sieht das Ergebnis im eigenen Verlauf.</div>';
+  }
+  var fehlend=liste.filter(function(p){return !p.ok;});
+  if(fehlend.length){
+    html+='<div class="karte" style="border-left:3px solid #C44030;font-size:12px;color:#2C2C2C;line-height:1.5"><b>Noch üben:</b>'+
+      fehlend.map(function(p){return '<div>· '+escHtml(p.punkt)+'</div>';}).join('')+'</div>';
+  }
+  if(notiz) html+='<div style="font-size:12px;color:#6B6560;font-style:italic;margin:8px 0">„'+escHtml(notiz)+'“</div>';
+  html+='<button class="btn btn-h" id="px-fertig" style="margin-top:8px">← Zurück zu '+escHtml(PX.lehrling.name)+'</button>';
+  document.getElementById('pruef-inhalt').innerHTML=html;
+  var nochmal=document.getElementById('px-nochmal');
+  if(nochmal) nochmal.addEventListener('click',function(){pruefPraxisSpeichern(ergebnis,notiz);});
+  document.getElementById('px-fertig').addEventListener('click',function(){
+    if(!PX.gespeichert&&!confirm('Das Ergebnis ist noch nicht gespeichert. Trotzdem zurück?')) return;
+    zeigeDetailLehrling(PX.lehrling);
+  });
+  window.scrollTo(0,0);
 }
 
 // ── PRÜFHINWEISE (Meisterin) ─────────────────────────────────────────────────
@@ -1870,7 +2067,7 @@ async function ladeAlleHinweise(lehrlinge){
   var ids=aktiv.map(function(l){return l.id;});
   var kRes=await sb.from('kompetenz').select('*').in('lehrling_id',ids);
   var gRes={data:[]};
-  try{ gRes=await sb.from('pruefgespraeche').select('lehrling_id,thema,ergebnis,datum,erstellt_am').in('lehrling_id',ids).order('erstellt_am',{ascending:false}); }catch(e){}
+  try{ gRes=await sb.from('pruefgespraeche').select('*').in('lehrling_id',ids).order('erstellt_am',{ascending:false}); }catch(e){}
   var out=[];
   aktiv.forEach(function(l){
     var komp={};
@@ -1908,6 +2105,7 @@ function pgLoesung(q){
 
 function zeigePruefStart(lehrling,komp,gespr){
   if(!ISTMEISTERIN) return;
+  PX.b=null;
   PG={lehrling:lehrling,komp:komp||{},gespr:gespr||{},themen:[],pool:[],fragen:[],idx:0,erg:[],gespeichert:false,offen:false};
   document.getElementById('pruef-titel').textContent='Prüfgespräch · '+lehrling.name;
   var alle=alleFragenPool(), themen=[];
@@ -2072,6 +2270,9 @@ async function pruefAbschliessen(){
 }
 
 function pruefZurueck(){
+  if(PX.b&&!PX.gespeichert&&PX.punkte.some(function(p){return p.ok!==null;})&&
+     !confirm('Praxis-Check abbrechen? Die Häkchen werden nicht gespeichert.')) return;
+  PX.b=null;
   if(PG.offen&&PG.erg.length&&!confirm('Prüfgespräch abbrechen? Die bisher bewerteten Fragen werden nicht gespeichert.')) return;
   if(!PG.gespeichert&&!PG.offen&&PG.erg.length&&!confirm('Das Ergebnis ist noch nicht gespeichert. Trotzdem zurück?')) return;
   PG.offen=false;
