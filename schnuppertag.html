@@ -1540,79 +1540,92 @@ async function speichereZiele(monat, cache) {
 }
 
 // ── WOCHENQUIZ ────────────────────────────────────────────────────────────────
-// 12 Wochenquizfragen für die Probezeit (je eine pro Woche)
+// Wochenquiz für die Probezeit: 12 Wochen, je 3 Wissensfragen + 1 Frage zur Salon-Checkliste.
+// Neue Fragen nur HINTEN anhängen: gespeicherte Antworten sind nach Position zugeordnet.
 var WOCHENQUIZ_FRAGEN = [
   // Woche 1
   [
     { frage: 'Wie begrüßt du eine Kundin professionell?', optionen: ['Hallo!', 'Guten Tag, willkommen bei A Great Hair Day — womit darf ich Ihnen heute helfen?', 'Ja, bitte?', 'Hey, was möchtest du?'], richtig: 1 },
     { frage: 'Was tust du, bevor du einer Kundin den Umhang anlegst?', optionen: ['Nichts besonderes', 'Kurz schauen ob sie bereit ist', 'Fragen ob sie eine Allergie auf Farbe hat', 'Den Umhang einfach umlegen'], richtig: 2 },
-    { frage: 'Wie hältst du deinen Arbeitsplatz?', optionen: ['Ordentlich — alles hat seinen Platz', 'Wie es kommt', 'Hauptsache schnell arbeiten', 'Aufräumen nur nach dem Schließen'], richtig: 0 }
+    { frage: 'Wie hältst du deinen Arbeitsplatz?', optionen: ['Ordentlich — alles hat seinen Platz', 'Wie es kommt', 'Hauptsache schnell arbeiten', 'Aufräumen nur nach dem Schließen'], richtig: 0 },
+    { frage: 'Checkliste: Wer macht morgens den Morgencheck?', optionen: ['Immer die Chefin', 'Die erste Person, die morgens im Salon ist', 'Wer zuletzt kommt', 'Niemand'], richtig: 1 }
   ],
   // Woche 2
   [
     { frage: 'Welche Temperatur sollte das Wasser für eine Haarwäsche haben?', optionen: ['Kalt (ca. 15°C)', 'Angenehm warm (ca. 38°C)', 'So heiß wie möglich', 'Lauwarm (ca. 25°C)'], richtig: 1 },
     { frage: 'Was sagst du, wenn du bei der Kopfmassage zu viel Druck ausübst?', optionen: ['Nichts — weiter arbeiten', 'Ich bitte die Kundin mir Feedback zu geben', 'Aufhören', 'Schneller machen'], richtig: 1 },
-    { frage: 'Wofür steht H₂O₂ beim Haarefärben?', optionen: ['Haarspülung', 'Wasserstoffperoxid (Oxidationsmittel)', 'Shampoo', 'Haarlack'], richtig: 1 }
+    { frage: 'Wofür steht H₂O₂ beim Haarefärben?', optionen: ['Haarspülung', 'Wasserstoffperoxid (Oxidationsmittel)', 'Shampoo', 'Haarlack'], richtig: 1 },
+    { frage: 'Checkliste: Wer macht abends den Abendcheck?', optionen: ['Die erste Person am nächsten Morgen', 'Wer gerade Zeit hat', 'Die letzte Person vor Salonschluss', 'Nur die Chefin'], richtig: 2 }
   ],
   // Woche 3
   [
     { frage: 'Was ist der Unterschied zwischen Tönung und Farbe?', optionen: ['Tönung enthält kein Peroxid und ist auswaschbar', 'Tönung ist dauerhafter', 'Es gibt keinen Unterschied', 'Farbe ist natürlicher'], richtig: 0 },
     { frage: 'Wie schützt du deine Hände beim Auftragen von Haarfarbe?', optionen: ['Gar nicht', 'Mit Einweghandschuhen', 'Mit Creme', 'Mit Alufolie'], richtig: 1 },
-    { frage: 'Was bedeutet "Einwirkzeit" bei der Haarfarbe?', optionen: ['Die Zeit zum Mischen', 'Die Zeit bis die Farbe aus dem Haar genommen wird', 'Die Zeit, in der die Farbe im Haar verbleibt und wirkt', 'Die Zeit für das Auftragen'], richtig: 2 }
+    { frage: 'Was bedeutet "Einwirkzeit" bei der Haarfarbe?', optionen: ['Die Zeit zum Mischen', 'Die Zeit bis die Farbe aus dem Haar genommen wird', 'Die Zeit, in der die Farbe im Haar verbleibt und wirkt', 'Die Zeit für das Auftragen'], richtig: 2 },
+    { frage: 'Checkliste: Wann werden Farbschalen abgewaschen?', optionen: ['Gleich nach dem Gebrauch, untertags', 'Erst abends', 'Einmal pro Woche', 'Am nächsten Morgen'], richtig: 0 }
   ],
   // Woche 4
   [
     { frage: 'Was machst du, wenn eine Kundin mit dem Ergebnis nicht zufrieden ist?', optionen: ['Mir ist das egal', 'Ich entschuldige mich und frage nach, was sie stört — dann rufe ich die Meisterin', 'Ich diskutiere mit ihr', 'Ich sage das nächste Mal wird es besser'], richtig: 1 },
     { frage: 'Wie oft solltest du im Salon Haare von Boden aufkehren?', optionen: ['Einmal am Tag', 'Nach jeder Kundin', 'Nur wenn jemand schaut', 'Einmal pro Woche'], richtig: 1 },
-    { frage: 'Was ist beim Mischen von Haarfarbe wichtig?', optionen: ['Immer gleich viel Farbe und Peroxid', 'Das richtige Mischverhältnis genau einhalten', 'Je mehr Peroxid desto heller', 'Am Gefühl orientieren'], richtig: 1 }
+    { frage: 'Was ist beim Mischen von Haarfarbe wichtig?', optionen: ['Immer gleich viel Farbe und Peroxid', 'Das richtige Mischverhältnis genau einhalten', 'Je mehr Peroxid desto heller', 'Am Gefühl orientieren'], richtig: 1 },
+    { frage: 'Checkliste: Was machst du morgens im Damen- und Herrenbereich?', optionen: ['Föns reinigen', 'Schneidemäntel kontrollieren, Handtücher zusammenlegen und einordnen', 'Müll ausleeren', 'Kühlschrank reinigen'], richtig: 1 }
   ],
   // Woche 5
   [
     { frage: 'Was ist ein Technikkopf?', optionen: ['Ein Übungskopf für Frisurtechniken', 'Ein besonderer Kundentyp', 'Ein Werkzeug', 'Eine Maschine'], richtig: 0 },
     { frage: 'Warum ist die Einwirkzeit bei Farbe wichtig einzuhalten?', optionen: ['Wegen der Kosten', 'Zu kurz = Farbe nimmt nicht richtig an, zu lang = Haarschaden', 'Wegen des Geruchs', 'Ist nicht so wichtig'], richtig: 1 },
-    { frage: 'Was bedeutet "Naturfarbtiefe" (NFS) beim Haarefärben?', optionen: ['Die natürliche Haarfarbe des Kunden', 'Die Farbtiefe der Naturhaarfarbe als Ausgangsbasis', 'Die Intensität der Kunstfarbe', 'Ein Produktname'], richtig: 1 }
+    { frage: 'Was bedeutet "Naturfarbtiefe" (NFS) beim Haarefärben?', optionen: ['Die natürliche Haarfarbe des Kunden', 'Die Farbtiefe der Naturhaarfarbe als Ausgangsbasis', 'Die Intensität der Kunstfarbe', 'Ein Produktname'], richtig: 1 },
+    { frage: 'Checkliste: Was gehört abends zum Trockner?', optionen: ['Nichts', 'Nur ausschalten', 'Trockner reinigen – das Sieb auswaschen', 'Einmal pro Monat entkalken'], richtig: 2 }
   ],
   // Woche 6
   [
     { frage: 'Wie erkennst du ob Haare gefärbt oder naturblond sind?', optionen: ['Am Glanz', 'An der Länge', 'Gefärbte Haare haben oft einen Ansatz und die Längen sind gleichmäßiger', 'Das ist nicht erkennbar'], richtig: 2 },
     { frage: 'Was sind Strähnen?', optionen: ['Einzelne Haarpartien, die aufgehellt oder gefärbt werden', 'Ein anderes Wort für Haarschnitt', 'Lange Haare', 'Eine Frisurform'], richtig: 0 },
-    { frage: 'Welches Werkzeug wird am häufigsten für Strähnen verwendet?', optionen: ['Schere', 'Folie oder Haube', 'Bürste', 'Kamm'], richtig: 1 }
+    { frage: 'Welches Werkzeug wird am häufigsten für Strähnen verwendet?', optionen: ['Schere', 'Folie oder Haube', 'Bürste', 'Kamm'], richtig: 1 },
+    { frage: 'Checkliste: Worauf kontrollierst du abends den Boden?', optionen: ['Auf Farbflecken', 'Auf Wasserflecken', 'Gar nicht', 'Nur auf Haare'], richtig: 0 }
   ],
   // Woche 7
   [
     { frage: 'Was ist ein Balayage?', optionen: ['Ein Haarschnitt', 'Eine Freihändige Aufhelltechnik für einen natürlichen Effekt', 'Ein Shampoo', 'Eine Kopfmassage-Technik'], richtig: 1 },
     { frage: 'Warum wäscht man nach dem Färben das Haar aus?', optionen: ['Damit es duftet', 'Um überschüssige Farbe und Peroxid zu entfernen', 'Das ist nicht nötig', 'Wegen der Hitze'], richtig: 1 },
-    { frage: 'Was machst du, wenn du beim Auftragen von Farbe unsicher bist?', optionen: ['Einfach machen', 'Aufhören und weinen', 'Mirjam fragen bevor ich weitermache', 'Raten'], richtig: 2 }
+    { frage: 'Was machst du, wenn du beim Auftragen von Farbe unsicher bist?', optionen: ['Einfach machen', 'Aufhören und weinen', 'Mirjam fragen bevor ich weitermache', 'Raten'], richtig: 2 },
+    { frage: 'Checkliste: Was gehört untertags in die Küche?', optionen: ['Nichts, nur abends', 'Essensreste wegräumen, Geschirr einräumen, Mikrowelle nach Gebrauch reinigen', 'Kühlschrank ausräumen', 'Lagerbestand prüfen'], richtig: 1 }
   ],
   // Woche 8
   [
     { frage: 'Wie lang dauert eine typische Färbung ungefähr?', optionen: ['5 Minuten', '2–3 Stunden insgesamt (Beratung + Auftragen + Einwirken + Waschen)', 'Exakt 30 Minuten', 'Den ganzen Tag'], richtig: 1 },
     { frage: 'Was bedeutet "Tönung auffrischen"?', optionen: ['Neue Tönung auf bereits getönte Haare auftragen', 'Tönung aus dem Haar waschen', 'Eine neue Farbe wählen', 'Das Haar schneiden'], richtig: 0 },
-    { frage: 'Was ist bei der Beratung der wichtigste Schritt?', optionen: ['Dem Kunden sagen was er will', 'Zuhören und die Wünsche des Kunden verstehen', 'Schnell zum Ergebnis kommen', 'Den teuersten Service empfehlen'], richtig: 1 }
+    { frage: 'Was ist bei der Beratung der wichtigste Schritt?', optionen: ['Dem Kunden sagen was er will', 'Zuhören und die Wünsche des Kunden verstehen', 'Schnell zum Ergebnis kommen', 'Den teuersten Service empfehlen'], richtig: 1 },
+    { frage: 'Checkliste: Was füllst du morgens im WC nach?', optionen: ['WC-Papier, Papierhandtücher und Seifenspender', 'Nichts', 'Nur die Seife', 'Das macht die Reinigungsfirma'], richtig: 0 }
   ],
   // Woche 9
   [
     { frage: 'Was ist ein Haardiagnose-Gespräch?', optionen: ['Ein Test für Allergien', 'Ein Gespräch bei dem man den Haarzustand, Wunsch und Pflegegewohnheiten bespricht', 'Eine Preisverhandlung', 'Ein Gespräch über Wetter'], richtig: 1 },
     { frage: 'Wie pflegst du Schneidescheren?', optionen: ['Nie — sie sind robust', 'Regelmäßig ölen und schärfen lassen', 'Mit Wasser reinigen', 'In Farbe einlegen'], richtig: 1 },
-    { frage: 'Was bedeutet "Veredeln" beim Haare schneiden?', optionen: ['Das letzte Finish und Ausdünnen', 'Das Grob-Schneiden', 'Das Waschen', 'Das Eindrehen'], richtig: 0 }
+    { frage: 'Was bedeutet "Veredeln" beim Haare schneiden?', optionen: ['Das letzte Finish und Ausdünnen', 'Das Grob-Schneiden', 'Das Waschen', 'Das Eindrehen'], richtig: 0 },
+    { frage: 'Checkliste: Was wird jede Woche mit den Haarschneidemaschinen gemacht?', optionen: ['Nichts', 'Mit Wasser abspülen', 'Säubern und ölen', 'Neu kaufen'], richtig: 2 }
   ],
   // Woche 10
   [
     { frage: 'Welche Schutzmaßnahme ist beim Bleichen besonders wichtig?', optionen: ['Schutzbrille', 'Handschuhe und Schutzumhang', 'Maske', 'Ohrstöpsel'], richtig: 1 },
     { frage: 'Warum wird nach dem Bleichen oft eine Tönungsbehandlung gemacht?', optionen: ['Für den Geruch', 'Um Gelbstiche zu neutralisieren und die Farbe zu verfeinern', 'Zum Sparen', 'Es sieht schöner aus'], richtig: 1 },
-    { frage: 'Was ist ein "Silbershampoo"?', optionen: ['Ein teures Shampoo', 'Ein lila/blau pigmentiertes Shampoo gegen Gelbstiche bei blonden Haaren', 'Ein Shampoo mit Silber-Inhaltsstoffen', 'Ein Shampoo für Ältere'], richtig: 1 }
+    { frage: 'Was ist ein "Silbershampoo"?', optionen: ['Ein teures Shampoo', 'Ein lila/blau pigmentiertes Shampoo gegen Gelbstiche bei blonden Haaren', 'Ein Shampoo mit Silber-Inhaltsstoffen', 'Ein Shampoo für Ältere'], richtig: 1 },
+    { frage: 'Checkliste: Wie oft werden die Föns gereinigt (Filter)?', optionen: ['Jeden Abend', 'Einmal pro Woche (Mi oder Do)', 'Nur wenn sie kaputt sind', 'Nie'], richtig: 1 }
   ],
   // Woche 11
   [
     { frage: 'Was machst du wenn du krank bist und nicht zur Arbeit kommen kannst?', optionen: ['Einfach nicht erscheinen', 'Mirjam so früh wie möglich — am Abend davor oder morgens früh — anrufen', 'Eine SMS schicken um 9 Uhr', 'Gar nichts, Mirjam merkt es schon'], richtig: 1 },
     { frage: 'Was ist "Farbabzug"?', optionen: ['Das Auftragen von Farbe', 'Das Entfernen von Haarfarbe aus dem Haar', 'Ein Buchführungsbegriff', 'Die Rechnung nach dem Färben'], richtig: 1 },
-    { frage: 'Welche Farbe entsteht, wenn man Rot + Gelb + Blau mischt?', optionen: ['Grün', 'Lila', 'Braun/Schwarz', 'Orange'], richtig: 2 }
+    { frage: 'Welche Farbe entsteht, wenn man Rot + Gelb + Blau mischt?', optionen: ['Grün', 'Lila', 'Braun/Schwarz', 'Orange'], richtig: 2 },
+    { frage: 'Checkliste: Was prüfst du morgens im Chemiebereich?', optionen: ['Lagerbestand (Farben, fehlende Produkte) und Folien, Küchenrolle, Müllsäcke, Watte', 'Den Kühlschrank', 'Die Föns', 'Die Zeitungen'], richtig: 0 }
   ],
   // Woche 12
   [
     { frage: 'Was war für dich in den letzten 3 Monaten am wichtigsten zu lernen?', optionen: ['Das Antwort ist offen — wähle aus, was für dich stimmt', 'Kundenkontakt und Freundlichkeit', 'Techniken wie Färben und Strähnen', 'Beide Bereiche gleich wichtig'], richtig: 3 },
     { frage: 'Was bedeutet "Probezeit" rechtlich?', optionen: ['Man kann kündigen wann man will', 'In den ersten 3 Monaten kann der Lehrvertrag von beiden Seiten jederzeit aufgelöst werden', 'Man muss 1 Jahr bleiben', 'Es gibt keine rechtliche Bedeutung'], richtig: 1 },
-    { frage: 'Was ist für dich das Schönste an der Arbeit im Friseursalon?', optionen: ['Die Antwort ist persönlich — wähle deine', 'Kunden glücklich machen', 'Kreativ arbeiten', 'Im Team sein'], richtig: 0 }
+    { frage: 'Was ist für dich das Schönste an der Arbeit im Friseursalon?', optionen: ['Die Antwort ist persönlich — wähle deine', 'Kunden glücklich machen', 'Kreativ arbeiten', 'Im Team sein'], richtig: 0 },
+    { frage: 'Checkliste: Wann wird der Kühlschrank gereinigt?', optionen: ['Jeden Morgen', 'Nur wenn er riecht', 'Einmal pro Woche (Fr oder Sa): Essen mitnehmen oder wegwerfen', 'Einmal im Jahr'], richtig: 2 }
   ]
 ];
 
@@ -1636,7 +1649,7 @@ async function renderWochenquizUebersicht() {
 
   var html = '<div class="card-amber" style="font-size:13px;line-height:1.6">' +
     '<strong>🎯 Wöchentlicher Wissensquiz</strong><br>' +
-    'Jeden ' + (AKT_PROBEZEIT.wochentag||'Feedbacktag') + ' macht der Lehrling 3 Fragen. ' +
+    'Jeden ' + (AKT_PROBEZEIT.wochentag||'Feedbacktag') + ' macht der Lehrling das Wochenquiz (Wissensfragen + 1 Frage zur Salon-Checkliste). ' +
     'Mit ✏️ kannst du die Fragen für jede Woche individuell anpassen.' +
   '</div>';
 
@@ -1646,7 +1659,7 @@ async function renderWochenquizUebersicht() {
     var erg = ergMap[w];
     var monat = Math.ceil(w/4);
     var status = erg ? (erg.richtig + '/' + erg.gesamt + ' richtig') : 'Offen';
-    var statusFarbe = !erg ? '#9A9180' : erg.richtig >= 2 ? '#896C32' : '#C44030';
+    var statusFarbe = !erg ? '#9A9180' : (erg.richtig / erg.gesamt) >= 0.66 ? '#896C32' : '#C44030';
     var istIndividuell = individuelleWochen[w];
     html += '<div class="card" style="padding:12px 14px;margin-bottom:8px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center">' +
