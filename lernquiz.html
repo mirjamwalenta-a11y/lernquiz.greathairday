@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <link rel="manifest" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/manifest-lernquiz.json">
+  <link rel="manifest" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/manifest-lernen.json">
   <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
   <meta name="theme-color" content="#1c1917">
 <meta charset="UTF-8">
@@ -22,6 +22,10 @@ html,body{height:100%}
 .kopf-klein{font-size:9px;font-weight:700;letter-spacing:2px;color:#896C32;text-transform:uppercase;margin-bottom:4px}
 .kopf h1{font-family:Poppins,system-ui,sans-serif;font-size:24px;color:#211D17;font-weight:600}
 .kopf p{font-size:13px;color:#6B6455;margin-top:2px}
+.kopf-zurueck{display:inline-block;font:500 13px Poppins,system-ui,sans-serif;color:#6B6455;text-decoration:none;margin-bottom:8px}
+.kopf-zurueck[hidden]{display:none}
+.login-info{background:#fff;border:1px solid #E4DBC5;border-radius:12px;padding:12px 14px;margin-top:18px;font-size:12px;color:#6B6455;line-height:1.5}
+.login-info b{color:#211D17}
 .btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:Poppins,system-ui;text-align:center}
 .btn-d{background:#896C32;color:#fff}
 #start-name,#detail-name,.seite h2{font-weight:600!important}
@@ -185,12 +189,13 @@ textarea{resize:vertical;margin-bottom:0}
 
 </style>
 </head>
-<body>
+<body class="ll-aus">
 
 <div class="kopf">
-  <div class="kopf-klein">greathairday · Lernquiz</div>
-  <h1>Lernquiz ❓</h1>
-  <p>Österreichisches Berufsbild Friseur/in</p>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j" hidden>← Lern-Tool</a>
+  <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
+  <h1 id="kopf-titel">Lernen ✂</h1>
+  <p id="kopf-sub">Lernquiz, Lern-Tool, Praxis &amp; Prüfung – eine App</p>
 </div>
 
 <div id="s-login" class="seite aktiv">
@@ -198,11 +203,12 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="lab" style="margin-bottom:16px;font-size:13px;color:#2C2C2C;text-transform:none;letter-spacing:0">Bitte einloggen</div>
     <div id="login-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
-    <input type="text" id="login-name" placeholder="Dein Name (z.B. Ronya)" autocomplete="off">
+    <input type="text" id="login-name" placeholder="Dein Name (z.B. Lena)" autocomplete="off">
     <div class="lab">PIN</div>
     <input type="password" id="login-pin" placeholder="6-stellige PIN" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
     <button class="btn btn-d" id="btn-login">Einloggen →</button>
     <button class="link-k" id="btn-zu-meisterin">Meisterinnen-Login</button>
+    <div class="login-info"><b>Einmal anmelden – überall angemeldet.</b><br>Nach dem Login landest du auf deiner Lern-Startseite.</div>
   </div>
 </div>
 
@@ -227,11 +233,6 @@ textarea{resize:vertical;margin-bottom:0}
     </div>
     <button id="btn-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
   </div>
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i" style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;background:#896C32;border-radius:12px;color:#fff;text-decoration:none;font-family:Poppins,system-ui">
-    <span style="font-size:22px">🏠</span>
-    <span style="flex:1"><span style="display:block;font-size:14px;font-weight:600">Zur Lern-Startseite</span><span style="display:block;font-size:12px;color:#F3EBD9;margin-top:2px">Heute, Wiederholen, Praxis &amp; Prüfung</span></span>
-    <span style="font-size:16px">→</span>
-  </a>
   <div id="start-letztes"></div>
   <div style="margin-bottom:18px">
     <div class="lab">Lehrjahr</div>
@@ -274,7 +275,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -307,10 +308,10 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Fragen &amp; Inhalte pflegen</div>
       <div class="mb-grid">
         <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
       </div>
       <div class="lab" style="margin-top:20px">Englisch</div>
       <div class="mb-grid">
@@ -322,7 +323,7 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Selbst ausprobieren</div>
       <div class="mb-grid">
         <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107i"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107j"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundschnitte &amp; Formwirkung</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Eigene Zeichnungen</small></a>
@@ -340,7 +341,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Neuen Lehrling anlegen</h2>
     <div id="neu-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
-    <input type="text" id="neu-name" placeholder="z.B. Ronya">
+    <input type="text" id="neu-name" placeholder="z.B. Lena">
     <div class="lab">Lehrjahr</div>
     <select id="neu-lj" style="margin-bottom:10px">
       <option value="1">1. Lehrjahr</option>
@@ -359,7 +360,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Lehrling bearbeiten</h2>
     <div id="edit-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
-    <input type="text" id="edit-name" placeholder="z.B. Ronya">
+    <input type="text" id="edit-name" placeholder="z.B. Lena">
     <div class="lab">Lehrjahr</div>
     <select id="edit-lj" style="margin-bottom:10px">
       <option value="1">1. Lehrjahr</option>
@@ -1261,10 +1262,36 @@ var AKTLEHRLING=null;
 var ISTMEISTERIN=false;
 var VLEHRJAHR=1,VIDX=null;
 
+// „Eine App“: Für Lehrlinge ist das Lernquiz der Bereich „Quiz“ im Lern-Tool
+// (Kopf „Quiz“, Zurück zum Lern-Tool, Leiste unten). Login und Meisterin-Seiten
+// zeigen den App-Kopf „Lernen“ ohne Leiste.
+var QUIZ_SEITEN=['s-start','s-quiz','s-ergebnis','s-verlauf','s-fortschritte'];
+function kopfSetzen(id){
+  var quiz=QUIZ_SEITEN.indexOf(id)>=0&&!ISTMEISTERIN&&!(AKTLEHRLING&&AKTLEHRLING.id==='meisterin-test');
+  document.getElementById('kopf-zurueck').hidden=!quiz;
+  document.getElementById('kopf-klein').textContent=quiz?'greathairday · Üben':'greathairday · Lernen';
+  document.getElementById('kopf-titel').textContent=quiz?'Quiz ❓':'Lernen ✂';
+  document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
+  document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
+}
 function zeige(id){
   document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
   document.getElementById(id).classList.add('aktiv');
+  kopfSetzen(id);
   window.scrollTo(0,0);
+}
+
+// Nach dem Login zur Lern-Startseite – oder zurück dorthin, woher man kam
+// (?zurueck=… setzt das Lern-Tool, wenn es ohne Anmeldung geöffnet wurde).
+// Nur Seiten dieser App sind erlaubt, keine fremden Adressen.
+var LQ_ZURUECK=(function(){
+  try{
+    var z=new URLSearchParams(location.search).get('zurueck')||'';
+    return /^[a-z-]+\.html(\?[A-Za-z0-9=&._-]*)?(#[a-z-]+)?$/.test(z)?z:'';
+  }catch(e){return '';}
+})();
+function nachLoginWeiter(){
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261107j'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -1357,7 +1384,10 @@ async function loginLehrling(){
   var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
   if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
   if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Quiz-Zugang wurde vorübergehend deaktiviert. Bitte wende dich an deine Meisterin.');await sb.auth.signOut();return;}
-  AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();zeige('s-start');setTimeout(function(){if(typeof streakSync==='function')streakSync(ldat.id,LJ);},800);
+  AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();
+  // Abzeichen-Stand erst synchronisieren, dann zur Lern-Startseite
+  try{ if(typeof streakSync==='function') await streakSync(ldat.id,LJ); }catch(e){}
+  nachLoginWeiter();
 }
 
 async function loginMeisterin(){
@@ -1369,7 +1399,10 @@ async function loginMeisterin(){
   // Rolle serverseitig prüfen (Tabelle app_rollen, Funktion ist_meisterin) –
   // ein gültiges Lehrlings-Login reicht nicht mehr für den Meisterin-Bereich.
   if(!(await istMeisterinServer())){await sb.auth.signOut();zeigeFehler('mlogin-fehler','Dieses Konto hat keinen Meisterinnen-Zugang.');return;}
-  ISTMEISTERIN=true;AKTLEHRLING=null;await ladeDashboard();zeige('s-dashboard');
+  ISTMEISTERIN=true;AKTLEHRLING=null;
+  // Kam die Meisterin von einer Pflege-Seite im Lern-Tool (#admin-…), dorthin zurück
+  if(/#admin-[a-z]+$/.test(LQ_ZURUECK)){nachLoginWeiter();return;}
+  await ladeDashboard();zeige('s-dashboard');
 }
 async function istMeisterinServer(){
   try{var r=await sb.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
@@ -3154,6 +3187,7 @@ async function claudeAnfrage(system, userText, maxTokens) {
   return data?.content?.[0]?.text || null;
 }
 </script>
-<script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#s-login" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
+<script src="lern-leiste.js?v=20261107j" data-aktiv="ueben" data-verstecken-bei="body.ll-aus" defer></script>  <!-- Leiste unten nur im Quiz-Bereich -->
+<script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#s-login" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 </body>
 </html>
