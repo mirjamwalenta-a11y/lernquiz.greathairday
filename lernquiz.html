@@ -115,6 +115,12 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-f .mb-f-warn{color:#C44030;font-weight:400}
 .mb-d-details{margin:4px 0 16px}
 .mb-d-details summary{cursor:pointer;font-size:12px;color:#896C32;font-weight:700;margin-bottom:10px}
+.wz-step{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.wz-step button{width:44px;height:44px;border-radius:10px;border:1.5px solid #DDD8D0;background:#fff;font-size:20px;color:#896C32;cursor:pointer;font-family:Poppins,system-ui}
+.wz-step button:disabled{opacity:.4;cursor:default}
+.wz-step b{font-size:20px;min-width:30px;text-align:center}
+.wz-step span{font-size:13px;color:#6B6455}
+.wz-hilfe{font-size:11px;color:#9A9188;margin-bottom:14px;line-height:1.45}
 .link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:Poppins,system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
 .fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
@@ -221,7 +227,7 @@ textarea{resize:vertical;margin-bottom:0}
     </div>
     <button id="btn-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
   </div>
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g" style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;background:#896C32;border-radius:12px;color:#fff;text-decoration:none;font-family:Poppins,system-ui">
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h" style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;background:#896C32;border-radius:12px;color:#fff;text-decoration:none;font-family:Poppins,system-ui">
     <span style="font-size:22px">🏠</span>
     <span style="flex:1"><span style="display:block;font-size:14px;font-weight:600">Zur Lern-Startseite</span><span style="display:block;font-size:12px;color:#F3EBD9;margin-top:2px">Heute, Wiederholen, Praxis &amp; Prüfung</span></span>
     <span style="font-size:16px">→</span>
@@ -268,7 +274,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -301,10 +307,10 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Fragen &amp; Inhalte pflegen</div>
       <div class="mb-grid">
         <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
       </div>
       <div class="lab" style="margin-top:20px">Englisch</div>
       <div class="mb-grid">
@@ -316,7 +322,7 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Selbst ausprobieren</div>
       <div class="mb-grid">
         <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107h"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107g"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundschnitte &amp; Formwirkung</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107g"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107g"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Eigene Zeichnungen</small></a>
@@ -363,6 +369,14 @@ textarea{resize:vertical;margin-bottom:0}
 
     <div class="lab">Neue PIN (6 Stellen, leer lassen = unverändert)</div>
     <input type="text" id="edit-pin" placeholder="Leer lassen für keine Änderung" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
+    <div class="lab">Wochenziel</div>
+    <div class="wz-step">
+      <button type="button" id="edit-wz-minus" aria-label="Wochenziel verringern">−</button>
+      <b id="edit-wz" aria-live="polite">3</b>
+      <button type="button" id="edit-wz-plus" aria-label="Wochenziel erhöhen">+</button>
+      <span>Lerneinheiten pro Woche</span>
+    </div>
+    <div class="wz-hilfe">Zählt jedes abgeschlossene Quiz (Lernquiz, Themen-Quiz, Praxis-Quizze). 1 bis 7 möglich.</div>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:#F3EFE8;border-radius:10px;padding:12px 14px">
       <div style="flex:1">
         <div style="font-size:13px;font-weight:600;color:#2C2C2C">Quiz aktiv</div>
@@ -1806,15 +1820,24 @@ async function ladeDashboard(){
   var kompVon={},letztesVon={};
   (kompRes.data||[]).forEach(function(k){(kompVon[k.lehrling_id]=kompVon[k.lehrling_id]||{})[k.thema]=k;});
   (verlRes.data||[]).forEach(function(v){if(!letztesVon[v.lehrling_id])letztesVon[v.lehrling_id]=v;});
+  // Wochenziel: abgeschlossene Quizze seit Montag
+  var mo=new Date();mo.setHours(0,0,0,0);mo.setDate(mo.getDate()-((mo.getDay()+6)%7));
+  var tagNr=(new Date().getDay()+6)%7; // 0 = Mo
+  var wocheVon={};
+  (verlRes.data||[]).forEach(function(v){if(v.erstellt_am&&new Date(v.erstellt_am)>=mo)wocheVon[v.lehrling_id]=(wocheVon[v.lehrling_id]||0)+1;});
 
   var html='<div class="lab">Lehrlinge</div>';
   lehrlinge.forEach(function(l){
     var v=letztesVon[l.id];
     var info=l.lehrjahr+'. Lehrjahr'+(v?' · zuletzt aktiv '+letztesWann(v.erstellt_am)+' · letztes Quiz '+Math.round(v.punkte/v.gesamt)+'/10':' · noch kein Quiz');
     var pausiert=l.aktiv===false;
+    var ziel=wochenzielVon(l), n=wocheVon[l.id]||0;
+    // grün: erreicht oder im Plan · gelb: etwas geübt, aber hinterher · rot: diese Woche noch nichts
+    var wzFarbe=(n>=ziel||n>=Math.floor(ziel*(tagNr+1)/7))?'#5B8A4A':n>0?'#A08A20':'#C44030';
+    var woche=pausiert?'':' · <b style="color:'+wzFarbe+'">Woche '+Math.min(n,ziel)+'/'+ziel+(n>=ziel?' ✓':'')+'</b>';
     html+='<button class="mb-l'+(pausiert?' pausiert':'')+'" id="dl-'+escHtml(String(l.id))+'">'+
       '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+'</div>'+
-      '<div class="mb-l-info">'+escHtml(info)+'</div></div><div class="mb-l-pfeil">›</div></div>'+
+      '<div class="mb-l-info">'+escHtml(info)+woche+'</div></div><div class="mb-l-pfeil">›</div></div>'+
       (pausiert?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
     '</button>';
   });
@@ -2545,6 +2568,14 @@ async function speichereNeuenLehrling(){
 
 var EDIT_LEHRLING = null;
 var EDIT_AKTIV = true;
+// Wochenziel (Spalte lehrlinge.wochenziel, Migration 20261107_lehrlinge_wochenziel.sql)
+var EDIT_WZ = 3;
+function wochenzielVon(l){ var z=parseInt(l&&l.wochenziel,10); return z>=1&&z<=7?z:3; }
+function zeigeEditWz(){
+  document.getElementById('edit-wz').textContent=EDIT_WZ;
+  document.getElementById('edit-wz-minus').disabled=EDIT_WZ<=1;
+  document.getElementById('edit-wz-plus').disabled=EDIT_WZ>=7;
+}
 
 function aktualisiereToggle(aktiv){
   EDIT_AKTIV = aktiv;
@@ -2564,6 +2595,9 @@ function zeigeEditLehrling(lehrling){
   versteckeFehler('edit-fehler');
   zeige('s-edit-lehrling');
   aktualisiereToggle(lehrling.aktiv !== false);
+  EDIT_WZ = wochenzielVon(lehrling); zeigeEditWz();
+  document.getElementById('edit-wz-minus').onclick = function(){ if(EDIT_WZ>1){EDIT_WZ--;zeigeEditWz();} };
+  document.getElementById('edit-wz-plus').onclick = function(){ if(EDIT_WZ<7){EDIT_WZ++;zeigeEditWz();} };
   document.getElementById('edit-aktiv-toggle').onclick = function(){
     aktualisiereToggle(!EDIT_AKTIV);
   };
@@ -2584,7 +2618,13 @@ async function speichereEditLehrling(){
   var btn = document.getElementById('btn-edit-speichern');
   btn.disabled = true; btn.textContent = 'Wird gespeichert…';
   // Name, Lehrjahr, aktiv speichern
-  var {error:dbErr} = await sb.from('lehrlinge').update({name:name, lehrjahr:lj, aktiv:EDIT_AKTIV}).eq('id', EDIT_LEHRLING.id);
+  var {error:dbErr} = await sb.from('lehrlinge').update({name:name, lehrjahr:lj, aktiv:EDIT_AKTIV, wochenziel:EDIT_WZ}).eq('id', EDIT_LEHRLING.id);
+  var wzFehlt = false;
+  if(dbErr && /wochenziel/.test(dbErr.message||'')){
+    // Spalte gibt es noch nicht (Migration nicht ausgeführt) – Rest trotzdem speichern
+    wzFehlt = true;
+    dbErr = (await sb.from('lehrlinge').update({name:name, lehrjahr:lj, aktiv:EDIT_AKTIV}).eq('id', EDIT_LEHRLING.id)).error;
+  }
   if(dbErr){ zeigeFehler('edit-fehler','Fehler: '+dbErr.message); btn.disabled=false; btn.textContent='Änderungen speichern'; return; }
   // PIN ändern falls angegeben
   if(pin){
@@ -2595,6 +2635,8 @@ async function speichereEditLehrling(){
   EDIT_LEHRLING.name = name;
   EDIT_LEHRLING.lehrjahr = lj;
   EDIT_LEHRLING.aktiv = EDIT_AKTIV;
+  if(!wzFehlt) EDIT_LEHRLING.wochenziel = EDIT_WZ;
+  else alert('Gespeichert. Das Wochenziel braucht noch die Datenbank-Änderung (supabase/20261107_lehrlinge_wochenziel.sql) – bis dahin gilt 3.');
   await ladeDashboard();
   zeigeDetailLehrling(EDIT_LEHRLING);
 }
