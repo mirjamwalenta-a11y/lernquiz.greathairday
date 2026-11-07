@@ -42,7 +42,9 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backgroun
 .brand .dot{color:var(--copper)}
 nav.tabs{display:flex;gap:4px;margin-left:auto}
 nav.tabs button{border:0;background:none;padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:6px}
-nav.tabs button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+header.top nav.tabs{background:#EEE6D6;border-radius:12px;padding:4px}
+nav.tabs button{border-radius:9px}
+nav.tabs button[aria-current="page"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
 nav.tabs svg{width:20px;height:20px;flex:none}
 .profile-chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:700;display:flex;gap:6px;align-items:center;max-width:180px}
 .profile-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -212,10 +214,12 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 
 @media (max-width:760px){
   header.top{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
-  nav.tabs{position:fixed;left:0;right:0;bottom:0;margin:0;background:var(--surface);border-top:1px solid var(--line);justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
-  nav.tabs button{flex-direction:column;gap:2px;font-size:.7rem;padding:6px 4px;border-radius:6px;flex:1}
+  /* Reiter oben (eigene Zeile), unten die gemeinsame Lern-Leiste (lern-leiste.js) */
+  .top .wrap{flex-wrap:wrap;padding-block:10px;gap:10px}
+  nav.tabs{order:3;flex:1 0 100%;margin:0;overflow-x:auto;scrollbar-width:none}
+  nav.tabs button{flex:none;font-size:12px;padding:7px 10px}
   .profile-chip{margin-left:auto}
-  main{padding-bottom:110px}
+  main{padding-bottom:20px}
   .exam-strip{grid-template-columns:1fr 1fr}
   .exam-strip button{border-bottom:1px solid var(--line)}
   .exam-strip button:nth-child(2n){border-right:0}
@@ -231,6 +235,8 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
   .answers button{transition:border-color .15s,background .15s}
 }
 </style>
+<link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="quiz-verlauf.js?v=20261031"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -238,7 +244,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="back-link" href="lerntool.html?v=20261107e">← Lern-Tool</a>
+    <a class="back-link" href="lerntool.html?v=20261107g">← Lern-Tool</a>
     <nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
     <button class="profile-chip" id="profileChip" data-a="profiles" aria-label="Lernprofil wechseln"></button>
   </div>
@@ -1390,5 +1396,6 @@ document.addEventListener('change',e=>{const el=e.target,a=el.dataset&&el.datase
 
 render();
 </script>
+<script src="lern-leiste.js?v=20261107g" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
 </body>
 </html>

@@ -156,6 +156,8 @@ select{width:100%;font:14px Poppins,system-ui;padding:10px 12px;border-radius:6p
 .score .num{font-size:1.5rem;color:var(--accent)}
 footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 </style>
+<link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="quiz-verlauf.js?v=20261031"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -165,8 +167,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 
 <div class="wrap">
   <header class="top">
-    <a class="back-link" href="lerntool.html?v=20261107e">← Zurück zum Lern-Tool</a>
-    <span class="tag">greathairday · Lern-Tool</span>
+    <a class="back-link" href="lerntool.html?v=20261107g">← Lern-Tool</a>
+    <span class="tag">greathairday · Praxis</span>
     <h1>Schnittwerkstatt ✂</h1>
     <p>Die vier Grundformen im Profil, von hinten und von oben, der Erhebungswinkel mit Kopfhaltung zum Ausprobieren, sechs Pony-Varianten und die Schnittzeichnung Schritt für Schritt. Am Übungsblatt baust du sie dann selbst.</p>
     <div class="angle-strip" aria-label="Winkel-Überblick">
@@ -398,7 +400,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <li>Gesichts-Baukasten: Gesichtsform, Augen (auch einseitig), Brauen, Nase, Mund und Mundwinkel, Frisur, Pony und Bart, mit Balance-Anzeige</li>
         <li>Wissen: das Kursmaterial zu Gesichtsformen und Formwirkung zum Nachlesen</li>
       </ul>
-      <div><a class="btn" href="beratung-formwirkung.html?v=20261107b" style="display:inline-block;text-decoration:none">Beratung &amp; Formwirkung öffnen</a></div>
+      <div><a class="btn" href="beratung-formwirkung.html?v=20261107g" style="display:inline-block;text-decoration:none">Beratung &amp; Formwirkung öffnen</a></div>
     </div>
   </section>
 
@@ -1196,6 +1198,6 @@ $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
 })();
 </script>
-<script src="lern-leiste.js?v=20261107e" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="lern-leiste.js?v=20261107g" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
 </body>
 </html>

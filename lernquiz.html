@@ -8,47 +8,49 @@
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lernquiz · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="lern-themen.js?v=20261107e"></script>  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#F9F7F4;min-height:100vh;min-height:100dvh}
+body{font-family:Poppins,system-ui,sans-serif;background:#F8F4EA;min-height:100vh;min-height:100dvh}
 html,body{height:100%}
 .seite{display:none;max-width:640px;margin:0 auto;padding:20px;min-height:100dvh}
 .seite.aktiv{display:block}
-.kopf{background:#2C2C2C;padding:18px 20px}
-.kopf-klein{font-size:10px;letter-spacing:2px;color:#896C32;text-transform:uppercase;margin-bottom:4px}
-.kopf h1{font-family:Georgia,serif;font-size:22px;color:#F9F7F4;font-weight:normal}
-.kopf p{font-size:11px;color:#5A5550;margin-top:3px}
-.btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:system-ui;text-align:center}
-.btn-d{background:#2C2C2C;color:#F9F7F4}
+.kopf{background:#F8F4EA;padding:22px 20px 2px;max-width:640px;margin:0 auto}
+.kopf-klein{font-size:9px;font-weight:700;letter-spacing:2px;color:#896C32;text-transform:uppercase;margin-bottom:4px}
+.kopf h1{font-family:Poppins,system-ui,sans-serif;font-size:24px;color:#211D17;font-weight:600}
+.kopf p{font-size:13px;color:#6B6455;margin-top:2px}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:Poppins,system-ui;text-align:center}
+.btn-d{background:#896C32;color:#fff}
+#start-name,#detail-name,.seite h2{font-weight:600!important}
 .btn-g{background:#896C32;color:#F9F7F4}
 .btn-h{background:#EDE8E0;color:#2C2C2C}
 .btn-r{background:#EDE8E0;color:#C44030}
 .btn-grau{background:#DDD8D0;color:#9A9188}
-input,select,textarea{width:100%;border:1.5px solid #DDD8D0;border-radius:8px;padding:10px 12px;font-size:14px;font-family:system-ui;background:#fff;outline:none;margin-bottom:10px}
+input,select,textarea{width:100%;border:1.5px solid #DDD8D0;border-radius:8px;padding:10px 12px;font-size:14px;font-family:Poppins,system-ui;background:#fff;outline:none;margin-bottom:10px}
 textarea{resize:vertical;margin-bottom:0}
 .lj-r{display:flex;gap:8px;margin-bottom:16px}
-.lj-b{flex:1;padding:11px 4px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;font-size:12px;cursor:pointer;font-family:system-ui;text-align:center}
+.lj-b{flex:1;padding:11px 4px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;font-size:12px;cursor:pointer;font-family:Poppins,system-ui;text-align:center}
 .lj-b.a1{border-color:#B07A50;background:#B07A5022;color:#7A4E2C;font-weight:700}
 .lj-b.a2{border-color:#C4B86A;background:#C4B86A22;color:#8A7A30;font-weight:700}
 .lj-b.a3{border-color:#D4A97A;background:#D4A97A22;color:#8A6030;font-weight:700}
 .lj-b.ab{border-color:#8B7535;background:#8B753522;color:#5A4A20;font-weight:700}
-.mod-b{width:100%;padding:13px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;margin-bottom:8px;text-align:left;cursor:pointer;font-family:system-ui}
+.mod-b{width:100%;padding:13px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;margin-bottom:8px;text-align:left;cursor:pointer;font-family:Poppins,system-ui}
 .mod-b.ak{border-color:#896C32;background:#896C3215}
 .mod-t{font-size:14px;font-weight:600;color:#2C2C2C}
 .mod-i{font-size:11px;color:#9A9188;margin-top:2px}
 .prog{height:4px;background:#EDE8E0}
 .prog-f{height:4px;background:#896C32;transition:width .3s}
 .frage-box{background:#2C2C2C;border-radius:12px;padding:20px;margin-bottom:14px}
-.frage-txt{font-family:Georgia,serif;font-size:16px;color:#F9F7F4;line-height:1.55}
+.frage-txt{font-family:Poppins,system-ui,sans-serif;font-size:16px;color:#F9F7F4;line-height:1.55}
 .meta{font-size:11px;color:#9A9188;margin-bottom:8px;display:flex;justify-content:space-between}
 .badge{display:inline-block;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:700}
 .bmc{background:#B07A5022;color:#7A4E2C;border:1px solid #B07A50}
 .bof{background:#C4B86A22;color:#8A7A30;border:1px solid #C4B86A}
 .bzf{background:#896C3222;color:#6E5527;border:1px solid #896C32}
-.opt{width:100%;padding:12px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;text-align:left;font-size:13px;cursor:pointer;margin-bottom:8px;font-family:system-ui;line-height:1.4;display:block}
+.opt{width:100%;padding:12px 14px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;text-align:left;font-size:13px;cursor:pointer;margin-bottom:8px;font-family:Poppins,system-ui;line-height:1.4;display:block}
 .opt.gew{border-color:#2C2C2C;background:#2C2C2C0D}
 .opt.ric{border-color:#896C32;background:#B07A5022;color:#6E5527}
 .opt.fal{border-color:#C44030;background:#D4584820;color:#C44030}
@@ -63,23 +65,23 @@ textarea{resize:vertical;margin-bottom:0}
 .karte{background:#F3EFE8;border-radius:10px;padding:14px;margin-bottom:8px}
 .lab{display:block;font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9188;text-transform:uppercase;margin-bottom:6px}
 .start-zweier{display:flex;gap:8px;margin-top:10px}
-.start-zweier button{flex:1;padding:11px 6px;border:1.5px solid #DDD8D0;border-radius:10px;background:#fff;font-size:13px;color:#5A5550;font-family:system-ui;cursor:pointer}
+.start-zweier button{flex:1;padding:11px 6px;border:1.5px solid #DDD8D0;border-radius:10px;background:#fff;font-size:13px;color:#5A5550;font-family:Poppins,system-ui;cursor:pointer}
 .start-zweier button:hover{border-color:#896C32;color:#896C32}
-.letztes-karte{background:#fff;border:1.5px solid #E4DBC5;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-family:system-ui}
+.letztes-karte{background:#fff;border:1.5px solid #E4DBC5;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-family:Poppins,system-ui}
 .letztes-ic{font-size:22px}
 .letztes-lab{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9A9188}
 .letztes-zeile{font-size:14px;color:#2C2C2C;margin-top:2px}
 .letztes-ueben{font-size:12px;color:#896C32;margin-top:2px}
 .mb-titel{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:16px}
-.mb-titel h2{font-family:Georgia,serif;font-weight:normal;font-size:22px}
+.mb-titel h2{font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:22px}
 .mb-titel small{display:block;font-size:12px;color:#9A9188;margin-top:2px}
-.mb-abm{flex:none;background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:system-ui}
+.mb-abm{flex:none;background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:Poppins,system-ui}
 .mb-tabs{display:flex;gap:4px;background:#EDE8E0;border-radius:10px;padding:4px;margin-bottom:18px}
-.mb-tabs button{flex:1;border:none;background:none;font-size:13px;padding:8px 4px;border-radius:7px;color:#6B6560;cursor:pointer;font-family:system-ui}
+.mb-tabs button{flex:1;border:none;background:none;font-size:13px;padding:8px 4px;border-radius:7px;color:#6B6560;cursor:pointer;font-family:Poppins,system-ui}
 .mb-tabs button[aria-selected="true"]{background:#fff;color:#2C2C2C;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .mb-panel[hidden]{display:none}
 .mb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mb-k{display:block;background:#fff;border:1.5px solid #E4DBC5;border-radius:10px;padding:12px;text-align:left;text-decoration:none;color:#2C2C2C;font-family:system-ui;cursor:pointer;width:100%}
+.mb-k{display:block;background:#fff;border:1.5px solid #E4DBC5;border-radius:10px;padding:12px;text-align:left;text-decoration:none;color:#2C2C2C;font-family:Poppins,system-ui;cursor:pointer;width:100%}
 .mb-k:hover{border-color:#896C32}
 .mb-k .mb-ic{font-size:18px;margin-bottom:3px}
 .mb-k b{display:block;font-size:13px}
@@ -87,13 +89,13 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-breit{grid-column:1/-1;display:flex;gap:12px;align-items:center}
 .mb-breit .mb-ic{margin:0}
 .mb-gold{background:linear-gradient(135deg,#FFFDF0,#F5EDD6);border-color:#C9A84C}
-.mb-neu{display:block;width:100%;padding:12px;border:1.5px dashed #C9BFAF;border-radius:12px;background:none;color:#896C32;font-size:14px;font-weight:600;cursor:pointer;font-family:system-ui;margin-top:4px}
-.mb-l{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #E4DBC5;border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer;font-family:system-ui;color:#2C2C2C}
+.mb-neu{display:block;width:100%;padding:12px;border:1.5px dashed #C9BFAF;border-radius:12px;background:none;color:#896C32;font-size:14px;font-weight:600;cursor:pointer;font-family:Poppins,system-ui;margin-top:4px}
+.mb-l{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #E4DBC5;border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer;font-family:Poppins,system-ui;color:#2C2C2C}
 .mb-l:hover{border-color:#896C32}
 .mb-l.pausiert{opacity:.55}
 .mb-l-oben{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.mb-l-name{font-family:Georgia,serif;font-size:18px}
-.mb-l-pause{font-size:11px;color:#C44030;font-family:system-ui}
+.mb-l-name{font-family:Poppins,system-ui,sans-serif;font-size:18px}
+.mb-l-pause{font-size:11px;color:#C44030;font-family:Poppins,system-ui}
 .mb-l-info{font-size:11px;color:#9A9188;margin-top:2px}
 .mb-l-pfeil{font-size:20px;color:#9A9188}
 .mb-ampel{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#EEE8DC;margin-top:10px}
@@ -106,14 +108,14 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-d-aktion .btn{flex:1;margin:0}
 .mb-d-hilfe{font-size:11px;color:#9A9188;margin:8px 0 16px;line-height:1.45}
 .mb-f-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px}
-.mb-f{display:block;text-align:left;background:#fff;border:1px solid #E4DBC5;border-left:5px solid var(--f);border-radius:8px;padding:8px 9px;font-size:12px;font-weight:600;line-height:1.3;color:#2C2C2C;font-family:system-ui;cursor:pointer;overflow-wrap:anywhere}
+.mb-f{display:block;text-align:left;background:#fff;border:1px solid #E4DBC5;border-left:5px solid var(--f);border-radius:8px;padding:8px 9px;font-size:12px;font-weight:600;line-height:1.3;color:#2C2C2C;font-family:Poppins,system-ui;cursor:pointer;overflow-wrap:anywhere}
 .mb-f:hover{border-color:#896C32;border-left-color:var(--f)}
 .mb-f small{display:block;font-size:10px;margin-top:3px;font-weight:600}
 .mb-f .mb-f-st{color:var(--f)}
 .mb-f .mb-f-warn{color:#C44030;font-weight:400}
 .mb-d-details{margin:4px 0 16px}
 .mb-d-details summary{cursor:pointer;font-size:12px;color:#896C32;font-weight:700;margin-bottom:10px}
-.link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
+.link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:Poppins,system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
 .fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
 
@@ -129,9 +131,9 @@ textarea{resize:vertical;margin-bottom:0}
 @keyframes spRing{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.3);opacity:0}}
 .sp-ring{width:82px;height:82px;background:linear-gradient(135deg,#FFFDF0,#F5EDD6);border-radius:50%;border:1.5px solid #8B7535;display:flex;align-items:center;justify-content:center;animation:spBounce .5s .1s cubic-bezier(.34,1.56,.64,1) both}
 @keyframes spBounce{from{transform:scale(0)}to{transform:scale(1)}}
-.sp-titel{font-family:Georgia,serif;font-size:1.6rem;font-weight:normal;margin-bottom:6px;color:#2C2C2C}
+.sp-titel{font-family:Poppins,system-ui,sans-serif;font-size:1.6rem;font-weight:normal;margin-bottom:6px;color:#2C2C2C}
 .sp-sub{font-size:12px;color:#5A5550;line-height:1.6;margin-bottom:22px}
-.sp-weiter{padding:11px 28px;background:#8B7535;color:#fff;border:none;font-family:system-ui;font-size:12px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}
+.sp-weiter{padding:11px 28px;background:#8B7535;color:#fff;border:none;font-family:Poppins,system-ui;font-size:12px;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}
 .sp-konf{position:absolute;border-radius:1px;pointer-events:none}
 .sc-ot{transform-origin:50px 50px;animation:scO 2.4s ease-in-out infinite}
 .sc-ut{transform-origin:50px 50px;animation:scU 2.4s ease-in-out infinite}
@@ -159,7 +161,7 @@ textarea{resize:vertical;margin-bottom:0}
 .m-pu{animation:mPu 3s ease-in-out infinite}
 @keyframes mPu{0%,100%{filter:brightness(1)}50%{filter:brightness(1.15) drop-shadow(0 0 8px rgba(139,117,53,.5))}}
 .ft-tabs{display:flex;gap:8px;margin-bottom:16px}
-.ft-tab{flex:1;padding:10px 4px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;font-size:12px;cursor:pointer;font-family:system-ui;text-align:center;font-weight:600}
+.ft-tab{flex:1;padding:10px 4px;border-radius:10px;border:2px solid #DDD8D0;background:#fff;font-size:12px;cursor:pointer;font-family:Poppins,system-ui;text-align:center;font-weight:600}
 .ft-tab.t1.ak{border-color:#B07A50;background:#B07A5022;color:#7A4E2C}
 .ft-tab.t2.ak{border-color:#C4B86A;background:#C4B86A22;color:#8A7A30}
 .ft-tab.t3.ak{border-color:#D4A97A;background:#D4A97A22;color:#8A6030}
@@ -170,7 +172,7 @@ textarea{resize:vertical;margin-bottom:0}
 .sk-row.locked .sk-icon{filter:grayscale(1);border-color:#DDD8D0;background:#F0EDE8}
 .sk-info{flex:1}
 .sk-lv{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:#8B7535;margin-bottom:2px}
-.sk-name{font-family:Georgia,serif;font-size:14px;color:#2C2C2C}
+.sk-name{font-family:Poppins,system-ui,sans-serif;font-size:14px;color:#2C2C2C}
 .sk-hinweis{font-size:10px;color:#9A9188;margin-top:2px}
 .sk-status{font-size:11px;font-weight:700;color:#8B7535;white-space:nowrap}
 .sk-row.locked .sk-status{color:#B0A898}
@@ -180,8 +182,8 @@ textarea{resize:vertical;margin-bottom:0}
 <body>
 
 <div class="kopf">
-  <div class="kopf-klein">A Great Hair Day · Lehrlingsbegleitung</div>
-  <h1>Lernquiz ✂</h1>
+  <div class="kopf-klein">greathairday · Lernquiz</div>
+  <h1>Lernquiz ❓</h1>
   <p>Österreichisches Berufsbild Friseur/in</p>
 </div>
 
@@ -200,7 +202,7 @@ textarea{resize:vertical;margin-bottom:0}
 
 <div id="s-mlogin" class="seite">
   <div style="padding-top:32px">
-    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Meisterinnen-Login</h2>
+    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Meisterinnen-Login</h2>
     <div id="mlogin-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">E-Mail</div>
     <input type="email" id="mlogin-email" placeholder="E-Mail">
@@ -215,11 +217,11 @@ textarea{resize:vertical;margin-bottom:0}
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;margin-bottom:20px">
     <div>
       <div class="lab">Lehrling</div>
-      <div id="start-name" style="font-family:Georgia,serif;font-size:20px;color:#2C2C2C"></div>
+      <div id="start-name" style="font-family:Poppins,system-ui,sans-serif;font-size:20px;color:#2C2C2C"></div>
     </div>
-    <button id="btn-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:system-ui">Abmelden</button>
+    <button id="btn-logout" style="background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
   </div>
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e" style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;background:#896C32;border-radius:12px;color:#fff;text-decoration:none;font-family:system-ui">
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g" style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:14px 16px;background:#896C32;border-radius:12px;color:#fff;text-decoration:none;font-family:Poppins,system-ui">
     <span style="font-size:22px">🏠</span>
     <span style="flex:1"><span style="display:block;font-size:14px;font-weight:600">Zur Lern-Startseite</span><span style="display:block;font-size:12px;color:#F3EBD9;margin-top:2px">Heute, Wiederholen, Praxis &amp; Prüfung</span></span>
     <span style="font-size:16px">→</span>
@@ -266,13 +268,13 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
 <div id="s-verlauf" class="seite">
   <div style="padding-top:20px">
-    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:16px">Verlauf</h2>
+    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:16px">Verlauf</h2>
     <div id="v-liste"><div class="laden">Wird geladen…</div></div>
     <button class="btn btn-h" id="btn-v-zurueck">← Zurück</button>
   </div>
@@ -299,10 +301,10 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Fragen &amp; Inhalte pflegen</div>
       <div class="mb-grid">
         <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
       </div>
       <div class="lab" style="margin-top:20px">Englisch</div>
       <div class="mb-grid">
@@ -314,10 +316,10 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Selbst ausprobieren</div>
       <div class="mb-grid">
         <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107e"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107b"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundschnitte &amp; Formwirkung</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107b"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107b"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Eigene Zeichnungen</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107g"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107g"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundschnitte &amp; Formwirkung</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107g"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107g"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Eigene Zeichnungen</small></a>
       </div>
       <div class="lab" style="margin-top:20px">Für mich</div>
       <div class="mb-grid">
@@ -329,7 +331,7 @@ textarea{resize:vertical;margin-bottom:0}
 
 <div id="s-neu-lehrling" class="seite">
   <div style="padding-top:20px">
-    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Neuen Lehrling anlegen</h2>
+    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Neuen Lehrling anlegen</h2>
     <div id="neu-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
     <input type="text" id="neu-name" placeholder="z.B. Ronya">
@@ -348,7 +350,7 @@ textarea{resize:vertical;margin-bottom:0}
 
 <div id="s-edit-lehrling" class="seite">
   <div style="padding-top:20px">
-    <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px;margin-bottom:20px">Lehrling bearbeiten</h2>
+    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Lehrling bearbeiten</h2>
     <div id="edit-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
     <input type="text" id="edit-name" placeholder="z.B. Ronya">
@@ -376,7 +378,7 @@ textarea{resize:vertical;margin-bottom:0}
 <div id="s-lehrling-detail" class="seite">
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px" id="detail-name"></h2>
+      <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px" id="detail-name"></h2>
       <button class="btn btn-h" id="btn-detail-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Übersicht</button>
     </div>
     <div id="detail-inhalt"><div class="laden">Wird geladen…</div></div>
@@ -386,7 +388,7 @@ textarea{resize:vertical;margin-bottom:0}
 <div id="s-pruef" class="seite">
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px" id="pruef-titel">Prüfgespräch</h2>
+      <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px" id="pruef-titel">Prüfgespräch</h2>
       <button class="btn btn-h" id="btn-pruef-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
     </div>
     <div id="pruef-inhalt"></div>
@@ -396,7 +398,7 @@ textarea{resize:vertical;margin-bottom:0}
 <div id="s-verw" class="seite">
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Fragen</h2>
+      <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px">Fragen</h2>
       <button class="btn btn-h" id="btn-verw-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
     </div>
     <div class="lj-r">
@@ -413,7 +415,7 @@ textarea{resize:vertical;margin-bottom:0}
 <div id="s-editor" class="seite">
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:18px" id="ed-titel">Frage</h2>
+      <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:18px" id="ed-titel">Frage</h2>
       <button class="btn btn-h" id="btn-ed-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
     </div>
     <div id="ed-inhalt"></div>
@@ -1591,7 +1593,7 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
   fb.className='fb '+cls;
   fb.innerHTML='<div style="display:flex;justify-content:space-between;margin-bottom:8px">'+
     '<div style="font-weight:700;font-size:14px;color:#2C2C2C">'+note+'</div>'+
-    '<div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:'+col+'">'+punkte+'/10</div>'+
+    '<div style="font-family:Poppins,system-ui,sans-serif;font-size:22px;font-weight:700;color:'+col+'">'+punkte+'/10</div>'+
   '</div>'+(staerke?'<div style="font-size:12px;color:'+(punkte>=7?'#6E5527':'#8A7A30')+';margin-bottom:4px">'+(punkte>=7?'✓ ':'')+staerke+'</div>':'')+
   '<div class="ml-box"><div class="ml-lab">Musterlösung</div><div class="ml-txt">'+muster+'</div></div>';
   fb.style.display='block';
@@ -2238,7 +2240,7 @@ function hinweisBox(eintraege,mitName){
   var html='<div style="background:#D4584812;border:1.5px solid #C44030;border-radius:12px;padding:14px 16px;margin-bottom:18px">'+
     '<div class="lab" style="color:#C44030;margin-bottom:10px">⚠️ Bitte nachprüfen</div>';
   eintraege.forEach(function(e,i){
-    html+='<button data-hinweis="'+i+'" style="display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #E8D5CF;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-family:system-ui">'+
+    html+='<button data-hinweis="'+i+'" style="display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #E8D5CF;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-family:Poppins,system-ui">'+
       '<div style="font-size:13px;color:#2C2C2C;font-weight:700;margin-bottom:3px">'+(mitName?escHtml(e.lehrling.name)+' – ':'')+escHtml(e.th)+'</div>'+
       e.gruende.map(function(g){return '<div style="font-size:11px;color:#6B6560;line-height:1.45">· '+escHtml(g)+'</div>';}).join('')+
       '<div style="font-size:11px;color:#896C32;font-weight:700;margin-top:5px">🗣 Prüfgespräch zu diesem Thema starten →</div>'+
@@ -2668,14 +2670,14 @@ function renderZusatzEditor(){
     html+='<div class="karte" style="border-left:3px solid #896C32;margin-bottom:10px">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
         '<div style="font-size:10px;font-weight:700;color:#6E5527">ZUSATZFRAGE '+(i+1)+' · '+(z.t==='mc'?'MC':'OFFEN')+'</div>'+
-        '<button data-zf-weg="'+i+'" style="border:none;background:none;color:#C44030;font-size:12px;cursor:pointer;font-family:system-ui">Entfernen</button>'+
+        '<button data-zf-weg="'+i+'" style="border:none;background:none;color:#C44030;font-size:12px;cursor:pointer;font-family:Poppins,system-ui">Entfernen</button>'+
       '</div>'+
       '<textarea id="zf-f'+i+'" rows="2" placeholder="Frage, z. B. „Warum …?“ oder ein kurzer Praxisfall">'+escHtml(z.f)+'</textarea>';
     if(z.t==='mc'){
       z.o.forEach(function(opt,k){
         var an=z.r===k;
         html+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">'+
-          '<button data-zf-r="'+i+'-'+k+'" style="width:28px;height:28px;flex:none;border-radius:50%;border:2px solid '+(an?'#896C32':'#DDD8D0')+';background:'+(an?'#896C32':'white')+';color:'+(an?'white':'#ccc')+';cursor:pointer;font-weight:700;font-family:system-ui">✓</button>'+
+          '<button data-zf-r="'+i+'-'+k+'" style="width:28px;height:28px;flex:none;border-radius:50%;border:2px solid '+(an?'#896C32':'#DDD8D0')+';background:'+(an?'#896C32':'white')+';color:'+(an?'white':'#ccc')+';cursor:pointer;font-weight:700;font-family:Poppins,system-ui">✓</button>'+
           '<input id="zf-o'+i+'-'+k+'" value="'+escHtml(opt)+'" placeholder="Antwort '+(k+1)+'" style="flex:1;margin:0"></div>';
       });
       html+='<div class="lab" style="margin-top:8px">Erklärung</div><textarea id="zf-e'+i+'" rows="2">'+escHtml(z.e)+'</textarea>';
@@ -2725,7 +2727,7 @@ function editiere(idx){
   html+='<div style="margin-bottom:12px"><div class="lab">Frage</div><textarea id="e-f" rows="3">'+q.f+'</textarea></div>';
   if(q.t==='mc'){
     html+='<div class="lab">Antworten (✓ = richtig)</div>';
-    q.o.forEach(function(opt,i){html+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><button id="er'+i+'" style="width:30px;height:30px;border-radius:50%;border:2px solid '+(q.r===i?'#896C32':'#DDD8D0')+';background:'+(q.r===i?'#896C32':'white')+';color:'+(q.r===i?'white':'#ccc')+';cursor:pointer;font-weight:700;font-family:system-ui">✓</button><input id="eo'+i+'" value="'+opt.replace(/"/g,'&quot;')+'" style="flex:1;margin:0"></div>';});
+    q.o.forEach(function(opt,i){html+='<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><button id="er'+i+'" style="width:30px;height:30px;border-radius:50%;border:2px solid '+(q.r===i?'#896C32':'#DDD8D0')+';background:'+(q.r===i?'#896C32':'white')+';color:'+(q.r===i?'white':'#ccc')+';cursor:pointer;font-weight:700;font-family:Poppins,system-ui">✓</button><input id="eo'+i+'" value="'+opt.replace(/"/g,'&quot;')+'" style="flex:1;margin:0"></div>';});
     html+='<div style="margin-top:10px"><div class="lab">Erklärung</div><textarea id="e-e" rows="2">'+q.e+'</textarea></div>';
   } else {
     html+='<div style="margin-bottom:12px"><div class="lab">Musterlösung</div><textarea id="e-ml" rows="3">'+q.ml+'</textarea></div>';
@@ -2873,7 +2875,7 @@ window.addEventListener('DOMContentLoaded',function(){
 <div id="s-fortschritte" class="seite">
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-      <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px">Fortschritte ✦</h2>
+      <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px">Fortschritte ✦</h2>
       <button class="btn btn-h" onclick="zeige('s-start')" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
     </div>
     <div class="ft-tabs">
