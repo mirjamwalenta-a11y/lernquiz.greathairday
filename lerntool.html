@@ -12,7 +12,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="lern-themen.js?v=20261107e"></script>
-<script src="quiz-verlauf.js?v=20261031"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
+<script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -294,13 +294,13 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
     <div class="label">Üben</div>
     <div class="st-grid">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
       <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
       <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
     </div>
@@ -310,16 +310,16 @@ body.mit-leiste .leiste{display:flex}
     <div class="label">Praxis</div>
     <div class="st-grid">
       <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis-Module</div><div class="st-d">Waschen, Farbe, Strähnen, Hochstecken</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107g'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107g'"><div class="st-ic">🧰</div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107g'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i'"><div class="st-ic">🧰</div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
     </div>
   </div>
 
   <div class="st-gruppe">
     <div class="label">Prüfung</div>
     <div class="st-grid">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107g'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107i'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
       <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
     </div>
   </div>
@@ -327,7 +327,7 @@ body.mit-leiste .leiste{display:flex}
   <details class="st-gruppe st-mehr" id="st-mehr" ontoggle="stMehrMerken(this.open)">
     <summary><span class="label" style="margin:0">Mehr</span><span class="st-mehr-zeile">🇬🇧 Englisch · 💡 Lerntipps · 📅 Lernplan</span><span class="st-pfeil">▾</span></summary>
     <div class="st-grid" style="margin-top:8px">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261107g'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261107i'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
       <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
       <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
     </div>
@@ -512,7 +512,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -4035,13 +4035,13 @@ var PMT_THEMEN = [
     {n:'Quiz: Strähnen', lj:[2], k:'quiz balayage', go:pmtStr('quiz')}
   ]},
   {i:'✂', n:'Schnitt', p:[
-    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261107g#formen')},
-    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261107g#winkel')},
-    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261107g#pony')},
-    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261107g#zeichnung')},
-    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261107g#quiz')},
-    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261107g#formwirkung')},
-    {n:'Schnittzeichnungs-Designer', lj:[1,2,3], k:'zeichnen designer', go:pmtLink('schnittdesigner.html?v=20261107g')}
+    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261107i#formen')},
+    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261107i#winkel')},
+    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261107i#pony')},
+    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261107i#zeichnung')},
+    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261107i#quiz')},
+    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261107i#formwirkung')},
+    {n:'Schnittzeichnungs-Designer', lj:[1,2,3], k:'zeichnen designer', go:pmtLink('schnittdesigner.html?v=20261107i')}
   ]},
   {i:'👑', n:'Hochstecken & Styling', p:[
     {n:'Gesichtsformen & passende Hochsteckfrisuren', lj:[3], k:'rund eckig oval herz dutt chignon top knot', go:pmtHoch('form')},
@@ -4049,14 +4049,14 @@ var PMT_THEMEN = [
     {n:'Quiz: Hochstecken', lj:[3], k:'quiz hochstecken', go:pmtHoch('quiz')}
   ]},
   {i:'🧰', n:'Werkzeug & Hygiene', p:[
-    {n:'Werkzeuge', lj:[1], k:'kamm bürste schere', go:pmtLink('werkzeugkunde.html?v=20261107g#werkzeuge')},
-    {n:'Aufbau der Schere', lj:[1], k:'schere', go:pmtLink('werkzeugkunde.html?v=20261107g#schere')},
-    {n:'Pflege & Hygiene', lj:[1], k:'desinfektion reinigung hygiene', go:pmtLink('werkzeugkunde.html?v=20261107g#hygiene')},
-    {n:'Spiel: Welches Werkzeug?', lj:[1], k:'spiel werkzeug', go:pmtLink('werkzeugkunde.html?v=20261107g#spiel')},
-    {n:'Wissens-Check Werkzeug', lj:[1], k:'quiz werkzeug', go:pmtLink('werkzeugkunde.html?v=20261107g#quiz')}
+    {n:'Werkzeuge', lj:[1], k:'kamm bürste schere', go:pmtLink('werkzeugkunde.html?v=20261107i#werkzeuge')},
+    {n:'Aufbau der Schere', lj:[1], k:'schere', go:pmtLink('werkzeugkunde.html?v=20261107i#schere')},
+    {n:'Pflege & Hygiene', lj:[1], k:'desinfektion reinigung hygiene', go:pmtLink('werkzeugkunde.html?v=20261107i#hygiene')},
+    {n:'Spiel: Welches Werkzeug?', lj:[1], k:'spiel werkzeug', go:pmtLink('werkzeugkunde.html?v=20261107i#spiel')},
+    {n:'Wissens-Check Werkzeug', lj:[1], k:'quiz werkzeug', go:pmtLink('werkzeugkunde.html?v=20261107i#quiz')}
   ]},
   {i:'🎓', n:'Prüfung', p:[
-    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261107g')},
+    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261107i')},
     {n:'LAP-Vorbereitung', lj:[3], k:'lehrabschlussprüfung lap theorie praxis', go:pmtSeite('lap')}
   ]},
   {i:'🇬🇧', n:'Englisch im Salon', p:[
@@ -4380,7 +4380,7 @@ function stWiederholenOeffnen() {
   var box = document.getElementById('wdh-liste');
   box.innerHTML = '';
   if (!ST.lehrling) {
-    box.innerHTML = '<div class="st-hinweis">Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h">Lernquiz einloggen</a>, dann siehst du hier, was du wiederholen solltest.</div>';
+    box.innerHTML = '<div class="st-hinweis">Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i">Lernquiz einloggen</a>, dann siehst du hier, was du wiederholen solltest.</div>';
   } else {
     var liste = stWiederholListe();
     if (!liste.length) box.innerHTML = '<div class="st-hinweis">Gerade gibt es nichts zu wiederholen. Mach einen Schnell-Check im Lernquiz oder ein neues Thema.</div>';
@@ -4398,7 +4398,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4458,6 +4458,11 @@ function lkGrund(th) {
   return LK_INFO[s].label + ' · ' + d.richtig + ' von ' + (d.richtig + d.falsch) + ' richtig';
 }
 
+function lkZuletzt(tag) {
+  var t = stTage(tag, stISO(new Date()));
+  if (t <= 0) return 'heute'; if (t === 1) return 'gestern'; if (t < 14) return 'vor ' + t + ' Tagen';
+  return 'vor ' + Math.floor(t / 7) + ' Wochen';
+}
 function lkEl(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
 function lkFeld(th) {
@@ -4477,7 +4482,7 @@ function lkZeichnen() {
   if (!ST.lehrling) {
     var h = lkEl('div', 'st-hinweis');
     h.innerHTML = ST.geladen
-      ? 'Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h">Lernquiz einloggen</a>, dann siehst du hier deine Kompetenz-Landkarte.'
+      ? 'Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i">Lernquiz einloggen</a>, dann siehst du hier deine Kompetenz-Landkarte.'
       : 'Wird geladen…';
     box.appendChild(h);
     return;
@@ -4541,7 +4546,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107h';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107i';
 }
 
 function lkTipp(th) {
@@ -4563,7 +4568,9 @@ function lkOeffnen(th) {
   zahlen.innerHTML = '';
   zahlen.style.display = s === 'offen' ? 'none' : '';
   if (s !== 'offen') {
-    [[d.richtig + ' / ' + (d.richtig + d.falsch), 'richtig'], [(d.geraten || 0) + '×', 'geraten'], [d.durchlaeufe + '×', d.durchlaeufe === 1 ? 'Runde geübt' : 'Runden geübt']].forEach(function(x){
+    // „zuletzt geübt“ aus kompetenz.zuletzt_am (Migration 20261107_kompetenz_zuletzt_verlauf_modus.sql), sonst Anzahl Runden
+    var dritte = d.zuletzt_am ? [lkZuletzt(d.zuletzt_am), 'zuletzt geübt'] : [d.durchlaeufe + '×', d.durchlaeufe === 1 ? 'Runde geübt' : 'Runden geübt'];
+    [[d.richtig + ' / ' + (d.richtig + d.falsch), 'richtig'], [(d.geraten || 0) + '×', 'geraten'], dritte].forEach(function(x){
       var c = lkEl('div'); c.appendChild(lkEl('b', null, x[0])); c.appendChild(lkEl('small', null, x[1])); zahlen.appendChild(c);
     });
   }
