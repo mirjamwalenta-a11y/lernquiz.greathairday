@@ -148,7 +148,7 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 
 <!-- ── HOME ── -->
 <div id="p-home" class="page ak">
-  <button class="back-btn" onclick="window.location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html')">← Lern-Tool</button>
+  <button class="back-btn" id="zurueck-btn" onclick="zurueckAusEnglisch()">← Lern-Tool</button>
   <div class="tag">greathairday · Englisch</div>
   <h1>🇬🇧 Englisch im Salon</h1>
   <p class="sub">Fachvokabular für Friseur-Kommunikation</p>
@@ -777,6 +777,16 @@ async function istMeisterinServer(){
   if(!sb_client)return false;
   try{var r=await sb_client.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
 }
+// Zurück: Meisterin direkt in ihren Bereich im Lernquiz (dort ohne neues Login),
+// Lehrlinge ins Lern-Tool
+function zurueckAusEnglisch(){
+  window.location.replace(IstMeisterin
+    ? 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107r#meisterin'
+    : 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107r');
+}
+function zurueckBeschriften(){
+  var b=document.getElementById('zurueck-btn'); if(b) b.textContent=IstMeisterin?'← Meisterin-Bereich':'← Lern-Tool';
+}
 function pinOeffnen(){
   document.getElementById('pin-input').value='';
   document.getElementById('pin-fehler').textContent='';
@@ -856,6 +866,7 @@ function sessionAbgeschlossen(){
 }
 
 function renderStreakHome(){
+  zurueckBeschriften();
   // Meisterin-Banner ein/ausblenden
   var banner=document.getElementById('meisterin-banner');
   var loginBtn=document.getElementById('meisterin-login-btn');
@@ -1232,6 +1243,6 @@ window.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 </div>
-<script src="lern-leiste.js?v=20261107q" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="lern-leiste.js?v=20261107r" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
 </body>
 </html>
