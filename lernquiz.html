@@ -116,6 +116,49 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-wahl-box b{display:block;font-size:15px;margin-bottom:10px;color:#211D17}
 .mb-wahl-box .mb-l{margin-bottom:8px}
 .pte-box{max-height:92dvh;overflow-y:auto}
+.paz-frei{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-4px 0 12px}
+.paz-frei label{font-size:10px;font-weight:700;letter-spacing:1px;color:#6B6455;text-transform:uppercase}
+.paz-frei input{margin:4px 0 0}
+.paz-karte{background:#fff;border:1px solid #E4DBC5;border-radius:12px;padding:14px;margin-bottom:12px}
+.paz-zeile{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr 92px;gap:8px;align-items:center;font-size:12px;margin-bottom:8px;color:#211D17}
+.paz-zeile span:first-child{overflow-wrap:anywhere}
+.paz-zeile span:last-child{text-align:right;color:#6B6455;white-space:nowrap}
+.paz-bal{height:10px;border-radius:5px;background:#EEE8DC;overflow:hidden}
+.paz-bal i{display:block;height:100%;background:#896C32}
+.paz-mon{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6B6455;margin:14px 0 6px}
+.paz-e{display:flex;gap:10px;border-top:1px solid #F0ECE5;padding:8px 0;font-size:12px}
+.paz-d{width:46px;color:#6B6455;flex:none}
+.paz-w{flex:1;min-width:0;overflow-wrap:anywhere}
+.paz-w b{display:block;font-size:13px;color:#211D17}
+.paz-w small{display:block;color:#6B6455;font-size:11px}
+.paz-m{display:block;color:#7A5E28;font-size:11px;margin-top:2px}
+.paz-t{color:#6B6455;white-space:nowrap}
+.pt-auszug-k{display:block;width:100%;background:#fff;border:1.5px solid #896C32;color:#896C32;border-radius:10px;padding:10px;font:600 13px Poppins,system-ui;cursor:pointer;margin:0 0 14px}
+#druck{display:none}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff!important;padding:0!important}
+  body>*:not(#druck){display:none!important}
+  #druck{display:block!important;font-family:Poppins,system-ui,sans-serif;color:#211D17;font-size:10.5px}
+  #druck .dr-k{display:flex;justify-content:space-between;border-bottom:2px solid #896C32;padding-bottom:10px;margin-bottom:14px}
+  #druck h1{font-size:20px;font-weight:600}
+  #druck .dr-s{color:#6B6455}
+  #druck .dr-r{text-align:right;color:#896C32;font-weight:700;letter-spacing:1.5px;font-size:8px;text-transform:uppercase}
+  #druck .dr-info{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  #druck .dr-info div{border:1px solid #E4DBC5;border-radius:6px;padding:6px 8px}
+  #druck .dr-info small{display:block;color:#6B6455;font-size:8px;text-transform:uppercase;letter-spacing:1px}
+  #druck .dr-info b{font-size:12px}
+  #druck h2{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#896C32;margin:14px 0 6px}
+  #druck table{width:100%;border-collapse:collapse}
+  #druck tr{page-break-inside:avoid}
+  #druck th{text-align:left;font-size:8px;text-transform:uppercase;letter-spacing:1px;color:#6B6455;border-bottom:1px solid #211D17;padding:4px}
+  #druck td{border-bottom:1px solid #EEE8DC;padding:4px;vertical-align:top}
+  #druck .r{text-align:right;white-space:nowrap}
+  #druck .dr-m{color:#7A5E28;font-style:italic}
+  #druck .dr-unt{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:44px;page-break-inside:avoid}
+  #druck .dr-unt div{border-top:1px solid #211D17;padding-top:5px;color:#6B6455}
+  #druck .dr-fuss{margin-top:18px;color:#9A9188;font-size:8px}
+}
 .pte-wer{font-size:12px;color:#6B6455;margin:-6px 0 6px}
 .pte-l{display:block;font-size:10px;font-weight:700;letter-spacing:1px;color:#6B6455;text-transform:uppercase;margin:8px 0 4px}
 .pte-l span{text-transform:none;letter-spacing:0;font-weight:400}
@@ -267,7 +310,7 @@ textarea{resize:vertical;margin-bottom:0}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Lernen ✂</h1>
   <p id="kopf-sub">Lernquiz, Lern-Tool, Praxis &amp; Prüfung – eine App</p>
@@ -350,7 +393,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -383,7 +426,7 @@ textarea{resize:vertical;margin-bottom:0}
         <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
         <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
         <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107u#en-verlauf"><div class="mb-ic">📊</div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107v#en-verlauf"><div class="mb-ic">📊</div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></a>
       </div>
     </div>
 
@@ -391,18 +434,18 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="lab">Inhalte pflegen</div>
       <div class="mb-grid">
         <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
       </div>
     </div>
 
     <div class="mb-gruppe">
       <div class="lab">Selbst ansehen</div>
       <div class="mb-grid">
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107u"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107u"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107v"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107v"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
         <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
       </div>
     </div>
@@ -416,6 +459,16 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">📝 Praxis-Tagebuch</h2>
     <p class="mb-sub">Alle Lehrlinge an einem Ort. Bestätigte Einträge zählen als Nachweis und für die Praxis-Abzeichen.</p>
     <div id="pt-alle-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-pt-auszug" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-paz-back">← Zurück</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h" id="paz-titel">Praxis-Auszug</h2>
+    <p class="mb-sub" id="paz-sub"></p>
+    <div id="paz-inhalt"></div>
   </div>
 </div>
 
@@ -1389,7 +1442,7 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle'||id==='s-pt-auszug');
 }
 function zeige(id){
   document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
@@ -1408,7 +1461,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261107u'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261107v'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -2234,6 +2287,91 @@ async function ptBearbeitenSpeichern(bestaetigen){
   if(PTE.nachher) PTE.nachher();
 }
 
+// ── PRAXIS-AUSZUG / PRAXIS-NACHWEIS (Meisterin) ────────────────────────────
+// Nur bestätigte Einträge eines Lehrlings in einem Zeitraum: Stunden pro
+// Bereich, alle Einträge, Drucken bzw. als PDF speichern (Druckansicht #druck).
+// Lesen über die RLS praxis_eintraege_meisterin.
+var PAZ={l:null,z:'jahr',von:'',bis:''};
+var PAZ_ZURUECK=null;
+function pazISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pazDatum(iso){var p=String(iso||'').slice(0,10).split('-');return p.length===3?(+p[2])+'.'+(+p[1])+'.'+p[0]:'';}
+function pazZeitraum(){
+  var h=new Date(), heute=pazISO(h);
+  if(PAZ.z==='monat') return {von:pazISO(new Date(h.getFullYear(),h.getMonth(),1)),bis:heute,text:'Dieser Monat'};
+  if(PAZ.z==='jahr'){ var j=h.getMonth()>=8?h.getFullYear():h.getFullYear()-1; return {von:j+'-09-01',bis:heute,text:'Ausbildungsjahr ab 1.9.'+j}; }
+  if(PAZ.z==='frei') return {von:PAZ.von||'',bis:PAZ.bis||heute,text:'Von – bis'};
+  return {von:'',bis:'',text:'Alles'};
+}
+async function zeigePtAuszug(lehrling,z){
+  if(!ISTMEISTERIN||!lehrling) return;
+  if(PAZ.l!==lehrling){PAZ.von='';PAZ.bis='';}
+  PAZ.l=lehrling; if(z) PAZ.z=z;
+  if(!document.getElementById('s-pt-auszug').classList.contains('aktiv')) zeige('s-pt-auszug');
+  document.getElementById('paz-titel').textContent='Praxis-Auszug · '+lehrling.name;
+  document.getElementById('paz-sub').textContent=(lehrling.lehrjahr?lehrling.lehrjahr+'. Lehrjahr · ':'')+'nur bestätigte Einträge';
+  var box=document.getElementById('paz-inhalt'); box.innerHTML='<div class="laden">Wird geladen…</div>';
+  var zr=pazZeitraum();
+  var q=sb.from('praxis_eintraege').select('*').eq('lehrling_id',lehrling.id).eq('bestaetigt',true);
+  if(zr.von) q=q.gte('datum',zr.von);
+  if(zr.bis) q=q.lte('datum',zr.bis);
+  var r; try{ r=await q.order('datum',{ascending:false}).limit(2000); }catch(e){ r={error:e}; }
+  if(r.error){ box.innerHTML='<p class="mb-sub">Konnte nicht geladen werden'+(navigator.onLine===false?' – keine Internetverbindung.':'.')+'</p>'; return; }
+  var e=(r.data||[]).filter(function(x){return (!zr.von||x.datum>=zr.von)&&(!zr.bis||x.datum<=zr.bis);});
+  var gesamt=0,tage={},pro={};
+  e.forEach(function(x){ gesamt+=x.dauer_min||0; tage[x.datum]=1; var b=pro[x.bereich]=pro[x.bereich]||{min:0,n:0}; b.min+=x.dauer_min||0; b.n++; });
+  var bereiche=Object.keys(pro).sort(function(a,b){return pro[b].min-pro[a].min;});
+  var max=bereiche.length?pro[bereiche[0]].min:1;
+  var chips=[['monat','Dieser Monat'],['jahr','Ausbildungsjahr'],['alles','Alles'],['frei','Von – bis …']];
+  var h='<div class="tb-filter">'+chips.map(function(c){return '<button data-pazz="'+c[0]+'" aria-pressed="'+(PAZ.z===c[0])+'">'+c[1]+'</button>';}).join('')+'</div>';
+  if(PAZ.z==='frei') h+='<div class="paz-frei"><label>von<input type="date" id="paz-von" value="'+escHtml(PAZ.von)+'"></label><label>bis<input type="date" id="paz-bis" value="'+escHtml(PAZ.bis||pazISO(new Date()))+'"></label></div>';
+  h+='<div class="tb-summe"><div><b>'+escHtml(ptDauer(gesamt))+'</b><small>geübt (bestätigt)</small></div><div><b>'+e.length+'</b><small>Einträge</small></div><div><b>'+Object.keys(tage).length+'</b><small>Tage geübt</small></div></div>';
+  if(!e.length){ h+='<p class="mb-sub">In diesem Zeitraum gibt es keine bestätigten Einträge.</p>'; box.innerHTML=h; pazKlicks(box); return; }
+  h+='<div class="paz-karte"><div class="lab">Stunden pro Bereich</div>'+bereiche.map(function(b){
+    return '<div class="paz-zeile"><span>'+escHtml(b)+'</span><div class="paz-bal"><i style="width:'+Math.max(4,Math.round(pro[b].min/max*100))+'%"></i></div><span>'+escHtml(ptDauer(pro[b].min))+'</span></div>';
+  }).join('')+'</div>';
+  h+='<button class="btn btn-g" id="paz-druck" style="margin:4px 0 4px">🖨 Drucken / als PDF speichern</button>'+
+    '<p class="mb-sub" style="font-size:11px;text-align:center">Als Ausbildungsnachweis, für die Zwischenprüfung oder die LAP</p>';
+  var MON=['Jänner','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  var mon='';
+  h+='<div class="paz-karte"><div class="lab">Alle Einträge</div>';
+  e.forEach(function(x){
+    var d=new Date(x.datum+'T12:00:00'), m=MON[d.getMonth()]+' '+d.getFullYear();
+    if(m!==mon){ mon=m; h+='<div class="paz-mon">'+escHtml(m)+'</div>'; }
+    var det=[x.details,x.kontrolliert_von?'kontrolliert: '+x.kontrolliert_von:''].filter(Boolean).join(' · ');
+    h+='<div class="paz-e"><span class="paz-d">'+escHtml(ptTag(x.datum))+'</span><span class="paz-w"><b>'+escHtml(x.bereich)+'</b>'+(det?'<small>'+escHtml(det)+'</small>':'')+
+      (x.meisterin_notiz?'<span class="paz-m">💬 '+escHtml(x.meisterin_notiz)+'</span>':'')+'</span><span class="paz-t">'+escHtml(ptDauer(x.dauer_min||0))+'</span></div>';
+  });
+  h+='</div>';
+  box.innerHTML=h; pazKlicks(box);
+  document.getElementById('paz-druck').addEventListener('click',function(){ pazDrucken(lehrling,zr,e,gesamt,bereiche,pro); });
+}
+function pazKlicks(box){
+  box.querySelectorAll('[data-pazz]').forEach(function(b){ b.addEventListener('click',function(){ zeigePtAuszug(PAZ.l,b.dataset.pazz); }); });
+  var v=document.getElementById('paz-von'), b=document.getElementById('paz-bis');
+  if(v) v.addEventListener('change',function(){ PAZ.von=v.value; zeigePtAuszug(PAZ.l); });
+  if(b) b.addEventListener('change',function(){ PAZ.bis=b.value; zeigePtAuszug(PAZ.l); });
+}
+function pazDrucken(lehrling,zr,e,gesamt,bereiche,pro){
+  var von=zr.von||(e.length?e[e.length-1].datum:''), bis=zr.bis||(e.length?e[0].datum:'');
+  var h='<div class="dr-k"><div><h1>Praxis-Nachweis</h1><div class="dr-s">A Great Hair Day · Lehrlingsausbildung Friseur:in</div></div><div class="dr-r">greathairday<br>Praxis-Tagebuch</div></div>'+
+    '<div class="dr-info"><div><small>Lehrling</small><b>'+escHtml(lehrling.name)+'</b></div><div><small>Lehrjahr</small><b>'+escHtml(String(lehrling.lehrjahr||'–'))+'.</b></div>'+
+    '<div><small>Zeitraum</small><b>'+escHtml(pazDatum(von)+' – '+pazDatum(bis))+'</b></div><div><small>Geübt, bestätigt</small><b>'+escHtml(ptDauer(gesamt))+'</b></div></div>'+
+    '<h2>Stunden pro Bereich</h2><table><tr><th>Bereich</th><th class="r">Einträge</th><th class="r">Stunden</th></tr>'+
+    bereiche.map(function(b){return '<tr><td>'+escHtml(b)+'</td><td class="r">'+pro[b].n+'</td><td class="r">'+escHtml(ptDauer(pro[b].min))+'</td></tr>';}).join('')+
+    '<tr><td><b>Gesamt</b></td><td class="r"><b>'+e.length+'</b></td><td class="r"><b>'+escHtml(ptDauer(gesamt))+'</b></td></tr></table>'+
+    '<h2>Alle Einträge</h2><table><tr><th>Datum</th><th>Was geübt</th><th>Kontrolliert von</th><th class="r">Dauer</th><th>Bestätigt</th></tr>'+
+    e.map(function(x){
+      return '<tr><td>'+escHtml(pazDatum(x.datum))+'</td><td>'+escHtml(x.bereich+(x.details?' – '+x.details:''))+
+        (x.meisterin_notiz?'<br><span class="dr-m">Meisterin: '+escHtml(x.meisterin_notiz)+'</span>':'')+'</td><td>'+escHtml(x.kontrolliert_von||'')+'</td>'+
+        '<td class="r">'+escHtml(ptDauer(x.dauer_min||0))+'</td><td>'+escHtml(x.bestaetigt_am?pazDatum(x.bestaetigt_am).replace(/\d{4}$/,''):'✓')+'</td></tr>';
+    }).join('')+'</table>'+
+    '<div class="dr-unt"><div>Datum, Unterschrift Ausbilder:in</div><div>Datum, Unterschrift Lehrling</div></div>'+
+    '<div class="dr-fuss">Erstellt am '+escHtml(pazDatum(pazISO(new Date())))+' aus dem Praxis-Tagebuch. Enthält nur von der Meisterin bestätigte Einträge.</div>';
+  var d=document.getElementById('druck'); d.innerHTML=h;
+  var alt=document.title; document.title='Praxis-Nachweis '+lehrling.name;
+  setTimeout(function(){ window.print(); document.title=alt; },50);
+}
+
 // ── PRAXIS-TAGEBUCH aller Lehrlinge (Meisterin) ─────────────────────────────
 // Liest public.praxis_eintraege; die Meisterin sieht alle Zeilen, bestätigen
 // darf nur sie – beides erzwingt die RLS (praxis_eintraege_meisterin).
@@ -2273,10 +2411,13 @@ async function zeigePtAlle(filter){
         '<button class="tb-edit" data-pte="'+escHtml(String(x.id))+'">✎ Bearbeiten / Notiz</button></div></div>';
   }
   var h='<div class="tb-summe"><div><b>'+nOffen+'</b><small>zum Bestätigen</small></div><div><b>'+escHtml(ptDauer(woche))+'</b><small>diese Woche</small></div><div><b>'+escHtml(ptDauer(gesamt))+'</b><small>gesamt bestätigt</small></div></div>';
+  if(mitEintrag.length===1&&!PTA_FILTER) PTA_FILTER=mitEintrag[0].id;
   if(mitEintrag.length>1){
     h+='<div class="tb-filter"><button data-ptf="" aria-pressed="'+(!PTA_FILTER)+'">Alle</button>'+
       mitEintrag.map(function(l){return '<button data-ptf="'+escHtml(String(l.id))+'" aria-pressed="'+(PTA_FILTER===l.id)+'">'+escHtml(l.name)+'</button>';}).join('')+'</div>';
   }
+  if(PTA_FILTER&&name[PTA_FILTER]!==undefined) h+='<button class="pt-auszug-k" data-pazl="'+escHtml(String(PTA_FILTER))+'">📄 Auszug &amp; Nachweis für '+escHtml(name[PTA_FILTER])+' →</button>';
+  else if(mitEintrag.length) h+='<p class="mb-sub" style="font-size:11px;margin:-6px 0 12px">📄 Für Auszug &amp; Nachweis oben einen Lehrling antippen.</p>';
   if(!alle.length) h+='<p class="mb-sub">Noch keine Einträge. Die Lehrlinge tragen im Lern-Tool unter „Praxis“ ein, was sie geübt haben.</p>';
   else {
     h+='<div class="lab">Wartet auf dich ('+offen.length+')</div>'+(offen.length?offen.map(eintrag).join(''):'<p class="mb-sub" style="margin-bottom:12px">Alles bestätigt ✓</p>');
@@ -2285,6 +2426,12 @@ async function zeigePtAlle(filter){
   }
   box.innerHTML=h;
   box.querySelectorAll('[data-ptf]').forEach(function(b){ b.addEventListener('click',function(){ zeigePtAlle(b.dataset.ptf||null); }); });
+  box.querySelectorAll('[data-pazl]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var l=(res[0].data||[]).filter(function(y){return String(y.id)===b.dataset.pazl;})[0];
+      if(l){ PAZ_ZURUECK='alle'; zeigePtAuszug(l,'jahr'); }
+    });
+  });
   box.querySelectorAll('[data-pte]').forEach(function(b){
     b.addEventListener('click',function(){
       var x=alle.filter(function(y){return String(y.id)===b.dataset.pte;})[0];
@@ -2335,7 +2482,10 @@ async function ptMeisterinLaden(lehrling){
   var top=Object.keys(proBereich).sort(function(a,b){return proBereich[b]-proBereich[a];}).slice(0,3);
   if(top.length) h+='<div style="font-size:11px;color:#9A9188;margin-top:8px">Am meisten geübt: '+escHtml(top.map(function(b){return b+' ('+ptDauer(proBereich[b])+')';}).join(', '))+'</div>';
   h+='<div style="font-size:11px;color:#9A9188;margin-top:4px">Bestätigt: '+ptDauer(bestaetigt)+' – zählt für die Praxis-Abzeichen.</div></div>';
+  if(e.length) h='<button class="pt-auszug-k" id="pt-auszug-detail">📄 Auszug &amp; Nachweis</button>'+h;
   panel.innerHTML=h;
+  var ak=document.getElementById('pt-auszug-detail');
+  if(ak) ak.addEventListener('click',function(){ PAZ_ZURUECK=lehrling; zeigePtAuszug(lehrling,'jahr'); });
   panel.querySelectorAll('[data-ptedit]').forEach(function(b){
     b.addEventListener('click',function(){
       var x=e.filter(function(y){return String(y.id)===b.dataset.ptedit;})[0];
@@ -3381,6 +3531,10 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
   document.getElementById('pte-ok').addEventListener('click',function(){ptBearbeitenSpeichern(false);});
+  document.getElementById('btn-paz-back').addEventListener('click',function(){
+    if(PAZ_ZURUECK&&PAZ_ZURUECK!=='alle'){ DETAIL_START_TAB='praxis'; zeigeDetailLehrling(PAZ_ZURUECK); }
+    else zeigePtAlle(PTA_FILTER);
+  });
   document.getElementById('pte-ok-bestaetigen').addEventListener('click',function(){ptBearbeitenSpeichern(true);});
   document.getElementById('pte-zu').addEventListener('click',function(){document.getElementById('pt-edit').hidden=true;});
   document.getElementById('mb-wahl').addEventListener('click',function(e){if(e.target===this)this.hidden=true;});
@@ -3785,7 +3939,8 @@ async function claudeAnfrage(system, userText, maxTokens) {
   return data?.content?.[0]?.text || null;
 }
 </script>
-<script src="lern-leiste.js?v=20261107u" data-aktiv="ueben" data-verstecken-bei="body.ll-aus" defer></script>  <!-- Leiste unten nur im Quiz-Bereich -->
+<script src="lern-leiste.js?v=20261107v" data-aktiv="ueben" data-verstecken-bei="body.ll-aus" defer></script>  <!-- Leiste unten nur im Quiz-Bereich -->
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#s-login" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
+<div id="druck" aria-hidden="true"></div>
 </body>
 </html>
