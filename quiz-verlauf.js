@@ -29,6 +29,7 @@
   // 20261029_kompetenz_sicherheit_wiederholung.sql kennt die Tabelle die
   // neuen Spalten noch nicht – dann ohne sie speichern (neueste zuerst weglassen).
   var STUFEN = [
+    {muster: /zuletzt_am/, spalten: ['zuletzt_am']},   // Migration 20261107_kompetenz_zuletzt_verlauf_modus.sql
     {muster: /sicher_falsch_offen/, spalten: ['sicher_falsch_offen']},
     {muster: /gut_seit|gut_am|geraten|sicher_falsch/, spalten: ['gut_seit', 'gut_am', 'geraten', 'sicher_falsch']}
   ];
@@ -78,14 +79,18 @@
         var alt = da[th] || {}, gut = lr === 'gut' || lr === 'sehrgut';
         var tage = {gut_seit: gut ? (alt.gut_seit || heute()) : null, gut_am: gut ? heute() : null,
                     geraten: (alt.geraten || 0) + runde[th].geraten, sicher_falsch: (alt.sicher_falsch || 0) + runde[th].sicherFalsch,
-                    sicher_falsch_offen: (alt.sicher_falsch_offen || 0) + runde[th].sicherFalsch};
+                    sicher_falsch_offen: (alt.sicher_falsch_offen || 0) + runde[th].sicherFalsch,
+                    zuletzt_am: heute()};
         if (da[th]) {
           await schreiben(c, Object.assign({richtig:alt.richtig+r, falsch:alt.falsch+f, durchlaeufe:alt.durchlaeufe+1, vorletzte_runde:alt.letzte_runde, letzte_runde:lr}, tage), alt.id);
         } else {
           await schreiben(c, Object.assign({lehrling_id:lid, thema:th, richtig:r, falsch:f, durchlaeufe:1, letzte_runde:lr}, tage), null);
         }
       }
-      var v = await c.from('verlauf').insert({lehrling_id:lid, datum:new Date().toLocaleDateString('de-AT'), lehrjahr:l.data.lehrjahr || 1, richtig:ok, falsch:g-ok, gesamt:g, punkte:ok*10, schwach:schwach});
+      var eintrag = {lehrling_id:lid, datum:new Date().toLocaleDateString('de-AT'), lehrjahr:l.data.lehrjahr || 1, richtig:ok, falsch:g-ok, gesamt:g, punkte:ok*10, schwach:schwach, modus:'uebung'};
+      var v = await c.from('verlauf').insert(eintrag);
+      // Ohne Migration 20261107_kompetenz_zuletzt_verlauf_modus.sql: ohne Modus speichern
+      if (v.error && /modus/.test(v.error.message || '')) { delete eintrag.modus; v = await c.from('verlauf').insert(eintrag); }
       if (v.error) throw v.error;
       hinweis(elId, '✓ Im Verlauf gespeichert', '#5B7B6F');
       return true;
