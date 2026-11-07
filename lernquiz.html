@@ -101,6 +101,18 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-ampel-txt{display:flex;gap:4px 10px;font-size:11px;color:#6B6560;margin-top:6px;flex-wrap:wrap}
 .mb-ampel-txt span{display:inline-flex;align-items:center;gap:4px}
 .mb-p{width:8px;height:8px;border-radius:50%;display:inline-block}
+.mb-d-info{font-size:12px;color:#9A9188;margin:-14px 0 14px}
+.mb-d-aktion{display:flex;gap:8px}
+.mb-d-aktion .btn{flex:1;margin:0}
+.mb-d-hilfe{font-size:11px;color:#9A9188;margin:8px 0 16px;line-height:1.45}
+.mb-f-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px}
+.mb-f{display:block;text-align:left;background:#fff;border:1px solid #E4DBC5;border-left:5px solid var(--f);border-radius:8px;padding:8px 9px;font-size:12px;font-weight:600;line-height:1.3;color:#2C2C2C;font-family:system-ui;cursor:pointer;overflow-wrap:anywhere}
+.mb-f:hover{border-color:#896C32;border-left-color:var(--f)}
+.mb-f small{display:block;font-size:10px;margin-top:3px;font-weight:600}
+.mb-f .mb-f-st{color:var(--f)}
+.mb-f .mb-f-warn{color:#C44030;font-weight:400}
+.mb-d-details{margin:4px 0 16px}
+.mb-d-details summary{cursor:pointer;font-size:12px;color:#896C32;font-weight:700;margin-bottom:10px}
 .link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
 .fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
@@ -365,7 +377,7 @@ textarea{resize:vertical;margin-bottom:0}
   <div style="padding-top:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <h2 style="font-family:Georgia,serif;font-weight:normal;font-size:20px" id="detail-name"></h2>
-      <button class="btn btn-h" id="btn-detail-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Zurück</button>
+      <button class="btn btn-h" id="btn-detail-back" style="width:auto;padding:8px 14px;margin:0;font-size:12px">← Übersicht</button>
     </div>
     <div id="detail-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
@@ -1828,28 +1840,67 @@ async function zeigeDetailLehrling(lehrling){
   var bekannt=alleThemen;
   var {data:verlauf}=await sb.from('verlauf').select('*').eq('lehrling_id',lehrling.id).order('erstellt_am',{ascending:false}).limit(10);
   var hinweise=pruefHinweise(komp,gespr).map(function(h){return {lehrling:lehrling,th:h.th,gruende:h.gruende,komp:komp,gespr:gespr};});
-  var html=hinweisBox(hinweise,false)+
-    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">'+
-      '<button class="btn btn-g" id="btn-pruef-start" style="flex:1;min-width:150px;margin:0">🗣 Prüfgespräch</button>'+
-      '<button class="btn btn-g" id="btn-praxis-start" style="flex:1;min-width:150px;margin:0">✂ Praxis-Check</button>'+
+  // Kopfzeile: Lehrjahr, Anzahl Quizze, zuletzt aktiv
+  var anzahl=null;
+  try{ var cRes=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lehrling.id); anzahl=cRes.count; }catch(e){}
+  var kopf=lehrling.lehrjahr+'. Lehrjahr'+(anzahl!=null?' · '+anzahl+(anzahl===1?' Quiz':' Quizze'):'')+
+    (verlauf&&verlauf.length?' · zuletzt aktiv '+letztesWann(verlauf[0].erstellt_am):' · noch kein Quiz');
+
+  var html='<div class="mb-d-info">'+escHtml(kopf)+'</div>'+
+    '<div class="mb-d-aktion">'+
+      '<button class="btn btn-g" id="btn-pruef-start">🗣 Prüfgespräch</button>'+
+      '<button class="btn btn-g" id="btn-praxis-start">✂ Praxis-Check</button>'+
     '</div>'+
-    '<div style="font-size:11px;color:#9A9188;margin-bottom:18px;line-height:1.45">Prüfgespräch: Der Lehrling erklärt in eigenen Worten. Praxis-Check: Du schaust bei einer echten Behandlung zu und hakst ab.</div>';
-  if(bekannt.length) html+=renderKompetenz(komp,bekannt,gespr,praxis);
-  else html+='<p style="color:#9A9188;font-size:13px;margin-bottom:16px">Noch kein Kompetenzstand vorhanden.</p>';
-  html+=gespraechListe(gliste,'Prüfgespräche und Praxis-Checks');
+    '<div class="mb-d-hilfe">Prüfgespräch: Der Lehrling erklärt in eigenen Worten. Praxis-Check: Du schaust bei einer echten Behandlung zu und hakst ab.</div>'+
+    '<div class="mb-tabs" role="tablist">'+
+      '<button role="tab" data-dtab="karte" aria-selected="true">🗺 Landkarte</button>'+
+      '<button role="tab" data-dtab="gespr" aria-selected="false">💬 Gespräche'+(gliste&&gliste.length?' ('+gliste.length+')':'')+'</button>'+
+      '<button role="tab" data-dtab="verl" aria-selected="false">📜 Verlauf</button>'+
+    '</div>';
+
+  // Reiter Landkarte: Ampel-Felder wie beim Lehrling, mit Gespräch/Praxis am Thema
+  var ljThemen=((window.GHD_LJ_THEMEN||{})[String(lehrling.lehrjahr)]||[]).slice();
+  var weitere=bekannt.filter(function(t){return ljThemen.indexOf(t)<0&&(ampelStand(komp[t])!=='offen'||gespr[t]||praxis[t]);})
+    .sort(function(x,y){return x.localeCompare(y,'de');});
+  function feld(th){
+    var d=komp[th], st=ampelStand(d), info=MB_STAND[st];
+    var zus='';
+    if(d&&d.sicher_falsch) zus+='<small class="mb-f-warn">'+d.sicher_falsch+'× sicher, aber falsch</small>';
+    if(gespr[th]) zus+='<small style="color:'+PG_FARBE[gespr[th].ergebnis]+'">🗣 '+escHtml(PG_LABEL[gespr[th].ergebnis])+'</small>';
+    if(praxis[th]) zus+='<small style="color:'+PG_FARBE[praxis[th].ergebnis]+'">✂ '+escHtml(PX_LABEL[praxis[th].ergebnis])+'</small>';
+    return '<button class="mb-f" data-pthema="'+escHtml(th)+'" style="--f:'+info.f+'">'+escHtml(th)+
+      '<small class="mb-f-st">'+(st==='faellig'?'↻ ':st==='offen'?'○ ':'● ')+escHtml(info.t[0])+'</small>'+zus+'</button>';
+  }
+  var karte=hinweisBox(hinweise,false);
+  [['Themen im '+lehrling.lehrjahr+'. Lehrjahr',ljThemen],['Auch geübt',weitere]].forEach(function(g){
+    if(!g[1].length) return;
+    karte+='<div class="lab" style="margin-top:4px">'+escHtml(g[0])+'</div><div class="mb-f-grid">'+g[1].map(feld).join('')+'</div>';
+  });
+  karte+='<div class="mb-d-hilfe" style="margin-top:-6px">Thema antippen = Prüfgespräch zu diesem Thema starten.</div>';
+  if(bekannt.length) karte+='<details class="mb-d-details"><summary>Zahlen pro Thema anzeigen</summary>'+renderKompetenz(komp,bekannt,gespr,praxis)+'</details>';
+  html+='<div class="mb-panel" data-dpanel="karte">'+karte+'</div>';
+
+  // Reiter Gespräche
+  html+='<div class="mb-panel" data-dpanel="gespr" hidden>'+(gliste&&gliste.length?gespraechListe(gliste,'Prüfgespräche und Praxis-Checks'):
+    '<p style="color:#9A9188;font-size:13px;margin-bottom:16px">Noch keine Prüfgespräche oder Praxis-Checks.</p>')+'</div>';
+
+  // Reiter Verlauf
+  var vh='';
   if(verlauf&&verlauf.length){
-    html+='<div class="lab" style="margin-bottom:8px">Letzte Durchläufe</div>';
+    vh+='<div class="lab" style="margin-bottom:8px">Letzte Durchläufe</div>';
     verlauf.forEach(function(v){
       var sc=Math.round(v.punkte/v.gesamt);
-      html+='<div class="karte" style="border-left:3px solid '+(sc>=7?'#896C32':sc>=5?'#C4B86A':'#D4A97A')+';margin-bottom:8px">'+
+      vh+='<div class="karte" style="border-left:3px solid '+(sc>=7?'#896C32':sc>=5?'#C4B86A':'#D4A97A')+';margin-bottom:8px">'+
         '<div style="display:flex;justify-content:space-between">'+
-          '<div style="font-size:12px;color:#9A9188">'+v.datum+' · '+v.lehrjahr+'. LJ</div>'+
+          '<div style="font-size:12px;color:#9A9188">'+escHtml(String(v.datum))+' · '+escHtml(String(v.lehrjahr)==='b'?'Betrieb':v.lehrjahr+'. LJ')+'</div>'+
           '<div style="font-weight:700;font-size:14px;color:'+(sc>=7?'#896C32':'#D4A97A')+'">'+sc+'/10</div>'+
         '</div>'+
-        (v.schwach&&v.schwach.length?'<div style="font-size:11px;color:#9A6530;margin-top:3px">→ '+v.schwach.join(', ')+'</div>':'')+
+        (v.schwach&&v.schwach.length?'<div style="font-size:11px;color:#9A6530;margin-top:3px">→ '+escHtml(v.schwach.join(', '))+'</div>':'')+
       '</div>';
     });
-  }
+  } else vh='<p style="color:#9A9188;font-size:13px;margin-bottom:16px">Noch kein Quiz gespielt.</p>';
+  html+='<div class="mb-panel" data-dpanel="verl" hidden>'+vh+'</div>';
+
   html+='<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">'+
     '<button class="btn btn-h" id="btn-edit-lehrling" style="flex:1;min-width:120px">✎ Bearbeiten</button>'+
     '<button class="btn btn-h" id="btn-reset-verlauf" style="flex:1;min-width:120px">↺ Verlauf zurückstellen</button>'+
@@ -1857,6 +1908,15 @@ async function zeigeDetailLehrling(lehrling){
   '</div>';
   document.getElementById('detail-inhalt').innerHTML=html;
   hinweisKlicks(hinweise);
+  document.querySelectorAll('#detail-inhalt [data-dtab]').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('#detail-inhalt [data-dtab]').forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
+      document.querySelectorAll('#detail-inhalt [data-dpanel]').forEach(function(p){p.hidden=(p.dataset.dpanel!==b.dataset.dtab);});
+    });
+  });
+  document.querySelectorAll('#detail-inhalt [data-pthema]').forEach(function(b){
+    b.addEventListener('click',function(){ zeigePruefStart(lehrling,komp,gespr); pruefStarten([b.dataset.pthema]); });
+  });
   document.getElementById('btn-pruef-start').addEventListener('click',function(){
     zeigePruefStart(lehrling,komp,gespr);
   });
