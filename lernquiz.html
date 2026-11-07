@@ -61,6 +61,14 @@ textarea{resize:vertical;margin-bottom:0}
 .score-box{background:#EDE8E0;border-radius:12px;padding:14px 16px;margin-bottom:16px}
 .karte{background:#F3EFE8;border-radius:10px;padding:14px;margin-bottom:8px}
 .lab{display:block;font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9188;text-transform:uppercase;margin-bottom:6px}
+.start-zweier{display:flex;gap:8px;margin-top:10px}
+.start-zweier button{flex:1;padding:11px 6px;border:1.5px solid #DDD8D0;border-radius:10px;background:#fff;font-size:13px;color:#5A5550;font-family:system-ui;cursor:pointer}
+.start-zweier button:hover{border-color:#896C32;color:#896C32}
+.letztes-karte{background:#fff;border:1.5px solid #E4DBC5;border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-family:system-ui}
+.letztes-ic{font-size:22px}
+.letztes-lab{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9A9188}
+.letztes-zeile{font-size:14px;color:#2C2C2C;margin-top:2px}
+.letztes-ueben{font-size:12px;color:#896C32;margin-top:2px}
 .link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
 .fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
@@ -189,19 +197,11 @@ textarea{resize:vertical;margin-bottom:0}
     <button class="mod-b" id="mod-lap"><div class="mod-t">LAP-Vorbereitung</div><div class="mod-i">Alle Fragen</div></button>
   </div>
   <button class="btn btn-d" id="btn-quiz-los">Quiz starten →</button>
-  <button class="link-k" id="btn-verlauf-zeigen">Verlauf ansehen</button>
-  <button class="link-k" id="btn-ft" onclick="zeigeFortschritte()" style="color:#8B7535;font-weight:700">✦ Meine Streak-Fortschritte</button>
-
-  <!-- HEUTE LAUT LERNPLAN -->
-  <div id="heute-box" style="margin-top:16px;background:#EDE8E0;border-radius:12px;padding:16px;display:none">
-    <div class="lab">Heute laut Lernplan</div>
-    <div id="heute-thema-q" style="font-family:Georgia,serif;font-size:17px;color:#2C2C2C;margin-bottom:6px"></div>
-    <div id="heute-dauer-q" style="font-size:12px;color:#9A9188;margin-bottom:10px"></div>
-    <div id="heute-tipp-q" style="font-size:13px;color:#5A5550;background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.5"></div>
-    <button class="btn btn-g" id="heute-start-btn" style="margin-bottom:8px">Jetzt starten →</button>
-    <button id="heute-verschieben-btn" style="background:none;border:none;color:#9A9188;font-size:12px;cursor:pointer;font-family:system-ui;text-decoration:underline;width:100%;text-align:center;padding:4px">Später — in 1 Stunde</button>
-    <div id="heute-msg-q" style="display:none;font-size:12px;color:#896C32;text-align:center;padding:6px"></div>
+  <div class="start-zweier">
+    <button id="btn-verlauf-zeigen">📜 Mein Verlauf</button>
+    <button id="btn-ft" onclick="zeigeFortschritte()">✦ Abzeichen</button>
   </div>
+
 
 </div>
 
@@ -222,6 +222,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107c#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -1302,69 +1303,42 @@ function updateStart(){
   var bb=document.getElementById('ljb');
   if(bb){bb.className='lj-b'+(LJ==='b'?' ab':'');bb.disabled=false;bb.style.opacity='1';bb.style.cursor='pointer';}
   ['schnell','tief','lap'].forEach(function(m){var b=document.getElementById('mod-'+m);if(b)b.className='mod-b'+(MODUS===m?' ak':'');});
-  heuteAktualisieren();
+  letztesLaden();
 }
 
-// ── HEUTE LAUT LERNPLAN ────────────────────────────────────────
-var HEUTE_VERSCHOBEN = false;
+// „Heute laut Lernplan“ gibt es nur noch auf der Lern-Startseite (lerntool.html),
+// damit es nicht zwei verschiedene Themen des Tages gibt.
 
-(function resetHeuteTaglich(){
-  var heute = new Date().toDateString();
-  var letzter = localStorage.getItem('lq_heute_tag');
-  if(letzter !== heute){ HEUTE_VERSCHOBEN = false; localStorage.setItem('lq_heute_tag', heute); }
-})();
-
-function heuteAktualisieren(){
-  var box = document.getElementById('heute-box');
+// ── LETZTES QUIZ (Startseite) ─────────────────────────────────
+function letztesWann(iso){
+  if(!iso) return '';
+  var d=new Date(iso), h=new Date(); d.setHours(0,0,0,0); h.setHours(0,0,0,0);
+  var t=Math.round((h-d)/86400000);
+  if(t<=0) return 'heute'; if(t===1) return 'gestern'; if(t<7) return 'vor '+t+' Tagen';
+  return new Date(iso).toLocaleDateString('de-AT');
+}
+async function letztesLaden(){
+  var box=document.getElementById('start-letztes');
   if(!box) return;
-
-  // Themen des aktuellen Lehrjahrs
-  var pool = FB[LJ] || [];
-  if(!pool.length){ box.style.display='none'; return; }
-
-  // Thema des Tages nach Wochentag
-  var wochentag = new Date().getDay(); // 0=So,1=Mo...6=Sa
-  // Mo-Sa lernen, So frei
-  if(wochentag === 0){ box.style.display='none'; return; }
-
-  var themen = [...new Set(pool.map(function(q){return q.th;}))];
-  var thema = themen[(wochentag-1) % themen.length];
-
-  document.getElementById('heute-thema-q').textContent = thema;
-  document.getElementById('heute-dauer-q').textContent = '20 Minuten · ' + (pool.filter(function(q){return q.th===thema;}).length) + ' Fragen verfügbar';
-
-  // Verschieben-Status
-  var vBtn = document.getElementById('heute-verschieben-btn');
-  var msg = document.getElementById('heute-msg-q');
-  if(HEUTE_VERSCHOBEN){
-    vBtn.style.display = 'none';
-    msg.style.display = 'block';
-    msg.textContent = 'Du hast deinen Lernmoment heute bereits verschoben. Letzte Chance!';
-  } else {
-    vBtn.style.display = 'block';
-    msg.style.display = 'none';
-  }
-
-  // Start-Button — startet Quiz mit diesem Thema
-  document.getElementById('heute-start-btn').onclick = function(){
-    // Thema filtern und Quiz starten
-    var filtered = pool.filter(function(q){return q.th===thema;});
-    if(!filtered.length) filtered = pool;
-    QFRAGEN = filtered.sort(function(){return Math.random()-.5;}).slice(0,10);
-    QIDX=0; QANT=[]; WIEDERHOLUNG=false;
-    zeigeFrage(); zeige('s-quiz');
-  };
-
-  document.getElementById('heute-verschieben-btn').onclick = function(){
-    if(HEUTE_VERSCHOBEN) return;
-    HEUTE_VERSCHOBEN = true;
-    document.getElementById('heute-verschieben-btn').style.display = 'none';
-    var m = document.getElementById('heute-msg-q');
-    m.style.display = 'block';
-    m.textContent = 'Verschoben. In 1 Stunde deine letzte Erinnerung.';
-  };
-
-  box.style.display = 'block';
+  box.innerHTML='';
+  if(!AKTLEHRLING||!AKTLEHRLING.id||AKTLEHRLING.id==='meisterin-test') return;
+  try{
+    var r=await sb.from('verlauf').select('erstellt_am,lehrjahr,richtig,gesamt,schwach').eq('lehrling_id',AKTLEHRLING.id).order('erstellt_am',{ascending:false}).limit(1);
+    var v=r.data&&r.data[0];
+    if(!v||!v.gesamt) return;
+    var lj=String(v.lehrjahr)==='b'?'Betrieb':v.lehrjahr+'. Lehrjahr';
+    var karte=document.createElement('div'); karte.className='letztes-karte';
+    var ic=document.createElement('div'); ic.className='letztes-ic'; ic.textContent='🕘';
+    var txt=document.createElement('div'); txt.style.flex='1';
+    var k=document.createElement('div'); k.className='letztes-lab'; k.textContent='Letztes Quiz · '+letztesWann(v.erstellt_am);
+    var z=document.createElement('div'); z.className='letztes-zeile';
+    var bb=document.createElement('b'); bb.textContent=v.richtig+' von '+v.gesamt;
+    z.appendChild(bb); z.appendChild(document.createTextNode(' richtig · '+lj));
+    txt.appendChild(k); txt.appendChild(z);
+    var schwach=(v.schwach||[]).filter(Boolean);
+    if(schwach.length){var u=document.createElement('div'); u.className='letztes-ueben'; u.textContent='Üben: '+schwach.slice(0,3).join(', ')+(schwach.length>3?' …':''); txt.appendChild(u);}
+    karte.appendChild(ic); karte.appendChild(txt); box.appendChild(karte);
+  }catch(e){}
 }
 
 function starteQuiz(){
@@ -1639,6 +1613,9 @@ async function zeigeErgebnis(){
     '<div style="font-size:12px;color:#6B6560">'+ok+' von '+g+' richtig · '+p+' von '+(g*10)+' Punkten</div>'+
     verstaendnisZusammenfassung()+sicherheitZusammenfassung();
   var komp={};
+  // Lernstand-Knopf nur für echte Lehrlings-Logins (nicht beim Meisterin-Test)
+  var lsBtn=document.getElementById('btn-lernstand');
+  if(lsBtn) lsBtn.style.display=(AKTLEHRLING&&AKTLEHRLING.id!=='meisterin-test')?'block':'none';
   if(AKTLEHRLING){
     komp=await speichereKompetenz(AKTLEHRLING.id,QANT);
     await sb.from('verlauf').insert({lehrling_id:AKTLEHRLING.id,datum:new Date().toLocaleDateString('de-AT'),lehrjahr:LJ,richtig:ok,falsch:g-ok,gesamt:g,punkte:p,schwach:schwach});
@@ -2690,7 +2667,7 @@ window.addEventListener('DOMContentLoaded',function(){
     sb.auth.getSession().then(function(result){
       if(result.data&&result.data.session){
         sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
-          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');if(typeof heuteInit==="function")heuteInit();setTimeout(function(){if(typeof streakSync==='function')streakSync(res.data.id,LJ);},800);}
+          if(res.data){AKTLEHRLING=res.data;LJ=res.data.lehrjahr||1;updateStart();zeige('s-start');setTimeout(function(){if(typeof streakSync==='function')streakSync(res.data.id,LJ);},800);}
         });
       } else {
         // Kein eingeloggter User → Login zeigen, Verlauf bereinigen
