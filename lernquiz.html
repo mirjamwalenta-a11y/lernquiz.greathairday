@@ -124,6 +124,16 @@ textarea{resize:vertical;margin-bottom:0}
 .wz-step button:disabled{opacity:.4;cursor:default}
 .wz-step b{font-size:20px;min-width:30px;text-align:center}
 .wz-step span{font-size:13px;color:#6B6455}
+.test-schalter{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;background:#F3EFE8;border-radius:10px;padding:12px 14px;cursor:pointer}
+.test-schalter input{width:20px;height:20px;margin-top:2px;accent-color:#896C32;flex:none}
+.test-schalter b{display:block;font-size:13px;color:#2C2C2C}
+.test-schalter small{display:block;font-size:11px;color:#9A9188;margin-top:2px;line-height:1.45}
+.mb-test{margin-top:8px}
+.mb-test summary{cursor:pointer;font-size:10px;font-weight:700;letter-spacing:1px;color:#9A9188;text-transform:uppercase;margin-bottom:8px;list-style:none}
+.mb-test summary::-webkit-details-marker{display:none}
+.mb-test summary::after{content:" ▾"}
+.mb-test[open] summary::after{content:" ▴"}
+.mb-test .mb-l{opacity:.75}
 .wz-hilfe{font-size:11px;color:#9A9188;margin-bottom:14px;line-height:1.45}
 .link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:Poppins,system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
@@ -385,6 +395,10 @@ textarea{resize:vertical;margin-bottom:0}
       </div>
       <button id="edit-aktiv-toggle" style="width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;font-size:11px;font-weight:700;transition:background .2s"></button>
     </div>
+    <label class="test-schalter">
+      <input type="checkbox" id="edit-nur-test">
+      <span><b>Nur zum Testen</b><small>z.B. Stylist:innen, die die App ausprobieren. Stehen im Meisterin-Bereich unten unter „Zum Testen“, ohne Prüfhinweise.</small></span>
+    </label>
     <button class="btn btn-g" id="btn-edit-speichern">Änderungen speichern</button>
     <button class="btn btn-h" id="btn-edit-back">← Zurück</button>
   </div>
@@ -1876,8 +1890,11 @@ async function ladeDashboard(){
   var wocheVon={};
   (verlRes.data||[]).forEach(function(v){if(v.erstellt_am&&new Date(v.erstellt_am)>=mo)wocheVon[v.lehrling_id]=(wocheVon[v.lehrling_id]||0)+1;});
 
-  var html='<div class="lab">Lehrlinge</div>';
-  lehrlinge.forEach(function(l){
+  // Echte Lehrlinge oben, Testzugänge (nur_test) eingeklappt darunter
+  var echte=lehrlinge.filter(function(l){return l.nur_test!==true;});
+  var tests=lehrlinge.filter(function(l){return l.nur_test===true;});
+  var html='';
+  function karte(l){
     var v=letztesVon[l.id];
     var info=l.lehrjahr+'. Lehrjahr'+(v?' · zuletzt aktiv '+letztesWann(v.erstellt_am)+' · letztes Quiz '+Math.round(v.punkte/v.gesamt)+'/10':' · noch kein Quiz');
     var pausiert=l.aktiv===false;
@@ -1885,14 +1902,17 @@ async function ladeDashboard(){
     // grün: erreicht oder im Plan · gelb: etwas geübt, aber hinterher · rot: diese Woche noch nichts
     var wzFarbe=(n>=ziel||n>=Math.floor(ziel*(tagNr+1)/7))?'#5B8A4A':n>0?'#A08A20':'#C44030';
     var woche=pausiert?'':' · <b style="color:'+wzFarbe+'">Woche '+Math.min(n,ziel)+'/'+ziel+(n>=ziel?' ✓':'')+'</b>';
-    html+='<button class="mb-l'+(pausiert?' pausiert':'')+'" id="dl-'+escHtml(String(l.id))+'">'+
+    return '<button class="mb-l'+(pausiert?' pausiert':'')+'" id="dl-'+escHtml(String(l.id))+'">'+
       '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+'</div>'+
       '<div class="mb-l-info">'+escHtml(info)+woche+'</div></div><div class="mb-l-pfeil">›</div></div>'+
       (pausiert?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
     '</button>';
-  });
+  }
+  html='<div class="lab">'+(echte.length===1?'Lehrling':'Lehrlinge')+'</div>'+
+    (echte.length?echte.map(karte).join(''):'<p style="color:#9A9188;font-size:13px;margin-bottom:12px">Noch kein echter Lehrling – alle sind als „Nur zum Testen“ markiert.</p>');
+  if(tests.length) html+='<details class="mb-test"><summary>Zum Testen ('+tests.length+')</summary>'+tests.map(karte).join('')+'</details>';
   var hinweise=[];
-  try{ hinweise=await ladeAlleHinweise(lehrlinge); }catch(e){}
+  try{ hinweise=await ladeAlleHinweise(echte); }catch(e){}
   if(!hinweise.length) html='<div style="font-size:12px;color:#5B7B6F;margin-bottom:14px">✓ Keine Prüfhinweise – im Quiz ist gerade nichts auffällig.</div>'+html;
   liste.innerHTML=hinweisBox(hinweise,true)+html;
   hinweisKlicks(hinweise);
@@ -2650,6 +2670,7 @@ function zeigeEditLehrling(lehrling){
   zeige('s-edit-lehrling');
   aktualisiereToggle(lehrling.aktiv !== false);
   EDIT_WZ = wochenzielVon(lehrling); zeigeEditWz();
+  document.getElementById('edit-nur-test').checked = lehrling.nur_test === true;
   document.getElementById('edit-wz-minus').onclick = function(){ if(EDIT_WZ>1){EDIT_WZ--;zeigeEditWz();} };
   document.getElementById('edit-wz-plus').onclick = function(){ if(EDIT_WZ<7){EDIT_WZ++;zeigeEditWz();} };
   document.getElementById('edit-aktiv-toggle').onclick = function(){
@@ -2672,13 +2693,18 @@ async function speichereEditLehrling(){
   var btn = document.getElementById('btn-edit-speichern');
   btn.disabled = true; btn.textContent = 'Wird gespeichert…';
   // Name, Lehrjahr, aktiv speichern
-  var {error:dbErr} = await sb.from('lehrlinge').update({name:name, lehrjahr:lj, aktiv:EDIT_AKTIV, wochenziel:EDIT_WZ}).eq('id', EDIT_LEHRLING.id);
-  var wzFehlt = false;
-  if(dbErr && /wochenziel/.test(dbErr.message||'')){
-    // Spalte gibt es noch nicht (Migration nicht ausgeführt) – Rest trotzdem speichern
-    wzFehlt = true;
-    dbErr = (await sb.from('lehrlinge').update({name:name, lehrjahr:lj, aktiv:EDIT_AKTIV}).eq('id', EDIT_LEHRLING.id)).error;
+  var nurTest = document.getElementById('edit-nur-test').checked;
+  var upd = {name:name, lehrjahr:lj, aktiv:EDIT_AKTIV, wochenziel:EDIT_WZ, nur_test:nurTest};
+  var {error:dbErr} = await sb.from('lehrlinge').update(upd).eq('id', EDIT_LEHRLING.id);
+  // Spalten, deren Migration noch nicht ausgeführt ist, weglassen und den Rest trotzdem speichern
+  var fehlend = [];
+  for(var versuch=0; versuch<2 && dbErr; versuch++){
+    var spalte = ['wochenziel','nur_test'].filter(function(k){ return k in upd && new RegExp(k).test(dbErr.message||''); })[0];
+    if(!spalte) break;
+    delete upd[spalte]; fehlend.push(spalte);
+    dbErr = (await sb.from('lehrlinge').update(upd).eq('id', EDIT_LEHRLING.id)).error;
   }
+  var wzFehlt = fehlend.indexOf('wochenziel') >= 0;
   if(dbErr){ zeigeFehler('edit-fehler','Fehler: '+dbErr.message); btn.disabled=false; btn.textContent='Änderungen speichern'; return; }
   // PIN ändern falls angegeben
   if(pin){
@@ -2690,7 +2716,8 @@ async function speichereEditLehrling(){
   EDIT_LEHRLING.lehrjahr = lj;
   EDIT_LEHRLING.aktiv = EDIT_AKTIV;
   if(!wzFehlt) EDIT_LEHRLING.wochenziel = EDIT_WZ;
-  else alert('Gespeichert. Das Wochenziel braucht noch die Datenbank-Änderung (supabase/20261107_lehrlinge_wochenziel.sql) – bis dahin gilt 3.');
+  if(fehlend.indexOf('nur_test') < 0) EDIT_LEHRLING.nur_test = nurTest;
+  if(fehlend.length) alert('Gespeichert. Noch nicht in der Datenbank: '+fehlend.map(function(k){return k==='wochenziel'?'Wochenziel (supabase/20261107_lehrlinge_wochenziel.sql)':'„Nur zum Testen“ (supabase/20261107_lehrlinge_nur_test.sql)';}).join(', ')+'.');
   await ladeDashboard();
   zeigeDetailLehrling(EDIT_LEHRLING);
 }
