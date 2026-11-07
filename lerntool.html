@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="lern-themen.js?v=20261107e"></script>
 <script src="quiz-verlauf.js?v=20261031"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
@@ -274,13 +275,13 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107d">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
     <div class="label">Üben</div>
     <div class="st-grid">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107d'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
       <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
       <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
     </div>
@@ -492,6 +493,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -785,11 +787,8 @@ body.mit-leiste .leiste{display:flex}
 // ── DATEN ────────────────────────────────────────────────────────
 var LEHRJAHR = '1';
 
-var THEMEN = {
-  '1': ['Hygiene & Schutzmaßnahmen','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde','Haarkunde & Haarstruktur','Hautkunde','Farbenlehre & Coloration','Beratungsgespräch & Kundenkommunikation'],
-  '2': ['Haarschnitt Techniken','Colorationsgrundlagen','Dauerwelle & Umformung','Kopfhautpflege','Fachkunde Chemie','Kundenberatung','Salon-Organisation','Balayage & Strähnen'],
-  '3': ['Umformungen Fortgeschritten','Betriebskunde & Recht','LAP-Vorbereitung','Kundenkommunikation Fortgeschritten','Pflegeprodukte & Wirkstoffe','Herrenservice']
-};
+// Themen pro Lehrjahr stehen in lern-themen.js (gemeinsam mit dem Meisterin-Bereich)
+var THEMEN = window.GHD_LJ_THEMEN;
 
 // Fragen-Bank pro Thema
 var FRAGEN = {
@@ -1618,7 +1617,7 @@ window.addEventListener('DOMContentLoaded', function(){
       // der Admin-Bereich ist über den Hinweis oben erreichbar.
     }
   });
-  ladeAllesDatenAusSupabase();
+  window.LT_DATEN = ladeAllesDatenAusSupabase();   // Promise – die Admin-Sprungziele warten darauf
 });
 
 // ── ADMIN QUIZ ──────────────────────────────────────────────────
@@ -4320,7 +4319,7 @@ function stWiederholenOeffnen() {
   var box = document.getElementById('wdh-liste');
   box.innerHTML = '';
   if (!ST.lehrling) {
-    box.innerHTML = '<div class="st-hinweis">Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107d">Lernquiz einloggen</a>, dann siehst du hier, was du wiederholen solltest.</div>';
+    box.innerHTML = '<div class="st-hinweis">Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f">Lernquiz einloggen</a>, dann siehst du hier, was du wiederholen solltest.</div>';
   } else {
     var liste = stWiederholListe();
     if (!liste.length) box.innerHTML = '<div class="st-hinweis">Gerade gibt es nichts zu wiederholen. Mach einen Schnell-Check im Lernquiz oder ein neues Thema.</div>';
@@ -4338,7 +4337,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107d'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4417,7 +4416,7 @@ function lkZeichnen() {
   if (!ST.lehrling) {
     var h = lkEl('div', 'st-hinweis');
     h.innerHTML = ST.geladen
-      ? 'Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107d">Lernquiz einloggen</a>, dann siehst du hier deine Kompetenz-Landkarte.'
+      ? 'Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f">Lernquiz einloggen</a>, dann siehst du hier deine Kompetenz-Landkarte.'
       : 'Wird geladen…';
     box.appendChild(h);
     return;
@@ -4481,7 +4480,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107d';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261107f';
 }
 
 function lkTipp(th) {
@@ -4543,6 +4542,19 @@ zeige = function(seite) {
   stLeiste('home');
   stZeichnen();
   stLaden();
+  // Sprungziele aus dem Meisterin-Bereich im Lernquiz (#admin-quiz usw.):
+  // nur mit Meisterin-Rolle (serverseitig, ist_meisterin), sonst Login.
+  var ADMIN_ZIELE = ['admin-quiz', 'admin-lap', 'admin-lernplan', 'admin-tipps'];
+  var adminZiel = location.hash.slice(1);
+  if (ADMIN_ZIELE.indexOf(adminZiel) >= 0) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    window.addEventListener('DOMContentLoaded', async function(){
+      var ok = await istMeisterinServer();
+      if (!ok) { zeige('mlogin'); return; }
+      try { await window.LT_DATEN; } catch (e) {}
+      zeige(adminZiel);
+    });
+  }
   // Sprungziele aus der Leiste der anderen Lern-Seiten (lern-leiste.js)
   var sprung = {'#ueben': function(){ pmtOeffnen(); }, '#praxis': function(){ zeige('praxis'); }, '#fortschritt': function(){ zeige('progress'); }}[location.hash];
   if (sprung) {
