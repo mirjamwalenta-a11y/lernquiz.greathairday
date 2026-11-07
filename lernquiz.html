@@ -138,6 +138,10 @@ textarea{resize:vertical;margin-bottom:0}
 .badge.bwh{background:#FDF6E3;color:#8A7020;border:1px solid #C4B86A}
 .wh-box{background:#fff;border:1px solid #E4DBC5;border-radius:12px;padding:14px;margin-bottom:14px}
 .wh-text{font-size:13px;color:#211D17;line-height:1.6}
+.ft-tabs{flex-wrap:wrap}
+#ft-ljk{border-color:#5B8A4A;color:#3E6B32}
+#ft-ljk.ak{background:#5B8A4A18;font-weight:700}
+.kn-icon{font-size:24px}
 .link-k{background:none;border:none;color:#C8C0B8;font-size:11px;cursor:pointer;font-family:Poppins,system-ui;text-decoration:underline;display:block;text-align:center;margin-top:12px;padding:6px;width:100%}
 .laden{text-align:center;padding:40px 20px;color:#9A9188;font-size:13px}
 .fehler-box{background:#D4584820;border:1.5px solid #C44030;border-radius:10px;padding:12px 14px;color:#C44030;font-size:13px;margin-bottom:12px}
@@ -1866,7 +1870,8 @@ async function zeigeErgebnis(){
     var vRes=await sb.from('verlauf').insert(vEintrag);
     // Ohne Migration 20261107_kompetenz_zuletzt_verlauf_modus.sql: ohne Modus speichern
     if(vRes&&vRes.error&&/modus/.test(vRes.error.message||'')){delete vEintrag.modus;await sb.from('verlauf').insert(vEintrag);}
-    if(typeof streakNachQuiz==='function') streakNachQuiz(LJ);
+    // Fleiß-Stufen: nur ernsthafte Quizze (ab FLEISS_MIN richtig) zählen
+    if(typeof streakNachQuiz==='function' && g>0 && ok/g>=FLEISS_MIN) streakNachQuiz(LJ);
   }
   var themen=[];
   QANT.forEach(function(a){if(themen.indexOf(a.q.th)<0)themen.push(a.q.th);});
@@ -1885,6 +1890,7 @@ async function zeigeErgebnis(){
   });
   var whHtml='';
   try{ whHtml=await whSpeichern(); }catch(e){}
+  try{ knPruefen(); }catch(e){}
   document.getElementById('erg-details').innerHTML=whHtml+html;
 }
 
@@ -3108,6 +3114,7 @@ window.addEventListener('DOMContentLoaded',function(){
       <button class="ft-tab t2" id="ft-lj2" onclick="ftZeige(2)">2. Lehrjahr</button>
       <button class="ft-tab t3" id="ft-lj3" onclick="ftZeige(3)">3. Lehrjahr</button>
       <button class="ft-tab" id="ft-ljb" onclick="ftZeige('b')" style="border-color:#C9A84C;color:#8B7535">✂ Betrieb</button>
+      <button class="ft-tab" id="ft-ljk" onclick="ftZeige('k')">🎯 Können</button>
     </div>
     <div id="ft-inhalt"></div>
   </div>
@@ -3175,9 +3182,10 @@ async function streakSync(lid,lj){
     // gewählten Lehrjahr zugeschrieben: bereits erarbeitete Abzeichen anderer
     // Lehrjahre (oder Betrieb) hatten dann lokal einen Zähler von 0 und
     // wirkten nach dem Abmelden/Neuanmelden fälschlich gesperrt statt erhalten.
-    var rv=await sb.from('verlauf').select('lehrjahr').eq('lehrling_id',lid);
+    var rv=await sb.from('verlauf').select('lehrjahr,richtig,gesamt').eq('lehrling_id',lid);
     var zaehler={};
     (rv.data||[]).forEach(function(row){
+      if(!(row.gesamt>0&&row.richtig/row.gesamt>=FLEISS_MIN)) return;   // nur ab 50 % richtig
       var k=String(row.lehrjahr);
       zaehler[k]=(zaehler[k]||0)+1;
     });
@@ -3277,6 +3285,12 @@ function zeigeFortschritte(){
   ftZeige(typeof LJ!=='undefined'?LJ:1);
 }
 function ftZeige(lj){
+  var kb=document.getElementById('ft-ljk'); if(kb) kb.classList.toggle('ak',lj==='k');
+  if(lj==='k'){
+    [1,2,3].forEach(function(l){var b=document.getElementById('ft-lj'+l);if(b)b.className='ft-tab t'+l;});
+    var b0=document.getElementById('ft-ljb'); if(b0){b0.style.background='';b0.style.color='#9A9188';b0.style.fontWeight='400';b0.style.borderColor='#DDD8D0';}
+    knZeigen(); return;
+  }
   // Tabs aktualisieren
   [1,2,3].forEach(function(l){
     var b=document.getElementById('ft-lj'+l);
@@ -3293,7 +3307,7 @@ function ftZeige(lj){
   var stufen=isBetrieb?SP_ST_B:SP_ST;
   var n=spN(lj),g=spG(lj);
   var labelTxt=isBetrieb?('Betriebssystem-Quizze absolviert'):('Quizze im '+lj+'. Lehrjahr');
-  var h='<div style="font-size:12px;color:#9A9188;margin-bottom:16px">'+n+' '+labelTxt+'</div>';
+  var h='<div style="font-size:12px;color:#9A9188;margin-bottom:16px">'+n+' '+labelTxt+'<span style="display:block;margin-top:4px;color:#896C32">Es zählen Quizze ab '+Math.round(FLEISS_MIN*100)+' % richtig.</span></div>';
   stufen.forEach(function(s){
     var frei=n>=s.sw, erh=g.indexOf(s.id)>=0;
     h+='<div class="sk-row'+(frei?' frei':'')+(frei?'':' locked')+'">';
@@ -3315,6 +3329,70 @@ function ftZeige(lj){
     h+='</div>';
   });
   document.getElementById('ft-inhalt').innerHTML=h;
+}
+
+// ── KÖNNEN-ABZEICHEN: für echten Lernerfolg, nicht fürs Durchklicken ───────
+// Berechnet aus vorhandenen Daten (verlauf, kompetenz, wiederholung,
+// pruefgespraeche). Erreichte Abzeichen wie die anderen in lernquiz_abzeichen,
+// Reihe „k“ (lehrjahr = 'k').
+var FLEISS_MIN=0.5;
+function knSvg(e){return '<circle cx="50" cy="50" r="44" fill="#F3F8EF" stroke="#5B8A4A" stroke-width="3"/><text x="50" y="64" font-size="40" text-anchor="middle" fill="#211D17" font-family="Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif">'+e+'</text>';}
+var KN_BADGES=[
+  {id:101,ic:'🎯',titel:'Volltreffer',          sub:'Ein Quiz mit 10 von 10 richtig',                 tag:'🎯 Können', pruef:function(d){return {ja:d.volltreffer};}},
+  {id:102,ic:'🧠',titel:'3 Themen sitzen',      sub:'Drei Themen sicher – auch nach ein paar Tagen',   tag:'🎯 Können', pruef:function(d){return {ja:d.sitzt>=3,stand:Math.min(d.sitzt,3)+' von 3'};}},
+  {id:103,ic:'💡',titel:'Missverständnis geklärt',sub:'Ein Thema mit „sicher, aber falsch“ sitzt jetzt', tag:'🎯 Können', pruef:function(d){return {ja:d.missv};}},
+  {id:104,ic:'🔁',titel:'Dranbleiben',          sub:'20 Wiederholungsfragen richtig gemerkt',         tag:'🎯 Können', pruef:function(d){return {ja:d.wdh>=20,stand:Math.min(d.wdh,20)+' von 20'};}},
+  {id:105,ic:'🗣',titel:'Prüfgespräch bestanden',sub:'Im Prüfgespräch als „verstanden“ bewertet',     tag:'🎯 Können', pruef:function(d){return {ja:d.pg};}},
+  {id:106,ic:'✂',titel:'Praxis sicher',         sub:'Im Praxis-Check als „sicher gemacht“ bewertet',   tag:'🎯 Können', pruef:function(d){return {ja:d.px};}},
+  {id:107,ic:'🏆',titel:'Alle Themen sitzen',   sub:'Alle Themen im eigenen Lehrjahr sitzen',          tag:'✨ Können', pruef:function(d){return {ja:d.ljN>0&&d.ljSitzt>=d.ljN,stand:d.ljSitzt+' von '+d.ljN};}}
+];
+KN_BADGES.forEach(function(b){b.svg=knSvg(b.ic);});
+
+async function knDaten(){
+  var lid=AKTLEHRLING.id, d={volltreffer:false,sitzt:0,missv:false,wdh:0,pg:false,px:false,ljSitzt:0,ljN:0};
+  var r=await Promise.all([
+    sb.from('verlauf').select('richtig,gesamt').eq('lehrling_id',lid),
+    ladeKompetenz(lid),
+    sb.from('wiederholung').select('stufe').eq('lehrling_id',lid),
+    sb.from('pruefgespraeche').select('art,ergebnis').eq('lehrling_id',lid)
+  ].map(function(x){return Promise.resolve(x).catch(function(){return {};});}));
+  (r[0].data||[]).forEach(function(v){if(v.gesamt>=10&&v.richtig===v.gesamt)d.volltreffer=true;});
+  var komp=r[1]||{};
+  Object.keys(komp).forEach(function(th){
+    var k=komp[th], st=berechneStatus(k);
+    if(st==='sitzt'){d.sitzt++; if(k.sicher_falsch>0) d.missv=true;}
+  });
+  var lj=(window.GHD_LJ_THEMEN||{})[String(AKTLEHRLING.lehrjahr||1)]||[];
+  d.ljN=lj.length; d.ljSitzt=lj.filter(function(th){return berechneStatus(komp[th])==='sitzt';}).length;
+  if(!r[2].error) (r[2].data||[]).forEach(function(w){d.wdh+=Math.max(0,w.stufe||0);});
+  if(!r[3].error) (r[3].data||[]).forEach(function(g){
+    if(g.ergebnis!=='verstanden') return;
+    if((g.art||'gespraech')==='praxis') d.px=true; else d.pg=true;
+  });
+  return d;
+}
+// Neu erreichte Können-Abzeichen speichern und mit dem Abzeichen-Fenster zeigen
+async function knPruefen(){
+  if(!AKTLEHRLING||!AKTLEHRLING.id||AKTLEHRLING.id==='meisterin-test'||ISTMEISTERIN) return null;
+  var d; try{ d=await knDaten(); }catch(e){ return null; }
+  var g=spG('k'), neu=[];
+  KN_BADGES.forEach(function(b){ if(b.pruef(d).ja&&g.indexOf(b.id)<0) neu.push(b); });
+  if(neu.length){ neu.forEach(function(b){SP_Q.push({s:b,lj:'k'});}); setTimeout(spNext,900); }
+  return d;
+}
+async function knZeigen(){
+  var box=document.getElementById('ft-inhalt');
+  box.innerHTML='<div style="font-size:12px;color:#9A9188">Wird geladen…</div>';
+  var d=await knPruefen();
+  var g=spG('k');
+  var h='<div style="font-size:12px;color:#9A9188;margin-bottom:16px">Abzeichen für echten Lernerfolg – nicht fürs Durchklicken</div>';
+  KN_BADGES.forEach(function(b){
+    var p=d?b.pruef(d):{ja:false}, erh=g.indexOf(b.id)>=0||p.ja;
+    h+='<div class="sk-row'+(erh?' frei':' locked')+'"><div class="sk-icon"><span class="kn-icon">'+b.ic+'</span></div>'+
+      '<div class="sk-info"><div class="sk-lv">Können</div><div class="sk-name">'+escHtml(b.titel)+'</div><div class="sk-hinweis">'+escHtml(b.sub)+'</div></div>'+
+      '<div class="sk-status">'+(erh?'✦ Erhalten':'🔒 '+escHtml(p.stand||'noch offen'))+'</div></div>';
+  });
+  box.innerHTML=h;
 }
 </script>
 <script>
