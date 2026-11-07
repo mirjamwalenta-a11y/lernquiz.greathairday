@@ -181,6 +181,52 @@ body.mit-leiste{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .wdh-eintrag .wdh-t{font-weight:600;font-size:14px;color:#211D17}
 .wdh-eintrag .wdh-grund{font-size:11px;color:#6B6455;margin-top:2px}
 .wdh-eintrag button{flex:none;padding:8px 12px;border-radius:6px;border:1px solid #896C32;background:#F3EBD9;color:#896C32;font-size:12px;font-weight:600;font-family:Poppins,system-ui;cursor:pointer}
+/* ── Kompetenz-Landkarte ── */
+.lk-sitzt{--f:#5B8A4A}.lk-wartet{--f:#8DB07D}.lk-faellig{--f:#D08A2E}.lk-wackelt{--f:#C4A830}.lk-unsicher{--f:#C44030}.lk-offen{--f:#B9B0A0}
+.lk-gesamt{background:#fff;border:1px solid #E4DBC5;border-radius:12px;padding:14px;margin-bottom:12px}
+.lk-gesamt-zeile{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.lk-gesamt-zeile b{font-size:15px;color:#211D17}
+.lk-gesamt-zeile span{font-size:12px;color:#6B6455;white-space:nowrap}
+.lk-balken{display:flex;height:10px;border-radius:5px;overflow:hidden;background:#EEE8DC}
+.lk-balken i{display:block;background:var(--f)}
+.lk-legende{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:10px;font-size:11px;color:#6B6455}
+.lk-legende span{display:inline-flex;align-items:center;gap:5px}
+.lk-punkt{width:9px;height:9px;border-radius:50%;display:inline-block;background:var(--f)}
+.lk-naechstes{background:#896C32;color:#fff;border-radius:12px;padding:14px 14px 8px;margin-bottom:20px}
+.lk-naechstes .label{color:#F3EBD9}
+.lk-n-zeile{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);border-radius:8px;padding:9px 10px;margin-bottom:6px}
+.lk-n-zeile .lk-t{flex:1;min-width:0;font-size:13px;font-weight:600;line-height:1.3}
+.lk-n-zeile small{display:block;font-weight:400;font-size:11px;color:#F3EBD9}
+.lk-n-zeile button{flex:none;background:#fff;color:#896C32;border:none;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:600;font-family:Poppins,system-ui;cursor:pointer}
+.lk-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lk-feld{background:#fff;border:1px solid #E4DBC5;border-left:6px solid var(--f);border-radius:10px;padding:11px 10px 10px 11px;text-align:left;font-family:Poppins,system-ui;min-height:92px;display:flex;flex-direction:column;cursor:pointer;width:100%}
+.lk-feld:hover{border-color:#896C32;border-left-color:var(--f)}
+.lk-feld .lk-t{font-size:12.5px;font-weight:600;line-height:1.3;color:#211D17;flex:1;overflow-wrap:anywhere;hyphens:auto}
+.lk-feld .lk-st{font-size:10.5px;font-weight:600;color:var(--f);margin-top:6px}
+.lk-feld.lk-wartet .lk-st{color:#5B8A4A}
+.lk-mini{height:4px;background:#EEE8DC;border-radius:2px;margin-top:5px;overflow:hidden}
+.lk-mini i{display:block;height:100%;background:var(--f)}
+.lk-feld.lk-offen{background:#FBF9F4;border-style:dashed;border-left-style:solid}
+.lk-feld.lk-offen .lk-t{color:#6B6455}
+body.lk-offen-sheet{overflow:hidden}
+body.mit-leiste.lk-offen-sheet .leiste{display:none}
+body.lk-offen-sheet .ghdv-fab{display:none !important}
+.lk-btn:focus-visible,.lk-feld:focus-visible{outline:2px solid #5A4520;outline-offset:2px}
+.lk-sheet[hidden]{display:none}
+.lk-sheet-bg{position:fixed;inset:0;z-index:400;background:rgba(33,28,23,.35)}
+.lk-sheet-box{position:fixed;left:0;right:0;bottom:0;z-index:401;max-width:580px;margin:0 auto;background:#fff;border-radius:16px 16px 0 0;padding:10px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 24px rgba(0,0,0,.12);max-height:85vh;overflow:auto}
+.lk-griff{width:40px;height:4px;border-radius:2px;background:#E4DBC5;margin:0 auto 12px}
+.lk-zu{position:absolute;top:10px;right:12px;background:none;border:none;font-size:24px;line-height:1;color:#6B6455;cursor:pointer;padding:4px 8px}
+.lk-sheet-box h2{font-size:18px;font-weight:600;margin:0 30px 4px 0;color:#211D17}
+.lk-s-status{font-size:12px;font-weight:600;color:var(--f);margin-bottom:12px}
+.lk-zahlen{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.lk-zahlen div{background:#F8F4EA;border-radius:8px;padding:8px 4px;text-align:center}
+.lk-zahlen b{display:block;font-size:16px;color:#211D17}
+.lk-zahlen small{font-size:10px;color:#6B6455}
+.lk-warn{font-size:12px;color:#C44030;background:#FDECEA;border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.4}
+.lk-btn{width:100%;padding:12px;border-radius:8px;font-size:14px;font-weight:600;font-family:Poppins,system-ui;margin-top:4px;margin-bottom:4px;cursor:pointer}
+.lk-btn-p{background:#896C32;color:#fff;border:none}
+.lk-btn-g{background:#fff;color:#896C32;border:1.5px solid #896C32}
 .leiste{position:fixed;left:0;right:0;bottom:0;z-index:380;background:#fff;border-top:1px solid #E4DBC5;display:none;justify-content:center;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
 body.mit-leiste .leiste{display:flex}
 .leiste-in{display:flex;width:100%;max-width:580px}
@@ -366,19 +412,36 @@ body.mit-leiste .leiste{display:flex}
   </div>
 </div>
 
-<!-- ── FORTSCHRITT MIT BALKEN ── -->
+<!-- ── FORTSCHRITT: KOMPETENZ-LANDKARTE ── -->
 <div id="p-progress" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
-  <div class="tag">greathairday · Wien</div>
-  <h1>Mein Fortschritt</h1>
-  <div class="card">
-    <div class="label">Lehrjahr</div>
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="btn-lj ak" id="prog-lj1" onclick="progLjWahl('1',this)">1. LJ</button>
-      <button class="btn-lj" id="prog-lj2" onclick="progLjWahl('2',this)">2. LJ</button>
-      <button class="btn-lj" id="prog-lj3" onclick="progLjWahl('3',this)">3. LJ</button>
+  <div class="st-kopf">
+    <div style="min-width:0">
+      <div class="tag">greathairday · Fortschritt</div>
+      <h1>Meine Kompetenz-Landkarte</h1>
     </div>
-    <div id="prog-liste"></div>
+    <label class="st-lj" title="Lehrjahr wählen">
+      <select id="lk-lj" onchange="stLjWahl(this.value); lkZeichnen()" aria-label="Lehrjahr">
+        <option value="1">1. Lehrjahr</option>
+        <option value="2">2. Lehrjahr</option>
+        <option value="3">3. Lehrjahr</option>
+      </select>
+    </label>
+  </div>
+  <div id="lk-inhalt"><div style="color:#6B6455;font-size:13px">Wird geladen…</div></div>
+</div>
+
+<div id="lk-sheet" class="lk-sheet" hidden>
+  <div class="lk-sheet-bg" onclick="lkSchliessen()"></div>
+  <div class="lk-sheet-box" role="dialog" aria-modal="true" aria-labelledby="lk-s-titel">
+    <div class="lk-griff"></div>
+    <button class="lk-zu" onclick="lkSchliessen()" aria-label="Schließen">×</button>
+    <h2 id="lk-s-titel"></h2>
+    <div class="lk-s-status" id="lk-s-status"></div>
+    <div class="lk-zahlen" id="lk-s-zahlen"></div>
+    <div id="lk-s-warn"></div>
+    <button class="lk-btn lk-btn-p" id="lk-s-quiz">Themen-Quiz starten →</button>
+    <button class="lk-btn lk-btn-g" id="lk-s-tipp">💡 Lerntipp zum Thema</button>
   </div>
 </div>
 
@@ -1297,76 +1360,9 @@ function fortschrittAnalyse() {
   document.getElementById('fs-ergebnis').style.display = 'block';
 }
 
-// ── FORTSCHRITT MIT BALKEN (aus Supabase) ──────────────────────
-var PROG_LJ = '1';
-
-function progLjWahl(lj, btn) {
-  PROG_LJ = lj;
-  ['1','2','3'].forEach(function(l){
-    var b = document.getElementById('prog-lj'+l);
-    if(b) b.className = 'btn-lj'+(PROG_LJ===l?' ak':'');
-  });
-  progZeige();
-}
-
-async function progZeige() {
-  var liste = document.getElementById('prog-liste');
-  liste.innerHTML = '<div style="color:#6B6455;font-size:13px">Wird geladen…</div>';
-
-  // Lehrling-ID aus Supabase Auth holen
-  var session = await sb2.auth.getSession();
-  var userId = session.data && session.data.session ? session.data.session.user.id : null;
-
-  // Lehrling-Datensatz holen
-  var lehrlingId = null;
-  if (userId) {
-    var lRes = await sb2.from('lehrlinge').select('id').eq('user_id', userId).single();
-    if (lRes.data) lehrlingId = lRes.data.id;
-  }
-
-  // Kompetenzdaten laden
-  var kompDaten = {};
-  if (lehrlingId) {
-    var kRes = await sb2.from('kompetenz').select('*').eq('lehrling_id', lehrlingId);
-    if (kRes.data) {
-      kRes.data.forEach(function(row){ kompDaten[row.thema] = row; });
-    }
-  }
-
-  var themen = (THEMEN[PROG_LJ] || []).slice();
-  // Auch geübte Themen außerhalb des Lehrjahr-Plans zeigen (Praxis-Quizze,
-  // Schnittwerkstatt, Werkzeugkunde, Zwischenprüfung, Englisch …)
-  Object.keys(kompDaten).forEach(function(t){ if (themen.indexOf(t) < 0) themen.push(t); });
-  themen.sort(function(a,b){ return a.localeCompare(b,'de'); });
-  liste.innerHTML = '';
-
-  if (!lehrlingId) {
-    liste.innerHTML = '<div style="color:#6B6455;font-size:13px">Bitte im Lernquiz einloggen um den Fortschritt zu sehen.</div>';
-    return;
-  }
-
-  themen.forEach(function(t){
-    var d = kompDaten[t];
-    var gesamt = d ? (d.richtig + d.falsch) : 0;
-    var richtig = d ? d.richtig : 0;
-    var prozent = gesamt > 0 ? Math.round((richtig / gesamt) * 100) : 0;
-    var farbe = prozent >= 80 ? '#896C32' : prozent >= 50 ? '#C4B86A' : prozent > 0 ? '#D4957A' : '#DDD8D0';
-    var label = prozent >= 80 ? 'Gut ✓' : prozent >= 50 ? 'Im Aufbau' : prozent > 0 ? 'Üben' : 'Noch nicht geübt';
-
-    var div = document.createElement('div');
-    div.style.cssText = 'margin-bottom:14px';
-    div.innerHTML =
-      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;align-items:center">' +
-        '<span style="font-size:13px;color:#211D17">'+t+'</span>' +
-        '<span style="font-size:11px;color:'+farbe+';font-weight:600">'+label+'</span>' +
-      '</div>' +
-      '<div style="background:#E4DBC5;border-radius:4px;height:8px;overflow:hidden">' +
-        '<div style="background:'+farbe+';height:100%;width:'+prozent+'%;border-radius:4px;transition:width 0.4s"></div>' +
-      '</div>' +
-      (gesamt > 0 ? '<div style="font-size:11px;color:#9A9188;margin-top:3px">'+richtig+' von '+gesamt+' Fragen richtig</div>' : '');
-    liste.appendChild(div);
-  });
-}
+// ── FORTSCHRITT ────────────────────────────────────────────────
+// Die Kompetenz-Landkarte (lkLaden/lkZeichnen) steht unten bei der Startseite.
+function progZeige() { return lkLaden(); }
 
 // ── LAP ─────────────────────────────────────────────────────────
 function lapWahl(modus, btn) {
@@ -1470,7 +1466,7 @@ zeige = function(seite) {
   if (el) el.classList.add('ak');
   if (seite === 'quiz') quizInit();
   if (seite === 'fortschritt') fsInit();
-  if (seite === 'progress') { PROG_LJ=LEHRJAHR; ['1','2','3'].forEach(function(l){var b=document.getElementById('prog-lj'+l);if(b)b.className='btn-lj'+(l===PROG_LJ?' ak':'');}); progZeige(); }
+  if (seite === 'progress') progZeige();
   if (seite === 'admin-quiz') adminQuizInit();
   if (seite === 'admin-lap') adminLapInit();
   if (seite === 'admin-lernplan') adminLpInit();
@@ -4371,8 +4367,168 @@ function stLeiste(seite) {
   document.querySelectorAll('#leiste button').forEach(function(b){ b.classList.toggle('ak', b.getAttribute('data-ziel') === ziel); });
 }
 
+// ── KOMPETENZ-LANDKARTE (Seite „Fortschritt“) ─────────────────────
+// Nutzt dieselben Daten (ST.komp) und Regeln wie die Startseite.
+var LK_INFO = {
+  sitzt:    {label:'sitzt',               zeichen:'●'},
+  wartet:   {label:'gut – bald prüfen',   zeichen:'●'},
+  faellig:  {label:'wiederholen',         zeichen:'↻'},
+  wackelt:  {label:'wackelt',             zeichen:'●'},
+  unsicher: {label:'unsicher',            zeichen:'●'},
+  offen:    {label:'noch nicht geübt',    zeichen:'○'}
+};
+var LK_REIHE = ['sitzt', 'wartet', 'faellig', 'wackelt', 'unsicher'];
+
+function lkStand(d) {
+  if (!d || !d.durchlaeufe || (d.richtig + d.falsch) === 0) return 'offen';
+  var q = d.richtig / (d.richtig + d.falsch);
+  var ws = q >= 0.8 ? stWiederholStatus(d) : null;
+  if (ws === 'faellig') return 'faellig';
+  if (ws === 'wartet') return 'wartet';
+  var st = stStatus(d);
+  return st === 'sitzt' ? 'sitzt' : st === 'teilweise' ? 'wackelt' : 'unsicher';
+}
+function lkProzent(d) { var g = d ? d.richtig + d.falsch : 0; return g > 0 ? Math.round(d.richtig / g * 100) : 0; }
+function lkResttage(d) { return Math.max(1, ST_SITZT_NACH_TAGEN - stTage(d.gut_seit, stISO(new Date()))); }
+function lkGrund(th) {
+  var d = ST.komp[th], s = lkStand(d);
+  if (s === 'offen') return 'noch nicht geübt';
+  if (s === 'faellig') return 'vor ' + stTage(d.gut_seit, stISO(new Date())) + ' Tagen gut – sitzt es noch?';
+  if (s === 'wartet') { var r = lkResttage(d); return 'gut – in ' + r + (r === 1 ? ' Tag' : ' Tagen') + ' nochmal prüfen'; }
+  return LK_INFO[s].label + ' · ' + d.richtig + ' von ' + (d.richtig + d.falsch) + ' richtig';
+}
+
+function lkEl(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function lkFeld(th) {
+  var d = ST.komp[th], s = lkStand(d);
+  var b = lkEl('button', 'lk-feld lk-' + s);
+  b.appendChild(lkEl('div', 'lk-t', th));
+  b.appendChild(lkEl('div', 'lk-st', LK_INFO[s].zeichen + ' ' + (s === 'wartet' ? 'gut · prüfen in ' + lkResttage(d) + ' T.' : LK_INFO[s].label)));
+  if (s !== 'offen') { var m = lkEl('div', 'lk-mini'), i = lkEl('i'); i.style.width = lkProzent(d) + '%'; m.appendChild(i); b.appendChild(m); }
+  b.onclick = function(){ lkOeffnen(th); };
+  return b;
+}
+
+function lkZeichnen() {
+  var box = document.getElementById('lk-inhalt');
+  document.getElementById('lk-lj').value = LEHRJAHR;
+  box.innerHTML = '';
+  if (!ST.lehrling) {
+    var h = lkEl('div', 'st-hinweis');
+    h.innerHTML = ST.geladen
+      ? 'Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html">Lernquiz einloggen</a>, dann siehst du hier deine Kompetenz-Landkarte.'
+      : 'Wird geladen…';
+    box.appendChild(h);
+    return;
+  }
+  var ljThemen = (THEMEN[LEHRJAHR] || []).slice();
+  var weitere = Object.keys(ST.komp).filter(function(t){ return ljThemen.indexOf(t) < 0 && lkStand(ST.komp[t]) !== 'offen'; })
+    .sort(function(a,b){ return a.localeCompare(b, 'de'); });
+
+  // Überblick
+  var zaehl = {}; ljThemen.forEach(function(t){ var s = lkStand(ST.komp[t]); zaehl[s] = (zaehl[s] || 0) + 1; });
+  var g = lkEl('div', 'lk-gesamt');
+  var z = lkEl('div', 'lk-gesamt-zeile');
+  z.appendChild(lkEl('b', null, (zaehl.sitzt || 0) + ' von ' + ljThemen.length + ' Themen sitzen'));
+  z.appendChild(lkEl('span', null, LEHRJAHR + '. Lehrjahr'));
+  g.appendChild(z);
+  var bal = lkEl('div', 'lk-balken');
+  LK_REIHE.forEach(function(s){ if (zaehl[s]) { var i = lkEl('i', 'lk-' + s); i.style.width = (zaehl[s] / ljThemen.length * 100) + '%'; bal.appendChild(i); } });
+  g.appendChild(bal);
+  var leg = lkEl('div', 'lk-legende');
+  ['sitzt', 'wartet', 'faellig', 'wackelt', 'unsicher', 'offen'].filter(function(s){ return s !== 'wartet' || zaehl.wartet; }).forEach(function(s){
+    var sp = lkEl('span', 'lk-' + s); sp.appendChild(lkEl('i', 'lk-punkt')); sp.appendChild(document.createTextNode(s === 'faellig' ? 'wiederholen fällig' : LK_INFO[s].label)); leg.appendChild(sp);
+  });
+  g.appendChild(leg);
+  box.appendChild(g);
+
+  // Als Nächstes üben: was wackelt, dann noch nicht geübte Lehrjahr-Themen
+  var naechste = stWiederholListe().map(function(x){ return x.th; });
+  ljThemen.forEach(function(t){ if (lkStand(ST.komp[t]) === 'offen') naechste.push(t); });
+  naechste = naechste.slice(0, 3);
+  if (naechste.length) {
+    var n = lkEl('div', 'lk-naechstes');
+    n.appendChild(lkEl('div', 'label', 'Als Nächstes üben'));
+    naechste.forEach(function(th){
+      var zl = lkEl('div', 'lk-n-zeile'), t = lkEl('div', 'lk-t', th);
+      t.appendChild(lkEl('small', null, lkGrund(th)));
+      var bt = lkEl('button', null, 'Üben →');
+      bt.onclick = function(){ lkUeben(th); };
+      zl.appendChild(t); zl.appendChild(bt); n.appendChild(zl);
+    });
+    box.appendChild(n);
+  }
+
+  // Ampel-Felder
+  [[ 'Themen im ' + LEHRJAHR + '. Lehrjahr', ljThemen ], [ 'Auch geübt', weitere ]].forEach(function(gr){
+    if (!gr[1].length) return;
+    var w = lkEl('div', 'st-gruppe');
+    w.appendChild(lkEl('div', 'label', gr[0]));
+    var grid = lkEl('div', 'lk-grid');
+    gr[1].forEach(function(th){ grid.appendChild(lkFeld(th)); });
+    w.appendChild(grid);
+    box.appendChild(w);
+  });
+}
+
+async function lkLaden() {
+  lkZeichnen();          // sofort mit dem, was schon da ist
+  await stLaden();
+  lkZeichnen();
+}
+
+function lkUeben(th) {
+  lkSchliessen();
+  if ((FRAGEN[th] || []).length) stThemaUeben(th);
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html';
+}
+
+function lkTipp(th) {
+  lkSchliessen();
+  zeige('fortschritt');
+  var sel = document.getElementById('fs-thema');
+  if (![].some.call(sel.options, function(o){ return o.value === th; })) { var o = document.createElement('option'); o.value = th; o.textContent = th; sel.appendChild(o); }
+  sel.value = th;
+  fortschrittAnalyse();
+}
+
+function lkOeffnen(th) {
+  var d = ST.komp[th], s = lkStand(d);
+  document.getElementById('lk-s-titel').textContent = th;
+  var st = document.getElementById('lk-s-status');
+  st.className = 'lk-s-status lk-' + s;
+  st.textContent = LK_INFO[s].zeichen + ' ' + (s === 'offen' ? LK_INFO[s].label : lkGrund(th));
+  var zahlen = document.getElementById('lk-s-zahlen');
+  zahlen.innerHTML = '';
+  zahlen.style.display = s === 'offen' ? 'none' : '';
+  if (s !== 'offen') {
+    [[d.richtig + ' / ' + (d.richtig + d.falsch), 'richtig'], [(d.geraten || 0) + '×', 'geraten'], [d.durchlaeufe + '×', d.durchlaeufe === 1 ? 'Runde geübt' : 'Runden geübt']].forEach(function(x){
+      var c = lkEl('div'); c.appendChild(lkEl('b', null, x[0])); c.appendChild(lkEl('small', null, x[1])); zahlen.appendChild(c);
+    });
+  }
+  var warn = document.getElementById('lk-s-warn');
+  warn.innerHTML = '';
+  if (d && d.sicher_falsch) warn.appendChild(lkEl('div', 'lk-warn', '⚠ ' + d.sicher_falsch + '× sicher, aber falsch – hier steckt vermutlich ein Missverständnis.'));
+  if (d && d.zusatz_falsch) warn.appendChild(lkEl('div', 'lk-warn', '⚠ ' + d.zusatz_falsch + '× Warum-Frage falsch – noch einmal genau die Erklärung lesen.'));
+  var q = document.getElementById('lk-s-quiz');
+  q.textContent = (FRAGEN[th] || []).length ? 'Themen-Quiz starten →' : 'Im Lernquiz üben →';
+  q.onclick = function(){ lkUeben(th); };
+  document.getElementById('lk-s-tipp').onclick = function(){ lkTipp(th); };
+  document.getElementById('lk-sheet').hidden = false;
+  document.body.classList.add('lk-offen-sheet');
+  q.focus();
+}
+
+function lkSchliessen() {
+  document.getElementById('lk-sheet').hidden = true;
+  document.body.classList.remove('lk-offen-sheet');
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !document.getElementById('lk-sheet').hidden) lkSchliessen(); });
+
 var _zeigeOhneLeiste = zeige;
 zeige = function(seite) {
+  if (typeof lkSchliessen === 'function') lkSchliessen();
   _zeigeOhneLeiste(seite);
   stLeiste(seite);
   if (seite === 'home') { stZeichnen(); stLaden(); }
