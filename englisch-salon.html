@@ -73,11 +73,11 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 .streak-gesamt{font-size:11px;color:#9A9180;text-align:right}
 
 /* ── BADGES ── */
-.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+.badge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:4px}
 .badge-item{text-align:center;padding:10px 4px;border-radius:8px;border:1.5px solid #E4DBC5;background:#fff;transition:all 0.2s}
 .badge-item.frei{border-color:#C4A830;background:#FDF6E3}
 .badge-icon{font-size:22px;margin-bottom:4px}
-.badge-name{font-size:9px;font-weight:700;color:#6B6455;text-transform:uppercase;letter-spacing:0.5px;line-height:1.3}
+.badge-name{font-size:9px;font-weight:700;color:#6B6455;text-transform:uppercase;letter-spacing:0.5px;line-height:1.3;overflow-wrap:anywhere;hyphens:auto}
 .badge-item.frei .badge-name{color:#8A7020}
 .badge-item.locked{opacity:0.4}
 .badge-item.locked .badge-icon{filter:grayscale(1)}
@@ -539,6 +539,15 @@ var BADGES = [
   {id:'streak14', icon:'🏆', name:'2 Wochen Streak', streak:14,   text:'14 Tage in Folge — einfach Spitze!'},
   {id:'meisterin',icon:'👑', name:'Salon-Meisterin', sessions:30, text:'30 Sessions — du bist eine echte Profi!'},
   {id:'marathon', icon:'🎓', name:'Sprachkünstlerin',sessions:50, text:'50 Sessions! Bewundernswert!'},
+  // Neue Abzeichen (2026-11): es geht weiter nach 50 Sessions / 14 Tagen
+  {id:'streak21', icon:'🌟', name:'3 Wochen Streak',  streak:21,    text:'21 Tage in Folge – du bist nicht zu bremsen!'},
+  {id:'s75',      icon:'🗣️', name:'Small-Talk-Profi', sessions:75,  text:'75 Sessions – Gespräche auf Englisch sind kein Problem mehr!'},
+  {id:'streak30', icon:'📅', name:'Ein ganzer Monat', streak:30,    text:'30 Tage in Folge – ein ganzer Monat!'},
+  {id:'s100',     icon:'🌍', name:'Weltgewandt',      sessions:100, text:'100 Sessions – Gäste aus aller Welt fühlen sich bei dir wohl!'},
+  {id:'streak50', icon:'💎', name:'50 Tage Streak',   streak:50,    text:'50 Tage in Folge – unglaublich ausdauernd!'},
+  {id:'s150',     icon:'🇬🇧', name:'Englisch-Ass',    sessions:150, text:'150 Sessions – du bist ein echtes Englisch-Ass!'},
+  {id:'s200',     icon:'🏅', name:'Botschafter:in', sessions:200, text:'200 Sessions – du vertrittst den Salon in jeder Sprache!'},
+  {id:'streak100',icon:'👑', name:'100 Tage Streak',  streak:100,   text:'100 Tage in Folge – absolute Spitze!'},
 ];
 
 // ════════════════════════════════════════════════════════
