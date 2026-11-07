@@ -19,6 +19,7 @@ html,body{height:100%}
 .seite{display:none;max-width:640px;margin:0 auto;padding:20px;min-height:100dvh}
 .seite.aktiv{display:block}
 .kopf{background:#F8F4EA;padding:22px 20px 2px;max-width:640px;margin:0 auto}
+.kopf[hidden]{display:none}
 .kopf-klein{font-size:9px;font-weight:700;letter-spacing:2px;color:#896C32;text-transform:uppercase;margin-bottom:4px}
 .kopf h1{font-family:Poppins,system-ui,sans-serif;font-size:24px;color:#211D17;font-weight:600}
 .kopf p{font-size:13px;color:#6B6455;margin-top:2px}
@@ -77,12 +78,45 @@ textarea{resize:vertical;margin-bottom:0}
 .letztes-zeile{font-size:14px;color:#2C2C2C;margin-top:2px}
 .letztes-ueben{font-size:12px;color:#896C32;margin-top:2px}
 .mb-titel{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:16px}
-.mb-titel h2{font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:22px}
+.mb-titel h2{font-family:Poppins,system-ui,sans-serif;font-weight:600;font-size:24px;color:#211D17}
+.mb-tag{font-size:9px;font-weight:700;letter-spacing:2px;color:#896C32;text-transform:uppercase;margin-bottom:4px}
+.mb-h{font-family:Poppins,system-ui,sans-serif;font-weight:600;font-size:24px;color:#211D17;margin-bottom:4px}
+.mb-sub{font-size:13px;color:#6B6455;margin-bottom:16px;line-height:1.45}
+.mb-zurueck{background:none;border:none;color:#6B6455;font:500 13px Poppins,system-ui;cursor:pointer;padding:0;margin-bottom:12px}
+.mb-gruppe{margin-bottom:20px}
+.mb-heute{background:#896C32;color:#fff;border-radius:12px;padding:18px;margin-bottom:12px}
+.mb-heute .lab{color:#F3EBD9;margin-bottom:4px}
+.mb-heute h3{font-family:Poppins,system-ui,sans-serif;font-size:18px;font-weight:600;line-height:1.3;margin-bottom:4px}
+.mb-heute p{font-size:12px;color:#F3EBD9;line-height:1.5;margin-bottom:14px}
+.mb-heute p:last-child{margin-bottom:0}
+.mb-heute-los{display:block;width:100%;padding:12px;border:none;border-radius:8px;background:#fff;color:#896C32;font:600 14px Poppins,system-ui;cursor:pointer}
+.mb-heute-link{display:block;width:100%;background:none;border:none;color:#F3EBD9;font:400 12px Poppins,system-ui;text-decoration:underline;padding:10px 0 0;cursor:pointer}
+.mb-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.mb-stat{background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;font-family:Poppins,system-ui;color:#211D17}
+.mb-stat b{display:block;font-size:18px;font-weight:600}
+.mb-stat small{font-size:10px;color:#6B6455;line-height:1.3;display:block}
+.mb-stat.mb-stat-an{border-color:#C4B86A;background:#FDF6E3}
+.tb-summe{background:#fff;border:1px solid #E4DBC5;border-radius:12px;padding:12px 6px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center}
+.tb-summe b{display:block;font-size:16px;color:#211D17}
+.tb-summe small{font-size:10px;color:#6B6455}
+.tb-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tb-filter button{font:500 12px Poppins,system-ui;padding:6px 12px;border-radius:16px;border:1px solid #E4DBC5;background:#fff;color:#6B6455;cursor:pointer}
+.tb-filter button[aria-pressed="true"]{background:#896C32;color:#fff;border-color:#896C32}
+.tb-e{background:#fff;border:1px solid #E4DBC5;border-left:3px solid #C4A830;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.tb-e.ok{border-left-color:#5B8A4A}
+.tb-k{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#6B6455}
+.tb-k b{color:#211D17}
+.tb-w{font-weight:600;font-size:14px;color:#211D17;margin:3px 0 2px;overflow-wrap:anywhere}
+.tb-d{font-size:12px;color:#6B6455;line-height:1.4;overflow-wrap:anywhere}
+.tb-e .tb-los{margin-top:8px;padding:8px 14px;border-radius:6px;border:none;background:#896C32;color:#fff;font:600 12px Poppins,system-ui;cursor:pointer}
+.tb-ok{font-size:11px;color:#5B8A4A;font-weight:600;margin-top:4px}
+.mb-wahl{position:fixed;inset:0;background:rgba(33,29,23,.45);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:16px}
+.mb-wahl[hidden]{display:none}
+.mb-wahl-box{background:#F8F4EA;border-radius:14px;padding:16px;width:100%;max-width:420px}
+.mb-wahl-box b{display:block;font-size:15px;margin-bottom:10px;color:#211D17}
+.mb-wahl-box .mb-l{margin-bottom:8px}
 .mb-titel small{display:block;font-size:12px;color:#9A9188;margin-top:2px}
 .mb-abm{flex:none;background:none;border:1.5px solid #DDD8D0;border-radius:8px;padding:7px 12px;font-size:12px;color:#9A9188;cursor:pointer;font-family:Poppins,system-ui}
-.mb-tabs{display:flex;gap:4px;background:#EDE8E0;border-radius:10px;padding:4px;margin-bottom:18px}
-.mb-tabs button{flex:1;border:none;background:none;font-size:13px;padding:8px 4px;border-radius:7px;color:#6B6560;cursor:pointer;font-family:Poppins,system-ui}
-.mb-tabs button[aria-selected="true"]{background:#fff;color:#2C2C2C;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.06)}
 .mb-panel[hidden]{display:none}
 .mb-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .mb-k{display:block;background:#fff;border:1.5px solid #E4DBC5;border-radius:10px;padding:12px;text-align:left;text-decoration:none;color:#2C2C2C;font-family:Poppins,system-ui;cursor:pointer;width:100%}
@@ -221,7 +255,7 @@ textarea{resize:vertical;margin-bottom:0}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Lernen ✂</h1>
   <p id="kopf-sub">Lernquiz, Lern-Tool, Praxis &amp; Prüfung – eine App</p>
@@ -304,7 +338,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -317,51 +351,67 @@ textarea{resize:vertical;margin-bottom:0}
 </div>
 
 <div id="s-dashboard" class="seite">
-  <div style="padding-top:20px">
+  <div style="padding-top:4px">
     <div class="mb-titel">
-      <div><h2>Meisterin-Bereich</h2><small>Alles für die Lehrlingsbegleitung an einem Ort</small></div>
+      <div><div class="mb-tag">greathairday · Meisterin</div><h2>Hallo Meisterin 👋</h2><small id="mb-datum"></small></div>
       <button id="btn-m-logout" class="mb-abm">Abmelden</button>
     </div>
-    <div class="mb-tabs" role="tablist">
-      <button role="tab" data-mbtab="lehrlinge" aria-selected="true">👥 Lehrlinge</button>
-      <button role="tab" data-mbtab="inhalte" aria-selected="false">✎ Inhalte</button>
-      <button role="tab" data-mbtab="ansehen" aria-selected="false">🔍 Ansehen</button>
-    </div>
+    <div id="mb-heute" class="mb-heute"><div class="laden" style="color:#F3EBD9;padding:10px">Wird geladen…</div></div>
+    <div class="mb-stats" id="mb-stats"></div>
+    <div id="mb-hinweise"></div>
 
-    <div class="mb-panel" id="mb-lehrlinge" role="tabpanel">
+    <div class="mb-gruppe" id="mb-lehrlinge">
       <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
       <button class="mb-neu" id="btn-lehrling-neu">+ Lehrling anlegen</button>
     </div>
 
-    <div class="mb-panel" id="mb-inhalte" role="tabpanel" hidden>
-      <div class="lab">Fragen &amp; Inhalte pflegen</div>
+    <div class="mb-gruppe">
+      <div class="lab">Begleiten</div>
       <div class="mb-grid">
-        <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
-      </div>
-      <div class="lab" style="margin-top:20px">Englisch</div>
-      <div class="mb-grid">
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107l#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge in „Englisch im Salon“</small></div></a>
+        <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
+        <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
+        <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107t#en-verlauf"><div class="mb-ic">📊</div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></a>
       </div>
     </div>
 
-    <div class="mb-panel" id="mb-ansehen" role="tabpanel" hidden>
-      <div class="lab">Selbst ausprobieren</div>
+    <div class="mb-gruppe">
+      <div class="lab">Inhalte pflegen</div>
       <div class="mb-grid">
-        <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107s"><div class="mb-ic">🏠</div><b>Lern-Startseite</b><small>So sehen es die Lehrlinge</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundschnitte &amp; Formwirkung</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Eigene Zeichnungen</small></a>
-      </div>
-      <div class="lab" style="margin-top:20px">Für mich</div>
-      <div class="mb-grid">
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107l"><div class="mb-ic">📚</div><div><b>Mein Lernbereich</b><small>Eigene Fachfragen, Englisch &amp; Abzeichen</small></div></a>
+        <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
       </div>
     </div>
+
+    <div class="mb-gruppe">
+      <div class="lab">Selbst ansehen</div>
+      <div class="mb-grid">
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107t"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107t"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
+        <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s-pt-alle" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-pt-back">← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">📝 Praxis-Tagebuch</h2>
+    <p class="mb-sub">Alle Lehrlinge an einem Ort. Bestätigte Einträge zählen als Nachweis und für die Praxis-Abzeichen.</p>
+    <div id="pt-alle-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="mb-wahl" class="mb-wahl" hidden>
+  <div class="mb-wahl-box" role="dialog" aria-modal="true" aria-labelledby="mb-wahl-titel">
+    <b id="mb-wahl-titel">Mit wem?</b>
+    <div id="mb-wahl-liste"></div>
+    <button class="mb-abm" id="mb-wahl-zu" style="width:100%;margin-top:6px">Abbrechen</button>
   </div>
 </div>
 
@@ -1306,6 +1356,8 @@ function kopfSetzen(id){
   document.getElementById('kopf-titel').textContent=quiz?'Quiz ❓':'Lernen ✂';
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
+  // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle');
 }
 function zeige(id){
   document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
@@ -1324,7 +1376,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261107s'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261107t'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -1940,14 +1992,6 @@ async function zeigeVerlauf(){
 // ── MEISTERIN-BEREICH: Reiter und Lehrlings-Übersicht ─────────────
 // Rolle wird beim Login serverseitig geprüft (ist_meisterin); was gelesen
 // werden darf, regelt die RLS (Meisterin liest alle Lehrlinge).
-var MB_TAB='lehrlinge';
-function mbTab(name){
-  MB_TAB=name;
-  document.querySelectorAll('[data-mbtab]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.mbtab===name?'true':'false');});
-  ['lehrlinge','inhalte','ansehen'].forEach(function(t){var el=document.getElementById('mb-'+t);if(el)el.hidden=(t!==name);});
-}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-mbtab]');if(b)mbTab(b.dataset.mbtab);});
-
 // Ampel-Stand eines Themas – dieselben Stufen wie die Kompetenz-Landkarte im Lern-Tool
 var MB_STAND={sitzt:{f:'#5B8A4A',t:['sitzt','sitzen']},wartet:{f:'#8DB07D',t:['bald prüfen','bald prüfen']},faellig:{f:'#D08A2E',t:['wiederholen','wiederholen']},
   wackelt:{f:'#C4A830',t:['wackelt','wackeln']},unsicher:{f:'#C44030',t:['unsicher','unsicher']},offen:{f:'#B9B0A0',t:['offen','offen']}};
@@ -1977,13 +2021,22 @@ function ampelHtml(a){
   return '<div class="mb-ampel">'+bal+'</div><div class="mb-ampel-txt">'+txt+'</div>';
 }
 
+// Echte, aktive Lehrlinge der letzten Übersicht (für „Mit wem?“ bei Prüfgespräch/Praxis-Check)
+var MB_AKTIVE=[];
+var MB_HINWEISE=[];
+
 async function ladeDashboard(){
   if(!ISTMEISTERIN) return;
-  mbTab(MB_TAB);
   var liste=document.getElementById('dashboard-liste');
+  var heute=document.getElementById('mb-heute'), stats=document.getElementById('mb-stats'), hbox=document.getElementById('mb-hinweise');
+  try{ document.getElementById('mb-datum').textContent=new Date().toLocaleDateString('de-AT',{weekday:'long',day:'numeric',month:'long'}); }catch(e){}
   liste.innerHTML='<div class="laden">Wird geladen…</div>';
   var {data:lehrlinge}=await sb.from('lehrlinge').select('*').order('name');
-  if(!lehrlinge||!lehrlinge.length){liste.innerHTML='<p style="color:#9A9188;font-size:13px;margin-bottom:12px">Noch keine Lehrlinge angelegt.</p>';return;}
+  if(!lehrlinge||!lehrlinge.length){
+    MB_AKTIVE=[];hbox.innerHTML='';stats.innerHTML='';
+    heute.innerHTML='<div class="lab">Heute zu tun</div><h3>Noch keine Lehrlinge</h3><p>Leg unten deinen ersten Lehrling an.</p>';
+    liste.innerHTML='';return;
+  }
   var ids=lehrlinge.map(function(l){return l.id;});
   // Ein Abruf für alle statt einer pro Lehrling
   var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]};
@@ -1991,13 +2044,14 @@ async function ladeDashboard(){
     var r=await Promise.all([
       sb.from('kompetenz').select('*').in('lehrling_id',ids),
       sb.from('verlauf').select('lehrling_id,erstellt_am,punkte,gesamt').in('lehrling_id',ids).order('erstellt_am',{ascending:false}).limit(2000),
-      // Praxis-Tagebuch: unbestätigte Einträge pro Lehrling (ohne Migration → einfach keine Anzeige)
-      Promise.resolve(sb.from('praxis_eintraege').select('lehrling_id').in('lehrling_id',ids).eq('bestaetigt',false)).catch(function(){return {data:[]};})
+      // Praxis-Tagebuch: unbestätigte Einträge (ohne Migration → einfach keine Anzeige)
+      Promise.resolve(sb.from('praxis_eintraege').select('lehrling_id,bereich,dauer_min').in('lehrling_id',ids).eq('bestaetigt',false)).catch(function(){return {data:[]};})
     ]);
     kompRes=r[0];verlRes=r[1];ptRes=r[2]&&!r[2].error?r[2]:{data:[]};
   }catch(e){}
-  var ptOffenVon={};
-  (ptRes.data||[]).forEach(function(x){ptOffenVon[x.lehrling_id]=(ptOffenVon[x.lehrling_id]||0)+1;});
+  var name={};lehrlinge.forEach(function(l){name[l.id]=l.name;});
+  var ptOffen=ptRes.data||[], ptOffenVon={};
+  ptOffen.forEach(function(x){ptOffenVon[x.lehrling_id]=(ptOffenVon[x.lehrling_id]||0)+1;});
   var kompVon={},letztesVon={};
   (kompRes.data||[]).forEach(function(k){(kompVon[k.lehrling_id]=kompVon[k.lehrling_id]||{})[k.thema]=k;});
   (verlRes.data||[]).forEach(function(v){if(!letztesVon[v.lehrling_id])letztesVon[v.lehrling_id]=v;});
@@ -2007,10 +2061,12 @@ async function ladeDashboard(){
   var wocheVon={};
   (verlRes.data||[]).forEach(function(v){if(v.erstellt_am&&new Date(v.erstellt_am)>=mo)wocheVon[v.lehrling_id]=(wocheVon[v.lehrling_id]||0)+1;});
 
-  // Echte Lehrlinge oben, Testzugänge (nur_test) eingeklappt darunter
+  // Echte aktive Lehrlinge oben; pausierte und Testzugänge (nur_test) eingeklappt darunter
   var echte=lehrlinge.filter(function(l){return l.nur_test!==true;});
+  var aktive=echte.filter(function(l){return l.aktiv!==false;});
+  var pausierte=echte.filter(function(l){return l.aktiv===false;});
   var tests=lehrlinge.filter(function(l){return l.nur_test===true;});
-  var html='';
+  MB_AKTIVE=aktive;
   function karte(l){
     var v=letztesVon[l.id];
     var info=l.lehrjahr+'. Lehrjahr'+(v?' · zuletzt aktiv '+letztesWann(v.erstellt_am)+' · letztes Quiz '+Math.round(v.punkte/v.gesamt)+'/10':' · noch kein Quiz');
@@ -2027,21 +2083,133 @@ async function ladeDashboard(){
       (pausiert?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
     '</button>';
   }
-  html='<div class="lab">'+(echte.length===1?'Lehrling':'Lehrlinge')+'</div>'+
-    (echte.length?echte.map(karte).join(''):'<p style="color:#9A9188;font-size:13px;margin-bottom:12px">Noch kein echter Lehrling – alle sind als „Nur zum Testen“ markiert.</p>');
+  var html='<div class="lab">'+(aktive.length===1?'Lehrling':'Lehrlinge')+'</div>'+
+    (aktive.length?aktive.map(karte).join(''):'<p style="color:#9A9188;font-size:13px;margin-bottom:12px">Gerade kein aktiver Lehrling.</p>');
+  if(pausierte.length) html+='<details class="mb-test"><summary>Pausiert ('+pausierte.length+')</summary>'+pausierte.map(karte).join('')+'</details>';
   if(tests.length) html+='<details class="mb-test"><summary>Zum Testen ('+tests.length+')</summary>'+tests.map(karte).join('')+'</details>';
-  var hinweise=[];
-  try{ hinweise=await ladeAlleHinweise(echte); }catch(e){}
-  if(!hinweise.length) html='<div style="font-size:12px;color:#5B7B6F;margin-bottom:14px">✓ Keine Prüfhinweise – im Quiz ist gerade nichts auffällig.</div>'+html;
-  liste.innerHTML=hinweisBox(hinweise,true)+html;
-  hinweisKlicks(hinweise);
+  liste.innerHTML=html;
   lehrlinge.forEach(function(l){
     var el=document.getElementById('dl-'+l.id);
     // Mit offenen Praxis-Einträgen gleich den Reiter „Praxis“ öffnen
     if(el) el.addEventListener('click',function(){DETAIL_START_TAB=ptOffenVon[l.id]?'praxis':null;zeigeDetailLehrling(l);});
   });
+
+  var hinweise=[];
+  try{ hinweise=await ladeAlleHinweise(aktive); }catch(e){}
+  MB_HINWEISE=hinweise;
+  hbox.innerHTML=hinweisBox(hinweise,true);
+  hinweisKlicks(hinweise);
+
+  // „Heute zu tun“: zuerst Praxis bestätigen, dann Prüfhinweise, sonst alles erledigt
+  var nPt=ptOffen.filter(function(x){return name[x.lehrling_id]!==undefined;}).length, nH=hinweise.length;
+  var wzErreicht=aktive.filter(function(l){return (wocheVon[l.id]||0)>=wochenzielVon(l);}).length;
+  var hh='<div class="lab">Heute zu tun</div>';
+  if(nPt){
+    var kurz=ptOffen.slice(0,3).map(function(x){return (name[x.lehrling_id]||'')+': '+x.bereich+' '+ptDauer(x.dauer_min||0);}).join(' · ')+(nPt>3?' …':'');
+    hh+='<h3>'+nPt+(nPt===1?' Praxis-Eintrag wartet':' Praxis-Einträge warten')+' auf dich</h3><p>'+escHtml(kurz)+'</p>'+
+      '<button class="mb-heute-los" data-mb-los="pt">Jetzt bestätigen →</button>'+
+      (nH?'<button class="mb-heute-link" data-mb-los="hinweise">Prüfhinweise ansehen ('+nH+')</button>':'');
+  } else if(nH){
+    hh+='<h3>'+nH+(nH===1?' Prüfhinweis':' Prüfhinweise')+'</h3><p>Im Quiz ist etwas auffällig – ein kurzes Prüfgespräch zeigt, ob es wirklich sitzt.</p>'+
+      '<button class="mb-heute-los" data-mb-los="hinweise">Ansehen →</button>';
+  } else {
+    hh+='<h3>Alles erledigt ✓</h3><p>Keine Praxis-Einträge zum Bestätigen und keine Prüfhinweise.</p>';
+  }
+  heute.innerHTML=hh;
+  stats.innerHTML=
+    '<button class="mb-stat'+(nPt?' mb-stat-an':'')+'" data-mb-los="pt"><b>'+nPt+'</b><small>Praxis zum Bestätigen</small></button>'+
+    '<button class="mb-stat'+(nH?' mb-stat-an':'')+'" data-mb-los="hinweise"><b>'+nH+'</b><small>'+(nH===1?'Prüfhinweis':'Prüfhinweise')+'</small></button>'+
+    '<button class="mb-stat" data-mb-los="lehrlinge"><b>'+wzErreicht+' / '+aktive.length+'</b><small>Wochenziel erreicht</small></button>';
+  document.getElementById('mb-pt-sub').textContent=nPt?'Alle Einträge · '+nPt+' zum Bestätigen':'Alle Einträge aller Lehrlinge';
 }
 var DETAIL_START_TAB=null;
+var DETAIL_START_KLICK=null;
+
+// Knöpfe in „Heute zu tun“ und den Zahlen-Kacheln
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-mb-los]'); if(!b||!ISTMEISTERIN) return;
+  var was=b.dataset.mbLos;
+  if(was==='pt'){ zeigePtAlle(null); return; }
+  var ziel=document.getElementById(was==='hinweise'?'mb-hinweise':'mb-lehrlinge');
+  if(was==='hinweise'&&!MB_HINWEISE.length){ alert('Gerade gibt es keine Prüfhinweise – im Quiz ist nichts auffällig.'); return; }
+  if(ziel) ziel.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+// „Mit wem?“ – Prüfgespräch oder Praxis-Check aus der Übersicht starten
+function mbMitWem(knopf){
+  var l=MB_AKTIVE;
+  if(!l.length){ alert('Gerade gibt es keinen aktiven Lehrling.'); return; }
+  function los(x){ document.getElementById('mb-wahl').hidden=true; DETAIL_START_KLICK=knopf; zeigeDetailLehrling(x); }
+  if(l.length===1){ los(l[0]); return; }
+  var box=document.getElementById('mb-wahl-liste'); box.innerHTML='';
+  l.forEach(function(x){
+    var b=document.createElement('button'); b.className='mb-l';
+    b.innerHTML='<div class="mb-l-oben"><div class="mb-l-name">'+escHtml(x.name)+'</div><div class="mb-l-pfeil">›</div></div>';
+    b.addEventListener('click',function(){ los(x); });
+    box.appendChild(b);
+  });
+  document.getElementById('mb-wahl-titel').textContent=knopf==='btn-pruef-start'?'Prüfgespräch – mit wem?':'Praxis-Check – mit wem?';
+  document.getElementById('mb-wahl').hidden=false;
+}
+
+// ── PRAXIS-TAGEBUCH aller Lehrlinge (Meisterin) ─────────────────────────────
+// Liest public.praxis_eintraege; die Meisterin sieht alle Zeilen, bestätigen
+// darf nur sie – beides erzwingt die RLS (praxis_eintraege_meisterin).
+var PTA_FILTER=null;
+async function zeigePtAlle(filter){
+  if(!ISTMEISTERIN) return;
+  PTA_FILTER=filter||null;
+  if(!document.getElementById('s-pt-alle').classList.contains('aktiv')) zeige('s-pt-alle');
+  var box=document.getElementById('pt-alle-inhalt');
+  var res;
+  try{
+    res=await Promise.all([
+      sb.from('lehrlinge').select('id,name,nur_test').order('name'),
+      sb.from('praxis_eintraege').select('*').order('datum',{ascending:false}).order('erstellt_am',{ascending:false}).limit(300)
+    ]);
+  }catch(e){ res=[{data:[]},{error:e}]; }
+  if(res[1].error){ box.innerHTML='<p class="mb-sub">Das Praxis-Tagebuch braucht noch die Datenbank-Änderung (supabase/20261107_praxis_eintraege.sql).</p>'; return; }
+  var name={}; (res[0].data||[]).forEach(function(l){name[l.id]=l.name;});
+  var alle=(res[1].data||[]).filter(function(x){return name[x.lehrling_id]!==undefined;});
+  var mo=new Date();mo.setHours(0,0,0,0);mo.setDate(mo.getDate()-((mo.getDay()+6)%7));
+  var nOffen=0,woche=0,gesamt=0;
+  alle.forEach(function(x){
+    if(!x.bestaetigt) nOffen++; else gesamt+=x.dauer_min||0;
+    if(new Date(x.datum+'T12:00:00')>=mo) woche+=x.dauer_min||0;
+  });
+  var mitEintrag=(res[0].data||[]).filter(function(l){return alle.some(function(x){return x.lehrling_id===l.id;});});
+  var sicht=PTA_FILTER?alle.filter(function(x){return x.lehrling_id===PTA_FILTER;}):alle;
+  var offen=sicht.filter(function(x){return !x.bestaetigt;}), ok=sicht.filter(function(x){return x.bestaetigt;});
+  function eintrag(x){
+    var d=[x.details,x.kontrolliert_von?'kontrolliert: '+x.kontrolliert_von:''].filter(Boolean).join(' · ');
+    return '<div class="tb-e'+(x.bestaetigt?' ok':'')+'"><div class="tb-k"><span>'+escHtml(ptTag(x.datum))+' · <b>'+escHtml(name[x.lehrling_id])+'</b></span><span>'+escHtml(ptDauer(x.dauer_min||0))+'</span></div>'+
+      '<div class="tb-w">'+escHtml(x.bereich)+'</div>'+(d?'<div class="tb-d">'+escHtml(d)+'</div>':'')+
+      (x.notiz?'<div class="tb-d" style="font-style:italic">„'+escHtml(x.notiz)+'“</div>':'')+
+      (x.bestaetigt?'<div class="tb-ok">✓ bestätigt'+(x.bestaetigt_am?' am '+escHtml(ptTag(String(x.bestaetigt_am).slice(0,10)).replace(/^\S+ /,'')):'')+'</div>'
+        :'<button class="tb-los" data-pta="'+escHtml(String(x.id))+'">✓ Bestätigen</button>')+'</div>';
+  }
+  var h='<div class="tb-summe"><div><b>'+nOffen+'</b><small>zum Bestätigen</small></div><div><b>'+escHtml(ptDauer(woche))+'</b><small>diese Woche</small></div><div><b>'+escHtml(ptDauer(gesamt))+'</b><small>gesamt bestätigt</small></div></div>';
+  if(mitEintrag.length>1){
+    h+='<div class="tb-filter"><button data-ptf="" aria-pressed="'+(!PTA_FILTER)+'">Alle</button>'+
+      mitEintrag.map(function(l){return '<button data-ptf="'+escHtml(String(l.id))+'" aria-pressed="'+(PTA_FILTER===l.id)+'">'+escHtml(l.name)+'</button>';}).join('')+'</div>';
+  }
+  if(!alle.length) h+='<p class="mb-sub">Noch keine Einträge. Die Lehrlinge tragen im Lern-Tool unter „Praxis“ ein, was sie geübt haben.</p>';
+  else {
+    h+='<div class="lab">Wartet auf dich ('+offen.length+')</div>'+(offen.length?offen.map(eintrag).join(''):'<p class="mb-sub" style="margin-bottom:12px">Alles bestätigt ✓</p>');
+    if(ok.length) h+='<div class="lab" style="margin-top:16px">Bestätigt</div>'+ok.slice(0,30).map(eintrag).join('')+
+      (ok.length>30?'<p class="mb-sub">… und '+(ok.length-30)+' ältere. Alle Einträge eines Lehrlings: in der Übersicht antippen → Reiter „Praxis“.</p>':'');
+  }
+  box.innerHTML=h;
+  box.querySelectorAll('[data-ptf]').forEach(function(b){ b.addEventListener('click',function(){ zeigePtAlle(b.dataset.ptf||null); }); });
+  box.querySelectorAll('[data-pta]').forEach(function(b){
+    b.addEventListener('click',async function(){
+      b.disabled=true; b.textContent='…';
+      var u=await sb.from('praxis_eintraege').update({bestaetigt:true,bestaetigt_am:new Date().toISOString()}).eq('id',b.dataset.pta);
+      if(u&&u.error){ b.disabled=false; b.textContent='✓ Bestätigen'; alert('Konnte nicht bestätigt werden: '+u.error.message); return; }
+      zeigePtAlle(PTA_FILTER);
+    });
+  });
+}
 
 // ── PRAXIS-TAGEBUCH (Meisterin): Einträge ansehen und bestätigen ─────
 // Tabelle praxis_eintraege (Migration 20261107_praxis_eintraege.sql).
@@ -2206,7 +2374,8 @@ async function zeigeDetailLehrling(lehrling){
     try{ await sb.rpc('lehrling_zugang_sperren',{target_user_id: lehrling.user_id, gesperrt: true}); }catch(e){}
     await sb.from('lehrlinge').delete().eq('id',lehrling.id);
     await ladeDashboard();zeige('s-dashboard');
-  });
+  });  // Aus der Übersicht „Prüfgespräch“/„Praxis-Check“ gewählt: gleich starten
+  if(DETAIL_START_KLICK){var sk=document.getElementById(DETAIL_START_KLICK);DETAIL_START_KLICK=null;if(sk)sk.click();}
 }
 
 // ── PRÜFGESPRÄCH (Meisterin) ─────────────────────────────────────────────────
@@ -3108,6 +3277,12 @@ window.addEventListener('DOMContentLoaded',function(){
     else zeige('s-start');
   });
   document.getElementById('btn-lehrling-neu').addEventListener('click',function(){zeige('s-neu-lehrling');});
+  document.getElementById('btn-mb-pt').addEventListener('click',function(){zeigePtAlle(null);});
+  document.getElementById('btn-mb-pg').addEventListener('click',function(){mbMitWem('btn-pruef-start');});
+  document.getElementById('btn-mb-px').addEventListener('click',function(){mbMitWem('btn-praxis-start');});
+  document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
+  document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
+  document.getElementById('mb-wahl').addEventListener('click',function(e){if(e.target===this)this.hidden=true;});
   document.getElementById('btn-fragen-verw').addEventListener('click',zeigeVerw);
   document.getElementById('btn-detail-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('btn-pruef-back').addEventListener('click',pruefZurueck);
@@ -3121,7 +3296,7 @@ window.addEventListener('DOMContentLoaded',function(){
   // Betriebssystem testen – Meisterin kann direkt testen
   document.getElementById('btn-betrieb-test').addEventListener('click',function(){
     ISTMEISTERIN=false;
-    AKTLEHRLING={id:'meisterin-test',name:'Mirjam (Test)',lehrjahr:1};
+    AKTLEHRLING={id:'meisterin-test',name:'Meisterin (Test)',lehrjahr:1};
     LJ='b'; MODUS='lap';
     updateStart(); zeige('s-quiz');
     var pool=(FB['b']||[]).slice().sort(function(){return Math.random()-.5;});
@@ -3509,7 +3684,7 @@ async function claudeAnfrage(system, userText, maxTokens) {
   return data?.content?.[0]?.text || null;
 }
 </script>
-<script src="lern-leiste.js?v=20261107s" data-aktiv="ueben" data-verstecken-bei="body.ll-aus" defer></script>  <!-- Leiste unten nur im Quiz-Bereich -->
+<script src="lern-leiste.js?v=20261107t" data-aktiv="ueben" data-verstecken-bei="body.ll-aus" defer></script>  <!-- Leiste unten nur im Quiz-Bereich -->
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#s-login" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 </body>
 </html>
