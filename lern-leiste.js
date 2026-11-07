@@ -14,7 +14,7 @@
   var skript = document.currentScript;
   var aktiv = (skript && skript.getAttribute('data-aktiv')) || '';
   var versteckenBei = (skript && skript.getAttribute('data-verstecken-bei')) || '';
-  var ZIEL = 'lerntool.html?v=20261107e';
+  var ZIEL = 'lerntool.html?v=20261107g';
 
   var KNOEPFE = [
     {id: 'heute', ic: '🏠', t: 'Heute', h: ''},
@@ -71,6 +71,44 @@
       pruefen();
       new MutationObserver(pruefen).observe(document.body, {attributes: true, childList: true, subtree: true, attributeFilter: ['hidden', 'class', 'style']});
     }
+
+    einleitungKuerzen();
+    reiterMarkieren();
+  }
+
+  // Lange Einleitung im Seitenkopf auf zwei Zeilen kürzen, mit „mehr anzeigen“
+  // (Aussehen in lern-stil.css: .ls-kurz, .ls-mehr)
+  function einleitungKuerzen() {
+    var p = document.querySelector('header.top > p');
+    if (!p) return;
+    p.classList.add('ls-kurz');
+    if (p.scrollHeight <= p.clientHeight + 2) { p.classList.remove('ls-kurz'); return; }
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ls-mehr';
+    b.textContent = 'mehr anzeigen';
+    b.setAttribute('aria-expanded', 'false');
+    b.onclick = function () {
+      var zu = p.classList.toggle('ls-kurz');
+      b.textContent = zu ? 'mehr anzeigen' : 'weniger anzeigen';
+      b.setAttribute('aria-expanded', zu ? 'false' : 'true');
+    };
+    p.insertAdjacentElement('afterend', b);
+  }
+
+  // Sprung-Reiter (nav.tabs a[href^="#"]): den Abschnitt markieren, der gerade zu sehen ist
+  function reiterMarkieren() {
+    var links = [].slice.call(document.querySelectorAll('nav.tabs a[href^="#"]'));
+    var ziele = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var setze = function (i) { links.forEach(function (a, j) { a.setAttribute('aria-current', j === i ? 'true' : 'false'); }); };
+    setze(0);
+    var sichtbar = {};
+    var io = new IntersectionObserver(function (eintraege) {
+      eintraege.forEach(function (e) { sichtbar[ziele.indexOf(e.target)] = e.isIntersecting; });
+      for (var i = 0; i < ziele.length; i++) if (sichtbar[i]) { setze(i); break; }
+    }, {rootMargin: '-30% 0px -60% 0px'});
+    ziele.forEach(function (z) { if (z) io.observe(z); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bauen);

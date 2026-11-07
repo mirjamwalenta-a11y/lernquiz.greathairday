@@ -59,14 +59,16 @@ input[type=text]{font:14px Poppins,system-ui;padding:8px 10px;border:1px solid v
 #exportBox img{width:100%;border:1px solid var(--line);border-radius:6px}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 </style>
+<link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
+
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <a class="back-link" href="lerntool.html?v=20261107e">← Zurück zum Lern-Tool</a>
-    <span class="tag">greathairday · Lern-Tool</span>
+    <a class="back-link" href="lerntool.html?v=20261107g">← Lern-Tool</a>
+    <span class="tag">greathairday · Praxis</span>
     <h1>Schnittzeichnungs-Designer ✎</h1>
     <p class="muted">Gestalte eigene Schnittzeichnungen für moderne Haarschnitte: Linien, Bögen, Pointen, Slicen, Pfeile, Schere und Text. Speichere deine Entwürfe oder als Bild zum Verschicken.</p>
   </header>
@@ -341,6 +343,6 @@ $('#export').onclick=()=>{
 setTool('line');renderSaved();redraw();
 })();
 </script>
-<script src="lern-leiste.js?v=20261107e" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="lern-leiste.js?v=20261107g" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
 </body>
 </html>
