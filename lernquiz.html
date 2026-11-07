@@ -408,8 +408,8 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="wz-hilfe">Zählt jedes abgeschlossene Quiz (Lernquiz, Themen-Quiz, Praxis-Quizze). 1 bis 7 möglich.</div>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:#F3EFE8;border-radius:10px;padding:12px 14px">
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:600;color:#2C2C2C">Quiz aktiv</div>
-        <div style="font-size:11px;color:#9A9188;margin-top:2px">Deaktiviert = Lehrling kann sich nicht einloggen</div>
+        <div style="font-size:13px;font-weight:600;color:#2C2C2C">Zugang aktiv</div>
+        <div style="font-size:11px;color:#9A9188;margin-top:2px">AUS = gesperrt: keine Anmeldung mehr, in keiner App. Lernstand und Tagebuch bleiben gespeichert, EIN gibt den Zugang wieder frei.</div>
       </div>
       <button id="edit-aktiv-toggle" style="width:52px;height:28px;border-radius:14px;border:none;cursor:pointer;font-size:11px;font-weight:700;transition:background .2s"></button>
     </div>
@@ -1279,7 +1279,7 @@ function renderKompetenz(kompdaten,themen,gespr,praxis){
     fokus.sort(function(a,b){return rang[a.st]-rang[b.st];});
     fokus.forEach(function(x){html+='<div style="font-size:13px;color:#2C2C2C;margin-bottom:4px">→ '+x.th+
       (x.st==='faellig'?' <span style="color:#9A9188;font-size:11px">(wiederholen, ob es noch sitzt)</span>':'')+
-      (x.st==='gespraech'?' <span style="color:#C44030;font-size:11px">(im Prüfgespräch noch nicht erklärt)</span>':'')+
+      (x.st==='gespraech'?' <span style="color:#C44030;font-size:11px">(im Prüfgespräch noch nicht verstanden)</span>':'')+
       (x.st==='praxis'?' <span style="color:#C44030;font-size:11px">(in der Praxis noch nicht sicher)</span>':'')+'</div>';});
     html+='</div>';
   }
@@ -1412,10 +1412,10 @@ async function loginLehrling(){
   if(!name||!pin){zeigeFehler('login-fehler','Bitte Name und PIN eingeben.');return;}
   var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
   var {data,error}=await sb.auth.signInWithPassword({email:email,password:pin});
-  if(error){zeigeFehler('login-fehler','Fehler: '+error.message);return;}
+  if(error){zeigeFehler('login-fehler',/banned/i.test(error.message||'')?'Dein Zugang ist gesperrt. Bitte wende dich an deine Meisterin.':'Fehler: '+error.message);return;}
   var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
   if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
-  if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Quiz-Zugang wurde vorübergehend deaktiviert. Bitte wende dich an deine Meisterin.');await sb.auth.signOut();return;}
+  if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Zugang ist gesperrt. Bitte wende dich an deine Meisterin.');await sb.auth.signOut();return;}
   AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();
   // Abzeichen-Stand erst synchronisieren, dann zur Lern-Startseite
   try{ if(typeof streakSync==='function') await streakSync(ldat.id,LJ); }catch(e){}
@@ -2191,9 +2191,10 @@ async function zeigeDetailLehrling(lehrling){
     zeigeDetailLehrling(lehrling);
   });
   document.getElementById('btn-del-lehrling').addEventListener('click',async function(){
-    if(!confirm(lehrling.name+' wirklich löschen?')) return;
+    if(!confirm(lehrling.name+' wirklich löschen?\n\nDabei gehen Lernstand, Abzeichen und Praxis-Tagebuch verloren. Nur den Zugang sperren geht über „Bearbeiten“ → Zugang aktiv: AUS.')) return;
+    // Konto zuerst am Server sperren – das Löschen der Zeile allein beendet die Anmeldung nicht
+    try{ await sb.rpc('lehrling_zugang_sperren',{target_user_id: lehrling.user_id, gesperrt: true}); }catch(e){}
     await sb.from('lehrlinge').delete().eq('id',lehrling.id);
-    await sb.auth.admin.deleteUser(lehrling.user_id).catch(function(){});
     await ladeDashboard();zeige('s-dashboard');
   });
 }
@@ -2206,7 +2207,7 @@ async function zeigeDetailLehrling(lehrling){
 // (supabase/20261031_pruefgespraeche.sql): schreiben nur Meisterin (RLS über
 // ist_meisterin()), Lehrling liest nur die eigenen Einträge.
 var PG_ANZAHL=5;
-var PG_LABEL={verstanden:'verstanden',teilweise:'teilweise erklärt',nicht:'nicht erklärt'};
+var PG_LABEL={verstanden:'verstanden',teilweise:'teilweise verstanden',nicht:'noch nicht verstanden'};
 var PG_FARBE={verstanden:'#896C32',teilweise:'#A09050',nicht:'#C44030'};
 var PG={lehrling:null,komp:{},gespr:{},themen:[],pool:[],fragen:[],idx:0,erg:[],gespeichert:false,offen:false};
 
@@ -2241,9 +2242,9 @@ function datumDE(iso){
 
 function gespraechZeile(g){
   if(!g) return '';
-  var txt=g.ergebnis==='verstanden'?'Im Prüfgespräch bestätigt':
-          g.ergebnis==='teilweise'?'Im Prüfgespräch teilweise erklärt':
-          'Im Prüfgespräch nicht erklärt – das Quiz-Ergebnis allein reicht hier nicht';
+  var txt=g.ergebnis==='verstanden'?'Im Prüfgespräch: verstanden ✓':
+          g.ergebnis==='teilweise'?'Im Prüfgespräch: teilweise verstanden':
+          'Im Prüfgespräch: noch nicht verstanden – das Quiz-Ergebnis allein reicht hier nicht';
   return '<div style="font-size:10px;color:'+PG_FARBE[g.ergebnis]+';margin-top:2px;font-weight:700">🗣 '+txt+' · '+datumDE(g.datum)+
     (wiederPruefenFaellig(g)?' – nach 3 Monaten wieder prüfen':'')+'</div>';
 }
@@ -2578,14 +2579,14 @@ function zeigePruefStart(lehrling,komp,gespr){
   var sitzt=themen.filter(function(th){return prio(th)===1;});
   var html='<div class="karte" style="font-size:13px;color:#2C2C2C;line-height:1.5;margin-bottom:16px">'+
     'So geht’s: Du liest jede Frage vor. '+escHtml(lehrling.name)+' antwortet <b>in eigenen Worten</b> – ohne Antwortauswahl. '+
-    'Danach siehst du die Musterlösung und eine Warum-Nachfrage und hältst fest, wie gut es erklärt war. '+PG_ANZAHL+' Fragen, ca. 10 Minuten.</div>';
+    'Danach siehst du die Musterlösung und eine Warum-Nachfrage und hältst fest, wie gut es verstanden wurde. '+PG_ANZAHL+' Fragen, ca. 10 Minuten.</div>';
   if(sitzt.length>1){
     html+='<button class="btn btn-g" id="pg-mix" style="margin-bottom:16px">Gemischt: alle '+sitzt.length+' Themen, die laut Quiz sitzen →</button>';
   }
   html+='<div class="lab" style="margin-bottom:8px">Thema wählen</div>';
   themen.forEach(function(th,i){
     var st=berechneStatus(PG.komp[th]), g=PG.gespr[th], p=prio(th);
-    var info=p===0?'<span style="color:#C44030">im letzten Gespräch nicht erklärt – nochmal prüfen</span>':
+    var info=p===0?'<span style="color:#C44030">im letzten Gespräch noch nicht verstanden – nochmal prüfen</span>':
              p===1?'<span style="color:#896C32">Vorschlag: laut Quiz sitzt, noch nicht im Gespräch bestätigt</span>':
              p===1.5?'<span style="color:#896C32">Vorschlag: vor über 3 Monaten bestätigt – wieder prüfen</span>':
              st?('Quiz: '+LABEL[st]):'im Quiz noch nicht geübt';
@@ -2638,7 +2639,7 @@ function zeigePruefFrage(){
     '</div>'+
     '<div class="lab" style="margin-top:14px">Notiz (optional – sieht auch der Lehrling)</div>'+
     '<textarea id="pg-notiz" rows="2" placeholder="z. B. Einwirkzeit gewusst, aber nicht warum"></textarea>'+
-    '<div class="lab" style="margin-top:14px">Wie gut war es erklärt?</div>'+
+    '<div class="lab" style="margin-top:14px">Wie gut hat '+escHtml(PG.lehrling.name)+' es verstanden?</div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
       '<button class="btn btn-g" data-pg-erg="verstanden" style="flex:1;min-width:96px;margin:0;padding-left:6px;padding-right:6px;white-space:nowrap">✓ Verstanden</button>'+
       '<button class="btn btn-h" data-pg-erg="teilweise" style="flex:1;min-width:96px;margin:0;padding-left:6px;padding-right:6px;white-space:nowrap;color:#8A7A30">~ Teilweise</button>'+
@@ -2693,7 +2694,7 @@ async function pruefAbschliessen(){
   var urteil=n.verstanden===g?'Wirklich verstanden ✦':n.nicht===0&&n.verstanden>=n.teilweise?'Größtenteils verstanden':n.nicht>=Math.ceil(g/2)?'Noch nicht verstanden':'Teilweise verstanden';
   var col=n.verstanden===g?'#6E5527':n.nicht>=Math.ceil(g/2)?'#C44030':'#A09050';
   var html='<div class="score-box"><div style="font-size:15px;color:'+col+';font-weight:700;margin-bottom:4px">'+urteil+'</div>'+
-    '<div style="font-size:12px;color:#6B6560">'+n.verstanden+'× verstanden · '+n.teilweise+'× teilweise · '+n.nicht+'× nicht erklärt</div></div>';
+    '<div style="font-size:12px;color:#6B6560">'+n.verstanden+'× verstanden · '+n.teilweise+'× teilweise verstanden · '+n.nicht+'× noch nicht verstanden</div></div>';
   if(fehler){
     var fehlt=/pruefgespraeche|relation|does not exist|schema cache/i.test(fehler.message||'');
     html+='<div class="fehler-box" style="display:block">Nicht gespeichert: '+escHtml(fehlt?'Die Tabelle „pruefgespraeche“ fehlt noch – bitte zuerst supabase/20261031_pruefgespraeche.sql im Supabase SQL-Editor ausführen.':(fehler.message||String(fehler)))+'</div>'+
@@ -2852,6 +2853,7 @@ async function speichereEditLehrling(){
   btn.disabled = true; btn.textContent = 'Wird gespeichert…';
   // Name, Lehrjahr, aktiv speichern
   var nurTest = document.getElementById('edit-nur-test').checked;
+  var warAktiv = EDIT_LEHRLING.aktiv !== false;
   var upd = {name:name, lehrjahr:lj, aktiv:EDIT_AKTIV, wochenziel:EDIT_WZ, nur_test:nurTest};
   var {error:dbErr} = await sb.from('lehrlinge').update(upd).eq('id', EDIT_LEHRLING.id);
   // Spalten, deren Migration noch nicht ausgeführt ist, weglassen und den Rest trotzdem speichern
@@ -2869,7 +2871,17 @@ async function speichereEditLehrling(){
     var {error:pwErr} = await sb.rpc('update_user_password',{target_user_id: EDIT_LEHRLING.user_id, new_password: pin});
     if(pwErr){ zeigeFehler('edit-fehler','Gespeichert, aber PIN-Änderung fehlgeschlagen: '+pwErr.message); btn.disabled=false; btn.textContent='Änderungen speichern'; return; }
   }
+  // Zugang sperren/freigeben: der Server sperrt das Konto selbst (Anmeldung und
+  // offene Sitzungen), siehe supabase/20261107_lehrling_zugang_sperren.sql
+  var sperrHinweis = '';
+  if(EDIT_AKTIV !== warAktiv || !EDIT_AKTIV){
+    var sp = await sb.rpc('lehrling_zugang_sperren',{target_user_id: EDIT_LEHRLING.user_id, gesperrt: !EDIT_AKTIV});
+    if(sp.error) sperrHinweis = EDIT_AKTIV
+      ? 'Freigabe am Server fehlgeschlagen: '+sp.error.message
+      : 'Im Lernquiz ausgeschaltet, aber das Konto ist noch nicht am Server gesperrt ('+sp.error.message+'). Bitte supabase/20261107_lehrling_zugang_sperren.sql ausführen und dann nochmal speichern.';
+  }
   btn.disabled=false; btn.textContent='Änderungen speichern';
+  if(sperrHinweis) alert(sperrHinweis);
   EDIT_LEHRLING.name = name;
   EDIT_LEHRLING.lehrjahr = lj;
   EDIT_LEHRLING.aktiv = EDIT_AKTIV;
