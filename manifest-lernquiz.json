@@ -9,7 +9,7 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "./lernquiz.html",
+  "start_url": "./lerntool.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1c1917"

@@ -6,8 +6,8 @@
 // Neue Seiten/Dateien dieser App hier bei `vorab` ergänzen.
 self.GHD_OFFLINE = {
   app: 'lernquiz',
-  version: '2026-11-07i',
-  start: './lernquiz.html',
+  version: '2026-11-07j',
+  start: './lerntool.html',
   vorab: [
     './',
     './lernquiz.html',
@@ -26,6 +26,7 @@ self.GHD_OFFLINE = {
     './lern-stil.css',
     './manifest-lernquiz.json',
     './manifest-lerntool.json',
+    './manifest-lernen.json',
     './customcolor_logo_customcolor_background.png',
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
     'https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png'
