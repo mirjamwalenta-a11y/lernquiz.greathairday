@@ -142,6 +142,52 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 .pm-seite p{font-size:16px;line-height:1.5;color:#211D17}
 .pm-seite.hinten p{font-size:14px}
 @media (prefers-reduced-motion: reduce){.pm-karte-in{transition:none}}
+/* ── Startseite (gruppiert) + Leiste unten ── */
+body.mit-leiste{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.st-kopf{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:18px}
+.st-kopf h1{font-size:24px;line-height:1.2;overflow-wrap:anywhere}
+.st-sub{color:#6B6455;font-size:13px;margin-top:2px}
+.st-lj select{width:auto;font-size:11px;font-weight:600;color:#896C32;border:1.5px solid #896C32;border-radius:20px;padding:5px 10px;background:#fff;cursor:pointer}
+.st-heute{background:#896C32;color:#fff;border-radius:12px;padding:18px;margin-bottom:12px}
+.st-heute .label{color:#F3EBD9}
+.st-heute h2{font-size:18px;font-weight:600;margin:2px 0 4px;line-height:1.3}
+.st-heute p{font-size:12px;color:#F3EBD9;margin-bottom:14px;line-height:1.5}
+.st-heute button{width:100%;padding:12px;border:none;border-radius:8px;background:#fff;color:#896C32;font-weight:600;font-size:14px;font-family:Poppins,system-ui;cursor:pointer}
+.st-heute button.st-heute-link{background:none;color:#F3EBD9;font-weight:400;font-size:12px;text-decoration:underline;padding:8px 0 0}
+.st-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.st-stat{background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;font-family:Poppins,system-ui;color:#211D17}
+.st-stat b{display:block;font-size:18px;font-weight:600}
+.st-stat small{font-size:10px;color:#6B6455;line-height:1.3;display:block}
+.st-stat.st-wdh{border-color:#C4B86A;background:#FDF6E3}
+.st-hinweis{background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:12px 14px;font-size:13px;color:#6B6455;margin-bottom:20px}
+.st-hinweis a{color:#896C32}
+.st-gruppe{margin-bottom:20px}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.st-kachel{background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:14px 12px;text-align:left;font-family:Poppins,system-ui;width:100%;cursor:pointer;transition:border-color .15s}
+.st-kachel:hover{border-color:#896C32}
+.st-ic{font-size:20px;margin-bottom:4px}
+.st-t{font-weight:600;font-size:13px;color:#211D17}
+.st-d{font-size:11px;color:#6B6455;margin-top:1px;line-height:1.35}
+.st-breit{grid-column:1/-1;display:flex;gap:12px;align-items:center}
+.st-breit .st-ic{margin:0}
+.st-mehr summary{list-style:none;cursor:pointer;background:#fff;border:1px dashed #D9CDAE;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.st-mehr summary::-webkit-details-marker{display:none}
+.st-mehr-zeile{flex:1;font-size:12px;color:#6B6455;min-width:0}
+.st-pfeil{color:#6B6455;transition:transform .2s}
+.st-mehr[open] .st-pfeil{transform:rotate(180deg)}
+.st-mehr[open] .st-mehr-zeile{visibility:hidden}
+.wdh-eintrag{background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.wdh-eintrag .wdh-text{flex:1;min-width:0}
+.wdh-eintrag .wdh-t{font-weight:600;font-size:14px;color:#211D17}
+.wdh-eintrag .wdh-grund{font-size:11px;color:#6B6455;margin-top:2px}
+.wdh-eintrag button{flex:none;padding:8px 12px;border-radius:6px;border:1px solid #896C32;background:#F3EBD9;color:#896C32;font-size:12px;font-weight:600;font-family:Poppins,system-ui;cursor:pointer}
+.leiste{position:fixed;left:0;right:0;bottom:0;z-index:380;background:#fff;border-top:1px solid #E4DBC5;display:none;justify-content:center;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+body.mit-leiste .leiste{display:flex}
+.leiste-in{display:flex;width:100%;max-width:580px}
+.leiste button{flex:1;background:none;border:none;font-family:Poppins,system-ui;font-size:10px;color:#6B6455;cursor:pointer;padding:2px 0}
+.leiste button i{display:block;font-style:normal;font-size:19px;margin:0 14px 1px;padding:1px 0;border-radius:12px}
+.leiste button.ak{color:#896C32;font-weight:600}
+.leiste button.ak i{background:#F3EBD9}
 </style>
 </head>
 <body>
@@ -149,107 +195,86 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 
 <!-- ── HOME ── -->
 <div id="p-home" class="page ak">
-  <button onclick="window.location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html')" style="background:none;border:none;color:#6B6455;font-size:13px;cursor:pointer;font-family:Poppins,system-ui;padding:0;margin-bottom:12px;display:inline-block">← Zurück zum Lernquiz</button>
-  <div class="tag">greathairday · Wien</div>
-  <h1>Lern-Tool ✂</h1>
-  <p class="sub">Für Ronya — Lehrlings-Begleitung</p>
+  <div class="st-kopf">
+    <div style="min-width:0">
+      <div class="tag">greathairday · Wien</div>
+      <h1 id="st-hallo">Lern-Tool ✂</h1>
+      <div class="st-sub" id="st-sub">Lehrlings-Begleitung</div>
+    </div>
+    <label class="st-lj" title="Lehrjahr wählen">
+      <select id="st-lj" onchange="stLjWahl(this.value)" aria-label="Lehrjahr">
+        <option value="1">1. Lehrjahr</option>
+        <option value="2">2. Lehrjahr</option>
+        <option value="3">3. Lehrjahr</option>
+      </select>
+    </label>
+  </div>
+
   <div id="admin-hinweis" style="display:none;background:#F3EBD9;border:1px solid #896C32;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#2C2C2C">
     ✂ Du bist als Meisterin eingeloggt — <button onclick="zeige('admin')" style="background:none;border:none;color:#896C32;font-size:13px;cursor:pointer;text-decoration:underline;font-family:Poppins,system-ui;padding:0">Admin-Bereich öffnen</button>
   </div>
 
-  <button class="nav-card" onclick="pmtOeffnen()" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;border:2px solid #896C32;background:#896C32;color:#fff">
-    <div class="nav-icon" style="margin:0">🔎</div>
-    <div>
-      <div class="nav-title" style="color:#fff">Was trainieren wir heute?</div>
-      <div class="nav-desc" style="color:#F3EBD9">Alle Themen, Suche &amp; zuletzt geöffnet</div>
-    </div>
-  </button>
+  <div class="st-heute">
+    <div class="label">Heute laut Lernplan</div>
+    <h2 id="st-heute-thema"></h2>
+    <p id="st-heute-info"></p>
+    <button onclick="stHeuteStarten()">Jetzt starten →</button>
+    <button class="st-heute-link" onclick="heuteOeffnen()">Lerntipp ansehen · später lernen</button>
+  </div>
 
-  <div class="card">
-    <div class="label">Lehrjahr wählen</div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-lj ak" onclick="wahlLj(this,'1')">1. Lehrjahr</button>
-      <button class="btn-lj" onclick="wahlLj(this,'2')">2. Lehrjahr</button>
-      <button class="btn-lj" onclick="wahlLj(this,'3')">3. Lehrjahr</button>
+  <div class="st-stats" id="st-stats" style="display:none">
+    <button class="st-stat st-wdh" onclick="stWiederholenOeffnen()"><b id="st-n-wdh">–</b><small>Themen zum Wiederholen</small></button>
+    <button class="st-stat" onclick="zeige('progress')"><b id="st-n-sitzt">–</b><small id="st-l-sitzt">Themen sitzen</small></button>
+    <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
+  </div>
+  <div class="st-hinweis" id="st-login-hinweis" style="display:none">
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+  </div>
+
+  <div class="st-gruppe">
+    <div class="label">Üben</div>
+    <div class="st-grid">
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+      <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
+      <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
     </div>
   </div>
 
-  <div class="grid2">
-    <button class="nav-card" onclick="heuteOeffnen()" style="grid-column:1/-1;border-color:#896C32;background:#F3EBD9">
-      <div class="nav-icon">📋</div>
-      <div class="nav-title">Heute laut Lernplan</div>
-      <div class="nav-desc">Direkt einsteigen</div>
-    </button>
-    <button class="nav-card" onclick="zeige('quiz')">
-      <div class="nav-icon">❓</div>
-      <div class="nav-title">Quiz starten</div>
-      <div class="nav-desc">Lernfragen üben</div>
-    </button>
-    <button class="nav-card" onclick="zeige('lernplan')">
-      <div class="nav-icon">📅</div>
-      <div class="nav-title">Lernplan</div>
-      <div class="nav-desc">Wochenplan erstellen</div>
-    </button>
-    <button class="nav-card" onclick="zeige('fortschritt')">
-      <div class="nav-icon">💡</div>
-      <div class="nav-title">Lerntipps</div>
-      <div class="nav-desc">Tipps pro Thema</div>
-    </button>
-    <button class="nav-card" onclick="zeige('lap')">
-      <div class="nav-icon">🎓</div>
-      <div class="nav-title">LAP-Vorbereitung</div>
-      <div class="nav-desc">Prüfung üben</div>
-    </button>
+  <div class="st-gruppe">
+    <div class="label">Praxis</div>
+    <div class="st-grid">
+      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis-Module</div><div class="st-d">Waschen, Farbe, Strähnen, Hochstecken</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261031a'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261031a'"><div class="st-ic">🧰</div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20260927f'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
+    </div>
   </div>
-  <button class="nav-card" onclick="zeige('progress')" style="margin-top:8px;display:flex;align-items:center;gap:12px">
-    <div class="nav-icon" style="margin:0">📊</div>
-    <div>
-      <div class="nav-title">Mein Fortschritt</div>
-      <div class="nav-desc">Lernstand ansehen</div>
+
+  <div class="st-gruppe">
+    <div class="label">Prüfung</div>
+    <div class="st-grid">
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261031a'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
+      <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
     </div>
-  </button>
-  <button class="nav-card" onclick="zeige('praxis')" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
-    <div class="nav-icon" style="margin:0">💆</div>
-    <div>
-      <div class="nav-title">Praxis-Module</div>
-      <div class="nav-desc">Haarwäsche &amp; Kopfmassage, Farbe, Strähnen, Hochstecken</div>
+  </div>
+
+  <details class="st-gruppe st-mehr" id="st-mehr" ontoggle="stMehrMerken(this.open)">
+    <summary><span class="label" style="margin:0">Mehr</span><span class="st-mehr-zeile">🇬🇧 Englisch · 💡 Lerntipps · 📅 Lernplan</span><span class="st-pfeil">▾</span></summary>
+    <div class="st-grid" style="margin-top:8px">
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
+      <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
+      <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
     </div>
-  </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261031a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
-    <div class="nav-icon" style="margin:0">🎓</div>
-    <div>
-      <div class="nav-title">Zwischenprüfung</div>
-      <div class="nav-desc">Praxis mit Prüfungszeit, Fachgespräch, Hautdiagnose &amp; Prüfungstag</div>
-    </div>
-  </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
-    <div class="nav-icon" style="margin:0">🇬🇧</div>
-    <div>
-      <div class="nav-title">Englisch im Salon</div>
-      <div class="nav-desc">Fachvokabular Deutsch ↔ Englisch</div>
-    </div>
-  </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261031a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
-    <div class="nav-icon" style="margin:0">✂</div>
-    <div>
-      <div class="nav-title">Schnittwerkstatt</div>
-      <div class="nav-desc">Grundschnitte, Winkel, Schnittzeichnung &amp; Beratung/Formwirkung</div>
-    </div>
-  </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261031a'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
-    <div class="nav-icon" style="margin:0">🧰</div>
-    <div>
-      <div class="nav-title">Werkzeugkunde</div>
-      <div class="nav-desc">Scheren, Kämme, Geräte, Pflege &amp; Hygiene</div>
-    </div>
-  </button>
-  <button class="nav-card" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20260927f'" style="margin-top:8px;display:flex;align-items:center;gap:12px;border-color:#896C32;background:#F3EBD9">
-    <div class="nav-icon" style="margin:0">✎</div>
-    <div>
-      <div class="nav-title">Schnittzeichnungs-Designer</div>
-      <div class="nav-desc">Eigene Schnittzeichnungen gestalten</div>
-    </div>
-  </button>
+  </details>
+</div>
+
+<!-- ── WIEDERHOLEN ── -->
+<div id="p-wiederholen" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Üben</div>
+  <h1>Wiederholen</h1>
+  <p class="sub">Diese Themen sitzen noch nicht ganz. Das Wichtigste steht oben.</p>
+  <div id="wdh-liste"></div>
 </div>
 
 <!-- ── HEUTE LAUT LERNPLAN ── -->
@@ -683,6 +708,15 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 <button onclick="zeige('mlogin')" style="background:none;border:none;color:#D9CDAE;font-size:11px;cursor:pointer;text-decoration:underline;margin-top:6px;font-family:Poppins,system-ui">Meisterin-Login</button>
 </div>
 </div>
+
+<nav class="leiste" id="leiste" aria-label="Hauptnavigation">
+  <div class="leiste-in">
+    <button data-ziel="home" onclick="zeige('home')"><i>🏠</i>Heute</button>
+    <button data-ziel="themen" onclick="pmtOeffnen()"><i>❓</i>Üben</button>
+    <button data-ziel="praxis" onclick="zeige('praxis')"><i>💆</i>Praxis</button>
+    <button data-ziel="progress" onclick="zeige('progress')"><i>📊</i>Fortschritt</button>
+  </div>
+</nav>
 
 <script>
 // ── DATEN ────────────────────────────────────────────────────────
@@ -1362,7 +1396,7 @@ var HEUTE_VERSCHOBEN = false;
 
 function heuteOeffnen() {
   // Heutiges Thema bestimmen — erstes Thema des gewählten Lehrjahrs als Beispiel
-  var themen = THEMEN[AKT_LJ] || [];
+  var themen = THEMEN[LEHRJAHR] || [];
   if (!themen.length) { zeige('home'); return; }
 
   // Thema des Tages: Index basierend auf Wochentag (0=Mo…6=So)
@@ -1436,7 +1470,7 @@ zeige = function(seite) {
   if (el) el.classList.add('ak');
   if (seite === 'quiz') quizInit();
   if (seite === 'fortschritt') fsInit();
-  if (seite === 'progress') { PROG_LJ='1'; ['1','2','3'].forEach(function(l){var b=document.getElementById('prog-lj'+l);if(b)b.className='btn-lj'+(l==='1'?' ak':'');}); progZeige(); }
+  if (seite === 'progress') { PROG_LJ=LEHRJAHR; ['1','2','3'].forEach(function(l){var b=document.getElementById('prog-lj'+l);if(b)b.className='btn-lj'+(l===PROG_LJ?' ak':'');}); progZeige(); }
   if (seite === 'admin-quiz') adminQuizInit();
   if (seite === 'admin-lap') adminLapInit();
   if (seite === 'admin-lernplan') adminLpInit();
@@ -4139,6 +4173,222 @@ async function claudeAnfrage(system, userText, maxTokens) {
   return data?.content?.[0]?.text || null;
 }
 </script>
-<script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#p-mlogin" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
+<script>
+// ── STARTSEITE: Begrüßung, Heute, Lernstand, Leiste unten ───────────
+// Liest nur eigene Daten des eingeloggten Lehrlings (lehrlinge, kompetenz,
+// verlauf) – was gelesen werden darf, regelt die bestehende RLS.
+// Der Thema-Status folgt denselben Regeln wie im Lernquiz (berechneStatus /
+// wiederholStatus in lernquiz.html) – bei Änderungen dort hier mitziehen.
+var ST = {lehrling:null, komp:{}, verlauf:[], geladen:false, ljGewaehlt:false};
+var ST_WOCHENZIEL = 3;          // Lerneinheiten pro Woche
+var ST_SITZT_NACH_TAGEN = 3;
+var ST_LJ_KEY = 'lt_lehrjahr';
+var ST_MEHR_KEY = 'lt_mehr_offen';
+
+function stISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function stTage(a, b) { return Math.round((new Date(b+'T12:00:00') - new Date(a+'T12:00:00')) / 86400000); }
+function stBestaetigt(d) { return !d || !d.gut_am || (!!d.gut_seit && stTage(d.gut_seit, d.gut_am) >= ST_SITZT_NACH_TAGEN); }
+function stWiederholStatus(d) {
+  if (!d || !d.gut_am || !d.gut_seit || stBestaetigt(d)) return null;
+  return stTage(d.gut_seit, stISO(new Date())) >= ST_SITZT_NACH_TAGEN ? 'faellig' : 'wartet';
+}
+function stStatus(d) {
+  if (!d || !d.durchlaeufe) return null;
+  var g = d.richtig + d.falsch;
+  if (g === 0) return null;
+  var q = d.richtig / g;
+  if (q >= 0.80 && d.durchlaeufe >= 2 && g >= 4 && (d.letzte_runde === 'gut' || d.letzte_runde === 'sehrgut') && stBestaetigt(d)) return 'sitzt';
+  if (d.richtig >= 2 && q >= 0.60) return 'teilweise';
+  if (d.richtig >= 3 && q >= 0.50) return 'teilweise';
+  return 'unsicher';
+}
+
+// Themen, die noch nicht sitzen – wichtigste zuerst (wie „Als Nächstes üben“ im Lernquiz)
+function stWiederholListe() {
+  var liste = [];
+  Object.keys(ST.komp).forEach(function(th){
+    var d = ST.komp[th], g = d.richtig + d.falsch;
+    var prozent = g > 0 ? d.richtig / g : 0;
+    var ws = prozent >= 0.8 ? stWiederholStatus(d) : null;
+    var st = stStatus(d);
+    if (ws === 'faellig') liste.push({th:th, st:'faellig'});
+    else if (ws !== 'wartet' && (st === 'unsicher' || st === 'teilweise')) liste.push({th:th, st:st});
+  });
+  var rang = {unsicher:0, teilweise:1, faellig:2};
+  liste.sort(function(a,b){ return rang[a.st] - rang[b.st] || a.th.localeCompare(b.th, 'de'); });
+  return liste;
+}
+
+// Tage in Folge mit mindestens einer Lerneinheit (heute oder bis gestern)
+function stStreak() {
+  var tage = {};
+  ST.verlauf.forEach(function(v){ if (v.erstellt_am) tage[stISO(new Date(v.erstellt_am))] = true; });
+  var d = new Date();
+  if (!tage[stISO(d)]) d.setDate(d.getDate() - 1);
+  var n = 0;
+  while (tage[stISO(d)]) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function stDieseWoche() {
+  var mo = new Date(); mo.setHours(0,0,0,0);
+  mo.setDate(mo.getDate() - ((mo.getDay() + 6) % 7));
+  return ST.verlauf.filter(function(v){ return v.erstellt_am && new Date(v.erstellt_am) >= mo; }).length;
+}
+
+function stHeuteThema() {
+  var themen = THEMEN[LEHRJAHR] || [];
+  return themen.length ? themen[new Date().getDay() % themen.length] : '';
+}
+
+function stZeichnen() {
+  var hallo = document.getElementById('st-hallo');
+  var sub = document.getElementById('st-sub');
+  document.getElementById('st-lj').value = LEHRJAHR;
+
+  // Heute laut Lernplan
+  var thema = stHeuteThema();
+  document.getElementById('st-heute-thema').textContent = thema || '—';
+  var tipp = (FORTSCHRITT_TIPPS[thema] || '').split('\n')[0].replace(/^[^A-Za-zÄÖÜäöü„"]+/, '');
+  if (tipp.length > 90) tipp = tipp.slice(0, 88).replace(/\s+\S*$/, '') + ' …';
+  document.getElementById('st-heute-info').textContent = 'ca. 20 Min' + (tipp ? ' · ' + tipp : '');
+
+  var stats = document.getElementById('st-stats');
+  var hinweis = document.getElementById('st-login-hinweis');
+  if (!ST.lehrling) {
+    hallo.textContent = 'Lern-Tool ✂';
+    sub.textContent = 'Lehrlings-Begleitung';
+    stats.style.display = 'none';
+    hinweis.style.display = ST.geladen ? 'block' : 'none';
+    document.getElementById('st-wdh-desc').textContent = 'Was noch wackelt';
+    return;
+  }
+  hinweis.style.display = 'none';
+  var vorname = String(ST.lehrling.name || '').trim().split(/\s+/)[0];
+  hallo.textContent = vorname ? 'Hallo ' + vorname + ' 👋' : 'Hallo 👋';
+  var streak = stStreak(), woche = stDieseWoche();
+  sub.textContent = (streak > 0 ? '🔥 ' + streak + (streak === 1 ? ' Tag' : ' Tage') + ' in Folge · ' : '') +
+    'Wochenziel ' + Math.min(woche, ST_WOCHENZIEL) + ' / ' + ST_WOCHENZIEL + (woche >= ST_WOCHENZIEL ? ' ✓' : '');
+
+  var wdh = stWiederholListe().length;
+  var sitzt = 0, offen = 0;
+  Object.keys(ST.komp).forEach(function(th){ if (stStatus(ST.komp[th]) === 'sitzt') sitzt++; });
+  (THEMEN[LEHRJAHR] || []).forEach(function(th){ var d = ST.komp[th]; if (!d || !d.durchlaeufe) offen++; });
+  document.getElementById('st-n-wdh').textContent = wdh;
+  document.getElementById('st-n-sitzt').textContent = sitzt;
+  document.getElementById('st-l-sitzt').textContent = sitzt === 1 ? 'Thema sitzt' : 'Themen sitzen';
+  document.getElementById('st-n-offen').textContent = offen;
+  document.getElementById('st-l-offen').textContent = (offen === 1 ? 'Thema' : 'Themen') + ' noch offen (' + LEHRJAHR + '. LJ)';
+  document.getElementById('st-wdh-desc').textContent = wdh ? wdh + (wdh === 1 ? ' Thema wackelt' : ' Themen wackeln') + ' noch' : 'Gerade nichts offen – super!';
+  stats.style.display = 'grid';
+}
+
+async function stLaden() {
+  try {
+    var s = await sb2.auth.getSession();
+    var uid = s.data && s.data.session ? s.data.session.user.id : null;
+    if (!uid) { ST.lehrling = null; return; }
+    var l = await sb2.from('lehrlinge').select('id,name,lehrjahr').eq('user_id', uid).maybeSingle();
+    ST.lehrling = l.data || null;
+    if (!ST.lehrling) return;   // z. B. Meisterin: kein Lernstand
+    if (!ST.ljGewaehlt && ['1','2','3'].indexOf(String(ST.lehrling.lehrjahr)) >= 0) LEHRJAHR = String(ST.lehrling.lehrjahr);
+    var res = await Promise.all([
+      sb2.from('kompetenz').select('*').eq('lehrling_id', ST.lehrling.id),
+      sb2.from('verlauf').select('erstellt_am').eq('lehrling_id', ST.lehrling.id).order('erstellt_am', {ascending:false}).limit(400)
+    ]);
+    ST.komp = {};
+    (res[0].data || []).forEach(function(r){ ST.komp[r.thema] = r; });
+    ST.verlauf = res[1].data || [];
+  } catch (e) {
+    // offline oder Fehler: Startseite trotzdem zeigen
+  } finally {
+    ST.geladen = true;
+    stZeichnen();
+  }
+}
+
+function stLjWahl(lj) {
+  LEHRJAHR = lj;
+  ST.ljGewaehlt = true;
+  try { localStorage.setItem(ST_LJ_KEY, lj); } catch (e) {}
+  stZeichnen();
+}
+
+function stHeuteStarten() {
+  heuteOeffnen();   // füllt Thema & Tipp auf der Heute-Seite
+  heuteStarten();   // und öffnet gleich das Quiz zum Thema
+}
+
+function stMehrMerken(offen) { try { localStorage.setItem(ST_MEHR_KEY, offen ? '1' : '0'); } catch (e) {} }
+
+function stWiederholenOeffnen() {
+  var box = document.getElementById('wdh-liste');
+  box.innerHTML = '';
+  if (!ST.lehrling) {
+    box.innerHTML = '<div class="st-hinweis">Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html">Lernquiz einloggen</a>, dann siehst du hier, was du wiederholen solltest.</div>';
+  } else {
+    var liste = stWiederholListe();
+    if (!liste.length) box.innerHTML = '<div class="st-hinweis">Gerade gibt es nichts zu wiederholen. Mach einen Schnell-Check im Lernquiz oder ein neues Thema.</div>';
+    var grund = {unsicher:'noch unsicher', teilweise:'teilweise sicher', faellig:'ein paar Tage her – prüfen, ob es noch sitzt'};
+    liste.forEach(function(x){
+      var el = document.createElement('div');
+      el.className = 'wdh-eintrag';
+      var txt = document.createElement('div'); txt.className = 'wdh-text';
+      var t = document.createElement('div'); t.className = 'wdh-t'; t.textContent = x.th;
+      var g = document.createElement('div'); g.className = 'wdh-grund'; g.textContent = grund[x.st];
+      txt.appendChild(t); txt.appendChild(g);
+      var b = document.createElement('button');
+      if ((FRAGEN[x.th] || []).length) {
+        b.textContent = 'Üben →';
+        b.onclick = function(){ stThemaUeben(x.th); };
+      } else {
+        b.textContent = 'Im Lernquiz →';
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html'; };
+      }
+      el.appendChild(txt); el.appendChild(b);
+      box.appendChild(el);
+    });
+  }
+  zeige('wiederholen');
+}
+
+// Themen-Quiz mit einem bestimmten Thema öffnen (auch aus einem anderen Lehrjahr)
+function stThemaUeben(thema) {
+  zeige('quiz');
+  var sel = document.getElementById('quiz-thema');
+  if (![].some.call(sel.options, function(o){ return o.value === thema; })) {
+    var o = document.createElement('option'); o.value = thema; o.textContent = thema; sel.appendChild(o);
+  }
+  sel.value = thema;
+  quizReset();
+}
+
+// Leiste unten: auf Lehrlings-Seiten zeigen, im Admin-/Login-Bereich nicht
+var ST_LEISTE_PRAXIS = /^(praxis|pm-)/;
+function stLeiste(seite) {
+  var ohne = seite === 'mlogin' || seite.indexOf('admin') === 0;
+  document.body.classList.toggle('mit-leiste', !ohne);
+  var ziel = ST_LEISTE_PRAXIS.test(seite) ? 'praxis' : seite;
+  document.querySelectorAll('#leiste button').forEach(function(b){ b.classList.toggle('ak', b.getAttribute('data-ziel') === ziel); });
+}
+
+var _zeigeOhneLeiste = zeige;
+zeige = function(seite) {
+  _zeigeOhneLeiste(seite);
+  stLeiste(seite);
+  if (seite === 'home') { stZeichnen(); stLaden(); }
+};
+
+(function(){
+  try {
+    var lj = localStorage.getItem(ST_LJ_KEY);
+    if (['1','2','3'].indexOf(lj) >= 0) { LEHRJAHR = lj; ST.ljGewaehlt = true; }
+    if (localStorage.getItem(ST_MEHR_KEY) === '1') document.getElementById('st-mehr').open = true;
+  } catch (e) {}
+  stLeiste('home');
+  stZeichnen();
+  stLaden();
+})();
+</script>
+<script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#p-mlogin" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 </body>
 </html>
