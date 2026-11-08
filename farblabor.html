@@ -141,7 +141,22 @@ section.block > header{display:grid;gap:6px}
 .wahl-liste button.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 
 /* ── Spiel ── */
-#msWo button,#msVerh button,#msWeiss button,#rpWeiss button,#rpGef button{font-family:Poppins,system-ui;font-size:13px}
+#atFall button,#msWo button,#msVerh button,#msWeiss button,#rpWeiss button,#rpGef button{font-family:Poppins,system-ui;font-size:13px}
+.at-zwei{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}
+.at-zwei .fb-bild.gross{width:130px}
+.at-schritte{display:grid;gap:8px}
+.at-schritte div{display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.4}
+.at-schritte .rp-n{width:24px;height:24px}
+.rp-n.gut{background:var(--good)}
+.at-balken{display:flex;height:24px;border-radius:6px;overflow:hidden;font-size:11px;color:#fff;font-weight:600}
+.at-balken span{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;padding:0 4px}
+.at-kopf svg{width:100%;max-width:240px;display:block;margin:0 auto}
+.ar-liste{display:grid;gap:7px;margin-top:4px}
+.ar-liste button{appearance:none;display:flex;gap:10px;align-items:center;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font:14px Poppins,system-ui;color:var(--ink);cursor:pointer;transition:background .2s}
+.ar-liste button i{font-style:normal;flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-2);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.ar-liste button.gesetzt{border-color:var(--accent);background:var(--accent-soft);cursor:default}
+.ar-liste button.gesetzt i{background:var(--accent);color:#fff}
+.ar-liste button.falsch{border-color:var(--bad);background:var(--bad-soft)}
 .fb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .fb-k{appearance:none;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;font-family:Poppins,system-ui;color:var(--ink);display:grid;gap:2px}
 .fb-k.ok{border-color:var(--good);box-shadow:0 0 0 1px var(--good)}
@@ -263,8 +278,9 @@ body.schnupper .nur-lern{display:none!important}
     <a href="#rezeptur">5 · Rezeptur</a>
     <a href="#mischstation">6 · Mischen</a>
     <a href="#fehler">7 · Fehlerbilder</a>
-    <a href="#spiel">8 · Spiel</a>
-    <a href="#quiz">9 · Quiz</a>
+    <a href="#auftragen">8 · Auftragen</a>
+    <a href="#spiel">9 · Spiel</a>
+    <a href="#quiz">10 · Quiz</a>
   </div>
 </nav>
 
@@ -477,10 +493,42 @@ body.schnupper .nur-lern{display:none!important}
     <p class="muted rp-hinweis">Lernhilfe. Bei echten Farbkorrekturen entscheidet die Meisterin.</p>
   </section>
 
-  <!-- ═════════ 8 SPIEL ═════════ -->
-  <section class="block" id="spiel">
+  <!-- ═════════ 8 AUFTRAGEN ═════════ -->
+  <section class="block" id="auftragen">
     <header>
       <span class="tag2">Teil 8</span>
+      <h2>Auftragen: was zuerst?</h2>
+      <p class="muted">Wo die Farbe zuerst hinkommt, entscheidet über das Ergebnis.</p>
+    </header>
+    <div class="panel">
+      <div class="wahl"><div class="knoepfe" id="atFall"></div></div>
+      <div class="at-zwei"><span class="fb-bild gross" id="atStr"></span><div class="at-schritte" id="atSchritte"></div></div>
+      <div class="at-balken" id="atBalken"></div>
+      <span class="rp-warum" id="atWarum"></span>
+    </div>
+    <div class="panel">
+      <h3>Reihenfolge am Kopf</h3>
+      <div class="rp-modus" style="margin:0"><button type="button" id="atFaerben" class="an" aria-pressed="true">Färben</button><button type="button" id="atBlond" aria-pressed="false">Blondieren</button></div>
+      <div class="at-kopf" id="atKopf"></div>
+      <div class="at-schritte" id="atKopfText"></div>
+    </div>
+    <div class="panel">
+      <div class="spiel-kopf">
+        <div><span class="tag2">Spiel</span><h3>Reihenfolge-Profi</h3></div>
+        <span class="punkte" id="arPunkte">0 ★</span>
+      </div>
+      <div class="fortschritt" id="arFort" aria-hidden="true"></div>
+      <div id="arFall"></div>
+      <div class="meldung" id="arMeldung" hidden></div>
+      <div class="reihe" style="justify-content:center"><button class="btn" id="arWeiter" hidden>Weiter →</button></div>
+      <p class="muted punkte-info" id="arSpeicher"></p>
+    </div>
+  </section>
+
+  <!-- ═════════ 9 SPIEL ═════════ -->
+  <section class="block" id="spiel">
+    <header>
+      <span class="tag2">Teil 9</span>
       <h2>Spiel: Neutralisier-Profi</h2>
       <p class="muted">Eine Kundin wurde aufgehellt, der Untergrund liegt schon in der Schale. Gib so viele Tropfen dazu, bis der Stich weg ist, nicht zu wenig und nicht zu viel.</p>
     </header>
@@ -508,10 +556,10 @@ body.schnupper .nur-lern{display:none!important}
     </div>
   </section>
 
-  <!-- ═════════ 9 QUIZ ═════════ -->
+  <!-- ═════════ 10 QUIZ ═════════ -->
   <section class="block" id="quiz">
     <header>
-      <span class="tag2">Teil 9</span>
+      <span class="tag2">Teil 10</span>
       <h2>Wissens-Check</h2>
       <p class="muted">Antwort antippen, dann sagen, ob du dir sicher bist. Die Erklärung erscheint sofort.</p>
     </header>
@@ -1479,6 +1527,90 @@ $('#fbWeiter').onclick=()=>{
 const fbWeiterStd=$('#fbWeiter').onclick;
 $('#fbZurueck').onclick=fbListe;
 fbListe();
+
+// ═════════ Teil 8: Auftragen in der richtigen Reihenfolge ═════════
+// Salon-Regel der Meisterin: Färben immer Kreuzscheitel, dann hinten beginnen.
+// Blondieren: an der dunkelsten Stelle zuerst.
+const AT=[
+ {n:'Erstfärbung heller',str:{a:'#7D5030',l:'#C98A52',s:'#C98A52'},
+  s:[['1','Längen & Spitzen, 1–2 cm Abstand zum Ansatz'],['2','ca. 15–20 Min einwirken lassen'],['3','Dann den <b>Ansatz</b> auftragen'],['4','Ab dem Ansatz noch 35 Min']],
+  b:[[20,'Längen & Spitzen','#C9A06A'],[35,'+ Ansatz · 35 Min','#896C32']],
+  w:'Warum? Am Ansatz ist es durch die Kopfwärme wärmer – die Farbe wirkt dort schneller. Käme er zuerst, würde er heller als die Längen („Hot Roots“).'},
+ {n:'Erstfärbung gleich/dunkler',str:{a:'#6A4428',l:'#6A4428',s:'#6A4428'},
+  s:[['1','In einem Zug vom <b>Ansatz bis in die Spitzen</b>'],['2','35 Min einwirken lassen']],
+  b:[[35,'Ansatz bis Spitzen · 35 Min','#896C32']],
+  w:'Warum? Es wird nicht aufgehellt – die Kopfwärme macht hier keinen Unterschied. Darum geht alles in einem Zug.'},
+ {n:'Nachfärbung',str:{a:'#7D5030',l:'#A87A48',s:'#B08452'},
+  s:[['1','Farbe nur auf den <b>Ansatz</b>'],['2','Einwirkzeit ab dem Ansatz laufen lassen'],['3','Die letzten 5–10 Min <b>Längen & Spitzen</b> durchziehen']],
+  b:[[27,'nur Ansatz','#896C32'],[8,'+ Längen','#C9A06A']],
+  w:'Warum? Die Längen sind schon gefärbt und oft porös. Volle Einwirkzeit würde sie zu dunkel machen – kurz durchziehen frischt nur auf.'}
+];
+let atI=0,atBlond=false;
+function atZeige(){
+  rpKnoepfe('atFall',AT.map(x=>x.n),atI,i=>{atI=i;atZeige();});
+  const f=AT[atI];
+  $('#atStr').innerHTML=straehneSVG(Object.assign({mitText:true},f.str),'at'+atI);
+  $('#atSchritte').innerHTML=f.s.map(x=>'<div><span class="rp-n">'+x[0]+'</span><span>'+x[1]+'</span></div>').join('');
+  $('#atBalken').innerHTML=f.b.map(x=>'<span style="flex:'+x[0]+';background:'+x[2]+'">'+esc(x[1])+'</span>').join('');
+  $('#atWarum').textContent=f.w;
+}
+function atKopf(){
+  $('#atFaerben').className=atBlond?'':'an';$('#atFaerben').setAttribute('aria-pressed',!atBlond);
+  $('#atBlond').className=atBlond?'an':'';$('#atBlond').setAttribute('aria-pressed',atBlond);
+  const kreis=(x,y,t,f)=>'<circle cx="'+x+'" cy="'+y+'" r="17" fill="'+f+'"/><text x="'+x+'" y="'+(y+5)+'" fill="#fff" font-size="15">'+t+'</text>';
+  let h='<svg viewBox="0 0 240 262" aria-label="Kopf von oben mit vier Partien"><text x="120" y="14" font-size="10" fill="#6B6455" text-anchor="middle" font-family="Poppins,sans-serif">Stirn / Gesicht</text>'+
+    '<ellipse cx="120" cy="138" rx="86" ry="108" fill="#E9DCC4" stroke="#896C32" stroke-width="2"/>'+
+    '<path d="M120 30 V246 M34 150 Q120 142 206 150" stroke="#211D17" stroke-width="2" stroke-dasharray="5 4" fill="none"/><g font-family="Poppins,sans-serif" font-weight="700" text-anchor="middle">';
+  if(!atBlond) h+=kreis(80,200,'1','#896C32')+kreis(160,200,'2','#896C32')+kreis(80,96,'3','#C9A06A')+kreis(160,96,'4','#C9A06A');
+  else h+='<ellipse cx="78" cy="190" rx="30" ry="24" fill="#5A3A24" opacity=".55"/>'+kreis(78,190,'★','#211D17');
+  h+='</g><text x="120" y="259" font-size="10" fill="#6B6455" text-anchor="middle" font-family="Poppins,sans-serif">Hinterkopf / Nacken</text></svg>';
+  $('#atKopf').innerHTML=h;
+  $('#atKopfText').innerHTML=(atBlond?[
+    ['1','Abteilen'],['★','An der <b>dunkelsten Stelle</b> zuerst beginnen – sie braucht am längsten zum Aufhellen'],['✓','Danach die helleren Partien, dünne Abteilungen, genug Produkt']]:[
+    ['1','Erst <b>Kreuzscheitel</b>: vier Partien abteilen'],['2','<b>Hinten</b> beginnen – dort ist es kühler, die Farbe braucht länger'],['3','Oberkopf und Vorderkopf zuletzt – feineres Haar, wärmer'],['✓','Dünne Abteilungen, genug Farbe – sonst wird es fleckig']])
+    .map(x=>'<div><span class="rp-n'+(x[0]==='✓'?' gut':'')+'">'+x[0]+'</span><span>'+x[1]+'</span></div>').join('');
+}
+$('#atFaerben').onclick=()=>{atBlond=false;atKopf();};
+$('#atBlond').onclick=()=>{atBlond=true;atKopf();};
+atZeige();atKopf();
+// Reihenfolge-Spiel
+const AR=[
+ {t:'Erstfärbung heller: Naturhaar 6, Wunsch 7.3',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Längen & Spitzen, 1–2 cm Abstand zum Ansatz','Ca. 15–20 Min einwirken lassen','Dann den Ansatz auftragen','Ab dem Ansatz noch 35 Min einwirken lassen','Emulgieren, ausspülen, Shampoo & Pflege'],
+  tipp:'Beim Heller-Färben kommt der Ansatz nicht zuerst – die Kopfwärme macht ihn sonst zu hell. Und abgeteilt wird immer vor dem Auftragen.'},
+ {t:'Nachfärbung: Ansatz 3 cm, Längen leicht verblasst',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Farbe nur auf den Ansatz','Einwirkzeit ab dem Ansatz laufen lassen','Die letzten 5–10 Min Längen & Spitzen durchziehen','Emulgieren, ausspülen, Shampoo & Pflege'],
+  tipp:'Bei der Nachfärbung zuerst nur der Ansatz – die Längen kommen erst ganz am Schluss kurz dazu.'},
+ {t:'Erstfärbung dunkler: Naturhaar 7, Wunsch 5.0',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: in einem Zug vom Ansatz bis in die Spitzen','35 Min einwirken lassen','Emulgieren, ausspülen, Shampoo & Pflege'],
+  tipp:'Beim Dunkler-Färben geht alles in einem Zug. Abgeteilt wird immer zuerst, und hinten wird begonnen.'}
+];
+let arI=0,arPos=0,arFehler=0,arErg=[],arP=0,arMix=[];
+function arNeu(){arI=0;arErg=[];arP=0;$('#arSpeicher').textContent='';arZeige();}
+function arZeige(){
+  const f=AR[arI];arPos=0;arFehler=0;arMix=mischen(f.s.map((x,i)=>i));
+  $('#arPunkte').textContent=arP+' ★';
+  $('#arFort').innerHTML=AR.map((_,i)=>'<span class="'+(i<arI?'ok':i===arI?'jetzt':'')+'"></span>').join('');
+  $('#arFall').innerHTML='<div class="auftrag"><span class="tag2">Fall '+(arI+1)+' von '+AR.length+'</span><b>'+esc(f.t)+'</b><span class="muted" style="font-size:13px">Tippe die Schritte in der richtigen Reihenfolge an.</span></div>'+
+    '<div class="ar-liste" id="arListe">'+arMix.map(i=>'<button type="button" data-i="'+i+'"><i></i><span>'+esc(f.s[i])+'</span></button>').join('')+'</div>';
+  $('#arMeldung').hidden=true;$('#arWeiter').hidden=true;
+  $('#arListe').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    if(b.classList.contains('gesetzt')||!$('#arWeiter').hidden)return;
+    const m=$('#arMeldung');
+    if(+b.dataset.i===arPos){arPos++;b.classList.add('gesetzt');b.querySelector('i').textContent=arPos;m.hidden=true;
+      if(arPos===f.s.length){const ok=!arFehler;if(ok)arP++;arErg.push(ok);$('#arPunkte').textContent=arP+' ★';
+        m.hidden=false;m.className='meldung gut';m.textContent=ok?'Perfekt, alles in der richtigen Reihenfolge! ★':'Geschafft! Beim nächsten Mal auf Anhieb.';
+        $('#arWeiter').hidden=false;$('#arWeiter').textContent=arI===AR.length-1?'Auswertung →':'Nächster Fall →';}}
+    else {arFehler++;b.classList.add('falsch');setTimeout(()=>b.classList.remove('falsch'),600);
+      m.hidden=false;m.className='meldung schlecht';m.innerHTML='<b>Noch nicht.</b> '+esc(f.tipp);}
+  });
+}
+$('#arWeiter').onclick=()=>{
+  if($('#arWeiter').textContent.indexOf('Neue')>=0){arNeu();return;}
+  if(arI<AR.length-1){arI++;arZeige();return;}
+  $('#arFort').innerHTML=AR.map(()=>'<span class="ok"></span>').join('');
+  $('#arFall').innerHTML='<div class="auftrag"><b>Alle '+AR.length+' Fälle geschafft! 🎉</b><span>'+arP+' von '+AR.length+' auf Anhieb in der richtigen Reihenfolge.</span></div>';
+  $('#arMeldung').hidden=true;$('#arWeiter').textContent='↻ Neue Runde';
+  punkteSpeichern(arErg.map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok})),'arSpeicher');
+};
+arNeu();
 
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
