@@ -173,6 +173,14 @@ body.mit-leiste{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .st-wh-text b{display:block;font-size:14px;font-weight:600}
 .st-wh-text small{display:block;font-size:12px;color:#6B6455;margin-top:1px}
 .st-wh-los{flex:none;background:#896C32;color:#fff;border-radius:8px;padding:9px 12px;font:600 13px Poppins,system-ui}
+.ffl-k{background:#fff;border:1px solid #E4DBC5;border-radius:12px;padding:14px;margin-bottom:10px}
+.ffl-kopf{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.ffl-kopf b{font-size:15px;color:#211D17}.ffl-kopf span{font-size:12px;font-weight:700;white-space:nowrap}
+.ffl-d{font-size:12px;color:#6B6455;margin-top:3px}
+.ffl-rueck{font-size:13px;color:#7A5E28;background:#F3EBD9;border-radius:8px;padding:8px 10px;margin-top:8px}
+.ffl-schale{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ffl-schale span{display:grid;gap:4px;font-size:11px;color:#6B6455}
+.ffl-schale input{margin:0}
 .pt-karte{background:#fff;border:1.5px solid #896C32;border-radius:12px;padding:14px;margin-bottom:16px}
 .pt-karte[hidden]{display:none}
 .pt-kopf{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
@@ -325,6 +333,12 @@ body.mit-leiste .leiste{display:flex}
     <span class="st-wh-los">Los →</span>
   </a>
 
+  <a class="st-wh" id="st-ff" hidden href="#farbfaelle" onclick="fflOeffnen();return false;">
+    <span class="st-wh-ic">📬</span>
+    <span class="st-wh-text"><b id="st-ff-titel"></b><small id="st-ff-text"></small></span>
+    <span class="st-wh-los">Los →</span>
+  </a>
+
   <div class="st-heute">
     <div class="label">Heute laut Lernplan</div>
     <h2 id="st-heute-thema"></h2>
@@ -358,7 +372,8 @@ body.mit-leiste .leiste{display:flex}
       <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
       <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i'"><div class="st-ic">🧰</div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></button>
       <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
+      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
+      <button class="st-kachel" onclick="fflOeffnen()"><div class="st-ic">🎨</div><div class="st-t">Farb-Fälle</div><div class="st-d">Rezeptur für echte Fälle planen</div></button>
     </div>
   </div>
 
@@ -402,6 +417,10 @@ body.mit-leiste .leiste{display:flex}
       <button type="button" data-min="0" onclick="ptDauerWahl(0)">andere …</button>
     </div>
     <input type="number" id="pt-min" min="1" max="600" inputmode="numeric" placeholder="Minuten" hidden>
+    <div id="pt-rez-box">
+      <label for="pt-rezeptur">Rezeptur (bei Farbe)</label>
+      <input id="pt-rezeptur" maxlength="200" placeholder="z. B. 6.34 + ¼ 6.0, 6 %, 1 : 1,5, 35 Min">
+    </div>
     <label for="pt-kontrolle">Wer hat kontrolliert?</label>
     <input id="pt-kontrolle" maxlength="60" list="pt-namen" placeholder="Name" autocomplete="off">
     <datalist id="pt-namen"></datalist>
@@ -411,6 +430,15 @@ body.mit-leiste .leiste{display:flex}
     <button class="btn-primary" id="pt-speichern" onclick="ptSpeichern()" style="margin-top:14px">Speichern</button>
     <p class="pt-info">Deine Meisterin bestätigt den Eintrag. Bestätigte Einträge zählen für die Praxis-Abzeichen.</p>
   </div>
+</div>
+
+<!-- ── FARB-FÄLLE ── -->
+<div id="p-farbfaelle" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Farbe</div>
+  <h1>🎨 Farb-Fälle</h1>
+  <p class="sub">Echte Fälle aus dem Salon: Du planst die Rezeptur, deine Meisterin gibt dir Rückmeldung.</p>
+  <div id="ffl-inhalt"></div>
 </div>
 
 <!-- ── WIEDERHOLEN ── -->
@@ -754,7 +782,7 @@ body.mit-leiste .leiste{display:flex}
       <div class="nav-desc">Haarzyklus, Pigmente, Warm-Kalt-Gesetz, Dominanz, Farbcodes, Pigmentierung, Farbabzug</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g'">
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h'">
     <div class="nav-icon" style="margin:0">🧪</div>
     <div>
       <div class="pm-lj">1. – 3. Lehrjahr · Spiel</div>
@@ -818,7 +846,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">1. Lehrjahr · Praxis-Modul</div>
   <h1>Farbtechniken</h1>
   <p class="sub">Mischen, einwirken lassen, Oxidanten verstehen.</p>
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g" style="display:inline-block;margin:-4px 0 12px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor selbst mischen &amp; neutralisieren →</a>
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h" style="display:inline-block;margin:-4px 0 12px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor selbst mischen &amp; neutralisieren →</a>
   <div class="pm-tabs">
     <button class="btn-toggle" id="pmf-tab-rechner" onclick="pmFarbeTab('rechner')">Rechner</button>
     <button class="btn-toggle" id="pmf-tab-oxi" onclick="pmFarbeTab('oxi')">Oxidanten</button>
@@ -850,7 +878,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">2. + 3. Lehrjahr · Praxis-Modul</div>
   <h1>Colorist: Farbe verstehen</h1>
   <p class="sub">Farbenlehre, Diagnose und das richtige Produkt.</p>
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g" style="display:inline-block;margin:-4px 0 12px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor selbst mischen &amp; neutralisieren →</a>
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h" style="display:inline-block;margin:-4px 0 12px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor selbst mischen &amp; neutralisieren →</a>
   <div class="pm-tabs pm-tabs-viele">
     <button class="btn-toggle" id="pmc-tab-pigment" onclick="pmColoristTab('pigment')">Pigmente</button>
     <button class="btn-toggle" id="pmc-tab-kontrast" onclick="pmColoristTab('kontrast')">Kontraste</button>
@@ -882,7 +910,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">1. – 3. Lehrjahr · Praxis-Modul</div>
   <h1>Haar &amp; Farbe: Wissen</h1>
   <p class="sub">Wie Haar aufgebaut ist und wie Farbe darin wirkt.</p>
-  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g" style="display:inline-block;margin:-4px 0 12px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor selbst mischen &amp; neutralisieren →</a>
+  <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h" style="display:inline-block;margin:-4px 0 12px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor selbst mischen &amp; neutralisieren →</a>
   <div class="pm-tabs pm-tabs-viele">
     <button class="btn-toggle" id="pmx-tab-haar" onclick="pmWissenTab('haar')">Haar</button>
     <button class="btn-toggle" id="pmx-tab-warmkalt" onclick="pmWissenTab('warmkalt')">Warm-Kalt</button>
@@ -3986,7 +4014,7 @@ function pmxCodes() {
     '<input id="pmx-code" type="text" inputmode="text" autocomplete="off" value="'+PMX.code.replace(/"/g, '')+'" oninput="PMX.code=this.value;pmxCodeErg()" placeholder="z. B. 7,21 oder 7VB" style="font-size:18px;text-align:center;margin-bottom:8px">' +
     '<div class="pm-wahl">' + ['6,0','7,21','8,13','5,4','7VB','9,1'].map(function(x){ return '<button class="btn-toggle" onclick="PMX.code=\''+x+'\';pmxCodes()">'+x+'</button>'; }).join('') + '</div>' +
     '<div id="pmx-code-erg"></div>' +
-    '<a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g#nummern" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor üben: 7.04, 7.4, 7.44, 7.40 und Nummern-Spiel →</a></div>' +
+    '<a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h#nummern" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:#896C32;text-decoration:none">🧪 Im Farblabor üben: 7.04, 7.4, 7.44, 7.40 und Nummern-Spiel →</a></div>' +
     '<div class="card"><div class="label">So ist die Tube aufgebaut</div>' + pmxPunkte(['<strong>Grundton (1–10):</strong> schafft die Farbtiefe und deckt weißes Haar. Je höher die Zahl, desto heller.','<strong>Hauptreflex (1. Stelle nach dem Komma):</strong> der größte Reflexanteil, z. B. Blau neutralisiert Orange.','<strong>Nebenreflex (2. Stelle):</strong> immer schwächer, z. B. Violett neutralisiert Gelb.','<strong>Naturton</strong> (z. B. 6,0): viel Grundton, kaum Reflex, mehr Deckkraft bei weißem Haar. <strong>Modeton</strong> (z. B. 6,46): mehr Reflex.']) +
     pmxMerke('Die Reflexnummern sind herstellerabhängig. Hier gilt die L’Oréal-Nummerierung (z. B. Majirel). Bei Matt- oder Mokka-Tönen (,7 / ,8) die Farbkarte der Linie prüfen.') + '</div>';
   pmxSetze(html);
@@ -4127,12 +4155,12 @@ var PMT_THEMEN = [
     {n:'Weißes Haar & UV-Schutz', lj:[1], k:'grau weiß melanozyten sonne uv', go:pmtWis('haar','weiss')}
   ]},
   {i:'🎨', n:'Farbe', p:[
-    {n:'Farblabor: selbst mischen & neutralisieren', lj:[1,2,3], k:'grundfarben mischen gegenfarbe komplementär farbkreis neutralisieren aufhellung untergrund spiel', go:pmtLink('farblabor.html?v=20261108g')},
-    {n:'Farbnummern verstehen (Farblabor)', lj:[1,2,3], k:'farbnummer 7.44 7.40 7.04 hauptreflex nebenreflex null doppelt intensiv kupfer spiel', go:pmtLink('farblabor.html?v=20261108g#nummern')},
-    {n:'Auftragen: was zuerst? (Farblabor)', lj:[1,2,3], k:'auftragen reihenfolge erstfärbung nachfärbung ansatz längen spitzen kreuzscheitel hinten abteilen blondieren dunkelste stelle', go:pmtLink('farblabor.html?v=20261108g#auftragen')},
-    {n:'Fehlerbilder: Was ist da passiert? (Farblabor)', lj:[1,2,3], k:'fehler grünstich gelbstich orange ansatz heller hot roots spitzen dunkel fleckig fahl korrektur vorpigmentieren weiß schimmert', go:pmtLink('farblabor.html?v=20261108g#fehler')},
-    {n:'Mischen, Rechnen & Grauabdeckung (Farblabor)', lj:[1,2,3], k:'mischen gramm ml oxidant mischverhältnis 1:1,5 1:2 einwirkzeit timer grauabdeckung weiß grau naturton rechnen', go:pmtLink('farblabor.html?v=20261108g#mischstation')},
-    {n:'Rezeptur-Planer: von Ist zu Soll (Farblabor)', lj:[1,2,3], k:'rezeptur oxidant wasserstoff 6% 9% 12% aufhellen tonhöhe weißanteil grau naturton mischverhältnis einwirkzeit planen', go:pmtLink('farblabor.html?v=20261108g#rezeptur')},
+    {n:'Farblabor: selbst mischen & neutralisieren', lj:[1,2,3], k:'grundfarben mischen gegenfarbe komplementär farbkreis neutralisieren aufhellung untergrund spiel', go:pmtLink('farblabor.html?v=20261108h')},
+    {n:'Farbnummern verstehen (Farblabor)', lj:[1,2,3], k:'farbnummer 7.44 7.40 7.04 hauptreflex nebenreflex null doppelt intensiv kupfer spiel', go:pmtLink('farblabor.html?v=20261108h#nummern')},
+    {n:'Auftragen: was zuerst? (Farblabor)', lj:[1,2,3], k:'auftragen reihenfolge erstfärbung nachfärbung ansatz längen spitzen kreuzscheitel hinten abteilen blondieren dunkelste stelle', go:pmtLink('farblabor.html?v=20261108h#auftragen')},
+    {n:'Fehlerbilder: Was ist da passiert? (Farblabor)', lj:[1,2,3], k:'fehler grünstich gelbstich orange ansatz heller hot roots spitzen dunkel fleckig fahl korrektur vorpigmentieren weiß schimmert', go:pmtLink('farblabor.html?v=20261108h#fehler')},
+    {n:'Mischen, Rechnen & Grauabdeckung (Farblabor)', lj:[1,2,3], k:'mischen gramm ml oxidant mischverhältnis 1:1,5 1:2 einwirkzeit timer grauabdeckung weiß grau naturton rechnen', go:pmtLink('farblabor.html?v=20261108h#mischstation')},
+    {n:'Rezeptur-Planer: von Ist zu Soll (Farblabor)', lj:[1,2,3], k:'rezeptur oxidant wasserstoff 6% 9% 12% aufhellen tonhöhe weißanteil grau naturton mischverhältnis einwirkzeit planen', go:pmtLink('farblabor.html?v=20261108h#rezeptur')},
     {n:'Mischungs- & Einwirkzeit-Rechner (L’Oréal)', lj:[1], k:'majirel inoa dia light high lift blond studio mischung gramm timer passé', go:pmtFarbe('rechner')},
     {n:'Oxidanten: Stärken & Wirkung', lj:[1], k:'oxidant wasserstoffperoxid h2o2 prozent vol', go:pmtFarbe('oxi')},
     {n:'Farb-Lernkarten', lj:[1], k:'karteikarten oxidant flashcards', go:pmtFarbe('karten')},
@@ -4452,6 +4480,7 @@ function stZeichnen() {
     var ml = document.getElementById('st-mlogin-link'); if (ml) ml.hidden = !!ST.meisterin;
     document.getElementById('st-wz').hidden = true;
     document.getElementById('st-wh').hidden = true;
+    document.getElementById('st-ff').hidden = true;
     document.getElementById('st-wdh-desc').textContent = 'Was noch wackelt';
     return;
   }
@@ -4464,6 +4493,7 @@ function stZeichnen() {
   var wh = document.getElementById('st-wh'), whN = ST.whFaellig || 0;
   wh.hidden = !whN;
   if (whN) document.getElementById('st-wh-titel').textContent = whN + (whN === 1 ? ' Frage heute fällig' : ' Fragen heute fällig');
+  fflBanner();
 
   var wdh = stWiederholListe().length;
   var sitzt = 0, offen = 0;
@@ -4506,6 +4536,7 @@ async function stLaden() {
       if (!w.error) ST.whFaellig = w.count || 0;
     } catch (e) {}
     ST.verlauf = res[1].data || [];
+    await fflLaden();
   } catch (e) {
     // offline oder Fehler: Startseite trotzdem zeigen
   } finally {
@@ -4745,6 +4776,103 @@ function lkSchliessen() {
 }
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !document.getElementById('lk-sheet').hidden) lkSchliessen(); });
 
+// ── FARB-FÄLLE (Lehrling) ───────────────────────────────────────────────────
+// Die Meisterin schickt einen Fall (farb_faelle), der Lehrling plant die Rezeptur
+// (farb_plaene, status 'offen'), die Meisterin gibt Rückmeldung. Lesen/Schreiben
+// regelt die RLS aus supabase/20261108_farb_faelle.sql.
+var FFL = {faelle: [], plaene: [], an: false, offen: null};
+var FFL_WEISS = ['kein Weiß', 'bis 30 %', '30–50 %', 'über 50 %'];
+var FFL_STATUS = {offen: ['wartet auf die Meisterin', '#A08A20'], passt: ['✓ passt', '#2F7D55'], fast: ['~ fast', '#8A7A30'], nochmal: ['✗ nochmal planen', '#C44030']};
+async function fflLaden() {
+  FFL.an = false;
+  if (!ST.lehrling) return;
+  try {
+    var r = await Promise.all([
+      sb2.from('farb_faelle').select('*').eq('aktiv', true).order('erstellt_am', {ascending: false}).limit(50),
+      sb2.from('farb_plaene').select('*').eq('lehrling_id', ST.lehrling.id).order('erstellt_am', {ascending: false}).limit(200)
+    ]);
+    if (r[0].error || r[1].error) return;
+    FFL.faelle = r[0].data || []; FFL.plaene = r[1].data || []; FFL.an = true;
+  } catch (e) {}
+}
+function fflLetzter(f) { return FFL.plaene.filter(function(p){ return p.fall_id === f.id; })[0] || null; }
+function fflZuTun() { return FFL.faelle.filter(function(f){ var p = fflLetzter(f); return !p || p.status === 'nochmal'; }); }
+function fflGesehen() { try { return localStorage.getItem('ffl-gesehen') || ''; } catch (e) { return ''; } }
+function fflNeueRueck() { var g = fflGesehen(); return FFL.plaene.filter(function(p){ return p.bewertet_am && p.bewertet_am > g; }); }
+function fflBanner() {
+  var b = document.getElementById('st-ff'); if (!b) return;
+  var neu = FFL.an ? fflZuTun().length : 0, rueck = FFL.an ? fflNeueRueck().length : 0;
+  b.hidden = !(neu || rueck);
+  if (neu) { document.getElementById('st-ff-titel').textContent = neu === 1 ? 'Neuer Farb-Fall von deiner Meisterin' : neu + ' Farb-Fälle von deiner Meisterin'; document.getElementById('st-ff-text').textContent = 'Plane die Rezeptur – sie schaut drüber.'; }
+  else if (rueck) { document.getElementById('st-ff-titel').textContent = 'Rückmeldung zu deinem Farb-Plan'; document.getElementById('st-ff-text').textContent = 'Deine Meisterin hat deinen Plan angeschaut.'; }
+}
+function fflEsc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
+function fflKurz(f) { return (f.gefaerbt ? 'Nachfärbung' : 'Naturhaar') + ' · Tonhöhe ' + f.ist_th + ' · ' + FFL_WEISS[f.weiss || 0] + ' · Wunsch ' + f.wunsch; }
+async function fflOeffnen() {
+  zeige('farbfaelle');
+  var box = document.getElementById('ffl-inhalt');
+  box.innerHTML = '<div class="st-hinweis">Wird geladen…</div>';
+  if (!ST.geladen) await stLaden();
+  if (!ST.lehrling) { box.innerHTML = '<div class="st-hinweis">' + stOhneLehrling('deine Farb-Fälle') + '</div>'; return; }
+  await fflLaden();
+  try { localStorage.setItem('ffl-gesehen', new Date().toISOString()); } catch (e) {}
+  fflBanner();
+  if (!FFL.an) { box.innerHTML = '<div class="st-hinweis">Die Farb-Fälle sind noch nicht eingerichtet – die Meisterin muss sie einmal freischalten.</div>'; return; }
+  if (!FFL.faelle.length) { box.innerHTML = '<div class="st-hinweis">Noch keine Farb-Fälle. Sobald deine Meisterin dir einen Fall schickt, steht er hier.</div>'; return; }
+  box.innerHTML = FFL.faelle.map(function(f){
+    var p = fflLetzter(f), st = p ? FFL_STATUS[p.status] : null, offen = !p || p.status === 'nochmal';
+    return '<div class="ffl-k"><div class="ffl-kopf"><b>' + fflEsc(f.titel) + '</b>' + (st ? '<span style="color:' + st[1] + '">' + st[0] + '</span>' : '<span style="color:#896C32">neu</span>') + '</div>' +
+      '<div class="ffl-d">' + fflEsc(fflKurz(f)) + '</div>' +
+      (p && p.rueckmeldung ? '<div class="ffl-rueck">💬 ' + fflEsc(p.rueckmeldung) + '</div>' : '') +
+      (offen ? '<button class="btn-primary" style="margin-top:10px" data-ffl="' + fflEsc(f.id) + '">' + (p ? 'Nochmal planen →' : 'Rezeptur planen →') + '</button>' :
+        p.status === 'offen' ? '<button class="pt-weg" style="margin-top:8px" data-ffl="' + fflEsc(f.id) + '">Plan ändern</button>' : '') + '</div>';
+  }).join('');
+  box.querySelectorAll('[data-ffl]').forEach(function(b){ b.onclick = function(){ fflPlan(b.dataset.ffl); }; });
+}
+function fflPlan(id) {
+  var f = FFL.faelle.filter(function(x){ return String(x.id) === id; })[0]; if (!f) return;
+  var p = fflLetzter(f), alt = p && p.status === 'offen' ? p : null;
+  FFL.offen = {f: f, alt: alt, ox: alt ? alt.oxidant : ''};
+  var oxs = ['1,8–3 %', '6 %', '9 %', '12 %'];
+  var box = document.getElementById('ffl-inhalt');
+  box.innerHTML = '<button class="back-btn" onclick="fflOeffnen()">← Alle Farb-Fälle</button>' +
+    '<div class="ffl-k"><div class="ffl-kopf"><b>' + fflEsc(f.titel) + '</b></div><div class="ffl-d">' + fflEsc(fflKurz(f)) + '</div>' +
+    (p && p.status === 'nochmal' && p.rueckmeldung ? '<div class="ffl-rueck">💬 ' + fflEsc(p.rueckmeldung) + '</div>' : '') + '</div>' +
+    '<div class="pt-f"><label>Oxidant</label><div class="pt-dauer" id="ffl-ox">' + oxs.map(function(o){ return '<button type="button" class="' + (o === FFL.offen.ox ? 'on' : '') + '">' + o + '</button>'; }).join('') + '</div>' +
+    '<label>In die Schale</label><div class="ffl-schale">' +
+      '<span>Farbe ' + fflEsc(f.wunsch) + '<input type="number" id="ffl-g" min="0" max="500" inputmode="numeric" placeholder="g" value="' + (alt && alt.farbe_g != null ? alt.farbe_g : '') + '"></span>' +
+      '<span>Naturton<input type="number" id="ffl-n" min="0" max="500" inputmode="numeric" placeholder="g" value="' + (alt && alt.naturton_g != null ? alt.naturton_g : '') + '"></span>' +
+      '<span>Oxidant<input type="number" id="ffl-ml" min="0" max="1000" inputmode="numeric" placeholder="ml" value="' + (alt && alt.oxidant_ml != null ? alt.oxidant_ml : '') + '"></span></div>' +
+    '<label for="ffl-reihe">Reihenfolge beim Auftragen</label><textarea id="ffl-reihe" rows="2" maxlength="500" placeholder="z. B. Kreuzscheitel, hinten beginnen, nur Ansatz …">' + fflEsc(alt ? alt.reihenfolge : '') + '</textarea>' +
+    '<label for="ffl-warum">Warum so?</label><textarea id="ffl-warum" rows="3" maxlength="500" placeholder="In deinen Worten: Warum dieses Oxidant, warum (k)ein Naturton …">' + fflEsc(alt ? alt.warum : '') + '</textarea>' +
+    '<div id="ffl-fehler" class="pt-fehler" aria-live="polite"></div>' +
+    '<button class="btn-primary" id="ffl-senden" style="margin-top:14px">An die Meisterin schicken →</button>' +
+    '<p class="pt-info">Tipp: Im Farblabor hilft dir der Rezeptur-Planer (Teil 5) und die Mischstation (Teil 6).</p></div>';
+  document.getElementById('ffl-ox').querySelectorAll('button').forEach(function(b){ b.onclick = function(){
+    FFL.offen.ox = b.textContent; document.getElementById('ffl-ox').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); }); }; });
+  document.getElementById('ffl-senden').onclick = fflSenden;
+  window.scrollTo(0, 0);
+}
+async function fflSenden() {
+  var o = FFL.offen, fe = document.getElementById('ffl-fehler'); fe.textContent = '';
+  var zahl = function(id){ var v = document.getElementById(id).value; return v === '' ? null : Math.max(0, Math.round(+v)); };
+  var plan = {oxidant: o.ox || null, farbe_g: zahl('ffl-g'), naturton_g: zahl('ffl-n'), oxidant_ml: zahl('ffl-ml'),
+    reihenfolge: document.getElementById('ffl-reihe').value.trim().slice(0, 500) || null, warum: document.getElementById('ffl-warum').value.trim().slice(0, 500) || null};
+  if (!plan.oxidant) { fe.textContent = 'Bitte wähle ein Oxidant.'; return; }
+  if (!plan.farbe_g) { fe.textContent = 'Bitte trag ein, wie viel Farbe in die Schale kommt.'; return; }
+  if (!plan.warum) { fe.textContent = 'Bitte schreib kurz, warum du es so planst.'; return; }
+  var b = document.getElementById('ffl-senden'); b.disabled = true; b.textContent = 'Wird geschickt…';
+  try {
+    var r = o.alt ? await sb2.from('farb_plaene').update(plan).eq('id', o.alt.id)
+                  : await sb2.from('farb_plaene').insert(Object.assign({fall_id: o.f.id, lehrling_id: ST.lehrling.id}, plan));
+    if (r.error) throw r.error;
+    fflOeffnen();
+  } catch (e) {
+    fe.textContent = 'Konnte nicht geschickt werden' + (navigator.onLine === false ? ' – keine Internetverbindung.' : '.');
+    b.disabled = false; b.textContent = 'An die Meisterin schicken →';
+  }
+}
+
 // ── PRAXIS-TAGEBUCH (Tabelle praxis_eintraege) ────────────────────────
 // Lehrling trägt ein, was geübt wurde; die Meisterin bestätigt im
 // Meisterin-Bereich. Selbst bestätigen geht nicht (RLS). Ohne Migration
@@ -4765,7 +4893,8 @@ async function ptLaden() {
     var holen = function(sp){ return sb2.from('praxis_eintraege').select(sp)
       .eq('lehrling_id', ST.lehrling.id).order('datum', {ascending: false}).order('erstellt_am', {ascending: false}).limit(30); };
     // meisterin_notiz kommt mit 20261107_praxis_meisterin_notiz.sql – ohne die Spalte trotzdem laden
-    var r = await holen(spalten + ',meisterin_notiz');
+    var r = await holen(spalten + ',meisterin_notiz,rezeptur');
+    if (r.error && /rezeptur/.test(r.error.message || '')) r = await holen(spalten + ',meisterin_notiz');
     if (r.error && /meisterin_notiz/.test(r.error.message || '')) r = await holen(spalten);
     PT.an = !r.error;
     PT.eintraege = r.data || [];
@@ -4792,6 +4921,7 @@ function ptZeichnen() {
     z.appendChild(lkEl('div', 'pt-d', ptDatumText(e.datum)));
     var w = lkEl('div', 'pt-w', e.bereich);
     w.appendChild(lkEl('small', null, [e.details, ptDauerText(e.dauer_min), e.kontrolliert_von ? 'kontrolliert von ' + e.kontrolliert_von : ''].filter(Boolean).join(' · ')));
+    if (e.rezeptur) w.appendChild(lkEl('span', 'pt-notiz', '🧪 ' + e.rezeptur));
     if (e.notiz) w.appendChild(lkEl('span', 'pt-notiz', '„' + e.notiz + '“'));
     if (e.meisterin_notiz) w.appendChild(lkEl('span', 'pt-mnotiz', '💬 Meisterin: ' + e.meisterin_notiz));
     z.appendChild(w);
@@ -4821,7 +4951,7 @@ function ptFormOeffnen(e) {
   document.getElementById('pt-form-titel').textContent = e ? 'Eintrag bearbeiten' : 'Geübt – eintragen';
   document.getElementById('pt-datum').value = e ? e.datum : stISO(new Date());
   document.getElementById('pt-datum').max = stISO(new Date());
-  ['pt-eigen','pt-details','pt-kontrolle','pt-notiz','pt-min'].forEach(function(id){ document.getElementById(id).value = ''; });
+  ['pt-eigen','pt-details','pt-kontrolle','pt-notiz','pt-min','pt-rezeptur'].forEach(function(id){ document.getElementById(id).value = ''; });
   var ausListe = e && PT_BEREICHE.indexOf(e.bereich) >= 0;
   sel.value = e ? (ausListe ? e.bereich : '') : PT_BEREICHE[0];
   ptBereichWahl();
@@ -4830,6 +4960,7 @@ function ptFormOeffnen(e) {
     document.getElementById('pt-details').value = e.details || '';
     document.getElementById('pt-kontrolle').value = e.kontrolliert_von || '';
     document.getElementById('pt-notiz').value = e.notiz || '';
+    document.getElementById('pt-rezeptur').value = e.rezeptur || '';
   }
   var fest = [15, 30, 45, 60, 90];
   if (e && fest.indexOf(e.dauer_min) < 0) { ptDauerWahl(0); document.getElementById('pt-min').value = e.dauer_min; }
@@ -4842,7 +4973,10 @@ function ptFormOeffnen(e) {
   zeige('praxis-eintrag');
 }
 function ptBereichWahl() {
-  var eigen = document.getElementById('pt-bereich').value === '';
+  var bw = document.getElementById('pt-bereich').value;
+  // Rezeptur-Feld bei Farbe, Strähnen oder selbst eingetragenem Bereich
+  document.getElementById('pt-rez-box').hidden = !(bw === '' || bw === 'Farbe' || bw === 'Strähnen & Balayage');
+  var eigen = bw === '';
   document.getElementById('pt-eigen').hidden = !eigen;
   if (eigen) document.getElementById('pt-eigen').focus();
 }
@@ -4867,6 +5001,8 @@ async function ptSpeichern() {
     kontrolliert_von: document.getElementById('pt-kontrolle').value.trim().slice(0, 60) || null,
     notiz: document.getElementById('pt-notiz').value.trim().slice(0, 500) || null
   };
+  var rez = document.getElementById('pt-rez-box').hidden ? '' : document.getElementById('pt-rezeptur').value.trim().slice(0, 200);
+  if (rez) eintrag.rezeptur = rez; else if (PT.bearbeiten) eintrag.rezeptur = null;
   var b = document.getElementById('pt-speichern'); b.disabled = true; b.textContent = 'Wird gespeichert…';
   try {
     var r;
@@ -4874,8 +5010,12 @@ async function ptSpeichern() {
       // Nur unbestätigte eigene Einträge lassen sich ändern (RLS praxis_eintraege_eigene_aendern)
       delete eintrag.lehrling_id;
       r = await sb2.from('praxis_eintraege').update(eintrag).eq('id', PT.bearbeiten).eq('bestaetigt', false).select('id');
+      if (r.error && /rezeptur/.test(r.error.message || '')) { delete eintrag.rezeptur; r = await sb2.from('praxis_eintraege').update(eintrag).eq('id', PT.bearbeiten).eq('bestaetigt', false).select('id'); }
       if (!r.error && (!r.data || !r.data.length)) { f.textContent = 'Dieser Eintrag ist schon bestätigt und kann nicht mehr geändert werden.'; return; }
-    } else r = await sb2.from('praxis_eintraege').insert(eintrag);
+    } else {
+      r = await sb2.from('praxis_eintraege').insert(eintrag);
+      if (r.error && /rezeptur/.test(r.error.message || '')) { delete eintrag.rezeptur; r = await sb2.from('praxis_eintraege').insert(eintrag); }
+    }
     if (r.error) throw r.error;
     PT.bearbeiten = null;
     zeige('praxis');
@@ -4928,7 +5068,7 @@ zeige = function(seite) {
     });
   }
   // Sprungziele aus der Leiste der anderen Lern-Seiten (lern-leiste.js)
-  var sprung = {'#ueben': function(){ pmtOeffnen(); }, '#praxis': function(){ zeige('praxis'); }, '#fortschritt': function(){ zeige('progress'); }}[location.hash];
+  var sprung = {'#ueben': function(){ pmtOeffnen(); }, '#praxis': function(){ zeige('praxis'); }, '#fortschritt': function(){ zeige('progress'); }, '#farbfaelle': function(){ fflOeffnen(); }}[location.hash];
   if (sprung) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
     sprung();

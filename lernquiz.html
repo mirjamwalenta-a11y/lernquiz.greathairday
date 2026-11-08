@@ -116,6 +116,17 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-wahl-box{background:#F8F4EA;border-radius:14px;padding:16px;width:100%;max-width:420px}
 .mb-wahl-box b{display:block;font-size:15px;margin-bottom:10px;color:#211D17}
 .mb-wahl-box .mb-l{margin-bottom:8px}
+.ff-vgl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:12px;line-height:1.45}
+.ff-vgl>div{background:#FFFDF8;border:1px solid #E4DBC5;border-radius:10px;padding:10px;overflow-wrap:anywhere}
+.ff-vgl b{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B6455;margin-bottom:4px}
+.ff-vgl .ff-lehr{border-color:#896C32}
+.ff-bew{display:flex;gap:6px;margin-top:8px}
+.ff-bew button{flex:1;appearance:none;border:1.5px solid #E4DBC5;background:#fff;border-radius:8px;padding:10px 4px;font:600 13px Poppins,system-ui;cursor:pointer}
+.ff-bew .g{border-color:#5B8A4A;color:#2F7D55}.ff-bew .t{color:#8A7A30}.ff-bew .n{color:#C44030}
+.ff-chips{display:flex;gap:5px;flex-wrap:wrap}
+.ff-chips button{appearance:none;border:1.5px solid #E4DBC5;background:#fff;border-radius:8px;padding:7px 10px;font:600 13px Poppins,system-ui;color:#6B6455;cursor:pointer}
+.ff-chips button.an{background:#896C32;border-color:#896C32;color:#fff}
+.ff-plan textarea,.tb-e input,.tb-e select{margin-bottom:0}
 .pte-box{max-height:92dvh;overflow-y:auto}
 .paz-frei{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:-4px 0 12px}
 .paz-frei label{font-size:10px;font-weight:700;letter-spacing:1px;color:#6B6455;text-transform:uppercase}
@@ -427,6 +438,7 @@ textarea{resize:vertical;margin-bottom:0}
         <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
         <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
         <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
+        <button class="mb-k mb-breit" id="btn-mb-ff"><div class="mb-ic">🎨</div><div><b>Farb-Fälle</b><small id="mb-ff-sub">Echte Fälle schicken – der Lehrling plant die Rezeptur</small></div></button>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w#en-verlauf"><div class="mb-ic">📊</div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></a>
       </div>
     </div>
@@ -448,7 +460,7 @@ textarea{resize:vertical;margin-bottom:0}
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundformen, Winkel, Pony, Formwirkung</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Schnittzeichnungen erstellen</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108g&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107j"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
         <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Hochstecken</small></div></a>
       </div>
@@ -475,6 +487,16 @@ textarea{resize:vertical;margin-bottom:0}
   </div>
 </div>
 
+<div id="s-farb-faelle" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-ff-back">← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🎨 Farb-Fälle</h2>
+    <p class="mb-sub">Du schickst einen echten Fall aus dem Salon, der Lehrling plant die Rezeptur, du gibst Rückmeldung. Ohne Namen und ohne Foto der Kundin.</p>
+    <div id="ff-inhalt"></div>
+  </div>
+</div>
+
 <div id="s-pt-auszug" class="seite">
   <div style="padding-top:4px">
     <button class="mb-zurueck" id="btn-paz-back">← Zurück</button>
@@ -496,6 +518,7 @@ textarea{resize:vertical;margin-bottom:0}
       <div><label class="pte-l" for="pte-min">Minuten</label><input type="number" id="pte-min" min="1" max="600" inputmode="numeric"></div>
       <div><label class="pte-l" for="pte-kontrolle">Kontrolliert von</label><input id="pte-kontrolle" maxlength="60"></div>
     </div>
+    <label class="pte-l" for="pte-rezeptur">Rezeptur (bei Farbe)</label><input id="pte-rezeptur" maxlength="200" placeholder="z. B. 6.34 + ¼ 6.0, 6 %, 35 Min">
     <label class="pte-l" for="pte-notiz">Notiz des Lehrlings</label><textarea id="pte-notiz" rows="2" maxlength="500"></textarea>
     <label class="pte-l" for="pte-mnotiz">💬 Deine Notiz <span>(sieht auch der Lehrling)</span></label><textarea id="pte-mnotiz" rows="2" maxlength="500" placeholder="z. B. Abteilungen sauber, Spannung beim Föhnen noch üben"></textarea>
     <div id="pte-fehler" class="pte-fehler" aria-live="polite"></div>
@@ -1458,7 +1481,7 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle'||id==='s-pt-auszug');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle');
 }
 function zeige(id){
   document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
@@ -2141,15 +2164,17 @@ async function ladeDashboard(){
   }
   var ids=lehrlinge.map(function(l){return l.id;});
   // Ein Abruf für alle statt einer pro Lehrling
-  var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]};
+  var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]},ffRes={data:[]};
   try{
     var r=await Promise.all([
       sb.from('kompetenz').select('*').in('lehrling_id',ids),
       sb.from('verlauf').select('lehrling_id,erstellt_am,punkte,gesamt').in('lehrling_id',ids).order('erstellt_am',{ascending:false}).limit(2000),
       // Praxis-Tagebuch: unbestätigte Einträge (ohne Migration → einfach keine Anzeige)
-      Promise.resolve(sb.from('praxis_eintraege').select('lehrling_id,bereich,dauer_min').in('lehrling_id',ids).eq('bestaetigt',false)).catch(function(){return {data:[]};})
+      Promise.resolve(sb.from('praxis_eintraege').select('lehrling_id,bereich,dauer_min').in('lehrling_id',ids).eq('bestaetigt',false)).catch(function(){return {data:[]};}),
+      // Farb-Fälle: Pläne, die auf Rückmeldung warten (ohne Migration → keine Anzeige)
+      Promise.resolve(sb.from('farb_plaene').select('lehrling_id').eq('status','offen')).catch(function(){return {data:[]};})
     ]);
-    kompRes=r[0];verlRes=r[1];ptRes=r[2]&&!r[2].error?r[2]:{data:[]};
+    kompRes=r[0];verlRes=r[1];ptRes=r[2]&&!r[2].error?r[2]:{data:[]};ffRes=r[3]&&!r[3].error?r[3]:{data:[]};
   }catch(e){}
   var name={};lehrlinge.forEach(function(l){name[l.id]=l.name;});
   var ptOffen=ptRes.data||[], ptOffenVon={};
@@ -2204,18 +2229,24 @@ async function ladeDashboard(){
 
   // „Heute zu tun“: zuerst Praxis bestätigen, dann Prüfhinweise, sonst alles erledigt
   var nPt=ptOffen.filter(function(x){return name[x.lehrling_id]!==undefined;}).length, nH=hinweise.length;
+  var nFF=(ffRes.data||[]).filter(function(x){return name[x.lehrling_id]!==undefined;}).length;
   var wzErreicht=aktive.filter(function(l){return (wocheVon[l.id]||0)>=wochenzielVon(l);}).length;
   var hh='<div class="lab">Heute zu tun</div>';
   if(nPt){
     var kurz=ptOffen.slice(0,3).map(function(x){return (name[x.lehrling_id]||'')+': '+x.bereich+' '+ptDauer(x.dauer_min||0);}).join(' · ')+(nPt>3?' …':'');
     hh+='<h3>'+nPt+(nPt===1?' Praxis-Eintrag wartet':' Praxis-Einträge warten')+' auf dich</h3><p>'+escHtml(kurz)+'</p>'+
       '<button class="mb-heute-los" data-mb-los="pt">Jetzt bestätigen →</button>'+
+      (nFF?'<button class="mb-heute-link" data-mb-los="ff">Farb-Pläne ansehen ('+nFF+')</button>':'')+
+      (nH?'<button class="mb-heute-link" data-mb-los="hinweise">Prüfhinweise ansehen ('+nH+')</button>':'');
+  } else if(nFF){
+    hh+='<h3>'+nFF+(nFF===1?' Farb-Plan wartet':' Farb-Pläne warten')+' auf deine Rückmeldung</h3><p>Der Lehrling hat eine Rezeptur geplant – schau drüber.</p>'+
+      '<button class="mb-heute-los" data-mb-los="ff">Ansehen →</button>'+
       (nH?'<button class="mb-heute-link" data-mb-los="hinweise">Prüfhinweise ansehen ('+nH+')</button>':'');
   } else if(nH){
     hh+='<h3>'+nH+(nH===1?' Prüfhinweis':' Prüfhinweise')+'</h3><p>Im Quiz ist etwas auffällig – ein kurzes Prüfgespräch zeigt, ob es wirklich sitzt.</p>'+
       '<button class="mb-heute-los" data-mb-los="hinweise">Ansehen →</button>';
   } else {
-    hh+='<h3>Alles erledigt ✓</h3><p>Keine Praxis-Einträge zum Bestätigen und keine Prüfhinweise.</p>';
+    hh+='<h3>Alles erledigt ✓</h3><p>Keine Praxis-Einträge zum Bestätigen, keine Farb-Pläne und keine Prüfhinweise.</p>';
   }
   heute.innerHTML=hh;
   stats.innerHTML=
@@ -2223,6 +2254,7 @@ async function ladeDashboard(){
     '<button class="mb-stat'+(nH?' mb-stat-an':'')+'" data-mb-los="hinweise"><b>'+nH+'</b><small>'+(nH===1?'Prüfhinweis':'Prüfhinweise')+'</small></button>'+
     '<button class="mb-stat" data-mb-los="lehrlinge"><b>'+wzErreicht+' / '+aktive.length+'</b><small>Wochenziel erreicht</small></button>';
   document.getElementById('mb-pt-sub').textContent=nPt?'Alle Einträge · '+nPt+' zum Bestätigen':'Alle Einträge aller Lehrlinge';
+  document.getElementById('mb-ff-sub').textContent=nFF?nFF+(nFF===1?' Plan wartet':' Pläne warten')+' auf deine Rückmeldung':'Echte Fälle schicken – der Lehrling plant die Rezeptur';
 }
 var DETAIL_START_TAB=null;
 var DETAIL_START_KLICK=null;
@@ -2232,6 +2264,7 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-mb-los]'); if(!b||!ISTMEISTERIN) return;
   var was=b.dataset.mbLos;
   if(was==='pt'){ zeigePtAlle(null); return; }
+  if(was==='ff'){ zeigeFarbFaelle(); return; }
   var ziel=document.getElementById(was==='hinweise'?'mb-hinweise':'mb-lehrlinge');
   if(was==='hinweise'&&!MB_HINWEISE.length){ alert('Gerade gibt es keine Prüfhinweise – im Quiz ist nichts auffällig.'); return; }
   if(ziel) ziel.scrollIntoView({behavior:'smooth',block:'start'});
@@ -2271,6 +2304,7 @@ function ptBearbeiten(e,wer,nachher){
   document.getElementById('pte-min').value=e.dauer_min||'';
   document.getElementById('pte-kontrolle').value=e.kontrolliert_von||'';
   document.getElementById('pte-notiz').value=e.notiz||'';
+  document.getElementById('pte-rezeptur').value=e.rezeptur||'';
   document.getElementById('pte-mnotiz').value=e.meisterin_notiz||'';
   document.getElementById('pte-fehler').textContent='';
   document.getElementById('pte-ok-bestaetigen').style.display=e.bestaetigt?'none':'';
@@ -2289,10 +2323,12 @@ async function ptBearbeitenSpeichern(bestaetigen){
     details:document.getElementById('pte-details').value.trim().slice(0,300)||null,
     kontrolliert_von:document.getElementById('pte-kontrolle').value.trim().slice(0,60)||null,
     notiz:document.getElementById('pte-notiz').value.trim().slice(0,500)||null,
-    meisterin_notiz:document.getElementById('pte-mnotiz').value.trim().slice(0,500)||null};
+    meisterin_notiz:document.getElementById('pte-mnotiz').value.trim().slice(0,500)||null,
+    rezeptur:document.getElementById('pte-rezeptur').value.trim().slice(0,200)||null};
   if(bestaetigen){upd.bestaetigt=true;upd.bestaetigt_am=new Date().toISOString();}
   var r=await sb.from('praxis_eintraege').update(upd).eq('id',e.id);
   var ohneNotiz=false;
+  if(r&&r.error&&/rezeptur/.test(r.error.message||'')){ delete upd.rezeptur; r=await sb.from('praxis_eintraege').update(upd).eq('id',e.id); }
   if(r&&r.error&&/meisterin_notiz/.test(r.error.message||'')){
     // Migration 20261107_praxis_meisterin_notiz.sql fehlt noch: Rest trotzdem speichern
     ohneNotiz=!!upd.meisterin_notiz; delete upd.meisterin_notiz;
@@ -2302,6 +2338,112 @@ async function ptBearbeitenSpeichern(bestaetigen){
   document.getElementById('pt-edit').hidden=true;
   if(ohneNotiz) alert('Gespeichert – nur deine Notiz noch nicht: Dafür bitte supabase/20261107_praxis_meisterin_notiz.sql in Supabase ausführen.');
   if(PTE.nachher) PTE.nachher();
+}
+
+// ── FARB-FÄLLE (Meisterin) ──────────────────────────────────────────────────
+// Tabellen farb_faelle / farb_plaene (Migration 20261108_farb_faelle.sql).
+// Anlegen und Bewerten darf nur die Meisterin – das erzwingt die RLS.
+var FF_WEISS=['kein Weiß','bis 30 %','30–50 %','über 50 %'];
+var FF_STATUS={offen:['wartet auf dich','#A08A20'],passt:['✓ passt','#2F7D55'],fast:['~ fast','#8A7A30'],nochmal:['✗ nochmal','#C44030']};
+var FF={neu:{ist:6,weiss:1,gef:false},lehrlinge:[]};
+// Vorschlag der App – dieselben Faustregeln wie im Rezeptur-Planer (farblabor.html):
+// Oxidant 1,8–3 % ohne Aufhellung/ohne Weiß, 6 % 1 Stufe oder Grauabdeckung,
+// 9 % 2 Stufen, 12 % 3–4 Stufen; Naturton ¼ bei 30–50 %, ½ über 50 %;
+// Einwirkzeit 10 Aufhellung · 15 Farbtiefe · 10 Reflex.
+function ffVorschlag(f){
+  var p=String(f.wunsch).split('.'), th=+p[0], refl=p[1]||'', natur=!refl||refl==='0'||refl.charAt(0)==='0', d=th-f.ist_th, t=[];
+  if(d>4) return 'Mehr als 4 Stufen heller: Blondierung oder High-Lift – Rezeptur plant die Meisterin.';
+  var ox=d<=0?(f.weiss>0?'6 %':'1,8–3 %'):d===1?'6 %':d===2?'9 %':'12 %';
+  t.push('Oxidant '+ox+(d>0?' ('+d+(d===1?' Stufe':' Stufen')+' heller)':d<0?' (dunkler)':' (Ton in Ton)'));
+  if(natur) t.push('Naturton-Wunsch: kein Naturton dazu');
+  else t.push(f.weiss===2?'¼ Naturton '+th+'.0 dazu':f.weiss===3?'½ Naturton '+th+'.0 dazu':'kein Naturton nötig');
+  t.push(f.gefaerbt?'Nachfärbung: nur Ansatz, Längen in der Reflex-Phase (letzte 10 Min)':d>0?'Erstfärbung heller: Längen zuerst, Ansatz zuletzt':'In einem Zug vom Ansatz bis in die Spitzen');
+  if(f.gefaerbt&&d>0) t.push('Achtung: Farbe hellt keine Farbe auf – die Längen nicht heller machen');
+  if(refl.charAt(0)==='1'&&th>=8) t.push('Asch auf gelbem Untergrund kann grünlich wirken – Irisé (Violett) passt besser');
+  if(refl.charAt(0)==='2'&&th<=6) t.push('Bei orangem Untergrund gleicht Asch (Blau) besser aus als Irisé');
+  t.push('Mischverhältnis 1 : 1,5 · 35 Min (10 · 15 · 10)');
+  return t.join(' · ');
+}
+function ffKurz(f){return (f.gefaerbt?'Nachfärbung':'Naturhaar')+' · TH '+f.ist_th+' · '+FF_WEISS[f.weiss||0]+' · Wunsch '+f.wunsch;}
+async function zeigeFarbFaelle(){
+  if(!ISTMEISTERIN) return;
+  if(!document.getElementById('s-farb-faelle').classList.contains('aktiv')) zeige('s-farb-faelle');
+  var box=document.getElementById('ff-inhalt'); box.innerHTML='<div class="laden">Wird geladen…</div>';
+  var r;
+  try{ r=await Promise.all([sb.from('lehrlinge').select('id,name,aktiv,nur_test').order('name'),
+    sb.from('farb_faelle').select('*').order('erstellt_am',{ascending:false}).limit(100),
+    sb.from('farb_plaene').select('*').order('erstellt_am',{ascending:false}).limit(300)]); }catch(e){ r=[{data:[]},{error:e},{error:e}]; }
+  if(r[1].error||r[2].error){ box.innerHTML='<p class="mb-sub">Die Farb-Fälle brauchen noch die Datenbank-Änderung (supabase/20261108_farb_faelle.sql).</p>'; return; }
+  FF.lehrlinge=(r[0].data||[]).filter(function(l){return l.aktiv!==false;});
+  var name={}; (r[0].data||[]).forEach(function(l){name[l.id]=l.name;});
+  var faelle=r[1].data||[], plaene=r[2].data||[];
+  var offen=plaene.filter(function(p){return p.status==='offen';});
+  var h='<button class="mb-neu" id="ff-neu-k" style="margin:0 0 14px">+ Neuer Farb-Fall</button><div id="ff-form" hidden></div>';
+  if(offen.length){
+    h+='<div class="lab">Wartet auf deine Rückmeldung ('+offen.length+')</div>';
+    offen.forEach(function(p){var f=faelle.filter(function(x){return x.id===p.fall_id;})[0]; if(f) h+=ffPlanKarte(p,f,name);});
+  }
+  h+='<div class="lab" style="margin-top:16px">Alle Fälle</div>';
+  if(!faelle.length) h+='<p class="mb-sub">Noch keine Farb-Fälle. Schick deinem Lehrling einen echten Fall aus dem Salon – ohne Namen und ohne Foto der Kundin.</p>';
+  faelle.forEach(function(f){
+    var ps=plaene.filter(function(p){return p.fall_id===f.id;});
+    h+='<div class="tb-e ff-fall"><div class="tb-k"><span>'+escHtml(ptTag(String(f.erstellt_am).slice(0,10)))+' · für <b>'+escHtml(f.lehrling_id?(name[f.lehrling_id]||'?'):'alle Lehrlinge')+'</b></span><span>'+ps.length+(ps.length===1?' Plan':' Pläne')+'</span></div>'+
+      '<div class="tb-w">'+escHtml(f.titel)+'</div><div class="tb-d">'+escHtml(ffKurz(f))+'</div>'+
+      ps.filter(function(p){return p.status!=='offen';}).slice(0,4).map(function(p){var st=FF_STATUS[p.status]||['',''];return '<div class="tb-d" style="margin-top:4px"><b style="color:'+st[1]+'">'+st[0]+'</b> · '+escHtml(name[p.lehrling_id]||'')+(p.rueckmeldung?' – „'+escHtml(p.rueckmeldung)+'“':'')+'</div>';}).join('')+
+      '<div class="tb-knoepfe"><button class="tb-edit" data-ffweg="'+escHtml(String(f.id))+'">Fall löschen</button></div></div>';
+  });
+  box.innerHTML=h;
+  document.getElementById('ff-neu-k').onclick=ffFormZeigen;
+  box.querySelectorAll('[data-ffweg]').forEach(function(b){b.onclick=async function(){
+    if(!confirm('Diesen Farb-Fall mit allen Plänen löschen?')) return;
+    var u=await sb.from('farb_faelle').delete().eq('id',b.dataset.ffweg); if(u&&u.error){alert('Konnte nicht gelöscht werden: '+u.error.message);return;} zeigeFarbFaelle();};});
+  box.querySelectorAll('[data-ffbew]').forEach(function(b){b.onclick=async function(){
+    var id=b.dataset.ffbew, st=b.dataset.st, notiz=(document.getElementById('ff-notiz-'+id).value||'').trim().slice(0,500)||null;
+    b.disabled=true;
+    var u=await sb.from('farb_plaene').update({status:st,rueckmeldung:notiz,bewertet_am:new Date().toISOString()}).eq('id',id);
+    if(u&&u.error){b.disabled=false;alert('Konnte nicht gespeichert werden: '+u.error.message);return;}
+    zeigeFarbFaelle();};});
+}
+function ffPlanKarte(p,f,name){
+  var schale=[p.farbe_g?f.wunsch+' '+p.farbe_g+' g':'',p.naturton_g?'Naturton '+p.naturton_g+' g':'',p.oxidant_ml?'Oxidant '+p.oxidant_ml+' ml':''].filter(Boolean).join(' + ');
+  return '<div class="tb-e ff-plan"><div class="tb-k"><span>'+escHtml(ptTag(String(p.erstellt_am).slice(0,10)))+' · <b>'+escHtml(name[p.lehrling_id]||'')+'</b></span><span>'+escHtml(f.wunsch)+'</span></div>'+
+    '<div class="tb-w">'+escHtml(f.titel)+'</div><div class="tb-d">'+escHtml(ffKurz(f))+'</div>'+
+    '<div class="ff-vgl"><div class="ff-lehr"><b>Plan von '+escHtml(name[p.lehrling_id]||'Lehrling')+'</b>'+escHtml([p.oxidant?'Oxidant '+p.oxidant:'',schale].filter(Boolean).join(' · '))+
+      (p.reihenfolge?'<br><br>'+escHtml(p.reihenfolge):'')+(p.warum?'<br><br><i>„'+escHtml(p.warum)+'“</i>':'')+'</div>'+
+      '<div><b>Vorschlag der App</b>'+escHtml(ffVorschlag(f))+'</div></div>'+
+    '<label class="pte-l" for="ff-notiz-'+escHtml(String(p.id))+'">Deine Rückmeldung</label><textarea id="ff-notiz-'+escHtml(String(p.id))+'" rows="2" maxlength="500" placeholder="z. B. Sehr gut – achte am Ansatz auf die Wärme."></textarea>'+
+    '<div class="ff-bew"><button data-ffbew="'+escHtml(String(p.id))+'" data-st="passt" class="g">✓ Passt</button><button data-ffbew="'+escHtml(String(p.id))+'" data-st="fast" class="t">~ Fast</button><button data-ffbew="'+escHtml(String(p.id))+'" data-st="nochmal" class="n">✗ Nochmal</button></div></div>';
+}
+function ffFormZeigen(){
+  var box=document.getElementById('ff-form'); box.hidden=false; document.getElementById('ff-neu-k').hidden=true;
+  var n=FF.neu;
+  function chips(id,werte,akt){return '<div class="ff-chips" id="'+id+'">'+werte.map(function(w,i){return '<button type="button" data-i="'+i+'" class="'+(i===akt?'an':'')+'">'+escHtml(String(w))+'</button>';}).join('')+'</div>';}
+  box.innerHTML='<div class="tb-e" style="border-left-color:#896C32">'+
+    '<label class="pte-l" for="ff-titel">Kurz beschrieben (ohne Namen)</label><input id="ff-titel" maxlength="120" placeholder="z. B. Stammkundin, möchte wärmer werden, Ansatz 2 cm">'+
+    '<div class="pte-l">Ausgangstonhöhe (Ansatz)</div>'+chips('ff-ist',[1,2,3,4,5,6,7,8,9,10],n.ist-1)+
+    '<div class="pte-l">Weißanteil</div>'+chips('ff-weiss',FF_WEISS,n.weiss)+
+    '<div class="pte-l">Haar</div>'+chips('ff-gef',['Naturhaar','schon gefärbt (Nachfärbung)'],n.gef?1:0)+
+    '<label class="pte-l" for="ff-wunsch">Wunschfarbe (Nummer)</label><input id="ff-wunsch" maxlength="5" inputmode="decimal" placeholder="z. B. 6.34">'+
+    '<label class="pte-l" for="ff-fuer">Für</label><select id="ff-fuer"><option value="">alle Lehrlinge</option>'+
+      FF.lehrlinge.filter(function(l){return l.nur_test!==true;}).concat(FF.lehrlinge.filter(function(l){return l.nur_test===true;})).map(function(l){return '<option value="'+escHtml(String(l.id))+'">'+escHtml(l.name)+(l.nur_test?' (Test)':'')+'</option>';}).join('')+'</select>'+
+    '<div id="ff-fehler" class="pte-fehler"></div>'+
+    '<button class="btn btn-g" id="ff-schicken" style="margin-top:10px">Fall schicken →</button><button class="mb-abm" id="ff-abbr" style="width:100%">Abbrechen</button></div>';
+  [['ff-ist','ist',1],['ff-weiss','weiss',0],['ff-gef','gef',0]].forEach(function(z){
+    document.getElementById(z[0]).querySelectorAll('button').forEach(function(b){b.onclick=function(){
+      var i=+b.dataset.i; n[z[1]]=z[1]==='gef'?i===1:i+z[2];
+      document.getElementById(z[0]).querySelectorAll('button').forEach(function(x){x.className=x===b?'an':'';});};});});
+  document.getElementById('ff-abbr').onclick=function(){box.hidden=true;box.innerHTML='';document.getElementById('ff-neu-k').hidden=false;};
+  document.getElementById('ff-schicken').onclick=async function(){
+    var f=document.getElementById('ff-fehler'); f.textContent='';
+    var titel=document.getElementById('ff-titel').value.trim(), wunsch=document.getElementById('ff-wunsch').value.trim().replace(',','.');
+    if(!titel){f.textContent='Bitte kurz beschreiben, worum es geht.';return;}
+    if(!/^[0-9]{1,2}(\.[0-9]{1,2})?$/.test(wunsch)||+wunsch.split('.')[0]<1||+wunsch.split('.')[0]>10){f.textContent='Bitte eine Farbnummer wie 6.34 eingeben (Tonhöhe 1–10).';return;}
+    var neu={titel:titel.slice(0,120),ist_th:n.ist,weiss:n.weiss,gefaerbt:n.gef,wunsch:wunsch,lehrling_id:document.getElementById('ff-fuer').value||null};
+    this.disabled=true;
+    var u=await sb.from('farb_faelle').insert(neu);
+    if(u&&u.error){this.disabled=false;f.textContent='Konnte nicht gespeichert werden: '+u.error.message;return;}
+    zeigeFarbFaelle();
+  };
 }
 
 // ── PRAXIS-AUSZUG / PRAXIS-NACHWEIS (Meisterin) ────────────────────────────
@@ -2367,6 +2509,7 @@ async function zeigePtAuszug(lehrling,z){
     if(m!==mon){ mon=m; h+='<div class="paz-mon">'+escHtml(m)+'</div>'; }
     var det=[x.details,x.kontrolliert_von?'kontrolliert: '+x.kontrolliert_von:''].filter(Boolean).join(' · ');
     h+='<div class="paz-e"><span class="paz-d">'+escHtml(ptTag(x.datum))+'</span><span class="paz-w"><b>'+escHtml(x.bereich)+'</b>'+(det?'<small>'+escHtml(det)+'</small>':'')+
+      (x.rezeptur?'<span class="paz-m" style="color:#6B6455">🧪 '+escHtml(x.rezeptur)+'</span>':'')+
       (x.meisterin_notiz?'<span class="paz-m">💬 '+escHtml(x.meisterin_notiz)+'</span>':'')+'</span><span class="paz-t">'+escHtml(ptDauer(x.dauer_min||0))+'</span></div>';
   });
   h+='</div>';
@@ -2390,6 +2533,7 @@ function pazDrucken(lehrling,zr,e,gesamt,bereiche,pro){
     '<h2>Alle Einträge</h2><table><tr><th>Datum</th><th>Was geübt</th><th>Kontrolliert von</th><th class="r">Dauer</th><th>Bestätigt</th></tr>'+
     e.map(function(x){
       return '<tr><td>'+escHtml(pazDatum(x.datum))+'</td><td>'+escHtml(x.bereich+(x.details?' – '+x.details:''))+
+        (x.rezeptur?'<br>Rezeptur: '+escHtml(x.rezeptur):'')+
         (x.meisterin_notiz?'<br><span class="dr-m">Meisterin: '+escHtml(x.meisterin_notiz)+'</span>':'')+'</td><td>'+escHtml(x.kontrolliert_von||'')+'</td>'+
         '<td class="r">'+escHtml(ptDauer(x.dauer_min||0))+'</td><td>'+escHtml(x.bestaetigt_am?pazDatum(x.bestaetigt_am).replace(/\d{4}$/,''):'✓')+'</td></tr>';
     }).join('')+'</table>'+
@@ -2432,6 +2576,7 @@ async function zeigePtAlle(filter){
     var d=[x.details,x.kontrolliert_von?'kontrolliert: '+x.kontrolliert_von:''].filter(Boolean).join(' · ');
     return '<div class="tb-e'+(x.bestaetigt?' ok':'')+'"><div class="tb-k"><span>'+escHtml(ptTag(x.datum))+' · <b>'+escHtml(name[x.lehrling_id])+'</b></span><span>'+escHtml(ptDauer(x.dauer_min||0))+'</span></div>'+
       '<div class="tb-w">'+escHtml(x.bereich)+'</div>'+(d?'<div class="tb-d">'+escHtml(d)+'</div>':'')+
+      (x.rezeptur?'<div class="tb-d">🧪 '+escHtml(x.rezeptur)+'</div>':'')+
       (x.notiz?'<div class="tb-d" style="font-style:italic">„'+escHtml(x.notiz)+'“</div>':'')+
       (x.meisterin_notiz?'<div class="tb-mnotiz">💬 '+escHtml(x.meisterin_notiz)+'</div>':'')+
       (x.bestaetigt?'<div class="tb-ok">✓ bestätigt'+(x.bestaetigt_am?' am '+escHtml(ptTag(String(x.bestaetigt_am).slice(0,10)).replace(/^\S+ /,'')):'')+'</div>':'')+
@@ -2502,6 +2647,7 @@ async function ptMeisterinLaden(lehrling){
   e.forEach(function(x){
     h+='<div class="pt-e"><div class="pt-d">'+escHtml(ptTag(x.datum))+'</div><div class="pt-w">'+escHtml(x.bereich)+
       '<small>'+escHtml([x.details,ptDauer(x.dauer_min),x.kontrolliert_von?'kontrolliert von '+x.kontrolliert_von:''].filter(Boolean).join(' · '))+'</small>'+
+      (x.rezeptur?'<small>🧪 '+escHtml(x.rezeptur)+'</small>':'')+
       (x.notiz?'<small style="font-style:italic">„'+escHtml(x.notiz)+'“</small>':'')+
       (x.meisterin_notiz?'<div class="tb-mnotiz" style="font-weight:400">💬 '+escHtml(x.meisterin_notiz)+'</div>':'')+
       '<button class="pt-edit-k" data-ptedit="'+escHtml(String(x.id))+'">✎ bearbeiten / Notiz</button></div>'+
@@ -3560,6 +3706,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-mb-pg').addEventListener('click',function(){mbMitWem('btn-pruef-start');});
   document.getElementById('btn-mb-px').addEventListener('click',function(){mbMitWem('btn-praxis-start');});
   document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
+  document.getElementById('btn-mb-ff').addEventListener('click',zeigeFarbFaelle);
+  document.getElementById('btn-ff-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
   document.getElementById('pte-ok').addEventListener('click',function(){ptBearbeitenSpeichern(false);});
   document.getElementById('btn-paz-back').addEventListener('click',function(){
@@ -3894,18 +4042,20 @@ var KN_BADGES=[
   {id:106,ic:'✂',titel:'Praxis sicher',         sub:'Im Praxis-Check als „sicher gemacht“ bewertet',   tag:'🎯 Können', pruef:function(d){return {ja:d.px};}},
   {id:108,ic:'🕐',titel:'10 Stunden Praxis',     sub:'10 Stunden Praxis, von der Meisterin bestätigt', tag:'🎯 Können', pruef:function(d){return {ja:d.praxisMin>=600,stand:ptDauer(Math.min(d.praxisMin,600))+' von 10 Std'};}},
   {id:109,ic:'🕐',titel:'50 Stunden Praxis',     sub:'50 Stunden Praxis, von der Meisterin bestätigt', tag:'✨ Können', pruef:function(d){return {ja:d.praxisMin>=3000,stand:ptDauer(Math.min(d.praxisMin,3000))+' von 50 Std'};}},
+  {id:110,ic:'🎨',titel:'Farb-Profi',         sub:'3 Farb-Fälle mit „passt“ von der Meisterin',    tag:'✨ Können', pruef:function(d){return {ja:d.ffPasst>=3,stand:Math.min(d.ffPasst,3)+' von 3'};}},
   {id:107,ic:'🏆',titel:'Alle Themen sitzen',   sub:'Alle Themen im eigenen Lehrjahr sitzen',          tag:'✨ Können', pruef:function(d){return {ja:d.ljN>0&&d.ljSitzt>=d.ljN,stand:d.ljSitzt+' von '+d.ljN};}}
 ];
 KN_BADGES.forEach(function(b){b.svg=knSvg(b.ic);});
 
 async function knDaten(){
-  var lid=AKTLEHRLING.id, d={volltreffer:false,sitzt:0,missv:false,wdh:0,pg:false,px:false,ljSitzt:0,ljN:0,praxisMin:0};
+  var lid=AKTLEHRLING.id, d={volltreffer:false,sitzt:0,missv:false,wdh:0,pg:false,px:false,ljSitzt:0,ljN:0,praxisMin:0,ffPasst:0};
   var r=await Promise.all([
     sb.from('verlauf').select('richtig,gesamt').eq('lehrling_id',lid),
     ladeKompetenz(lid),
     sb.from('wiederholung').select('stufe').eq('lehrling_id',lid),
     sb.from('pruefgespraeche').select('art,ergebnis').eq('lehrling_id',lid),
-    sb.from('praxis_eintraege').select('dauer_min,bestaetigt').eq('lehrling_id',lid)
+    sb.from('praxis_eintraege').select('dauer_min,bestaetigt').eq('lehrling_id',lid),
+    sb.from('farb_plaene').select('fall_id').eq('lehrling_id',lid).eq('status','passt')
   ].map(function(x){return Promise.resolve(x).catch(function(){return {};});}));
   (r[0].data||[]).forEach(function(v){if(v.gesamt>=10&&v.richtig===v.gesamt)d.volltreffer=true;});
   var komp=r[1]||{};
@@ -3917,6 +4067,8 @@ async function knDaten(){
   d.ljN=lj.length; d.ljSitzt=lj.filter(function(th){return berechneStatus(komp[th])==='sitzt';}).length;
   if(!r[2].error) (r[2].data||[]).forEach(function(w){d.wdh+=Math.max(0,w.stufe||0);});
   if(r[4]&&!r[4].error) (r[4].data||[]).forEach(function(x){ if(x.bestaetigt) d.praxisMin+=x.dauer_min||0; });
+  // Farb-Fälle: verschiedene Fälle mit „passt“ (ohne Migration → 0)
+  if(r[5]&&!r[5].error){ var fs={}; (r[5].data||[]).forEach(function(x){fs[x.fall_id]=1;}); d.ffPasst=Object.keys(fs).length; }
   if(!r[3].error) (r[3].data||[]).forEach(function(g){
     if(g.ergebnis!=='verstanden') return;
     if((g.art||'gespraech')==='praxis') d.px=true; else d.pg=true;
