@@ -69,9 +69,13 @@ section.block > header{display:grid;gap:6px}
 .meldung.schlecht{background:var(--bad-soft);color:var(--bad)}
 .meldung.info{background:var(--surface-2);color:var(--ink)}
 .fortschritt{display:flex;gap:4px}
-.fortschritt span{flex:1;height:6px;border-radius:3px;background:var(--line)}
-.fortschritt span.ok{background:var(--good)}
-.fortschritt span.jetzt{background:var(--accent)}
+.fortschritt span,.fortschritt button{flex:1;height:6px;border-radius:3px;background:var(--line);border:0;padding:0}
+.fortschritt button{height:10px;cursor:pointer;background-clip:content-box;padding:2px 0}
+.fortschritt .ok{background:var(--good)}
+.fortschritt .jetzt{background:var(--accent)}
+.btn.klein{font-size:12px;padding:6px 10px}
+.punkte-info{font-size:13px;text-align:center;margin:0;min-height:0}
+.punkte-info:empty{display:none}
 
 /* ── Farbkreis ── */
 .kreis-box{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
@@ -147,7 +151,7 @@ body.schnupper .nur-lern{display:none!important}
     <a class="back-link" id="zurueck" href="lerntool.html?v=20261107w">← Lern-Tool</a>
     <span class="tag">greathairday · Farbenlehre</span>
     <h1>Farblabor 🎨</h1>
-    <p>Mit nur drei Farben, Gelb, Rot und Blau, mischst du jede Farbe selbst. Du entdeckst die Gegenfarben, siehst, welcher Untergrund beim Aufhellen zum Vorschein kommt, und neutralisierst ihn im Spiel.</p>
+    <p>Mit nur drei Farben, Gelb, Rot und Blau, mischst du jede Farbe selbst. Du entdeckst die Gegenfarben, siehst, welcher Untergrund beim Aufhellen zum Vorschein kommt, und neutralisierst ihn im Spiel.<span class="nur-lern"> Mischlabor, Spiel und Quiz bringen Punkte für deine Serie 🔥.</span></p>
   </header>
 </div>
 
@@ -187,6 +191,7 @@ body.schnupper .nur-lern{display:none!important}
         <button class="btn ghost" id="mLeeren">Schale leeren</button>
       </div>
       <div class="meldung" id="mMeldung" hidden></div>
+      <p class="muted punkte-info" id="mSpeicher"></p>
     </div>
   </section>
 
@@ -255,6 +260,7 @@ body.schnupper .nur-lern{display:none!important}
         <button class="btn ghost" id="sWeiter" hidden>Nächste Kundin →</button>
       </div>
       <div class="meldung" id="sMeldung" hidden></div>
+      <p class="muted punkte-info" id="sSpeicher"></p>
     </div>
   </section>
 
@@ -403,37 +409,71 @@ const AUFTRAEGE=[
   {ziel:'Blau-Violett', t:'Mische <b>Blau-Violett</b>, die Gegenfarbe von Gelb-Orange.', vor:'Gelb-Orange', tipp:'Mehr Blau als Rot, ungefähr doppelt so viel.', gut:'Blau-Violett neutralisiert den gelborangen Untergrund (Tonhöhe 7).'},
   {ziel:'Neutral', t:'Letzter Auftrag: Mische <b>Neutral</b>.', tipp:'Nimm von allen drei Grundfarben gleich viel.', gut:'Alle drei Grundfarben gleich stark = Neutral. Genau das passiert beim Neutralisieren am Haar.'}
 ];
-let mIdx=0, mFehler=0, mSterne=[];
-try{const g=JSON.parse(localStorage.getItem('farblabor-auftraege')||'null');if(g&&Array.isArray(g.s)){mSterne=g.s;mIdx=Math.min(g.i||0,AUFTRAEGE.length-1);}}catch(e){}
+// mSterne: beste Sterne je Auftrag (bleibt), mRunde: Sterne dieser Runde (für Punkte)
+let mIdx=0, mFehler=0, mSterne=[], mRunde=[], mFertig=false;
+try{const g=JSON.parse(localStorage.getItem('farblabor-auftraege')||'null');if(g&&Array.isArray(g.s)){mSterne=g.s;mRunde=Array.isArray(g.r)?g.r:[];mIdx=Math.min(g.i||0,AUFTRAEGE.length-1);mFertig=!!g.f;}}catch(e){}
+const mMerken=()=>{try{localStorage.setItem('farblabor-auftraege',JSON.stringify({i:mIdx,s:mSterne,r:mRunde,f:mFertig}));}catch(e){}};
 const M=Mischfeld('m',()=>{$('#mMeldung').hidden=true;});
 function mZeige(){
   const a=AUFTRAEGE[mIdx];
-  $('#mFort').innerHTML=AUFTRAEGE.map((_,i)=>'<span class="'+(mSterne[i]?'ok':i===mIdx?'jetzt':'')+'"></span>').join('');
-  $('#mAuftrag').innerHTML='<span class="tag2">Auftrag '+(mIdx+1)+' von '+AUFTRAEGE.length+'</span><b>'+a.t+'</b>'+
-    (a.vor?'<div class="reihe">'+chip(a.vor)+'<span class="gleich">+ ?</span><span class="gleich">= Neutral</span></div>':'');
+  $('#mFort').innerHTML=AUFTRAEGE.map((_,i)=>'<button type="button" data-i="'+i+'" class="'+(i===mIdx?'jetzt':mSterne[i]?'ok':'')+'" aria-label="Auftrag '+(i+1)+(mSterne[i]?', geschafft':'')+'"></button>').join('');
+  $('#mFort').querySelectorAll('button').forEach(b=>b.onclick=()=>{mIdx=+b.dataset.i;mMerken();mZeige();});
+  $('#mAuftrag').innerHTML='<span class="tag2">Auftrag '+(mIdx+1)+' von '+AUFTRAEGE.length+(mSterne[mIdx]?' · '+'★'.repeat(mSterne[mIdx]):'')+'</span><b>'+a.t+'</b>'+
+    (a.vor?'<div class="reihe">'+chip(a.vor)+'<span class="gleich">+ ?</span><span class="gleich">= Neutral</span></div>':'')+
+    '<div class="reihe" style="margin-top:4px"><button class="btn ghost klein" id="mVor"'+(mIdx===0?' disabled':'')+'>‹ Vorheriger</button>'+
+    '<button class="btn ghost klein" id="mNach"'+(mIdx===AUFTRAEGE.length-1?' disabled':'')+'>Nächster ›</button>'+
+    '<button class="btn ghost klein" id="mNeu">↻ Von vorn</button></div>';
+  $('#mVor').onclick=()=>{if(mIdx>0){mIdx--;mMerken();mZeige();}};
+  $('#mNach').onclick=()=>{if(mIdx<AUFTRAEGE.length-1){mIdx++;mMerken();mZeige();}};
+  $('#mNeu').onclick=mVonVorn;
   M.leeren(); mFehler=0;
 }
+function mVonVorn(){mIdx=0;mRunde=[];mFertig=false;mMerken();mZeige();$('#mMeldung').hidden=true;$('#mSpeicher').textContent='';}
 $('#mPruefen').onclick=()=>{
   const c=M.zaehl(), a=AUFTRAEGE[mIdx], n=grund(nameVon(c.r,c.y,c.b)), m=$('#mMeldung');
   m.hidden=false;
   if(!n){m.className='meldung info';m.textContent='Tippe zuerst auf eine Tube.';return;}
   if(n===a.ziel && !/getrübt/.test(nameVon(c.r,c.y,c.b))){
     const st=mFehler===0?3:mFehler===1?2:1; mSterne[mIdx]=Math.max(mSterne[mIdx]||0,st);
+    if(mRunde[mIdx]===undefined||mRunde[mIdx]===null) mRunde[mIdx]=st;
     m.className='meldung gut';
-    const fertig=mIdx===AUFTRAEGE.length-1;
-    m.innerHTML='<span class="sterne">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span><br>'+a.gut+(fertig?'<br><b>Alle Aufträge geschafft! Weiter zum Farbkreis.</b>':'');
-    if(!fertig){mIdx++;}
-    try{localStorage.setItem('farblabor-auftraege',JSON.stringify({i:mIdx,s:mSterne}));}catch(e){}
-    setTimeout(()=>{if(!fertig)mZeige();else $('#mFort').innerHTML=AUFTRAEGE.map(()=>'<span class="ok"></span>').join('');m.hidden=false;},fertig?0:1800);
+    const alleDa=AUFTRAEGE.every((_,i)=>mRunde[i]), fertig=alleDa&&!mFertig;
+    const offen=AUFTRAEGE.findIndex((_,i)=>!mRunde[i]);
+    m.innerHTML='<span class="sterne">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span><br>'+a.gut+
+      (fertig?'<br><b>Alle Aufträge geschafft! 🎉</b>':alleDa?'<br>Mit „↻ Von vorn“ startest du eine neue Runde.':'');
+    if(fertig){
+      mFertig=true;
+      punkteSpeichern(AUFTRAEGE.map((_,i)=>({thema:'Farbenlehre & Coloration',korrekt:mRunde[i]>=2})),'mSpeicher');
+      m.innerHTML+='<br><button class="btn ghost klein" id="mNochmal" style="margin-top:8px">↻ Nochmal von vorn</button>';
+      $('#mNochmal').onclick=mVonVorn;
+    }
+    // nächster noch offener Auftrag dieser Runde
+    const weiter=!alleDa;
+    if(weiter) mIdx=offen>mIdx?offen:(AUFTRAEGE.findIndex((_,i)=>i>mIdx&&!mRunde[i])>=0?AUFTRAEGE.findIndex((_,i)=>i>mIdx&&!mRunde[i]):offen);
+    mMerken();
+    if(weiter) setTimeout(mZeige,1800); else mZeigeFort();
     return;
   }
   mFehler++;
   m.className='meldung schlecht';
   m.innerHTML='Das ist '+chip(nameVon(c.r,c.y,c.b))+', noch nicht '+chip(a.ziel)+'.'+(mFehler>=2?'<br>💡 '+a.tipp:' Versuch es nochmal.');
 };
+function mZeigeFort(){$('#mFort').querySelectorAll('button').forEach((b,i)=>b.className=mSterne[i]?'ok':'');}
 $('#mZurueck').onclick=()=>M.zurueck();
 $('#mLeeren').onclick=()=>M.leeren();
 mZeige();
+
+// ── Punkte: Ergebnis im Lernverlauf speichern → zählt für Serie (🔥 Tage in Folge),
+// Wochenziel und Abzeichen, genau wie ein Quiz. Nur mit Lehrlings-Login, nie im Schnupper-Modus.
+function punkteSpeichern(antworten,elId){
+  const el=$('#'+elId), ok=antworten.filter(a=>a.korrekt).length, p=ok*10;
+  if(document.body.classList.contains('schnupper')){el.textContent='';return;}
+  if(!window.ghdQuizSpeichernAntworten){el.textContent='+'+p+' Punkte (nur mit Lehrlings-Login gespeichert)';return;}
+  el.textContent='Punkte werden gespeichert …';
+  ghdQuizSpeichernAntworten(antworten,elId).then(gut=>{
+    if(gut){el.style.color='#2F7D55';el.textContent='🔥 +'+p+' Punkte · zählt für deine Serie, dein Wochenziel und deine Abzeichen'+(ok/antworten.length<0.5?' (Abzeichen erst ab der Hälfte richtig)':'');}
+  });
+}
 
 // ═════════ Teil 2: Farbkreis ═════════
 // Reihenfolge im Uhrzeigersinn, Gelb oben. Reflex-Namen wie im Lern-Tool (Colorist).
@@ -554,7 +594,7 @@ $('#sAuftragen').onclick=()=>{
     return hex(lerp(n,mischRGB(rest.r,rest.y,rest.b),Math.min(.55,.22*(rest.r+rest.y+rest.b))));})();
   $('#sKundin svg').outerHTML=strangSVG(ergebnisFarbe,'s'+Date.now());
   if(c.r===c.y&&c.y===c.b){
-    const st=sVersuche===0?3:sVersuche===1?2:1; sPunkte+=st; sErg.push(true);
+    const st=sVersuche===0?3:sVersuche===1?2:1; sPunkte+=st; sErg.push(st);
     m.className='meldung gut';
     m.innerHTML='<span class="sterne">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span><br>Perfekt neutral! Du hast '+chip(gem)+' dazugegeben, das ist die Gegenfarbe zu '+esc(sFall.u)+' ('+REFLEX[sFall.g]+').';
     S.sperren(true);$('#sAuftragen').hidden=true;$('#sZurueck').hidden=true;$('#sWeiter').hidden=false;
@@ -582,9 +622,10 @@ $('#sWeiter').onclick=()=>{
   m.hidden=false;m.className='meldung info';
   m.innerHTML='<b>Geschafft: '+sPunkte+' von '+max+' Sternen.</b> '+(sPunkte>=max-2?'Du bist ein echter Neutralisier-Profi! 🏆':sPunkte>=max/2?'Gut gemacht! Mit etwas Übung schaffst du alle Sterne.':'Schau dir Teil 3 nochmal an und versuch es erneut.');
   try{const b=+localStorage.getItem('farblabor-spiel-best')||0;if(sPunkte>b)localStorage.setItem('farblabor-spiel-best',sPunkte);m.innerHTML+='<br><span class="muted">Dein Rekord: '+Math.max(b,sPunkte)+' ★</span>';}catch(e){}
+  punkteSpeichern(sErg.map(st=>({thema:'Farbenlehre & Coloration',korrekt:st>=2})),'sSpeicher');
   $('#sKundin').innerHTML='';S.leeren();S.sperren(true);
   $('#sWeiter').textContent='Nochmal spielen ↻';$('#sWeiter').hidden=false;$('#sAuftragen').hidden=true;$('#sZurueck').hidden=true;
-  $('#sWeiter').onclick=()=>{sRunde=0;sPunkte=0;sErg=[];$('#sWeiter').onclick=weiterOrig;sNeu();};
+  $('#sWeiter').onclick=()=>{sRunde=0;sPunkte=0;sErg=[];$('#sSpeicher').textContent='';$('#sWeiter').onclick=weiterOrig;sNeu();};
 };
 const weiterOrig=$('#sWeiter').onclick;
 sNeu();
@@ -637,8 +678,8 @@ function score(){const e=Object.entries(answers),n=e.length;
   $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du kennst deine Farbenlehre.':r>=QUIZ.length*.5?'Gute Basis. Spiel Teil 4 nochmal durch.':'Geh Teil 1 bis 3 nochmal durch und versuch es erneut.')+
     (ger?' '+ger+'× richtig geraten.':'')+(sf?' '+sf+'× sicher, aber falsch – schau dir diese Fragen nochmal an.':'');
   if(n===0){quizGespeichert=false;$('#scoreSpeicher').textContent='';}
-  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichernAntworten&&!document.body.classList.contains('schnupper')){quizGespeichert=true;
-    ghdQuizSpeichernAntworten(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Farbenlehre & Coloration',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
+  else if(n===QUIZ.length&&!quizGespeichert){quizGespeichert=true;
+    punkteSpeichern(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Farbenlehre & Coloration',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
 }
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
