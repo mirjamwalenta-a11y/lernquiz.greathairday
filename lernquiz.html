@@ -116,6 +116,9 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-wahl-box{background:#F8F4EA;border-radius:14px;padding:16px;width:100%;max-width:420px}
 .mb-wahl-box b{display:block;font-size:15px;margin-bottom:10px;color:#211D17}
 .mb-wahl-box .mb-l{margin-bottom:8px}
+.fz-zeile{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-top:1px solid #F0ECE5;font-size:13px;color:#211D17}
+.fz-wert{display:flex;align-items:center;gap:6px;flex:none;font-size:13px;color:#6B6455}
+.fz-wert input{width:72px;margin:0;text-align:center}
 .ff-vgl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;font-size:12px;line-height:1.45}
 .ff-vgl>div{background:#FFFDF8;border:1px solid #E4DBC5;border-radius:10px;padding:10px;overflow-wrap:anywhere}
 .ff-vgl b{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6B6455;margin-bottom:4px}
@@ -451,6 +454,7 @@ textarea{resize:vertical;margin-bottom:0}
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
         <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
+        <button class="mb-k mb-breit" id="btn-mb-fz"><div class="mb-ic">⏱</div><div><b>Farb-Zeiten</b><small>Einwirkzeiten laut Gebrauchsanweisung – gelten im Farblabor und auf dem Spickzettel</small></div></button>
       </div>
     </div>
 
@@ -460,7 +464,7 @@ textarea{resize:vertical;margin-bottom:0}
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundformen, Winkel, Pony, Formwirkung</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Schnittzeichnungen erstellen</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108h&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
+        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108k&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107j"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
         <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Hochstecken</small></div></a>
       </div>
@@ -471,6 +475,7 @@ textarea{resize:vertical;margin-bottom:0}
       <div class="mb-grid">
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
         <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
+        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/spickzettel.html?v=20261108k&amp;von=meisterin"><div class="mb-ic">🖨</div><div><b>Farb-Spickzettel</b><small>Alle Farb-Regeln auf einer A4-Seite zum Aufhängen</small></div></a>
         <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
       </div>
     </div>
@@ -484,6 +489,16 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">📝 Praxis-Tagebuch</h2>
     <p class="mb-sub">Alle Lehrlinge an einem Ort. Bestätigte Einträge zählen als Nachweis und für die Praxis-Abzeichen.</p>
     <div id="pt-alle-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-farb-zeiten" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-fz-back">← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">⏱ Farb-Zeiten</h2>
+    <p class="mb-sub">Trag die Zeiten aus der Gebrauchsanweisung eurer Farbe ein. Sie gelten im Farblabor (Timer, Rezeptur, Auftragen, Spiele) und auf dem Spickzettel.</p>
+    <div id="fz-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
 
@@ -1481,7 +1496,7 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle'||id==='s-farb-zeiten');
 }
 function zeige(id){
   document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
@@ -2338,6 +2353,44 @@ async function ptBearbeitenSpeichern(bestaetigen){
   document.getElementById('pt-edit').hidden=true;
   if(ohneNotiz) alert('Gespeichert – nur deine Notiz noch nicht: Dafür bitte supabase/20261107_praxis_meisterin_notiz.sql in Supabase ausführen.');
   if(PTE.nachher) PTE.nachher();
+}
+
+// ── FARB-ZEITEN (Meisterin) ─────────────────────────────────────────────────
+// Zeiten laut Gebrauchsanweisung, gespeichert in lerntool_daten (typ
+// 'farb_einstellung'). Schreiben darf nur die Meisterin (RLS lerntool_daten_meisterin).
+// Gelesen werden sie von farb-zeiten.js (Farblabor, Spickzettel).
+var FZ_FELDER=[['farbe','Haarfarbe: Einwirkzeit gesamt'],['aufhellung','davon Phase Aufhellung'],['farbtiefe','davon Phase Farbtiefe'],['reflex','davon Phase Reflex'],
+  ['vorlauf','Erstfärbung heller: Mittelteil & Spitzen stehen lassen, bevor der Ansatz kommt'],['nachLaengen','Nachfärbung: Längen & Spitzen die letzten …'],
+  ['heller','Hellerfärbung (Spezial-Hellblond) bis'],['blond','Blondierung bis']];
+var FZ_STD={farbe:35,vorlauf:10,aufhellung:10,farbtiefe:15,reflex:10,nachLaengen:10,heller:45,blond:50};
+async function zeigeFarbZeiten(){
+  if(!ISTMEISTERIN) return;
+  zeige('s-farb-zeiten');
+  var box=document.getElementById('fz-inhalt'), w=Object.assign({},FZ_STD), da=false;
+  try{ var r=await sb.from('lerntool_daten').select('wert').eq('typ','farb_einstellung').eq('schluessel','farb_einstellung|zeiten').limit(1);
+    if(r&&!r.error&&r.data&&r.data[0]){ da=true; try{Object.assign(w,JSON.parse(r.data[0].wert));}catch(e){} } }catch(e){}
+  box.innerHTML='<div class="tb-e" style="border-left-color:#896C32">'+FZ_FELDER.map(function(f){
+    return '<label class="fz-zeile" for="fz-'+f[0]+'"><span>'+escHtml(f[1])+'</span><span class="fz-wert"><input type="number" id="fz-'+f[0]+'" min="1" max="120" inputmode="numeric" value="'+escHtml(String(w[f[0]]))+'"> Min</span></label>';}).join('')+
+    '<div id="fz-summe" class="tb-d" style="margin-top:6px"></div><div id="fz-fehler" class="pte-fehler"></div>'+
+    '<button class="btn btn-g" id="fz-speichern" style="margin-top:10px">Speichern</button><button class="mb-abm" id="fz-std" style="width:100%">Standard wiederherstellen</button></div>';
+  function summe(){var a=+document.getElementById('fz-aufhellung').value||0,b=+document.getElementById('fz-farbtiefe').value||0,c=+document.getElementById('fz-reflex').value||0,g=+document.getElementById('fz-farbe').value||0;
+    document.getElementById('fz-summe').textContent='Phasen zusammen: '+(a+b+c)+' Min'+(a+b+c!==g?' – passt nicht zur Gesamtzeit von '+g+' Min.':' ✓');}
+  box.querySelectorAll('input').forEach(function(i){i.oninput=summe;}); summe();
+  document.getElementById('fz-std').onclick=function(){FZ_FELDER.forEach(function(f){document.getElementById('fz-'+f[0]).value=FZ_STD[f[0]];});summe();};
+  document.getElementById('fz-speichern').onclick=async function(){
+    var fe=document.getElementById('fz-fehler'); fe.textContent=''; var neu={};
+    for(var i=0;i<FZ_FELDER.length;i++){var k=FZ_FELDER[i][0],v=Math.round(+document.getElementById('fz-'+k).value);
+      if(!(v>=1&&v<=120)){fe.textContent='Bitte bei „'+FZ_FELDER[i][1]+'“ 1 bis 120 Minuten eintragen.';return;} neu[k]=v;}
+    if(neu.vorlauf>=neu.farbe){fe.textContent='Die Zeit vor dem Ansatz muss kürzer sein als die Gesamtzeit.';return;}
+    var b=this; b.disabled=true;
+    var wert=JSON.stringify(neu), u;
+    if(da) u=await sb.from('lerntool_daten').update({wert:wert}).eq('typ','farb_einstellung').eq('schluessel','farb_einstellung|zeiten');
+    else u=await sb.from('lerntool_daten').insert({typ:'farb_einstellung',schluessel:'farb_einstellung|zeiten',wert:wert});
+    b.disabled=false;
+    if(u&&u.error){fe.textContent='Konnte nicht gespeichert werden: '+u.error.message;return;}
+    da=true; try{localStorage.setItem('ghd-farb-zeiten',wert);}catch(e){}
+    fe.style.color='#2F7D55'; fe.textContent='Gespeichert ✓ – gilt ab dem nächsten Öffnen im Farblabor und auf dem Spickzettel.';
+  };
 }
 
 // ── FARB-FÄLLE (Meisterin) ──────────────────────────────────────────────────
@@ -3707,6 +3760,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-mb-px').addEventListener('click',function(){mbMitWem('btn-praxis-start');});
   document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('btn-mb-ff').addEventListener('click',zeigeFarbFaelle);
+  document.getElementById('btn-mb-fz').addEventListener('click',zeigeFarbZeiten);
+  document.getElementById('btn-fz-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('btn-ff-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
   document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
   document.getElementById('pte-ok').addEventListener('click',function(){ptBearbeitenSpeichern(false);});
