@@ -200,6 +200,24 @@ body.schnupper .spick-link{display:none}
 .rp-modus{display:flex;gap:4px;background:var(--surface-2);border-radius:10px;padding:4px}
 .rp-modus button{flex:1;appearance:none;border:0;background:none;border-radius:7px;padding:9px 6px;font:600 13px Poppins,system-ui;color:var(--muted);cursor:pointer}
 .rp-modus button.an{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+/* 🧠 Begründen: erst Entscheidung, dann Auflösung mit Denkfehler-Typ */
+.bg-fall{font-size:14px;line-height:1.5}.bg-fall b{font-size:15px}
+.bg-frage{font-weight:600;margin-top:2px}
+.bg-hinweis{font-size:12px;color:var(--muted)}
+.bg-feld{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font:14px/1.45 Poppins,system-ui;color:var(--ink);background:#fff;resize:vertical}
+.bg-feld:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.bg-wahl{display:flex;gap:5px;flex-wrap:wrap}
+.bg-wahl button{appearance:none;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:7px 11px;font:600 13px Poppins,system-ui;color:var(--ink);cursor:pointer}
+.bg-wahl button.an{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent)}
+.bg-aufl{background:#fff;border:1px solid var(--line);border-left:4px solid var(--good);border-radius:10px;padding:11px 13px;font-size:13.5px;line-height:1.5}
+.bg-aufl.f{border-left-color:var(--bad)}.bg-aufl b.t{display:block;font-size:14px;margin-bottom:2px}
+.bg-aufl .du{display:block;font-size:11px;font-weight:700;color:var(--accent)}
+.bg-df{display:inline-block;margin-bottom:4px;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:10px}
+.bg-df.T{background:#E8EEF8;color:#2D4F8A}.bg-df.Z{background:#FBEFD9;color:#8A5A10}.bg-df.L{background:#F3E6F2;color:#7A3A74}
+.bg-ein{display:grid;gap:4px;font-size:13.5px}
+.bg-check label{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;padding:3px 0;cursor:pointer}
+.bg-check input{margin-top:4px;accent-color:var(--good)}
+.bg-zitat{font-size:13px;background:var(--surface-2);border-radius:8px;padding:8px 10px;white-space:pre-wrap}
 #rpPlanen,#rpSelbst{display:grid;gap:12px}
 #rpPlanen[hidden],#rpSelbst[hidden]{display:none}
 .rp-ist{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
@@ -405,6 +423,7 @@ body.schnupper .nur-lern{display:none!important}
     <div class="rp-modus" role="tablist">
       <button type="button" id="rpModusWeg" class="an" aria-pressed="true">Weg planen</button>
       <button type="button" id="rpModusSelbst" aria-pressed="false">🎯 Selbst planen</button>
+      <button type="button" id="rpModusBegr" aria-pressed="false">🧠 Begründen</button>
     </div>
     <div id="rpPlanen">
       <div class="panel">
@@ -435,6 +454,13 @@ body.schnupper .nur-lern{display:none!important}
         <div class="meldung" id="rpMeldung" hidden></div>
         <div class="reihe" style="justify-content:center"><button class="btn" id="rpWeiter" hidden>Weiter →</button></div>
         <p class="muted punkte-info" id="rpSpeicher"></p>
+      </div>
+    </div>
+    <div id="rpBegr" hidden>
+      <div class="panel">
+        <div class="fortschritt" id="bgFort" aria-hidden="true"></div>
+        <div id="bgInhalt" aria-live="polite"></div>
+        <p class="muted punkte-info" id="bgSpeicher"></p>
       </div>
     </div>
     <p class="muted rp-hinweis">Lernhilfe mit Faustregeln (L’Oréal-Nummern wie Majirel). Im Salon gelten die Farbkarte des Herstellers, die Rezeptur der Meisterin und der Allergie-Test.</p>
@@ -1351,14 +1377,122 @@ $('#rpWeiter').onclick=()=>{
   punkteSpeichern(rpErg.map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok})),'rpSpeicher');
 };
 const rpWeiterStd=$('#rpWeiter').onclick;
-function rpModus(selbst){
-  $('#rpPlanen').hidden=selbst;$('#rpSelbst').hidden=!selbst;
-  $('#rpModusWeg').className=selbst?'':'an';$('#rpModusWeg').setAttribute('aria-pressed',!selbst);
-  $('#rpModusSelbst').className=selbst?'an':'';$('#rpModusSelbst').setAttribute('aria-pressed',selbst);
-  if(selbst&&!rpFaelle.length)rpNeu();
+function rpModus(m){ // m: 'weg' | 'selbst' | 'begr'
+  $('#rpPlanen').hidden=m!=='weg';$('#rpSelbst').hidden=m!=='selbst';$('#rpBegr').hidden=m!=='begr';
+  [['weg','#rpModusWeg'],['selbst','#rpModusSelbst'],['begr','#rpModusBegr']].forEach(([k,id])=>{$(id).className=m===k?'an':'';$(id).setAttribute('aria-pressed',m===k);});
+  if(m==='selbst'&&!rpFaelle.length)rpNeu();
+  if(m==='begr'&&!BG.fall)bgNeu();
 }
-$('#rpModusWeg').onclick=()=>rpModus(false);
-$('#rpModusSelbst').onclick=()=>rpModus(true);
+$('#rpModusWeg').onclick=()=>rpModus('weg');
+$('#rpModusSelbst').onclick=()=>rpModus('selbst');
+$('#rpModusBegr').onclick=()=>rpModus('begr');
+
+// ── 🧠 Begründen: Fall lesen → Ausgangslage einschätzen → Kernproblem → entscheiden
+//    → begründen → erst dann Auflösung. Jede falsche Option steht für einen typischen
+//    Denkfehler (T = Theorie ohne Fallbezug, Z = Ziel ohne Prozess, L = Logik ohne Feingefühl).
+//    Fachlich eindeutig gebaut (keine Grenzzone beim Oxidant). Salon-Regeln der Meisterin.
+const BG_DF={T:'Theorie ohne Fallbezug',Z:'Ziel ohne Prozess',L:'Logik ohne Feingefühl'};
+const BG_FAELLE=[{
+  id:'gold-1',
+  fall:'<b>Stammkundin, 52 Jahre</b><br>Naturhaar, noch nie gefärbt. Ansatz und Längen Tonhöhe 6, etwa 40 % Weiß, gleichmäßig verteilt. Sie sagt: „Einen Ton heller und schön warm – ein sattes Goldblond. Nicht rotstichig, nicht grau.“ Das entspricht etwa <b>7.3</b>.',
+  kurz:'TH 6 · 40 % Weiß · Naturhaar, nie gefärbt · Wunsch warmes Goldblond (≈ 7.3)',
+  ein:[ // Schritt 1: Ausgangslage – erst selbst einschätzen
+    {f:'Wie viele Stufen musst du aufhellen?',o:['0','1','2','3'],r:'1',
+     w:'6 → 7 ist genau 1 Stufe.'},
+    {f:'Welcher Untergrund zeigt sich auf Tonhöhe 7?',o:['Orange','Gelborange','Gelb'],r:'Gelborange',
+     w:'Tonhöhe 7 bringt einen gelborangen Untergrund.'},
+    {f:'Was verlangen die 40 % Weiß?',o:['nichts','¼ Naturton','½ Naturton'],r:'¼ Naturton',
+     w:'30–50 % Weiß → ¼ Naturton zur Modefarbe.'}],
+  kern:{f:'Was ist hier das eigentliche Problem?',o:[
+    {t:'Drei Dinge gleichzeitig: 1 Stufe aufhellen, 40 % Weiß sicher decken – und der warme Untergrund soll fürs Gold genutzt werden, nicht bekämpft.',ok:1,
+     w:'Genau: Aufhellung, Grauabdeckung und Reflex hängen zusammen. Der gelborange Untergrund passt zum Goldwunsch.'},
+    {t:'Der gelborange Untergrund auf Tonhöhe 7 muss neutralisiert werden.',df:'T',
+     w:'Die Regel „Untergrund neutralisieren“ gilt, wenn die Kundin kühl will. Sie will warm – der Untergrund ist hier ein Helfer.'},
+    {t:'Die Wunschfarbe ist klar: 7.3 – Hauptsache, die richtige Tube.',df:'Z',
+     w:'Die Nummer ist nur das Ziel. Ob es deckt und gleichmäßig wird, entscheidet der Weg: Naturton, Oxidant, Reihenfolge.'},
+    {t:'Bei Weiß ist Abdeckung das Wichtigste – also möglichst viel Naturton.',df:'L',
+     w:'Mehr ist nicht besser: ½ Naturton bei 40 % Weiß macht das Gold stumpf und dunkler. ¼ reicht.'}]},
+  rez:{f:'Welche Rezeptur nimmst du?',o:[
+    {k:'7.3 + ¼ · 6 %',t:'7.3 + ¼ Naturton 7.0 · 6 % · Mittelteil & Spitzen zuerst, dann Ansatz',ok:1,
+     w:z=>'1 Stufe → 6 % (ca. 1–2 Töne, Standard für 100 % Grauabdeckung). 40 % Weiß → ¼ Naturton 7.0, damit es deckt, ohne das Gold stumpf zu machen. Der gelborange Untergrund trägt den Goldton – er wird genutzt, nicht neutralisiert. Erstfärbung heller: Mittelteil & Spitzen zuerst, ca. '+z.vorlauf+' Min stehen lassen, dann der Ansatz – gesamt '+z.farbe+' Min laut Gebrauchsanweisung.'},
+    {k:'7.13',t:'7.13 + ¼ Naturton 7.0 · 6 % · Mittelteil & Spitzen zuerst, dann Ansatz',df:'T',
+     w:()=>'Die Regel „Asch gegen Orange“ stimmt – aber nicht hier. Die Kundin will warm. Asch nimmt dem Gold die Wärme, das Ergebnis wird matt und kann grünlich wirken.'},
+    {k:'7.3 pur',t:'7.3 pur · 6 % · in einem Zug vom Ansatz bis in die Spitzen',df:'Z',
+     w:()=>'Die Nummer stimmt, der Weg nicht: Ohne Naturton schimmern 40 % Weiß durch. Und in einem Zug wird der Ansatz durch die Kopfwärme heller als die Längen (heller Ansatz, „Hot Roots“).'},
+    {k:'9 %',t:'7.3 + ¼ Naturton 7.0 · 9 % – damit es sicher hell genug wird',df:'L',
+     w:()=>'Stärker ist nicht sicherer. 9 % hellt ca. 2–3 Töne auf – gebraucht wird 1. Folge: mehr Belastung, der Ansatz wird zu hell und zu warm. 6 % reicht und ist der Standard für 100 % Grauabdeckung.'}]},
+  check:['Stufen → Oxidant (1 Stufe → 6 %)','Weißanteil → Naturton-Menge (¼)','Untergrund nutzen statt neutralisieren','Reihenfolge: Mittelteil & Spitzen zuerst, dann Ansatz']
+}];
+const BG={fall:null,s:0,ein:[],kern:null,kernO:[],rez:null,rezO:[],warum:'',andere:null,andereWarum:''};
+const BG_KEY='ghd-denkfehler-profil';
+function bgProfil(){try{return Object.assign({T:0,Z:0,L:0,faelle:0},JSON.parse(localStorage.getItem(BG_KEY)||'{}'));}catch(e){return{T:0,Z:0,L:0,faelle:0};}}
+function bgNeu(){const f=BG_FAELLE[0];
+  Object.assign(BG,{fall:f,s:0,ein:f.ein.map(()=>null),kern:null,kernO:mischen(f.kern.o.slice()),rez:null,rezO:mischen(f.rez.o.slice()),warum:'',andere:null,andereWarum:''});
+  $('#bgSpeicher').textContent='';bgZeige();}
+const BG_TITEL=['Ausgangslage einschätzen','Was ist das eigentliche Problem?','Entscheide und begründe','Auflösung'];
+function bgZeige(){
+  const f=BG.fall,s=BG.s,el=$('#bgInhalt');
+  $('#bgFort').innerHTML=[0,1,2,3].map(i=>'<span class="'+(i<s?'ok':i===s?'jetzt':'')+'"></span>').join('');
+  let h='<span class="tag2">Rezeptur-Fall · Schritt '+(s+1)+' von 4</span><h3>'+BG_TITEL[s]+'</h3>';
+  if(s===0){
+    h+='<div class="auftrag bg-fall"><div>'+f.fall+'</div></div><p class="bg-hinweis">Noch keine Hilfe – zuerst deine eigene Einschätzung.</p>'+
+      f.ein.map((q,i)=>'<div class="bg-ein"><span class="bg-frage">'+esc(q.f)+'</span><div class="bg-wahl" data-i="'+i+'">'+q.o.map(o=>'<button type="button" class="'+(BG.ein[i]===o?'an':'')+'">'+esc(o)+'</button>').join('')+'</div></div>').join('')+
+      '<button class="btn" id="bgWeiter"'+(BG.ein.every(x=>x)?'':' disabled')+'>Weiter zum Kernproblem →</button>';
+  } else if(s===1){
+    h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(f.kurz)+'</div><p class="bg-frage">'+esc(f.kern.f)+'</p>'+
+      '<div class="wahl-liste" id="bgKern">'+BG.kernO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(BG.kern===o?'sel':'')+'">'+esc(o.t)+'</button>').join('')+'</div>'+
+      '<button class="btn" id="bgWeiter"'+(BG.kern?'':' disabled')+'>Weiter zur Entscheidung →</button>';
+  } else if(s===2){
+    const fehl=BG.rezO.filter(o=>!o.ok);
+    h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(f.kurz)+'</div><p class="bg-frage">'+esc(f.rez.f)+'</p>'+
+      '<div class="wahl-liste" id="bgRez">'+BG.rezO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(BG.rez===o?'sel':'')+'">'+esc(o.t)+'</button>').join('')+'</div>'+
+      '<label class="bg-ein"><span class="bg-frage">Warum passt deine Wahl? (1–2 Sätze)</span><textarea class="bg-feld" id="bgWarum" maxlength="400" placeholder="z. B. Stufen → Oxidant, Weiß → Naturton …">'+esc(BG.warum)+'</textarea></label>'+
+      '<div class="bg-ein"><span class="bg-frage">Welche andere Option wirkt auch richtig – und warum ist sie es nicht?</span>'+
+      '<div class="bg-wahl" id="bgAndere">'+BG.rezO.filter(o=>o!==BG.rez).map(o=>'<button type="button" class="'+(BG.andere===o?'an':'')+'">'+esc(o.k)+'</button>').join('')+'</div>'+
+      '<textarea class="bg-feld" id="bgAndereWarum" maxlength="400" placeholder="Sie klingt richtig, weil … – aber …">'+esc(BG.andereWarum)+'</textarea></div>'+
+      '<button class="btn" id="bgWeiter">Auflösung ansehen →</button><p class="bg-hinweis" id="bgFehlt"></p>';
+  } else {
+    const z=FZ, P=bgProfil();
+    const einOk=f.ein.map((q,i)=>BG.ein[i]===q.r);
+    h+='<div class="bg-aufl'+(einOk.every(x=>x)?'':' f')+'"><b class="t">Deine Ausgangslage</b>'+f.ein.map((q,i)=>(einOk[i]?'✅ ':'❌ ')+esc(q.f)+' <b>'+esc(BG.ein[i])+'</b>'+(einOk[i]?'':' → richtig: <b>'+esc(q.r)+'</b>')+'<br><span class="muted" style="font-size:12.5px">'+esc(q.w)+'</span>').join('<div style="height:6px"></div>')+'</div>';
+    const k=BG.kern;
+    h+='<div class="bg-aufl'+(k.ok?'':' f')+'"><b class="t">Kernproblem: '+(k.ok?'✅ richtig erkannt':'❌ daneben')+'</b>'+(k.ok?'':'<span class="bg-df '+k.df+'">'+BG_DF[k.df].toUpperCase()+'</span><br>')+esc(k.w)+(k.ok?'':'<br><b>Richtig:</b> '+esc(f.kern.o[0].t))+'</div>';
+    const r=f.rez.o[0];
+    h+='<div class="bg-aufl"><b class="t">✓ Richtig: '+esc(r.t)+'</b>'+(BG.rez===r?'<span class="du">DEINE WAHL ✅</span>':'')+esc(r.w(z))+'</div>';
+    f.rez.o.slice(1).forEach(o=>{h+='<div class="bg-aufl f"><span class="bg-df '+o.df+'">'+BG_DF[o.df].toUpperCase()+'</span><b class="t">'+esc(o.t)+'</b>'+(BG.rez===o?'<span class="du">DEINE WAHL</span>':'')+(BG.andere===o?'<span class="du">DU HAST SIE ALS „WIRKT RICHTIG“ ERKANNT 👍</span>':'')+esc(o.w(z))+'</div>';});
+    h+='<div class="bg-ein"><span class="bg-frage">Deine Begründung</span><div class="bg-zitat">'+esc(BG.warum)+'</div></div>'+
+      '<div class="panel bg-check" style="padding:12px"><span class="bg-frage">Selbstcheck: Was hast du in deiner Begründung genannt?</span>'+f.check.map(c=>'<label><input type="checkbox"> '+esc(c)+'</label>').join('')+'<span class="bg-hinweis">Was fehlt, ist dein Lernpunkt für den nächsten Fall.</span></div>'+
+      '<div class="bg-hinweis" style="font-size:13px;color:var(--ink)"><b>Dein Denkfehler-Profil</b> ('+P.faelle+' '+(P.faelle===1?'Fall':'Fälle')+', auf diesem Gerät): '+['T','Z','L'].map(x=>P[x]+' × '+BG_DF[x]).join(' · ')+'</div>'+
+      '<button class="btn" id="bgNochmal">↻ Fall nochmal üben</button>';
+  }
+  el.innerHTML=h;
+  if(s===0){el.querySelectorAll('.bg-wahl').forEach(w=>w.querySelectorAll('button').forEach(b=>b.onclick=()=>{BG.ein[+w.dataset.i]=b.textContent;bgZeige();}));}
+  if(s===1){el.querySelectorAll('#bgKern button').forEach(b=>b.onclick=()=>{BG.kern=BG.kernO[+b.dataset.i];bgZeige();});}
+  if(s===2){
+    const merk=()=>{BG.warum=$('#bgWarum').value;BG.andereWarum=$('#bgAndereWarum').value;};
+    el.querySelectorAll('#bgRez button').forEach(b=>b.onclick=()=>{merk();const neu=BG.rezO[+b.dataset.i];if(BG.andere===neu)BG.andere=null;BG.rez=neu;bgZeige();});
+    const andere=BG.rezO.filter(o=>o!==BG.rez);
+    el.querySelectorAll('#bgAndere button').forEach((b,i)=>b.onclick=()=>{merk();BG.andere=andere[i];bgZeige();});
+  }
+  const w=$('#bgWeiter');
+  if(w)w.onclick=()=>{
+    if(s===2){
+      BG.warum=$('#bgWarum').value.trim();BG.andereWarum=$('#bgAndereWarum').value.trim();
+      const fehlt=!BG.rez?'Wähle zuerst eine Rezeptur.':BG.warum.length<15?'Begründe deine Wahl kurz (mind. ein Satz).':!BG.andere?'Wähle die Option, die auch richtig wirkt.':BG.andereWarum.length<10?'Schreib kurz, warum sie trotzdem nicht passt.':'';
+      if(fehlt){$('#bgFehlt').textContent=fehlt;return;}
+      bgAbschluss();
+    }
+    BG.s++;bgZeige();el.scrollIntoView({block:'nearest'});
+  };
+  const n=$('#bgNochmal');if(n)n.onclick=bgNeu;
+}
+function bgAbschluss(){
+  const f=BG.fall,P=bgProfil();
+  [BG.kern,BG.rez].forEach(o=>{if(o.df)P[o.df]++;});P.faelle++;
+  try{localStorage.setItem(BG_KEY,JSON.stringify(P));}catch(e){}
+  const ant=[f.ein.every((q,i)=>BG.ein[i]===q.r),!!BG.kern.ok,!!BG.rez.ok].map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok}));
+  punkteSpeichern(ant,'bgSpeicher');
+}
 
 // ═════════ Teil 6: Mischstation, Grauabdeckung, Rechen-Training ═════════
 // Mengen (Meisterin): Ansatz ca. 30 g, kurz 30–40 g, mittel 40–50 g, lang 50–60 g Farbe je nach Haarmenge;
