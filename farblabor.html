@@ -642,7 +642,7 @@ const REF={
 };
 const HAARREFLEX={'0':'#8A6A4A','1':'#7E8A93','2':'#8C6A95','3':'#D2A43A','4':'#D9661C','5':'#7E2A3C','6':'#B82222'};
 // Stärke des Reflexes: 0 = Naturton … 4 = am stärksten
-// 7.04 Hauch · 7.4 deutlich · 7.43 deutlich + etwas Gold · 7.44 intensiv · 7.40 am stärksten
+// 7.04 leichtes Kupfer · 7.4 Kupfer · 7.43 Kupfer mit etwas Gold · 7.44 intensives Kupfer · 7.40 sehr intensives (das stärkste)
 function lies(h,n){
   if(h===''||h==='0'&&(n===''||n==='0')) return {st:0,haupt:null,neben:null};
   if(h==='0') return {st:1,haupt:n,neben:null};
@@ -651,8 +651,9 @@ function lies(h,n){
   if(n===h) return {st:3,haupt:h,neben:null};
   return {st:2,haupt:h,neben:n};
 }
-const STW=['kein Reflex','ein Hauch','deutliches','intensives','sehr intensives (das stärkste)'];
-const STKURZ=['Naturton','leicht','deutlich','intensiv','am stärksten'];
+const STKURZ=['Naturton','leicht','','intensiv','am stärksten'];
+// Kurzwort unter der Strähne: bei einem einfachen Reflex (7.4) einfach der Reflexname, kein Zusatz
+const kurz=(st,r)=>st===2?REF[r].n:STKURZ[st];
 const nrText=(th,h,n)=>th+(h===''?'':'.'+h+n);
 const luma=c=>0.299*c[0]+0.587*c[1]+0.114*c[2];
 function nFarbe(th,h,n){
@@ -667,8 +668,11 @@ function nFarbe(th,h,n){
 function beschreibung(th,h,n){
   const l=lies(h,n), p=PIG[th-1];
   if(!l.st) return p.n+', reiner Naturton';
-  if(l.st===1) return p.n+', Naturton mit einem Hauch '+REF[l.haupt].n;
-  return p.n+', '+STW[l.st]+' '+REF[l.haupt].n+(l.neben?' mit etwas '+REF[l.neben].n:'');
+  const r=REF[l.haupt].n;
+  if(l.st===1) return p.n+', leichtes '+r;
+  if(l.st===2) return p.n+' '+r+(l.neben?' mit etwas '+REF[l.neben].n:'');
+  if(l.st===3) return p.n+', intensives '+r;
+  return p.n+', sehr intensives '+r+' (das stärkste)';
 }
 const staerkeHTML=(st,f)=>'<span class="staerke" aria-label="Stärke '+st+' von 4">'+[1,2,3,4].map(i=>'<i'+(i<=st?' style="background:'+f+'"':'')+'></i>').join('')+'</span>';
 
@@ -693,13 +697,13 @@ function nZeige(){
   $('#nZahl').innerHTML=z(th,'Tonhöhe','#211D17')+(h===''?'':'<span class="punkt-z">.</span>'+z(h,'Hauptreflex',REF[h].f)+(n===''?'':z(n,'Nebenreflex',REF[n].f)));
   let erkl;
   if(!l.st) erkl='Nur Tonhöhe, kein Reflex: ein <b>reiner Naturton</b>. Er deckt weißes Haar am besten.';
-  else if(l.st===1) erkl='<b>0 als Hauptreflex</b>: Es bleibt ein Naturton, der '+REF[n].n+'-Reflex ist nur <b>ein Hauch</b>. Weniger '+REF[n].n+' als bei '+th+'.'+n+'.';
+  else if(l.st===1) erkl='<b>0 als Hauptreflex</b>: Es bleibt ein Naturton, der '+REF[n].n+'-Reflex ist nur <b>leicht</b>. Weniger '+REF[n].n+' als bei '+th+'.'+n+'.';
   else if(l.st===4) erkl='<b>0 nach dem Hauptreflex</b>: Der Reflex wird verstärkt. '+th+'.'+h+'0 ist das <b>stärkste '+REF[h].n+'</b>, noch kräftiger als '+th+'.'+h+h+'.';
   else if(l.st===3) erkl='<b>Doppelte Zahl</b>: Haupt- und Nebenreflex sind gleich, das verstärkt ihn. '+th+'.'+h+h+' ist <b>intensives '+REF[h].n+'</b>.';
   else if(l.neben) erkl='Hauptreflex <b>'+REF[h].w+'</b> ist der größte Anteil, der Nebenreflex <b>'+REF[n].w+'</b> ist schwächer und gibt nur eine Richtung.';
-  else erkl='Ein Reflex: <b>deutliches '+REF[h].n+'</b>.';
+  else erkl='Ein Reflex ohne Zusatz: <b>'+PIG[th-1].n+' '+REF[h].n+'</b>.';
   $('#nLesen').innerHTML=strangSVG(nFarbe(th,h,n),'nb')+'<div style="display:grid;gap:6px"><b>'+esc(beschreibung(th,h,n))+'</b>'+
-    (l.st?'<span class="muted" style="font-size:13px">'+REF[l.haupt].n+'-Stärke '+staerkeHTML(l.st,REF[l.haupt].f)+' '+STKURZ[l.st]+'</span>':'')+
+    (l.st?'<span class="muted" style="font-size:13px">'+REF[l.haupt].n+'-Stärke '+staerkeHTML(l.st,REF[l.haupt].f)+' '+(l.st===2?'normal':STKURZ[l.st])+'</span>':'')+
     '<span style="font-size:14px">'+erkl+'</span></div>';
 }
 bauer($('#nWahl'),NB,nZeige); nZeige();
@@ -712,11 +716,11 @@ function vZeige(){
   $('#vReflex').innerHTML=['1','2','3','4','5','6'].map(r=>'<button type="button" data-r="'+r+'" class="'+(r===vR?'an':'')+'"><i class="punkt" style="background:'+REF[r].f+'"></i>'+REF[r].n+'</button>').join('');
   $('#vReflex').querySelectorAll('button').forEach(b=>b.onclick=()=>{vR=b.dataset.r;vZeige();});
   const reihe=[['0',vR],[vR,''],[vR,vR],[vR,'0']];
-  $('#vZeile').innerHTML=reihe.map(([h,n],i)=>{const l=lies(h,n);return '<div>'+strangSVG(nFarbe(7,h,n),'v'+i)+'<b>7.'+h+n+'</b>'+staerkeHTML(l.st,REF[vR].f)+'<br>'+STKURZ[l.st]+'</div>';}).join('');
+  $('#vZeile').innerHTML=reihe.map(([h,n],i)=>{const l=lies(h,n);return '<div>'+strangSVG(nFarbe(7,h,n),'v'+i)+'<b>7.'+h+n+'</b>'+staerkeHTML(l.st,REF[vR].f)+'<br>'+kurz(l.st,vR)+'</div>';}).join('');
   const r=REF[vR].n;
   $('#vRegeln').innerHTML=
-    '<b style="font:700 14px var(--mono)">7.0'+vR+'</b><span><b>0 vorne</b> = Naturton, nur ein Hauch '+r+'. Am wenigsten.</span>'+
-    '<b style="font:700 14px var(--mono)">7.'+vR+'</b><span>Ein Reflex: deutliches '+r+'.</span>'+
+    '<b style="font:700 14px var(--mono)">7.0'+vR+'</b><span><b>0 vorne</b> = Naturton mit leichtem '+r+'. Am wenigsten.</span>'+
+    '<b style="font:700 14px var(--mono)">7.'+vR+'</b><span>Ein Reflex ohne Zusatz: Mittelblond '+r+'.</span>'+
     '<b style="font:700 14px var(--mono)">7.'+vR+vR+'</b><span><b>Doppelt</b> = intensives '+r+'.</span>'+
     '<b style="font:700 14px var(--mono)">7.'+vR+'0</b><span><b>0 hinten</b> = das stärkste '+r+'.</span>'+
     '<span class="muted">Hinweis</span><span class="muted" style="font-size:12px">Nummerierung wie bei L’Oréal (z. B. Majirel). Andere Marken können abweichen, immer die Farbkarte prüfen.</span>';
@@ -789,7 +793,7 @@ $('#gPruefen').onclick=()=>{
     const z=gAuf.z, b=[...$('#gListe').querySelectorAll('button')].find(x=>x.textContent===gAuf.wahl);
     if(!b) return;
     if(gAuf.wahl===gAuf.richtig){b.classList.remove('sel');b.classList.add('right');$('#gListe').querySelectorAll('button').forEach(x=>x.disabled=true);$('#gPruefen').hidden=true;gGeschafft(nrText(z.th,z.h,z.n)+' = '+gAuf.richtig+'.');}
-    else{b.classList.remove('sel');b.classList.add('wrong');gFalsch('Nicht ganz. Schau auf die Zahlen nach dem Punkt: 0 vorne = Hauch, doppelt = intensiv, 0 hinten = am stärksten. Wähl eine andere Antwort.');}
+    else{b.classList.remove('sel');b.classList.add('wrong');gFalsch('Nicht ganz. Schau auf die Zahlen nach dem Punkt: 0 vorne = leicht, eine Zahl = normal, doppelt = intensiv, 0 hinten = am stärksten. Wähl eine andere Antwort.');}
     return;
   }
   const s=gAuf.st,z=gAuf.z;
@@ -903,10 +907,10 @@ const QUIZ=[
   ['Du neutralisierst Orange und gibst viel zu viel Blau dazu. Wie wirkt das Haar dann?',['Wärmer, kupferig','Zu kühl, aschig-grau','Genau neutral','Rötlich'],1,'Zu viel Gegenfarbe kippt ins Gegenteil: Hier ein Blau-/Aschstich.'],
   ['Was steht bei der Farbnummer 7.43 vor dem Punkt?',['Der Hauptreflex','Die Tonhöhe','Die Einwirkzeit','Der Oxidant'],1,'Vor dem Punkt steht immer die Tonhöhe: 7 = Mittelblond.'],
   ['Bei 7.43: Was ist die 4?',['Nebenreflex Kupfer','Hauptreflex Kupfer','Tonhöhe','Hauptreflex Gold'],1,'Die erste Zahl nach dem Punkt ist der Hauptreflex, 4 = Kupfer. Die 3 (Gold) ist der schwächere Nebenreflex.'],
-  ['Welche Nummer hat am WENIGSTEN Kupfer?',['7.40','7.44','7.4','7.04'],3,'0 als Hauptreflex: Es bleibt ein Naturton, das Kupfer ist nur ein Hauch.'],
+  ['Welche Nummer hat am WENIGSTEN Kupfer?',['7.40','7.44','7.4','7.04'],3,'0 als Hauptreflex: Es bleibt ein Naturton mit leichtem Kupfer.'],
   ['Welche Nummer hat das STÄRKSTE Kupfer?',['7.04','7.4','7.44','7.40'],3,'Die 0 nach dem Hauptreflex verstärkt ihn am meisten: 7.40 ist das stärkste Kupfer.'],
   ['Was bedeutet die doppelte Zahl bei 7.44?',['Doppelt so hell','Intensives Kupfer','Zwei Tuben nehmen','Kupfer mit Gold'],1,'Haupt- und Nebenreflex gleich = der Reflex wird verstärkt.'],
-  ['Wie heißt die Reihenfolge von wenig nach viel Kupfer?',['7.40 · 7.44 · 7.4 · 7.04','7.04 · 7.4 · 7.44 · 7.40','7.4 · 7.04 · 7.40 · 7.44','7.44 · 7.40 · 7.04 · 7.4'],1,'0 vorne = Hauch, eine Zahl = deutlich, doppelt = intensiv, 0 hinten = am stärksten.'],
+  ['Wie heißt die Reihenfolge von wenig nach viel Kupfer?',['7.40 · 7.44 · 7.4 · 7.04','7.04 · 7.4 · 7.44 · 7.40','7.4 · 7.04 · 7.40 · 7.44','7.44 · 7.40 · 7.04 · 7.4'],1,'0 vorne = leichtes Kupfer, eine Zahl = Kupfer, doppelt = intensives Kupfer, 0 hinten = das stärkste.'],
   ['Wie findest du die Gegenfarbe ganz ohne Farbkreis?',['Ich nehme immer Blau','Ich mische die Grundfarbe(n), die im Untergrund fehlen','Ich nehme die gleiche Farbe nochmal','Ich nehme Schwarz'],1,'Fehlt im Untergrund eine Grundfarbe, ist sie die Gegenfarbe. Fehlen zwei, mischst du sie.']
 ];
 const PUNKT=Object.keys(FARBE).sort((a,b)=>b.length-a.length);
