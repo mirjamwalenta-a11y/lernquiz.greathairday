@@ -1640,7 +1640,7 @@ const FB=[
  {t:'Gelbstich',k:'bei hellem Blond',fall:'Blondiert auf Tonhöhe 9. Die Kundin möchte ein kühles Hellblond.',v:['vorher',{a:'#8A6040'}],e:{a:'#E6D28A',l:'#E2CC7E',s:'#DCC46E'},
   u:{o:['Der gelbe Untergrund ist sichtbar und nicht neutralisiert','Zu lange eingewirkt','Das Haar ist zu trocken','Falsches Shampoo'],e:'Auf Tonhöhe 9–10 bleibt immer ein gelber Untergrund – er muss neutralisiert werden.',tipp:'Schau in Teil 3: Welcher Untergrund gehört zu Tonhöhe 9?'},
   r:{o:['Mit Irisé (Violett) tönen','Mit Asch (Blau) tönen','Mit Gold tönen','Nochmal blondieren'],e:'Violett ist die Gegenfarbe von Gelb. Asch (Blau) passt zu Orange – auf Gelb macht es Grün.',tipp:'Welche Farbe liegt im Farbkreis gegenüber von Gelb?'}},
- {t:'Weiß schimmert',k:'Grau nicht gedeckt',fall:'Kundin mit 60 % Weiß. Gefärbt mit 6.4 (Kupfer) und 1,8–3 %, nur 20 Minuten.',v:['vorher',{a:'#7D5030',weiss:.6}],e:{a:'#B0683A',weiss:.35},
+ {t:'Weiß schimmert',k:'Grau nicht gedeckt',neu:'weiss',fall:'Kundin mit 60 % Weiß. Gefärbt mit 6.4 (Kupfer) und 1,8–3 %, nur 20 Minuten.',v:['vorher',{a:'#7D5030',weiss:.6}],e:{a:'#B0683A',weiss:.35},
   u:{o:['Modefarbe ohne Naturton, zu schwaches Oxidant, zu kurz eingewirkt','Zu viel Naturton','Das Oxidant war zu stark','Die Haare waren zu nass'],e:'Weißes Haar hat kein eigenes Pigment. Über 50 % Weiß braucht etwa ½ Naturton, 6 % und die volle Einwirkzeit.',tipp:'Denk an Teil 6: Was braucht Weiß über 50 % – und welches Oxidant deckt 100 %?'},
   r:{o:['Nochmal mit ½ Naturton 6.0 + ½ 6.4, 6 %, volle Einwirkzeit','Nur länger einwirken lassen','Mit 12 % nochmal','Mit Asch tönen'],e:'Naturton deckt das Weiß, 6 % ist der Standard für 100 % Grauabdeckung. Und erst die volle Einwirkzeit laut Gebrauchsanweisung (Aufhellung, Farbtiefe, Reflex) lässt Farbtiefe und Reflex ganz entwickeln – nach 20 Min fehlt beides noch.',tipp:'Drei Dinge fehlten: der Naturton, das richtige Oxidant und die Zeit.'}},
  {t:'Fleckig',k:'ungleichmäßig',fall:'Ganzer Kopf, Wunsch 6.0. Dicke Abteilungen, wenig Farbe, schnell aufgetragen.',v:['geplant',{a:'#7D5030'}],e:{a:'#86603C',flecken:true},
@@ -1659,9 +1659,10 @@ function fbListe(){
   $('#fbGrid').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>fbOeffnen(+b.dataset.i));
   $('#fbStand').textContent=fbGeloest.length+' von '+FB.length+' gelöst · jedes Fehlerbild bringt Punkte für die Serie 🔥';
 }
-function fbOeffnen(i){fbI=i;fbS=0;fbErg=[];$('#fbSpeicher').textContent='';$('#fbListe').hidden=true;$('#fbFall').hidden=false;fbZeige();
+function fbOeffnen(i){fbI=i;fbS=0;fbErg=[];if(FB[i].neu)fnNeu(FB[i].neu);$('#fbSpeicher').textContent='';$('#fbListe').hidden=true;$('#fbFall').hidden=false;fbZeige();
   try{$('#fehler').scrollIntoView({behavior:'smooth'});}catch(e){}}
 function fbZeige(){
+  if(FB[fbI].neu){fnZeige();return;}
   const f=FB[fbI], q=fbS===0?f.u:f.r;fbFehler=0;
   const opts=mischen(q.o.slice());
   $('#fbInhalt').innerHTML='<span class="tag2">Fehlerbild '+(fbI+1)+' von '+FB.length+'</span><h3 style="font-size:1.2rem">'+esc(f.t)+'</h3><p class="muted" style="font-size:14px">'+esc(f.fall)+'</p>'+
@@ -1688,6 +1689,108 @@ $('#fbWeiter').onclick=()=>{
   $('#fbWeiter').onclick=()=>{$('#fbWeiter').onclick=fbWeiterStd;if(naechst>=0)fbOeffnen(naechst);else fbListe();};
 };
 const fbWeiterStd=$('#fbWeiter').onclick;
+// ── Fehlerbild nach der Begründen-Logik (wie Teil 5 „🧠 Begründen“):
+//    Diagnose ohne Hilfe → Kernproblem → Korrektur-Vorschlag + Ein-Zeilen-Begründung → Auflösung.
+//    Kein allgemeiner Reparaturweg: Eine Farbkorrektur wird immer mit der Meisterin abgestimmt.
+//    Denkfehler-Typen T/Z/L wie BG_DF; Profil gemeinsam mit Teil 5 (BG_KEY, nur auf dem Gerät).
+const FN_FAELLE={weiss:{
+  fall:'Kundin mit etwa 60 % Weiß, Wunsch warmes Kupfer. Gefärbt mit 6.4 pur, 1,8–3 %, nach 20 Min ausgespült. Ergebnis: Kupfer in den Längen, am Ansatz schimmert das Weiß hell durch.',
+  kurz:'60 % Weiß · Wunsch Kupfer · 6.4 pur · 1,8–3 % · 20 Min · Weiß schimmert',
+  diag:[ // f: war wirklich falsch?
+    {t:'Kein Naturton dabei',f:1,w:'Über 50 % Weiß braucht etwa ½ Naturton – sonst bekommt das Weiß kein Pigment.'},
+    {t:'Oxidant 1,8–3 %',f:1,w:'1,8–3 % deckt kein Weiß. 6 % ist der Standard für 100 % Grauabdeckung.'},
+    {t:'Einwirkzeit 20 Min',f:1,w:z=>'Farbtiefe und Reflex brauchen die volle Zeit – gesamt '+z.farbe+' Min laut Gebrauchsanweisung.'},
+    {t:'Farbnummer 6.4 (Kupfer)',f:0,w:'Kupfer war der Wunsch der Kundin – die Nummer war nicht der Fehler.'}],
+  kern:{f:'Was ist das eigentliche Problem?',o:[
+    {t:'Weißes Haar hat kein eigenes Pigment. Die Rezeptur war für pigmentiertes Haar gebaut – ohne Naturton, ohne Oxidant für Grauabdeckung und ohne volle Zeit kann sich am Weiß keine Farbe aufbauen.',ok:1,
+     w:'Genau: Nicht ein einzelner Fehler, sondern eine Rezeptur, die das Weiß nicht berücksichtigt hat.'},
+    {t:'Kupfer ist eine Modefarbe – Modefarben decken Weiß grundsätzlich nicht. Die Farbwahl war falsch.',df:'T',
+     w:'Pauschal stimmt das nicht: Mit dem passenden Naturton-Anteil deckt auch eine Modefarbe. Der Wunsch war richtig, die Rezeptur nicht.'},
+    {t:'Es ist zu hell geworden. Beim nächsten Mal einfach eine Nummer dunkler.',df:'Z',
+     w:'Das schaut nur aufs Ergebnis. Die Ursachen – Naturton, Oxidant, Zeit – bleiben dieselben.'},
+    {t:'Die Farbe war zu schwach. Je stärker das Oxidant und je länger, desto besser deckt es.',df:'L',
+     w:'Mehr ist nicht besser: Zu starkes Oxidant hellt auf, statt zu decken.'}]},
+  rez:{f:'Welchen Korrektur-Vorschlag bringst du der Meisterin?',o:[
+    {k:'½ + ½ · 6 %',t:'½ 6.0 + ½ 6.4 · 6 % · volle Einwirkzeit laut Gebrauchsanweisung',ok:1,
+     w:()=>'Über 50 % Weiß → ½ Naturton, damit das Weiß Pigment bekommt. 6 % ist der Standard für 100 % Grauabdeckung. Das Kupfer bleibt – der Wunsch war nicht falsch, nur der Weg.'},
+    {k:'6.0 pur',t:'6.0 pur · 6 % · volle Einwirkzeit',df:'T',
+     w:()=>'„Weiß → Naturton“ stimmt – aber die Kundin wollte Kupfer. Es deckt, ist aber nicht mehr ihre Farbe.'},
+    {k:'5.4',t:'5.4 · 1,8–3 % · 20 Min – eine Stufe dunkler',df:'Z',
+     w:()=>'Dunkler kaschiert das Weiß kurz, aber alle drei Ursachen bleiben. Nach ein paar Wäschen schimmert es wieder.'},
+    {k:'12 %',t:'½ 6.0 + ½ 6.4 · 12 % · extra lang',df:'L',
+     w:()=>'Stärker ist nicht besser: 12 % hellt 3–4 Töne auf, statt zu decken. Das Weiß wird gelblich, das Kupfer zu hell – und eine Zeit über der Gebrauchsanweisung belastet Haar und Kopfhaut.'}]},
+  vorbeugen:'Vor jeder Farbe den Weißanteil einschätzen – er entscheidet über Naturton und Oxidant.'
+}};
+const FN={f:null,s:0,diag:[],kern:null,kernO:[],rez:null,rezO:[],warum:'',andere:null,andereWarum:''};
+function fnNeu(k){const f=FN_FAELLE[k];
+  Object.assign(FN,{f,s:0,diag:f.diag.map(()=>false),kern:null,kernO:mischen(f.kern.o.slice()),rez:null,rezO:mischen(f.rez.o.slice()),warum:'',andere:null,andereWarum:''});}
+const FN_TITEL=['Diagnose: Was lief schief?','Was ist das eigentliche Problem?','Korrektur-Vorschlag und kurz begründen','Auflösung'];
+const FN_MEISTERIN='<div class="meldung info" style="border-left:4px solid var(--accent)"><b>Eine Farbkorrektur machst du nie allein.</b> Du bringst einen begründeten Vorschlag – die Korrektur wird immer mit der Meisterin abgestimmt. Sie entscheidet, ob, wann und wie korrigiert wird.</div>';
+function fnZeige(){
+  const F=FB[fbI],f=FN.f,s=FN.s,el=$('#fbInhalt');
+  $('#fbMeldung').hidden=true;$('#fbWeiter').hidden=true;
+  let h='<span class="tag2">Fehlerbild '+(fbI+1)+' von '+FB.length+' · Schritt '+(s+1)+' von 4</span><div class="fortschritt" aria-hidden="true">'+[0,1,2,3].map(i=>'<span class="'+(i<s?'ok':i===s?'jetzt':'')+'"></span>').join('')+'</div><h3 style="font-size:1.2rem">'+FN_TITEL[s]+'</h3>';
+  if(s===0){
+    h+='<div class="auftrag bg-fall"><div><b>Fehlerbild: '+esc(F.t)+'</b><br>'+esc(f.fall)+'</div></div>'+
+      '<div class="fb-paar"><div><span class="fb-bild gross">'+straehneSVG(Object.assign({mitText:true},F.v[1]),'fnv'+fbI)+'</span>'+esc(F.v[0])+'</div><div><span class="fb-bild gross">'+straehneSVG(Object.assign({mitText:true},F.e),'fne'+fbI)+'</span>Ergebnis</div></div>'+
+      '<p class="bg-frage">Welche Teile der Rezeptur waren falsch?</p><p class="bg-hinweis">Alle ankreuzen, die du für falsch hältst – noch keine Hilfe.</p>'+
+      '<div class="bg-check">'+f.diag.map((d,i)=>'<label><input type="checkbox" data-i="'+i+'"'+(FN.diag[i]?' checked':'')+'> '+esc(d.t)+'</label>').join('')+'</div>'+
+      '<button class="btn" id="fnWeiter"'+(FN.diag.some(x=>x)?'':' disabled')+'>Weiter zum Kernproblem →</button>';
+  } else if(s===1){
+    h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(f.kurz)+'</div><p class="bg-frage">'+esc(f.kern.f)+'</p>'+
+      '<div class="wahl-liste" id="fnKern">'+FN.kernO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(FN.kern===o?'sel':'')+'">'+esc(o.t)+'</button>').join('')+'</div>'+
+      '<button class="btn" id="fnWeiter"'+(FN.kern?'':' disabled')+'>Weiter zum Korrektur-Vorschlag →</button>';
+  } else if(s===2){
+    h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(f.kurz)+'</div><p class="bg-frage">'+esc(f.rez.f)+'</p>'+
+      '<div class="wahl-liste" id="fnRez">'+FN.rezO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(FN.rez===o?'sel':'')+'">'+esc(o.t)+'</button>').join('')+'</div>'+
+      '<label class="bg-ein"><span class="bg-frage">Warum? Ein Satz, Stichworte reichen</span><input class="bg-feld" style="min-height:0" id="fnWarum" maxlength="120" placeholder="z. B. Weiß → Naturton, Oxidant …" value="'+esc(FN.warum)+'"></label>'+
+      '<div class="bg-ein"><span class="bg-frage">Welche andere wirkt auch richtig – und warum nicht?</span>'+
+      '<div class="bg-wahl" id="fnAndere">'+FN.rezO.filter(o=>o!==FN.rez).map(o=>'<button type="button" class="'+(FN.andere===o?'an':'')+'">'+esc(o.k)+'</button>').join('')+'</div>'+
+      '<input class="bg-feld" style="min-height:0" id="fnAndereWarum" maxlength="120" placeholder="klingt richtig, aber …" value="'+esc(FN.andereWarum)+'"></div>'+
+      '<button class="btn" id="fnWeiter">Auflösung ansehen →</button><p class="bg-hinweis" id="fnFehlt"></p>';
+  } else {
+    const z=FZ,P=bgProfil(),gef=f.diag.filter((d,i)=>d.f&&FN.diag[i]).length,soll=f.diag.filter(d=>d.f).length;
+    const allesOk=f.diag.every((d,i)=>!!d.f===FN.diag[i]);
+    h+='<div class="bg-aufl'+(allesOk?'':' f')+'"><b class="t">Deine Diagnose: '+gef+' von '+soll+' Fehlern gefunden</b>'+f.diag.map((d,i)=>{const ok=!!d.f===FN.diag[i];
+        return (ok?'✅ ':'❌ ')+'<b>'+esc(d.t)+'</b> – '+(d.f?'war falsch':'war richtig')+'<br><span class="muted" style="font-size:12.5px">'+esc(typeof d.w==='function'?d.w(z):d.w)+'</span>';}).join('<div style="height:6px"></div>')+'</div>';
+    const k=FN.kern;
+    h+='<div class="bg-aufl'+(k.ok?'':' f')+'"><b class="t">Kernproblem: '+(k.ok?'✅ richtig erkannt':'❌ daneben')+'</b>'+(k.ok?'':'<span class="bg-df '+k.df+'">'+BG_DF[k.df].toUpperCase()+'</span><br>')+esc(k.w)+(k.ok?'':'<br><b>Richtig:</b> '+esc(f.kern.o[0].t))+'</div>';
+    const r=f.rez.o[0];
+    h+='<div class="bg-aufl"><b class="t">✓ Stimmiger Vorschlag: '+esc(r.t)+'</b>'+(FN.rez===r?'<span class="du">DEINE WAHL ✅</span>':'')+esc(r.w(z))+'</div>';
+    f.rez.o.slice(1).forEach(o=>{h+='<div class="bg-aufl f"><span class="bg-df '+o.df+'">'+BG_DF[o.df].toUpperCase()+'</span><b class="t">'+esc(o.t)+'</b>'+(FN.rez===o?'<span class="du">DEINE WAHL</span>':'')+(FN.andere===o?'<span class="du">DU HAST SIE ALS „WIRKT RICHTIG“ ERKANNT 👍</span>':'')+esc(o.w(z))+'</div>';});
+    h+=FN_MEISTERIN+
+      '<div class="bg-ein"><span class="bg-frage">Deine Begründung</span><div class="bg-zitat">'+esc(FN.warum)+'</div></div>'+
+      '<div class="bg-aufl" style="border-left-color:var(--accent)"><b class="t">Vorbeugen</b>'+esc(f.vorbeugen)+'</div>'+
+      '<div class="bg-hinweis" style="font-size:13px;color:var(--ink)"><b>Dein Denkfehler-Profil</b> ('+P.faelle+' '+(P.faelle===1?'Fall':'Fälle')+', auf diesem Gerät): '+['T','Z','L'].map(x=>P[x]+' × '+BG_DF[x]).join(' · ')+'</div><button class="btn" id="fnListe">← Alle Fehlerbilder</button>';
+  }
+  el.innerHTML=h;
+  const li=$('#fnListe');if(li)li.onclick=fbListe;
+  if(s===0)el.querySelectorAll('.bg-check input').forEach(c=>c.onchange=()=>{FN.diag[+c.dataset.i]=c.checked;$('#fnWeiter').disabled=!FN.diag.some(x=>x);});
+  if(s===1)el.querySelectorAll('#fnKern button').forEach(b=>b.onclick=()=>{FN.kern=FN.kernO[+b.dataset.i];fnZeige();});
+  if(s===2){
+    const merk=()=>{FN.warum=$('#fnWarum').value;FN.andereWarum=$('#fnAndereWarum').value;};
+    el.querySelectorAll('#fnRez button').forEach(b=>b.onclick=()=>{merk();const n=FN.rezO[+b.dataset.i];if(FN.andere===n)FN.andere=null;FN.rez=n;fnZeige();});
+    const andere=FN.rezO.filter(o=>o!==FN.rez);
+    el.querySelectorAll('#fnAndere button').forEach((b,i)=>b.onclick=()=>{merk();FN.andere=andere[i];fnZeige();});
+  }
+  const w=$('#fnWeiter');
+  if(w)w.onclick=()=>{
+    if(s===2){
+      FN.warum=$('#fnWarum').value.trim();FN.andereWarum=$('#fnAndereWarum').value.trim();
+      const fehlt=!FN.rez?'Wähle zuerst einen Vorschlag.':FN.warum.length<8?'Schreib kurz in Stichworten, warum.':!FN.andere?'Wähle die Option, die auch richtig wirkt.':FN.andereWarum.length<5?'Ein paar Worte, warum sie nicht passt.':'';
+      if(fehlt){$('#fnFehlt').textContent=fehlt;return;}
+      fnAbschluss();
+    }
+    FN.s++;fnZeige();try{$('#fehler').scrollIntoView({block:'start'});}catch(e){}
+  };
+}
+function fnAbschluss(){
+  const f=FN.f,P=bgProfil();
+  [FN.kern,FN.rez].forEach(o=>{if(o.df)P[o.df]++;});P.faelle++;
+  try{localStorage.setItem(BG_KEY,JSON.stringify(P));}catch(e){}
+  if(fbGeloest.indexOf(fbI)<0){fbGeloest.push(fbI);try{localStorage.setItem('farblabor-fehler',JSON.stringify(fbGeloest));}catch(e){}}
+  punkteSpeichern([f.diag.every((d,i)=>!!d.f===FN.diag[i]),!!FN.kern.ok,!!FN.rez.ok].map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok})),'fbSpeicher');
+}
 $('#fbZurueck').onclick=fbListe;
 fbListe();
 
