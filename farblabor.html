@@ -1688,7 +1688,7 @@ const FB=[
  {t:'Weiß schimmert',k:'Grau nicht gedeckt',neu:'weiss',fall:'Kundin mit 60 % Weiß. Gefärbt mit 6.4 (Kupfer) und 1,8–3 %, nur 20 Minuten.',v:['vorher',{a:'#7D5030',weiss:.6}],e:{a:'#B0683A',weiss:.35},
   u:{o:['Modefarbe ohne Naturton, zu schwaches Oxidant, zu kurz eingewirkt','Zu viel Naturton','Das Oxidant war zu stark','Die Haare waren zu nass'],e:'Weißes Haar hat kein eigenes Pigment. Über 50 % Weiß braucht etwa ½ Naturton, 6 % und die volle Einwirkzeit.',tipp:'Denk an Teil 6: Was braucht Weiß über 50 % – und welches Oxidant deckt 100 %?'},
   r:{o:['Nochmal mit ½ Naturton 6.0 + ½ 6.4, 6 %, volle Einwirkzeit','Nur länger einwirken lassen','Mit 12 % nochmal','Mit Asch tönen'],e:'Naturton deckt das Weiß, 6 % ist der Standard für 100 % Grauabdeckung. Und erst die volle Einwirkzeit laut Gebrauchsanweisung (Aufhellung, Farbtiefe, Reflex) lässt Farbtiefe und Reflex ganz entwickeln – nach 20 Min fehlt beides noch.',tipp:'Drei Dinge fehlten: der Naturton, das richtige Oxidant und die Zeit.'}},
- {t:'Fleckig',k:'ungleichmäßig',fall:'Ganzer Kopf, Wunsch 6.0. Dicke Abteilungen, wenig Farbe, schnell aufgetragen.',v:['geplant',{a:'#7D5030'}],e:{a:'#86603C',flecken:true},
+ {t:'Fleckig',k:'ungleichmäßig',neu:'fleckig',fall:'Ganzer Kopf, Wunsch 6.0. Dicke Abteilungen, wenig Farbe, schnell aufgetragen.',v:['geplant',{a:'#7D5030'}],e:{a:'#86603C',flecken:true},
   u:{o:['Zu dicke Abteilungen und zu wenig Farbe – nicht überall gleich viel Produkt','Die Farbe war abgelaufen','Das Oxidant war zu schwach','Die Kundin hat zu heiß geföhnt'],e:'Wo wenig Farbe hinkommt, wirkt sie schwächer. Dicke Abteilungen werden innen nicht richtig durchtränkt.',tipp:'Wie wurde aufgetragen? Kam überall gleich viel Farbe hin?'},
   r:{o:['Dünne Abteilungen, genug Produkt, gleichmäßig – jetzt die hellen Stellen gezielt nachfärben','Den ganzen Kopf mit 12 % nochmal','Mit Asch drüber tönen','Abwarten, das gleicht sich aus'],e:'Sauberes Auftragen in dünnen Abteilungen mit genug Farbe verhindert Flecken. Die helleren Stellen jetzt gezielt angleichen.',tipp:'Was machst du beim Auftragen anders – und was mit den helleren Stellen?'}},
  {t:'Fahl & grünlich',k:'dunkler auf Blond',fall:'Blondiertes Haar (Tonhöhe 9) soll wieder Hellbraun (5.0) werden. Direkt mit 5.0 gefärbt.',v:['vorher',{a:'#E6CC9C'}],e:{a:'#5E5A4E',l:'#58554A',s:'#4E4C42'},
@@ -1794,6 +1794,37 @@ spitzen:{
     {k:'12 %',t:'Spitzen mit 12 % aufhellen, damit es sicher heller wird',df:'L',
      w:()=>'Stärker ist nicht besser: Die Spitzen sind schon porös. 12 % belastet sie noch mehr und macht sie warm und fleckig statt gleichmäßig.'}]},
   vorbeugen:'Vor jeder Nachfärbung die Längen prüfen: Wie porös sind sie? Je poröser, desto kürzer kommen sie dazu.'
+},
+// „Fleckig“: prüft Technik und sauberes Arbeiten statt Farbwahl. Ab Schulter = lang (50–60 g),
+// sehr dicht → 60 g. Keine operative Korrekturanleitung – die Methode legt die Meisterin fest.
+fleckig:{
+  fall:'Naturhaar Tonhöhe 6, nie gefärbt, etwa 20 % Weiß. Schulterlang, sehr dicht. Wunsch 6.0 mit 6 %. Kreuzscheitel, hinten begonnen. Gearbeitet in dicken Abteilungen, nur 30 g angemischt, schnell verteilt. Ergebnis: ungleichmäßig, hellere Stellen vor allem innen am Hinterkopf.',
+  kurz:'TH 6 · nie gefärbt · schulterlang, sehr dicht · 6.0 · 6 % · dicke Abteilungen · 30 g · schnell · fleckig',
+  diag:[
+    {t:'Dicke Abteilungen',f:1,w:'Dicke Abteilungen werden innen nicht richtig durchtränkt.'},
+    {t:'Nur 30 g Farbe',f:1,w:'Ab Schulter ist es langes Haar: 50–60 g. Sehr dicht heißt das obere Ende, 60 g – 30 g war nur die Hälfte.'},
+    {t:'Schnell verteilt, nicht jede Partie satt',f:1,w:'Schnell ist nicht gleichmäßig: Jede Partie muss satt mit Farbe versorgt sein.'},
+    {t:'Hinten begonnen',f:0,w:'Das war richtig: Kreuzscheitel, hinten beginnen.'},
+    {t:'Farbe 6.0 mit 6 %',f:0,w:'Das war richtig: Naturton Ton in Ton, 6 % für die Grauabdeckung.'}],
+  kern:{f:'Was ist das eigentliche Problem?',o:[
+    {t:'Nicht überall kam gleich viel Farbe hin. Dicke Abteilungen werden innen nicht durchtränkt, und 30 g reichen für langes, dichtes Haar nicht. Wo weniger Farbe ist, wirkt sie schwächer.',ok:1,
+     w:'Genau: Die Farbe war richtig – Menge und Technik nicht.'},
+    {t:'Flecken entstehen, weil das Haar unterschiedlich porös ist und die Farbe unterschiedlich aufnimmt.',df:'T',
+     w:'Das gibt es – aber nicht hier: Das Haar ist Naturhaar, nie gefärbt. Die Ursache war die Menge Farbe.'},
+    {t:'Hauptsache, die ganze Fläche ist bedeckt – wie dick die Abteilungen sind, ist egal.',df:'Z',
+     w:'Bedeckt heißt nicht durchtränkt: Außen ist Farbe, innen in der dicken Abteilung fehlt sie.'},
+    {t:'Die Farbe hatte zu wenig Zeit – je länger sie wirkt, desto gleichmäßiger wird es.',df:'L',
+     w:'Zeit ersetzt keine Farbe: Wo zu wenig drauf ist, wird es auch mit mehr Zeit nicht gleichmäßig.'}]},
+  rez:{f:'Welchen Korrektur-Vorschlag bringst du der Meisterin?',o:[
+    {k:'gezielt angleichen',t:'Hellere Stellen gezielt angleichen, Methode legt die Meisterin fest · nächstes Mal: dünne Abteilungen, genug Farbe, jede Partie satt',ok:1,
+     w:()=>'Die Farbe war richtig – die Technik nicht. Die helleren Stellen gezielt angleichen, die Methode legt die Meisterin fest. Nächstes Mal: dünne Abteilungen, genug Farbe für Länge und Dichte, jede Partie satt.'},
+    {k:'Porosität',t:'Nächstes Mal einen Porositätsausgleich vorher auftragen',df:'T',
+     w:()=>'Unterschiedliche Porosität macht Flecken – aber nicht hier: Das Haar ist Naturhaar, nie gefärbt. Die Ursache war die Menge Farbe, nicht das Haar.'},
+    {k:'6.0 drüber',t:'Ganzen Kopf nochmal mit 6.0 drüber – dann wird es gleich',df:'Z',
+     w:()=>'Das Ziel „gleichmäßig“ stimmt, der Weg nicht: Über die gut gedeckten, dunkleren Stellen nochmal drüber heißt Überlagerung – sie werden noch dunkler. Die Flecken bleiben, nur anders.'},
+    {k:'länger',t:'Nächstes Mal deutlich länger einwirken lassen als laut Gebrauchsanweisung',df:'L',
+     w:()=>'Wo zu wenig Farbe ist, hilft auch mehr Zeit nicht – Zeit ersetzt keine Farbe. Und länger als laut Gebrauchsanweisung belastet Haar und Kopfhaut.'}]},
+  vorbeugen:'Menge vor dem Mischen an Länge und Dichte ausrichten – und beim Auftragen lieber dünner abteilen als schneller fertig sein.'
 }};
 const FN={f:null,s:0,diag:[],kern:null,kernO:[],rez:null,rezO:[],warum:'',andere:null,andereWarum:''};
 function fnNeu(k){const f=FN_FAELLE[k];
