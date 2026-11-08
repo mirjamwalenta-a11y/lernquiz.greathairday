@@ -178,9 +178,12 @@ body.mit-leiste{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .ffl-kopf b{font-size:15px;color:#211D17}.ffl-kopf span{font-size:12px;font-weight:700;white-space:nowrap}
 .ffl-d{font-size:12px;color:#6B6455;margin-top:3px}
 .ffl-rueck{font-size:13px;color:#7A5E28;background:#F3EBD9;border-radius:8px;padding:8px 10px;margin-top:8px}
-.ffl-schale{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.ffl-schale span{display:grid;gap:4px;font-size:11px;color:#6B6455}
-.ffl-schale input{margin:0}
+.ffl-schale{display:grid;gap:8px}
+.ffl-hinweis{text-transform:none;letter-spacing:0;font-weight:400}
+.ffl-step-k{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:#211D17;background:#fff;border:1px solid #E4DBC5;border-radius:10px;padding:6px 6px 6px 12px}
+.ffl-step{display:flex;align-items:center;gap:6px}
+.ffl-step b{min-width:64px;text-align:center;font-size:15px}
+.ffl-step button{width:40px;height:40px;border-radius:8px;border:1.5px solid #D9CDAE;background:#F8F4EA;font:600 20px Poppins,system-ui;color:#896C32;cursor:pointer}
 .pt-karte{background:#fff;border:1.5px solid #896C32;border-radius:12px;padding:14px;margin-bottom:16px}
 .pt-karte[hidden]{display:none}
 .pt-kopf{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
@@ -4839,23 +4842,33 @@ function fflPlan(id) {
     '<div class="ffl-k"><div class="ffl-kopf"><b>' + fflEsc(f.titel) + '</b></div><div class="ffl-d">' + fflEsc(fflKurz(f)) + '</div>' +
     (p && p.status === 'nochmal' && p.rueckmeldung ? '<div class="ffl-rueck">💬 ' + fflEsc(p.rueckmeldung) + '</div>' : '') + '</div>' +
     '<div class="pt-f"><label>Oxidant</label><div class="pt-dauer" id="ffl-ox">' + oxs.map(function(o){ return '<button type="button" class="' + (o === FFL.offen.ox ? 'on' : '') + '">' + o + '</button>'; }).join('') + '</div>' +
-    '<label>In die Schale</label><div class="ffl-schale">' +
-      '<span>Farbe ' + fflEsc(f.wunsch) + '<input type="number" id="ffl-g" min="0" max="500" inputmode="numeric" placeholder="g" value="' + (alt && alt.farbe_g != null ? alt.farbe_g : '') + '"></span>' +
-      '<span>Naturton<input type="number" id="ffl-n" min="0" max="500" inputmode="numeric" placeholder="g" value="' + (alt && alt.naturton_g != null ? alt.naturton_g : '') + '"></span>' +
-      '<span>Oxidant<input type="number" id="ffl-ml" min="0" max="1000" inputmode="numeric" placeholder="ml" value="' + (alt && alt.oxidant_ml != null ? alt.oxidant_ml : '') + '"></span></div>' +
+    '<label>In die Schale <span class="ffl-hinweis">(in 5er-Schritten, wie an der Mischstation)</span></label><div class="ffl-schale">' +
+      fflStepper('ffl-g', 'Farbe ' + f.wunsch, 'g', alt ? alt.farbe_g : 0) +
+      fflStepper('ffl-n', 'Naturton', 'g', alt ? alt.naturton_g : 0) +
+      fflStepper('ffl-ml', 'Oxidant', 'ml', alt ? alt.oxidant_ml : 0) + '</div>' +
     '<label for="ffl-reihe">Reihenfolge beim Auftragen</label><textarea id="ffl-reihe" rows="2" maxlength="500" placeholder="z. B. Kreuzscheitel, hinten beginnen, nur Ansatz …">' + fflEsc(alt ? alt.reihenfolge : '') + '</textarea>' +
     '<label for="ffl-warum">Warum so?</label><textarea id="ffl-warum" rows="3" maxlength="500" placeholder="In deinen Worten: Warum dieses Oxidant, warum (k)ein Naturton …">' + fflEsc(alt ? alt.warum : '') + '</textarea>' +
     '<div id="ffl-fehler" class="pt-fehler" aria-live="polite"></div>' +
     '<button class="btn-primary" id="ffl-senden" style="margin-top:14px">An die Meisterin schicken →</button>' +
     '<p class="pt-info">Tipp: Im Farblabor hilft dir der Rezeptur-Planer (Teil 5) und die Mischstation (Teil 6).</p></div>';
   document.getElementById('ffl-ox').querySelectorAll('button').forEach(function(b){ b.onclick = function(){
-    FFL.offen.ox = b.textContent; document.getElementById('ffl-ox').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); }); }; });
+    FFL.offen.ox = b.textContent; document.getElementById('ffl-fehler').textContent = ''; document.getElementById('ffl-ox').querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); }); }; });
+  document.querySelectorAll('.ffl-step button').forEach(function(b){ b.onclick = function(){
+    var el = document.getElementById(b.dataset.ziel), v = Math.max(0, Math.min(+el.dataset.max, (+el.dataset.wert || 0) + (+b.dataset.d)));
+    el.dataset.wert = v; el.textContent = v + ' ' + el.dataset.einheit; }; });
   document.getElementById('ffl-senden').onclick = fflSenden;
   window.scrollTo(0, 0);
 }
+// Mengen in 5er-Schritten (g bzw. ml) – wie in der Praxis an der Mischstation
+function fflStepper(id, name, einheit, wert) {
+  var w = Math.round((+wert || 0) / 5) * 5, max = einheit === 'ml' ? 300 : 200;
+  return '<span class="ffl-step-k">' + fflEsc(name) + '<span class="ffl-step"><button type="button" data-ziel="' + id + '" data-d="-5" aria-label="' + fflEsc(name) + ' 5 ' + einheit + ' weniger">−</button>' +
+    '<b id="' + id + '" data-wert="' + w + '" data-max="' + max + '" data-einheit="' + einheit + '" aria-live="polite">' + w + ' ' + einheit + '</b>' +
+    '<button type="button" data-ziel="' + id + '" data-d="5" aria-label="' + fflEsc(name) + ' 5 ' + einheit + ' mehr">+</button></span></span>';
+}
 async function fflSenden() {
   var o = FFL.offen, fe = document.getElementById('ffl-fehler'); fe.textContent = '';
-  var zahl = function(id){ var v = document.getElementById(id).value; return v === '' ? null : Math.max(0, Math.round(+v)); };
+  var zahl = function(id){ var v = +document.getElementById(id).dataset.wert || 0; return v ? v : null; };
   var plan = {oxidant: o.ox || null, farbe_g: zahl('ffl-g'), naturton_g: zahl('ffl-n'), oxidant_ml: zahl('ffl-ml'),
     reihenfolge: document.getElementById('ffl-reihe').value.trim().slice(0, 500) || null, warum: document.getElementById('ffl-warum').value.trim().slice(0, 500) || null};
   if (!plan.oxidant) { fe.textContent = 'Bitte wähle ein Oxidant.'; return; }
