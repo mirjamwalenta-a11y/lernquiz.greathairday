@@ -540,6 +540,11 @@ body.schnupper .nur-lern{display:none!important}
       <p class="muted">Wo die Farbe zuerst hinkommt, entscheidet über das Ergebnis.</p>
     </header>
     <div class="panel">
+      <div><span class="tag2">🧠 Erst selbst entscheiden</span><h3>Auftrags-Fall</h3></div>
+      <div id="dfAuftrag" aria-live="polite"></div>
+      <p class="muted punkte-info" id="dfAuftragSpeicher"></p>
+    </div>
+    <div class="panel">
       <div class="wahl"><div class="knoepfe" id="atFall"></div></div>
       <div class="at-zwei"><span class="fb-bild gross" id="atStr"></span><div class="at-schritte" id="atSchritte"></div></div>
       <div class="at-balken" id="atBalken"></div>
@@ -1794,6 +1799,107 @@ function fnAbschluss(){
 $('#fbZurueck').onclick=fbListe;
 fbListe();
 
+// ═════════ Denk-Fall (allgemein): Ausgangslage ohne Hilfe (ankreuzen) → Kernproblem →
+//    Entscheidung + Ein-Zeilen-Begründung + plausible Alternative → Auflösung mit Denkfehlern.
+//    Gleiche Logik wie Teil 5 „🧠 Begründen“ und Teil 7 „Weiß schimmert“; Profil gemeinsam (BG_KEY).
+//    cfg: {titel, fall, kurz, einFrage, ein:[{t,f,w}], einKopf, kern:{o:[{t,ok|df,w}]},
+//          ent:{f,o:[{k,t,ok|df,w}]}, richtigLabel, extra(html), speicherId}
+function denkFall(el,cfg){
+  const D={s:0,ein:cfg.ein.map(()=>false),kern:null,kernO:mischen(cfg.kern.o.slice()),ent:null,entO:mischen(cfg.ent.o.slice()),warum:'',andere:null,andereWarum:''};
+  const W=x=>typeof x==='function'?x(FZ):x;
+  const TIT=[cfg.titel[0],'Was ist das eigentliche Problem?',cfg.titel[1],'Auflösung'];
+  function zeige(){
+    const s=D.s;
+    let h='<span class="tag2">Schritt '+(s+1)+' von 4</span><div class="fortschritt" aria-hidden="true">'+[0,1,2,3].map(i=>'<span class="'+(i<s?'ok':i===s?'jetzt':'')+'"></span>').join('')+'</div><h3>'+TIT[s]+'</h3>';
+    if(s===0){
+      h+='<div class="auftrag bg-fall"><div>'+W(cfg.fall)+'</div></div><p class="bg-frage">'+esc(cfg.einFrage)+'</p><p class="bg-hinweis">Alle ankreuzen, die du für wichtig hältst – noch keine Hilfe.</p>'+
+        '<div class="bg-check">'+cfg.ein.map((d,i)=>'<label><input type="checkbox" data-i="'+i+'"'+(D.ein[i]?' checked':'')+'> '+esc(d.t)+'</label>').join('')+'</div>'+
+        '<button class="btn" data-w'+(D.ein.some(x=>x)?'':' disabled')+'>Weiter zum Kernproblem →</button>';
+    } else if(s===1){
+      h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(cfg.kurz)+'</div>'+
+        '<div class="wahl-liste" data-kern>'+D.kernO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(D.kern===o?'sel':'')+'">'+esc(W(o.t))+'</button>').join('')+'</div>'+
+        '<button class="btn" data-w'+(D.kern?'':' disabled')+'>Weiter zur Entscheidung →</button>';
+    } else if(s===2){
+      h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(cfg.kurz)+'</div><p class="bg-frage">'+esc(cfg.ent.f)+'</p>'+
+        '<div class="wahl-liste" data-ent>'+D.entO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(D.ent===o?'sel':'')+'">'+esc(W(o.t))+'</button>').join('')+'</div>'+
+        '<label class="bg-ein"><span class="bg-frage">Warum? Ein Satz, Stichworte reichen</span><input class="bg-feld" style="min-height:0" data-warum maxlength="120" value="'+esc(D.warum)+'"></label>'+
+        '<div class="bg-ein"><span class="bg-frage">Welche andere wirkt auch richtig – und warum nicht?</span>'+
+        '<div class="bg-wahl" data-andere>'+D.entO.filter(o=>o!==D.ent).map(o=>'<button type="button" class="'+(D.andere===o?'an':'')+'">'+esc(o.k)+'</button>').join('')+'</div>'+
+        '<input class="bg-feld" style="min-height:0" data-andere-warum maxlength="120" placeholder="klingt richtig, aber …" value="'+esc(D.andereWarum)+'"></div>'+
+        '<button class="btn" data-w>Auflösung ansehen →</button><p class="bg-hinweis" data-fehlt></p>';
+    } else {
+      const P=bgProfil(),soll=cfg.ein.filter(d=>d.f).length,gef=cfg.ein.filter((d,i)=>d.f&&D.ein[i]).length,allesOk=cfg.ein.every((d,i)=>!!d.f===D.ein[i]);
+      h+='<div class="bg-aufl'+(allesOk?'':' f')+'"><b class="t">'+esc(cfg.einKopf)+': '+gef+' von '+soll+' gefunden</b>'+cfg.ein.map((d,i)=>{const ok=!!d.f===D.ein[i];
+          return (ok?'✅ ':'❌ ')+'<b>'+esc(d.t)+'</b> – '+(d.f?'wichtig':'ändert hier nichts')+'<br><span class="muted" style="font-size:12.5px">'+esc(W(d.w))+'</span>';}).join('<div style="height:6px"></div>')+'</div>';
+      const k=D.kern;
+      h+='<div class="bg-aufl'+(k.ok?'':' f')+'"><b class="t">Kernproblem: '+(k.ok?'✅ richtig erkannt':'❌ daneben')+'</b>'+(k.ok?'':'<span class="bg-df '+k.df+'">'+BG_DF[k.df].toUpperCase()+'</span><br>')+esc(W(k.w))+(k.ok?'':'<br><b>Richtig:</b> '+esc(W(cfg.kern.o[0].t)))+'</div>';
+      const r=cfg.ent.o[0];
+      h+='<div class="bg-aufl"><b class="t">✓ '+esc(cfg.richtigLabel)+': '+esc(W(r.t))+'</b>'+(D.ent===r?'<span class="du">DEINE WAHL ✅</span>':'')+esc(W(r.w))+'</div>';
+      cfg.ent.o.slice(1).forEach(o=>{h+='<div class="bg-aufl f"><span class="bg-df '+o.df+'">'+BG_DF[o.df].toUpperCase()+'</span><b class="t">'+esc(W(o.t))+'</b>'+(D.ent===o?'<span class="du">DEINE WAHL</span>':'')+(D.andere===o?'<span class="du">DU HAST SIE ALS „WIRKT RICHTIG“ ERKANNT 👍</span>':'')+esc(W(o.w))+'</div>';});
+      h+=(cfg.extra||'')+'<div class="bg-ein"><span class="bg-frage">Deine Begründung</span><div class="bg-zitat">'+esc(D.warum)+'</div></div>'+
+        '<div class="bg-hinweis" style="font-size:13px;color:var(--ink)"><b>Dein Denkfehler-Profil</b> ('+P.faelle+' '+(P.faelle===1?'Fall':'Fälle')+', auf diesem Gerät): '+['T','Z','L'].map(x=>P[x]+' × '+BG_DF[x]).join(' · ')+'</div>'+
+        '<button class="btn" data-neu>↻ Fall nochmal üben</button>';
+    }
+    el.innerHTML=h;
+    const q=x=>el.querySelector(x);
+    if(s===0)el.querySelectorAll('.bg-check input').forEach(c=>c.onchange=()=>{D.ein[+c.dataset.i]=c.checked;q('[data-w]').disabled=!D.ein.some(x=>x);});
+    if(s===1)el.querySelectorAll('[data-kern] button').forEach(b=>b.onclick=()=>{D.kern=D.kernO[+b.dataset.i];zeige();});
+    if(s===2){
+      const merk=()=>{D.warum=q('[data-warum]').value;D.andereWarum=q('[data-andere-warum]').value;};
+      el.querySelectorAll('[data-ent] button').forEach(b=>b.onclick=()=>{merk();const n=D.entO[+b.dataset.i];if(D.andere===n)D.andere=null;D.ent=n;zeige();});
+      const andere=D.entO.filter(o=>o!==D.ent);
+      el.querySelectorAll('[data-andere] button').forEach((b,i)=>b.onclick=()=>{merk();D.andere=andere[i];zeige();});
+    }
+    const w=q('[data-w]');
+    if(w)w.onclick=()=>{
+      if(s===2){
+        D.warum=q('[data-warum]').value.trim();D.andereWarum=q('[data-andere-warum]').value.trim();
+        const fehlt=!D.ent?'Wähle zuerst eine Antwort.':D.warum.length<8?'Schreib kurz in Stichworten, warum.':!D.andere?'Wähle die Option, die auch richtig wirkt.':D.andereWarum.length<5?'Ein paar Worte, warum sie nicht passt.':'';
+        if(fehlt){q('[data-fehlt]').textContent=fehlt;return;}
+        const P=bgProfil();[D.kern,D.ent].forEach(o=>{if(o.df)P[o.df]++;});P.faelle++;
+        try{localStorage.setItem(BG_KEY,JSON.stringify(P));}catch(e){}
+        punkteSpeichern([cfg.ein.every((d,i)=>!!d.f===D.ein[i]),!!D.kern.ok,!!D.ent.ok].map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok})),cfg.speicherId);
+      }
+      D.s++;zeige();try{el.scrollIntoView({block:'nearest'});}catch(e){}
+    };
+    const n=q('[data-neu]');if(n)n.onclick=()=>{$('#'+cfg.speicherId).textContent='';denkFall(el,cfg);};
+  }
+  zeige();
+}
+
+// Teil 8: Auftrags-Fall (Erstfärbung heller). Salon-Regeln der Meisterin: Kreuzscheitel, hinten beginnen
+// (Haar dort dunkler, braucht am längsten); vorne zuletzt (feinere Ansatzhaare, Farbe greift stärker,
+// Reflex kommt stärker zur Geltung). Erstfärbung heller: Mittelteil & Spitzen zuerst, dann Ansatz.
+const DF_AUFTRAG={
+  titel:['Ausgangslage: Was zählt fürs Auftragen?','Ablauf wählen und kurz begründen'],
+  fall:'<b>Neukundin, 34 Jahre</b><br>Naturhaar Tonhöhe 5, noch nie gefärbt, schulterlang, etwa 20 % Weiß. Wunsch: ein Ton heller, warm – <b>6.3 mit 6 %</b>. Die Rezeptur steht. Deine Aufgabe: das Auftragen planen.',
+  kurz:'TH 5 · nie gefärbt · Wunsch 6.3 · 6 % · schulterlang · 20 % Weiß',
+  einFrage:'Was davon bestimmt die Reihenfolge?',einKopf:'Deine Einschätzung',
+  ein:[{t:'Noch nie gefärbt (Erstfärbung)',f:1,w:'Die Längen müssen genauso aufhellen wie der Ansatz – sie sind noch Naturhaar.'},
+       {t:'Es wird heller als Naturhaar',f:1,w:'Nur beim Aufhellen spielt der Vorsprung für Mittelteil & Spitzen eine Rolle.'},
+       {t:'Am Ansatz ist Kopfwärme',f:1,w:'Die Kopfwärme lässt die Farbe am Ansatz schneller wirken – deshalb kommt er zuletzt.'},
+       {t:'20 % Weiß',f:0,w:'Bis 30 % Weiß deckt die Modefarbe allein – das ändert die Reihenfolge nicht.'}],
+  kern:{o:[
+    {t:'Am Ansatz wirkt die Farbe durch die Kopfwärme schneller und hellt stärker auf. Mittelteil & Spitzen brauchen einen Vorsprung, sonst wird der Ansatz heller als die Längen.',ok:1,
+     w:'Genau: Die Kopfwärme ist der Grund für die Reihenfolge.'},
+    {t:'Am Ansatz ist der Nachwuchs – dort fängt man immer an.',df:'T',
+     w:'Das gilt für die Nachfärbung. Hier gibt es keinen Nachwuchs – das ganze Haar ist Naturhaar.'},
+    {t:'Hauptsache, überall ist gleich lange Farbe drauf – dann wird es gleichmäßig.',df:'Z',
+     w:'Gleich lange Zeit heißt nicht gleiches Ergebnis: Am warmen Ansatz wirkt die Farbe stärker.'},
+    {t:'Die Längen sind am schwersten aufzuhellen – sie müssen möglichst lange vor dem Ansatz drauf.',df:'L',
+     w:'Die Richtung stimmt, aber „möglichst lange“ überzieht: Der Vorsprung ist laut Gebrauchsanweisung kurz.'}]},
+  ent:{f:'Wie trägst du auf?',o:[
+    {k:'Spitzen-Vorsprung',t:F=>'Kreuzscheitel, hinten beginnen · Mittelteil & Spitzen (1–2 cm Abstand) · ca. '+F.vorlauf+' Min · dann Ansatz · gesamt '+F.farbe+' Min',ok:1,
+     w:F=>'Hinten beginnen, weil das Haar dort dunkler ist und am längsten braucht; vorne zuletzt, weil die feineren Ansatzhaare die Farbe stärker annehmen und der Reflex dort stärker zur Geltung kommt. Mittelteil & Spitzen bekommen ca. '+F.vorlauf+' Min Vorsprung, dann der Ansatz – gesamt '+F.farbe+' Min laut Gebrauchsanweisung. So hellt es überall gleich auf.'},
+    {k:'Ansatz zuerst',t:F=>'Kreuzscheitel, hinten beginnen · zuerst Ansatz · Längen die letzten '+F.nachLaengen+' Min',df:'T',
+     w:()=>'Das ist der richtige Ablauf – aber für die Nachfärbung. Hier sind die Längen noch nie gefärbt und müssen genauso aufhellen wie der Ansatz. Sonst: heller Ansatz, dunklere Längen.'},
+    {k:'in einem Zug',t:F=>'Vorne beginnen · Ansatz bis Spitzen in einem Zug · '+F.farbe+' Min',df:'Z',
+     w:()=>'Gleich lange Farbe heißt nicht gleiches Ergebnis: Der Ansatz wird durch die Kopfwärme heller („Hot Roots“). Und vorne zuerst heißt: Die feinen Ansatzhaare vorne bekommen am meisten Zeit, das dunklere Haar hinten am wenigsten.'},
+    {k:'langer Vorsprung',t:F=>'Kreuzscheitel, hinten beginnen · Mittelteil & Spitzen · '+(F.farbe-F.vorlauf)+' Min · dann Ansatz '+F.vorlauf+' Min',df:'L',
+     w:F=>'Die Richtung stimmt, das Maß nicht: Der Ansatz bekommt nur '+F.vorlauf+' Min, hellt zu wenig auf und bleibt dunkler – die Längen bekommen zu viel Zeit. Der Vorsprung ist laut Gebrauchsanweisung ca. '+F.vorlauf+' Min, nicht mehr.'}]},
+  richtigLabel:'Richtig',speicherId:'dfAuftragSpeicher'
+};
+
 // ═════════ Teil 8: Auftragen in der richtigen Reihenfolge ═════════
 // Salon-Regel der Meisterin: Färben immer Kreuzscheitel, dann hinten beginnen.
 // Blondieren: an der dunkelsten Stelle zuerst.
@@ -1814,6 +1920,7 @@ function atBauen(){const F=FZ,ph=F.aufhellung+' Min Aufhellung, '+F.farbtiefe+' 
   w:'Warum? Die '+F.farbe+' Min sind '+ph+'. Die Längen sind schon gefärbt und oft porös – sie brauchen nur den Schluss, volle Einwirkzeit würde sie zu dunkel machen.'}
 ];}
 atBauen();
+denkFall($('#dfAuftrag'),DF_AUFTRAG);
 let atI=0,atBlond=false;
 function atZeige(){
   rpKnoepfe('atFall',AT.map(x=>x.n),atI,i=>{atI=i;atZeige();});
@@ -1836,7 +1943,7 @@ function atKopf(){
   $('#atKopf').innerHTML=h;
   $('#atKopfText').innerHTML=(atBlond?[
     ['1','Abteilen'],['★','An der <b>dunkelsten Stelle</b> zuerst beginnen – sie braucht am längsten zum Aufhellen'],['✓','Danach die helleren Partien, dünne Abteilungen, genug Produkt']]:[
-    ['1','Erst <b>Kreuzscheitel</b>: vier Partien abteilen'],['2','<b>Hinten</b> beginnen – dort ist es kühler, die Farbe braucht länger'],['3','Oberkopf und Vorderkopf zuletzt – feineres Haar, wärmer'],['✓','Dünne Abteilungen, genug Farbe – sonst wird es fleckig']])
+    ['1','Erst <b>Kreuzscheitel</b>: vier Partien abteilen'],['2','<b>Hinten</b> beginnen – dort ist das Haar dunkler und braucht am längsten'],['3','Oberkopf und Vorderkopf zuletzt – die Ansatzhaare sind feiner: Die Farbe greift dort stärker, der Reflex kommt stärker zur Geltung'],['✓','Dünne Abteilungen, genug Farbe – sonst wird es fleckig']])
     .map(x=>'<div><span class="rp-n'+(x[0]==='✓'?' gut':'')+'">'+x[0]+'</span><span>'+x[1]+'</span></div>').join('');
 }
 $('#atFaerben').onclick=()=>{atBlond=false;atKopf();};
