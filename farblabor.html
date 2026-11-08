@@ -1670,7 +1670,7 @@ rpWegZeige=function(){rpWegZeigeAlt();msZeige();gaZeige();};
 // ═════════ Teil 7: Fehlerbilder – Ursache finden, Korrektur wählen ═════════
 // Jeweils: Fall, Strähne vorher/geplant und Ergebnis, 2 Schritte. Antwort [0] ist richtig.
 const FB=[
- {t:'Grünstich',k:'nach Asch auf Blond',fall:'Blondiertes Haar, Tonhöhe 9 mit gelbem Untergrund. Gefärbt mit 9.1 (Asch).',v:['vorher',{a:'#E6CF86'}],e:{a:'#B8B27A',l:'#ADAB70',s:'#A2A46A'},
+ {t:'Grünstich',k:'nach Asch auf Blond',neu:'gruen',fall:'Blondiertes Haar, Tonhöhe 9 mit gelbem Untergrund. Gefärbt mit 9.1 (Asch).',v:['vorher',{a:'#E6CF86'}],e:{a:'#B8B27A',l:'#ADAB70',s:'#A2A46A'},
   u:{o:['Asch (Blau) auf gelbem Untergrund – Blau + Gelb ergibt Grün','Das Oxidant war zu stark','Die Einwirkzeit war zu kurz','Das Haar war nicht gewaschen'],e:'Asch ist Blau. Auf gelbem Untergrund mischen sich Blau und Gelb – das ergibt Grün. Für Gelb ist Irisé (Violett) die Gegenfarbe.',tipp:'Welche Farbe hat Asch – und welche der Untergrund? Was ergibt das gemischt?'},
   r:{o:['Mit einem Rot-Anteil ausgleichen (z. B. Kupfer- oder Rotton)','Nochmal mit Asch drüber','Mit 12 % aufhellen','Gar nichts, das wäscht sich aus'],e:'Rot ist die Gegenfarbe von Grün und hebt den Stich auf. Beim nächsten Mal auf gelbem Untergrund Irisé statt Asch.',tipp:'Asch ist Blau – und Blau auf Gelb ergibt gerade das Grün. Welche Farbe liegt im Farbkreis gegenüber von Grün?'}},
  {t:'Ansatz heller',k:'„Hot Roots“',fall:'Erstfärbung, Naturhaar 6, Wunsch 6.3. Die Farbe wurde von oben bis unten in einem Zug aufgetragen.',v:['geplant',{a:'#8A5A34'}],e:{a:'#D09358',l:'#8A6040',s:'#86603C'},
@@ -1855,6 +1855,36 @@ fahl:{
     {k:'Rotton',t:'Mit einem kräftigen Rotton drüber – Rot ist die Gegenfarbe von Grün',df:'L',
      w:()=>'Rot gegen Grün ist logisch – aber ein kräftiger Rotton schießt übers Ziel: Das Ergebnis wird rotstichig statt Hellbraun. Wärme zurückgeben heißt dosiert, nicht maximal.'}]},
   vorbeugen:'Vor dem Dunklerfärben immer fragen: War das Haar blondiert oder stark aufgehellt? Dann fehlt Wärme – und das gehört in den Plan.'
+},
+// „Grünstich“: Der Fehler ist schon passiert – das Problem hat sich von Gelb zu Grün verändert.
+// Keine feste Farbnummer bei der Korrektur: Produkt und Vorgehen legt die Meisterin fest.
+gruen:{
+  fall:'Blondiert auf Tonhöhe 9, gleichmäßig, mit gelbem Untergrund. Wunsch: kühles Hellblond. Getönt mit 9.1 (Asch) und 1,8–3 %, „weil kühl = Asch“. Ergebnis: grünlicher Schimmer.',
+  kurz:'blondiert TH 9 · gelber Untergrund · Wunsch kühl · 9.1 Asch · 1,8–3 % · Grünstich',
+  diag:[
+    {t:'Asch (Blau) auf gelbem Untergrund',f:1,w:'Blau und Gelb mischen sich zu Grün.'},
+    {t:'Untergrund vor dem Tönen nicht bestimmt',f:1,w:'Erst den Untergrund lesen, dann die Gegenfarbe wählen – auf Gelb wäre es Violett (Irisé) gewesen.'},
+    {t:'Aufgehellt auf Tonhöhe 9',f:0,w:'Das war richtig: Für kühles Hellblond muss so weit aufgehellt werden.'},
+    {t:'Tönung mit 1,8–3 %',f:0,w:'Das war richtig: Zum Tönen ohne Aufhellung reichen 1,8–3 %.'}],
+  kern:{f:'Was ist das eigentliche Problem?',o:[
+    {t:'Asch ist Blau. Auf gelbem Untergrund mischen sich Blau und Gelb zu Grün. Für Gelb wäre Violett (Irisé) die Gegenfarbe gewesen – jetzt ist das Problem nicht mehr Gelb, sondern Grün.',ok:1,
+     w:'Genau: Der Fehler hat das Problem verändert – jetzt muss das Grün ausgeglichen werden.'},
+    {t:'„Kühl = Asch“ ist die Regel. Der Fehler muss woanders liegen.',df:'T',
+     w:'„Kühl“ ist ein Ziel, kein Farbton. Welcher kühle Reflex passt, entscheidet der Untergrund.'},
+    {t:'Hauptsache, auf der Farbkarte steht „kühl“ – was darunter ist, spielt keine Rolle.',df:'Z',
+     w:'Das schaut nur aufs Ziel. Die Farbe mischt sich immer mit dem Untergrund.'},
+    {t:'Die Tönung war zu schwach – mit mehr Kraft wäre das Grün nicht entstanden.',df:'L',
+     w:'Mehr Blau auf Gelb macht mehr Grün, nicht weniger. Stärker löst das Problem nicht.'}]},
+  rez:{f:'Welchen Korrektur-Vorschlag bringst du der Meisterin?',o:[
+    {k:'Rot-Anteil',t:'Das Grün mit seiner Gegenfarbe ausgleichen (Rot-Anteil) – Produkt und Vorgehen legt die Meisterin fest · nächstes Mal auf Gelb: Irisé statt Asch',ok:1,
+     w:()=>'Jetzt ist das Problem Grün – und die Gegenfarbe von Grün ist Rot. Produkt und Vorgehen legt die Meisterin fest. Nächstes Mal auf gelbem Untergrund: Irisé (Violett) statt Asch.'},
+    {k:'Irisé',t:'Mit Irisé drübertönen – Violett ist die Gegenfarbe von Gelb',df:'T',
+     w:()=>'„Violett gegen Gelb“ stimmt – aber das Gelb ist nicht mehr das Problem. Jetzt ist es Grün. Violett auf Grün macht es grau-bläulich, nicht neutral.'},
+    {k:'Asch kürzer',t:'Nochmal mit Asch drüber, nur kürzer – Hauptsache kühl',df:'Z',
+     w:()=>'Das Ziel „kühl“ ist geblieben, die Ursache auch: Mehr Blau auf Gelb macht wieder Grün – kürzer heißt nur weniger davon.'},
+    {k:'12 %',t:'Mit 12 % aufhellen, um das Grün herauszuholen',df:'L',
+     w:()=>'Stärker ist nicht besser: Das Haar ist schon auf Tonhöhe 9 blondiert. 12 % belastet es weiter – und es legt wieder gelben Untergrund frei, statt das Grün auszugleichen.'}]},
+  vorbeugen:'Vor jeder Tönung den Untergrund lesen: Gelb → Violett, Gelborange → Blau-Violett, Orange → Blau. „Kühl“ ist kein Farbton, sondern ein Ziel.'
 }};
 const FN={f:null,s:0,diag:[],kern:null,kernO:[],rez:null,rezO:[],warum:'',andere:null,andereWarum:''};
 function fnNeu(k){const f=FN_FAELLE[k];
