@@ -217,6 +217,9 @@ body.schnupper .spick-link{display:none}
 .bg-ein{display:grid;gap:4px;font-size:13.5px}
 .bg-check label{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;padding:3px 0;cursor:pointer}
 .bg-check input{margin-top:4px;accent-color:var(--good)}
+/* Tropfen in Denk-Fällen (Teil 9) */
+.tr{display:inline-block;width:11px;height:11px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin:0 1px}
+.tr.r{background:#D42A2A}.tr.y{background:#F5C518}.tr.b{background:#2D62B3}.tr.v{background:#74399A}
 .bg-zitat{font-size:13px;background:var(--surface-2);border-radius:8px;padding:8px 10px;white-space:pre-wrap}
 #rpPlanen,#rpSelbst{display:grid;gap:12px}
 #rpPlanen[hidden],#rpSelbst[hidden]{display:none}
@@ -581,6 +584,11 @@ body.schnupper .nur-lern{display:none!important}
       <h2>Spiel: Neutralisier-Profi</h2>
       <p class="muted">Eine Kundin wurde aufgehellt, der Untergrund liegt schon in der Schale. Gib so viele Tropfen dazu, bis der Stich weg ist, nicht zu wenig und nicht zu viel.</p>
     </header>
+    <div class="panel">
+      <div><span class="tag2">🧠 Erst selbst entscheiden</span><h3>Neutralisier-Fall</h3></div>
+      <div id="dfNeutral" aria-live="polite"></div>
+      <p class="muted punkte-info" id="dfNeutralSpeicher"></p>
+    </div>
     <div class="panel">
       <div class="spiel-kopf">
         <div class="fortschritt" id="sFort" style="flex:1;min-width:140px" aria-hidden="true"></div>
@@ -1812,6 +1820,7 @@ fbListe();
 function denkFall(el,cfg){
   const D={s:0,ein:cfg.ein.map(()=>false),kern:null,kernO:mischen(cfg.kern.o.slice()),ent:null,entO:mischen(cfg.ent.o.slice()),warum:'',andere:null,andereWarum:''};
   const W=x=>typeof x==='function'?x(FZ):x;
+  const OT=o=>o.h?o.h:esc(W(o.t)); // o.h: feste HTML-Darstellung (z. B. Tropfen), nur aus dem Code
   const TIT=[cfg.titel[0],'Was ist das eigentliche Problem?',cfg.titel[1],'Auflösung'];
   function zeige(){
     const s=D.s;
@@ -1825,8 +1834,8 @@ function denkFall(el,cfg){
         '<div class="wahl-liste" data-kern>'+D.kernO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(D.kern===o?'sel':'')+'">'+esc(W(o.t))+'</button>').join('')+'</div>'+
         '<button class="btn" data-w'+(D.kern?'':' disabled')+'>Weiter zur Entscheidung →</button>';
     } else if(s===2){
-      h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(cfg.kurz)+'</div><p class="bg-frage">'+esc(cfg.ent.f)+'</p>'+
-        '<div class="wahl-liste" data-ent>'+D.entO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(D.ent===o?'sel':'')+'">'+esc(W(o.t))+'</button>').join('')+'</div>'+
+      h+='<div class="auftrag bg-fall" style="font-size:13px">'+esc(cfg.kurz)+'</div>'+(cfg.entKopf||'')+'<p class="bg-frage">'+esc(cfg.ent.f)+'</p>'+
+        '<div class="wahl-liste" data-ent>'+D.entO.map((o,i)=>'<button type="button" data-i="'+i+'" class="'+(D.ent===o?'sel':'')+'">'+OT(o)+'</button>').join('')+'</div>'+
         '<label class="bg-ein"><span class="bg-frage">Warum? Ein Satz, Stichworte reichen</span><input class="bg-feld" style="min-height:0" data-warum maxlength="120" value="'+esc(D.warum)+'"></label>'+
         '<div class="bg-ein"><span class="bg-frage">Welche andere wirkt auch richtig – und warum nicht?</span>'+
         '<div class="bg-wahl" data-andere>'+D.entO.filter(o=>o!==D.ent).map(o=>'<button type="button" class="'+(D.andere===o?'an':'')+'">'+esc(o.k)+'</button>').join('')+'</div>'+
@@ -1839,8 +1848,8 @@ function denkFall(el,cfg){
       const k=D.kern;
       h+='<div class="bg-aufl'+(k.ok?'':' f')+'"><b class="t">Kernproblem: '+(k.ok?'✅ richtig erkannt':'❌ daneben')+'</b>'+(k.ok?'':'<span class="bg-df '+k.df+'">'+BG_DF[k.df].toUpperCase()+'</span><br>')+esc(W(k.w))+(k.ok?'':'<br><b>Richtig:</b> '+esc(W(cfg.kern.o[0].t)))+'</div>';
       const r=cfg.ent.o[0];
-      h+='<div class="bg-aufl"><b class="t">✓ '+esc(cfg.richtigLabel)+': '+esc(W(r.t))+'</b>'+(D.ent===r?'<span class="du">DEINE WAHL ✅</span>':'')+esc(W(r.w))+'</div>';
-      cfg.ent.o.slice(1).forEach(o=>{h+='<div class="bg-aufl f"><span class="bg-df '+o.df+'">'+BG_DF[o.df].toUpperCase()+'</span><b class="t">'+esc(W(o.t))+'</b>'+(D.ent===o?'<span class="du">DEINE WAHL</span>':'')+(D.andere===o?'<span class="du">DU HAST SIE ALS „WIRKT RICHTIG“ ERKANNT 👍</span>':'')+esc(W(o.w))+'</div>';});
+      h+='<div class="bg-aufl"><b class="t">✓ '+esc(cfg.richtigLabel)+': '+OT(r)+'</b>'+(D.ent===r?'<span class="du">DEINE WAHL ✅</span>':'')+esc(W(r.w))+'</div>';
+      cfg.ent.o.slice(1).forEach(o=>{h+='<div class="bg-aufl f"><span class="bg-df '+o.df+'">'+BG_DF[o.df].toUpperCase()+'</span><b class="t">'+OT(o)+'</b>'+(D.ent===o?'<span class="du">DEINE WAHL</span>':'')+(D.andere===o?'<span class="du">DU HAST SIE ALS „WIRKT RICHTIG“ ERKANNT 👍</span>':'')+esc(W(o.w))+'</div>';});
       h+=(cfg.extra||'')+'<div class="bg-ein"><span class="bg-frage">Deine Begründung</span><div class="bg-zitat">'+esc(D.warum)+'</div></div>'+
         '<div class="bg-hinweis" style="font-size:13px;color:var(--ink)"><b>Dein Denkfehler-Profil</b> ('+P.faelle+' '+(P.faelle===1?'Fall':'Fälle')+', auf diesem Gerät): '+['T','Z','L'].map(x=>P[x]+' × '+BG_DF[x]).join(' · ')+'</div>'+
         '<button class="btn" data-neu>↻ Fall nochmal üben</button>';
@@ -1959,6 +1968,40 @@ const DF_MISCHEN={
 atBauen();
 denkFall($('#dfAuftrag'),DF_AUFTRAG);
 denkFall($('#dfMischen'),DF_MISCHEN);
+// Teil 9: Neutralisier-Fall. Gleiche Regeln wie das Spiel: TH 7 = Gelborange (1 Rot + 2 Gelb),
+// neutral = Rot, Gelb, Blau gleich stark. Keine feste Farbnummer: der Ton kommt aus der Farbkarte des Salons.
+const DFT=(f,n)=>('<span class="tr '+f+'"></span>').repeat(n);
+const DF_NEUTRAL={
+  titel:['Ausgangslage: Was bestimmt die Gegenfarbe?','Gegenfarbe wählen und kurz begründen'],
+  fall:'<b>Kundin, 41 Jahre</b><br>Naturhaar Tonhöhe 5, wurde auf <b>Tonhöhe 7</b> aufgehellt. Jetzt zeigt sich ein warmer Untergrund. Wunsch: „Kühles, neutrales Mittelblond – kein Gelb, kein Orange, aber bitte nicht grau.“',
+  kurz:'aufgehellt auf TH 7 · Wunsch kühl-neutral, nicht grau',
+  entKopf:'<div class="bg-aufl" style="border-left-color:#EF9A24">Untergrund in der Schale: '+DFT('r',1)+' '+DFT('y',2)+' = 1 Rot · 2 Gelb (Gelborange)</div>',
+  einFrage:'Was davon brauchst du, um richtig zu neutralisieren?',einKopf:'Deine Einschätzung',
+  ein:[{t:'Die erreichte Tonhöhe 7',f:1,w:'Die erreichte Tonhöhe bestimmt, welcher Untergrund sichtbar ist – auf Tonhöhe 7 Gelborange.'},
+       {t:'Das Naturhaar war Tonhöhe 5',f:0,w:'Ist hier egal: Es zählt die Tonhöhe, die jetzt erreicht ist, nicht die von vorher.'},
+       {t:'Wie viel Rot und Gelb im Untergrund steckt',f:1,w:'Die Stärke des Untergrunds bestimmt, wie viel Gegenfarbe es braucht.'},
+       {t:'Wunsch: neutral, aber nicht grau',f:1,w:'Neutral heißt ausgleichen – nicht so weit, dass es grau oder stumpf wird.'}],
+  kern:{o:[
+    {t:'Der Untergrund auf Tonhöhe 7 ist Gelborange – eine Mischung aus Gelb und Orange. Die Gegenfarbe muss beides treffen, und zwar nur so viel, bis es neutral ist.',ok:1,
+     w:'Genau: erst den Untergrund lesen, dann Gegenfarbe und Menge daraus ableiten.'},
+    {t:'Aufgehellt heißt Orange, und gegen Orange hilft Blau. Das ist die Regel.',df:'T',
+     w:'Die Regel stimmt für Tonhöhe 6. Auf Tonhöhe 7 steckt zusätzlich Gelb drin – das trifft Blau allein nicht.'},
+    {t:'Die Kundin will kühl – also einfach eine hellere, kühlere Farbe drüber.',df:'Z',
+     w:'Das schaut nur aufs Ziel. Ohne Gegenfarbe bleibt der Untergrund sichtbar.'},
+    {t:'Je mehr Gegenfarbe, desto sicherer ist der Stich weg.',df:'L',
+     w:'Zu viel Gegenfarbe kippt ins Gegenteil – das Haar wird grau und stumpf.'}]},
+  ent:{f:'Was gibst du dazu?',o:[
+    {k:'Violett + Blau',t:'1 Tropfen Violett + 1 Tropfen Blau (Asch-Irisé)',h:DFT('v',1)+' '+DFT('b',1)+' 1 Tropfen Violett + 1 Tropfen Blau (Asch-Irisé)',ok:1,
+     w:'Gelborange = 1 Rot + 2 Gelb. Neutral ist es, wenn Rot, Gelb und Blau gleich stark sind: Es fehlen 1 Rot und 2 Blau – genau 1 Violett (Rot + Blau) + 1 Blau. Im Salon wählst du den passenden Asch-Irisé-Ton nach der Farbkarte des Salons – die Nummer steht dort, der Denkweg ist dieser.'},
+    {k:'2 × Blau',t:'2 Tropfen Blau (Asch)',h:DFT('b',2)+' 2 Tropfen Blau (Asch)',df:'T',
+     w:'„Orange → Blau“ stimmt – aber auf Tonhöhe 7 ist es nicht nur Orange. Blau nimmt das Orange weg, das übrige Gelb mischt sich mit Blau: Grünstich.'},
+    {k:'Naturton 8.0',t:'Keine Gegenfarbe – mit hellerem Naturton 8.0 drüberfärben',df:'Z',
+     w:'Heller ist nicht kühler. Ohne Gegenfarbe bleibt der Untergrund – und ein Naturton bringt selbst warmes Pigment mit. Das Gelborange bleibt sichtbar.'},
+    {k:'doppelt',t:'2 Violett + 2 Blau – sicher ist sicher',h:DFT('v',2)+' '+DFT('b',2)+' 2 Violett + 2 Blau – sicher ist sicher',df:'L',
+     w:'Neutralisieren heißt ausgleichen, nicht überdecken. Zu viel Gegenfarbe kippt ins Gegenteil: Das Haar wird blau-violett, grau und stumpf – genau das „nicht grau“, das die Kundin nicht wollte.'}]},
+  richtigLabel:'Richtig',speicherId:'dfNeutralSpeicher'
+};
+denkFall($('#dfNeutral'),DF_NEUTRAL);
 let atI=0,atBlond=false;
 function atZeige(){
   rpKnoepfe('atFall',AT.map(x=>x.n),atI,i=>{atI=i;atZeige();});
