@@ -474,6 +474,11 @@ body.schnupper .nur-lern{display:none!important}
       <p class="muted">Wie viel Farbe, wie viel Oxidant, wie lange? Und warum braucht weißes Haar Naturton? Die App rechnet mit und erklärt es.</p>
     </header>
     <div class="panel">
+      <div><span class="tag2">🧠 Erst selbst entscheiden</span><h3>Misch-Fall</h3></div>
+      <div id="dfMischen" aria-live="polite"></div>
+      <p class="muted punkte-info" id="dfMischenSpeicher"></p>
+    </div>
+    <div class="panel">
       <h3>Mischstation</h3>
       <p class="muted" style="font-size:13px">Ausgangstonhöhe und Wunschfarbe kommen aus dem Rezeptur-Planer (Teil 5).</p>
       <div class="wahl">
@@ -1919,8 +1924,41 @@ function atBauen(){const F=FZ,ph=F.aufhellung+' Min Aufhellung, '+F.farbtiefe+' 
   b:[[Math.max(1,F.farbe-F.nachLaengen),'nur Ansatz','#896C32'],[F.nachLaengen,'+ Längen','#C9A06A']],
   w:'Warum? Die '+F.farbe+' Min sind '+ph+'. Die Längen sind schon gefärbt und oft porös – sie brauchen nur den Schluss, volle Einwirkzeit würde sie zu dunkel machen.'}
 ];}
+// Teil 6: Misch-Fall. Salon-Regeln der Meisterin: lang 50–60 g je nach Haarmenge (sehr dicht → 60 g,
+// bewusst eindeutig), über 50 % Weiß ½ Naturton, Oxidant aus der gesamten Farbmenge (laut Packung 1 : 1,5).
+const DF_MISCHEN={
+  titel:['Ausgangslage: Was bestimmt die Mischung?','Schale wählen und kurz begründen'],
+  fall:'<b>Stammkundin, 58 Jahre</b><br>Naturhaar Tonhöhe 7, noch nie gefärbt. Sehr dichtes, langes Haar bis zur Brust. Etwa 60 % Weiß. Wunsch: warmes Kupfer in ihrer Tonhöhe – <b>7.4</b>, Ton in Ton, mit 6 %. Mischverhältnis laut Packung <b>1 : 1,5</b>. Deine Aufgabe: die Schale anmischen.',
+  kurz:'TH 7 · lang & sehr dicht · 60 % Weiß · Wunsch 7.4 · 6 % · 1 : 1,5',
+  einFrage:'Was davon bestimmt, was in die Schale kommt?',einKopf:'Deine Einschätzung',
+  ein:[{t:'Langes Haar',f:1,w:'Lang heißt 50–60 g Farbe.'},
+       {t:'Sehr dichtes Haar',f:1,w:'Die Haarmenge entscheidet, wo du in 50–60 g landest – sehr dichtes Haar braucht das obere Ende: 60 g.'},
+       {t:'60 % Weiß',f:1,w:'Über 50 % Weiß → ½ Naturton zur Modefarbe.'},
+       {t:'Mischverhältnis 1 : 1,5',f:1,w:'Daraus rechnest du das Oxidant – aus der gesamten Farbmenge.'},
+       {t:'Kupfer ist ein kräftiger Reflex',f:0,w:'Der Reflex ändert die Menge nicht – ein kräftiger Reflex braucht nicht mehr Gramm.'}],
+  kern:{o:[
+    {t:'Drei Rechnungen hängen zusammen: genug Farbe für langes, dichtes Haar – davon die Hälfte Naturton fürs Weiß – und das Oxidant aus der gesamten Farbmenge.',ok:1,
+     w:'Genau: Menge, Naturton-Anteil und Oxidant bauen aufeinander auf.'},
+    {t:'Die Menge steht in der Tabelle: lang = 50 g. Damit ist es erledigt.',df:'T',
+     w:'Die Tabelle gibt einen Bereich (50–60 g). Wo du landest, entscheidet die Kundin – hier sehr dichtes Haar.'},
+    {t:'Hauptsache, 7.4 kommt in die Schale – die Menge geht nach Gefühl.',df:'Z',
+     w:'Die Wunschfarbe allein reicht nicht: Ohne Naturton und ohne gerechnetes Oxidant deckt es das Weiß nicht.'},
+    {t:'Der Naturton ist nur ein Zusatz – das Oxidant rechnet man für die Modefarbe.',df:'L',
+     w:'Klingt logisch, ist aber falsch: Der Naturton ist Farbe wie jede andere und braucht genauso Oxidant.'}]},
+  ent:{f:'Was kommt in die Schale?',o:[
+    {k:'30 + 30 g · 90 ml',t:'30 g 7.4 + 30 g 7.0 + 90 ml 6 %',ok:1,
+     w:'Lang und sehr dicht → 60 g. Über 50 % Weiß → ½ Naturton: 30 g 7.4 + 30 g 7.0. Oxidant aus der gesamten Farbe: 60 g × 1,5 = 90 ml. Ton in Ton mit viel Weiß → 6 %.'},
+    {k:'50 g',t:'25 g 7.4 + 25 g 7.0 + 75 ml 6 %',df:'T',
+     w:'Nach Tabelle gerechnet, aber ohne die Kundin: „lang = 50 g“ ist der untere Wert. Bei sehr dichtem Haar reicht es nicht – hinten oder in den Spitzen fehlt Farbe, es wird fleckig.'},
+    {k:'ohne Naturton',t:'60 g 7.4 + 60 ml 6 %',df:'Z',
+     w:'Die Wunschfarbe ist drin, der Weg fehlt: Ohne Naturton schimmern 60 % Weiß durch, und 1 : 1 statt 1 : 1,5 lässt die Farbe sich nicht so entwickeln, wie sie soll.'},
+    {k:'45 ml',t:'30 g 7.4 + 30 g 7.0 + 45 ml 6 %',df:'L',
+     w:'Klingt logisch („Naturton ist nur Zusatz“), ist aber falsch: Auch der Naturton braucht Oxidant. Mit 45 ml statt 90 ml wird die Mischung zu dick, verteilt sich schlechter und entwickelt sich nicht so, wie sie soll. Dadurch kann das Ergebnis ungleichmäßig werden und die Weißabdeckung zu schwach ausfallen.'}]},
+  richtigLabel:'Richtig',speicherId:'dfMischenSpeicher'
+};
 atBauen();
 denkFall($('#dfAuftrag'),DF_AUFTRAG);
+denkFall($('#dfMischen'),DF_MISCHEN);
 let atI=0,atBlond=false;
 function atZeige(){
   rpKnoepfe('atFall',AT.map(x=>x.n),atI,i=>{atI=i;atZeige();});
