@@ -9,6 +9,7 @@
 
 <meta name="theme-color" content="#1c1917">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <style>
@@ -535,7 +536,7 @@ async function zeigeEnVerlaufFuer(lehrling){
 // Anmeldung mit dem Meisterinnen-Konto (Supabase). Ob das Konto
 // Meisterin ist, entscheidet der Server (ist_meisterin, Tabelle app_rollen).
 async function istMeisterinServer(){
-  try{var r=await sb_m.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
+  return lqIstMeisterin(sb_m);
 }
 function pinFehler(t){document.getElementById('pin-fehler').textContent=t;}
 async function pinPruefen(){

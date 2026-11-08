@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-themen.js?v=20261107e"></script>
 <script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -1661,7 +1662,7 @@ var AQEDIT_IDX = -1;
 var ALEDIT_IDX = -1;
 
 async function istMeisterinServer() {
-  try { var r = await sb2.rpc('ist_meisterin'); return !r.error && r.data === true; } catch (e) { return false; }
+  return lqIstMeisterin(sb2);
 }
 
 async function adminLogin() {

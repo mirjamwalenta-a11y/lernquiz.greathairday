@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis auch im Lernquiz-Verlauf speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
@@ -775,7 +776,7 @@ var IstMeisterin = false;
 // Meisterin ist, entscheidet der Server (ist_meisterin, Tabelle app_rollen).
 async function istMeisterinServer(){
   if(!sb_client)return false;
-  try{var r=await sb_client.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
+  return lqIstMeisterin(sb_client);
 }
 // Zurück: Meisterin direkt in ihren Bereich im Lernquiz (dort ohne neues Login),
 // Lehrlinge ins Lern-Tool
