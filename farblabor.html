@@ -273,7 +273,7 @@ body.schnupper .nur-lern{display:none!important}
     <a class="back-link" id="zurueck" href="lerntool.html?v=20261107w">← Lern-Tool</a>
     <span class="tag">greathairday · Farbenlehre</span>
     <h1>Farblabor 🎨</h1>
-    <a class="spick-link" href="spickzettel.html?v=20261108i">🖨 Farb-Spickzettel drucken</a>
+    <a class="spick-link" href="spickzettel.html?v=20261108j">🖨 Farb-Spickzettel drucken</a>
     <p>Mit nur drei Farben, Gelb, Rot und Blau, mischst du jede Farbe selbst. Du entdeckst die Gegenfarben, siehst, welcher Untergrund beim Aufhellen zum Vorschein kommt, und neutralisierst ihn im Spiel.<span class="nur-lern"> Mischlabor, Spiel und Quiz bringen Punkte für deine Serie 🔥.</span></p>
   </header>
 </div>
@@ -461,7 +461,7 @@ body.schnupper .nur-lern{display:none!important}
         <div class="reihe"><button class="btn" id="msStart">⏱ Starten</button><button class="btn ghost" id="msReset">↺</button></div>
       </div>
       <div class="ms-phasen" id="msPhasen" aria-hidden="true"><span style="flex:10">Aufhellung 10</span><span style="flex:15">Farbtiefe 15</span><span style="flex:10">Reflex 10</span><i id="msZeiger"></i></div>
-      <p class="muted" style="font-size:12px;margin-top:-4px">Die 35 Min Einwirkzeit: <b>10 Min Aufhellung</b> (das eigene Pigment wird abgebaut) · <b>15 Min Farbtiefe</b> (die Tonhöhe baut sich auf) · <b>10 Min Reflex</b> (der Farbton entwickelt sich).</p>
+      <p class="muted" style="font-size:12px;margin-top:-4px">Die 35 Min Einwirkzeit: <b>10 Min Aufhellung</b> (das eigene Pigment wird abgebaut) · <b>15 Min Farbtiefe</b> (die Tonhöhe baut sich auf) · <b>10 Min Reflex</b> (der Farbton entwickelt sich).<br>Zum Vergleich: <b>Hellerfärbung</b> (Spezial-Hellblond) meist bis <b>45 Min</b>, <b>Blondierung</b> meist bis <b>50 Min</b> – immer laut Hersteller.</p>
     </div>
     <div class="panel">
       <h3>Weißes Haar abdecken</h3>
@@ -1209,7 +1209,7 @@ function score(){const e=Object.entries(answers),n=e.length;
 // 1,8–3 % (10 Vol.) keine Aufhellung (Tönung, Ton in Ton, dunkler) · 6 % (20 Vol.) ca. 1–2 Töne,
 // Standard und 100 % Grauabdeckung · 9 % (30 Vol.) ca. 2–3 Töne · 12 % (40 Vol.) ca. 3–4 Töne
 // (High-Lift bis 4–5). Farbe hellt keine Farbe auf; ab ca. 50 % Weiß Naturton dazu;
-// Mischverhältnis 1 : 1,5; Einwirkzeit 35 Min.
+// Mischverhältnis 1 : 1,5; Einwirkzeit Farbe gesamt 35 Min (Hellerfärbung bis 45, Blondierung bis 50).
 const RP_OX_INFO='1,8–3 % = keine Aufhellung · 6 % = ca. 1–2 Töne · 9 % = ca. 2–3 Töne · 12 % = ca. 3–4 Töne';
 const RP={ist:5,weiss:1,gef:false,w:{th:7,h:'4',n:'3'},laenge:1,menge:0};
 const RP_WEISS=['keiner','bis 30 %','30–50 %','über 50 %'];
@@ -1224,9 +1224,9 @@ function rpPlan(ist,weiss,gef,w){
   // 1 · Aufhellen
   if(d<=0) s.push({t:d===0?'Ton in Ton':'Dunkler um '+(-d)+(d===-1?' Stufe':' Stufen'),p:d===0?'Gleiche Tonhöhe – es wird nur der Farbton (Reflex) verändert.':'Dunkler geht mit Farbe immer, kein Aufhellen nötig.'+(d<=-3?' Bei 3 und mehr Stufen dunkler mit der Meisterin über Vorpigmentieren sprechen, sonst wirkt das Ergebnis fahl.':''),
     w:'Warum? Farbe lagert Pigment ein. Dunkler machen ist leicht, heller machen kostet Kraft.'});
-  else if(d>4){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'So viele Stufen schafft eine normale Farbe nicht. Hier braucht es Blondierung oder ein spezielles High-Lift-System – mit der Meisterin planen.',
+  else if(d>4){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'So viele Stufen schafft eine normale Farbe nicht. Hier braucht es Blondierung (Einwirkzeit meist bis 50 Min) oder ein spezielles High-Lift-System – mit der Meisterin planen.',
     w:'Warum? Mit 12 % hellt Farbe ca. 3–4 Töne auf, nur spezielle High-Lift-Farben schaffen 4–5 Töne.',warn:true});}
-  else if(d===4) s.push({t:'Aufhellen um 4 Stufen',p:'Das ist die Grenze: nur mit 12 % oder einer High-Lift-Farbe (Spezial-Hellblond). Mit der Meisterin absprechen.',
+  else if(d===4) s.push({t:'Aufhellen um 4 Stufen',p:'Das ist die Grenze: nur mit 12 % oder einer High-Lift-Farbe (Spezial-Hellblond, Einwirkzeit meist bis 45 Min). Mit der Meisterin absprechen.',
     w:'Warum? 12 % hellt ca. 3–4 Töne auf – mehr geht mit Farbe nicht sicher.',warn:true});
   else s.push({t:'Aufhellen um '+d+(d===1?' Stufe':' Stufen'),p:'Von '+ist+' auf '+w.th+' geht mit der Farbe selbst – kein Blondieren nötig.',
     w:'Warum? Eine oxidative Farbe hellt Naturhaar je nach Oxidant ca. 1–4 Töne auf.'});
@@ -1274,7 +1274,7 @@ function rpWegZeige(){
     h+='<div class="rp-rez"><div class="rp-rez-k"><span class="lab">Rezeptur · Beispiel</span><span class="rp-len">'+RP_LAENGE.map((x,i)=>'<button type="button" data-len="'+i+'" class="'+(i===RP.laenge?'an':'')+'">'+x[0]+'</button>').join('')+'</span></div>'+
       '<div class="rp-rez-k"><small class="rp-phasen">'+RP_LAENGE[RP.laenge][0]+': '+sp[0]+'–'+sp[1]+' g, je nach Haarmenge</small><span class="rp-len">'+RP_MENGE.map((x,i)=>'<button type="button" data-menge="'+i+'" class="'+(i===RP.menge?'an':'')+'">'+x+'</button>').join('')+'</span></div>'+
       '<table><tr><td>Farbe '+esc(rpNr(w))+'</td><td>'+mode+' g</td></tr>'+(nat?'<tr><td>Naturton '+w.th+'.0</td><td>'+nat+' g</td></tr>':'')+
-      '<tr><td>Oxidant '+p.ox+' % (1 : 1,5)</td><td>'+Math.round(g*1.5)+' ml</td></tr><tr><td>Einwirkzeit</td><td>35 Min ⏱</td></tr></table><small class="rp-phasen">10 Min Aufhellung · 15 Min Farbtiefe · 10 Min Reflex</small></div>';}
+      '<tr><td>Oxidant '+p.ox+' % (1 : 1,5)</td><td>'+Math.round(g*1.5)+' ml</td></tr><tr><td>Einwirkzeit</td><td>'+(p.d===4?'bis 45 Min ⏱ (Hellerfärbung)':'35 Min ⏱')+'</td></tr></table><small class="rp-phasen">10 Min Aufhellung · 15 Min Farbtiefe · 10 Min Reflex</small></div>';}
   $('#rpWeg').innerHTML=h;
   $('#rpWeg').querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{RP.laenge=+b.dataset.len;rpWegZeige();});
   $('#rpWeg').querySelectorAll('[data-menge]').forEach(b=>b.onclick=()=>{RP.menge=+b.dataset.menge;rpWegZeige();});
@@ -1559,9 +1559,9 @@ fbListe();
 // Blondieren: an der dunkelsten Stelle zuerst.
 const AT=[
  {n:'Erstfärbung heller',str:{a:'#7D5030',l:'#C98A52',s:'#C98A52'},
-  s:[['1','Längen & Spitzen, 1–2 cm Abstand zum Ansatz'],['2','ca. 15–20 Min einwirken lassen'],['3','Dann den <b>Ansatz</b> auftragen'],['4','Ab dem Ansatz noch 35 Min']],
-  b:[[20,'Längen & Spitzen','#C9A06A'],[35,'+ Ansatz · 35 Min','#896C32']],
-  w:'Warum? Am Ansatz ist es durch die Kopfwärme wärmer – die Farbe wirkt dort schneller. Käme er zuerst, würde er heller als die Längen („Hot Roots“).'},
+  s:[['1','Längen & Spitzen, 1–2 cm Abstand zum Ansatz'],['2','ca. 10 Min einwirken lassen'],['3','Dann den <b>Ansatz</b> auftragen'],['4','Insgesamt <b>35 Min</b> – ab dem ersten Auftragen']],
+  b:[[10,'Längen 10','#C9A06A'],[25,'+ Ansatz · gesamt 35 Min','#896C32']],
+  w:'Warum? Am Ansatz ist es durch die Kopfwärme wärmer – die Farbe wirkt dort schneller. Darum bekommen die Längen einen Vorsprung, die Gesamtzeit der Farbe bleibt 35 Min.'},
  {n:'Erstfärbung gleich/dunkler',str:{a:'#6A4428',l:'#6A4428',s:'#6A4428'},
   s:[['1','In einem Zug vom <b>Ansatz bis in die Spitzen</b>'],['2','35 Min einwirken lassen']],
   b:[[35,'Ansatz bis Spitzen · 35 Min','#896C32']],
@@ -1601,7 +1601,7 @@ $('#atBlond').onclick=()=>{atBlond=true;atKopf();};
 atZeige();atKopf();
 // Reihenfolge-Spiel
 const AR=[
- {t:'Erstfärbung heller: Naturhaar 6, Wunsch 7.3',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Längen & Spitzen, 1–2 cm Abstand zum Ansatz','Ca. 15–20 Min einwirken lassen','Dann den Ansatz auftragen','Ab dem Ansatz noch 35 Min einwirken lassen','Emulgieren, ausspülen, Shampoo & Pflege'],
+ {t:'Erstfärbung heller: Naturhaar 6, Wunsch 7.3',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Längen & Spitzen, 1–2 cm Abstand zum Ansatz','Ca. 10 Min einwirken lassen','Dann den Ansatz auftragen','Einwirken lassen bis insgesamt 35 Min','Emulgieren, ausspülen, Shampoo & Pflege'],
   tipp:'Beim Heller-Färben kommt der Ansatz nicht zuerst – die Kopfwärme macht ihn sonst zu hell. Und abgeteilt wird immer vor dem Auftragen.'},
  {t:'Nachfärbung: Ansatz 3 cm, Längen leicht verblasst',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Farbe nur auf den Ansatz','Einwirkzeit ab dem Ansatz laufen lassen','Die letzten 5–10 Min Längen & Spitzen durchziehen','Emulgieren, ausspülen, Shampoo & Pflege'],
   tipp:'Bei der Nachfärbung zuerst nur der Ansatz – die Längen kommen erst ganz am Schluss kurz dazu.'},
