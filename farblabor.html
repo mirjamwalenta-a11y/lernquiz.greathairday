@@ -135,6 +135,8 @@ section.block > header{display:grid;gap:6px}
 .sortier button:disabled{cursor:default}
 .wahl-liste{display:grid;gap:6px}
 .wahl-liste button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:10px 12px;font:14px Poppins,system-ui;color:var(--ink);cursor:pointer}
+.wahl-liste button.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.sortier button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .wahl-liste button.right{border-color:var(--good);background:var(--good-soft);font-weight:600}
 .wahl-liste button.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 
@@ -736,13 +738,13 @@ function gMuster(){ // zufällige, sinnvolle Nummer
 function gNeu(){
   gFehler=0; const art=G_ARTEN[gR], m=$('#gMeldung'); m.hidden=true;
   $('#gFort').innerHTML=G_ARTEN.map((_,i)=>'<span class="'+(i<gR?'ok':i===gR?'jetzt':'')+'"></span>').join('');
-  $('#gPunkte').textContent=gPunkte+' ★'; $('#gWeiter').hidden=true; $('#gPruefen').hidden=true;
+  $('#gPunkte').textContent=gPunkte+' ★'; $('#gWeiter').hidden=true; $('#gPruefen').hidden=true; $('#gPruefen').disabled=false;
   const box=$('#gAufgabe'), kopf='<span class="tag2">Runde '+(gR+1)+' von '+G_ARTEN.length+'</span>';
   if(art==='sort'){
     const th=zuf([5,6,7,8]), r=zuf(['3','4','6','2','1']);
     const richtig=[['0',r],[r,''],[r,r],[r,'0']];
     gAuf={art,th,r,richtig,reihe:richtig.slice().sort(()=>Math.random()-.5),wahl:[]};
-    box.innerHTML=kopf+'<p style="margin:6px 0 10px"><b>Sortiere nach '+REF[r].n+'-Stärke:</b> Tippe die Tuben an, von <b>wenig</b> nach <b>viel</b>.</p><div class="sortier" id="gSort"></div>';
+    box.innerHTML=kopf+'<p style="margin:6px 0 10px"><b>Sortiere nach '+REF[r].n+'-Stärke:</b> Tippe die Tuben an, von <b>wenig</b> nach <b>viel</b>.</p><div class="sortier" id="gSort"></div><p class="muted" id="gSortHinweis" style="font-size:12px;margin-top:6px"></p>';
     gSortZeichne();
   } else if(art==='bau'){
     const z=gMuster(); gAuf={art,z,st:{th:7,h:'',n:''}};
@@ -759,25 +761,37 @@ function gNeu(){
     gAuf={art,z,richtig};
     box.innerHTML=kopf+'<p style="margin:6px 0 4px">Was bedeutet diese Nummer?</p><div class="nummer" style="font-size:2.6rem">'+nrText(z.th,z.h,z.n)+'</div><div class="wahl-liste" id="gListe">'+liste.map(t=>'<button type="button">'+esc(t)+'</button>').join('')+'</div>';
     $('#gListe').querySelectorAll('button').forEach(b=>b.onclick=()=>{
-      if(b.textContent===richtig){b.classList.add('right');$('#gListe').querySelectorAll('button').forEach(x=>x.disabled=true);gGeschafft(nrText(z.th,z.h,z.n)+' = '+richtig+'.');}
-      else{b.classList.add('wrong');b.disabled=true;gFalsch('Nicht ganz. Schau auf die Zahlen nach dem Punkt: 0 vorne = Hauch, doppelt = intensiv, 0 hinten = am stärksten.');}
+      $('#gListe').querySelectorAll('button').forEach(x=>{x.classList.remove('sel','wrong');});
+      b.classList.add('sel'); gAuf.wahl=b.textContent; $('#gMeldung').hidden=true; $('#gPruefen').hidden=false; $('#gPruefen').disabled=false;
     });
+    $('#gPruefen').hidden=false; $('#gPruefen').disabled=true;
   }
 }
 function gSortZeichne(){
   const a=gAuf;
-  $('#gSort').innerHTML=a.reihe.map(([h,n],i)=>{const pos=a.wahl.indexOf(i);return '<button type="button" data-i="'+i+'"'+(pos>=0?' disabled':'')+'>'+(pos>=0?'<span class="platz">'+(pos+1)+'</span>':'')+tubeSVG(nFarbe(a.th,h,n))+a.th+'.'+h+n+'</button>';}).join('');
+  $('#gSort').innerHTML=a.reihe.map(([h,n],i)=>{const pos=a.wahl.indexOf(i);return '<button type="button" data-i="'+i+'"'+(a.fertig?' disabled':'')+' aria-pressed="'+(pos>=0)+'">'+(pos>=0?'<span class="platz">'+(pos+1)+'</span>':'')+tubeSVG(nFarbe(a.th,h,n))+a.th+'.'+h+n+'</button>';}).join('');
   $('#gSort').querySelectorAll('button').forEach(b=>b.onclick=()=>{
-    a.wahl.push(+b.dataset.i); gSortZeichne();
-    if(a.wahl.length===4){
-      const ok=a.wahl.every((idx,p)=>a.reihe[idx].join('|')===a.richtig[p].join('|'));
-      const loesung=a.richtig.map(([h,n])=>a.th+'.'+h+n).join(' < ');
-      if(ok) gGeschafft('Richtig sortiert: '+loesung+'.');
-      else{gFalsch('Noch nicht. Richtig ist: <b>'+loesung+'</b>. Versuch es nochmal.');a.wahl=[];setTimeout(gSortZeichne,900);}
-    }
+    const i=+b.dataset.i, pos=a.wahl.indexOf(i);
+    if(pos>=0) a.wahl.splice(pos,1); else a.wahl.push(i);   // nochmal antippen = zurücknehmen
+    $('#gMeldung').hidden=true; gSortZeichne();
   });
+  $('#gPruefen').hidden=false; $('#gPruefen').disabled=a.wahl.length<4;
+  $('#gSortHinweis').textContent=a.wahl.length<4?'Noch '+(4-a.wahl.length)+' Tube'+(4-a.wahl.length===1?'':'n')+' antippen. Verdrückt? Einfach nochmal antippen, dann ist sie wieder frei.':'Alle gewählt. Passt die Reihenfolge? Dann „Prüfen“.';
+}
+function gSortPruefen(){
+  const a=gAuf, ok=a.wahl.every((idx,p)=>a.reihe[idx].join('|')===a.richtig[p].join('|'));
+  if(ok){a.fertig=true;gSortZeichne();$('#gPruefen').hidden=true;$('#gSortHinweis').textContent='';gGeschafft('Richtig sortiert: '+a.richtig.map(([h,n])=>a.th+'.'+h+n).join(' < ')+'.');return;}
+  gFalsch(gFehler>=1?'Noch nicht. Richtig ist: <b>'+a.richtig.map(([h,n])=>a.th+'.'+h+n).join(' < ')+'</b>. Tipp die Tuben an, um es zu ändern.':'Noch nicht ganz. Tipp eine Tube an, um sie herauszunehmen, und sortiere neu. Tipp: 0 vorne = am wenigsten, 0 hinten = am meisten.');
 }
 $('#gPruefen').onclick=()=>{
+  if(gAuf.art==='sort'){gSortPruefen();return;}
+  if(gAuf.art==='lies'){
+    const z=gAuf.z, b=[...$('#gListe').querySelectorAll('button')].find(x=>x.textContent===gAuf.wahl);
+    if(!b) return;
+    if(gAuf.wahl===gAuf.richtig){b.classList.remove('sel');b.classList.add('right');$('#gListe').querySelectorAll('button').forEach(x=>x.disabled=true);$('#gPruefen').hidden=true;gGeschafft(nrText(z.th,z.h,z.n)+' = '+gAuf.richtig+'.');}
+    else{b.classList.remove('sel');b.classList.add('wrong');gFalsch('Nicht ganz. Schau auf die Zahlen nach dem Punkt: 0 vorne = Hauch, doppelt = intensiv, 0 hinten = am stärksten. Wähl eine andere Antwort.');}
+    return;
+  }
   const s=gAuf.st,z=gAuf.z;
   const norm=(h,n)=>{const l=lies(h,n);return l.st+'|'+l.haupt+'|'+l.neben;};
   if(s.th===z.th&&norm(s.h,s.n)===norm(z.h,z.n)&&(s.h+s.n)===(z.h+z.n)){gGeschafft('Genau: <b>'+nrText(z.th,z.h,z.n)+'</b>.');$('#gPruefen').hidden=true;return;}
