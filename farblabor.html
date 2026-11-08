@@ -263,6 +263,7 @@ body.schnupper .nur-lern{display:none!important}
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="farb-zeiten.js?v=20261108k"></script>  <!-- Farb-Zeiten laut Gebrauchsanweisung (Meisterin pflegt sie) -->
 <script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 </head>
@@ -273,7 +274,7 @@ body.schnupper .nur-lern{display:none!important}
     <a class="back-link" id="zurueck" href="lerntool.html?v=20261107w">← Lern-Tool</a>
     <span class="tag">greathairday · Farbenlehre</span>
     <h1>Farblabor 🎨</h1>
-    <a class="spick-link" href="spickzettel.html?v=20261108j">🖨 Farb-Spickzettel drucken</a>
+    <a class="spick-link" href="spickzettel.html?v=20261108k">🖨 Farb-Spickzettel drucken</a>
     <p>Mit nur drei Farben, Gelb, Rot und Blau, mischst du jede Farbe selbst. Du entdeckst die Gegenfarben, siehst, welcher Untergrund beim Aufhellen zum Vorschein kommt, und neutralisierst ihn im Spiel.<span class="nur-lern"> Mischlabor, Spiel und Quiz bringen Punkte für deine Serie 🔥.</span></p>
   </header>
 </div>
@@ -457,11 +458,11 @@ body.schnupper .nur-lern{display:none!important}
       </div>
       <div id="msSchale" aria-live="polite"></div>
       <div class="ms-timer">
-        <div><small id="msPhase">Einwirkzeit</small><b id="msZeit">35:00</b></div>
+        <div><small id="msPhase">Einwirkzeit</small><b id="msZeit">--:--</b></div>
         <div class="reihe"><button class="btn" id="msStart">⏱ Starten</button><button class="btn ghost" id="msReset">↺</button></div>
       </div>
-      <div class="ms-phasen" id="msPhasen" aria-hidden="true"><span style="flex:10">Aufhellung 10</span><span style="flex:15">Farbtiefe 15</span><span style="flex:10">Reflex 10</span><i id="msZeiger"></i></div>
-      <p class="muted" style="font-size:12px;margin-top:-4px">Die 35 Min Einwirkzeit: <b>10 Min Aufhellung</b> (das eigene Pigment wird abgebaut) · <b>15 Min Farbtiefe</b> (die Tonhöhe baut sich auf) · <b>10 Min Reflex</b> (der Farbton entwickelt sich).<br>Zum Vergleich: <b>Hellerfärbung</b> (Spezial-Hellblond) meist bis <b>45 Min</b>, <b>Blondierung</b> meist bis <b>50 Min</b> – immer laut Hersteller.</p>
+      <div class="ms-phasen" id="msPhasen" aria-hidden="true"></div>
+      <p class="muted" style="font-size:12px;margin-top:-4px">Einwirkzeit <b>laut Gebrauchsanweisung</b>: <b><span data-fz="farbe"></span> Min</b> = <b><span data-fz="aufhellung"></span> Min Aufhellung</b> (das eigene Pigment wird abgebaut) · <b><span data-fz="farbtiefe"></span> Min Farbtiefe</b> (die Tonhöhe baut sich auf) · <b><span data-fz="reflex"></span> Min Reflex</b> (der Farbton entwickelt sich).<br>Zum Vergleich: <b>Hellerfärbung</b> meist bis <b><span data-fz="heller"></span> Min</b>, <b>Blondierung</b> meist bis <b><span data-fz="blond"></span> Min</b>.</p>
     </div>
     <div class="panel">
       <h3>Weißes Haar abdecken</h3>
@@ -1209,7 +1210,7 @@ function score(){const e=Object.entries(answers),n=e.length;
 // 1,8–3 % (10 Vol.) keine Aufhellung (Tönung, Ton in Ton, dunkler) · 6 % (20 Vol.) ca. 1–2 Töne,
 // Standard und 100 % Grauabdeckung · 9 % (30 Vol.) ca. 2–3 Töne · 12 % (40 Vol.) ca. 3–4 Töne
 // (High-Lift bis 4–5). Farbe hellt keine Farbe auf; ab ca. 50 % Weiß Naturton dazu;
-// Mischverhältnis 1 : 1,5; Einwirkzeit Farbe gesamt 35 Min (Hellerfärbung bis 45, Blondierung bis 50).
+// Mischverhältnis 1 : 1,5; Einwirkzeit laut Gebrauchsanweisung (FZ aus farb-zeiten.js, von der Meisterin gepflegt).
 const RP_OX_INFO='1,8–3 % = keine Aufhellung · 6 % = ca. 1–2 Töne · 9 % = ca. 2–3 Töne · 12 % = ca. 3–4 Töne';
 const RP={ist:5,weiss:1,gef:false,w:{th:7,h:'4',n:'3'},laenge:1,menge:0};
 const RP_WEISS=['keiner','bis 30 %','30–50 %','über 50 %'];
@@ -1224,9 +1225,9 @@ function rpPlan(ist,weiss,gef,w){
   // 1 · Aufhellen
   if(d<=0) s.push({t:d===0?'Ton in Ton':'Dunkler um '+(-d)+(d===-1?' Stufe':' Stufen'),p:d===0?'Gleiche Tonhöhe – es wird nur der Farbton (Reflex) verändert.':'Dunkler geht mit Farbe immer, kein Aufhellen nötig.'+(d<=-3?' Bei 3 und mehr Stufen dunkler mit der Meisterin über Vorpigmentieren sprechen, sonst wirkt das Ergebnis fahl.':''),
     w:'Warum? Farbe lagert Pigment ein. Dunkler machen ist leicht, heller machen kostet Kraft.'});
-  else if(d>4){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'So viele Stufen schafft eine normale Farbe nicht. Hier braucht es Blondierung (Einwirkzeit meist bis 50 Min) oder ein spezielles High-Lift-System – mit der Meisterin planen.',
+  else if(d>4){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'So viele Stufen schafft eine normale Farbe nicht. Hier braucht es Blondierung (Einwirkzeit laut Gebrauchsanweisung, meist bis '+FZ.blond+' Min) oder ein spezielles High-Lift-System – mit der Meisterin planen.',
     w:'Warum? Mit 12 % hellt Farbe ca. 3–4 Töne auf, nur spezielle High-Lift-Farben schaffen 4–5 Töne.',warn:true});}
-  else if(d===4) s.push({t:'Aufhellen um 4 Stufen',p:'Das ist die Grenze: nur mit 12 % oder einer High-Lift-Farbe (Spezial-Hellblond, Einwirkzeit meist bis 45 Min). Mit der Meisterin absprechen.',
+  else if(d===4) s.push({t:'Aufhellen um 4 Stufen',p:'Das ist die Grenze: nur mit 12 % oder einer High-Lift-Farbe (Spezial-Hellblond, Einwirkzeit laut Gebrauchsanweisung, meist bis '+FZ.heller+' Min). Mit der Meisterin absprechen.',
     w:'Warum? 12 % hellt ca. 3–4 Töne auf – mehr geht mit Farbe nicht sicher.',warn:true});
   else s.push({t:'Aufhellen um '+d+(d===1?' Stufe':' Stufen'),p:'Von '+ist+' auf '+w.th+' geht mit der Farbe selbst – kein Blondieren nötig.',
     w:'Warum? Eine oxidative Farbe hellt Naturhaar je nach Oxidant ca. 1–4 Töne auf.'});
@@ -1274,7 +1275,7 @@ function rpWegZeige(){
     h+='<div class="rp-rez"><div class="rp-rez-k"><span class="lab">Rezeptur · Beispiel</span><span class="rp-len">'+RP_LAENGE.map((x,i)=>'<button type="button" data-len="'+i+'" class="'+(i===RP.laenge?'an':'')+'">'+x[0]+'</button>').join('')+'</span></div>'+
       '<div class="rp-rez-k"><small class="rp-phasen">'+RP_LAENGE[RP.laenge][0]+': '+sp[0]+'–'+sp[1]+' g, je nach Haarmenge</small><span class="rp-len">'+RP_MENGE.map((x,i)=>'<button type="button" data-menge="'+i+'" class="'+(i===RP.menge?'an':'')+'">'+x+'</button>').join('')+'</span></div>'+
       '<table><tr><td>Farbe '+esc(rpNr(w))+'</td><td>'+mode+' g</td></tr>'+(nat?'<tr><td>Naturton '+w.th+'.0</td><td>'+nat+' g</td></tr>':'')+
-      '<tr><td>Oxidant '+p.ox+' % (1 : 1,5)</td><td>'+Math.round(g*1.5)+' ml</td></tr><tr><td>Einwirkzeit</td><td>'+(p.d===4?'bis 45 Min ⏱ (Hellerfärbung)':'35 Min ⏱')+'</td></tr></table><small class="rp-phasen">10 Min Aufhellung · 15 Min Farbtiefe · 10 Min Reflex</small></div>';}
+      '<tr><td>Oxidant '+p.ox+' % (1 : 1,5)</td><td>'+Math.round(g*1.5)+' ml</td></tr><tr><td>Einwirkzeit</td><td>'+(p.d===4?'bis '+FZ.heller+' Min ⏱ (Hellerfärbung)':FZ.farbe+' Min ⏱')+'</td></tr></table><small class="rp-phasen">laut Gebrauchsanweisung: '+FZ.aufhellung+' Min Aufhellung · '+FZ.farbtiefe+' Min Farbtiefe · '+FZ.reflex+' Min Reflex</small></div>';}
   $('#rpWeg').innerHTML=h;
   $('#rpWeg').querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{RP.laenge=+b.dataset.len;rpWegZeige();});
   $('#rpWeg').querySelectorAll('[data-menge]').forEach(b=>b.onclick=()=>{RP.menge=+b.dataset.menge;rpWegZeige();});
@@ -1391,17 +1392,19 @@ function msZeige(){
     '<span class="rp-warum">'+warum+'</span>';
 }
 msZeige();
-// Einwirkzeit-Timer (35 Min), läuft auch bei der echten Färbung
-let msRest=35*60, msUhr=null;
+// Einwirkzeit-Timer (Farb-Zeiten laut Gebrauchsanweisung, FZ), läuft auch bei der echten Färbung
+let msRest=FZ.farbe*60, msUhr=null;
 // Phasen der Einwirkzeit (Meisterin): 10 Min Aufhellung · 15 Min Farbtiefe · 10 Min Reflex
-const MS_PHASEN=[[10,'Aufhellung'],[15,'Farbtiefe'],[10,'Reflex']];
+const msPh=()=>[[FZ.aufhellung,'Aufhellung'],[FZ.farbtiefe,'Farbtiefe'],[FZ.reflex,'Reflex']];
+function msPhasenZeichnen(){$('#msPhasen').innerHTML=msPh().map(x=>'<span style="flex:'+x[0]+'">'+x[1]+' '+x[0]+'</span>').join('')+'<i id="msZeiger"></i>';}
+msPhasenZeichnen();
 const msZeit=()=>{$('#msZeit').textContent=String(Math.floor(msRest/60)).padStart(2,'0')+':'+String(msRest%60).padStart(2,'0');
-  const vorbei=35*60-msRest; let t=0,ph='Einwirkzeit';
-  if(vorbei>0&&msRest>0) for(const [m,n] of MS_PHASEN){t+=m*60;if(vorbei<t){ph='Phase: '+n+' · noch '+Math.ceil((t-vorbei)/60)+' Min';break;}}
-  $('#msPhase').textContent=ph; $('#msZeiger').style.left=(vorbei/(35*60)*100)+'%';$('#msZeiger').style.opacity=vorbei>0&&msRest>0?1:0;};
+  const vorbei=FZ.farbe*60-msRest; let t=0,ph='Einwirkzeit';
+  if(vorbei>0&&msRest>0) for(const [m,n] of msPh()){t+=m*60;if(vorbei<t){ph='Phase: '+n+' · noch '+Math.ceil((t-vorbei)/60)+' Min';break;}}
+  $('#msPhase').textContent=ph; $('#msZeiger').style.left=(vorbei/(FZ.farbe*60)*100)+'%';$('#msZeiger').style.opacity=vorbei>0&&msRest>0?1:0;};
 $('#msStart').onclick=()=>{
   if(msUhr){clearInterval(msUhr);msUhr=null;$('#msStart').textContent='⏱ Weiter';return;}
-  if(msRest<=0)msRest=35*60;
+  if(msRest<=0)msRest=FZ.farbe*60;
   const ende=Date.now()+msRest*1000;
   $('#msStart').textContent='⏸ Pause';
   msUhr=setInterval(()=>{msRest=Math.max(0,Math.round((ende-Date.now())/1000));msZeit();
@@ -1409,7 +1412,7 @@ $('#msStart').onclick=()=>{
       try{navigator.vibrate&&navigator.vibrate([300,150,300]);}catch(e){}
       $('#msZeit').textContent='Fertig!';$('#msPhase').textContent='Einwirkzeit vorbei';}},500);
 };
-$('#msReset').onclick=()=>{if(msUhr){clearInterval(msUhr);msUhr=null;}msRest=35*60;msZeit();$('#msStart').textContent='⏱ Starten';};
+$('#msReset').onclick=()=>{if(msUhr){clearInterval(msUhr);msUhr=null;}msRest=FZ.farbe*60;msZeit();$('#msStart').textContent='⏱ Starten';};
 msZeit();
 
 // Grauabdeckung: Strähnen zum Vergleich
@@ -1446,11 +1449,11 @@ function trAufgaben(){
   const gV=trZuf([40,60]);
   a.push({f:'Kundin mit 40 % Weiß. '+gV+' g Farbe insgesamt. Wie viel Naturton?',r:gV/4+' g',o:[gV/4,gV/2,gV,0].map(x=>x+' g'),tipp:'30–50 % Weiß: etwa ¼ Naturton. Ein Viertel ist die Hälfte von der Hälfte.'});
   a.push({f:'Kundin mit 20 % Weiß, Wunsch 7.43. Brauchst du Naturton dazu?',r:'Nein, die Modefarbe deckt',o:['Nein, die Modefarbe deckt','Ja, etwa ¼','Ja, etwa die Hälfte','Ja, nur Naturton'],tipp:'Bis ca. 30 % Weiß deckt die Modefarbe allein.'});
-  const h=trZuf([9,10,14,15]),m=trZuf([10,20,40,45]),e=new Date(2000,0,1,h,m+35);
+  const h=trZuf([9,10,14,15]),m=trZuf([10,20,40,45]),e=new Date(2000,0,1,h,m+FZ.farbe);
   const ende=String(e.getHours())+':'+String(e.getMinutes()).padStart(2,'0'), z=x=>{const d=new Date(2000,0,1,h,m+x);return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');};
-  a.push({f:'Farbe aufgetragen um '+h+':'+String(m).padStart(2,'0')+' Uhr. Einwirkzeit 35 Min. Wann ist sie fertig?',r:ende+' Uhr',o:[ende,z(30),z(45),z(25)].map(x=>x+' Uhr'),tipp:'Erst 30 Minuten dazurechnen, dann noch 5.'});
+  a.push({f:'Farbe aufgetragen um '+h+':'+String(m).padStart(2,'0')+' Uhr. Einwirkzeit laut Gebrauchsanweisung '+FZ.farbe+' Min. Wann ist sie fertig?',r:ende+' Uhr',o:[ende,z(FZ.farbe-5),z(FZ.farbe+10),z(FZ.farbe-10)].map(x=>x+' Uhr'),tipp:'Rechne die '+FZ.farbe+' Minuten dazu: erst die vollen Zehner, dann den Rest.'});
   const hp=trZuf([9,13,16]),mp=trZuf([0,10,30]),zp=x=>{const d=new Date(2000,0,1,hp,mp+x);return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');};
-  a.push({f:'Aufgetragen um '+hp+':'+String(mp).padStart(2,'0')+' Uhr. Einwirkzeit: 10 Min Aufhellung, 15 Min Farbtiefe, 10 Min Reflex. Wann beginnt die Reflex-Phase?',r:zp(25)+' Uhr',o:[zp(25),zp(10),zp(15),zp(35)].map(x=>x+' Uhr'),tipp:'Die Reflex-Phase kommt nach Aufhellung und Farbtiefe: 10 + 15 Minuten.'});
+  a.push({f:'Aufgetragen um '+hp+':'+String(mp).padStart(2,'0')+' Uhr. Einwirkzeit: '+FZ.aufhellung+' Min Aufhellung, '+FZ.farbtiefe+' Min Farbtiefe, '+FZ.reflex+' Min Reflex. Wann beginnt die Reflex-Phase?',r:zp(FZ.aufhellung+FZ.farbtiefe)+' Uhr',o:[zp(FZ.aufhellung+FZ.farbtiefe),zp(FZ.aufhellung),zp(FZ.farbtiefe),zp(FZ.farbe+5)].map(x=>x+' Uhr'),tipp:'Die Reflex-Phase kommt nach Aufhellung und Farbtiefe: '+FZ.aufhellung+' + '+FZ.farbtiefe+' Minuten.'});
   const gA=trZuf([30,45]);
   a.push({f:'Nur Ansatz, '+gA+' g Farbe, Mischverhältnis 1 : 2. Wie viel Oxidant?',r:gA*2+' ml',o:[gA*2,gA,Math.round(gA*1.5),gA*3].map(x=>x+' ml'),tipp:'Mal 2 heißt: die Menge verdoppeln.'});
   return a.map(x=>Object.assign(x,{o:mischen(Array.from(new Set(x.o)))}));
@@ -1496,7 +1499,7 @@ const FB=[
   r:{o:['Erstfärbung: zuerst Längen und Spitzen, den Ansatz zuletzt – jetzt den Ansatz an die Längen anpassen','Den ganzen Kopf mit 12 % nochmal färben','Nur die Spitzen nachfärben','Den Ansatz blondieren'],e:'Der Ansatz kommt zuletzt dran, weil er durch die Wärme schneller wirkt. Den zu hellen Ansatz jetzt Ton in Ton an die Längen anpassen.',tipp:'Der Ansatz ist zu hell. Und was machst du nächstes Mal beim Auftragen anders?'}},
  {t:'Spitzen zu dunkel',k:'nach Nachfärbung',fall:'Nachfärbung, Wunsch 7.3. Die Farbe kam gleich am Anfang auch in Längen und Spitzen. Die Spitzen sind porös.',v:['geplant',{a:'#A87A48'}],e:{a:'#A87A48',l:'#8E6438',s:'#3A261A'},
   u:{o:['Poröse Spitzen nehmen mehr Farbe auf und waren zu lange mit drin','Zu wenig Farbe am Ansatz','Das Oxidant war zu stark','Die Farbnummer war falsch'],e:'Poröses Haar saugt Farbe auf wie ein Schwamm. Die volle Einwirkzeit macht die Spitzen zu dunkel.',tipp:'Wie unterscheiden sich die Spitzen vom Ansatz – und wie lange war die Farbe auf ihnen?'},
-  r:{o:['Längen erst die letzten 5–10 Min mitfärben – jetzt Tiefenreinigung oder sanfter Farbabzug','Die Spitzen mit 12 % nachfärben','Die ganzen Haare dunkler färben','Die Spitzen mit Asch tönen'],e:'Bei der Nachfärbung zuerst nur den Ansatz, die Längen erst am Ende kurz durchziehen. Zu dunkle Spitzen hellt eine Tiefenreinigung sanft auf – mit der Meisterin.',tipp:'Mehr Farbe macht die Spitzen nicht heller. Und wann sollten die Längen dazukommen?'}},
+  r:{o:['Längen erst am Schluss kurz mitfärben – jetzt Tiefenreinigung oder sanfter Farbabzug','Die Spitzen mit 12 % nachfärben','Die ganzen Haare dunkler färben','Die Spitzen mit Asch tönen'],e:'Bei der Nachfärbung zuerst nur den Ansatz, die Längen erst am Ende kurz durchziehen. Zu dunkle Spitzen hellt eine Tiefenreinigung sanft auf – mit der Meisterin.',tipp:'Mehr Farbe macht die Spitzen nicht heller. Und wann sollten die Längen dazukommen?'}},
  {t:'Orange statt Blond',k:'zu wenig aufgehellt',fall:'Naturhaar 5, Wunsch 8.0. Gefärbt mit 8.0 und 9 %.',v:['vorher',{a:'#643C24'}],e:{a:'#D98B3C',l:'#D6843A',s:'#CF7A32'},
   u:{o:['Zu wenig aufgehellt – der Untergrund Orange bleibt sichtbar','Zu stark aufgehellt','Die Farbe war zu kühl','Die Farbe wurde zu kurz ausgespült'],e:'Von 5 auf 8 sind es 3 Stufen. 9 % schafft ca. 2–3 Töne – es blieb beim orangen Untergrund, und ein Naturton neutralisiert ihn nicht.',tipp:'Wie viele Stufen sind es von 5 auf 8 – und schafft 9 % das sicher?'},
   r:{o:['Mit Asch (Blau) neutralisieren oder mit stärkerem Oxidant weiter aufhellen','Mit Kupfer nachfärben','Mit Gold tönen','Mit 1,8–3 % nochmal dasselbe'],e:'Blau ist die Gegenfarbe von Orange. Bei 3 Stufen ist 12 % die sicherere Wahl.',tipp:'Welche Farbe liegt im Farbkreis gegenüber von Orange?'}},
@@ -1505,7 +1508,7 @@ const FB=[
   r:{o:['Mit Irisé (Violett) tönen','Mit Asch (Blau) tönen','Mit Gold tönen','Nochmal blondieren'],e:'Violett ist die Gegenfarbe von Gelb. Asch (Blau) passt zu Orange – auf Gelb macht es Grün.',tipp:'Welche Farbe liegt im Farbkreis gegenüber von Gelb?'}},
  {t:'Weiß schimmert',k:'Grau nicht gedeckt',fall:'Kundin mit 60 % Weiß. Gefärbt mit 6.4 (Kupfer) und 1,8–3 %, nur 20 Minuten.',v:['vorher',{a:'#7D5030',weiss:.6}],e:{a:'#B0683A',weiss:.35},
   u:{o:['Modefarbe ohne Naturton, zu schwaches Oxidant, zu kurz eingewirkt','Zu viel Naturton','Das Oxidant war zu stark','Die Haare waren zu nass'],e:'Weißes Haar hat kein eigenes Pigment. Über 50 % Weiß braucht etwa ½ Naturton, 6 % und die volle Einwirkzeit.',tipp:'Denk an Teil 6: Was braucht Weiß über 50 % – und welches Oxidant deckt 100 %?'},
-  r:{o:['Nochmal mit ½ Naturton 6.0 + ½ 6.4, 6 %, volle 35 Min','Nur länger einwirken lassen','Mit 12 % nochmal','Mit Asch tönen'],e:'Naturton deckt das Weiß, 6 % ist der Standard für 100 % Grauabdeckung. Und erst die vollen 35 Min (10 Aufhellung, 15 Farbtiefe, 10 Reflex) lassen Farbtiefe und Reflex ganz entwickeln – nach 20 Min fehlt beides noch.',tipp:'Drei Dinge fehlten: der Naturton, das richtige Oxidant und die Zeit.'}},
+  r:{o:['Nochmal mit ½ Naturton 6.0 + ½ 6.4, 6 %, volle Einwirkzeit','Nur länger einwirken lassen','Mit 12 % nochmal','Mit Asch tönen'],e:'Naturton deckt das Weiß, 6 % ist der Standard für 100 % Grauabdeckung. Und erst die volle Einwirkzeit laut Gebrauchsanweisung (Aufhellung, Farbtiefe, Reflex) lässt Farbtiefe und Reflex ganz entwickeln – nach 20 Min fehlt beides noch.',tipp:'Drei Dinge fehlten: der Naturton, das richtige Oxidant und die Zeit.'}},
  {t:'Fleckig',k:'ungleichmäßig',fall:'Ganzer Kopf, Wunsch 6.0. Dicke Abteilungen, wenig Farbe, schnell aufgetragen.',v:['geplant',{a:'#7D5030'}],e:{a:'#86603C',flecken:true},
   u:{o:['Zu dicke Abteilungen und zu wenig Farbe – nicht überall gleich viel Produkt','Die Farbe war abgelaufen','Das Oxidant war zu schwach','Die Kundin hat zu heiß geföhnt'],e:'Wo wenig Farbe hinkommt, wirkt sie schwächer. Dicke Abteilungen werden innen nicht richtig durchtränkt.',tipp:'Wie wurde aufgetragen? Kam überall gleich viel Farbe hin?'},
   r:{o:['Dünne Abteilungen, genug Produkt, gleichmäßig – jetzt die hellen Stellen gezielt nachfärben','Den ganzen Kopf mit 12 % nochmal','Mit Asch drüber tönen','Abwarten, das gleicht sich aus'],e:'Sauberes Auftragen in dünnen Abteilungen mit genug Farbe verhindert Flecken. Die helleren Stellen jetzt gezielt angleichen.',tipp:'Was machst du beim Auftragen anders – und was mit den helleren Stellen?'}},
@@ -1557,20 +1560,23 @@ fbListe();
 // ═════════ Teil 8: Auftragen in der richtigen Reihenfolge ═════════
 // Salon-Regel der Meisterin: Färben immer Kreuzscheitel, dann hinten beginnen.
 // Blondieren: an der dunkelsten Stelle zuerst.
-const AT=[
+// Texte mit den Farb-Zeiten der Meisterin (FZ, laut Gebrauchsanweisung) – neu gebaut, wenn sie geladen sind
+let AT=[];
+function atBauen(){const F=FZ,ph=F.aufhellung+' Min Aufhellung, '+F.farbtiefe+' Min Farbtiefe, '+F.reflex+' Min Reflex';AT=[
  {n:'Erstfärbung heller',str:{a:'#7D5030',l:'#C98A52',s:'#C98A52'},
-  s:[['1','Längen & Spitzen, 1–2 cm Abstand zum Ansatz'],['2','ca. 10 Min einwirken lassen'],['3','Dann den <b>Ansatz</b> auftragen'],['4','Insgesamt <b>35 Min</b> – ab dem ersten Auftragen']],
-  b:[[10,'Längen 10','#C9A06A'],[25,'+ Ansatz · gesamt 35 Min','#896C32']],
-  w:'Warum? Am Ansatz ist es durch die Kopfwärme wärmer – die Farbe wirkt dort schneller. Darum bekommen die Längen einen Vorsprung, die Gesamtzeit der Farbe bleibt 35 Min.'},
+  s:[['1','Zuerst <b>Mittelteil & Spitzen</b>, 1–2 cm Abstand zum Ansatz'],['2','Stehen lassen – laut Gebrauchsanweisung ca. '+F.vorlauf+' Min'],['3','Dann den <b>Ansatz</b> auftragen'],['4','Einwirkzeit gesamt laut Gebrauchsanweisung: <b>'+F.farbe+' Min</b>']],
+  b:[[F.vorlauf,'Mittelteil & Spitzen','#C9A06A'],[Math.max(1,F.farbe-F.vorlauf),'+ Ansatz · gesamt '+F.farbe+' Min','#896C32']],
+  w:'Warum? Am Ansatz ist es durch die Kopfwärme wärmer – die Farbe hellt dort schneller auf. Mittelteil und Spitzen bekommen einen Vorsprung, damit die Aufhellung überall gleich wird. Die genauen Zeiten stehen in der Gebrauchsanweisung.'},
  {n:'Erstfärbung gleich/dunkler',str:{a:'#6A4428',l:'#6A4428',s:'#6A4428'},
-  s:[['1','In einem Zug vom <b>Ansatz bis in die Spitzen</b>'],['2','35 Min einwirken lassen']],
-  b:[[35,'Ansatz bis Spitzen · 35 Min','#896C32']],
-  w:'Warum? Es wird nicht aufgehellt – die Kopfwärme macht hier keinen Unterschied. Darum geht alles in einem Zug. Die 35 Min: 10 Min Aufhellung, 15 Min Farbtiefe, 10 Min Reflex.'},
+  s:[['1','In einem Zug vom <b>Ansatz bis in die Spitzen</b>'],['2',F.farbe+' Min einwirken lassen (laut Gebrauchsanweisung)']],
+  b:[[F.farbe,'Ansatz bis Spitzen · '+F.farbe+' Min','#896C32']],
+  w:'Warum? Es wird nicht aufgehellt – die Kopfwärme macht hier keinen Unterschied. Darum geht alles in einem Zug. Die '+F.farbe+' Min: '+ph+'.'},
  {n:'Nachfärbung',str:{a:'#7D5030',l:'#A87A48',s:'#B08452'},
-  s:[['1','Farbe nur auf den <b>Ansatz</b>'],['2','Einwirkzeit ab dem Ansatz laufen lassen'],['3','Die letzten 5–10 Min <b>Längen & Spitzen</b> durchziehen']],
-  b:[[27,'nur Ansatz','#896C32'],[8,'+ Längen','#C9A06A']],
-  w:'Warum? Die 35 Min sind 10 Min Aufhellung, 15 Min Farbtiefe und 10 Min Reflex. Die Längen sind schon gefärbt und oft porös – sie brauchen nur die Reflex-Phase am Schluss, volle Einwirkzeit würde sie zu dunkel machen.'}
-];
+  s:[['1','Farbe nur auf den <b>Ansatz</b>'],['2','Einwirkzeit ab dem Ansatz laufen lassen'],['3','Die letzten '+F.nachLaengen+' Min <b>Längen & Spitzen</b> durchziehen']],
+  b:[[Math.max(1,F.farbe-F.nachLaengen),'nur Ansatz','#896C32'],[F.nachLaengen,'+ Längen','#C9A06A']],
+  w:'Warum? Die '+F.farbe+' Min sind '+ph+'. Die Längen sind schon gefärbt und oft porös – sie brauchen nur den Schluss, volle Einwirkzeit würde sie zu dunkel machen.'}
+];}
+atBauen();
 let atI=0,atBlond=false;
 function atZeige(){
   rpKnoepfe('atFall',AT.map(x=>x.n),atI,i=>{atI=i;atZeige();});
@@ -1600,14 +1606,16 @@ $('#atFaerben').onclick=()=>{atBlond=false;atKopf();};
 $('#atBlond').onclick=()=>{atBlond=true;atKopf();};
 atZeige();atKopf();
 // Reihenfolge-Spiel
-const AR=[
- {t:'Erstfärbung heller: Naturhaar 6, Wunsch 7.3',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Längen & Spitzen, 1–2 cm Abstand zum Ansatz','Ca. 10 Min einwirken lassen','Dann den Ansatz auftragen','Einwirken lassen bis insgesamt 35 Min','Emulgieren, ausspülen, Shampoo & Pflege'],
+let AR=[];
+function arBauen(){const F=FZ;AR=[
+ {t:'Erstfärbung heller: Naturhaar 6, Wunsch 7.3',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Mittelteil & Spitzen, 1–2 cm Abstand zum Ansatz','Stehen lassen – laut Gebrauchsanweisung ca. '+F.vorlauf+' Min','Dann den Ansatz auftragen','Einwirken lassen bis insgesamt '+F.farbe+' Min','Emulgieren, ausspülen, Shampoo & Pflege'],
   tipp:'Beim Heller-Färben kommt der Ansatz nicht zuerst – die Kopfwärme macht ihn sonst zu hell. Und abgeteilt wird immer vor dem Auftragen.'},
- {t:'Nachfärbung: Ansatz 3 cm, Längen leicht verblasst',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Farbe nur auf den Ansatz','Einwirkzeit ab dem Ansatz laufen lassen','Die letzten 5–10 Min Längen & Spitzen durchziehen','Emulgieren, ausspülen, Shampoo & Pflege'],
+ {t:'Nachfärbung: Ansatz 3 cm, Längen leicht verblasst',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: Farbe nur auf den Ansatz','Einwirkzeit ab dem Ansatz laufen lassen','Die letzten '+F.nachLaengen+' Min Längen & Spitzen durchziehen','Emulgieren, ausspülen, Shampoo & Pflege'],
   tipp:'Bei der Nachfärbung zuerst nur der Ansatz – die Längen kommen erst ganz am Schluss kurz dazu.'},
- {t:'Erstfärbung dunkler: Naturhaar 7, Wunsch 5.0',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: in einem Zug vom Ansatz bis in die Spitzen','35 Min einwirken lassen','Emulgieren, ausspülen, Shampoo & Pflege'],
+ {t:'Erstfärbung dunkler: Naturhaar 7, Wunsch 5.0',s:['Kreuzscheitel: vier Partien abteilen','Hinten beginnen: in einem Zug vom Ansatz bis in die Spitzen',F.farbe+' Min einwirken lassen','Emulgieren, ausspülen, Shampoo & Pflege'],
   tipp:'Beim Dunkler-Färben geht alles in einem Zug. Abgeteilt wird immer zuerst, und hinten wird begonnen.'}
-];
+];}
+arBauen();
 let arI=0,arPos=0,arFehler=0,arErg=[],arP=0,arMix=[];
 function arNeu(){arI=0;arErg=[];arP=0;$('#arSpeicher').textContent='';arZeige();}
 function arZeige(){
@@ -1638,6 +1646,13 @@ $('#arWeiter').onclick=()=>{
 };
 arNeu();
 
+// Farb-Zeiten der Meisterin laden (laut Gebrauchsanweisung) und Anzeigen auffrischen
+function fzAnwenden(){
+  ghdFarbZeitenEinsetzen();msPhasenZeichnen();
+  if(!msUhr){msRest=FZ.farbe*60;msZeit();}
+  try{rpWegZeige();}catch(e){} atBauen();atZeige(); arBauen(); if(!arErg.length&&!arPos)arZeige();
+}
+fzAnwenden(); ghdFarbZeitenLaden(fzAnwenden);
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
 })();

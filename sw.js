@@ -6,7 +6,7 @@
 // Neue Seiten/Dateien dieser App hier bei `vorab` ergänzen.
 self.GHD_OFFLINE = {
   app: 'lernquiz',
-  version: '2026-11-08p',
+  version: '2026-11-08q',
   start: './lerntool.html',
   vorab: [
     './',
@@ -22,6 +22,7 @@ self.GHD_OFFLINE = {
     './werkzeugkunde.html',
     './farblabor.html',
     './spickzettel.html',
+    './farb-zeiten.js',
     './quiz-verlauf.js',
     './lern-leiste.js',
     './lern-themen.js',
