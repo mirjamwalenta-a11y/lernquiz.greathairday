@@ -141,7 +141,7 @@ section.block > header{display:grid;gap:6px}
 .wahl-liste button.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 
 /* ── Spiel ── */
-#atFall button,#msWo button,#msVerh button,#msWeiss button,#rpWeiss button,#rpGef button{font-family:Poppins,system-ui;font-size:13px}
+#atFall button,#msMenge button,#msWo button,#msVerh button,#msWeiss button,#rpWeiss button,#rpGef button{font-family:Poppins,system-ui;font-size:13px}
 .at-zwei{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center}
 .at-zwei .fb-bild.gross{width:130px}
 .at-schritte{display:grid;gap:8px}
@@ -448,6 +448,7 @@ body.schnupper .nur-lern{display:none!important}
       <p class="muted" style="font-size:13px">Ausgangstonhöhe und Wunschfarbe kommen aus dem Rezeptur-Planer (Teil 5).</p>
       <div class="wahl">
         <div class="lab">Wo wird gefärbt?</div><div class="knoepfe" id="msWo"></div>
+        <div class="lab">Haarmenge</div><div class="knoepfe" id="msMenge"></div>
         <div class="lab">Mischverhältnis (steht auf der Packung)</div><div class="knoepfe" id="msVerh"></div>
         <div class="lab">Weißanteil</div><div class="knoepfe" id="msWeiss"></div>
       </div>
@@ -1207,9 +1208,12 @@ function score(){const e=Object.entries(answers),n=e.length;
 // (High-Lift bis 4–5). Farbe hellt keine Farbe auf; ab ca. 50 % Weiß Naturton dazu;
 // Mischverhältnis 1 : 1,5; Einwirkzeit 35 Min.
 const RP_OX_INFO='1,8–3 % = keine Aufhellung · 6 % = ca. 1–2 Töne · 9 % = ca. 2–3 Töne · 12 % = ca. 3–4 Töne';
-const RP={ist:5,weiss:1,gef:false,w:{th:7,h:'4',n:'3'},laenge:1};
+const RP={ist:5,weiss:1,gef:false,w:{th:7,h:'4',n:'3'},laenge:1,menge:0};
 const RP_WEISS=['keiner','bis 30 %','30–50 %','über 50 %'];
-const RP_LAENGE=[['kurz',40],['mittel',60],['lang',90]];
+// Farbmenge (Meisterin): kurz 30–40 g, mittel 40–50 g, lang 50–60 g – je nach Haarmenge
+const RP_LAENGE=[['kurz',[30,40]],['mittel',[40,50]],['lang',[50,60]]];
+const RP_MENGE=['wenig Haar','viel Haar'];
+const rpGramm=(spanne)=>spanne[RP.menge||0];
 const rpNr=w=>nrText(w.th,w.h,w.n);
 function rpPlan(ist,weiss,gef,w){
   const d=w.th-ist, l=lies(w.h,w.n), kalt=l.haupt==='1'||l.haupt==='2', natur=!l.st||l.st===1;
@@ -1263,12 +1267,14 @@ function rpWegZeige(){
     '<span><i class="punkt" style="background:'+f+'"></i><b>'+esc(rpNr(w))+'</b></span></div>';
   p.s.forEach((x,i)=>{h+='<div class="rp-schritt'+(x.warn?' warn':'')+'"><div class="rp-k"><span class="rp-n">'+(i+1)+'</span><h3>'+esc(x.t)+'</h3>'+(x.farbe?'<i class="punkt" style="background:'+x.farbe+'"></i>':'')+'</div><p>'+esc(x.p)+'</p><span class="rp-warum">'+esc(x.w)+'</span></div>';});
   if(p.blond) h+='<div class="rp-rez"><span class="lab">Rezeptur</span><p>Mit Blondierung – diese Rezeptur plant die Meisterin.</p></div>';
-  else {const g=RP_LAENGE[RP.laenge][1], nat=Math.round(g*p.naturAnteil/5)*5, mode=g-nat;
+  else {const sp=RP_LAENGE[RP.laenge][1], g=rpGramm(sp), nat=Math.round(g*p.naturAnteil/5)*5, mode=g-nat;
     h+='<div class="rp-rez"><div class="rp-rez-k"><span class="lab">Rezeptur · Beispiel</span><span class="rp-len">'+RP_LAENGE.map((x,i)=>'<button type="button" data-len="'+i+'" class="'+(i===RP.laenge?'an':'')+'">'+x[0]+'</button>').join('')+'</span></div>'+
+      '<div class="rp-rez-k"><small class="rp-phasen">'+RP_LAENGE[RP.laenge][0]+': '+sp[0]+'–'+sp[1]+' g, je nach Haarmenge</small><span class="rp-len">'+RP_MENGE.map((x,i)=>'<button type="button" data-menge="'+i+'" class="'+(i===RP.menge?'an':'')+'">'+x+'</button>').join('')+'</span></div>'+
       '<table><tr><td>Farbe '+esc(rpNr(w))+'</td><td>'+mode+' g</td></tr>'+(nat?'<tr><td>Naturton '+w.th+'.0</td><td>'+nat+' g</td></tr>':'')+
       '<tr><td>Oxidant '+p.ox+' % (1 : 1,5)</td><td>'+Math.round(g*1.5)+' ml</td></tr><tr><td>Einwirkzeit</td><td>35 Min ⏱</td></tr></table><small class="rp-phasen">10 Min Aufhellung · 15 Min Farbtiefe · 10 Min Reflex</small></div>';}
   $('#rpWeg').innerHTML=h;
   $('#rpWeg').querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{RP.laenge=+b.dataset.len;rpWegZeige();});
+  $('#rpWeg').querySelectorAll('[data-menge]').forEach(b=>b.onclick=()=>{RP.menge=+b.dataset.menge;rpWegZeige();});
 }
 function rpKnoepfe(id,werte,akt,fn,mitPunkt){
   $('#'+id).innerHTML=werte.map((w,i)=>'<button type="button" class="'+(i===akt?'an':'')+'" aria-pressed="'+(i===akt)+'" data-i="'+i+'">'+(mitPunkt?'<i class="punkt" style="background:'+PIG[i].haar+'"></i>':'')+esc(String(w))+'</button>').join('');
@@ -1351,21 +1357,22 @@ $('#rpModusWeg').onclick=()=>rpModus(false);
 $('#rpModusSelbst').onclick=()=>rpModus(true);
 
 // ═════════ Teil 6: Mischstation, Grauabdeckung, Rechen-Training ═════════
-// Mengen-Faustregeln: Ansatz ca. 30 g, kurz 40 g, mittel 60 g, lang 90 g Farbe;
+// Mengen (Meisterin): Ansatz ca. 30 g, kurz 30–40 g, mittel 40–50 g, lang 50–60 g Farbe je nach Haarmenge;
 // Mischverhältnis laut Packung (Majirel 1 : 1,5, High-Lift 1 : 2); Naturton:
 // bis 30 % Weiß keiner, 30–50 % etwa ¼, über 50 % etwa ½; 6 % für volle Grauabdeckung.
 const MS={wo:2,verh:1,weiss:2};
-const MS_WO=[['nur Ansatz',30],['kurz',40],['mittel',60],['lang',90]];
+const MS_WO=[['nur Ansatz',[30,30]],['kurz',[30,40]],['mittel',[40,50]],['lang',[50,60]]];
 const MS_VERH=[['1 : 1',1],['1 : 1,5',1.5],['1 : 2',2]];
 const MS_WEISS=['bis 30 %','30–50 %','über 50 %'];
 const deZahl=x=>String(Math.round(x*10)/10).replace('.',',');
 function msZeige(){
-  rpKnoepfe('msWo',MS_WO.map(x=>x[0]),MS.wo,i=>{MS.wo=i;msZeige();});
+  rpKnoepfe('msWo',MS_WO.map(x=>x[0]+' '+(x[1][0]===x[1][1]?x[1][0]:x[1][0]+'–'+x[1][1])+' g'),MS.wo,i=>{MS.wo=i;msZeige();});
+  rpKnoepfe('msMenge',RP_MENGE,RP.menge,i=>{RP.menge=i;msZeige();});
   rpKnoepfe('msVerh',MS_VERH.map(x=>x[0]),MS.verh,i=>{MS.verh=i;msZeige();});
   rpKnoepfe('msWeiss',MS_WEISS,MS.weiss,i=>{MS.weiss=i;msZeige();});
   const w=RP.w, l=lies(w.h,w.n), natur=!l.st||l.st===1;
   const plan=rpPlan(RP.ist,MS.weiss+1,RP.gef,w);
-  const g=MS_WO[MS.wo][1], v=MS_VERH[MS.verh][1];
+  const g=rpGramm(MS_WO[MS.wo][1]), v=MS_VERH[MS.verh][1];
   const anteil=natur?0:[0,.25,.5][MS.weiss], nat=Math.round(g*anteil/5)*5, mode=g-nat, ox=Math.round(g*v);
   const max=Math.max(ox,g), hoehe=x=>Math.max(14,Math.round(x/max*150));
   const saeule=(menge,ein,farbe,name,rand)=>'<div class="ms-s"><b>'+menge+' '+ein+'</b><i style="height:'+hoehe(menge)+'px;background:'+farbe+(rand?';box-shadow:inset 0 0 0 1px #D9CDAE':'')+'"></i><span>'+esc(name)+'</span></div>';
@@ -1388,7 +1395,7 @@ const MS_PHASEN=[[10,'Aufhellung'],[15,'Farbtiefe'],[10,'Reflex']];
 const msZeit=()=>{$('#msZeit').textContent=String(Math.floor(msRest/60)).padStart(2,'0')+':'+String(msRest%60).padStart(2,'0');
   const vorbei=35*60-msRest; let t=0,ph='Einwirkzeit';
   if(vorbei>0&&msRest>0) for(const [m,n] of MS_PHASEN){t+=m*60;if(vorbei<t){ph='Phase: '+n+' · noch '+Math.ceil((t-vorbei)/60)+' Min';break;}}
-  $('#msPhase').textContent=ph; $('#msZeiger').style.left=(vorbei/(35*60)*100)+'%';};
+  $('#msPhase').textContent=ph; $('#msZeiger').style.left=(vorbei/(35*60)*100)+'%';$('#msZeiger').style.opacity=vorbei>0&&msRest>0?1:0;};
 $('#msStart').onclick=()=>{
   if(msUhr){clearInterval(msUhr);msUhr=null;$('#msStart').textContent='⏱ Weiter';return;}
   if(msRest<=0)msRest=35*60;
@@ -1400,6 +1407,7 @@ $('#msStart').onclick=()=>{
       $('#msZeit').textContent='Fertig!';$('#msPhase').textContent='Einwirkzeit vorbei';}},500);
 };
 $('#msReset').onclick=()=>{if(msUhr){clearInterval(msUhr);msUhr=null;}msRest=35*60;msZeit();$('#msStart').textContent='⏱ Starten';};
+msZeit();
 
 // Grauabdeckung: Strähnen zum Vergleich
 function gaZeige(){
@@ -1427,12 +1435,12 @@ function trAufgaben(){
   const a=[];
   const ox=(g,v,vt)=>{const r=Math.round(g*v);return {f:'Du brauchst '+g+' g Farbe. Mischverhältnis '+vt+'. Wie viel Oxidant?',r:r+' ml',o:[r].concat([g,Math.round(g*1.5),g*2,g*3].filter(x=>x!==r).slice(0,3)).map(x=>x+' ml'),
     tipp:v===1.5?'Mal 1,5 heißt: die Menge plus die Hälfte davon. Die Hälfte von '+g+' ist '+g/2+'.':v===2?'Mal 2 heißt: die Menge verdoppeln.':'1 : 1 heißt: gleich viel Oxidant wie Farbe.'};};
-  a.push(ox(trZuf([40,60,80]),1.5,'1 : 1,5'));
-  a.push(ox(trZuf([30,50,70]),1.5,'1 : 1,5'));
-  a.push(ox(trZuf([30,40,60]),2,'1 : 2'));
-  const gN=trZuf([40,60,80]);
+  a.push(ox(trZuf([40,50,60]),1.5,'1 : 1,5'));
+  a.push(ox(trZuf([30,50]),1.5,'1 : 1,5'));
+  a.push(ox(trZuf([30,40,50,60]),2,'1 : 2'));
+  const gN=trZuf([40,50,60]);
   a.push({f:'Kundin mit 60 % Weiß. Du brauchst '+gN+' g Farbe insgesamt. Wie viel davon ist Naturton?',r:gN/2+' g',o:[gN/2,gN/4,gN,0].map(x=>x+' g'),tipp:'Über 50 % Weiß: etwa die Hälfte Naturton. Die Hälfte von '+gN+' ist …?'});
-  const gV=trZuf([40,80]);
+  const gV=trZuf([40,60]);
   a.push({f:'Kundin mit 40 % Weiß. '+gV+' g Farbe insgesamt. Wie viel Naturton?',r:gV/4+' g',o:[gV/4,gV/2,gV,0].map(x=>x+' g'),tipp:'30–50 % Weiß: etwa ¼ Naturton. Ein Viertel ist die Hälfte von der Hälfte.'});
   a.push({f:'Kundin mit 20 % Weiß, Wunsch 7.43. Brauchst du Naturton dazu?',r:'Nein, die Modefarbe deckt',o:['Nein, die Modefarbe deckt','Ja, etwa ¼','Ja, etwa die Hälfte','Ja, nur Naturton'],tipp:'Bis ca. 30 % Weiß deckt die Modefarbe allein.'});
   const h=trZuf([9,10,14,15]),m=trZuf([10,20,40,45]),e=new Date(2000,0,1,h,m+35);
