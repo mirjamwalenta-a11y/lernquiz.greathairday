@@ -804,7 +804,7 @@ async function pinPruefen(){
   if(!sb_client){fehler.textContent='Keine Verbindung zu Supabase.';return;}
   if(!email||!pw){fehler.textContent='Bitte E-Mail und Passwort eingeben.';return;}
   var res=await sb_client.auth.signInWithPassword({email:email,password:pw});
-  if(res.error){fehler.textContent='E-Mail oder Passwort nicht korrekt.';document.getElementById('pin-input').value='';return;}
+  if(res.error){fehler.textContent=(!navigator.onLine||/RetryableFetch/.test(res.error.name||'')||/fetch|network/i.test(res.error.message||''))?'Kein Internet – Einloggen geht nur mit Verbindung (WLAN oder mobile Daten). Bitte Verbindung einschalten und nochmal versuchen.':'E-Mail oder Passwort nicht korrekt.';document.getElementById('pin-input').value='';return;}
   if(!(await istMeisterinServer())){await sb_client.auth.signOut();fehler.textContent='Dieses Konto hat keinen Meisterinnen-Zugang.';return;}
   IstMeisterin=true;
   document.getElementById('pin-input').value='';
