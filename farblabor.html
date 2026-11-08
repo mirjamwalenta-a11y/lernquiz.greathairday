@@ -141,6 +141,41 @@ section.block > header{display:grid;gap:6px}
 .wahl-liste button.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 
 /* ── Spiel ── */
+.rp-modus{display:flex;gap:4px;background:var(--surface-2);border-radius:10px;padding:4px}
+.rp-modus button{flex:1;appearance:none;border:0;background:none;border-radius:7px;padding:9px 6px;font:600 13px Poppins,system-ui;color:var(--muted);cursor:pointer}
+.rp-modus button.an{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+#rpPlanen,#rpSelbst{display:grid;gap:12px}
+#rpPlanen[hidden],#rpSelbst[hidden]{display:none}
+.rp-ist{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.rp-ist .punkt{width:14px;height:14px}
+.rp-lab{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.rp-wunsch{display:flex;gap:12px;align-items:center;border:1.5px solid var(--accent);border-radius:12px;padding:10px 12px}
+.rp-wunsch b{display:block;font:700 26px var(--mono);letter-spacing:1px}
+.rp-wunsch small{display:block;font-size:12px;color:var(--muted)}
+.punkt.rp-gross{width:40px;height:40px}
+#rpWeg{display:grid;gap:9px}
+.rp-pfad{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px}
+.rp-pfad span{display:inline-flex;gap:6px;align-items:center}
+.rp-pfad .punkt{width:14px;height:14px}
+.rp-pf{color:var(--accent);font-weight:700}
+.rp-schritt{background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:12px 14px;display:grid;gap:4px}
+.rp-schritt.warn{border-left-color:var(--bad)}
+.rp-k{display:flex;gap:8px;align-items:center}
+.rp-k .punkt{width:14px;height:14px;margin-left:auto}
+.rp-n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.rp-schritt.warn .rp-n{background:var(--bad)}
+.rp-schritt p{font-size:13px;color:#4A4339;max-width:none}
+.rp-warum{font-size:12px;color:#7A5E28;background:var(--accent-soft);border-radius:6px;padding:5px 8px;line-height:1.4}
+.rp-rez{background:#211D17;color:#F8F4EA;border-radius:12px;padding:14px;display:grid;gap:8px}
+.rp-rez .lab{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#D9B66A}
+.rp-rez-k{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.rp-len{display:flex;gap:4px}
+.rp-len button{appearance:none;border:1px solid #5A5040;background:none;color:#D8CFBE;border-radius:6px;padding:3px 9px;font:600 11px Poppins,system-ui;cursor:pointer}
+.rp-len button.an{background:#D9B66A;border-color:#D9B66A;color:#211D17}
+.rp-rez table{width:100%;font-size:14px;border-collapse:collapse}
+.rp-rez td{padding:3px 0}.rp-rez td:last-child{text-align:right;font-weight:600}
+.rp-hinweis{font-size:11px;text-align:center}
+.wahl .knoepfe button .punkt{width:12px;height:12px}
 .spiel-kopf{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .punkte{font:700 1.3rem var(--mono);color:var(--accent)}
 .kundin{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:center}
@@ -192,8 +227,9 @@ body.schnupper .nur-lern{display:none!important}
     <a href="#kreis">2 · Farbkreis</a>
     <a href="#aufhellung">3 · Aufhellung</a>
     <a href="#nummern">4 · Farbnummern</a>
-    <a href="#spiel">5 · Spiel</a>
-    <a href="#quiz">6 · Quiz</a>
+    <a href="#rezeptur">5 · Rezeptur</a>
+    <a href="#spiel">6 · Spiel</a>
+    <a href="#quiz">7 · Quiz</a>
   </div>
 </nav>
 
@@ -298,10 +334,55 @@ body.schnupper .nur-lern{display:none!important}
     </div>
   </section>
 
-  <!-- ═════════ 5 SPIEL ═════════ -->
-  <section class="block" id="spiel">
+  <!-- ═════════ 5 REZEPTUR-PLANER ═════════ -->
+  <section class="block" id="rezeptur">
     <header>
       <span class="tag2">Teil 5</span>
+      <h2>Rezeptur-Planer: von Ist zu Soll</h2>
+      <p class="muted">Von der Haarfarbe, die die Kundin hat, zu der, die sie möchte – Schritt für Schritt, mit dem Warum.</p>
+    </header>
+    <div class="rp-modus" role="tablist">
+      <button type="button" id="rpModusWeg" class="an" aria-pressed="true">Weg planen</button>
+      <button type="button" id="rpModusSelbst" aria-pressed="false">🎯 Selbst planen</button>
+    </div>
+    <div id="rpPlanen">
+      <div class="panel">
+        <div class="wahl">
+          <div class="lab">1 · Ausgangstonhöhe (Ansatz)</div>
+          <div class="knoepfe" id="rpIst"></div>
+          <div class="rp-ist" id="rpIstName"></div>
+          <div class="lab">2 · Weißanteil</div>
+          <div class="knoepfe" id="rpWeiss"></div>
+          <div class="lab">3 · Haar vorher gefärbt?</div>
+          <div class="knoepfe" id="rpGef"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="lab rp-lab">4 · Wunschfarbe</div>
+        <div class="rp-wunsch" id="rpWunschZeige"></div>
+        <div class="wahl" id="rpWunsch"></div>
+      </div>
+      <div id="rpWeg" aria-live="polite"></div>
+    </div>
+    <div id="rpSelbst" hidden>
+      <div class="panel">
+        <div class="spiel-kopf">
+          <div class="fortschritt" id="rpFort" style="flex:1;min-width:140px" aria-hidden="true"></div>
+          <span class="punkte" id="rpPunkte">0 ★</span>
+        </div>
+        <div id="rpFall"></div>
+        <div class="meldung" id="rpMeldung" hidden></div>
+        <div class="reihe" style="justify-content:center"><button class="btn" id="rpWeiter" hidden>Weiter →</button></div>
+        <p class="muted punkte-info" id="rpSpeicher"></p>
+      </div>
+    </div>
+    <p class="muted rp-hinweis">Lernhilfe mit Faustregeln (L’Oréal-Nummern wie Majirel). Im Salon gelten die Farbkarte des Herstellers, die Rezeptur der Meisterin und der Allergie-Test.</p>
+  </section>
+
+  <!-- ═════════ 6 SPIEL ═════════ -->
+  <section class="block" id="spiel">
+    <header>
+      <span class="tag2">Teil 6</span>
       <h2>Spiel: Neutralisier-Profi</h2>
       <p class="muted">Eine Kundin wurde aufgehellt, der Untergrund liegt schon in der Schale. Gib so viele Tropfen dazu, bis der Stich weg ist, nicht zu wenig und nicht zu viel.</p>
     </header>
@@ -332,7 +413,7 @@ body.schnupper .nur-lern{display:none!important}
   <!-- ═════════ 5 QUIZ ═════════ -->
   <section class="block" id="quiz">
     <header>
-      <span class="tag2">Teil 6</span>
+      <span class="tag2">Teil 7</span>
       <h2>Wissens-Check</h2>
       <p class="muted">Antwort antippen, dann sagen, ob du dir sicher bist. Die Erklärung erscheint sofort.</p>
     </header>
@@ -947,6 +1028,141 @@ function score(){const e=Object.entries(answers),n=e.length;
   else if(n===QUIZ.length&&!quizGespeichert){quizGespeichert=true;
     punkteSpeichern(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Farbenlehre & Coloration',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
 }
+// ═════════ Teil 5: Rezeptur-Planer „Von Ist zu Soll“ ═════════
+// Faustregeln als Lernmodell (L'Oréal-Nummern): Oxidant 6 % = Ton in Ton bis 1 Stufe,
+// 9 % = 2 Stufen, 12 % = bis 3 Stufen; Farbe hellt keine Farbe auf; ab ca. 50 % Weiß
+// Naturton dazu; Mischverhältnis 1 : 1,5; Einwirkzeit 35 Min.
+const RP={ist:5,weiss:1,gef:false,w:{th:7,h:'4',n:'3'},laenge:1};
+const RP_WEISS=['keiner','bis 30 %','30–50 %','über 50 %'];
+const RP_LAENGE=[['kurz',40],['mittel',60],['lang',90]];
+const rpNr=w=>nrText(w.th,w.h,w.n);
+function rpPlan(ist,weiss,gef,w){
+  const d=w.th-ist, l=lies(w.h,w.n), kalt=l.haupt==='1'||l.haupt==='2', natur=!l.st||l.st===1;
+  const s=[]; let ox=null, blond=false, naturAnteil=0;
+  // 1 · Aufhellen
+  if(d<=0) s.push({t:d===0?'Ton in Ton':'Dunkler um '+(-d)+(d===-1?' Stufe':' Stufen'),p:d===0?'Gleiche Tonhöhe – es wird nur der Farbton (Reflex) verändert.':'Dunkler geht mit Farbe immer, kein Aufhellen nötig.'+(d<=-3?' Bei 3 und mehr Stufen dunkler mit der Meisterin über Vorpigmentieren sprechen, sonst wirkt das Ergebnis fahl.':''),
+    w:'Warum? Farbe lagert Pigment ein. Dunkler machen ist leicht, heller machen kostet Kraft.'});
+  else if(d>3){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'Mehr als 3 Stufen schafft die Farbe nicht. Hier braucht es Blondierung oder Spezial-Hellblond – mit der Meisterin planen.',
+    w:'Warum? Mit Farbe lässt sich Naturhaar höchstens etwa 3 Stufen aufhellen.',warn:true});}
+  else s.push({t:'Aufhellen um '+d+(d===1?' Stufe':' Stufen'),p:'Von '+ist+' auf '+w.th+' geht mit der Farbe selbst – kein Blondieren nötig.',
+    w:'Warum? Naturhaar lässt sich mit Farbe bis zu 3 Stufen aufhellen.'});
+  if(gef&&d>0) s.push({t:'Achtung: schon gefärbt',p:'Der Ansatz (Naturhaar) wird heller – die gefärbten Längen nicht. Farbe hellt keine Farbe auf: Für die Längen braucht es einen Farbabzug oder Blondierung.',
+    w:'Warum? Das künstliche Pigment in den Längen lässt sich mit Farbe nicht abbauen.',warn:true});
+  // 2 · Oxidant
+  if(!blond){ox=d<=1?6:d===2?9:12;
+    s.push({t:'Oxidant '+ox+' %',p:(d<=0?'Ton in Ton oder dunkler → 6 %.':d+(d===1?' Stufe':' Stufen')+' heller → '+ox+' %.')+' (6 % = bis 1 Stufe, 9 % = 2 Stufen, 12 % = bis 3 Stufen)',
+      w:'Warum? Je mehr Stufen, desto stärker muss das Oxidant das eigene Pigment abbauen.'});}
+  // 3 · Untergrund
+  if(d>0){const p=PIG[Math.min(10,w.th)-1], rn=l.haupt?REF[l.haupt].n:'Natur';
+    let txt,warum;
+    if(kalt){const passt=(l.haupt==='1'&&w.th<=7)||(l.haupt==='2'&&w.th>=7);
+      txt='Bei Tonhöhe '+w.th+' kommt '+p.u+' zum Vorschein. '+rn+' ist kühl und gleicht den warmen Untergrund aus'+(passt?' – genau richtig.':'. Gegen „'+p.u+'“ wirkt aber '+(l.haupt==='1'?'Irisé (Violett)':'Asch (Blau)')+' noch besser.');
+      warum='Warum? Gegenfarben heben sich auf: '+p.u+' braucht '+p.g+'.';}
+    else if(natur){txt='Bei Tonhöhe '+w.th+' kommt '+p.u+' zum Vorschein. Ein Naturton deckt ihn nicht ganz – das Ergebnis kann etwas warm wirken.';
+      warum='Warum? Wer ein ganz neutrales Ergebnis will, nimmt einen Ton mit leichtem '+p.g+'-Anteil (Gegenfarbe).';}
+    else {txt='Bei Tonhöhe '+w.th+' kommt '+p.u+' zum Vorschein. '+rn+' ist warm – das passt, nichts neutralisieren.';
+      warum='Warum? Wäre der Wunsch ein Asch- oder Irisé-Ton, müsste die Gegenfarbe den warmen Untergrund ausgleichen.';}
+    s.push({t:'Untergrund: '+p.u,p:txt,w:warum,farbe:p.uf});}
+  else s.push({t:'Untergrund',p:'Es wird nicht aufgehellt, also kommt kein Untergrund zum Vorschein.',w:'Warum? Der warme Untergrund zeigt sich erst, wenn das eigene Pigment abgebaut wird.'});
+  // 4 · Weißanteil
+  if(weiss===0) s.push({t:'Kein Weißanteil',p:'Nichts zu beachten.',w:'Warum? Ohne weiße Haare muss nichts extra abgedeckt werden.'});
+  else if(natur) s.push({t:'Weißanteil '+RP_WEISS[weiss],p:'Die Wunschfarbe ist ein Naturton – der deckt Weiß am besten. Nichts dazu nötig.',w:'Warum? Naturtöne haben am meisten deckendes Pigment.'});
+  else if(weiss===1) s.push({t:'Weißanteil bis 30 %',p:'Kein Naturton dazu nötig – die Modefarbe deckt.',w:'Warum? Ab ca. 50 % Weiß braucht es Naturton (z. B. '+w.th+'.0), sonst wirkt das Weiß durchsichtig.'});
+  else if(weiss===2){naturAnteil=.25;s.push({t:'Weißanteil 30–50 %',p:'Etwa ¼ Naturton '+w.th+'.0 dazumischen, damit das Weiß sicher deckt.',w:'Warum? Je mehr Weiß, desto mehr Naturton braucht es – sonst schimmert das Weiß durch.'});}
+  else {naturAnteil=.5;s.push({t:'Weißanteil über 50 %',p:'Halb '+rpNr(w)+', halb Naturton '+w.th+'.0.',w:'Warum? Ab ca. 50 % Weiß braucht es Naturton, sonst wirkt das Weiß durchsichtig.'});}
+  return {d,ox,blond,naturAnteil,s};
+}
+function rpWegZeige(){
+  const p=rpPlan(RP.ist,RP.weiss,RP.gef,RP.w), w=RP.w, f=nFarbe(w.th,w.h,w.n);
+  let h='<div class="rp-pfad"><span><i class="punkt" style="background:'+PIG[RP.ist-1].haar+'"></i><b>'+RP.ist+'</b> '+(RP.gef?'gefärbt':'Naturhaar')+'</span>'+
+    '<span class="rp-pf">→ '+(p.d>0?p.d+(p.d===1?' Stufe':' Stufen')+' heller':p.d<0?(-p.d)+(p.d===-1?' Stufe':' Stufen')+' dunkler':'Ton in Ton')+' →</span>'+
+    '<span><i class="punkt" style="background:'+f+'"></i><b>'+esc(rpNr(w))+'</b></span></div>';
+  p.s.forEach((x,i)=>{h+='<div class="rp-schritt'+(x.warn?' warn':'')+'"><div class="rp-k"><span class="rp-n">'+(i+1)+'</span><h3>'+esc(x.t)+'</h3>'+(x.farbe?'<i class="punkt" style="background:'+x.farbe+'"></i>':'')+'</div><p>'+esc(x.p)+'</p><span class="rp-warum">'+esc(x.w)+'</span></div>';});
+  if(p.blond) h+='<div class="rp-rez"><span class="lab">Rezeptur</span><p>Mit Blondierung – diese Rezeptur plant die Meisterin.</p></div>';
+  else {const g=RP_LAENGE[RP.laenge][1], nat=Math.round(g*p.naturAnteil/5)*5, mode=g-nat;
+    h+='<div class="rp-rez"><div class="rp-rez-k"><span class="lab">Rezeptur · Beispiel</span><span class="rp-len">'+RP_LAENGE.map((x,i)=>'<button type="button" data-len="'+i+'" class="'+(i===RP.laenge?'an':'')+'">'+x[0]+'</button>').join('')+'</span></div>'+
+      '<table><tr><td>Farbe '+esc(rpNr(w))+'</td><td>'+mode+' g</td></tr>'+(nat?'<tr><td>Naturton '+w.th+'.0</td><td>'+nat+' g</td></tr>':'')+
+      '<tr><td>Oxidant '+p.ox+' % (1 : 1,5)</td><td>'+Math.round(g*1.5)+' ml</td></tr><tr><td>Einwirkzeit</td><td>35 Min ⏱</td></tr></table></div>';}
+  $('#rpWeg').innerHTML=h;
+  $('#rpWeg').querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{RP.laenge=+b.dataset.len;rpWegZeige();});
+}
+function rpKnoepfe(id,werte,akt,fn,mitPunkt){
+  $('#'+id).innerHTML=werte.map((w,i)=>'<button type="button" class="'+(i===akt?'an':'')+'" aria-pressed="'+(i===akt)+'" data-i="'+i+'">'+(mitPunkt?'<i class="punkt" style="background:'+PIG[i].haar+'"></i>':'')+esc(String(w))+'</button>').join('');
+  $('#'+id).querySelectorAll('button').forEach(b=>b.onclick=()=>fn(+b.dataset.i));
+}
+function rpEingabe(){
+  rpKnoepfe('rpIst',PIG.map(p=>p.th),RP.ist-1,i=>{RP.ist=i+1;rpEingabe();},true);
+  $('#rpIstName').innerHTML='<i class="punkt" style="background:'+PIG[RP.ist-1].haar+'"></i>'+esc(PIG[RP.ist-1].n);
+  rpKnoepfe('rpWeiss',RP_WEISS,RP.weiss,i=>{RP.weiss=i;rpEingabe();});
+  rpKnoepfe('rpGef',['Naturhaar','schon gefärbt'],RP.gef?1:0,i=>{RP.gef=i===1;rpEingabe();});
+  rpWunschZeige(); rpWegZeige();
+}
+function rpWunschZeige(){const w=RP.w;
+  $('#rpWunschZeige').innerHTML='<i class="punkt rp-gross" style="background:'+nFarbe(w.th,w.h,w.n)+'"></i><div><b>'+esc(rpNr(w))+'</b><small>'+esc(beschreibung(w.th,w.h,w.n))+'</small></div>';}
+bauer($('#rpWunsch'),RP.w,()=>{rpWunschZeige();rpWegZeige();});
+rpEingabe();
+
+// ── 🎯 Selbst planen: 5 Fälle, je 4 Entscheidungen, Tipp statt Lösung ──
+let rpFaelle=[],rpF=0,rpQ=0,rpErg=[],rpFehler=0,rpPunkte=0;
+const RP_FAELLE=[[5,{th:7,h:'4',n:'3'},1],[6,{th:8,h:'1',n:''},0],[7,{th:7,h:'3',n:''},3],[4,{th:6,h:'4',n:'4'},2],[8,{th:6,h:'0',n:''},0],[6,{th:9,h:'2',n:''},0],[5,{th:5,h:'6',n:'6'},1],[7,{th:9,h:'3',n:''},1],[3,{th:5,h:'4',n:''},3],[8,{th:8,h:'2',n:''},2]];
+function rpFragen(f){
+  const [ist,w,weiss]=f, p=rpPlan(ist,weiss,false,w), d=p.d, ug=d>0?PIG[w.th-1].u:'keiner';
+  const l=lies(w.h,w.n), natur=!l.st||l.st===1;
+  const nat=weiss>=2&&!natur?(weiss===2?'Ja, etwa ¼ Naturton':'Ja, etwa die Hälfte Naturton'):'Nein';
+  const andere=PIG.map(x=>x.u).filter(u=>u!==ug);
+  return [
+    {f:'Schritt 1: Wie viel musst du aufhellen?',o:['Gar nicht (Ton in Ton oder dunkler)','1 Stufe','2 Stufen','3 Stufen'],r:d<=0?0:d,tipp:'Vergleiche die Zahl vor dem Punkt: Ausgangstonhöhe '+ist+', Wunsch '+w.th+'.'},
+    {f:'Schritt 2: Welches Oxidant nimmst du?',o:['3 %','6 %','9 %','12 %'],r:[1,1,2,3][Math.max(0,d)],tipp:'6 % reicht für Ton in Ton oder 1 Stufe. Je mehr Stufen, desto stärker das Oxidant.'},
+    {f:'Schritt 3: Welcher Untergrund kommt zum Vorschein?',o:mischen([d>0?ug:'Keiner – es wird nicht aufgehellt'].concat(mischen(andere).slice(0,3))),r:d>0?ug:'Keiner – es wird nicht aufgehellt',tipp:d>0?'Schau in Teil 3: Welcher Untergrund gehört zur Wunsch-Tonhöhe '+w.th+'?':'Ein Untergrund zeigt sich nur, wenn aufgehellt wird.'},
+    {f:'Schritt 4: Brauchst du Naturton dazu? (Weißanteil: '+RP_WEISS[weiss]+')',o:['Nein','Ja, etwa ¼ Naturton','Ja, etwa die Hälfte Naturton'],r:nat,tipp:natur?'Die Wunschfarbe ist schon ein Naturton – der deckt Weiß am besten.':'Ab ca. 30 % Weiß braucht eine Modefarbe Hilfe – je mehr Weiß, desto mehr Naturton.'}
+  ].map(q=>Object.assign(q,{r:typeof q.r==='number'?q.o[q.r]:q.r}));
+}
+function rpNeu(){rpFaelle=mischen(RP_FAELLE.slice()).slice(0,5);rpF=0;rpQ=0;rpErg=[];rpPunkte=0;rpZeigeFall();}
+function rpZeigeFall(){
+  const f=rpFaelle[rpF],[ist,w,weiss]=f,q=rpFragen(f)[rpQ];rpFehler=0;
+  $('#rpPunkte').textContent=rpPunkte+' ★';
+  $('#rpFort').innerHTML=rpFaelle.map((_,i)=>'<span class="'+(i<rpF?'ok':i===rpF?'jetzt':'')+'"></span>').join('');
+  $('#rpFall').innerHTML='<div class="auftrag"><span class="tag2">Fall '+(rpF+1)+' von '+rpFaelle.length+' · Schritt '+(rpQ+1)+' von 4</span>'+
+    '<b>Kundin: Naturhaar <i class="punkt" style="width:14px;height:14px;vertical-align:-2px;background:'+PIG[ist-1].haar+'"></i> '+ist+' · Wunsch <i class="punkt" style="width:14px;height:14px;vertical-align:-2px;background:'+nFarbe(w.th,w.h,w.n)+'"></i> '+esc(rpNr(w))+'</b>'+
+    '<span class="muted" style="font-size:13px">'+esc(beschreibung(w.th,w.h,w.n))+' · Weißanteil '+RP_WEISS[weiss]+'</span></div>'+
+    '<p style="font-weight:600;margin-top:4px">'+esc(q.f)+'</p><div class="wahl-liste" id="rpOpt">'+q.o.map(o=>'<button type="button">'+esc(o)+'</button>').join('')+'</div>';
+  $('#rpMeldung').hidden=true;$('#rpWeiter').hidden=true;
+  $('#rpOpt').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    if(b.disabled)return;
+    if(b.textContent===q.r){
+      b.classList.add('right');$('#rpOpt').querySelectorAll('button').forEach(x=>x.disabled=true);
+      if(!rpFehler)rpPunkte++;
+      rpErg.push(rpFehler===0);
+      const m=$('#rpMeldung');m.hidden=false;m.className='meldung gut';m.textContent=rpFehler?'Richtig! Beim nächsten Mal klappt es auf Anhieb.':'Richtig auf Anhieb! ★';
+      $('#rpPunkte').textContent=rpPunkte+' ★';
+      const letzte=rpQ===3&&rpF===rpFaelle.length-1;
+      $('#rpWeiter').hidden=false;$('#rpWeiter').textContent=letzte?'Auswertung →':rpQ===3?'Nächste Kundin →':'Weiter →';
+    } else {
+      rpFehler++;b.classList.add('wrong');b.disabled=true;
+      const m=$('#rpMeldung');m.hidden=false;m.className='meldung schlecht';m.innerHTML='<b>Fast!</b> '+esc(q.tipp)+' Probier nochmal.';
+    }
+  });
+}
+$('#rpWeiter').onclick=()=>{
+  if(rpQ<3){rpQ++;rpZeigeFall();return;}
+  if(rpF<rpFaelle.length-1){rpF++;rpQ=0;rpZeigeFall();return;}
+  const n=rpErg.length;
+  $('#rpFort').innerHTML=rpFaelle.map(()=>'<span class="ok"></span>').join('');
+  $('#rpFall').innerHTML='<div class="auftrag"><b>Alle 5 Kundinnen geplant! 🎉</b><span>'+rpPunkte+' von '+n+' Schritten auf Anhieb richtig.</span></div>';
+  $('#rpMeldung').hidden=true;$('#rpWeiter').hidden=false;$('#rpWeiter').textContent='↻ Neue Kundinnen';
+  $('#rpWeiter').onclick=()=>{$('#rpWeiter').onclick=rpWeiterStd;$('#rpSpeicher').textContent='';rpNeu();};
+  punkteSpeichern(rpErg.map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok})),'rpSpeicher');
+};
+const rpWeiterStd=$('#rpWeiter').onclick;
+function rpModus(selbst){
+  $('#rpPlanen').hidden=selbst;$('#rpSelbst').hidden=!selbst;
+  $('#rpModusWeg').className=selbst?'':'an';$('#rpModusWeg').setAttribute('aria-pressed',!selbst);
+  $('#rpModusSelbst').className=selbst?'an':'';$('#rpModusSelbst').setAttribute('aria-pressed',selbst);
+  if(selbst&&!rpFaelle.length)rpNeu();
+}
+$('#rpModusWeg').onclick=()=>rpModus(false);
+$('#rpModusSelbst').onclick=()=>rpModus(true);
+
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
 })();
