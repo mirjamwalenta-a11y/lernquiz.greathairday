@@ -1676,7 +1676,7 @@ const FB=[
  {t:'Ansatz heller',k:'„Hot Roots“',fall:'Erstfärbung, Naturhaar 6, Wunsch 6.3. Die Farbe wurde von oben bis unten in einem Zug aufgetragen.',v:['geplant',{a:'#8A5A34'}],e:{a:'#D09358',l:'#8A6040',s:'#86603C'},
   u:{o:['Am Ansatz ist es wärmer – die Farbe wirkt dort stärker','Das Oxidant war zu schwach','Die Farbe war zu alt','Die Kundin hat zu früh gewaschen'],e:'Die Kopfwärme beschleunigt die Farbe am Ansatz – dort hellt sie stärker auf.',tipp:'Was ist direkt an der Kopfhaut anders als in den Längen?'},
   r:{o:['Erstfärbung: zuerst Längen und Spitzen, den Ansatz zuletzt – jetzt den Ansatz an die Längen anpassen','Den ganzen Kopf mit 12 % nochmal färben','Nur die Spitzen nachfärben','Den Ansatz blondieren'],e:'Der Ansatz kommt zuletzt dran, weil er durch die Wärme schneller wirkt. Den zu hellen Ansatz jetzt Ton in Ton an die Längen anpassen.',tipp:'Der Ansatz ist zu hell. Und was machst du nächstes Mal beim Auftragen anders?'}},
- {t:'Spitzen zu dunkel',k:'nach Nachfärbung',fall:'Nachfärbung, Wunsch 7.3. Die Farbe kam gleich am Anfang auch in Längen und Spitzen. Die Spitzen sind porös.',v:['geplant',{a:'#A87A48'}],e:{a:'#A87A48',l:'#8E6438',s:'#3A261A'},
+ {t:'Spitzen zu dunkel',k:'nach Nachfärbung',neu:'spitzen',fall:'Nachfärbung, Wunsch 7.3. Die Farbe kam gleich am Anfang auch in Längen und Spitzen. Die Spitzen sind porös.',v:['geplant',{a:'#A87A48'}],e:{a:'#A87A48',l:'#8E6438',s:'#3A261A'},
   u:{o:['Poröse Spitzen nehmen mehr Farbe auf und waren zu lange mit drin','Zu wenig Farbe am Ansatz','Das Oxidant war zu stark','Die Farbnummer war falsch'],e:'Poröses Haar saugt Farbe auf wie ein Schwamm. Die volle Einwirkzeit macht die Spitzen zu dunkel.',tipp:'Wie unterscheiden sich die Spitzen vom Ansatz – und wie lange war die Farbe auf ihnen?'},
   r:{o:['Längen erst am Schluss kurz mitfärben – jetzt Tiefenreinigung oder sanfter Farbabzug','Die Spitzen mit 12 % nachfärben','Die ganzen Haare dunkler färben','Die Spitzen mit Asch tönen'],e:'Bei der Nachfärbung zuerst nur den Ansatz, die Längen erst am Ende kurz durchziehen. Zu dunkle Spitzen hellt eine Tiefenreinigung sanft auf – mit der Meisterin.',tipp:'Mehr Farbe macht die Spitzen nicht heller. Und wann sollten die Längen dazukommen?'}},
  {t:'Orange statt Blond',k:'zu wenig aufgehellt',fall:'Naturhaar 5, Wunsch 8.0. Gefärbt mit 8.0 und 9 %.',v:['vorher',{a:'#643C24'}],e:{a:'#D98B3C',l:'#D6843A',s:'#CF7A32'},
@@ -1765,6 +1765,35 @@ const FN_FAELLE={weiss:{
     {k:'12 %',t:'½ 6.0 + ½ 6.4 · 12 % · extra lang',df:'L',
      w:()=>'Stärker ist nicht besser: 12 % hellt 3–4 Töne auf, statt zu decken. Das Weiß wird gelblich, das Kupfer zu hell – und eine Zeit über der Gebrauchsanweisung belastet Haar und Kopfhaut.'}]},
   vorbeugen:'Vor jeder Farbe den Weißanteil einschätzen – er entscheidet über Naturton und Oxidant.'
+},
+// „Spitzen zu dunkel“: keine operative Korrekturanleitung – die Methode legt die Meisterin fest.
+spitzen:{
+  fall:'Nachfärbung, Wunsch 7.3 wie beim letzten Mal, 6 %. Die Längen sind schon gefärbt, die Spitzen porös. Die Farbe kam gleich am Anfang vom Ansatz bis in die Spitzen, volle Einwirkzeit. Ergebnis: Ansatz passt, Spitzen deutlich dunkler und stumpf.',
+  kurz:'Nachfärbung 7.3 · 6 % · Längen gefärbt, Spitzen porös · alles volle Zeit · Spitzen zu dunkel',
+  diag:[
+    {t:'Längen gleich am Anfang mitgefärbt',f:1,w:z=>'Bei der Nachfärbung zuerst nur der Ansatz – Längen & Spitzen erst die letzten '+z.nachLaengen+' Min.'},
+    {t:'Poröse Spitzen nicht beachtet',f:1,w:'Poröse Spitzen saugen Farbe auf wie ein Schwamm – mit voller Zeit werden sie zu dunkel.'},
+    {t:'Farbnummer 7.3',f:0,w:'Die Nummer war richtig – der Ansatz passt ja.'},
+    {t:'Oxidant 6 % am Ansatz',f:0,w:'6 % war richtig – auch das zeigt der passende Ansatz.'}],
+  kern:{f:'Was ist das eigentliche Problem?',o:[
+    {t:'Die Längen sind schon gefärbt und die Spitzen porös. Mit der vollen Einwirkzeit nehmen sie zu viel Pigment auf. Nicht die Farbe war falsch, sondern die Zeit auf den Längen.',ok:1,
+     w:'Genau: Farbe und Oxidant stimmten – der Ablauf auf den Längen nicht.'},
+    {t:'Poröses Haar hält Farbe schlecht – deshalb müssen die Längen immer die volle Zeit mit.',df:'T',
+     w:'„Porös hält Farbe schlecht“ stimmt fürs Auswaschen – beim Färben nimmt poröses Haar aber mehr auf.'},
+    {t:'Die Spitzen sind zu dunkel – also war die Farbnummer zu dunkel.',df:'Z',
+     w:'Das schaut nur aufs Ergebnis. Der Ansatz zeigt: Die Nummer passt, der Ablauf war falsch.'},
+    {t:'Dann färbt man die Längen am besten gar nicht mehr mit.',df:'L',
+     w:'Zu weit gedacht: Ohne Auffrischen verblassen die Längen. Sie kommen dazu – nur kurz und am Schluss.'}]},
+  rez:{f:'Welchen Korrektur-Vorschlag bringst du der Meisterin?',o:[
+    {k:'Ansatz lassen',t:'Ansatz lassen · Spitzen behutsam heller holen, Methode legt die Meisterin fest · nächstes Mal: nur Ansatz, Längen erst zum Schluss',ok:1,
+     w:z=>'Der Ansatz passt – daran nichts ändern. Die Spitzen haben zu viel Pigment: behutsam heller holen, die Methode legt die Meisterin fest. Nächstes Mal zuerst nur der Ansatz, Längen & Spitzen erst die letzten '+z.nachLaengen+' Min.'},
+    {k:'7.3 nochmal',t:'Spitzen nochmal mit 7.3 und voller Zeit, damit es gleichmäßig wird',df:'T',
+     w:()=>'„Porös hält Farbe schlecht“ stimmt fürs Auswaschen – aber beim Färben nimmt poröses Haar mehr auf. Nochmal volle Zeit macht die Spitzen noch dunkler.'},
+    {k:'8.3 drüber',t:'Ganzen Kopf mit 8.3 drüberfärben – eine Stufe heller gleicht es aus',df:'Z',
+     w:()=>'Das Ziel „heller“ stimmt, der Weg nicht: Farbe hebt Farbe nicht. Die Spitzen bleiben dunkel, aber der Ansatz wird heller – jetzt passt gar nichts mehr zusammen.'},
+    {k:'12 %',t:'Spitzen mit 12 % aufhellen, damit es sicher heller wird',df:'L',
+     w:()=>'Stärker ist nicht besser: Die Spitzen sind schon porös. 12 % belastet sie noch mehr und macht sie warm und fleckig statt gleichmäßig.'}]},
+  vorbeugen:'Vor jeder Nachfärbung die Längen prüfen: Wie porös sind sie? Je poröser, desto kürzer kommen sie dazu.'
 }};
 const FN={f:null,s:0,diag:[],kern:null,kernO:[],rez:null,rezO:[],warum:'',andere:null,andereWarum:''};
 function fnNeu(k){const f=FN_FAELLE[k];
