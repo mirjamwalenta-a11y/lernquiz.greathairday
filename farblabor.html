@@ -141,6 +141,25 @@ section.block > header{display:grid;gap:6px}
 .wahl-liste button.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
 
 /* ── Spiel ── */
+#msWo button,#msVerh button,#msWeiss button,#rpWeiss button,#rpGef button{font-family:Poppins,system-ui;font-size:13px}
+.ms-kopf{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.ms-saeulen{display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:6px 0}
+.ms-s{display:grid;justify-items:center;gap:4px;font-size:11px;color:var(--muted);text-align:center;max-width:90px}
+.ms-s i{display:block;width:56px;border-radius:8px 8px 4px 4px}
+.ms-s b{font-size:14px;color:var(--ink)}
+.ms-summe{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px;font-size:14px}
+.ms-timer{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#211D17;color:#F8F4EA;border-radius:12px;padding:12px 14px}
+.ms-timer small{display:block;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#D9B66A}
+.ms-timer b{font:700 26px var(--mono);letter-spacing:1px}
+.ms-timer .btn{background:#D9B66A;border-color:#D9B66A;color:#211D17}
+.ms-timer .btn.ghost{background:transparent;color:#D9B66A}
+.ga-regler{width:100%;accent-color:var(--accent)}
+.ga-vgl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;font-size:12px;color:var(--muted)}
+.ga-str{height:120px;width:46px;border-radius:30px 30px 8px 8px;margin:0 auto 6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.ga-regeln{display:grid}
+.ga-regeln div{display:flex;gap:10px;padding:8px 6px;border-top:1px solid #F0ECE5;font-size:13px;border-radius:8px}
+.ga-regeln div.an{background:var(--accent-soft);border-top-color:transparent}
+.ga-regeln b{width:84px;flex:none}
 .rp-modus{display:flex;gap:4px;background:var(--surface-2);border-radius:10px;padding:4px}
 .rp-modus button{flex:1;appearance:none;border:0;background:none;border-radius:7px;padding:9px 6px;font:600 13px Poppins,system-ui;color:var(--muted);cursor:pointer}
 .rp-modus button.an{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
@@ -228,8 +247,9 @@ body.schnupper .nur-lern{display:none!important}
     <a href="#aufhellung">3 · Aufhellung</a>
     <a href="#nummern">4 · Farbnummern</a>
     <a href="#rezeptur">5 · Rezeptur</a>
-    <a href="#spiel">6 · Spiel</a>
-    <a href="#quiz">7 · Quiz</a>
+    <a href="#mischstation">6 · Mischen</a>
+    <a href="#spiel">7 · Spiel</a>
+    <a href="#quiz">8 · Quiz</a>
   </div>
 </nav>
 
@@ -379,10 +399,52 @@ body.schnupper .nur-lern{display:none!important}
     <p class="muted rp-hinweis">Lernhilfe mit Faustregeln (L’Oréal-Nummern wie Majirel). Im Salon gelten die Farbkarte des Herstellers, die Rezeptur der Meisterin und der Allergie-Test.</p>
   </section>
 
-  <!-- ═════════ 6 SPIEL ═════════ -->
-  <section class="block" id="spiel">
+  <!-- ═════════ 6 MISCHEN & GRAUABDECKUNG ═════════ -->
+  <section class="block" id="mischstation">
     <header>
       <span class="tag2">Teil 6</span>
+      <h2>Mischen, Rechnen &amp; Grauabdeckung</h2>
+      <p class="muted">Wie viel Farbe, wie viel Oxidant, wie lange? Und warum braucht weißes Haar Naturton? Die App rechnet mit und erklärt es.</p>
+    </header>
+    <div class="panel">
+      <h3>Mischstation</h3>
+      <p class="muted" style="font-size:13px">Ausgangstonhöhe und Wunschfarbe kommen aus dem Rezeptur-Planer (Teil 5).</p>
+      <div class="wahl">
+        <div class="lab">Wo wird gefärbt?</div><div class="knoepfe" id="msWo"></div>
+        <div class="lab">Mischverhältnis (steht auf der Packung)</div><div class="knoepfe" id="msVerh"></div>
+        <div class="lab">Weißanteil</div><div class="knoepfe" id="msWeiss"></div>
+      </div>
+      <div id="msSchale" aria-live="polite"></div>
+      <div class="ms-timer">
+        <div><small>Einwirkzeit</small><b id="msZeit">35:00</b></div>
+        <div class="reihe"><button class="btn" id="msStart">⏱ Starten</button><button class="btn ghost" id="msReset">↺</button></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Weißes Haar abdecken</h3>
+      <p class="muted" style="font-size:14px">Weißes Haar hat kein eigenes Pigment. Je mehr Weiß, desto mehr Naturton braucht die Farbe.</p>
+      <label class="lab" for="gaRegler" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Weißanteil der Kundin: <span id="gaWert">60 %</span></label>
+      <input type="range" id="gaRegler" min="0" max="100" step="5" value="60" class="ga-regler">
+      <div class="ga-vgl" id="gaVgl"></div>
+      <div class="ga-regeln" id="gaRegeln"></div>
+    </div>
+    <div class="panel">
+      <div class="spiel-kopf">
+        <div><span class="tag2">Training</span><h3>Rechnen wie an der Mischstation</h3></div>
+        <span class="punkte" id="trPunkte">0 ★</span>
+      </div>
+      <div class="fortschritt" id="trFort" aria-hidden="true"></div>
+      <div id="trAufgabe"></div>
+      <div class="meldung" id="trMeldung" hidden></div>
+      <div class="reihe" style="justify-content:center"><button class="btn" id="trWeiter" hidden>Weiter →</button></div>
+      <p class="muted punkte-info" id="trSpeicher"></p>
+    </div>
+  </section>
+
+  <!-- ═════════ 7 SPIEL ═════════ -->
+  <section class="block" id="spiel">
+    <header>
+      <span class="tag2">Teil 7</span>
       <h2>Spiel: Neutralisier-Profi</h2>
       <p class="muted">Eine Kundin wurde aufgehellt, der Untergrund liegt schon in der Schale. Gib so viele Tropfen dazu, bis der Stich weg ist, nicht zu wenig und nicht zu viel.</p>
     </header>
@@ -410,10 +472,10 @@ body.schnupper .nur-lern{display:none!important}
     </div>
   </section>
 
-  <!-- ═════════ 5 QUIZ ═════════ -->
+  <!-- ═════════ 8 QUIZ ═════════ -->
   <section class="block" id="quiz">
     <header>
-      <span class="tag2">Teil 7</span>
+      <span class="tag2">Teil 8</span>
       <h2>Wissens-Check</h2>
       <p class="muted">Antwort antippen, dann sagen, ob du dir sicher bist. Die Erklärung erscheint sofort.</p>
     </header>
@@ -1177,6 +1239,123 @@ function rpModus(selbst){
 }
 $('#rpModusWeg').onclick=()=>rpModus(false);
 $('#rpModusSelbst').onclick=()=>rpModus(true);
+
+// ═════════ Teil 6: Mischstation, Grauabdeckung, Rechen-Training ═════════
+// Mengen-Faustregeln: Ansatz ca. 30 g, kurz 40 g, mittel 60 g, lang 90 g Farbe;
+// Mischverhältnis laut Packung (Majirel 1 : 1,5, High-Lift 1 : 2); Naturton:
+// bis 30 % Weiß keiner, 30–50 % etwa ¼, über 50 % etwa ½; 6 % für volle Grauabdeckung.
+const MS={wo:2,verh:1,weiss:2};
+const MS_WO=[['nur Ansatz',30],['kurz',40],['mittel',60],['lang',90]];
+const MS_VERH=[['1 : 1',1],['1 : 1,5',1.5],['1 : 2',2]];
+const MS_WEISS=['bis 30 %','30–50 %','über 50 %'];
+const deZahl=x=>String(Math.round(x*10)/10).replace('.',',');
+function msZeige(){
+  rpKnoepfe('msWo',MS_WO.map(x=>x[0]),MS.wo,i=>{MS.wo=i;msZeige();});
+  rpKnoepfe('msVerh',MS_VERH.map(x=>x[0]),MS.verh,i=>{MS.verh=i;msZeige();});
+  rpKnoepfe('msWeiss',MS_WEISS,MS.weiss,i=>{MS.weiss=i;msZeige();});
+  const w=RP.w, l=lies(w.h,w.n), natur=!l.st||l.st===1;
+  const plan=rpPlan(RP.ist,MS.weiss+1,RP.gef,w);
+  const g=MS_WO[MS.wo][1], v=MS_VERH[MS.verh][1];
+  const anteil=natur?0:[0,.25,.5][MS.weiss], nat=Math.round(g*anteil/5)*5, mode=g-nat, ox=Math.round(g*v);
+  const max=Math.max(ox,g), hoehe=x=>Math.max(14,Math.round(x/max*150));
+  const saeule=(menge,ein,farbe,name,rand)=>'<div class="ms-s"><b>'+menge+' '+ein+'</b><i style="height:'+hoehe(menge)+'px;background:'+farbe+(rand?';box-shadow:inset 0 0 0 1px #D9CDAE':'')+'"></i><span>'+esc(name)+'</span></div>';
+  let warum;
+  if(natur) warum='Warum kein Naturton dazu? '+esc(rpNr(w))+' ist schon ein Naturton – der deckt Weiß am besten.';
+  else if(!anteil) warum='Warum kein Naturton? Bis ca. 30 % Weiß deckt die Modefarbe allein.';
+  else warum='Warum '+(anteil===.5?'halb':'etwa ¼')+' Naturton? '+(anteil===.5?'Über 50 % Weiß':'30–50 % Weiß')+': Die Modefarbe allein deckt nicht sicher, das Weiß schimmert durch.';
+  $('#msSchale').innerHTML='<div class="ms-kopf">In die Schale · Wunsch <i class="punkt" style="width:14px;height:14px;background:'+nFarbe(w.th,w.h,w.n)+'"></i> <b>'+esc(rpNr(w))+'</b></div>'+
+    '<div class="ms-saeulen">'+saeule(mode,'g',nFarbe(w.th,w.h,w.n),rpNr(w))+(nat?saeule(nat,'g',PIG[w.th-1].haar,'Naturton '+w.th+'.0'):'')+
+    (plan.blond?'':saeule(ox,'ml','#ECE6DA','Oxidant '+plan.ox+' %',true))+'</div>'+
+    (plan.blond?'<p class="meldung schlecht" style="margin:0">Von '+RP.ist+' auf '+w.th+' braucht es Blondierung – das plant die Meisterin.</p>':
+    '<div class="ms-summe"><span>Farbe gesamt '+g+' g × '+deZahl(v)+'</span><b>= '+ox+' ml Oxidant</b></div>')+
+    '<span class="rp-warum">'+warum+'</span>';
+}
+msZeige();
+// Einwirkzeit-Timer (35 Min), läuft auch bei der echten Färbung
+let msRest=35*60, msUhr=null;
+const msZeit=()=>{$('#msZeit').textContent=String(Math.floor(msRest/60)).padStart(2,'0')+':'+String(msRest%60).padStart(2,'0');};
+$('#msStart').onclick=()=>{
+  if(msUhr){clearInterval(msUhr);msUhr=null;$('#msStart').textContent='⏱ Weiter';return;}
+  if(msRest<=0)msRest=35*60;
+  const ende=Date.now()+msRest*1000;
+  $('#msStart').textContent='⏸ Pause';
+  msUhr=setInterval(()=>{msRest=Math.max(0,Math.round((ende-Date.now())/1000));msZeit();
+    if(msRest<=0){clearInterval(msUhr);msUhr=null;$('#msStart').textContent='⏱ Starten';
+      try{navigator.vibrate&&navigator.vibrate([300,150,300]);}catch(e){}
+      $('#msZeit').textContent='Fertig!';}},500);
+};
+$('#msReset').onclick=()=>{if(msUhr){clearInterval(msUhr);msUhr=null;}msRest=35*60;msZeit();$('#msStart').textContent='⏱ Starten';};
+
+// Grauabdeckung: Strähnen zum Vergleich
+function gaZeige(){
+  const p=+$('#gaRegler').value, w=RP.w, mode=nFarbe(w.th,w.h,w.n), haar=PIG[RP.ist-1].haar, natFarbe=nFarbe(w.th,'0','');
+  $('#gaWert').textContent=p+' %';
+  const streifen=(a,b,anteilB)=>{const s=Math.round(anteilB/100*8);return 'repeating-linear-gradient(90deg,'+a+' 0 '+(8-s)+'px,'+b+' '+(8-s)+'px 8px)';};
+  const hell=hex(lerp(rgb(mode),[236,230,220],.6));
+  const nur=p<=30?mode:streifen(mode,hell,p), mitNat=mode;
+  const nat=p<=30?'':p<=50?'+ ¼ '+w.th+'.0':'+ ½ '+w.th+'.0';
+  const deckt=p<=30;
+  $('#gaVgl').innerHTML=
+    '<div><div class="ga-str" style="background:'+(p?streifen(haar,'#E9E4DA',p):haar)+'"></div>vorher<br><b>'+p+' % Weiß</b></div>'+
+    '<div><div class="ga-str" style="background:'+nur+'"></div>nur '+esc(rpNr(w))+'<br><b style="color:'+(deckt?'var(--good)':'var(--bad)')+'">'+(deckt?'deckt ✓':'schimmert durch')+'</b></div>'+
+    '<div><div class="ga-str" style="background:'+(deckt?mode:hex(lerp(rgb(mitNat),rgb(natFarbe),.25)))+'"></div>'+(deckt?'kein Naturton nötig':esc(rpNr(w))+' '+nat)+'<br><b style="color:var(--good)">deckt ✓</b></div>';
+  const z=p<=30?0:p<=50?1:2;
+  $('#gaRegeln').innerHTML=[['bis 30 %','Modefarbe deckt allein'],['30–50 %','etwa ¼ Naturton dazu'],['über 50 %','etwa ½ Naturton dazu']].map((r,i)=>'<div class="'+(i===z?'an':'')+'"><b>'+r[0]+'</b><span>'+r[1]+'</span></div>').join('')+
+    '<div><b>Oxidant</b><span>6 % – Standard für 100 % Grauabdeckung</span></div>';
+}
+$('#gaRegler').oninput=gaZeige; gaZeige();
+
+// Rechen-Training: 8 Aufgaben, Tipp statt Lösung
+let trA=[],trI=0,trErg=[],trFehler=0,trP=0;
+const trZuf=a=>a[Math.floor(Math.random()*a.length)];
+function trAufgaben(){
+  const a=[];
+  const ox=(g,v,vt)=>{const r=Math.round(g*v);return {f:'Du brauchst '+g+' g Farbe. Mischverhältnis '+vt+'. Wie viel Oxidant?',r:r+' ml',o:[r].concat([g,Math.round(g*1.5),g*2,g*3].filter(x=>x!==r).slice(0,3)).map(x=>x+' ml'),
+    tipp:v===1.5?'Mal 1,5 heißt: die Menge plus die Hälfte davon. Die Hälfte von '+g+' ist '+g/2+'.':v===2?'Mal 2 heißt: die Menge verdoppeln.':'1 : 1 heißt: gleich viel Oxidant wie Farbe.'};};
+  a.push(ox(trZuf([40,60,80]),1.5,'1 : 1,5'));
+  a.push(ox(trZuf([30,50,70]),1.5,'1 : 1,5'));
+  a.push(ox(trZuf([30,40,60]),2,'1 : 2'));
+  const gN=trZuf([40,60,80]);
+  a.push({f:'Kundin mit 60 % Weiß. Du brauchst '+gN+' g Farbe insgesamt. Wie viel davon ist Naturton?',r:gN/2+' g',o:[gN/2,gN/4,gN,0].map(x=>x+' g'),tipp:'Über 50 % Weiß: etwa die Hälfte Naturton. Die Hälfte von '+gN+' ist …?'});
+  const gV=trZuf([40,80]);
+  a.push({f:'Kundin mit 40 % Weiß. '+gV+' g Farbe insgesamt. Wie viel Naturton?',r:gV/4+' g',o:[gV/4,gV/2,gV,0].map(x=>x+' g'),tipp:'30–50 % Weiß: etwa ¼ Naturton. Ein Viertel ist die Hälfte von der Hälfte.'});
+  a.push({f:'Kundin mit 20 % Weiß, Wunsch 7.43. Brauchst du Naturton dazu?',r:'Nein, die Modefarbe deckt',o:['Nein, die Modefarbe deckt','Ja, etwa ¼','Ja, etwa die Hälfte','Ja, nur Naturton'],tipp:'Bis ca. 30 % Weiß deckt die Modefarbe allein.'});
+  const h=trZuf([9,10,14,15]),m=trZuf([10,20,40,45]),e=new Date(2000,0,1,h,m+35);
+  const ende=String(e.getHours())+':'+String(e.getMinutes()).padStart(2,'0'), z=x=>{const d=new Date(2000,0,1,h,m+x);return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');};
+  a.push({f:'Farbe aufgetragen um '+h+':'+String(m).padStart(2,'0')+' Uhr. Einwirkzeit 35 Min. Wann ist sie fertig?',r:ende+' Uhr',o:[ende,z(30),z(45),z(25)].map(x=>x+' Uhr'),tipp:'Erst 30 Minuten dazurechnen, dann noch 5.'});
+  const gA=trZuf([30,45]);
+  a.push({f:'Nur Ansatz, '+gA+' g Farbe, Mischverhältnis 1 : 2. Wie viel Oxidant?',r:gA*2+' ml',o:[gA*2,gA,Math.round(gA*1.5),gA*3].map(x=>x+' ml'),tipp:'Mal 2 heißt: die Menge verdoppeln.'});
+  return a.map(x=>Object.assign(x,{o:mischen(Array.from(new Set(x.o)))}));
+}
+function trNeu(){trA=trAufgaben();trI=0;trErg=[];trP=0;$('#trSpeicher').textContent='';trZeige();}
+function trZeige(){
+  const q=trA[trI];trFehler=0;
+  $('#trPunkte').textContent=trP+' ★';
+  $('#trFort').innerHTML=trA.map((_,i)=>'<span class="'+(i<trI?'ok':i===trI?'jetzt':'')+'"></span>').join('');
+  $('#trAufgabe').innerHTML='<p style="font-weight:600">'+esc(q.f)+'</p><div class="wahl-liste" id="trOpt">'+q.o.map(o=>'<button type="button">'+esc(o)+'</button>').join('')+'</div>';
+  $('#trMeldung').hidden=true;$('#trWeiter').hidden=true;
+  $('#trOpt').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    if(b.disabled)return;
+    const m=$('#trMeldung');m.hidden=false;
+    if(b.textContent===q.r){b.classList.add('right');$('#trOpt').querySelectorAll('button').forEach(x=>x.disabled=true);
+      if(!trFehler)trP++;trErg.push(!trFehler);$('#trPunkte').textContent=trP+' ★';
+      m.className='meldung gut';m.textContent=trFehler?'Richtig!':'Richtig auf Anhieb! ★';
+      $('#trWeiter').hidden=false;$('#trWeiter').textContent=trI===trA.length-1?'Auswertung →':'Weiter →';}
+    else {trFehler++;b.classList.add('wrong');b.disabled=true;m.className='meldung schlecht';m.innerHTML='<b>Fast!</b> '+esc(q.tipp)+' Probier nochmal.';}
+  });
+}
+$('#trWeiter').onclick=()=>{
+  if(trI<trA.length-1){trI++;trZeige();return;}
+  if($('#trWeiter').textContent.indexOf('Neue')>=0){trNeu();return;}
+  $('#trFort').innerHTML=trA.map(()=>'<span class="ok"></span>').join('');
+  $('#trAufgabe').innerHTML='<div class="auftrag"><b>Alle '+trA.length+' Aufgaben gerechnet! 🎉</b><span>'+trP+' von '+trA.length+' auf Anhieb richtig.</span></div>';
+  $('#trMeldung').hidden=true;$('#trWeiter').textContent='↻ Neue Aufgaben';
+  punkteSpeichern(trErg.map(ok=>({thema:'Farbenlehre & Coloration',korrekt:ok})),'trSpeicher');
+};
+trNeu();
+// Änderungen im Rezeptur-Planer (Ausgang/Wunsch) auch hier zeigen
+const rpWegZeigeAlt=rpWegZeige;
+rpWegZeige=function(){rpWegZeigeAlt();msZeige();gaZeige();};
 
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
