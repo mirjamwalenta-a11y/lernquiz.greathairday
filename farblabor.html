@@ -1691,7 +1691,7 @@ const FB=[
  {t:'Fleckig',k:'ungleichmäßig',neu:'fleckig',fall:'Ganzer Kopf, Wunsch 6.0. Dicke Abteilungen, wenig Farbe, schnell aufgetragen.',v:['geplant',{a:'#7D5030'}],e:{a:'#86603C',flecken:true},
   u:{o:['Zu dicke Abteilungen und zu wenig Farbe – nicht überall gleich viel Produkt','Die Farbe war abgelaufen','Das Oxidant war zu schwach','Die Kundin hat zu heiß geföhnt'],e:'Wo wenig Farbe hinkommt, wirkt sie schwächer. Dicke Abteilungen werden innen nicht richtig durchtränkt.',tipp:'Wie wurde aufgetragen? Kam überall gleich viel Farbe hin?'},
   r:{o:['Dünne Abteilungen, genug Produkt, gleichmäßig – jetzt die hellen Stellen gezielt nachfärben','Den ganzen Kopf mit 12 % nochmal','Mit Asch drüber tönen','Abwarten, das gleicht sich aus'],e:'Sauberes Auftragen in dünnen Abteilungen mit genug Farbe verhindert Flecken. Die helleren Stellen jetzt gezielt angleichen.',tipp:'Was machst du beim Auftragen anders – und was mit den helleren Stellen?'}},
- {t:'Fahl & grünlich',k:'dunkler auf Blond',fall:'Blondiertes Haar (Tonhöhe 9) soll wieder Hellbraun (5.0) werden. Direkt mit 5.0 gefärbt.',v:['vorher',{a:'#E6CC9C'}],e:{a:'#5E5A4E',l:'#58554A',s:'#4E4C42'},
+ {t:'Fahl & grünlich',k:'dunkler auf Blond',neu:'fahl',fall:'Blondiertes Haar (Tonhöhe 9) soll wieder Hellbraun (5.0) werden. Direkt mit 5.0 gefärbt.',v:['vorher',{a:'#E6CC9C'}],e:{a:'#5E5A4E',l:'#58554A',s:'#4E4C42'},
   u:{o:['Dem blondierten Haar fehlt der warme Untergrund (Rot/Orange)','Zu viel Oxidant','Zu kurze Einwirkzeit','Die Farbe war zu warm'],e:'Beim Blondieren wurde das warme Pigment entfernt. Ein Naturton allein wirkt darauf fahl, grau oder grünlich.',tipp:'Was hat das Blondieren aus dem Haar herausgeholt?'},
   r:{o:['Vorher vorpigmentieren (warmer Ton), dann färben','Mit Asch nachfärben','Mit 12 % färben','Nochmal blondieren'],e:'Vorpigmentieren gibt das fehlende warme Pigment zurück. Danach hält die dunkle Farbe und wirkt natürlich – mit der Meisterin planen.',tipp:'Was fehlt dem Haar – und wie gibst du es zurück, bevor du dunkel färbst?'}}
 ];
@@ -1825,6 +1825,36 @@ fleckig:{
     {k:'länger',t:'Nächstes Mal deutlich länger einwirken lassen als laut Gebrauchsanweisung',df:'L',
      w:()=>'Wo zu wenig Farbe ist, hilft auch mehr Zeit nicht – Zeit ersetzt keine Farbe. Und länger als laut Gebrauchsanweisung belastet Haar und Kopfhaut.'}]},
   vorbeugen:'Menge vor dem Mischen an Länge und Dichte ausrichten – und beim Auftragen lieber dünner abteilen als schneller fertig sein.'
+},
+// „Fahl & grünlich“: dunkler auf blondiertem Haar. Fachbegriff „vorpigmentieren“ darf stehen (Meisterin),
+// Produkt und Vorgehen legt die Meisterin fest. 1,8–3 % fürs Dunklerfärben ist richtig (Salon-Regel).
+fahl:{
+  fall:'Die Kundin war blondiert auf Tonhöhe 9 und möchte zurück zu ihrem Hellbraun, 5.0. Gefärbt wurde direkt mit 5.0 und 1,8–3 %, volle Einwirkzeit. Ergebnis: dunkel, aber fahl, grau-grünlich, ohne Wärme.',
+  kurz:'blondiert TH 9 → Wunsch 5.0 · direkt 5.0 · 1,8–3 % · fahl, grünlich',
+  diag:[
+    {t:'Blondiertes Haar wie Naturhaar behandelt',f:1,w:'Blondiertes Haar hat sein warmes Pigment verloren – es reagiert anders als Naturhaar.'},
+    {t:'Kein warmes Pigment zurückgegeben',f:1,w:'Genau das fehlt dem blondierten Haar: Ohne Wärme wirkt jeder Naturton fahl.'},
+    {t:'Oxidant 1,8–3 %',f:0,w:'Das war richtig: Dunkler färben braucht keine Aufhellung.'},
+    {t:'Wunsch 5.0',f:0,w:'Der Wunsch war in Ordnung – nur der Weg dorthin fehlte.'}],
+  kern:{f:'Was ist das eigentliche Problem?',o:[
+    {t:'Beim Blondieren wurde das warme Pigment (Rot, Orange) entfernt. Ein Naturton allein bringt zu wenig Wärme mit – auf dem „leeren“ Haar wirkt er fahl und grünlich. Erst muss die Wärme zurück, dann kann es dunkel werden.',ok:1,
+     w:'Genau: Nicht die Nummer war falsch, sondern der fehlende Zwischenschritt.'},
+    {t:'Dunkler färben geht immer – Farbe deckt Farbe. Der Naturton hätte reichen müssen.',df:'T',
+     w:'„Farbe deckt Farbe“ stimmt bei Naturhaar – blondiertem Haar fehlt aber das warme Pigment.'},
+    {t:'Der Wunsch war 5.0, also kommt 5.0 drauf – die Nummer bestimmt das Ergebnis.',df:'Z',
+     w:'Die Nummer ist das Ziel. Ob es so aussieht, entscheidet der Weg – hier fehlte die Wärme.'},
+    {t:'Grünlich heißt: Es fehlt Rot. Also so viel Rot wie möglich dazu.',df:'L',
+     w:'Die Richtung stimmt, das Maß nicht: „so viel wie möglich“ macht es rotstichig.'}]},
+  rez:{f:'Welchen Korrektur-Vorschlag bringst du der Meisterin?',o:[
+    {k:'vorpigmentieren',t:'Erst warmes Pigment zurückgeben (vorpigmentieren), dann 5.0 – Produkt und Vorgehen legt die Meisterin fest',ok:1,
+     w:()=>'Blondiertes Haar hat sein warmes Pigment verloren. Bevor es dunkel wird, muss die Wärme zurück (vorpigmentieren) – sonst wirkt jeder Naturton fahl. Produkt und Vorgehen legt die Meisterin fest.'},
+    {k:'5.0 nochmal',t:'Nochmal 5.0 drüber – beim zweiten Mal hält es',df:'T',
+     w:()=>'„Farbe deckt Farbe“ stimmt bei Naturhaar – aber nicht bei blondiertem. Ein zweites Mal Naturton bringt wieder keine Wärme: Es bleibt fahl, nur dunkler.'},
+    {k:'4.0',t:'Mit 4.0 drüber – dunkler deckt den Grünstich',df:'Z',
+     w:()=>'Das Ziel „Grünstich weg“ stimmt, der Weg nicht: Dunkler versteckt den Stich nur. Die Ursache – fehlende Wärme – bleibt, und die Kundin ist dunkler als gewünscht.'},
+    {k:'Rotton',t:'Mit einem kräftigen Rotton drüber – Rot ist die Gegenfarbe von Grün',df:'L',
+     w:()=>'Rot gegen Grün ist logisch – aber ein kräftiger Rotton schießt übers Ziel: Das Ergebnis wird rotstichig statt Hellbraun. Wärme zurückgeben heißt dosiert, nicht maximal.'}]},
+  vorbeugen:'Vor dem Dunklerfärben immer fragen: War das Haar blondiert oder stark aufgehellt? Dann fehlt Wärme – und das gehört in den Plan.'
 }};
 const FN={f:null,s:0,diag:[],kern:null,kernO:[],rez:null,rezO:[],warum:'',andere:null,andereWarum:''};
 function fnNeu(k){const f=FN_FAELLE[k];
