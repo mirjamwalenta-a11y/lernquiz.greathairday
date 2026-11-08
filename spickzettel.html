@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F8F4EA">
+<title>Farb-Spickzettel · A Great Hair Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<!-- Farb-Spickzettel zum Ausdrucken (A4). Inhalte = Salon-Regeln der Meisterin,
+     dieselben wie im Farblabor (farblabor.html). Keine Daten, kein Login nötig. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F8F4EA;font-family:Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;color:#211D17;padding:16px 12px 40px}
+.leiste{max-width:794px;margin:0 auto 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.leiste a{color:#6B6455;font-size:13px;text-decoration:none}
+.leiste button{appearance:none;border:none;background:#896C32;color:#fff;font:600 14px Poppins,system-ui;padding:11px 16px;border-radius:10px;cursor:pointer}
+.a4{max-width:794px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(33,29,23,.12);padding:28px 26px;font-size:12px;display:grid;gap:12px}
+.k{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;border-bottom:2px solid #896C32;padding-bottom:8px}
+.k h1{font-size:20px;font-weight:600}.k small{color:#6B6455;font-size:11px}
+.k .r{color:#896C32;font-weight:700;letter-spacing:1.5px;font-size:8px;text-transform:uppercase;text-align:right}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.g{grid-template-columns:1fr}.a4{padding:20px 16px}}
+.b{border:1px solid #E4DBC5;border-radius:8px;padding:10px 12px;break-inside:avoid}
+.b h2{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#896C32;margin-bottom:6px;font-weight:700}
+table{width:100%;border-collapse:collapse}
+td{padding:3px 3px;border-bottom:1px solid #F0ECE5;vertical-align:middle}
+.p{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin-right:5px;border:1px solid rgba(0,0,0,.15)}
+.kreis{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+.kreis svg{width:120px;height:120px;display:block}
+.kreis ul{list-style:none;display:grid;gap:5px}
+.ph{display:flex;height:20px;border-radius:5px;overflow:hidden;font-size:9px;font-weight:600;color:#fff;margin:2px 0 6px}
+.ph span{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+ol{padding-left:16px}li{margin:3px 0}
+.f{color:#9A9188;font-size:9px;text-align:center}
+@page{size:A4;margin:12mm}
+@media print{
+  body{background:#fff;padding:0}
+  .leiste{display:none}
+  .a4{max-width:none;box-shadow:none;border-radius:0;padding:0;font-size:12.5px;gap:14px}
+  .g{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="leiste">
+  <a href="farblabor.html?v=20261108i" id="zurueck">← Farblabor</a>
+  <button type="button" onclick="window.print()">🖨 Drucken / als PDF</button>
+</div>
+<div class="a4">
+  <div class="k"><div><h1>Farb-Spickzettel</h1><small>A Great Hair Day · für den Arbeitsplatz</small></div><div class="r">greathairday<br>Farblabor</div></div>
+  <div class="g">
+    <div class="b"><h2>Farbkreis &amp; Gegenfarben</h2>
+      <div class="kreis">
+        <svg viewBox="-52 -52 104 104" aria-label="Farbkreis mit Gelb, Orange, Rot, Violett, Blau und Grün">
+          <path d="M0 0 L0 -50 A50 50 0 0 1 43.3 -25Z" fill="#F5C518"/><path d="M0 0 L43.3 -25 A50 50 0 0 1 43.3 25Z" fill="#EE7B1E"/>
+          <path d="M0 0 L43.3 25 A50 50 0 0 1 0 50Z" fill="#D42A2A"/><path d="M0 0 L0 50 A50 50 0 0 1 -43.3 25Z" fill="#74399A"/>
+          <path d="M0 0 L-43.3 25 A50 50 0 0 1 -43.3 -25Z" fill="#2D62B3"/><path d="M0 0 L-43.3 -25 A50 50 0 0 1 0 -50Z" fill="#3E9A4A"/>
+          <circle r="14" fill="#fff"/></svg>
+        <ul>
+          <li><i class="p" style="background:#F5C518"></i>Gelb ↔ <i class="p" style="background:#74399A"></i>Violett (Irisé)</li>
+          <li><i class="p" style="background:#EE7B1E"></i>Orange ↔ <i class="p" style="background:#2D62B3"></i>Blau (Asch)</li>
+          <li><i class="p" style="background:#D42A2A"></i>Rot ↔ <i class="p" style="background:#3E9A4A"></i>Grün (Matt)</li>
+          <li style="color:#6B6455;font-size:.9em">Gegenfarben heben sich auf</li>
+        </ul>
+      </div>
+    </div>
+    <div class="b"><h2>Untergrund beim Aufhellen</h2><table>
+      <tr><td>TH 1–4</td><td><i class="p" style="background:#C0231A"></i>Rot</td><td>→ Grün</td></tr>
+      <tr><td>TH 5</td><td><i class="p" style="background:#D6401C"></i>Orangerot</td><td>→ Blau-Grün</td></tr>
+      <tr><td>TH 6</td><td><i class="p" style="background:#E46A1E"></i>Orange</td><td>→ Blau (Asch)</td></tr>
+      <tr><td>TH 7</td><td><i class="p" style="background:#EF9A24"></i>Gelborange</td><td>→ Blau-Violett</td></tr>
+      <tr><td>TH 8–10</td><td><i class="p" style="background:#F2C12A"></i>Gelb</td><td>→ Violett (Irisé)</td></tr></table></div>
+    <div class="b"><h2>Oxidant</h2><table>
+      <tr><td><b>1,8–3 %</b> (10 Vol.)</td><td>keine Aufhellung: Tönung, Ton in Ton, dunkler</td></tr>
+      <tr><td><b>6 %</b> (20 Vol.)</td><td>ca. 1–2 Töne · Standard · 100 % Grauabdeckung</td></tr>
+      <tr><td><b>9 %</b> (30 Vol.)</td><td>ca. 2–3 Töne</td></tr>
+      <tr><td><b>12 %</b> (40 Vol.)</td><td>ca. 3–4 Töne (High-Lift bis 4–5)</td></tr></table></div>
+    <div class="b"><h2>Farbnummer lesen · z. B. 7.43</h2><table>
+      <tr><td><b>7</b></td><td>Tonhöhe (vor dem Punkt)</td></tr>
+      <tr><td><b>4 · 3</b></td><td>Hauptreflex · Nebenreflex</td></tr>
+      <tr><td colspan="2">0 Natur · 1 Asch · 2 Irisé · 3 Gold · 4 Kupfer · 5 Mahagoni · 6 Rot</td></tr>
+      <tr><td colspan="2">7.04 leicht · 7.4 · 7.44 intensiv · 7.40 am stärksten</td></tr></table></div>
+    <div class="b"><h2>Menge &amp; Mischen</h2><table>
+      <tr><td>Ansatz</td><td>ca. 30 g</td></tr><tr><td>kurz</td><td>30–40 g</td></tr><tr><td>mittel</td><td>40–50 g</td></tr>
+      <tr><td>lang</td><td>50–60 g · je nach Haarmenge</td></tr><tr><td>1 : 1,5</td><td>40 g Farbe + 60 ml Oxidant</td></tr></table></div>
+    <div class="b"><h2>Weißanteil</h2><table>
+      <tr><td>bis 30 %</td><td>Modefarbe deckt allein</td></tr><tr><td>30–50 %</td><td>¼ Naturton dazu</td></tr><tr><td>über 50 %</td><td>½ Naturton dazu · 6 %</td></tr></table></div>
+    <div class="b"><h2>Einwirkzeit 35 Min</h2>
+      <div class="ph"><span style="flex:10;background:#D9B66A;color:#211D17">Aufhellung 10</span><span style="flex:15;background:#896C32">Farbtiefe 15</span><span style="flex:10;background:#5B4320">Reflex 10</span></div>
+      <table><tr><td>Aufhellung</td><td>eigenes Pigment wird abgebaut</td></tr><tr><td>Farbtiefe</td><td>die Tonhöhe baut sich auf</td></tr><tr><td>Reflex</td><td>der Farbton entwickelt sich</td></tr></table></div>
+    <div class="b"><h2>Auftragen</h2><ol>
+      <li>Kreuzscheitel, <b>hinten beginnen</b> · Blondieren: dunkelste Stelle zuerst</li>
+      <li><b>Erstfärbung heller:</b> Längen zuerst (1–2 cm Abstand), Ansatz zuletzt</li>
+      <li><b>Nachfärbung:</b> nur Ansatz, Längen die letzten 5–10 Min</li></ol></div>
+  </div>
+  <div class="f">Lernhilfe. Im Salon gelten die Farbkarte des Herstellers, die Rezeptur der Meisterin und der Allergie-Test.</div>
+</div>
+<script>
+// Zurück dorthin, woher man kam (Meisterin-Bereich oder Farblabor)
+(function(){var von=new URLSearchParams(location.search).get('von');
+  if(von==='meisterin'){var a=document.getElementById('zurueck');a.href='lernquiz.html?v=20261108i#meisterin';a.textContent='← Meisterin-Bereich';}})();
+</script>
+</body>
+</html>
