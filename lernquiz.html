@@ -10,6 +10,7 @@
 <title>Lernquiz · A Great Hair Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-themen.js?v=20261107e"></script>  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
@@ -1568,7 +1569,8 @@ async function loginMeisterin(){
   var pw=document.getElementById('mlogin-pw').value;
   versteckeFehler('mlogin-fehler');
   var {data,error}=await sb.auth.signInWithPassword({email:email,password:pw});
-  if(error){zeigeFehler('mlogin-fehler','E-Mail oder Passwort nicht korrekt.');return;}
+  if(error&&lqNetzFehler(error)&&window.ghdSitzung&&ghdSitzung.offlineEntsperren&&ghdSitzung.offlineEntsperren()){versteckeFehler('mlogin-fehler');return;}
+  if(error){zeigeFehler('mlogin-fehler',(!navigator.onLine||/RetryableFetch/.test(error.name||'')||/fetch|network/i.test(error.message||''))?'Kein Internet – Einloggen geht nur mit Verbindung (WLAN oder mobile Daten). Bitte Verbindung einschalten und nochmal versuchen.':'E-Mail oder Passwort nicht korrekt.');return;}
   // Rolle serverseitig prüfen (Tabelle app_rollen, Funktion ist_meisterin) –
   // ein gültiges Lehrlings-Login reicht nicht mehr für den Meisterin-Bereich.
   if(!(await istMeisterinServer())){await sb.auth.signOut();zeigeFehler('mlogin-fehler','Dieses Konto hat keinen Meisterinnen-Zugang.');return;}
@@ -1578,7 +1580,7 @@ async function loginMeisterin(){
   await ladeDashboard();zeige('s-dashboard');
 }
 async function istMeisterinServer(){
-  try{var r=await sb.rpc('ist_meisterin');return !r.error&&r.data===true;}catch(e){return false;}
+  return lqIstMeisterin(sb);
 }
 
 async function logout(){
