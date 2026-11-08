@@ -1029,9 +1029,12 @@ function score(){const e=Object.entries(answers),n=e.length;
     punkteSpeichern(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Farbenlehre & Coloration',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
 }
 // ═════════ Teil 5: Rezeptur-Planer „Von Ist zu Soll“ ═════════
-// Faustregeln als Lernmodell (L'Oréal-Nummern): Oxidant 6 % = Ton in Ton bis 1 Stufe,
-// 9 % = 2 Stufen, 12 % = bis 3 Stufen; Farbe hellt keine Farbe auf; ab ca. 50 % Weiß
-// Naturton dazu; Mischverhältnis 1 : 1,5; Einwirkzeit 35 Min.
+// Faustregeln als Lernmodell (L'Oréal-Nummern), Oxidant-Stufen von der Meisterin:
+// 1,8–3 % (10 Vol.) keine Aufhellung (Tönung, Ton in Ton, dunkler) · 6 % (20 Vol.) ca. 1–2 Töne,
+// Standard und 100 % Grauabdeckung · 9 % (30 Vol.) ca. 2–3 Töne · 12 % (40 Vol.) ca. 3–4 Töne
+// (High-Lift bis 4–5). Farbe hellt keine Farbe auf; ab ca. 50 % Weiß Naturton dazu;
+// Mischverhältnis 1 : 1,5; Einwirkzeit 35 Min.
+const RP_OX_INFO='1,8–3 % = keine Aufhellung · 6 % = ca. 1–2 Töne · 9 % = ca. 2–3 Töne · 12 % = ca. 3–4 Töne';
 const RP={ist:5,weiss:1,gef:false,w:{th:7,h:'4',n:'3'},laenge:1};
 const RP_WEISS=['keiner','bis 30 %','30–50 %','über 50 %'];
 const RP_LAENGE=[['kurz',40],['mittel',60],['lang',90]];
@@ -1042,16 +1045,25 @@ function rpPlan(ist,weiss,gef,w){
   // 1 · Aufhellen
   if(d<=0) s.push({t:d===0?'Ton in Ton':'Dunkler um '+(-d)+(d===-1?' Stufe':' Stufen'),p:d===0?'Gleiche Tonhöhe – es wird nur der Farbton (Reflex) verändert.':'Dunkler geht mit Farbe immer, kein Aufhellen nötig.'+(d<=-3?' Bei 3 und mehr Stufen dunkler mit der Meisterin über Vorpigmentieren sprechen, sonst wirkt das Ergebnis fahl.':''),
     w:'Warum? Farbe lagert Pigment ein. Dunkler machen ist leicht, heller machen kostet Kraft.'});
-  else if(d>3){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'Mehr als 3 Stufen schafft die Farbe nicht. Hier braucht es Blondierung oder Spezial-Hellblond – mit der Meisterin planen.',
-    w:'Warum? Mit Farbe lässt sich Naturhaar höchstens etwa 3 Stufen aufhellen.',warn:true});}
+  else if(d>4){blond=true;s.push({t:'Aufhellen um '+d+' Stufen',p:'So viele Stufen schafft eine normale Farbe nicht. Hier braucht es Blondierung oder ein spezielles High-Lift-System – mit der Meisterin planen.',
+    w:'Warum? Mit 12 % hellt Farbe ca. 3–4 Töne auf, nur spezielle High-Lift-Farben schaffen 4–5 Töne.',warn:true});}
+  else if(d===4) s.push({t:'Aufhellen um 4 Stufen',p:'Das ist die Grenze: nur mit 12 % oder einer High-Lift-Farbe (Spezial-Hellblond). Mit der Meisterin absprechen.',
+    w:'Warum? 12 % hellt ca. 3–4 Töne auf – mehr geht mit Farbe nicht sicher.',warn:true});
   else s.push({t:'Aufhellen um '+d+(d===1?' Stufe':' Stufen'),p:'Von '+ist+' auf '+w.th+' geht mit der Farbe selbst – kein Blondieren nötig.',
-    w:'Warum? Naturhaar lässt sich mit Farbe bis zu 3 Stufen aufhellen.'});
+    w:'Warum? Eine oxidative Farbe hellt Naturhaar je nach Oxidant ca. 1–4 Töne auf.'});
   if(gef&&d>0) s.push({t:'Achtung: schon gefärbt',p:'Der Ansatz (Naturhaar) wird heller – die gefärbten Längen nicht. Farbe hellt keine Farbe auf: Für die Längen braucht es einen Farbabzug oder Blondierung.',
     w:'Warum? Das künstliche Pigment in den Längen lässt sich mit Farbe nicht abbauen.',warn:true});
   // 2 · Oxidant
-  if(!blond){ox=d<=1?6:d===2?9:12;
-    s.push({t:'Oxidant '+ox+' %',p:(d<=0?'Ton in Ton oder dunkler → 6 %.':d+(d===1?' Stufe':' Stufen')+' heller → '+ox+' %.')+' (6 % = bis 1 Stufe, 9 % = 2 Stufen, 12 % = bis 3 Stufen)',
-      w:'Warum? Je mehr Stufen, desto stärker muss das Oxidant das eigene Pigment abbauen.'});}
+  if(!blond){
+    let txt,warum='Warum? Je mehr Stufen, desto stärker muss das Oxidant das eigene Pigment abbauen.';
+    if(d<=0&&weiss===0){ox='1,8–3';txt=(d===0?'Ton in Ton':'Dunkler')+' ohne Weißanteil → 1,8–3 % (10 Vol.). Es muss nichts aufgehellt werden.';
+      warum='Warum? Ohne Aufhellung reicht ein schwaches Oxidant – das schont das Haar.';}
+    else if(d<=0){ox=6;txt=(d===0?'Ton in Ton':'Dunkler')+', aber mit Weißanteil → 6 % (20 Vol.) für die volle Grauabdeckung.';
+      warum='Warum? 6 % ist der Standard für permanente Farbe und deckt Weiß zu 100 %.';}
+    else if(d===1){ox=6;txt='1 Stufe heller → 6 % (20 Vol.), der Standard.';}
+    else if(d===2){ox=9;txt='2 Stufen heller → 9 % (30 Vol.). 6 % schafft 1–2 Töne, 9 % sicher 2–3.';}
+    else {ox=12;txt=d+' Stufen heller → 12 % (40 Vol.). 9 % schafft 2–3 Töne, 12 % sicher 3–4.';}
+    s.push({t:'Oxidant '+ox+' %',p:txt+' ('+RP_OX_INFO+')',w:warum});}
   // 3 · Untergrund
   if(d>0){const p=PIG[Math.min(10,w.th)-1], rn=l.haupt?REF[l.haupt].n:'Natur';
     let txt,warum;
@@ -1112,10 +1124,13 @@ function rpFragen(f){
   const andere=PIG.map(x=>x.u).filter(u=>u!==ug);
   return [
     {f:'Schritt 1: Wie viel musst du aufhellen?',o:['Gar nicht (Ton in Ton oder dunkler)','1 Stufe','2 Stufen','3 Stufen'],r:d<=0?0:d,tipp:'Vergleiche die Zahl vor dem Punkt: Ausgangstonhöhe '+ist+', Wunsch '+w.th+'.'},
-    {f:'Schritt 2: Welches Oxidant nimmst du?',o:['3 %','6 %','9 %','12 %'],r:[1,1,2,3][Math.max(0,d)],tipp:'6 % reicht für Ton in Ton oder 1 Stufe. Je mehr Stufen, desto stärker das Oxidant.'},
+    // Oxidant: Bereiche überlappen (6 % 1–2, 9 % 2–3, 12 % 3–4 Töne) – beides an der Grenze gilt als richtig
+    {f:'Schritt 2: Welches Oxidant nimmst du?',o:['1,8–3 %','6 %','9 %','12 %'],
+      r:d<=0?(weiss===0?['1,8–3 %']:['6 %']):d===1?['6 %']:d===2?['9 %','6 %']:['12 %','9 %'],
+      tipp:d<=0?(weiss===0?'Es wird nicht aufgehellt und es gibt kein Weiß – wie stark muss das Oxidant dann sein?':'Nicht aufhellen, aber Weiß abdecken – welches Oxidant ist der Standard für 100 % Grauabdeckung?'):'1,8–3 % hellt nicht auf · 6 % ca. 1–2 Töne · 9 % ca. 2–3 Töne · 12 % ca. 3–4 Töne. Wie viele Stufen sind es?'},
     {f:'Schritt 3: Welcher Untergrund kommt zum Vorschein?',o:mischen([d>0?ug:'Keiner – es wird nicht aufgehellt'].concat(mischen(andere).slice(0,3))),r:d>0?ug:'Keiner – es wird nicht aufgehellt',tipp:d>0?'Schau in Teil 3: Welcher Untergrund gehört zur Wunsch-Tonhöhe '+w.th+'?':'Ein Untergrund zeigt sich nur, wenn aufgehellt wird.'},
     {f:'Schritt 4: Brauchst du Naturton dazu? (Weißanteil: '+RP_WEISS[weiss]+')',o:['Nein','Ja, etwa ¼ Naturton','Ja, etwa die Hälfte Naturton'],r:nat,tipp:natur?'Die Wunschfarbe ist schon ein Naturton – der deckt Weiß am besten.':'Ab ca. 30 % Weiß braucht eine Modefarbe Hilfe – je mehr Weiß, desto mehr Naturton.'}
-  ].map(q=>Object.assign(q,{r:typeof q.r==='number'?q.o[q.r]:q.r}));
+  ].map(q=>Object.assign(q,{r:typeof q.r==='number'?[q.o[q.r]]:Array.isArray(q.r)?q.r:[q.r]}));
 }
 function rpNeu(){rpFaelle=mischen(RP_FAELLE.slice()).slice(0,5);rpF=0;rpQ=0;rpErg=[];rpPunkte=0;rpZeigeFall();}
 function rpZeigeFall(){
@@ -1129,11 +1144,11 @@ function rpZeigeFall(){
   $('#rpMeldung').hidden=true;$('#rpWeiter').hidden=true;
   $('#rpOpt').querySelectorAll('button').forEach(b=>b.onclick=()=>{
     if(b.disabled)return;
-    if(b.textContent===q.r){
+    if(q.r.indexOf(b.textContent)>=0){
       b.classList.add('right');$('#rpOpt').querySelectorAll('button').forEach(x=>x.disabled=true);
       if(!rpFehler)rpPunkte++;
       rpErg.push(rpFehler===0);
-      const m=$('#rpMeldung');m.hidden=false;m.className='meldung gut';m.textContent=rpFehler?'Richtig! Beim nächsten Mal klappt es auf Anhieb.':'Richtig auf Anhieb! ★';
+      const m=$('#rpMeldung');m.hidden=false;m.className='meldung gut';m.textContent=(rpFehler?'Richtig! Beim nächsten Mal klappt es auf Anhieb.':'Richtig auf Anhieb! ★')+(q.r.length>1?' ('+(b.textContent===q.r[0]?'Auch '+q.r[1]:'Noch sicherer: '+q.r[0])+' – an der Grenze geht beides.)':'');
       $('#rpPunkte').textContent=rpPunkte+' ★';
       const letzte=rpQ===3&&rpF===rpFaelle.length-1;
       $('#rpWeiter').hidden=false;$('#rpWeiter').textContent=letzte?'Auswertung →':rpQ===3?'Nächste Kundin →':'Weiter →';
