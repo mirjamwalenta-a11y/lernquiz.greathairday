@@ -1133,6 +1133,33 @@ wechsle aber nicht ohne Zustimmung.
       '<dt>Aufsteigendes (dreieckiges) Gesicht</dt><dd>Breitere Stirn, schmalerer Kiefer. Kaschieren mit seitlichem Pony oder seitlichem Scheitel. Lange Haare, die das Gesicht umrahmen, gleichen optisch aus. Eine warme Haarfarbe lässt das Gesicht weicher wirken.</dd>' +
       '</dl>'; }},
 
+    {t:"Gesichtsform-Analyse: Vorher & Optimiert", s:"Gesichtskompass", k:"Sechs Gesichtsformen mit Fotos: was ungünstig betont und wie du sofort mit Styling optimierst.", html: function(){
+      var B = "https://mirjamwalenta-a11y.github.io/index.greathairday/";
+      var F = [
+        ["rund", "Rund", "Symmetrie, flach am Oberkopf", "Seitenscheitel, Höhe am Oberkopf", ["Einen tiefen Seitenscheitel ziehen.", "Am Oberkopf mit Texturspray Höhe aufbauen.", "Den Pony zur Seite wegstylen."], "Diagonale Linien und Höhe am Oberkopf strecken das Gesicht optisch."],
+        ["eckig", "Eckig", "Harte Kanten", "Wellen, Seitenscheitel, weicher Pony", ["Mit einem schmalen Lockenstab Wellen formen.", "Einen Seitenscheitel ziehen und so die Symmetrie aufbrechen.", "Pony und Partien ums Gesicht weich und locker stylen."], "Weiche Textur und unregelmäßige Längen zeichnen die Kieferlinie weicher."],
+        ["herz", "Herzförmig", "Breite Stirn, spitzes Kinn", "Oben flach, Pony diagonal, Gesicht umrahmt", ["Das Volumen am Oberkopf flach halten.", "Den Pony diagonal zur Seite stylen.", "Strähnen vor den Ohren lassen, damit sie das Gesicht umrahmen."], "Fülle auf Kinnhöhe gleicht die schmale untere Gesichtshälfte aus."],
+        ["oval", "Oval", "Harmonisch, aber unauffällig", "Jedes Styling möglich", ["Jedes Styling ist möglich – die Form trägt fast alles.", "Mit Asymmetrie oder einem Curtain-Pony einen Akzent setzen.", "Textur einarbeiten, damit das Haar Bewegung bekommt."], "Ausgewogene Proportionen brauchen keinen Ausgleich – hier geht es um Ausdruck."],
+        ["lang", "Länglich", "Zieht in die Länge", "Horizontaler Pony, Breite an den Seiten", ["Einen horizontalen Pony schneiden oder stylen.", "Mit Wellen oder Locken Volumen an den Seiten aufbauen.", "Einen Seitenscheitel ziehen."], "Horizontale Linien und Breite an den Seiten verkürzen das Gesicht optisch."],
+        ["diamant", "Diamantförmig", "Markante Wangenknochen", "Weicher Pony, Textur am Kiefer", ["Den Pony weich und fransig stylen.", "Auf Kieferhöhe Textur erzeugen.", "Das Haar locker nach vorne frisieren."], "Fülle an Stirn und Kiefer gleicht die schmalen Partien zu den Wangenknochen aus."]
+      ];
+      var bild = function(id, look, alt){ return '<img src="' + B + 'bilder/gesichtskompass/' + id + '-' + look + '.jpg" alt="' + alt + '" width="440" height="440" loading="lazy" style="width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:10px;display:block">'; };
+      return '' +
+      '<p>Zuerst die Gesichtsform erkennen: Wo ist das Gesicht am breitesten – an der Stirn, an den Wangenknochen oder am Kiefer? Ist es eher so lang wie breit oder deutlich länger? Dann mit Styling ausgleichen, was die Form ungünstig betont.</p>' +
+      '<div class="callout accent" style="margin:12px 0 16px"><p><strong>🧭 Gesichtskompass</strong></p><p>Mit der Kundin gemeinsam durchgehen: Form wählen, Vorher und Optimiert vergleichen, Sofortmaßnahmen besprechen.</p>' +
+      '<p><a href="' + B + 'gesichtskompass.html" style="font-weight:700">Gesichtskompass öffnen →</a></p></div>' +
+      F.map(function(f){
+        return '<div style="border:1px solid var(--line);border-radius:var(--r-s);padding:12px;margin:0 0 12px">' +
+          '<h3 style="margin:0 0 8px">' + f[1] + '</h3>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+            '<figure style="margin:0">' + bild(f[0], 'vorher', 'Vorher: ' + f[2]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Vorher:</strong> ' + f[2] + '</figcaption></figure>' +
+            '<figure style="margin:0">' + bild(f[0], 'opt', 'Optimiert: ' + f[3]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Optimiert:</strong> ' + f[3] + '</figcaption></figure>' +
+          '</div>' +
+          '<p style="margin:0 0 4px"><strong>Sofortmaßnahmen</strong></p><ol style="margin:0 0 6px">' + f[4].map(function(x){ return '<li>' + x + '</li>'; }).join("") + '</ol>' +
+          '<p style="margin:0;color:var(--muted)">Warum es wirkt: ' + f[5] + '</p></div>';
+      }).join("") +
+      '<div class="callout"><p><strong>Merke:</strong> Erst die Form erkennen, dann ausgleichen. Und immer mit der Kundin sprechen – es geht um ihr Bild, nicht um ein Urteil.</p></div>'; }},
+
     {t:"Haarfarbe und Wirkung", s:"Seite 6–7", k:"Wie die Haarfarbe Gesichtsform, Teint und Volumen verändert.", html: function(){ return '' +
       '<p class="lead">Die Haarfarbe kann das Gesicht und das Volumen auf verschiedene Weisen beeinflussen.</p>' +
       '<dl>' +
@@ -1248,10 +1275,13 @@ wechsle aber nicht ohne Zustimmung.
   function renderWissen(){
     if (st.kap < 0){
       return '<div class="screen"><div class="pagehead"><h1>Wissen aus der Beratung</h1>' +
-        '<p class="meta">Die Inhalte aus deinem Unterrichtsmaterial, Seite 1 bis 16.</p></div>' +
+        '<p class="meta">Die Inhalte aus deinem Unterrichtsmaterial, Seite 1 bis 16, und die Gesichtsform-Analyse.</p></div>' +
         '<div class="callout" style="margin-bottom:16px"><p><strong>🧭 Farbkompass: Farbrichtung aus Sicht der Kundin</strong></p>' +
         '<p>Wie soll die Haarfarbe im Gesicht wirken? Drei Fragen, eine Farbrichtung, mit Übungsfällen und dem Satz für die Kundin.</p>' +
         '<p><a href="https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/farbkompass-team.html?modus=lernen" style="font-weight:700">Farbkompass lernen →</a> &nbsp;·&nbsp; <a href="https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/farbkompass-team.html?modus=beraten" style="font-weight:700">Beraten →</a></p></div>' +
+        '<div class="callout" style="margin-bottom:16px"><p><strong>🧭 Gesichtskompass: Gesichtsform & Styling</strong></p>' +
+        '<p>Sechs Gesichtsformen mit Fotos, Vorher und Optimiert, dazu die Sofortmaßnahmen. Für das Gespräch mit der Kundin.</p>' +
+        '<p><a href="https://mirjamwalenta-a11y.github.io/index.greathairday/gesichtskompass.html" style="font-weight:700">Gesichtskompass öffnen →</a></p></div>' +
         '<ol class="kapitel-liste">' + KAPITEL.map(function(k, i){
           return '<li><button type="button" data-act="kap" data-val="' + i + '"><span class="nr">' + (i + 1) + '</span>' +
             '<span><span class="tt">' + k.t + '</span><span class="ks">' + k.k + ' · ' + k.s + '</span></span>' + ICON_WEITER + '</button></li>';
