@@ -6,7 +6,7 @@
 // Neue Seiten/Dateien dieser App hier bei `vorab` ergänzen.
 self.GHD_OFFLINE = {
   app: 'lernquiz',
-  version: '2026-11-12f',
+  version: '2026-11-12g',
   start: './lerntool.html',
   vorab: [
     './',
@@ -28,6 +28,19 @@ self.GHD_OFFLINE = {
     './lern-leiste.js',
     './lern-themen.js',
     './lern-stil.css',
+    './fonts/poppins.css',
+    './fonts/poppins/poppins-latin-400-italic.woff2',
+    './fonts/poppins/poppins-latin-400-normal.woff2',
+    './fonts/poppins/poppins-latin-500-normal.woff2',
+    './fonts/poppins/poppins-latin-600-normal.woff2',
+    './fonts/poppins/poppins-latin-700-normal.woff2',
+    './fonts/poppins/poppins-latin-800-normal.woff2',
+    './fonts/poppins/poppins-latin-ext-400-italic.woff2',
+    './fonts/poppins/poppins-latin-ext-400-normal.woff2',
+    './fonts/poppins/poppins-latin-ext-500-normal.woff2',
+    './fonts/poppins/poppins-latin-ext-600-normal.woff2',
+    './fonts/poppins/poppins-latin-ext-700-normal.woff2',
+    './fonts/poppins/poppins-latin-ext-800-normal.woff2',
     './meisterin-rolle.js',
     './rechtliches-fuss.js',
     './manifest-lernquiz.json',
