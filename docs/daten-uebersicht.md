@@ -94,7 +94,6 @@ Browserdaten mitgelöscht.
 | **Supabase** | Datenbank, Anmeldung, Server-Funktionen | Alle Daten aus Abschnitt 2 | Region im Dashboard prüfen (Settings → General) |
 | **GitHub Pages** | Bereitstellung der Seiten (`mirjamwalenta-a11y.github.io`) | IP-Adresse beim Laden | USA |
 | **Anthropic (Claude)** | KI-Trainer „Wörni“ im Bereich *Beratung & Formwirkung* (über die Server-Funktion `rapid-function`) | Was im Trainer eingetippt wird | USA |
-| **Google Fonts** | Schrift „Poppins“ | IP-Adresse beim Laden | USA |
 | **jsDelivr** | Programm-Bibliothek von Supabase | IP-Adresse beim Laden | weltweites CDN |
 
 Zusätzlich lädt jede Seite Hilfsskripte aus dem eigenen Repo
@@ -123,8 +122,8 @@ warum der Verkauf einen technischen Umbau braucht.
    nur ausblenden reicht nicht, CLAUDE.md Regel 3). Die Funktion
    `claudeAnfrage` steht außerdem ungenutzt in `lernquiz.html`,
    `lerntool.html` und `schnuppertag.html` und kann dort entfernt werden.
-5. **Google Fonts selbst hosten.** Dann wird beim Laden keine IP-Adresse an
-   Google übertragen. Das ist wenig Aufwand.
+5. **Google Fonts selbst hosten: erledigt (2026-11-12).** Die Schrift Poppins
+   liegt in `fonts/` und wird nicht mehr von Google geladen.
 6. **Nutzungsrechte an Inhalten: erledigt (2026-11-12).** Die Zwischenprüfung
    war eng an Unterlagen der Landesinnung Wien und an einen Fragenkatalog
    unklarer Herkunft angelehnt. Alle Texte sind jetzt in eigenen Worten
