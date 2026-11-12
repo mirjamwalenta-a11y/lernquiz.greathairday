@@ -360,42 +360,71 @@ body.mit-leiste .leiste{display:flex}
   </div>
 
   <div class="st-gruppe">
-    <div class="label">Üben</div>
+    <div class="label">Bereiche</div>
     <div class="st-grid">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261112a'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
-      <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
-      <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
+      <button class="st-kachel" onclick="zeige('b-ueben')"><div class="st-ic">❓</div><div class="st-t">Üben</div><div class="st-d">Quiz, Themen-Quiz, Wiederholen</div></button>
+      <button class="st-kachel" onclick="zeige('b-farbe')"><div class="st-ic">🎨</div><div class="st-t">Farbe</div><div class="st-d">Farblabor, Farb-Fälle</div></button>
+      <button class="st-kachel" onclick="zeige('b-schnitt')"><div class="st-ic">✂</div><div class="st-t">Schnitt &amp; Form</div><div class="st-d">Schnittwerkstatt, Schnitt-Designer, Werkzeug</div></button>
+      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Waschen, Farbe, Strähnen, Hochstecken</div></button>
+      <button class="st-kachel" onclick="zeige('b-pruefung')"><div class="st-ic">🎓</div><div class="st-t">Prüfung</div><div class="st-d">Zwischenprüfung, LAP-Vorbereitung</div></button>
+      <button class="st-kachel" onclick="zeige('b-lernplan')"><div class="st-ic">📅</div><div class="st-t">Lernplan &amp; Tipps</div><div class="st-d">Lernplan, Lerntipps, Englisch</div></button>
     </div>
   </div>
+</div>
 
-  <div class="st-gruppe">
-    <div class="label">Praxis</div>
-    <div class="st-grid">
-      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis-Module</div><div class="st-d">Waschen, Farbe, Strähnen, Hochstecken</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i'"><div class="st-ic">🧰</div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108u'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
-      <button class="st-kachel" onclick="fflOeffnen()"><div class="st-ic">🎨</div><div class="st-t">Farb-Fälle</div><div class="st-d">Rezeptur für echte Fälle planen</div></button>
-    </div>
+<!-- ── BEREICHE: die bisherigen Kacheln, nach Thema einsortiert ── -->
+<div id="p-b-ueben" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Lernen</div>
+  <h1>❓ Üben</h1>
+  <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
+  <div class="st-grid">
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261112a'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
+    <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
-
-  <div class="st-gruppe">
-    <div class="label">Prüfung</div>
-    <div class="st-grid">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107j'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
-      <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
-    </div>
+</div>
+<div id="p-b-farbe" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Lernen</div>
+  <h1>🎨 Farbe</h1>
+  <div class="st-sub" style="margin-bottom:16px">Farben mischen, neutralisieren und echte Fälle planen.</div>
+  <div class="st-grid">
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108u'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
+    <button class="st-kachel" onclick="fflOeffnen()"><div class="st-ic">🎨</div><div class="st-t">Farb-Fälle</div><div class="st-d">Rezeptur für echte Fälle planen</div></button>
   </div>
-
-  <details class="st-gruppe st-mehr" id="st-mehr" ontoggle="stMehrMerken(this.open)">
-    <summary><span class="label" style="margin:0">Mehr</span><span class="st-mehr-zeile">🇬🇧 Englisch · 💡 Lerntipps · 📅 Lernplan</span><span class="st-pfeil">▾</span></summary>
-    <div class="st-grid" style="margin-top:8px">
-      <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261107w'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
-      <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
-      <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
-    </div>
-  </details>
+</div>
+<div id="p-b-schnitt" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Lernen</div>
+  <h1>✂ Schnitt &amp; Form</h1>
+  <div class="st-sub" style="margin-bottom:16px">Schneiden, Formwirkung und Werkzeug.</div>
+  <div class="st-grid">
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
+    <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i'"><div class="st-ic">🧰</div><div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></div></button>
+  </div>
+</div>
+<div id="p-b-pruefung" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Lernen</div>
+  <h1>🎓 Prüfung</h1>
+  <div class="st-sub" style="margin-bottom:16px">Zwischenprüfung und LAP vorbereiten.</div>
+  <div class="st-grid">
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107j'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
+    <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
+  </div>
+</div>
+<div id="p-b-lernplan" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Lernen</div>
+  <h1>📅 Lernplan &amp; Tipps</h1>
+  <div class="st-sub" style="margin-bottom:16px">Plan für die Woche, Tipps und Englisch im Salon.</div>
+  <div class="st-grid">
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261107w'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
+    <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
+    <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
+  </div>
 </div>
 
 <!-- ── PRAXIS-TAGEBUCH: EINTRAG ── -->
@@ -5056,7 +5085,7 @@ zeige = function(seite) {
   try {
     var lj = localStorage.getItem(ST_LJ_KEY);
     if (['1','2','3'].indexOf(lj) >= 0) { LEHRJAHR = lj; ST.ljGewaehlt = true; }
-    if (localStorage.getItem(ST_MEHR_KEY) === '1') document.getElementById('st-mehr').open = true;
+    var stMehr = document.getElementById('st-mehr'); if (stMehr && localStorage.getItem(ST_MEHR_KEY) === '1') stMehr.open = true;
   } catch (e) {}
   stLeiste('home');
   stZeichnen();
