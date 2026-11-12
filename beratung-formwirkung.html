@@ -360,10 +360,12 @@ dl.steck dd{margin:0}
 #trainer .send:disabled{opacity:.45;cursor:not-allowed}
 #trainer .send svg{width:22px;height:22px}
 #trainer .stop{background:var(--bad)}
-/* KI-Hinweis auf Fotos (AI Act, Transparenz): Alle Fotos in diesem Bereich sind mit KI (Gemini) erzeugt */
-.ki-bild{position:relative}
-.ki-bild::after{content:"KI-generiert";position:absolute;top:6px;right:6px;font:600 10px/1 system-ui,sans-serif;letter-spacing:.02em;padding:3px 6px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff;pointer-events:none}
-.hd-bild.ki-bild::after{top:14px;right:14px}
+/* KI-Hinweis auf Fotos (AI Act, Transparenz): Alle Fotos in diesem Bereich sind mit KI (Gemini) erzeugt.
+   Klein und unaufdringlich rechts unter dem Bild, nicht im Bild. */
+.ki-zeile{display:block;text-align:right;font:300 9px/1.3 system-ui,-apple-system,sans-serif;letter-spacing:.03em;color:#9A9188;margin-top:2px}
+.vg-bild .ki-zeile{margin-top:-4px}
+#trainer .lightbox .ki-zeile{color:rgba(255,255,255,.65)}
+#trainer .sketch .ki-zeile{padding:0 6px}
 </style>
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 
@@ -428,7 +430,7 @@ dl.steck dd{margin:0}
   </div>
 </div>
 
-<div class="lightbox" id="fw-lightbox" hidden><figure class="ki-bild"><img alt=""><figcaption></figcaption></figure></div>
+<div class="lightbox" id="fw-lightbox" hidden><figure><img alt=""><span class="ki-zeile">KI-generiert</span><figcaption></figcaption></figure></div>
 <script type="text/plain" id="fw-rules"># Formwirkung-Trainer (V3)
 
 ## Rolle und Auftrag
@@ -655,12 +657,9 @@ wechsle aber nicht ohne Zustimmung.
 </div>
 
 <script>
-// „KI-generiert“-Etikett oben rechts in einem SVG-Foto (x/y/w: sichtbarer Bildbereich)
-function kiSvg(x, y, w, f){
-  var fs = Math.max(9, Math.round(w * (f || 0.034))), bw = Math.round(fs * 6.9), bh = Math.round(fs * 1.7), m = Math.round(fs * 0.6);
-  var bx = x + w - bw - m, by = y + m;
-  return '<g pointer-events="none"><rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="' + Math.round(fs * 0.5) + '" fill="rgba(0,0,0,.55)"/>' +
-    '<text x="' + (bx + bw / 2) + '" y="' + (by + bh * 0.7).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="600" font-family="system-ui,sans-serif" fill="#fff">KI-generiert</text></g>';
+// „KI-generiert“ klein und rechtsbündig unter einem SVG-Foto (xr = rechter Rand, y = Grundlinie)
+function kiSvg(xr, y, fs){
+  return '<text x="' + xr + '" y="' + y + '" text-anchor="end" font-size="' + fs + '" font-weight="300" letter-spacing=".3" font-family="system-ui,sans-serif" fill="#9A9188" pointer-events="none">KI-generiert</text>';
 }
 (function(){
   // ---------- Lehrgrafik (SVG) ----------
@@ -774,11 +773,11 @@ function kiSvg(x, y, w, f){
   function vlBild(fall, stufe, label){
     var b = VL_BILDER[fall] && VL_BILDER[fall][lkArt()] && VL_BILDER[fall][lkArt()][stufe];
     if (!b) return null;
-    var W = b.w, H = b.h, fs = 26;
-    return '<svg viewBox="0 0 ' + W + ' ' + (H + fs * 2.2).toFixed(0) + '" role="img" aria-label="' + (label || VL_FIX[fall]) + '">' +
-      '<rect width="' + W + '" height="' + (H + fs * 2.2).toFixed(0) + '" rx="18" fill="#efefed"/>' +
-      '<image href="' + b.src + '" width="' + W + '" height="' + H + '"/>' + kiSvg(0, 0, W, 0.06) +
-      '<text x="' + (W / 2) + '" y="' + (H + fs * 1.45).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="700" fill="#896C32">' + VL_FIX[fall] + '</text></svg>';
+    var W = b.w, H = b.h, fs = 26, ki = 22;
+    return '<svg viewBox="0 0 ' + W + ' ' + (H + ki + fs * 2.2).toFixed(0) + '" role="img" aria-label="' + (label || VL_FIX[fall]) + '">' +
+      '<rect width="' + W + '" height="' + (H + ki + fs * 2.2).toFixed(0) + '" rx="18" fill="#efefed"/>' +
+      '<image href="' + b.src + '" width="' + W + '" height="' + H + '"/>' + kiSvg(W - 10, H + 18, 17) +
+      '<text x="' + (W / 2) + '" y="' + (H + ki + fs * 1.45).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="700" fill="#896C32">' + VL_FIX[fall] + '</text></svg>';
   }
 
   function fig(o){
@@ -1154,7 +1153,7 @@ function kiSvg(x, y, w, f){
         ["lang", "Länglich", "Zieht in die Länge", "Horizontaler Pony, Breite an den Seiten", ["Einen horizontalen Pony schneiden oder stylen.", "Mit Wellen oder Locken Volumen an den Seiten aufbauen.", "Einen Seitenscheitel ziehen."], "Horizontale Linien und Breite an den Seiten verkürzen das Gesicht optisch."],
         ["diamant", "Diamantförmig", "Markante Wangenknochen", "Weicher Pony, Textur am Kiefer", ["Den Pony weich und fransig stylen.", "Auf Kieferhöhe Textur erzeugen.", "Das Haar locker nach vorne frisieren."], "Fülle an Stirn und Kiefer gleicht die schmalen Partien zu den Wangenknochen aus."]
       ];
-      var bild = function(id, look, alt){ return '<img src="' + B + 'bilder/gesichtskompass/' + id + '-' + look + '.jpg" alt="' + alt + '" width="440" height="440" loading="lazy" style="width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:10px;display:block">'; };
+      var bild = function(id, look, alt){ return '<img src="' + B + 'bilder/gesichtskompass/' + id + '-' + look + '.jpg" alt="' + alt + '" width="440" height="440" loading="lazy" style="width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:10px;display:block"><span class="ki-zeile">KI-generiert</span>'; };
       return '' +
       '<p>Zuerst die Gesichtsform erkennen: Wo ist das Gesicht am breitesten – an der Stirn, an den Wangenknochen oder am Kiefer? Ist es eher so lang wie breit oder deutlich länger? Dann mit Styling ausgleichen, was die Form ungünstig betont.</p>' +
       '<div class="callout accent" style="margin:12px 0 16px"><p><strong>🧭 Gesichtskompass</strong></p><p>Mit der Kundin gemeinsam durchgehen: Form wählen, Vorher und Optimiert vergleichen, Sofortmaßnahmen besprechen.</p>' +
@@ -1163,8 +1162,8 @@ function kiSvg(x, y, w, f){
         return '<div style="border:1px solid var(--line);border-radius:var(--r-s);padding:12px;margin:0 0 12px">' +
           '<h3 style="margin:0 0 8px">' + f[1] + '</h3>' +
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
-            '<figure class="ki-bild" style="margin:0">' + bild(f[0], 'vorher', 'Vorher: ' + f[2]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Vorher:</strong> ' + f[2] + '</figcaption></figure>' +
-            '<figure class="ki-bild" style="margin:0">' + bild(f[0], 'opt', 'Optimiert: ' + f[3]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Optimiert:</strong> ' + f[3] + '</figcaption></figure>' +
+            '<figure style="margin:0">' + bild(f[0], 'vorher', 'Vorher: ' + f[2]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Vorher:</strong> ' + f[2] + '</figcaption></figure>' +
+            '<figure style="margin:0">' + bild(f[0], 'opt', 'Optimiert: ' + f[3]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Optimiert:</strong> ' + f[3] + '</figcaption></figure>' +
           '</div>' +
           '<p style="margin:0 0 4px"><strong>Sofortmaßnahmen</strong></p><ol style="margin:0 0 6px">' + f[4].map(function(x){ return '<li>' + x + '</li>'; }).join("") + '</ol>' +
           '<p style="margin:0;color:var(--muted)">Warum es wirkt: ' + f[5] + '</p></div>';
@@ -1694,9 +1693,9 @@ function kiSvg(x, y, w, f){
   function hdFig(o){
     o = o || {};
     var art = lkArt(), V = HD_VAR[art], key = o.hd || "A", Z = HD_ZUSTAND[key], W = V.w, H = V.h, P = HD_PFEILE[art];
-    var s = '<svg viewBox="-40 -24 ' + (W + 80) + ' ' + (H + 48) + '" role="img" aria-label="' + (o.label || "Hell und Dunkel") + '">';
-    s += '<rect x="-40" y="-24" width="' + (W + 80) + '" height="' + (H + 48) + '" rx="10" fill="#fff"/>';
-    s += '<image href="' + V[key] + '" x="0" y="0" width="' + W + '" height="' + H + '"/>' + kiSvg(-40, -24, W + 80, 0.06);
+    var s = '<svg viewBox="-40 -24 ' + (W + 80) + ' ' + (H + 70) + '" role="img" aria-label="' + (o.label || "Hell und Dunkel") + '">';
+    s += '<rect x="-40" y="-24" width="' + (W + 80) + '" height="' + (H + 70) + '" rx="10" fill="#fff"/>';
+    s += '<image href="' + V[key] + '" x="0" y="0" width="' + W + '" height="' + H + '"/>' + kiSvg(W, H + 38, 15);
     // Schnitt (fix): in jedem Bild derselbe
     s += '<text x="' + (W / 2) + '" y="' + (H + 17) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#896C32">Schnitt unverändert</text>';
     if (o.hilfe){
@@ -1866,7 +1865,7 @@ function kiSvg(x, y, w, f){
     }},
     {step:4, render:function(){
       var key = HD_FORMEN[st.hdForm] ? st.hdForm : "rund", art = lkArt(), Z = Object.assign({}, HD_FORMEN[key], art === "mann" ? HD_FORMEN_MANN[key] : {}), bild = HD_BILDER[art][key];
-      return card('<figure class="hd-bild ki-bild"><img src="' + bild.src + '" width="' + bild.w + '" height="' + bild.h + '" alt="' + Z.t + ': ' + Z.farbe + '"></figure>' +
+      return card('<figure class="hd-bild"><img src="' + bild.src + '" width="' + bild.w + '" height="' + bild.h + '" alt="' + Z.t + ': ' + Z.farbe + '"><span class="ki-zeile">KI-generiert</span></figure>' +
         controls(seg("hdForm", Object.keys(HD_FORMEN).map(function(k){ return [k, {rund:"Rund", oval:"Oval", aufsteigend:"Herz", abfallend:"Trapez", viereck:"Eckig", rechteck:"Länglich"}[k]]; }), st.hdForm)),
         '<h2>Farbe und Schnitt kombinieren</h2>' +
         '<p>Am stärksten wirkt es, wenn Haarfarbe (Hell und Dunkel) und Schnitt zusammenspielen. Wähle eine Gesichtsform.</p>' +
@@ -2351,7 +2350,8 @@ function kiSvg(x, y, w, f){
   function sbZiel(o){
     o = o || {};
     var Z = sbF().ziel, B = Z.src ? {src:Z.src} : VL_BILDER[Z.bild[0]][Z.bild[1]][Z.bild[2]], zonen = Z.zonen;
-    var s = '<svg viewBox="' + (Z.vb || "0 0 480 600") + '" role="img" aria-label="' + (o.label || "Zielbild") + '" style="background:#fff;border-radius:12px">' +
+    var vb = (Z.vb || "0 0 480 600").split(/\s+/).map(Number);
+    var s = '<svg viewBox="' + vb[0] + ' ' + vb[1] + ' ' + vb[2] + ' ' + (vb[3] + 22) + '" role="img" aria-label="' + (o.label || "Zielbild") + '" style="background:#fff;border-radius:12px">' +
       '<image href="' + B.src + '" x="0" y="0" width="480" height="600" ' + (Z.flip === false ? '' : ' transform="translate(480,0) scale(-1,1)"') + '/>';
     if (Z.abdecken) s += '<rect x="' + Z.abdecken[0] + '" y="' + Z.abdecken[1] + '" width="' + Z.abdecken[2] + '" height="' + Z.abdecken[3] + '" fill="#f2f2f2"/>'; // Schriftrest im Originalfoto
     if (o.zonen){
@@ -2364,8 +2364,7 @@ function kiSvg(x, y, w, f){
         s += '<text x="472" y="' + (y[0] + 26) + '" font-size="20" font-weight="700" fill="#6E5527" stroke="#fff" stroke-width="5" paint-order="stroke" text-anchor="end" pointer-events="none">' + namen[z] + '</text>';
       });
     }
-    var vb = (Z.vb || "0 0 480 600").split(/\s+/).map(Number);
-    return s + kiSvg(vb[0], vb[1], vb[2]) + '</svg>';
+    return s + kiSvg(vb[0] + vb[2] - 8, vb[1] + vb[3] + 16, 13) + '</svg>';
   }
   function sbFig(o){
     o = o || {};
@@ -2939,7 +2938,7 @@ function kiSvg(x, y, w, f){
     var B = MOK_BILDER[o.bild], K = MOK_KOEPFE[B.kopf], R = mokRegionen(o.bild), xl = K.x[0], xr = K.x[1], xm = (xl + xr) / 2;
     function band(y, fill, extra){ return '<rect x="' + xl + '" y="' + y[0] + '" width="' + (xr - xl) + '" height="' + (y[1] - y[0]) + '" fill="' + fill + '"' + (extra || '') + '/>'; }
     function linie(y, farbe, breite, extra){ return '<line x1="' + xl + '" x2="' + xr + '" y1="' + y + '" y2="' + y + '" stroke="' + farbe + '" stroke-width="' + breite + '"' + (extra || '') + '/>'; }
-    var s = '<svg viewBox="20 0 420 470" role="img" aria-label="Foto Hinterkopf mit Verlauf">' +
+    var s = '<svg viewBox="20 0 420 488" role="img" aria-label="Foto Hinterkopf mit Verlauf">' +
       '<image href="' + K.foto + '?v=' + MOK_BILD_VERSION + '" x="0" y="0" width="480" height="470" preserveAspectRatio="none"/>';
     // Teilzone (z. B. ein Drittel von Band 1): kräftig gefüllt und umrandet, damit sie im schmalen Band auffällt
     if (o.aktiv && (o.markiert || []).indexOf(o.aktiv) < 0) s += band(R[o.aktiv], "var(--accent)", ' fill-opacity=".6" stroke="#fff" stroke-width="2"');
@@ -2962,7 +2961,7 @@ function kiSvg(x, y, w, f){
       s += '<circle cx="40" cy="' + ym + '" r="10" fill="var(--surface)" stroke="var(--g-kontur)"/>' +
         '<text x="40" y="' + (ym + 4) + '" font-size="12" font-weight="700" text-anchor="middle" fill="var(--ink)">' + (i + 1) + '</text>';
     });
-    return s + kiSvg(20, 0, 420) + '</svg>';
+    return s + kiSvg(436, 484, 12) + '</svg>';
   }
   // Zonen von unten nach oben sortiert (Nummer 1 = unterste Fläche)
   function mokReihenfolge(ids, R){
@@ -4602,9 +4601,9 @@ function kiSvg(x, y, w, f){
     var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key;
     // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt.
     // Er zeigt nur den gesuchten Dateinamen, keine Bildbeschreibung, damit Schritt 1 nicht verraten wird.
-    return '<figure class="vg-bild ki-bild' + (gross ? ' gross' : '') + '">' +
+    return '<figure class="vg-bild' + (gross ? ' gross' : '') + '">' +
       (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '') +
-      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span></div>' +
+      '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span></div>' + (src ? '<span class="ki-zeile">KI-generiert</span>' : '') +
       '<figcaption>' + label + '</figcaption></figure>';
   }
   // A und B in zufälliger Reihenfolge, nur mit „A“ und „B“ beschriftet
@@ -5090,7 +5089,7 @@ function kiSvg(x, y, w, f){
     const a = parseAttrs(attrs), b = BILDER[(a.id || "").toLowerCase()];
     if (!b) return "";
     const cap = a.titel || "";
-    return `<figure class="sketch ki-bild"><img src="${b.src}" alt="${esc(cap || b.t)}" data-cap="${esc(cap || b.t)}">${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
+    return `<figure class="sketch"><img src="${b.src}" alt="${esc(cap || b.t)}" data-cap="${esc(cap || b.t)}"><span class="ki-zeile">KI-generiert</span>${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
   }
 
 
