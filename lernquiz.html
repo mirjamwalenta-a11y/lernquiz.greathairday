@@ -436,50 +436,100 @@ textarea{resize:vertical;margin-bottom:0}
     </div>
 
     <div class="mb-gruppe">
-      <div class="lab">Begleiten</div>
+      <div class="lab">Bereiche</div>
       <div class="mb-grid">
-        <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
-        <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
-        <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
-        <button class="mb-k mb-breit" id="btn-mb-ff"><div class="mb-ic">🎨</div><div><b>Farb-Fälle</b><small id="mb-ff-sub">Echte Fälle schicken – der Lehrling plant die Rezeptur</small></div></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w#en-verlauf"><div class="mb-ic">📊</div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></a>
+        <button class="mb-k" data-mb-bereich="s-b-farbe"><div class="mb-ic">🎨</div><b>Farbe</b><small>Farblabor, Farbkompass, Farb-Fälle, Farb-Zeiten, Spickzettel</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-schnitt"><div class="mb-ic">✂</div><b>Schnitt &amp; Form</b><small>Schnittwerkstatt, Schnitt-Designer, Gesichtskompass, Werkzeug</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-praxis"><div class="mb-ic">💆</div><b>Praxis</b><small>Praxis-Module, Praxis-Check, Praxis-Tagebuch</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-pruefung"><div class="mb-ic">🎓</div><b>Prüfung</b><small>Zwischenprüfung, Prüfgespräch, LAP-Fragen, Betriebs-Quiz</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-inhalte"><div class="mb-ic">❓</div><b>Fragen &amp; Lernpläne</b><small>Quiz-Fragen, Lernpläne, Lerntipps, Englisch</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-selbst"><div class="mb-ic">🏠</div><b>Selbst ansehen</b><small>Wie Lehrlinge es sehen, Mein Lernbereich</small></button>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="mb-gruppe">
-      <div class="lab">Inhalte pflegen</div>
-      <div class="mb-grid">
-        <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-lap"><div class="mb-ic">🎓</div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-tipps"><div class="mb-ic">💡</div><div><b>Lerntipps</b><small>Tipps pro Thema</small></div></a>
-        <button class="mb-k mb-breit" id="btn-mb-fz"><div class="mb-ic">⏱</div><div><b>Farb-Zeiten</b><small>Einwirkzeiten laut Gebrauchsanweisung – gelten im Farblabor und auf dem Spickzettel</small></div></button>
-      </div>
+<!-- Meisterin-Bereiche: die bisherigen Kacheln, nach Thema einsortiert -->
+<div id="s-b-farbe" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🎨 Farbe</h2>
+    <p class="mb-sub">Alles rund um Farbe – üben, beraten, echte Fälle.</p>
+    <div class="mb-grid">
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108u&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/farbkompass-team.html?modus=lernen"><div class="mb-ic">🧭</div><b>Farbkompass</b><small>Farbrichtung beraten, mit Übungsfällen</small></a>
+      <button class="mb-k mb-breit" id="btn-mb-ff"><div class="mb-ic">🎨</div><div><b>Farb-Fälle</b><small id="mb-ff-sub">Echte Fälle schicken – der Lehrling plant die Rezeptur</small></div></button>
+      <button class="mb-k mb-breit" id="btn-mb-fz"><div class="mb-ic">⏱</div><div><b>Farb-Zeiten</b><small>Einwirkzeiten laut Gebrauchsanweisung – gelten im Farblabor und auf dem Spickzettel</small></div></button>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/spickzettel.html?v=20261108k&amp;von=meisterin"><div class="mb-ic">🖨</div><div><b>Farb-Spickzettel</b><small>Alle Farb-Regeln auf einer A4-Seite zum Aufhängen</small></div></a>
     </div>
-
-    <div class="mb-gruppe">
-      <div class="lab">Lern-Module</div>
-      <div class="mb-grid">
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundformen, Winkel, Pony, Formwirkung</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Schnittzeichnungen erstellen</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261108u&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/farbkompass-team.html?modus=lernen"><div class="mb-ic">🧭</div><b>Farbkompass</b><small>Farbrichtung beraten, mit Übungsfällen</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/index.greathairday/gesichtskompass.html"><div class="mb-ic">◐</div><b>Gesichtskompass</b><small>Gesichtsform, Vorher &amp; Optimiert</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107j"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Hochstecken</small></div></a>
-      </div>
+  </div>
+</div>
+<div id="s-b-schnitt" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">✂ Schnitt &amp; Form</h2>
+    <p class="mb-sub">Schneiden, Formwirkung und Werkzeug.</p>
+    <div class="mb-grid">
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i"><div class="mb-ic">✂</div><b>Schnittwerkstatt</b><small>Grundformen, Winkel, Pony, Formwirkung</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i"><div class="mb-ic">✎</div><b>Schnitt-Designer</b><small>Schnittzeichnungen erstellen</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/index.greathairday/gesichtskompass.html"><div class="mb-ic">◐</div><b>Gesichtskompass</b><small>Gesichtsform, Vorher &amp; Optimiert</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i"><div class="mb-ic">🧰</div><b>Werkzeugkunde</b><small>Scheren, Geräte, Hygiene</small></a>
     </div>
-
-    <div class="mb-gruppe">
-      <div class="lab">Selbst ansehen</div>
-      <div class="mb-grid">
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
-        <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
-        <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/spickzettel.html?v=20261108k&amp;von=meisterin"><div class="mb-ic">🖨</div><div><b>Farb-Spickzettel</b><small>Alle Farb-Regeln auf einer A4-Seite zum Aufhängen</small></div></a>
-        <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
-      </div>
+  </div>
+</div>
+<div id="s-b-praxis" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">💆 Praxis</h2>
+    <p class="mb-sub">Am Kunden üben, abhaken und nachweisen.</p>
+    <div class="mb-grid">
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Hochstecken</small></div></a>
+      <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
+      <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
+    </div>
+  </div>
+</div>
+<div id="s-b-pruefung" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🎓 Prüfung</h2>
+    <p class="mb-sub">Zwischenprüfung und LAP vorbereiten.</p>
+    <div class="mb-grid">
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261107j"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
+      <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
+      <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
+    </div>
+  </div>
+</div>
+<div id="s-b-inhalte" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">❓ Fragen &amp; Lernpläne</h2>
+    <p class="mb-sub">Inhalte pflegen und Lernfortschritt ansehen.</p>
+    <div class="mb-grid">
+      <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
+    </div>
+  </div>
+</div>
+<div id="s-b-selbst" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🏠 Selbst ansehen</h2>
+    <p class="mb-sub">Die App so sehen, wie deine Lehrlinge sie sehen.</p>
+    <div class="mb-grid">
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261107w"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
     </div>
   </div>
 </div>
@@ -1514,9 +1564,11 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle'||id==='s-farb-zeiten');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle'||id==='s-farb-zeiten');
 }
+var MB_BEREICH='';   // offener Meisterin-Bereich, damit „Zurück“ dorthin führt
 function zeige(id){
+  if(id==='s-dashboard') MB_BEREICH='';
   document.querySelectorAll('.seite').forEach(function(s){s.classList.remove('aktiv');});
   document.getElementById(id).classList.add('aktiv');
   kopfSetzen(id);
@@ -3773,14 +3825,17 @@ window.addEventListener('DOMContentLoaded',function(){
     else zeige('s-start');
   });
   document.getElementById('btn-lehrling-neu').addEventListener('click',function(){zeige('s-neu-lehrling');});
+  // Meisterin-Bereiche (Farbe, Schnitt & Form, Praxis, …): Kachel öffnet die Unterseite
+  document.querySelectorAll('[data-mb-bereich]').forEach(function(b){b.addEventListener('click',function(){MB_BEREICH=b.getAttribute('data-mb-bereich');zeige(MB_BEREICH);});});
+  document.querySelectorAll('[data-mb-zurueck]').forEach(function(b){b.addEventListener('click',function(){MB_BEREICH='';ladeDashboard();zeige('s-dashboard');});});
   document.getElementById('btn-mb-pt').addEventListener('click',function(){zeigePtAlle(null);});
   document.getElementById('btn-mb-pg').addEventListener('click',function(){mbMitWem('btn-pruef-start');});
   document.getElementById('btn-mb-px').addEventListener('click',function(){mbMitWem('btn-praxis-start');});
-  document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
+  document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-mb-ff').addEventListener('click',zeigeFarbFaelle);
   document.getElementById('btn-mb-fz').addEventListener('click',zeigeFarbZeiten);
-  document.getElementById('btn-fz-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
-  document.getElementById('btn-ff-back').addEventListener('click',function(){ladeDashboard();zeige('s-dashboard');});
+  document.getElementById('btn-fz-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
+  document.getElementById('btn-ff-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
   document.getElementById('pte-ok').addEventListener('click',function(){ptBearbeitenSpeichern(false);});
   document.getElementById('btn-paz-back').addEventListener('click',function(){
