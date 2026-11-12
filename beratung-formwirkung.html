@@ -360,6 +360,10 @@ dl.steck dd{margin:0}
 #trainer .send:disabled{opacity:.45;cursor:not-allowed}
 #trainer .send svg{width:22px;height:22px}
 #trainer .stop{background:var(--bad)}
+/* KI-Hinweis auf Fotos (AI Act, Transparenz): Alle Fotos in diesem Bereich sind mit KI (Gemini) erzeugt */
+.ki-bild{position:relative}
+.ki-bild::after{content:"KI-generiert";position:absolute;top:6px;right:6px;font:600 10px/1 system-ui,sans-serif;letter-spacing:.02em;padding:3px 6px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff;pointer-events:none}
+.hd-bild.ki-bild::after{top:14px;right:14px}
 </style>
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 
@@ -424,7 +428,7 @@ dl.steck dd{margin:0}
   </div>
 </div>
 
-<div class="lightbox" id="fw-lightbox" hidden><figure><img alt=""><figcaption></figcaption></figure></div>
+<div class="lightbox" id="fw-lightbox" hidden><figure class="ki-bild"><img alt=""><figcaption></figcaption></figure></div>
 <script type="text/plain" id="fw-rules"># Formwirkung-Trainer (V3)
 
 ## Rolle und Auftrag
@@ -651,6 +655,13 @@ wechsle aber nicht ohne Zustimmung.
 </div>
 
 <script>
+// „KI-generiert“-Etikett oben rechts in einem SVG-Foto (x/y/w: sichtbarer Bildbereich)
+function kiSvg(x, y, w, f){
+  var fs = Math.max(9, Math.round(w * (f || 0.034))), bw = Math.round(fs * 6.9), bh = Math.round(fs * 1.7), m = Math.round(fs * 0.6);
+  var bx = x + w - bw - m, by = y + m;
+  return '<g pointer-events="none"><rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="' + Math.round(fs * 0.5) + '" fill="rgba(0,0,0,.55)"/>' +
+    '<text x="' + (bx + bw / 2) + '" y="' + (by + bh * 0.7).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="600" font-family="system-ui,sans-serif" fill="#fff">KI-generiert</text></g>';
+}
 (function(){
   // ---------- Lehrgrafik (SVG) ----------
   // Stil wie Fach-Skizze: Kopf als Linienzeichnung, Kopfhaut fein gestrichelt,
@@ -766,7 +777,7 @@ wechsle aber nicht ohne Zustimmung.
     var W = b.w, H = b.h, fs = 26;
     return '<svg viewBox="0 0 ' + W + ' ' + (H + fs * 2.2).toFixed(0) + '" role="img" aria-label="' + (label || VL_FIX[fall]) + '">' +
       '<rect width="' + W + '" height="' + (H + fs * 2.2).toFixed(0) + '" rx="18" fill="#efefed"/>' +
-      '<image href="' + b.src + '" width="' + W + '" height="' + H + '"/>' +
+      '<image href="' + b.src + '" width="' + W + '" height="' + H + '"/>' + kiSvg(0, 0, W, 0.06) +
       '<text x="' + (W / 2) + '" y="' + (H + fs * 1.45).toFixed(0) + '" text-anchor="middle" font-size="' + fs + '" font-weight="700" fill="#896C32">' + VL_FIX[fall] + '</text></svg>';
   }
 
@@ -1152,8 +1163,8 @@ wechsle aber nicht ohne Zustimmung.
         return '<div style="border:1px solid var(--line);border-radius:var(--r-s);padding:12px;margin:0 0 12px">' +
           '<h3 style="margin:0 0 8px">' + f[1] + '</h3>' +
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
-            '<figure style="margin:0">' + bild(f[0], 'vorher', 'Vorher: ' + f[2]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Vorher:</strong> ' + f[2] + '</figcaption></figure>' +
-            '<figure style="margin:0">' + bild(f[0], 'opt', 'Optimiert: ' + f[3]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Optimiert:</strong> ' + f[3] + '</figcaption></figure>' +
+            '<figure class="ki-bild" style="margin:0">' + bild(f[0], 'vorher', 'Vorher: ' + f[2]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Vorher:</strong> ' + f[2] + '</figcaption></figure>' +
+            '<figure class="ki-bild" style="margin:0">' + bild(f[0], 'opt', 'Optimiert: ' + f[3]) + '<figcaption style="font-size:var(--t-s);margin-top:4px"><strong>Optimiert:</strong> ' + f[3] + '</figcaption></figure>' +
           '</div>' +
           '<p style="margin:0 0 4px"><strong>Sofortmaßnahmen</strong></p><ol style="margin:0 0 6px">' + f[4].map(function(x){ return '<li>' + x + '</li>'; }).join("") + '</ol>' +
           '<p style="margin:0;color:var(--muted)">Warum es wirkt: ' + f[5] + '</p></div>';
@@ -1685,7 +1696,7 @@ wechsle aber nicht ohne Zustimmung.
     var art = lkArt(), V = HD_VAR[art], key = o.hd || "A", Z = HD_ZUSTAND[key], W = V.w, H = V.h, P = HD_PFEILE[art];
     var s = '<svg viewBox="-40 -24 ' + (W + 80) + ' ' + (H + 48) + '" role="img" aria-label="' + (o.label || "Hell und Dunkel") + '">';
     s += '<rect x="-40" y="-24" width="' + (W + 80) + '" height="' + (H + 48) + '" rx="10" fill="#fff"/>';
-    s += '<image href="' + V[key] + '" x="0" y="0" width="' + W + '" height="' + H + '"/>';
+    s += '<image href="' + V[key] + '" x="0" y="0" width="' + W + '" height="' + H + '"/>' + kiSvg(-40, -24, W + 80, 0.06);
     // Schnitt (fix): in jedem Bild derselbe
     s += '<text x="' + (W / 2) + '" y="' + (H + 17) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#896C32">Schnitt unverändert</text>';
     if (o.hilfe){
@@ -1855,7 +1866,7 @@ wechsle aber nicht ohne Zustimmung.
     }},
     {step:4, render:function(){
       var key = HD_FORMEN[st.hdForm] ? st.hdForm : "rund", art = lkArt(), Z = Object.assign({}, HD_FORMEN[key], art === "mann" ? HD_FORMEN_MANN[key] : {}), bild = HD_BILDER[art][key];
-      return card('<figure class="hd-bild"><img src="' + bild.src + '" width="' + bild.w + '" height="' + bild.h + '" alt="' + Z.t + ': ' + Z.farbe + '"></figure>' +
+      return card('<figure class="hd-bild ki-bild"><img src="' + bild.src + '" width="' + bild.w + '" height="' + bild.h + '" alt="' + Z.t + ': ' + Z.farbe + '"></figure>' +
         controls(seg("hdForm", Object.keys(HD_FORMEN).map(function(k){ return [k, {rund:"Rund", oval:"Oval", aufsteigend:"Herz", abfallend:"Trapez", viereck:"Eckig", rechteck:"Länglich"}[k]]; }), st.hdForm)),
         '<h2>Farbe und Schnitt kombinieren</h2>' +
         '<p>Am stärksten wirkt es, wenn Haarfarbe (Hell und Dunkel) und Schnitt zusammenspielen. Wähle eine Gesichtsform.</p>' +
@@ -2353,7 +2364,8 @@ wechsle aber nicht ohne Zustimmung.
         s += '<text x="472" y="' + (y[0] + 26) + '" font-size="20" font-weight="700" fill="#6E5527" stroke="#fff" stroke-width="5" paint-order="stroke" text-anchor="end" pointer-events="none">' + namen[z] + '</text>';
       });
     }
-    return s + '</svg>';
+    var vb = (Z.vb || "0 0 480 600").split(/\s+/).map(Number);
+    return s + kiSvg(vb[0], vb[1], vb[2]) + '</svg>';
   }
   function sbFig(o){
     o = o || {};
@@ -2950,7 +2962,7 @@ wechsle aber nicht ohne Zustimmung.
       s += '<circle cx="40" cy="' + ym + '" r="10" fill="var(--surface)" stroke="var(--g-kontur)"/>' +
         '<text x="40" y="' + (ym + 4) + '" font-size="12" font-weight="700" text-anchor="middle" fill="var(--ink)">' + (i + 1) + '</text>';
     });
-    return s + '</svg>';
+    return s + kiSvg(20, 0, 420) + '</svg>';
   }
   // Zonen von unten nach oben sortiert (Nummer 1 = unterste Fläche)
   function mokReihenfolge(ids, R){
@@ -4590,7 +4602,7 @@ wechsle aber nicht ohne Zustimmung.
     var src = VG_BILDER[key] || "", datei = src.split("/").pop() || key;
     // Platzhalter liegt versteckt hinter dem Foto und erscheint, wenn die Datei (noch) fehlt.
     // Er zeigt nur den gesuchten Dateinamen, keine Bildbeschreibung, damit Schritt 1 nicht verraten wird.
-    return '<figure class="vg-bild' + (gross ? ' gross' : '') + '">' +
+    return '<figure class="vg-bild ki-bild' + (gross ? ' gross' : '') + '">' +
       (src ? '<img src="' + src + '?v=' + VG_BILD_VERSION + '" alt="' + label + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' : '') +
       '<div class="vg-platzhalter" role="img" aria-label="Platzhalter: ' + label + '"' + (src ? ' hidden' : '') + '><span class="vg-ph-id">' + datei + '</span><span>Foto fehlt noch</span></div>' +
       '<figcaption>' + label + '</figcaption></figure>';
@@ -5078,7 +5090,7 @@ wechsle aber nicht ohne Zustimmung.
     const a = parseAttrs(attrs), b = BILDER[(a.id || "").toLowerCase()];
     if (!b) return "";
     const cap = a.titel || "";
-    return `<figure class="sketch"><img src="${b.src}" alt="${esc(cap || b.t)}" data-cap="${esc(cap || b.t)}">${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
+    return `<figure class="sketch ki-bild"><img src="${b.src}" alt="${esc(cap || b.t)}" data-cap="${esc(cap || b.t)}">${cap ? `<figcaption>${esc(cap)}</figcaption>` : ""}</figure>`;
   }
 
 
@@ -5300,5 +5312,6 @@ Regeln für Bilder (sehr wichtig):
 })();
 </script>
 <script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" data-verstecken-bei="#fw-composer" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="rechtliches-fuss.js?v=20261112" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 </body>
 </html>
