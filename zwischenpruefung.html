@@ -250,7 +250,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
   </div>
 </header>
 <main class="wrap" id="main"></main>
-<footer class="wrap">Inhalte nach der Broschüre „Karriere mit Schere: Die Zwischenprüfung“ und dem Rasur-Skript der Landesinnung Wien der Friseure sowie dem Fragenkatalog 1. und 2. Lehrjahr. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
+<footer class="wrap">Inhalte nach der Broschüre „Karriere mit Schere: Die Zwischenprüfung“ und dem Rasur-Skript der Landesinnung Wien der Friseure. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
 
 <script>
 "use strict";
@@ -462,7 +462,7 @@ const CATS = [
   ['Wie trägst du den Farblack sauber auf?','Mit drei Strichen: Mitte, dann links und rechts','Mit vielen kleinen Tupfern','Von der Spitze zur Nagelhaut','Mit dem Finger','Einen kleinen Abstand zur Nagelhaut lassen, dann wirkt es sauber.'],
   ['Womit wird die Nagellackierung am Schluss versiegelt?','Mit Klarlack','Mit Nagellackentferner','Mit Handcreme','Mit Unterlack',''],
   ['Was machst du nach dem Auftragen des Unterlacks?','Trocknen lassen','Sofort Klarlack darüber','Abwischen','Nochmals feilen',''],
-  ['Womit schiebst du laut Skript die Nagelhaut zurück?','Mit dem Rosenholzstäbchen','Mit der Feile','Mit der Nagelschere','Mit dem Fingernagel','Danach die Nagelhaut vorsichtig entfernen.'],
+  ['Womit kannst du die Nagelhaut zurückschieben?','Mit dem Rosenholzstäbchen','Mit der Feile','Mit der Nagelschere','Mit dem Fingernagel','Danach die Nagelhaut vorsichtig entfernen.','1etusyz'],
   ['Wie werden die Nägel gefeilt?','Symmetrisch und typgerecht','Möglichst spitz','Jeder Nagel anders','Gar nicht, nur lackieren',''],
   ['Was ist ein Niednagel?','Ein eingerissenes Hautstück am Nagelrand','Ein eingewachsener Zehennagel','Ein Nagelpilz','Ein künstlicher Nagel','Sauber mit der Nagelhautzange abschneiden, nicht abreißen.'],
   ['Was ist eine Paronychie?','Eine Entzündung des Nagelwalls','Ein Nageldesign','Eine Feilform','Ein Nagellack','Bei Entzündungen nicht behandeln und an Ärztin oder Arzt verweisen.'],
@@ -616,7 +616,7 @@ const ZUEGE = [
  ['Ausrasieren der Mundwinkel','','Beschließt die Rasur. Rechter Mundwinkel im Rückhandgriff, linker Mundwinkel im Vorhandgriff.']
 ];
 
-/* Nagelaufbau, Maniküre und Handmassage (allgemein + Salon-Skript) */
+/* Nagelaufbau, Maniküre und Handmassage */
 /* n = Name, lat = Fachbegriff, d = Beschreibung. Nummer im Schema = Index + 1 */
 const NAGELTEILE=[
  ['Nagelplatte (Nagelkörper)','Corpus unguis','Die sichtbare, verhornte Schicht des Nagels.'],
@@ -630,19 +630,19 @@ const NAGELTEILE=[
  ['Nagelwall','','Der Hautwulst, der die Nagelplatte seitlich umrahmt und schützt.'],
  ['Fingerknochen','','Das Endglied des Fingers, auf dem Nagelbett und Nagel aufliegen.']
 ];
-/* Salon-Skript: Ablauf einer Maniküre inklusive Handmassage */
-const MANI_SALON=['Betrachtung beider Hände (Eigenverletzungen, Ungleichheiten)','Ablackieren','Feilen der linken Hand, Wasserbad','Feilen der rechten Hand, linke Hand aus dem Wasserbad nehmen und rechte Hand ins Wasserbad','Auftragen der Handpflegecreme und Nagelhäutchen zurückschieben','Nagelhäutchen lösen','Entfernung der Hautfransen','Einmassieren der Restcreme und Massage'];
-const HM_AUSSEN=['Ausstreichen der ganzen Hand (Streichmassage): von den Fingerspitzen aufwärts bis zum Ellenbogen mit leichtem Druck, abwärts auf der Unterseite ohne Druck','Kreisende Bewegung mit den Daumenballen bis zum Ellenbogen und abwärts ohne Druck (Rotationsmassage)','Unterarm mit Daumen, 2. und 3. Finger seitlich nach aufwärts kneten (Knetmassage), abwärts ohne Druck','Ansatz an der Fingerwurzel, mit rollend-schiebender Bewegung des 1. und 2. oder 1. und 3. Fingers bis zur Fingerspitze gehen','Kreisende Bewegung des Daumens vom Mond ausgehend über die Finger bis hin zur Fingerwurzel','Ausstreichen des Handrückens mit beiden Daumen','Einzelne Finger und Handgelenk kreisen lassen'];
-const HM_INNEN=['Hand umdrehen, auf der Innenfläche von der Fingerspitze bis zur Fingerwurzel mit dem Daumen kreisen','Auf der Handinnenfläche oberhalb der Fingerwurzel kreisen','Auskneten der Handinnenfläche mit Kammgriff (Faustgriff) und des Handgelenks mit leichtem Daumendruck','Nachfedern des Handgelenks (seitlich)','Kreisen des Handgelenks (mit Richtungswechsel)','Ausschütteln des Handgelenks','Ausstreichen der Hand zum Ellenbogen hin (Hand unbedingt aufstützen!)'];
+/* Ablauf einer Maniküre mit Handmassage (eigene Formulierung) */
+const MANI_SALON=['Beide Hände ansehen: Gibt es Verletzungen oder Auffälligkeiten?','Alten Lack entfernen','Linke Hand feilen, dann ins Wasserbad legen','Rechte Hand feilen, linke Hand aus dem Bad nehmen, rechte Hand hineinlegen','Pflegecreme auftragen und die Nagelhaut zurückschieben','Nagelhaut lösen','Abstehende Hautfransen entfernen','Restliche Creme einmassieren und die Hand massieren'];
+const HM_AUSSEN=['Streichen (Streichmassage): Hand und Unterarm von den Fingerspitzen bis zum Ellenbogen mit leichtem Druck ausstreichen, auf der Unterseite ohne Druck zurück','Kreisen (Rotationsmassage): mit den Daumenballen kreisend bis zum Ellenbogen hinauf, ohne Druck zurück','Kneten (Knetmassage): den Unterarm seitlich mit Daumen, Zeige- und Mittelfinger nach oben kneten, ohne Druck zurück','Finger rollen: an der Fingerwurzel ansetzen und jeden Finger zwischen Daumen und Zeige- oder Mittelfinger rollend bis zur Spitze schieben','Mit dem Daumen vom Nagelmond über den Finger bis zur Fingerwurzel kreisen','Den Handrücken mit beiden Daumen ausstreichen','Jeden Finger und das Handgelenk locker kreisen lassen'];
+const HM_INNEN=['Hand wenden: auf der Innenfläche mit dem Daumen von der Fingerspitze bis zur Fingerwurzel kreisen','Auf der Handfläche oberhalb der Fingerwurzeln kreisen','Handfläche mit dem Faustgriff (Kammgriff) durchkneten, das Handgelenk mit leichtem Daumendruck lockern','Das Handgelenk seitlich nachfedern','Das Handgelenk kreisen, dabei die Richtung wechseln','Das Handgelenk locker ausschütteln','Zum Schluss die Hand Richtung Ellenbogen ausstreichen und dabei immer gut abstützen'];
 const INSTR=[
- {t:'Feilen der Nägel',i:['Nagelfeile','Frottiertuch','Serviette']},
- {t:'Entfernen der Nagelhaut',i:['Nagelschere oder Zange','Nagelhautheber','Gummi- oder Pferdefüßchen','Lanzette','Radierstab','H₂O₂, Watte, warmes Wasser, Serviette']},
+ {t:'Feilen der Nägel',i:['Nagelfeile','Frotteehandtuch','Serviette']},
+ {t:'Entfernen der Nagelhaut',i:['Nagelhautschere oder -zange','Nagelhautschieber','Pferdefuß aus Gummi','Lanzette','Radierstab','H₂O₂, Watte, warmes Wasser und eine Serviette']},
  {t:'Auftragen von Nagellack',i:['Serviette','Watte','Nagellackentferner','Nagellack']}
 ];
-const NH_ENTF=['Erweichen der Nagelhaut','Auftragen des Nagelhautentferners','Radieren der Nagelhaut','Entfernen des überschüssigen Nagelhautentferners'];
-const NH_SCHN=['Eincremen der Nagelhaut','Weichbad','Schneiden der Nagelhaut','Nachbehandlung der Nagelhaut durch Massage'];
-const LACK_SCHRITTE=['„Alten“ Lack stets entfernen','Farbton des Nagellacks auswählen','Auftragen des Nagellacks'];
-const LACK_ARTEN=['Vollackiert','Möndchen freilassen','Seiten freilassen'];
+const NH_ENTF=['Nagelhaut aufweichen','Nagelhautentferner auftragen','Nagelhaut mit dem Radierstab abtragen','Reste des Entferners gründlich abnehmen'];
+const NH_SCHN=['Nagelhaut eincremen','Finger im Weichbad einweichen','Nagelhaut vorsichtig schneiden','Nagelhaut zum Abschluss einmassieren und pflegen'];
+const LACK_SCHRITTE=['Alten Lack immer zuerst vollständig entfernen','Passende Lackfarbe wählen','Lack auftragen'];
+const LACK_ARTEN=['Voll lackiert','Halbmond frei','Seitenränder frei'];
 const BEURTEILUNG=[
  {t:'Grundformen der Nägel',i:['rund','spitz','oval','breit']},
  {t:'Form der Finger',i:['lang','kurz','breit','schmal']},
@@ -657,108 +657,108 @@ const MGRIFFE=[
  ['Tapotement','Sanftes Klopfen zur Anregung','Leichtes, lockeres Klopfen mit den Fingerkuppen, z. B. an Wangen und Stirn.']
 ];
 
-/* Fragenkatalog Friseurgewerbe 1. und 2. Lehrjahr (Frage, Antwort) */
+/* Grundwissen-Fragen 1. und 2. Lehrjahr (Frage, Musterantwort, bisherige Kennung für den Lernfortschritt) */
 const KATALOG = {
  komm:[
-  ['Welche Fragen stellt man bei einer Beratung?','Wünsche, bisherige Behandlungen, Haarpflege und Allergien.'],
-  ['Warum ist aktives Zuhören wichtig?','Es schafft Vertrauen und verbessert die Beratung.'],
-  ['Wie geht man mit einer Reklamation um?','Ruhig bleiben, zuhören, Verständnis zeigen und gemeinsam eine Lösung finden.'],
-  ['Warum ist ein Beratungsgespräch wichtig?','Damit die Wünsche des Kunden verstanden und Missverständnisse vermieden werden.'],
-  ['Wie begrüßt man einen Kunden?','Freundlich, höflich und mit Blickkontakt.'],
-  ['Warum sollte man gut zuhören?','Um die Bedürfnisse des Kunden richtig zu erkennen.'],
-  ['Was gehört zu einem professionellen Auftreten?','Freundlichkeit, Höflichkeit, gepflegtes Erscheinungsbild und Zuverlässigkeit.'],
-  ['Warum ist Körpersprache wichtig?','Sie vermittelt Interesse, Freundlichkeit und Sicherheit.'],
-  ['Was bedeutet aktives Zuhören?','Dem Kunden aufmerksam zuhören, nachfragen und das Gesagte zusammenfassen.'],
-  ['Wie reagiert man auf einen unzufriedenen Kunden?','Ruhig bleiben, Verständnis zeigen und gemeinsam nach einer Lösung suchen.'],
-  ['Warum sollte man Fachbegriffe verständlich erklären?','Damit der Kunde die Beratung nachvollziehen kann.'],
-  ['Welche Eigenschaften zeichnen einen guten Friseur aus?','Freundlichkeit, Geduld, Fachwissen, Kreativität und Zuverlässigkeit.'],
-  ['Warum ist eine Haaranalyse wichtig?','Sie hilft bei der Auswahl der richtigen Behandlung und Produkte.'],
-  ['Welche Fragen gehören zur Haaranalyse?','Naturhaarfarbe, frühere Colorationen, Haarzustand, Kopfhaut, Pflegegewohnheiten und Allergien.'],
-  ['Warum empfiehlt man Pflegeprodukte?','Damit das Ergebnis länger schön bleibt und das Haar gesund gepflegt wird.'],
-  ['Wann sollte ein Allergietest durchgeführt werden?','Vor einer ersten Coloration oder wenn Unsicherheiten bestehen.'],
-  ['Warum dokumentiert man chemische Behandlungen?','Damit spätere Behandlungen sicher geplant werden können.'],
-  ['Was ist das wichtigste Ziel jeder Friseurbehandlung?','Ein gesundes, schönes Ergebnis und ein zufriedener Kunde.']
+  ['Was fragst du in einer Beratung ab?','Was sich die Kundin wünscht, welche Behandlungen schon gemacht wurden, wie sie ihr Haar zu Hause pflegt und ob Allergien bekannt sind.','kcqeola'],
+  ['Wozu dient aktives Zuhören in der Beratung?','Die Kundin fühlt sich ernst genommen, es entsteht Vertrauen, und du verstehst ihren Wunsch genauer.','knyyf08'],
+  ['Eine Kundin reklamiert. Wie gehst du vor?','Gelassen bleiben, sie ausreden lassen, Verständnis zeigen und zusammen eine Lösung suchen.','kjwuijn'],
+  ['Wozu ist ein Beratungsgespräch da?','Um den Wunsch der Kundin richtig zu verstehen und Missverständnisse vor der Behandlung auszuräumen.','k2wjjmu'],
+  ['Wie empfängst du eine Kundin im Salon?','Freundlich und höflich, mit Blickkontakt und einer persönlichen Begrüßung.','kr04h3c'],
+  ['Warum lohnt es sich, gut zuzuhören?','Nur so erkennst du, was die Kundin wirklich braucht.','k1patx41'],
+  ['Woran erkennt man ein professionelles Auftreten?','Freundlich und höflich sein, gepflegt aussehen und verlässlich arbeiten.','ko3wzaa'],
+  ['Welche Rolle spielt die Körpersprache?','Sie zeigt der Kundin auch ohne Worte Interesse, Freundlichkeit und Sicherheit.','k1g55rcf'],
+  ['Wie hörst du aktiv zu?','Aufmerksam sein, nachfragen und das Gehörte in eigenen Worten zusammenfassen.','k5vhrd6'],
+  ['Eine Kundin ist unzufrieden. Wie reagierst du?','Ruhig und verständnisvoll bleiben und mit ihr gemeinsam eine Lösung finden.','k14w1d56'],
+  ['Warum erklärst du Fachbegriffe in einfachen Worten?','Damit die Kundin versteht, was du vorschlägst, und mitentscheiden kann.','k3qep1o'],
+  ['Was macht eine gute Friseurin oder einen guten Friseur aus?','Freundlichkeit, Geduld, Fachwissen, Kreativität und Verlässlichkeit.','k2rkc67'],
+  ['Wozu machst du eine Haaranalyse?','Um die passende Behandlung und die richtigen Produkte auszuwählen.','kkgkxax'],
+  ['Was klärst du bei der Haaranalyse?','Naturfarbe, frühere Farbbehandlungen, Zustand von Haar und Kopfhaut, Pflege zu Hause und Allergien.','k1yxmp60'],
+  ['Warum empfiehlst du Pflegeprodukte für zu Hause?','Das Ergebnis hält länger, und das Haar bleibt gesund und gepflegt.','k103unvv'],
+  ['Wann ist ein Allergietest nötig?','Vor der ersten Farbbehandlung und immer dann, wenn du unsicher bist.','km0ueyr'],
+  ['Warum schreibst du chemische Behandlungen in der Kundenkartei auf?','Damit die nächste Behandlung sicher geplant werden kann.','k1wfxyl7'],
+  ['Worauf zielt jede Behandlung im Salon ab?','Auf ein schönes Ergebnis bei gesundem Haar und eine zufriedene Kundin.','k1eaht3c']
  ],
  schutz:[
-  ['Warum ist Arbeitsschutz im Salon wichtig?','Er schützt Mitarbeiter und Kunden vor Unfällen, Infektionen und gesundheitlichen Schäden.'],
-  ['Warum ist eine gute Körperhaltung wichtig?','Um Rücken- und Gelenkbeschwerden vorzubeugen.'],
-  ['Warum sollte der Salon regelmäßig gelüftet werden?','Um Dämpfe und Gerüche zu reduzieren und für frische Luft zu sorgen.'],
-  ['Welche persönliche Schutzausrüstung wird im Salon verwendet?','Handschuhe und Schürzen.'],
-  ['Warum müssen elektrische Geräte regelmäßig überprüft werden?','Zur Vermeidung von Stromunfällen und zur Gewährleistung der Betriebssicherheit.']
+  ['Wozu dient der Arbeitsschutz im Salon?','Er bewahrt Team und Kundschaft vor Unfällen, Ansteckung und Gesundheitsschäden.','kfkjikt'],
+  ['Warum achtest du bei der Arbeit auf deine Haltung?','Damit Rücken und Gelenke auf Dauer gesund bleiben.','k1fx1xqq'],
+  ['Weshalb lüftest du den Salon regelmäßig?','Dämpfe und Gerüche, z. B. von Farbe oder Dauerwelle, ziehen ab, und die Luft bleibt frisch.','k17dy47q'],
+  ['Welche Schutzausrüstung trägst du im Salon?','Handschuhe und eine Schürze.','k1327s5h'],
+  ['Warum werden Föhn, Glätteisen und andere Elektrogeräte regelmäßig geprüft?','Damit keine Stromunfälle passieren und die Geräte sicher funktionieren.','k18t4skh']
  ],
  haut:[
-  ['Welche Funktion hat die Talgdrüse?','Sie produziert Talg, der Haut und Haare geschmeidig hält und vor dem Austrocknen schützt.'],
-  ['Welche Aufgabe hat die Schweißdrüse?','Sie reguliert die Körpertemperatur und unterstützt die Ausscheidung.'],
-  ['Was ist der Säureschutzmantel?','Ein natürlicher Schutzfilm der Haut mit einem pH-Wert von etwa 5,5, der Krankheitserreger abwehrt.'],
-  ['Was versteht man unter einer empfindlichen Kopfhaut?','Eine Kopfhaut, die schnell auf Pflegeprodukte oder äußere Einflüsse mit Rötungen oder Juckreiz reagiert.'],
-  ['Welche Ursachen können Schuppen haben?','Trockene Haut, Pilze, ungeeignete Pflegeprodukte oder Hauterkrankungen.'],
-  ['Welche Hautveränderungen sollte ein Friseur erkennen?','Schuppen, Rötungen, Ekzeme, Warzen oder Entzündungen.'],
-  ['Wann sollte ein Kunde an einen Hautarzt verwiesen werden?','Bei auffälligen Hautveränderungen, Entzündungen oder ansteckenden Erkrankungen.'],
-  ['Welche Aufgaben hat die Haut?','Sie schützt den Körper vor äußeren Einflüssen, reguliert die Körpertemperatur, speichert Fett und Wasser und dient als Sinnesorgan.'],
-  ['Aus welchen Schichten besteht die Haut?','Oberhaut (Epidermis), Lederhaut (Dermis) und Unterhaut (Subcutis).'],
-  ['Warum ist gesunde Kopfhaut wichtig?','Sie ist die Grundlage für gesundes Haarwachstum und schützt vor Krankheitserregern.']
+  ['Was macht die Talgdrüse?','Sie bildet Talg. Er hält Haut und Haar geschmeidig und schützt sie vor dem Austrocknen.','k1xar53f'],
+  ['Was macht die Schweißdrüse?','Sie hilft, die Körpertemperatur zu regeln, und scheidet mit dem Schweiß Stoffe aus.','kiqwe82'],
+  ['Was ist der Säureschutzmantel?','Ein leicht saurer Schutzfilm auf der Haut (pH-Wert um 5,5), der Krankheitserreger abwehrt.','k83ii3j'],
+  ['Woran erkennst du eine empfindliche Kopfhaut?','Sie rötet sich oder juckt schnell, zum Beispiel nach Pflegeprodukten oder anderen äußeren Reizen.','k1shjqop'],
+  ['Woher können Schuppen kommen?','Von trockener Haut, Pilzbefall, unpassenden Pflegeprodukten oder Hauterkrankungen.','k1j5xand'],
+  ['Welche Veränderungen an Haut und Kopfhaut solltest du erkennen?','Schuppen, Rötungen, Ekzeme, Warzen und Entzündungen.','kxjnawa'],
+  ['Wann empfiehlst du einer Kundin, zur Hautärztin oder zum Hautarzt zu gehen?','Wenn dir auffällige Hautveränderungen, Entzündungen oder Anzeichen einer ansteckenden Krankheit auffallen.','k135p05o'],
+  ['Welche Aufgaben erfüllt die Haut?','Sie schützt vor äußeren Einflüssen, regelt die Körpertemperatur, speichert Fett und Wasser und ist ein Sinnesorgan.','kc5ra2e'],
+  ['Nenne die drei Schichten der Haut.','Oberhaut (Epidermis), Lederhaut (Dermis) und Unterhaut (Subcutis).','k60z8yn'],
+  ['Warum ist eine gesunde Kopfhaut so wichtig?','Auf ihr wächst gesundes Haar, und sie hält Krankheitserreger ab.','k1ye54m4']
  ],
  haar:[
-  ['Was bedeutet pH-Wert?','Er zeigt an, ob eine Lösung sauer, neutral oder alkalisch ist.'],
-  ['Welchen pH-Wert hat gesundes Haar ungefähr?','Etwa 4,5 bis 5,5.'],
-  ['Warum wird Conditioner verwendet?','Er schließt die Schuppenschicht, verbessert die Kämmbarkeit und schützt das Haar.'],
-  ['Wie viele Haare hat ein Mensch durchschnittlich?','Etwa 80.000 bis 150.000 Haare.'],
-  ['Wie schnell wächst ein Haar?','Etwa 1 bis 1,5 cm pro Monat.'],
-  ['Welche Wachstumsphasen hat das Haar?','Anagenphase (Wachstum), Katagenphase (Übergang), Telogenphase (Ruhe- und Ausfallphase).'],
-  ['Wie lange dauert die Wachstumsphase?','Etwa 2 bis 7 Jahre.'],
-  ['Wann ist Haarausfall normal?','Bis zu etwa 100 Haare pro Tag.'],
-  ['Wovon hängt die Haarstruktur ab?','Von der genetischen Veranlagung, dem Durchmesser und der Form des Haarfollikels.'],
-  ['Was ist poröses Haar?','Haar mit einer geschädigten Schuppenschicht, das Feuchtigkeit schlecht speichert.'],
-  ['Warum muss die Haarstruktur vor einer chemischen Behandlung beurteilt werden?','Damit das richtige Produkt und die passende Einwirkzeit gewählt werden.'],
-  ['Woraus besteht Keratin?','Aus Eiweiß (Protein).'],
-  ['Was versteht man unter Haarqualität?','Den Zustand des Haares hinsichtlich Gesundheit, Festigkeit und Elastizität.'],
-  ['Welche Faktoren beeinflussen die Haarqualität?','Ernährung, Pflege, Alter, Krankheiten, Umwelt und chemische Behandlungen.'],
-  ['Warum ist Feuchtigkeit für das Haar wichtig?','Sie erhält Elastizität, Glanz und Geschmeidigkeit.'],
-  ['Aus welchem Stoff bestehen Haare hauptsächlich?','Aus Keratin.'],
-  ['Welche drei Haarschichten gibt es?','Schuppenschicht (Cuticula), Faserschicht (Cortex) und Markschicht (Medulla).'],
-  ['Welche Aufgaben haben Haare?','Schutz, Wärmeregulierung und ästhetische Wirkung.'],
-  ['Welche Haarstrukturen gibt es?','Glattes, welliges, lockiges und krauses Haar.'],
-  ['Was bedeutet feines Haar?','Das einzelne Haar hat einen kleinen Durchmesser.'],
-  ['Wodurch kann Haar geschädigt werden?','Durch Hitze, chemische Behandlungen, UV-Strahlen und falsche Pflege.'],
-  ['Was ist Spliss?','Das Aufspalten der Haarspitzen durch Schädigung.'],
-  ['Warum sollte nasses Haar vorsichtig gekämmt werden?','Weil es empfindlicher und leichter dehnbar ist.'],
-  ['Was bedeutet elastisches Haar?','Es lässt sich dehnen und kehrt in seine ursprüngliche Form zurück.'],
-  ['Welche Haarstruktur eignet sich besonders gut für Dauerwellen?','Gesundes, elastisches und nicht zu stark geschädigtes Haar.'],
-  ['Was versteht man unter Haarporosität?','Die Fähigkeit des Haares, Feuchtigkeit und Wirkstoffe aufzunehmen.']
+  ['Was gibt der pH-Wert an?','Ob eine Lösung sauer, neutral oder alkalisch (basisch) ist.','k1567zew'],
+  ['In welchem pH-Bereich liegt gesundes Haar?','Ungefähr zwischen 4,5 und 5,5, also leicht sauer.','k1o6kxvf'],
+  ['Was bewirkt ein Conditioner?','Er glättet und schließt die Schuppenschicht. Das Haar lässt sich leichter kämmen und ist besser geschützt.','k22jjco'],
+  ['Wie viele Haare hat ein Mensch im Durchschnitt auf dem Kopf?','Rund 80.000 bis 150.000.','k16y02jt'],
+  ['Wie viel wächst ein Haar im Monat?','Ungefähr 1 bis 1,5 cm.','k8htoon'],
+  ['Nenne die Wachstumsphasen des Haares.','Anagenphase (Wachstum), Katagenphase (Übergang) und Telogenphase (Ruhe, danach fällt das Haar aus).','k1raceyz'],
+  ['Wie lange wächst ein Haar in der Anagenphase?','Meist zwischen 2 und 7 Jahren.','ktr0wyf'],
+  ['Wie viel Haarausfall ist normal?','Bis zu etwa 100 Haare am Tag.','kolg54l'],
+  ['Was bestimmt die Haarstruktur?','Die Veranlagung (Gene) sowie Dicke und Form des Haarfollikels.','kbrlh2v'],
+  ['Was ist poröses Haar?','Haar mit geschädigter Schuppenschicht. Es kann Feuchtigkeit schlecht halten.','kgxkxyl'],
+  ['Warum beurteilst du die Haarstruktur vor einer chemischen Behandlung?','Um das passende Produkt und die richtige Einwirkzeit zu wählen.','k1q9cyq0'],
+  ['Was ist Keratin chemisch gesehen?','Ein Eiweiß (Protein).','k1h3ii3m'],
+  ['Was beschreibt die Haarqualität?','Wie gesund, fest und elastisch das Haar ist.','k3zqks2'],
+  ['Was beeinflusst die Haarqualität?','Ernährung, Pflege, Alter, Krankheiten, Umwelteinflüsse und chemische Behandlungen.','k6oue0f'],
+  ['Warum braucht Haar Feuchtigkeit?','Sie hält es elastisch, glänzend und geschmeidig.','k1k21u2b'],
+  ['Woraus besteht Haar zum größten Teil?','Aus Keratin.','kw074hz'],
+  ['Nenne die drei Schichten des Haares.','Schuppenschicht (Cuticula), Faserschicht (Cortex) und Markschicht (Medulla).','k1odqwsz'],
+  ['Wozu hat der Mensch Haare?','Zum Schutz, zur Wärmeregulierung und für das Aussehen.','kppez4k'],
+  ['Welche Haarstrukturen unterscheidet man?','Glatt, wellig, lockig und kraus.','k1c1kznh'],
+  ['Was heißt „feines Haar“?','Das einzelne Haar ist dünn, hat also einen kleinen Durchmesser.','kjw652v'],
+  ['Was schadet dem Haar?','Hitze, chemische Behandlungen, UV-Strahlung und falsche Pflege.','k9lo0vz'],
+  ['Was ist Spliss?','Gespaltene Haarspitzen als Folge einer Schädigung.','kaook2l'],
+  ['Warum kämmst du nasses Haar besonders sanft?','Nasses Haar ist empfindlicher und dehnt sich leichter, dadurch reißt es schneller.','k1akxv24'],
+  ['Woran erkennst du elastisches Haar?','Es lässt sich dehnen und geht danach wieder in seine Form zurück.','ktv6c9h'],
+  ['Welches Haar eignet sich gut für eine Dauerwelle?','Gesundes, elastisches Haar, das nicht stark vorgeschädigt ist.','kv7ok34'],
+  ['Was beschreibt die Porosität des Haares?','Wie gut das Haar Feuchtigkeit und Wirkstoffe aufnimmt.','k1jx2l76']
  ],
  farbe:[
-  ['Was versteht man unter dem Farbkreis?','Eine Darstellung der Grund-, Sekundär- und Komplementärfarben.'],
-  ['Warum werden Komplementärfarben beim Färben verwendet?','Um unerwünschte Farbstiche zu neutralisieren.'],
-  ['Welche Pigmente bestimmen die natürliche Haarfarbe?','Eumelanin und Phäomelanin.'],
-  ['Was ist eine Oxidationshaarfarbe?','Eine dauerhafte Haarfarbe, die mit Wasserstoffperoxid entwickelt wird.'],
-  ['Warum ist eine Haaranalyse vor dem Färben wichtig?','Um Haarzustand, Naturfarbe und mögliche Risiken zu beurteilen.'],
-  ['Was sind die drei Grundfarben?','Gelb, Rot und Blau.'],
-  ['Welche Farben entstehen durch das Mischen von zwei Grundfarben?','Orange, Grün und Violett.'],
-  ['Was sind Komplementärfarben?','Farben, die sich im Farbkreis gegenüberliegen und sich gegenseitig neutralisieren.'],
-  ['Welche warmen Farben gibt es?','Rot, Orange und Gelb.'],
-  ['Welche kalten Farben gibt es?','Blau, Grün und Violett.'],
-  ['Welche Farbe neutralisiert Gelb?','Violett.'],
-  ['Welche Farbe neutralisiert Orange?','Blau.'],
-  ['Welche Farbe neutralisiert Rot?','Grün.'],
-  ['Was bedeutet Tonhöhe?','Die Helligkeit oder Dunkelheit einer Haarfarbe.'],
-  ['Was ist eine Nuance?','Der Farbton innerhalb einer Tonhöhe.'],
-  ['Warum wird Wasserstoffperoxid verwendet?','Zum Aufhellen des Naturpigments und zum Entwickeln der Haarfarbe.'],
-  ['Was ist eine Tönung?','Eine nicht dauerhafte Haarfarbe, die sich nach mehreren Haarwäschen auswäscht.'],
-  ['Was ist Blondierung?','Eine chemische Aufhellung des natürlichen Haarpigments.']
+  ['Was zeigt der Farbkreis?','Wie Grundfarben, Mischfarben (Sekundärfarben) und Gegenfarben (Komplementärfarben) zueinander stehen.','k548lzx'],
+  ['Wozu nutzt du Komplementärfarben beim Färben?','Um einen unerwünschten Farbstich auszugleichen (zu neutralisieren).','k5uet93'],
+  ['Welche Pigmente geben dem Haar seine natürliche Farbe?','Eumelanin und Phäomelanin.','kvkxvjx'],
+  ['Was ist eine Oxidationshaarfarbe?','Eine dauerhafte Farbe, die mit Wasserstoffperoxid angemischt und dadurch entwickelt wird.','k16b5swu'],
+  ['Warum machst du vor dem Färben eine Haaranalyse?','Um Haarzustand, Naturfarbe und mögliche Risiken einzuschätzen.','kyny71z'],
+  ['Nenne die drei Grundfarben.','Gelb, Rot und Blau.','k1rnya01'],
+  ['Welche Farben entstehen, wenn du je zwei Grundfarben mischst?','Orange, Grün und Violett.','k8hvqj1'],
+  ['Was sind Komplementärfarben?','Gegenfarben, die sich im Farbkreis gegenüberliegen und sich gegenseitig aufheben.','ks95cyl'],
+  ['Welche Farben gelten als warm?','Gelb, Orange und Rot.','kn34fki'],
+  ['Welche Farben gelten als kalt?','Blau, Grün und Violett.','k1u01z'],
+  ['Womit gleichst du einen Gelbstich aus?','Mit Violett.','k179jtkx'],
+  ['Womit gleichst du einen Orangestich aus?','Mit Blau.','k1nfdlr7'],
+  ['Womit gleichst du einen Rotstich aus?','Mit Grün.','k1gz5pr0'],
+  ['Was beschreibt die Tonhöhe?','Wie hell oder dunkel eine Haarfarbe ist.','k4k9lml'],
+  ['Was ist die Nuance?','Die Farbrichtung auf einer bestimmten Tonhöhe, zum Beispiel gold oder asch.','kic3uoq'],
+  ['Wofür brauchst du Wasserstoffperoxid?','Es hellt das Naturpigment auf und entwickelt die Farbe.','kvh7qh8'],
+  ['Was ist eine Tönung?','Eine nicht dauerhafte Farbe, die nach einigen Haarwäschen wieder herausgeht.','kh59req'],
+  ['Was passiert bei einer Blondierung?','Das natürliche Pigment wird chemisch abgebaut, das Haar wird heller.','k1x42wbc']
  ],
  hyg:[
-  ['Wann müssen die Hände desinfiziert werden?','Vor und nach jedem Kunden sowie nach Verschmutzungen.'],
-  ['Warum müssen Handtücher nach jedem Kunden gewechselt werden?','Um die Übertragung von Keimen zu verhindern.'],
-  ['Wie werden Scheren und Kämme hygienisch aufbereitet?','Reinigen, gegebenenfalls desinfizieren und trocken lagern.'],
-  ['Was bedeutet persönliche Hygiene?','Saubere Arbeitskleidung, gepflegte Hände, kurze Fingernägel und tägliche Körperpflege.'],
-  ['Warum müssen Arbeitsgeräte gereinigt werden?','Um Krankheiten und Keime nicht zu übertragen.'],
-  ['Was gehört zur öffentlichen Hygiene?','Maßnahmen zum Schutz der Bevölkerung, z. B. Trinkwasserkontrolle und Abfallentsorgung.'],
-  ['Was bedeutet gewerbliche Hygiene?','Hygienemaßnahmen im Salon wie Reinigung, Desinfektion und Einhaltung gesetzlicher Vorschriften.'],
-  ['Warum trägt man Handschuhe?','Zum Schutz vor Chemikalien und Keimen.'],
-  ['Was ist der Unterschied zwischen Reinigen und Desinfizieren?','Reinigen entfernt Schmutz, Desinfizieren reduziert oder tötet Keime.'],
-  ['Wie oft müssen Umhänge gereinigt werden?','Nach jedem Kunden, oder man verwendet einen hygienischen Einweg-Halskragen.'],
-  ['Warum dürfen benutzte Rasierklingen nicht wiederverwendet werden?','Wegen der Verletzungs- und Infektionsgefahr.'],
-  ['Wie entsorgt man Rasierklingen?','In einem stichfesten Sicherheitsbehälter.']
+  ['Wann desinfizierst du deine Hände?','Vor und nach jeder Kundin und immer, wenn sie verschmutzt sind.','k1n1v2c'],
+  ['Warum bekommt jede Kundin ein frisches Handtuch?','Damit keine Keime von einer Person zur nächsten gelangen.','k1yc3e2b'],
+  ['Wie bereitest du Schere und Kamm hygienisch auf?','Säubern, bei Bedarf desinfizieren und dann trocken aufbewahren.','k1udp5wm'],
+  ['Was gehört zur persönlichen Hygiene?','Saubere Arbeitskleidung, gepflegte Hände, kurze Nägel und tägliche Körperpflege.','kjpjo31'],
+  ['Warum reinigst du deine Arbeitsgeräte?','Damit keine Keime und Krankheiten übertragen werden.','k2s45wa'],
+  ['Was versteht man unter öffentlicher Hygiene?','Maßnahmen, die die ganze Bevölkerung schützen, zum Beispiel die Kontrolle des Trinkwassers und die Müllentsorgung.','k5kp30l'],
+  ['Was ist gewerbliche Hygiene?','Die Hygiene im Betrieb: Reinigung, Desinfektion und das Einhalten der Vorschriften.','k1irzkjv'],
+  ['Wozu trägst du Handschuhe?','Zum Schutz vor Chemikalien und Keimen.','k1dtboh8'],
+  ['Worin unterscheiden sich Reinigen und Desinfizieren?','Reinigen entfernt Schmutz. Desinfizieren macht Keime unschädlich oder verringert sie stark.','k19ofzsa'],
+  ['Wie oft wird der Umhang gewechselt?','Nach jeder Kundin, oder du verwendest einen hygienischen Einweg-Halsstreifen.','k1jfroe7'],
+  ['Warum verwendest du eine benutzte Rasierklinge nie ein zweites Mal?','Es besteht Verletzungs- und Ansteckungsgefahr.','k168slah'],
+  ['Wohin kommen gebrauchte Rasierklingen?','In einen stichfesten Sicherheitsbehälter.','ke203s9']
  ]
 };
 
@@ -819,10 +819,10 @@ const SCHEDULE = [
 function hash(s){let x=5381;for(let i=0;i<s.length;i++)x=((x<<5)+x+s.charCodeAt(i))|0;return (x>>>0).toString(36);}
 const QUESTIONS=[];
 CATS.forEach(c=>{
-  c.mc.forEach(m=>QUESTIONS.push({id:c.id+'-'+hash(m[0]),cat:c.id,type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]||''}));
+  c.mc.forEach(m=>QUESTIONS.push({id:c.id+'-'+(m[6]||hash(m[0])),cat:c.id,type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]||''}));
   c.open.forEach(o=>QUESTIONS.push({id:c.id+'-o'+hash(o[0]),cat:c.id,type:'open',q:o[0],pts:o[1]}));
 });
-Object.entries(KATALOG).forEach(([cid,list])=>list.forEach(([q,a])=>QUESTIONS.push({id:cid+'-k'+hash(q),cat:cid,type:'open',src:'katalog',q,pts:[a]})));
+Object.entries(KATALOG).forEach(([cid,list])=>list.forEach(([q,a,kid])=>QUESTIONS.push({id:cid+'-'+(kid||'k'+hash(q)),cat:cid,type:'open',src:'katalog',q,pts:[a]})));
 /* Massagegriff-Fragen mit Bild */
 MGRIFFE.forEach(([n,w],i)=>{QUESTIONS.push({id:'haut-mg'+i,cat:'haut',tag:'massage',type:'mc',q:'Welcher Massagegriff ist hier gezeigt?',a:n,w:shuffle(MGRIFFE.filter((x,j)=>j!==i).map(x=>x[0])).slice(0,3),e:`${n}: ${w}.`,mg:i});
  QUESTIONS.push({id:'haut-mw'+i,cat:'haut',tag:'massage',type:'mc',q:`Welche Wirkung hat ${n}?`,a:w,w:shuffle(MGRIFFE.filter((x,j)=>j!==i).map(x=>x[1])).slice(0,3),e:'',mg:i});
@@ -838,30 +838,30 @@ nextQ('ne',NH_ENTF,'Nagelhaut entfernen mit Nagelhautentferner');
 nextQ('ns',NH_SCHN,'Nagelhaut entfernen durch Schneiden');
 [['Wie heißt die Nagelplatte mit dem Fachbegriff?','Corpus unguis','Lectulus unguis','Eponychium','Cuticula','Corpus unguis ist die sichtbare, verhornte Schicht des Nagels.'],
  ['Was bedeutet Lectulus unguis?','Nagelbett','Nagelplatte','Nagelwurzel','Nagelhaut','Das Nagelbett verankert und versorgt den Nagel.'],
- ['Wie heißt die Nagelplatte im Salon-Skript noch?','Nagelkörper','Nagelsaum','Nagelfalz','Nagelwall',''],
+ ['Welcher andere Name ist für die Nagelplatte gebräuchlich?','Nagelkörper','Nagelsaum','Nagelfalz','Nagelwall','','mbt458a'],
  ['Was ist der Nagelmond?','Die Lunula: der helle, halbmondförmige Bereich am Ende der Matrix','Der freie Nagelrand','Die Nagelhaut','Ein weißer Fleck als Nagelveränderung',''],
- ['Womit schiebst du die Nagelhaut zurück?','Mit dem Gummi- oder Pferdefüßchen','Mit der Nagelschere','Mit der Lanzette','Mit dem Fingernagel',''],
- ['Womit beginnt die Maniküre im Salon?','Betrachtung beider Hände (Eigenverletzungen, Ungleichheiten)','Ablackieren','Feilen der linken Hand','Wasserbad',''],
- ['Welche Hand wird im Salon-Ablauf zuerst gefeilt?','Die linke Hand, sie kommt danach ins Wasserbad','Die rechte Hand','Beide gleichzeitig','Die Hand mit den längeren Nägeln',''],
- ['Welche Hilfsmittel brauchst du zum Feilen der Nägel?','Nagelfeile, Frottiertuch, Serviette','Lanzette, Radierstab, H₂O₂','Nagelschere, Watte, Nagellack','Pferdefüßchen, Nagellackentferner, Watte',''],
- ['Welches Instrument gehört NICHT zum Entfernen der Nagelhaut?','Nagelfeile','Lanzette','Radierstab','Nagelhautheber','Zum Entfernen der Nagelhaut: Nagelschere oder Zange, Nagelhautheber, Gummi- oder Pferdefüßchen, Lanzette, Radierstab, H₂O₂, Watte, warmes Wasser, Serviette.'],
- ['Welche zwei Methoden gibt es, die Nagelhaut zu entfernen?','Durch Nagelhautentferner und durch Schneiden','Durch Feilen und durch Lackieren','Durch Abreißen und durch Abbeißen','Nur durch Schneiden',''],
- ['Was ist der erste Schritt beim Entfernen der Nagelhaut mit Nagelhautentferner?','Erweichen der Nagelhaut','Radieren der Nagelhaut','Schneiden der Nagelhaut','Nachbehandlung durch Massage',''],
- ['Was ist der letzte Schritt beim Entfernen der Nagelhaut durch Schneiden?','Nachbehandlung der Nagelhaut durch Massage','Weichbad','Eincremen der Nagelhaut','Radieren der Nagelhaut',''],
- ['Welche Hilfsmittel brauchst du zum Auftragen von Nagellack?','Serviette, Watte, Nagellackentferner, Nagellack','Nagelfeile, Lanzette, Radierstab','Nagelschere, H₂O₂, warmes Wasser','Frottiertuch, Pferdefüßchen, Zange',''],
- ['Was machst du immer, bevor du neuen Nagellack aufträgst?','„Alten“ Lack stets entfernen','Nagelöl auftragen','Die Nagelhaut schneiden','Die Hand eincremen',''],
- ['Welche Arten zu lackieren gibt es laut Skript?','Vollackiert, Möndchen freilassen, Seiten freilassen','Nur vollackiert','Spitze freilassen, Mitte lackieren','Rund, spitz, oval',''],
+ ['Womit schiebst du die Nagelhaut zurück?','Mit einem Pferdefuß aus Gummi oder einem Nagelhautschieber','Mit der Nagelschere','Mit der Lanzette','Mit dem Fingernagel','','mf97wu0'],
+ ['Was machst du ganz am Anfang der Maniküre?','Beide Hände ansehen und auf Verletzungen oder Auffälligkeiten achten','Alten Lack entfernen','Die linke Hand feilen','Die Hände ins Wasserbad legen','','m1h6llsz'],
+ ['Welche Hand feilst du zuerst?','Die linke Hand, sie kommt danach gleich ins Wasserbad','Die rechte Hand','Beide gleichzeitig','Die Hand mit den längeren Nägeln','','m1d3k12d'],
+ ['Was brauchst du zum Feilen der Nägel?','Nagelfeile, Frotteehandtuch, Serviette','Lanzette, Radierstab, H₂O₂','Nagelschere, Watte, Nagellack','Pferdefuß, Nagellackentferner, Watte','','m1qq3bd6'],
+ ['Welches Instrument brauchst du NICHT, um die Nagelhaut zu entfernen?','Nagelfeile','Lanzette','Radierstab','Nagelhautschieber','Für die Nagelhaut brauchst du: Nagelhautschere oder -zange, Nagelhautschieber, Pferdefuß aus Gummi, Lanzette, Radierstab, H₂O₂, Watte, warmes Wasser und eine Serviette.','m9s7slf'],
+ ['Auf welche zwei Arten kannst du die Nagelhaut entfernen?','Mit Nagelhautentferner oder durch Schneiden','Durch Feilen oder durch Lackieren','Durch Abreißen oder Abbeißen','Nur durch Schneiden','','m1jow2xk'],
+ ['Womit beginnst du, wenn du die Nagelhaut mit Nagelhautentferner entfernst?','Nagelhaut aufweichen','Nagelhaut mit dem Radierstab abtragen','Nagelhaut schneiden','Nagelhaut einmassieren','','m1bowpts'],
+ ['Was ist der letzte Schritt, wenn du die Nagelhaut schneidest?','Nagelhaut einmassieren und pflegen','Finger im Weichbad einweichen','Nagelhaut eincremen','Nagelhaut mit dem Radierstab abtragen','','m1lukqls'],
+ ['Was brauchst du zum Lackieren der Nägel?','Serviette, Watte, Nagellackentferner, Nagellack','Nagelfeile, Lanzette, Radierstab','Nagelschere, H₂O₂, warmes Wasser','Frotteehandtuch, Pferdefuß, Zange','','m1m04ls4'],
+ ['Was machst du immer, bevor du neuen Nagellack aufträgst?','Den alten Lack vollständig entfernen','Nagelöl auftragen','Die Nagelhaut schneiden','Die Hand eincremen','','m17da786'],
+ ['Welche Arten zu lackieren unterscheidet man?','Voll lackiert, Halbmond frei, Seitenränder frei','Nur voll lackiert','Spitze frei, Mitte lackiert','Rund, spitz, oval','','m1dibvlw'],
  ['Welche Grundformen der Nägel gibt es?','Rund, spitz, oval, breit','Lang, kurz, breit, schmal','Gelackt, nicht gelackt','Längsrillen, Querrillen',''],
  ['Wie beschreibst du die Form der Finger?','Lang, kurz, breit, schmal','Rund, spitz, oval, breit','Vollgelackt, seitenfrei','Weiße Flecken, Niednagel',''],
  ['Was zählt zu den Nagelveränderungen?','Weiße Flecken, Längsrillen, Querrillen, brüchige Nägel, Niednagel','Rund, spitz, oval, breit','Nagelmond, Nagelsaum, Nagelwall','Transparentlack, Decklack',''],
- ['Womit beginnt die Handmassage (außen)?','Ausstreichen der ganzen Hand (Streichmassage)','Handgelenk kreisen lassen','Auskneten der Handinnenfläche','Ausschütteln des Handgelenks',''],
- ['Wie streichst du bei der Streichmassage aus?','Aufwärts bis zum Ellenbogen mit leichtem Druck, abwärts auf der Unterseite ohne Druck','Abwärts mit starkem Druck','Nur am Handrücken hin und her','Mit Klopfbewegungen',''],
- ['Wie heißt die kreisende Bewegung mit den Daumenballen bis zum Ellenbogen?','Rotationsmassage','Streichmassage','Knetmassage','Vibrationsmassage',''],
- ['Womit knetest du den Unterarm (Knetmassage)?','Mit Daumen, 2. und 3. Finger seitlich nach aufwärts, abwärts ohne Druck','Mit der Faust nach unten','Mit dem Handballen klopfend','Mit allen Fingern im Kreis',''],
- ['Mit welchem Griff knetest du die Handinnenfläche aus?','Kammgriff (Faustgriff)','Zangengriff','Rückhandgriff','Pinzettengriff',''],
- ['Womit endet die Handmassage?','Ausstreichen der Hand zum Ellenbogen hin, Hand unbedingt aufstützen','Ausschütteln des Handgelenks','Kreisen des Handgelenks','Nachfedern des Handgelenks',''],
- ['Was kommt bei der Handmassage innen nach dem Nachfedern des Handgelenks?','Kreisen des Handgelenks mit Richtungswechsel','Ausstreichen des Handrückens mit beiden Daumen','Hand umdrehen','Rotationsmassage am Unterarm','']
-].forEach(m=>QUESTIONS.push({id:'naegel-m'+hash(m[0]),cat:'naegel',tag:'nagelbau',type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]}));
+ ['Womit beginnt die Handmassage auf der Außenseite?','Mit dem Streichen: Hand und Unterarm bis zum Ellenbogen ausstreichen','Handgelenk kreisen','Handfläche durchkneten','Handgelenk ausschütteln','','mzi16q'],
+ ['Wie führst du die Streichmassage aus?','Hinauf bis zum Ellenbogen mit leichtem Druck, auf der Unterseite ohne Druck zurück','Abwärts mit starkem Druck','Nur am Handrücken hin und her','Mit Klopfbewegungen','','m1h4ftky'],
+ ['Wie nennt man das Kreisen mit den Daumenballen bis zum Ellenbogen?','Rotationsmassage','Streichmassage','Knetmassage','Vibrationsmassage','','m14skdu8'],
+ ['Wie knetest du den Unterarm (Knetmassage)?','Seitlich nach oben mit Daumen, Zeige- und Mittelfinger, ohne Druck zurück','Mit der Faust nach unten','Mit dem Handballen klopfend','Mit allen Fingern im Kreis','','m1miv1mc'],
+ ['Mit welchem Griff knetest du die Handfläche durch?','Faustgriff (Kammgriff)','Zangengriff','Rückhandgriff','Pinzettengriff','','m1u3898s'],
+ ['Wie endet die Handmassage?','Hand Richtung Ellenbogen ausstreichen und dabei gut abstützen','Handgelenk ausschütteln','Handgelenk kreisen','Handgelenk seitlich nachfedern','','m1y0q1qq'],
+ ['Was folgt bei der Handmassage innen auf das seitliche Nachfedern des Handgelenks?','Das Handgelenk kreisen, dabei die Richtung wechseln','Den Handrücken mit beiden Daumen ausstreichen','Die Hand wenden','Kreisen am Unterarm','','mdttj10']
+].forEach(m=>QUESTIONS.push({id:'naegel-'+(m[6]||'m'+hash(m[0])),cat:'naegel',tag:'nagelbau',type:'mc',q:m[0],a:m[1],w:[m[2],m[3],m[4]],e:m[5]}));
 /* Rasierzüge-Fragen aus den 15 Zügen erzeugen */
 ZUEGE.forEach(([name,griff],i)=>{const n=i+1;
   const others=shuffle(ZUEGE.filter((z,j)=>j!==i&&z[0]!==name).map(z=>z[0])).slice(0,3);
@@ -1135,7 +1135,7 @@ function massageHTML(){return `<p class="lead">Die fünf Standard-Massagegriffe 
  <div class="row"><button class="btn primary" data-a="quiz" data-cat="" data-type="massage">Massagegriffe abfragen</button></div>
  <ol class="steps">${MGRIFFE.map(([n,w,t],i)=>`<li><div class="panel zug">${massageSVG(i)}<div class="stack"><h3>${n}</h3><p><strong>${esc(w)}</strong></p><p class="muted">${esc(t)}</p></div></div></li>`).join('')}</ol>
  <p class="small muted">Selbst gezeichnete Schemas. Die Zeichen zeigen die Art des Griffs: Pfeile = Streichen, Schlaufen = Kneten, Kreise = Friktion, Zickzack = Vibration, Punkte = Klopfen.</p>`;}
-/* Nagel-Schemas wie im Salon-Skript: Seitenansicht und Vorderansicht, beschriftet.
+/* Nagel-Schemas: Seitenansicht und Vorderansicht, beschriftet.
    Einträge: [Index in NAGELTEILE, Punkt x, y, Beschriftung x, y, Ausrichtung]. hi = Index: nur dieser Teil markiert (Abfrage) */
 const NAGEL_KURZ=['Nagelplatte','Nagelbett','Nagelwurzel (Matrix)','Nagelmond','Nagelhaut','Freier Nagelrand','Nagelsaum','Nagelfalz','Nagelwall','Fingerknochen'];
 const NAGEL_SEITE=[[2,133,128,150,32,'middle'],[7,134,96,200,62,'middle'],[4,182,100,305,32,'middle'],[3,196,110,410,62,'middle'],[5,451,114,490,78,'start'],[0,336,104,490,104,'start'],[6,396,114,490,132,'start'],[1,308,121,490,160,'start'],[9,196,195,196,195,'middle']];
@@ -1187,7 +1187,7 @@ function nagelHTML(){const ns=V.nsub||'aufbau';
   <section class="panel stack"><h3>Auftragen von Nagellack</h3><p class="eyebrow">Hilfsmittel</p><p>${INSTR[2].i.map(esc).join(', ')}</p><ul class="crit">${LACK_SCHRITTE.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p><strong>Arten:</strong> ${LACK_ARTEN.map(esc).join(' · ')}</p></section>`;
  else if(ns==='beurt')b=`<p class="muted">Hand- und Nagelpflege: Die Nagelplatte nach Form, Beschaffenheit und Veränderungen beurteilen.</p><section class="grid-2">${BEURTEILUNG.map(g=>`<div class="panel stack"><h3>${esc(g.t)}</h3><ul class="crit">${g.i.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')}</section>`;
  else b=`<section class="panel stack"><h3>Reihenfolge üben</h3>${ordHTML(V.ord)}</section>`;
- return `<section class="stack"><p class="lead">Aufbau des Nagels, Maniküre und Handmassage wie im Salon-Skript. Beim Fachgespräch solltest du jeden Teil zeigen und erklären können.</p>
+ return `<section class="stack"><p class="lead">Aufbau des Nagels, Maniküre und Handmassage Schritt für Schritt. Beim Fachgespräch solltest du jeden Teil zeigen und erklären können.</p>
  <div class="row"><button class="btn primary" data-a="quiz" data-cat="naegel" data-type="nagelbau">Nägel & Maniküre abfragen</button></div>${nav}</section>${b}`;}
 const ORD_LV=[['salon','Maniküre im Salon',MANI_SALON],['aussen','Handmassage außen',HM_AUSSEN],['innen','Handmassage innen',HM_INNEN],['entf','Nagelhautentferner',NH_ENTF],['schn','Nagelhaut schneiden',NH_SCHN]];
 function ordItems(l){return (ORD_LV.find(x=>x[0]===l)||ORD_LV[0])[2];}
@@ -1221,7 +1221,7 @@ function theorieHTML(){if(QZ)return quizHTML();
  <section class="grid">
   <div class="card stack"><div class="eyebrow">Wissensfragen</div><h3>Lernrunde</h3><p class="muted small">10 Fragen mit Auswahl. ${due?`${due} fällig zur Wiederholung.`:'Neue und fällige Fragen gemischt.'}</p><button class="btn primary" data-a="quiz" data-cat="" data-type="mc">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Wie beim Prüfer</div><h3>Prüferfragen</h3><p class="muted small">Offene Fragen: erst selbst laut antworten, dann mit der Musterantwort vergleichen. Ideal zu zweit.</p><button class="btn" data-a="quiz" data-cat="" data-type="open">Starten</button></div>
-  <div class="card stack"><div class="eyebrow">Berufsschule 1. + 2. Lehrjahr</div><h3>Fragenkatalog</h3><p class="muted small">${QUESTIONS.filter(q=>q.src==='katalog').length} Fragen mit Antworten aus dem Fragenkatalog, inklusive Kommunikation, Beratung und Arbeitsschutz.</p><button class="btn" data-a="quiz" data-cat="" data-type="katalog">Starten</button></div>
+  <div class="card stack"><div class="eyebrow">Berufsschule 1. + 2. Lehrjahr</div><h3>Grundwissen-Fragen</h3><p class="muted small">${QUESTIONS.filter(q=>q.src==='katalog').length} Fragen mit Musterantworten zum Schulstoff, inklusive Kommunikation, Beratung und Arbeitsschutz.</p><button class="btn" data-a="quiz" data-cat="" data-type="katalog">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Rasur</div><h3>Rasierzüge 1–15</h3><p class="muted small">Name, Reihenfolge und Griff jedes Rasierzugs abfragen.</p><button class="btn" data-a="quiz" data-cat="rasur" data-type="zug">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Nägel</div><h3>Nägel & Maniküre</h3><p class="muted small">Aufbau des Nagels am Schema, Ablauf der Maniküre, Handmassage, Instrumente und Lackieren.</p><button class="btn" data-a="quiz" data-cat="naegel" data-type="nagelbau">Starten</button></div>
   <div class="card stack"><div class="eyebrow">Generalprobe</div><h3>Fachgespräch-Simulation</h3><p class="muted small">5 zufällige Prüferfragen in 10 Minuten. Die Ausbilderin liest vor, der Lehrling antwortet.</p><button class="btn" data-a="quiz" data-cat="" data-type="sim">Starten</button></div>
@@ -1244,7 +1244,7 @@ function startQuiz(cat,type){const kind=type;let items;
 
 function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  const dots=`<div class="progress-dots" aria-hidden="true">${QZ.items.map((x,i)=>`<i class="${x.res==='yes'?'ok':x.res==='no'?'no':x.res==='part'?'part':i===QZ.i?'cur':''}"></i>`).join('')}</div>`;
- const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Fragenkatalog':QZ.kind==='zug'?'Rasierzüge':QZ.kind==='massage'?'Massagegriffe':QZ.kind==='nagelbau'?'Nägel & Maniküre':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
+ const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Grundwissen-Fragen':QZ.kind==='zug'?'Rasierzüge':QZ.kind==='massage'?'Massagegriffe':QZ.kind==='nagelbau'?'Nägel & Maniküre':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
  if(QZ.i>=n){const ok=QZ.items.filter(x=>x.res==='yes').length;
   return `<div class="quiz"><div class="eyebrow">${esc(title)}</div>${dots}<h1>${ok} von ${n} ${QZ.items.every(x=>x.q.type==='mc')?'richtig':'gewusst'}</h1>
   <p class="lead">${ok===n?'Ausgezeichnet!':ok>=n*.7?'Sehr gut, weiter so!':'Die Fragen, die noch nicht saßen, kommen bald wieder. So lernst du sie sicher.'}</p>
@@ -1260,7 +1260,7 @@ function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
   body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}else if(k===it.sel)cls='sel';return `<button data-a="sel" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
   ${it.pick==null&&it.sel!=null?`<div class="stack"><div class="small muted" style="text-align:center">Wie sicher bist du dir?</div><div class="row"><button class="btn primary" data-a="ans" data-s="1" style="flex:1">Sicher – prüfen</button><button class="btn" data-a="ans" data-s="0" style="flex:1">Geraten – prüfen</button></div></div>`:''}
   ${it.pick!=null?`<div class="explain"><strong>${titel}</strong> ${ok?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
- else{body=it.shown?`<div class="model"><div class="eyebrow">${q.src==='katalog'?'Antwort laut Fragenkatalog':'Das sollte in deiner Antwort vorkommen'}</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+ else{body=it.shown?`<div class="model"><div class="eyebrow">${q.src==='katalog'?'Musterantwort':'Das sollte in deiner Antwort vorkommen'}</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
   ${it.res?`<button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:`<div class="stack"><div class="small muted">Wie gut war die Antwort?</div><div class="row"><button class="btn" data-a="self" data-r="yes" style="border-color:var(--good);color:var(--good)">Gewusst</button><button class="btn" data-a="self" data-r="part" style="border-color:var(--warn);color:var(--warn)">Teilweise</button><button class="btn" data-a="self" data-r="no" style="border-color:var(--bad);color:var(--bad)">Noch nicht</button></div></div>`}`
   :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
  return `<div class="quiz"><div class="row" style="justify-content:space-between"><span class="eyebrow">${esc(title)} · ${esc(CAT[q.cat].name)}</span><span class="small muted num">Frage ${QZ.i+1} von ${n}</span></div>${dots}
