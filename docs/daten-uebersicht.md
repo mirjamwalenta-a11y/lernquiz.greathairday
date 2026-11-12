@@ -125,10 +125,14 @@ warum der Verkauf einen technischen Umbau braucht.
    `lerntool.html` und `schnuppertag.html` und kann dort entfernt werden.
 5. **Google Fonts selbst hosten.** Dann wird beim Laden keine IP-Adresse an
    Google übertragen. Das ist wenig Aufwand.
-6. **Nutzungsrechte an Inhalten.** Die Zwischenprüfung beruht laut Fußzeile
-   auf der Broschüre „Karriere mit Schere“ und dem Rasur-Skript der
-   Landesinnung Wien. Vor dem Verkauf klären, ob diese Inhalte kommerziell
-   genutzt werden dürfen. Sonst diese Teile umschreiben oder herausnehmen.
+6. **Nutzungsrechte an Inhalten: erledigt (2026-11-12).** Die Zwischenprüfung
+   war eng an Unterlagen der Landesinnung Wien und an einen Fragenkatalog
+   unklarer Herkunft angelehnt. Alle Texte sind jetzt in eigenen Worten
+   geschrieben: Grundwissen-Fragen, Maniküre-Ablauf, Rasierzüge,
+   Bewertungskriterien, Fehlerlisten, Hauttypen. Übernommen sind nur
+   Fakten und Fachbegriffe. Die Fußzeile verweist auf die verbindlichen
+   Prüfungsunterlagen der Landesinnung, nicht mehr als Quelle. Wer sicher
+   gehen will, kann die Landesinnung trotzdem über das Angebot informieren.
 7. **Konto löschen.** Ein Lehrling kann sein Konto noch nicht selbst löschen
    (nötig für DSGVO und Apple). Die Meisterin kann heute nur sperren.
 8. **Schnuppertag und Probezeit** sind Personalwerkzeuge des eigenen Salons.
