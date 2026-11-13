@@ -619,6 +619,25 @@ textarea{resize:vertical;margin-bottom:0}
     <input type="text" id="neu-pin" placeholder="z.B. 123456" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
     <button class="btn btn-g" id="btn-neu-speichern">Lehrling anlegen</button>
     <button class="btn btn-h" id="btn-neu-back">← Zurück</button>
+
+    <!-- Mehrere Test-Zugänge auf einmal (z. B. für einen Salon, der die App ausprobiert) -->
+    <div id="mt-box" style="margin-top:28px;padding-top:20px;border-top:1px solid #E4DBC5">
+      <h3 style="font-family:Poppins,system-ui,sans-serif;font-weight:600;font-size:16px;margin-bottom:6px">Mehrere Test-Zugänge auf einmal</h3>
+      <p style="font-size:13px;color:#6B6455;line-height:1.5;margin-bottom:14px">Zum Ausprobieren, z.&nbsp;B. für die Lehrlinge eines anderen Salons. Die Zugänge heißen „Kürzel 1“, „Kürzel 2“ … und bekommen zufällige PINs. Sie stehen unten in der Gruppe „Zum Testen“. Nur du als Meisterin siehst ihre Ergebnisse.</p>
+      <div id="mt-fehler" class="fehler-box" style="display:none"></div>
+      <div class="lab">Kürzel (nur Buchstaben und Ziffern)</div>
+      <input type="text" id="mt-kuerzel" placeholder="z.B. SK" maxlength="12" autocapitalize="characters">
+      <div class="lab">Anzahl</div>
+      <select id="mt-anzahl" style="margin-bottom:10px"></select>
+      <div class="lab">Lehrjahr</div>
+      <select id="mt-lj" style="margin-bottom:16px">
+        <option value="1">1. Lehrjahr</option>
+        <option value="2">2. Lehrjahr</option>
+        <option value="3">3. Lehrjahr</option>
+      </select>
+      <button class="btn btn-g" id="btn-mt-anlegen">Test-Zugänge anlegen</button>
+      <div id="mt-ergebnis"></div>
+    </div>
   </div>
 </div>
 
@@ -3461,14 +3480,19 @@ function pruefZurueck(){
 // Lehrling in die Liste eintragen – direkt mit dem Meisterin-Token (RLS-Policy
 // lehrlinge_meisterin über ist_meisterin()). Die frühere Edge Function
 // (rapid-function, insert_lehrling) trug seit Ende August nichts mehr ein.
-async function lehrlingEintragen(meisterinToken,userId,name,lj){
+async function lehrlingEintragen(meisterinToken,userId,name,lj,extra){
   if(!meisterinToken) return 'Meisterin nicht angemeldet – bitte neu einloggen.';
   try{
+    var zeile={user_id:userId,name:name,lehrjahr:lj};
+    if(extra) Object.keys(extra).forEach(function(k){zeile[k]=extra[k];});
     var r=await fetch(SB_URL+'/rest/v1/lehrlinge',{method:'POST',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+meisterinToken,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({user_id:userId,name:name,lehrjahr:lj})});
+      body:JSON.stringify(zeile)});
     if(r.ok) return null;
-    var t=await r.text(); try{ var j=JSON.parse(t); return j.message||t; }catch(e){ return t||('HTTP '+r.status); }
+    var t=await r.text(), msg; try{ var j=JSON.parse(t); msg=j.message||t; }catch(e){ msg=t||('HTTP '+r.status); }
+    // Spalte nur_test fehlt (Migration 20261107_lehrlinge_nur_test.sql nicht ausgeführt): ohne Zusatzfelder eintragen
+    if(extra && /nur_test/.test(msg)) return lehrlingEintragen(meisterinToken,userId,name,lj,null);
+    return msg;
   }catch(e){ return e.message||String(e); }
 }
 // Nach signUp/signIn des Lehrlings wieder die Sitzung der Meisterin herstellen
@@ -3479,14 +3503,9 @@ async function meisterinSitzungZurueck(sessionVorher){
       await sb.auth.setSession({access_token:sessionVorher.access_token,refresh_token:sessionVorher.refresh_token});
   }catch(e){}
 }
-async function speichereNeuenLehrling(){
-  if(!ISTMEISTERIN) return;
-  var name=document.getElementById('neu-name').value.trim();
-  var lj=parseInt(document.getElementById('neu-lj').value);
-  var pin=document.getElementById('neu-pin').value.trim();
-  versteckeFehler('neu-fehler');
-  if(!name||!pin){zeigeFehler('neu-fehler','Bitte alle Felder ausfüllen.');return;}
-  if(pin.length!==6||!/^\d{6}$/.test(pin)){zeigeFehler('neu-fehler','PIN muss genau 6 Ziffern sein.');return;}
+// Konto + Listeneintrag für einen Lehrling anlegen. Rückgabe: null = ok,
+// sonst {art:'vorhanden'|'fehler', text}. Die Meisterin-Sitzung bleibt erhalten.
+async function lehrlingKontoAnlegen(name,lj,pin,extra){
   var email=name.toLowerCase().replace(/\s+/g,'.')+'.lernquiz@greathairday.at';
   // Meisterin-Sitzung VOR dem signUp/signIn sichern: die Sitzung kann dabei zum
   // Lehrling wechseln oder abgemeldet werden.
@@ -3503,24 +3522,89 @@ async function speichereNeuenLehrling(){
     var {data:signInData,error:signInErr}=await sb.auth.signInWithPassword({email:email,password:pin});
     if(signInErr){
       await meisterinSitzungZurueck(vorher);
-      zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen existiert bereits. Bitte einen anderen Namen oder andere PIN verwenden.');
-      return;
+      return {art:'vorhanden',text:'Ein Lehrling mit diesem Namen existiert bereits. Bitte einen anderen Namen oder andere PIN verwenden.'};
     }
     userId=signInData.user.id;
     await sb.auth.signOut({scope:'local'});
     await meisterinSitzungZurueck(vorher);
     var {data:vorhandene}=await sb.from('lehrlinge').select('id').eq('user_id',userId).maybeSingle();
-    if(vorhandene){zeigeFehler('neu-fehler','Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.');return;}
+    if(vorhandene) return {art:'vorhanden',text:'Ein Lehrling mit diesem Namen ist bereits aktiv vorhanden.'};
   } else {
-    if(authErr){await meisterinSitzungZurueck(vorher);zeigeFehler('neu-fehler','Fehler: '+authErr.message);return;}
+    if(authErr){await meisterinSitzungZurueck(vorher);return {art:'fehler',text:'Fehler: '+authErr.message};}
     userId=authData.user.id;
     await meisterinSitzungZurueck(vorher);
     await sb.rpc('confirm_user_email',{user_id:userId}).catch(function(){});
   }
-  var fehler=await lehrlingEintragen(meisterinToken,userId,name,lj);
-  if(fehler){zeigeFehler('neu-fehler','Datenbankfehler: '+fehler);return;}
+  var fehler=await lehrlingEintragen(meisterinToken,userId,name,lj,extra);
+  return fehler?{art:'fehler',text:'Datenbankfehler: '+fehler}:null;
+}
+async function speichereNeuenLehrling(){
+  if(!ISTMEISTERIN) return;
+  var name=document.getElementById('neu-name').value.trim();
+  var lj=parseInt(document.getElementById('neu-lj').value);
+  var pin=document.getElementById('neu-pin').value.trim();
+  versteckeFehler('neu-fehler');
+  if(!name||!pin){zeigeFehler('neu-fehler','Bitte alle Felder ausfüllen.');return;}
+  if(pin.length!==6||!/^\d{6}$/.test(pin)){zeigeFehler('neu-fehler','PIN muss genau 6 Ziffern sein.');return;}
+  var r=await lehrlingKontoAnlegen(name,lj,pin,null);
+  if(r){zeigeFehler('neu-fehler',r.text);return;}
   document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
   await ladeDashboard();zeige('s-dashboard');
+}
+
+// ── Mehrere Test-Zugänge auf einmal (Meisterin-Bereich → Neuer Lehrling) ──
+// Namen „Kürzel 1“, „Kürzel 2“ …, zufällige 6-stellige PINs (crypto), nur_test = true.
+// Gibt es einen Namen schon, wird die nächste Nummer genommen. Die PINs werden nur
+// hier einmal angezeigt (am Server liegen sie nur verschlüsselt).
+function zufallsPin(){
+  var a=new Uint32Array(1); crypto.getRandomValues(a);
+  return String(100000+(a[0]%900000));
+}
+async function testZugaengeAnlegen(){
+  if(!ISTMEISTERIN) return;
+  var k=document.getElementById('mt-kuerzel').value.trim().toUpperCase();
+  var n=parseInt(document.getElementById('mt-anzahl').value,10)||0;
+  var lj=parseInt(document.getElementById('mt-lj').value,10)||1;
+  var btn=document.getElementById('btn-mt-anlegen'), box=document.getElementById('mt-ergebnis');
+  versteckeFehler('mt-fehler');
+  if(!/^[A-Z0-9]{1,12}$/.test(k)){zeigeFehler('mt-fehler','Bitte ein Kürzel nur aus Buchstaben A–Z und Ziffern eingeben (ohne Umlaute und Leerzeichen).');return;}
+  if(n<1||n>15){zeigeFehler('mt-fehler','Bitte 1 bis 15 Zugänge wählen.');return;}
+  btn.disabled=true;
+  var ok=[], probleme=[], nr=1, versuche=0;
+  while(ok.length<n && versuche<n+30){
+    versuche++;
+    var name=k+' '+nr, pin=zufallsPin();
+    box.innerHTML='<p style="font-size:13px;color:#6B6455;margin-top:12px">Lege Zugang '+(ok.length+1)+' von '+n+' an …</p>';
+    var r=await lehrlingKontoAnlegen(name,lj,pin,{nur_test:true});
+    nr++;
+    if(!r){ ok.push({name:name,pin:pin}); }
+    else if(r.art==='vorhanden'){ continue; }
+    else { probleme.push(name+': '+r.text); if(/rate|too many|429/i.test(r.text)) break; }
+    await new Promise(function(res){setTimeout(res,400);});
+  }
+  btn.disabled=false;
+  var url='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html';
+  var text='Test-Zugänge Lern-App ('+lj+'. Lehrjahr)\nAnmelden: '+url+'\nName und PIN eingeben:\n'+ok.map(function(z){return z.name+' – PIN '+z.pin;}).join('\n');
+  var h='';
+  if(ok.length){
+    h+='<div style="margin-top:14px;background:#F3EBD9;border:1px solid #896C32;border-radius:10px;padding:12px 14px">'+
+      '<p style="font-weight:600;font-size:14px;margin-bottom:6px">'+ok.length+' Test-Zugänge angelegt</p>'+
+      '<p style="font-size:12px;color:#6B6455;margin-bottom:8px">Bitte jetzt kopieren und weitergeben: Die PINs werden nur hier einmal angezeigt.</p>'+
+      '<pre id="mt-liste" style="white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 ui-monospace,Menlo,monospace;background:#fff;border-radius:8px;padding:10px;margin-bottom:10px">'+escHtml(text)+'</pre>'+
+      '<button class="btn btn-g" id="btn-mt-kopieren">Liste kopieren</button></div>';
+  }
+  if(probleme.length){
+    h+='<div class="fehler-box" style="margin-top:12px">Nicht angelegt:<br>'+probleme.map(escHtml).join('<br>')+
+      (/rate|too many|429/i.test(probleme.join(' '))?'<br><br>Zu viele Anmeldungen in kurzer Zeit. Bitte 5 Minuten warten und dann nochmal starten – schon angelegte Zugänge werden übersprungen.':'')+'</div>';
+  }
+  box.innerHTML=h;
+  var kb=document.getElementById('btn-mt-kopieren');
+  if(kb) kb.addEventListener('click',function(){
+    var fertig=function(){kb.textContent='✓ Kopiert';};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(fertig,function(){alert(text);});
+    else alert(text);
+  });
+  if(ok.length) ladeDashboard().catch(function(){});
 }
 
 var EDIT_LEHRLING = null;
@@ -3850,6 +3934,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-pruef-back').addEventListener('click',pruefZurueck);
   document.getElementById('btn-neu-speichern').addEventListener('click',speichereNeuenLehrling);
   document.getElementById('btn-neu-back').addEventListener('click',function(){zeige('s-dashboard');});
+  (function(){var sel=document.getElementById('mt-anzahl');if(sel){for(var i=1;i<=15;i++){var o=document.createElement('option');o.value=i;o.textContent=i+(i===1?' Zugang':' Zugänge');if(i===10)o.selected=true;sel.appendChild(o);}}})();
+  document.getElementById('btn-mt-anlegen').addEventListener('click',testZugaengeAnlegen);
   document.getElementById('btn-edit-speichern').addEventListener('click',speichereEditLehrling);
   document.getElementById('btn-edit-back').addEventListener('click',function(){if(EDIT_LEHRLING) zeigeDetailLehrling(EDIT_LEHRLING); else zeige('s-dashboard');});
   document.getElementById('btn-verw-back').addEventListener('click',function(){zeige('s-dashboard');});
@@ -4253,6 +4339,6 @@ async function claudeAnfrage(system, userText, maxTokens) {
 <script src="lern-leiste.js?v=20261107w" data-aktiv="ueben" data-verstecken-bei="body.ll-aus" defer></script>  <!-- Leiste unten nur im Quiz-Bereich -->
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#s-login" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 <div id="druck" aria-hidden="true"></div>
-<script src="rechtliches-fuss.js?v=20261112" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="rechtliches-fuss.js?v=20261113" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 </body>
 </html>
