@@ -325,6 +325,8 @@ body.mit-leiste .leiste{display:flex}
     ✂ Du bist als Meisterin eingeloggt — <button onclick="zeige('admin')" style="background:none;border:none;color:#896C32;font-size:13px;cursor:pointer;text-decoration:underline;font-family:Poppins,system-ui;padding:0">Admin-Bereich öffnen</button>
   </div>
 
+  <div id="woerni-sagt"></div>  <!-- „Wörni sagt“: Spruch des Tages (woernis-tipps.js) -->
+
   <div class="st-wz" id="st-wz" hidden>
     <div class="st-wz-oben"><b id="st-wz-titel"></b><span id="st-wz-zahl"></span></div>
     <div class="st-wz-tage" id="st-wz-tage"></div>
@@ -5120,5 +5122,7 @@ zeige = function(seite) {
 </script>
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#p-mlogin" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 <script src="rechtliches-fuss.js?v=20261112" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="woernis-tipps.js?v=20261113"></script>
+<script>try{var w=document.getElementById('woerni-sagt');if(w&&window.woerniSagtHTML)w.innerHTML=woerniSagtHTML();}catch(e){}</script>
 </body>
 </html>
