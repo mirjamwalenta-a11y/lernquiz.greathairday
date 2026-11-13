@@ -14,9 +14,9 @@ window.WOERNIS_TIPPS = [
   { id: 'rad', art: 'spruch', modul: '',
     titel: 'Das Rad nicht zweimal erfinden',
     text: 'Ein Rad muss man nicht zweimal erfinden. Was sich bewährt hat, darfst du übernehmen. Schau dir bei erfahrenen Kolleginnen und Kollegen ab, wie sie es machen, und frag nach.' },
-  { id: 'perspektive-m', art: 'tipp', modul: 'beratung',
+  { id: 'perspektive-m', art: 'spruch', modul: '',
     titel: 'M, W, E oder 3?',
-    text: 'Mal ein großes M auf ein Blatt und leg es zwischen dich und die Kundin. Von dir aus ist es ein M, von gegenüber ein W, von der Seite ein E oder eine 3. Alle sehen dasselbe und trotzdem etwas anderes. Darum frag in der Beratung immer nach, wie die Kundin es sieht, bevor du anfängst.',
+    text: 'Mal ein großes M auf ein Blatt. Du siehst ein M, wer dir gegenübersitzt, sieht ein W, von der Seite ist es ein E oder eine 3. Alle haben recht, je nachdem, wo sie stehen. Bei einem Konflikt im Team oder mit einer Kundin hilft es, sich zuerst auf den Platz des anderen zu stellen: Wie sieht es von dort aus?',
     bild: 'perspektive-m' }
 ];
 
@@ -27,8 +27,8 @@ window.WOERNIS_TIPPS = [
   var WOERNI_BILDER = {
     // Ein M, viermal gedreht: so sieht es jemand von einer anderen Seite
     'perspektive-m': function () {
-      var felder = [[0, 'M', 'du'], [-90, 'E', 'links'], [180, 'W', 'Kundin'], [90, '3', 'rechts']];
-      return '<div class="woerni-bild" role="img" aria-label="Ein M aus vier Blickrichtungen: du siehst ein M, von links ein E, die Kundin gegenüber ein W, von rechts eine 3">' + felder.map(function (f) {
+      var felder = [[0, 'M', 'du'], [-90, 'E', 'links'], [180, 'W', 'gegen\u00ADüber'], [90, '3', 'rechts']];
+      return '<div class="woerni-bild" role="img" aria-label="Ein M aus vier Blickrichtungen: du siehst ein M, von links ein E, wer gegenübersitzt ein W, von rechts eine 3">' + felder.map(function (f) {
         return '<figure><svg viewBox="0 0 60 60" aria-hidden="true"><g transform="rotate(' + f[0] + ' 30 30)">' +
           '<path d="M14 46V14l16 20 16-20v32" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g></svg>' +
           '<figcaption><b>' + f[1] + '</b>' + f[2] + '</figcaption></figure>';
@@ -44,9 +44,9 @@ window.WOERNIS_TIPPS = [
     '.woerni-titel{font-size:15px;font-weight:600;margin:0 0 4px;line-height:1.3}' +
     '.woerni-text{font-size:13.5px;line-height:1.55;margin:0;color:#3A342A}' +
     '.woerni-bild{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:10px 0 2px;color:#896C32}' +
-    '.woerni-bild figure{margin:0;background:#fff;border-radius:8px;padding:6px 4px 6px;text-align:center}' +
+    '.woerni-bild figure{margin:0;background:#fff;border-radius:8px;padding:6px 2px;text-align:center}' +
     '.woerni-bild svg{width:100%;max-width:56px;height:auto;display:block;margin:0 auto}' +
-    '.woerni-bild figcaption{font-size:11px;line-height:1.25;color:#6B6455}' +
+    '.woerni-bild figcaption{font-size:10.5px;hyphens:manual;line-height:1.25;color:#6B6455}' +
     '.woerni-bild figcaption b{display:block;font-size:13px;color:#211D17}';
   function cssEinmal() {
     if (document.getElementById('woerni-css')) return;
