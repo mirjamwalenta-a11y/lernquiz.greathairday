@@ -7,14 +7,19 @@
 <title>Impressum &amp; Datenschutz</title>
 <!--
   Impressum, Datenschutzerklärung und Nutzungsbedingungen der Lern-Apps.
-  STAND: GERÜST. Alles in [eckigen Klammern] ist ein Platzhalter und muss
-  vor dem Verkauf von einer Anwältin bzw. der Steuerberatung geprüft und
-  ausgefüllt werden. Grundlage für die Datenschutzerklärung:
-  docs/daten-uebersicht.md (welche Daten wo gespeichert werden).
+  STAND: ENTWURF vom 2026-11-13.
+  - Gelb (.offen): Angabe fehlt noch.
+  - Gestrichelt umrandet (.vorschlag): Formulierungsvorschlag, muss noch von
+    einer Anwältin geprüft werden.
+  Grundlage für die Datenschutzerklärung: docs/daten-uebersicht.md.
 
-  CLAUDE.md, Regel 2: Die Angaben im Impressum sind Pflichtangaben eines
-  Unternehmens und dürfen hier stehen. Bitte eine geschäftliche
-  E-Mail-Adresse verwenden, keine private.
+  WICHTIG: Einige Vorschläge beschreiben, wie es im Abo sein SOLL
+  (z. B. automatische Löschfristen, Datenexport bei Kündigung). Diese
+  Funktionen müssen gebaut sein, bevor die Texte als endgültig gelten.
+
+  CLAUDE.md, Regel 2: Die Angaben im Impressum sind gesetzliche
+  Pflichtangaben des Unternehmens (geschäftliche Adresse und
+  geschäftliche E-Mail-Adresse). Keine privaten Daten ergänzen.
 
   Bewusst ohne Google Fonts und ohne Supabase: Diese Seite lädt nichts von
   fremden Servern.
@@ -44,6 +49,8 @@ dt{color:var(--muted);font-size:14px}
 dd{margin:0}
 @media (max-width:520px){dl{grid-template-columns:1fr}dd{margin-bottom:6px}}
 .offen{background:var(--offen-bg);color:var(--offen-ink);border-radius:5px;padding:0 4px;font-size:14px}
+.vorschlag{border:1.5px dashed var(--accent);border-radius:10px;padding:8px 12px 2px;margin-bottom:10px}
+.vorschlag::before{content:"Vorschlag, wird noch rechtlich geprüft";display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
 .hinweis{background:var(--soft);border-left:3px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:16px}
 .stand{color:var(--muted);font-size:13px}
 a{color:var(--accent)}
@@ -55,7 +62,7 @@ a{color:var(--accent)}
   <h1>Impressum, Datenschutz &amp; Nutzungsbedingungen</h1>
   <p class="sub">Rechtliche Angaben zu den Lern-Apps (Lernquiz, Lern-Tool und Lern-Module).</p>
 
-  <div class="hinweis"><strong>Entwurf.</strong> Die gelb markierten Stellen sind Platzhalter. Diese Seite wird vor dem Angebot an andere Salons von einer Anwältin geprüft und vervollständigt.</div>
+  <div class="hinweis"><strong>Entwurf.</strong> <span class="offen">Gelb</span> markierte Angaben fehlen noch. Gestrichelt umrandete Texte sind Vorschläge und werden noch von einer Anwältin geprüft.</div>
 
   <nav class="inhalt" aria-label="Inhalt">
     <a href="#impressum">Impressum</a>
@@ -69,93 +76,131 @@ a{color:var(--accent)}
     <h2>Impressum</h2>
     <p class="stand">Informationspflicht laut § 5 E-Commerce-Gesetz, § 14 Unternehmensgesetzbuch, § 63 Gewerbeordnung und Offenlegungspflicht laut § 25 Mediengesetz.</p>
     <dl>
-      <dt>Unternehmen</dt><dd><span class="offen">[Name bzw. Firmenname]</span></dd>
-      <dt>Unternehmensgegenstand</dt><dd><span class="offen">[z. B. Friseurbetrieb; Entwicklung und Vertrieb von Lern-Software]</span></dd>
-      <dt>Anschrift</dt><dd><span class="offen">[Straße Nr., PLZ Ort, Österreich]</span></dd>
-      <dt>E-Mail</dt><dd><span class="offen">[geschäftliche E-Mail-Adresse]</span></dd>
-      <dt>Telefon</dt><dd><span class="offen">[optional]</span></dd>
-      <dt>UID-Nummer</dt><dd><span class="offen">[ATU…, falls vorhanden]</span></dd>
-      <dt>Firmenbuch</dt><dd><span class="offen">[Firmenbuchnummer und -gericht, falls eingetragen]</span></dd>
-      <dt>Mitglied der</dt><dd><span class="offen">[Wirtschaftskammer, Landesinnung]</span></dd>
-      <dt>Gewerbebehörde</dt><dd><span class="offen">[Bezirkshauptmannschaft bzw. Magistrat]</span></dd>
-      <dt>Gewerbe</dt><dd><span class="offen">[Gewerbewortlaut; für den Software-Verkauf ggf. eigenes Gewerbe – Steuerberatung fragen]</span></dd>
-      <dt>Berufsrecht</dt><dd>Gewerbeordnung: <a href="https://www.ris.bka.gv.at" rel="noopener">www.ris.bka.gv.at</a></dd>
+      <dt>Unternehmen</dt><dd>Mirjam Walenta – A Great Hair Day<br>Einzelunternehmen</dd>
+      <dt>Unternehmensgegenstand</dt><dd>Friseurbetrieb; Entwicklung und Vertrieb einer Lern-App für die Lehrlingsausbildung im Friseurhandwerk</dd>
+      <dt>Anschrift</dt><dd>Rechte Wienzeile 47, <span class="offen">[PLZ]</span> Wien, Österreich</dd>
+      <dt>E-Mail</dt><dd><a href="mailto:walenta@greathairday.at">walenta@greathairday.at</a></dd>
+      <dt>UID-Nummer</dt><dd>ATU70253325</dd>
+      <dt>Gewerbe</dt><dd>Friseure und Perückenmacher (Stylisten)<br><span class="offen">[Ob für den Verkauf der Lern-App ein weiteres Gewerbe nötig ist, klärt die Steuerberatung.]</span></dd>
+      <dt>Gewerbebehörde</dt><dd>Magistratisches Bezirksamt für den 4. und 5. Bezirk, Wien</dd>
+      <dt>Mitglied der</dt><dd>Wirtschaftskammer Wien, Landesinnung Wien der Friseure</dd>
+      <dt>Berufsrecht</dt><dd>Gewerbeordnung, abrufbar unter <a href="https://www.ris.bka.gv.at" rel="noopener">www.ris.bka.gv.at</a></dd>
     </dl>
     <h3>Blattlinie</h3>
-    <p><span class="offen">[z. B.: Lern- und Übungsinhalte für die Ausbildung im Friseurhandwerk.]</span></p>
-    <h3>Quellen der Lerninhalte</h3>
-    <p><span class="offen">[Quellen nennen und Nutzungsrechte klären, z. B. Inhalte, die sich auf Unterlagen der Landesinnung beziehen.]</span></p>
+    <p>Lern- und Übungsinhalte für die Ausbildung im Friseurhandwerk sowie Informationen zum Angebot der Lern-App.</p>
+    <h3>Lerninhalte</h3>
+    <p>Alle Lerninhalte sind selbst erstellt. Sie orientieren sich an den Anforderungen der Zwischen- und Lehrabschlussprüfung im Friseurhandwerk. Für die Prüfung verbindlich sind immer die aktuellen Prüfungsunterlagen der Landesinnung. Zu den Bildern siehe <a href="#ki">KI-Hinweis</a>.</p>
   </section>
 
   <!-- ═══════════════════════ DATENSCHUTZ ═══════════════════════ -->
   <section id="datenschutz">
     <h2>Datenschutzerklärung</h2>
-    <p class="stand">Stand: <span class="offen">[Datum]</span></p>
+    <p class="stand">Stand: Entwurf vom 13. November 2026</p>
 
-    <h3>1. Verantwortliche Stelle</h3>
-    <p><span class="offen">[Wer ist verantwortlich? Heute: der Salon. Wenn andere Salons die App nutzen: Jeder Salon ist für die Daten seiner Lehrlinge verantwortlich, die Anbieterin verarbeitet sie in seinem Auftrag (Auftragsverarbeitungsvertrag).]</span></p>
+    <h3>1. Wer ist verantwortlich?</h3>
+    <div class="vorschlag">
+      <p><strong>Im eigenen Salon:</strong> Mirjam Walenta – A Great Hair Day, Rechte Wienzeile 47, <span class="offen">[PLZ]</span> Wien, <a href="mailto:walenta@greathairday.at">walenta@greathairday.at</a>.</p>
+      <p><strong>Für Salons mit Abo:</strong> Jeder Salon, der die App nutzt, ist für die Daten seiner Lehrlinge, Bewerberinnen und Bewerber selbst verantwortlich. Wir verarbeiten diese Daten nur in seinem Auftrag und nach seinen Weisungen (Auftragsverarbeitung nach Art. 28 DSGVO, mit einem eigenen Vertrag). Fragen zu diesen Daten richtest du am besten an deinen Ausbildungsbetrieb. Schreibst du uns, leiten wir deine Anfrage an den Salon weiter.</p>
+    </div>
 
     <h3>2. Welche Daten wir verarbeiten</h3>
     <ul>
       <li><strong>Zugang:</strong> Name, Lehrjahr, PIN (verschlüsselt gespeichert), Konto der Meisterin (E-Mail und Passwort, verschlüsselt).</li>
       <li><strong>Lernfortschritt:</strong> Quiz-Ergebnisse, Stärken und Schwächen je Thema, Wiederholungen, Abzeichen und Lernserien.</li>
       <li><strong>Ausbildungs-Dokumentation:</strong> Praxis-Tagebuch, Prüfgespräche, Farbpläne mit Rückmeldung der Meisterin, Notizen der Meisterin.</li>
-      <li><strong>Bewerbung und Probezeit</strong> (nur für die Meisterin sichtbar): Ergebnisse von Schnuppertagen, Probezeit-Einschätzungen und Notizen.</li>
-      <li><strong>Auf dem Gerät</strong> (nicht am Server): Einstellungen und Übungsstände einzelner Module im Browser-Speicher.</li>
-      <li><strong>KI-Trainer:</strong> Texte, die im Trainer eingegeben werden.</li>
+      <li><strong>Bewerbung und Probezeit</strong> (nur für die Meisterin sichtbar): Ergebnisse von Schnuppertagen, Einschätzungen in der Probezeit und Notizen.</li>
+      <li><strong>Abo und Rechnung</strong> (bei Salons mit Abo): Name und Anschrift des Salons, Ansprechperson, E-Mail-Adresse, UID-Nummer, Rechnungen und Zahlungen.</li>
+      <li><strong>Auf dem Gerät</strong> (nicht am Server): Anmeldung, Einstellungen und Übungsstände einzelner Module im Speicher des Browsers. Wir verwenden keine Cookies für Werbung oder Analyse.</li>
+      <li><strong>Beim Aufruf der Seiten:</strong> technisch notwendige Daten wie die IP-Adresse.</li>
     </ul>
-    <p><span class="offen">[Vollständige Liste: siehe interne Daten-Übersicht.]</span></p>
 
-    <h3>3. Zweck und Rechtsgrundlage</h3>
-    <p><span class="offen">[Zwecke (Ausbildung, Lernfortschritt, Dokumentation) und Rechtsgrundlagen nach Art. 6 DSGVO je Datenart.]</span></p>
+    <h3>3. Wofür und auf welcher Grundlage</h3>
+    <div class="vorschlag">
+      <ul>
+        <li><strong>App bereitstellen, Konten, Lernfortschritt, Ausbildungs-Dokumentation:</strong> zur Erfüllung des Vertrags mit dem Salon und zur Unterstützung der Ausbildung (Art. 6 Abs. 1 lit. b und f DSGVO).</li>
+        <li><strong>Schnuppertag und Probezeit:</strong> zur Anbahnung und Durchführung eines Lehrverhältnisses (Art. 6 Abs. 1 lit. b DSGVO).</li>
+        <li><strong>Rechnungen:</strong> zur Erfüllung gesetzlicher Pflichten, z. B. Aufbewahrung nach Steuerrecht (Art. 6 Abs. 1 lit. c DSGVO).</li>
+        <li><strong>Technisch notwendige Daten beim Aufruf:</strong> für einen sicheren und zuverlässigen Betrieb (Art. 6 Abs. 1 lit. f DSGVO).</li>
+      </ul>
+    </div>
 
-    <h3>4. Empfänger und Dienstleister</h3>
+    <h3>4. Dienstleister</h3>
     <ul>
-      <li><strong>Supabase</strong> (Datenbank und Anmeldung) – <span class="offen">[Serverstandort/Region prüfen, Auftragsverarbeitungsvertrag]</span></li>
-      <li><strong>GitHub Pages</strong> (Bereitstellung der App) – <span class="offen">[Anbieter in den USA, Datenübermittlung prüfen]</span></li>
-      <li><strong>Anthropic</strong> (KI-Trainer „Wörni“, nur im eigenen Salon) – <span class="offen">[Anbieter in den USA, Datenübermittlung prüfen]</span></li>
-      <li><strong>jsDelivr</strong> (Programm-Bibliothek von Supabase) – <span class="offen">[Anbieter und Datenübermittlung prüfen]</span></li>
+      <li><strong>Supabase</strong> (Datenbank und Anmeldung), Supabase Inc., USA. Serverstandort: <span class="offen">[Region eintragen]</span>.</li>
+      <li><strong>GitHub Pages</strong> (Bereitstellung der Seiten), GitHub Inc., USA.</li>
+      <li><strong>jsDelivr</strong> (Programm-Bibliothek für die Anmeldung), weltweites Netzwerk.</li>
+      <li><strong>Anthropic</strong> (KI-Trainer „Wörni“), Anthropic PBC, USA. Nur im eigenen Salon der Anbieterin, nicht Teil des Abos.</li>
     </ul>
+    <p>Schriften und Bilder laden wir vom eigenen Server, nicht von Google oder anderen fremden Diensten. Es gibt keine Werbung, kein Tracking und keine Analyse-Tools.</p>
+    <div class="vorschlag">
+      <p>Mit allen Dienstleistern bestehen Verträge zur Auftragsverarbeitung. Werden Daten in die USA übermittelt, stützt sich das auf das EU-US Data Privacy Framework bzw. auf Standardvertragsklauseln der EU-Kommission.</p>
+    </div>
 
-    <h3>5. Speicherdauer</h3>
-    <p><span class="offen">[Wie lange bleiben Daten gespeichert, z. B. bis Ende der Lehrzeit plus X Monate, Bewerbungen X Monate?]</span></p>
+    <h3>5. Wie lange wir Daten speichern</h3>
+    <div class="vorschlag">
+      <ul>
+        <li><strong>Lernfortschritt und Ausbildungs-Dokumentation:</strong> bis zum Ende der Lehrzeit, danach werden sie innerhalb von 3 Monaten gelöscht. Der Salon kann sie jederzeit früher löschen lassen.</li>
+        <li><strong>Schnuppertag ohne Lehrverhältnis:</strong> 6 Monate, dann werden die Daten gelöscht.</li>
+        <li><strong>Kündigung des Abos:</strong> Auf Wunsch stellen wir dem Salon seine Daten als Datei zur Verfügung. 30 Tage nach Ende des Abos werden sie gelöscht.</li>
+        <li><strong>Rechnungen:</strong> 7 Jahre, wie gesetzlich vorgeschrieben.</li>
+        <li><strong>Daten auf dem Gerät:</strong> bis du sie im Browser löschst.</li>
+      </ul>
+    </div>
 
     <h3>6. Minderjährige</h3>
-    <p><span class="offen">[Lehrlinge sind oft unter 18. Hinweis, wie damit umgegangen wird.]</span></p>
+    <div class="vorschlag">
+      <p>Viele Lehrlinge sind unter 18 Jahre alt. Ihre Konten legt der Ausbildungsbetrieb an. Die App zeigt keine Werbung und verwendet weder Tracking noch Analyse-Tools. Wir verarbeiten nur die Daten, die für die Ausbildung nötig sind.</p>
+    </div>
 
     <h3>7. Deine Rechte</h3>
-    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Wende dich dafür an <span class="offen">[Kontakt]</span>.</p>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Schreib uns dafür an <a href="mailto:walenta@greathairday.at">walenta@greathairday.at</a>.</p>
     <p>Du kannst dich bei der österreichischen Datenschutzbehörde beschweren: <a href="https://www.dsb.gv.at" rel="noopener">www.dsb.gv.at</a>.</p>
   </section>
 
   <!-- ═══════════════════════ NUTZUNGSBEDINGUNGEN ═══════════════════════ -->
   <section id="nutzungsbedingungen">
     <h2>Nutzungsbedingungen</h2>
-    <p class="stand">Stand: <span class="offen">[Datum]</span></p>
+    <p class="stand">Stand: Entwurf vom 13. November 2026</p>
 
-    <h3>1. Geltungsbereich und Vertragspartner</h3>
-    <p><span class="offen">[Wer bietet an, wer ist Kundin (Salon), wer nutzt (Meisterin, Lehrlinge)?]</span></p>
+    <h3>1. Geltung und Vertragspartner</h3>
+    <p>Diese Bedingungen gelten für das Abo der Lern-App zwischen Mirjam Walenta – A Great Hair Day (Anbieterin) und dem Salon, der das Abo bestellt (Kundin). Das Angebot richtet sich nur an Unternehmen, also an Friseurbetriebe, nicht an Verbraucherinnen und Verbraucher. Die App nutzen dürfen die Inhaberin bzw. die Meisterin des Salons und die Lehrlinge, die sie einlädt.</p>
 
     <h3>2. Leistung</h3>
-    <p><span class="offen">[Welche Module sind enthalten? Verfügbarkeit, Weiterentwicklung.]</span></p>
+    <p>Das Abo umfasst den Zugang zu:</p>
+    <ul>
+      <li>Lernquiz und Lern-Tool mit allen Lern-Modulen, u. a. Beratung &amp; Formwirkung, Farblabor, Schnittwerkstatt, Werkzeugkunde, Englisch im Salon und Zwischenprüfung</li>
+      <li>dem Meisterin-Bereich mit Lernfortschritt, Praxis-Tagebuch und Prüfgesprächen</li>
+      <li>Schnuppertag und Probezeit</li>
+    </ul>
+    <p>Der KI-Trainer „Wörni“ ist nicht Teil des Abos. Wir entwickeln die App laufend weiter, einzelne Inhalte und Funktionen können sich dabei ändern. Wir bemühen uns um eine hohe Verfügbarkeit, können aber keine bestimmte Verfügbarkeit zusichern. Wartungsarbeiten können zu kurzen Unterbrechungen führen.</p>
 
     <h3>3. Zugang und Konten</h3>
-    <p><span class="offen">[Die Meisterin legt Lehrlinge an und sperrt sie. Zugangsdaten geheim halten. Konto und Daten löschen.]</span></p>
+    <p>Die Meisterin legt die Konten ihrer Lehrlinge an und kann sie jederzeit sperren. Passwörter und PINs sind geheim zu halten. Die Kundin sorgt dafür, dass nur berechtigte Personen Zugang haben, und informiert ihre Lehrlinge, Bewerberinnen und Bewerber über die Verarbeitung ihrer Daten. Konten und Daten werden auf Wunsch gelöscht.</p>
 
-    <h3>4. Preise, Abo und Zahlung</h3>
-    <p><span class="offen">[Preis, Abrechnungszeitraum, automatische Verlängerung, Zahlungsart, Testphase.]</span></p>
+    <h3>4. Testphase, Preis und Zahlung</h3>
+    <ul>
+      <li><strong>Testphase:</strong> Der erste Monat ist kostenlos. Die Testphase endet automatisch. Danach läuft der Zugang nur weiter, wenn die Kundin das Abo bestellt.</li>
+      <li><strong>Preis:</strong> 35 € pro Salon und Monat <span class="offen">[netto zzgl. 20 % USt. oder Endpreis? Mit der Steuerberatung klären]</span>.</li>
+      <li><strong>Zahlung:</strong> monatlich im Voraus per Rechnung, zahlbar innerhalb von 14 Tagen per Überweisung.</li>
+      <li><strong>Zahlungsverzug:</strong> Bleibt eine Rechnung trotz Mahnung offen, darf der Zugang gesperrt werden, bis sie bezahlt ist.</li>
+    </ul>
 
     <h3>5. Laufzeit und Kündigung</h3>
-    <p><span class="offen">[Mindestlaufzeit, Kündigungsfrist, was mit den Daten nach Kündigung passiert.]</span></p>
+    <p>Das Abo läuft unbefristet und ist monatlich zum Ende des Abrechnungsmonats kündbar, per E-Mail an <a href="mailto:walenta@greathairday.at">walenta@greathairday.at</a>. Nach dem Ende des Abos stellen wir der Kundin ihre Daten auf Wunsch als Datei zur Verfügung. 30 Tage später werden sie gelöscht, soweit keine gesetzliche Pflicht zur Aufbewahrung besteht.</p>
 
     <h3>6. Inhalte</h3>
-    <p>Die Lerninhalte unterstützen die Ausbildung. Sie ersetzen nicht die Anleitung im Salon, die Berufsschule oder Prüfungsunterlagen. Im Salon gelten immer die Angaben der Hersteller und die Hygieneregeln.</p>
+    <p>Die Lerninhalte unterstützen die Ausbildung. Sie ersetzen nicht die Anleitung im Salon, die Berufsschule oder die Prüfungsunterlagen. Im Salon gelten immer die Angaben der Hersteller und die Hygieneregeln.</p>
+    <p>Die Inhalte der App sind urheberrechtlich geschützt. Sie dürfen nur im eigenen Betrieb genutzt und nicht kopiert, weitergegeben oder weiterverkauft werden.</p>
 
     <h3>7. Haftung</h3>
-    <p><span class="offen">[Haftungsbeschränkung nach österreichischem Recht.]</span></p>
+    <div class="vorschlag">
+      <p>Wir haften für Schäden nur bei Vorsatz und grober Fahrlässigkeit. Das gilt nicht für Personenschäden. Die Haftung für entgangenen Gewinn, Folgeschäden und Datenverlust ist ausgeschlossen, soweit gesetzlich zulässig. Insgesamt ist die Haftung auf die Abo-Entgelte der letzten 12 Monate begrenzt.</p>
+    </div>
 
     <h3>8. Schlussbestimmungen</h3>
-    <p><span class="offen">[Anwendbares Recht, Gerichtsstand, Änderungen der Bedingungen.]</span></p>
+    <div class="vorschlag">
+      <p>Es gilt österreichisches Recht unter Ausschluss des UN-Kaufrechts. Gerichtsstand ist Wien. Änderungen dieser Bedingungen kündigen wir mindestens 4 Wochen vorher per E-Mail an. Ist die Kundin nicht einverstanden, kann sie das Abo bis zum Inkrafttreten der Änderung kündigen.</p>
+    </div>
   </section>
 
   <!-- ═══════════════════════ KI-HINWEIS ═══════════════════════ -->
