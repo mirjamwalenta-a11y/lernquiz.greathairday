@@ -384,6 +384,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <div class="wb-leiste" id="wbAnsicht" role="group" aria-label="Ansicht"></div>
         <svg id="techSvg" viewBox="0 0 300 260" role="img" aria-label="Kopf zum Wickeln"></svg>
         <div class="wb-leiste" id="wbGroesse" role="group" aria-label="Wicklergröße"></div>
+        <div class="wb-leiste"><div class="chips" id="wbLaenge" role="group" aria-label="Wicklerlänge" style="align-items:center"></div></div>
         <div class="wb-leiste"><div class="chips" id="wbRichtung" role="group" aria-label="Richtung"></div></div>
         <div class="wb-leiste"><div class="chips" id="wbModus" role="group" aria-label="Modus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
         <div class="wb-leiste"><button class="btn ghost" id="wbZurueck">↶ Letzten weg</button><button class="btn ghost" id="wbLeeren">Alle weg</button><span class="muted" id="wbZahl" style="font-size:12px;margin-left:auto"></span></div>
@@ -400,6 +401,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <div class="werkzeug" id="studioWerkzeug" hidden>
         <div class="zeile" hidden><span>Technik</span><div class="chips" id="stTechnik"></div></div>
         <div class="zeile"><span>Größe</span><div id="stGroesse" style="display:flex;gap:8px"></div><span class="muted" id="stGroesseName" style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:600"></span></div>
+        <div class="zeile"><span>Länge</span><div class="chips" id="stLaenge"><button type="button" class="chip" data-f="1" aria-pressed="true">normal</button><button type="button" class="chip" data-f=".65" aria-pressed="false">kurz</button></div></div>
         <div class="zeile"><span>Richtung</span><div class="chips" id="stRichtung"></div></div>
         <div class="zeile" hidden><label><input type="checkbox" id="stVorlage"> Vorlage einblenden</label><label><input type="checkbox" id="stRasten"> Einrasten</label></div>
         <div class="zeile"><span>Modus</span><div class="chips" id="stModus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
@@ -757,10 +759,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   var ANSICHTEN=[['back','Von hinten'],['side','Profil (Seite)'],['top','Von oben'],['front','Von vorne']];
   var WGR=[{n:'sehr dünn',h:7.5,l:50},{n:'dünn',h:9,l:50},{n:'mittel',h:10.5,l:50},{n:'dick',h:12,l:50},{n:'sehr dick',h:14,l:50},{n:'Papillote',pap:1,h:10,l:50,f:PAP}];
   var WRICHT=[['quer ↔',0],['schräg ↗',-35],['schräg ↖',35],['längs ↕',90]];
-  var tech=TECH[0], ansicht=tech.v, wgr=2, wrot=0, wmodus='setzen';
+  var tech=TECH[0], ansicht=tech.v, wgr=2, wrot=0, wmodus='setzen', wlen=50;
+  var WLAENGE=[['normal',50],['kurz',32]];
   function wbListe(){ var k=tech.id+'|'+ansicht; return wb[k]||(wb[k]=[]); }
   function wbSpeichern(){ try{ localStorage.setItem(WB_KEY,JSON.stringify(wb)); }catch(e){} }
-  function wicklerSvg(r){ var g=WGR[r[2]]; return g.pap?pap(r[0],r[1],g.l,r[3]):w(r[0],r[1],g.l,g.h,r[3],WF[r[2]]); }
+  function wicklerSvg(r){ var g=WGR[r[2]]; var L=r[4]||g.l; return g.pap?pap(r[0],r[1],L,r[3]):w(r[0],r[1],L,g.h,r[3],WF[r[2]]); }
   function techMalen(){
     var l=wbListe();
     $('#techSvg').innerHTML=swKopf(ansicht,l.map(wicklerSvg).join(''));
@@ -771,6 +774,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     $('#techChips').innerHTML=TECH.map(function(t){return '<button type="button" class="chip" data-id="'+t.id+'" aria-pressed="'+(t===tech)+'">'+esc(t.n)+'</button>';}).join('');
     $('#wbAnsicht').innerHTML=ANSICHTEN.map(function(a){return '<button type="button" data-v="'+a[0]+'" aria-pressed="'+(a[0]===ansicht)+'">'+a[1]+'</button>';}).join('');
     $('#wbGroesse').innerHTML=WGR.map(function(g,i){return '<button type="button" class="wb-gr" data-g="'+i+'" aria-pressed="'+(i===wgr)+'"><i style="background:'+(g.f||WF[i])+'"></i>'+g.n+'</button>';}).join('');
+    $('#wbLaenge').innerHTML='<span class="muted" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase">Länge</span>'+WLAENGE.map(function(x){return '<button type="button" class="chip" data-l="'+x[1]+'" aria-pressed="'+(x[1]===wlen)+'">'+x[0]+'</button>';}).join('');
     $('#wbRichtung').innerHTML=WRICHT.map(function(r){return '<button type="button" class="chip" data-r="'+r[1]+'" aria-pressed="'+(r[1]===wrot)+'">'+r[0]+'</button>';}).join('');
     techMalen();
     $('#techInfo').innerHTML='<h3>'+esc(tech.n)+'</h3><dl class="facts"><dt>So geht’s</dt><dd>'+esc(tech.wie)+'</dd><dt>Warum</dt><dd>'+esc(tech.warum)+'</dd><dt>Achtung</dt><dd>'+esc(tech.achtung)+'</dd></dl>'+
@@ -780,6 +784,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   $('#techChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;tech=TECH.filter(function(t){return t.id===b.dataset.id;})[0];ansicht=tech.v;techZeigen();});
   $('#wbAnsicht').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;ansicht=b.dataset.v;techZeigen();});
   $('#wbGroesse').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wgr=+b.dataset.g;techZeigen();});
+  $('#wbLaenge').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wlen=+b.dataset.l;techZeigen();});
   $('#wbRichtung').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wrot=+b.dataset.r;techZeigen();});
   $('#wbZurueck').onclick=function(){ wbListe().pop(); wbSpeichern(); techMalen(); };
   $('#wbLeeren').onclick=function(){ var l=wbListe(); if(l.length&&!confirm('Alle Wickler in dieser Ansicht entfernen?')) return; l.length=0; wbSpeichern(); techMalen(); };
@@ -787,7 +792,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function wbTreffer(l,p,rand){
     for(var i=l.length-1;i>=0;i--){ var r=l[i], g=WGR[r[2]], t=r[3]*Math.PI/180, dx=p.x-r[0], dy=p.y-r[1];
       var lx=dx*Math.cos(t)+dy*Math.sin(t), ly=-dx*Math.sin(t)+dy*Math.cos(t);
-      if(Math.abs(lx)<=g.l/2+(rand||0)&&Math.abs(ly)<=g.h/2+(rand||0)) return {i:i,lx:lx,ly:ly}; }
+      if(Math.abs(lx)<=(r[4]||g.l)/2+(rand||0)&&Math.abs(ly)<=g.h/2+(rand||0)) return {i:i,lx:lx,ly:ly}; }
     return null;
   }
   $('#techSvg').addEventListener('click',function(e){
@@ -801,7 +806,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       x=r[0]+nx*sg*ab; y=r[1]+ny*sg*ab;
       for(var k=0;k<40;k++){ var q=wbTreffer(l,{x:x,y:y},-1); if(!q) break; var rq=l[q.i]; ab=WGR[rq[2]].h/2+WGR[wgr].h/2+.4; x=rq[0]+nx*sg*ab; y=rq[1]+ny*sg*ab; }
     }
-    l.push([+x.toFixed(1),+y.toFixed(1),wgr,wrot]); wbSpeichern(); techMalen();
+    l.push([+x.toFixed(1),+y.toFixed(1),wgr,wrot,wlen]); wbSpeichern(); techMalen();
   });
   $('#wbModus').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wmodus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});});
   techZeigen();
@@ -1033,9 +1038,9 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     GR.forEach(function(g,i){ var k=new T.CylinderGeometry(g.r*.82,g.r*.82,LEN,18); k.rotateZ(Math.PI/2); geo.kern.push(k); var bd=new T.CylinderGeometry(g.r,g.r,LEN*.74,22); bd.rotateZ(Math.PI/2); geo.band.push(bd); var gh=new T.CylinderGeometry(g.r,g.r,LEN,16); gh.rotateZ(Math.PI/2); geo.ghost.push(gh); });
     var mat={kern:WF.map(function(f){return new T.MeshStandardMaterial({color:f,roughness:.5});}),ghost:WF.map(function(f){return new T.MeshBasicMaterial({color:f,transparent:true,opacity:.38,depthWrite:false});}),
       band:new T.MeshStandardMaterial({color:0xB07A48,roughness:.9}),gummi:new T.MeshStandardMaterial({color:0x2F2A24})};
-    function wicklerMesh(p,n,d,g,ghost){
+    function wicklerMesh(p,n,d,g,ghost,lf){
       var grp=new T.Group(), m=new T.Matrix4(), z=new T.Vector3().crossVectors(d,n).normalize(), y=new T.Vector3().crossVectors(z,d).normalize();
-      m.makeBasis(d,y,z); grp.quaternion.setFromRotationMatrix(m); grp.position.copy(p).add(n.clone().multiplyScalar(GR[g].r+.004));
+      m.makeBasis(d,y,z); grp.quaternion.setFromRotationMatrix(m); grp.scale.set(lf||1,1,1); grp.position.copy(p).add(n.clone().multiplyScalar(GR[g].r+.004));
       if(ghost){ grp.add(new T.Mesh(geo.ghost[g],mat.ghost[g])); }
       else { grp.add(new T.Mesh(geo.kern[g],mat.kern[g])); grp.add(new T.Mesh(geo.band[g],mat.band)); var gu=new T.Mesh(gummiGeo,mat.gummi); gu.position.y=GR[g].r+.004; grp.add(gu); }
       return grp;
@@ -1069,9 +1074,9 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       $('#stFb').className='fb'+(pct>=90&&!falscheGr?' ok':'');
       $('#stFb').textContent=ok+' von '+vorlage.length+' Wicklern sitzen richtig ('+pct+' %).'+(falscheGr?' '+falscheGr+' davon haben noch die falsche Größe.':'')+(rest?' '+rest+' Wickler liegen außerhalb der Vorlage oder in falscher Richtung.':'')+(pct>=90&&!falscheGr?' 🏆 Super gewickelt!':'');
     };
-    function setzen(p,n,d,g){ var m=wicklerMesh(p,n,d,g,false); kopf.add(m); gesetzt.push({p:p.clone(),n:n.clone(),d:d.clone(),g:g,mesh:m}); malen(); }
+    function setzen(p,n,d,g,lf){ lf=lf||laenge; var m=wicklerMesh(p,n,d,g,false,lf); kopf.add(m); gesetzt.push({p:p.clone(),n:n.clone(),d:d.clone(),g:g,lf:lf,mesh:m}); malen(); }
     // Drehen, Zoomen, Tippen
-    var stModus='setzen'; $('#stModus').onclick=function(e){var b=e.target.closest('button');if(!b)return;stModus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});};
+    var stModus='setzen', laenge=1; $('#stLaenge').onclick=function(e){var b=e.target.closest('button');if(!b)return;laenge=+b.dataset.f;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});}; $('#stModus').onclick=function(e){var b=e.target.closest('button');if(!b)return;stModus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});};
     var yaw=Math.PI, pitch=.12, zeiger={}, start=null, ray=new T.Raycaster(), maus=new T.Vector2();
     function ansicht(v){ if(v==='hinten'){yaw=Math.PI;pitch=.12;} if(v==='seite'){yaw=Math.PI/2;pitch=.1;} if(v==='oben'){yaw=Math.PI;pitch=1.25;} if(v==='vorne'){yaw=0;pitch=.05;} kopf.rotation.set(pitch,yaw,0); malen(); }
     buehne.querySelector('.ansicht').onclick=function(e){var x=e.target.closest('button'); if(x) ansicht(x.dataset.v);};
@@ -1091,7 +1096,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         // dicht an dicht: neben den getroffenen Wickler, auf der Seite, wo getippt wurde
         var w0=gesetzt[i], quer=new T.Vector3().crossVectors(w0.n,w0.d).normalize(), hp=kopf.worldToLocal(treffer[0].point.clone()), sg=hp.clone().sub(w0.p).dot(quer)<0?-1:1;
         var np=w0.p.clone().add(quer.clone().multiplyScalar(sg*(GR[w0.g].r+GR[groesse].r+.006)));
-        for(var k=0;k<40;k++){ var belegt=gesetzt.filter(function(x){ var d=np.clone().sub(x.p); return Math.abs(d.dot(new T.Vector3().crossVectors(x.n,x.d).normalize()))<GR[x.g].r+GR[groesse].r-.004&&Math.abs(d.dot(x.d))<LEN/2; })[0]; if(!belegt) break;
+        for(var k=0;k<40;k++){ var belegt=gesetzt.filter(function(x){ var d=np.clone().sub(x.p); return Math.abs(d.dot(new T.Vector3().crossVectors(x.n,x.d).normalize()))<GR[x.g].r+GR[groesse].r-.004&&Math.abs(d.dot(x.d))<LEN*(x.lf||1)/2; })[0]; if(!belegt) break;
           var q2=new T.Vector3().crossVectors(belegt.n,belegt.d).normalize(); if(q2.dot(quer)<0) q2.negate(); np=belegt.p.clone().add(q2.multiplyScalar(sg*(GR[belegt.g].r+GR[groesse].r+.006))); }
         if(!istHaar(np.clone().normalize(),-.03)){ $('#stFb').className='fb no'; $('#stFb').textContent='Hier ist kein Haar mehr: Die Reihe endet am Haaransatz.'; return; }
         $('#stFb').className='fb'; $('#stFb').textContent='';
