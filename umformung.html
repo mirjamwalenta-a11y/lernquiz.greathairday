@@ -377,7 +377,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <ol class="ablauf" id="wickelTipps"></ol>
     </div>
     <h3 style="margin-top:6px">Techniken: selbst wickeln</h3>
-    <p class="muted" style="font-size:14px">Wähle eine Technik und lies, wie sie geht. Dann setzt du die Wickler selbst auf den Kopf: Tippen setzt einen Wickler, Tippen auf einen Wickler nimmt ihn wieder weg. Deine Bilder bleiben in diesem Browser gespeichert.</p>
+    <p class="muted" style="font-size:14px">Wähle eine Technik und lies, wie sie geht. Dann setzt du die Wickler selbst auf den Kopf. Tippst du auf einen Wickler, kommt der nächste dicht daneben, auf der Seite, wo du getippt hast. So entstehen enge Reihen. Zum Wegnehmen auf „Entfernen“ umschalten. Deine Bilder bleiben in diesem Browser gespeichert.</p>
     <div class="chips" role="group" aria-label="Technik wählen" id="techChips"></div>
     <div class="grid2">
       <div class="wickelbild">
@@ -385,6 +385,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <svg id="techSvg" viewBox="0 0 300 260" role="img" aria-label="Kopf zum Wickeln"></svg>
         <div class="wb-leiste" id="wbGroesse" role="group" aria-label="Wicklergröße"></div>
         <div class="wb-leiste"><div class="chips" id="wbRichtung" role="group" aria-label="Richtung"></div></div>
+        <div class="wb-leiste"><div class="chips" id="wbModus" role="group" aria-label="Modus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
         <div class="wb-leiste"><button class="btn ghost" id="wbZurueck">↶ Letzten weg</button><button class="btn ghost" id="wbLeeren">Alle weg</button><span class="muted" id="wbZahl" style="font-size:12px;margin-left:auto"></span></div>
       </div>
       <article class="panel" id="techInfo" aria-live="polite"></article>
@@ -392,7 +393,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <div class="panel studio" id="studio">
       <span class="tag">3D-Übung</span>
       <h3>Wickelstudio 3D: wickeln am ganzen Kopf</h3>
-      <p class="muted" style="font-size:14px">Wickle eine Technik am ganzen Kopf und schau sie dir von allen Seiten an. Wähle Größe und Richtung. <strong>Ziehen</strong> dreht den Kopf, <strong>Tippen</strong> setzt einen Wickler, Tippen auf einen Wickler nimmt ihn wieder weg.</p>
+      <p class="muted" style="font-size:14px">Wickle eine Technik am ganzen Kopf und schau sie dir von allen Seiten an. Wähle Größe und Richtung. <strong>Ziehen</strong> dreht den Kopf, <strong>Tippen</strong> setzt einen Wickler. Tippst du auf einen Wickler, kommt der nächste dicht daneben. Zum Wegnehmen auf „Entfernen“ umschalten.</p>
       <div class="studio-buehne" id="studioBuehne">
         <div class="studio-start" id="studioStartBox"><span style="font-size:40px">🧑‍🦱</span><button class="btn" id="studioStart">3D-Kopf laden</button><span class="muted" style="font-size:12px">lädt einmalig ca. 0,6 MB</span></div>
       </div>
@@ -401,6 +402,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <div class="zeile"><span>Größe</span><div id="stGroesse" style="display:flex;gap:8px"></div><span class="muted" id="stGroesseName" style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:600"></span></div>
         <div class="zeile"><span>Richtung</span><div class="chips" id="stRichtung"></div></div>
         <div class="zeile" hidden><label><input type="checkbox" id="stVorlage"> Vorlage einblenden</label><label><input type="checkbox" id="stRasten"> Einrasten</label></div>
+        <div class="zeile"><span>Modus</span><div class="chips" id="stModus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
         <div class="zeile"><button class="btn ghost" id="stZurueck">↶ Letzten weg</button><button class="btn ghost" id="stLeeren">Alle weg</button><button id="stPruefen" hidden></button><button id="stLoesung" hidden></button></div>
         <p class="fb" id="stFb" aria-live="polite"></p>
       </div>
@@ -643,12 +645,14 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function wf(h){ return h<=10?WF[0]:h<=12?WF[1]:h<=14?WF[2]:h<=16?WF[3]:WF[4]; }
   function txt(x,y,t,o){ o=o||{}; return '<text x="'+x+'" y="'+y+'" text-anchor="'+(o.a||'middle')+'" font-size="'+(o.s||10)+'" font-weight="'+(o.w||600)+'" fill="'+(o.f||'#4A4336')+'" font-family="Poppins,system-ui">'+t+'</text>'; }
   function w(x,y,l,h,rot,farbe){
-    var f=farbe||wf(h), x0=x-l/2, y0=y-h/2, e=Math.max(5,l*0.16), s;
-    s='<g transform="rotate('+(rot||0)+' '+x+' '+y+')"><rect x="'+x0+'" y="'+y0+'" width="'+l+'" height="'+h+'" rx="'+(h/2)+'" fill="'+f+'" stroke="rgba(0,0,0,.3)" stroke-width="1"/>';
-    s+='<rect x="'+(x0+e)+'" y="'+(y0-1.5)+'" width="'+(l-2*e)+'" height="'+(h+3)+'" rx="'+(h*0.35)+'" fill="#D3A06A" stroke="#5E3A1E" stroke-width="1"/>';
-    for(var k=x0+e+3;k<x0+l-e-1;k+=4) s+='<path d="M'+k+' '+(y0)+' Q'+(k+3)+' '+y+' '+(k+0.5)+' '+(y0+h)+'" stroke="#8A5A36" stroke-width=".9" fill="none"/>';
-    return s+'<line x1="'+(x0+2)+'" y1="'+y+'" x2="'+(x0+l-2)+'" y2="'+y+'" stroke="#2F2A24" stroke-opacity=".7" stroke-width="1.3"/></g>';
+    var f=farbe||wf(h), x0=x-l/2, e=Math.max(2.5,h*.3), s='<g transform="rotate('+(rot||0)+' '+x+' '+y+')">';
+    s+='<rect x="'+x0+'" y="'+(y-h*.36)+'" width="'+l+'" height="'+(h*.72)+'" rx="'+(h*.3)+'" fill="'+f+'" stroke="rgba(0,0,0,.35)" stroke-width=".8"/>';
+    s+='<rect x="'+(x0+e)+'" y="'+(y-h/2)+'" width="'+(l-2*e)+'" height="'+h+'" rx="'+(h*.22)+'" fill="url(#wbHaar)" stroke="#6E4428" stroke-width=".7"/>';
+    for(var k=x0+e+2;k<x0+l-e-1;k+=2.6) s+='<path d="M'+k.toFixed(1)+' '+(y-h/2+.6)+' Q'+(k+1.8).toFixed(1)+' '+y+' '+(k+.3).toFixed(1)+' '+(y+h/2-.6)+'" stroke="#8E5C33" stroke-width=".55" fill="none" opacity=".75"/>';
+    s+='<ellipse cx="'+(x0+1.6)+'" cy="'+y+'" rx="'+(h*.2)+'" ry="'+(h*.36)+'" fill="'+f+'" stroke="rgba(0,0,0,.4)" stroke-width=".7"/><ellipse cx="'+(x0+l-1.6)+'" cy="'+y+'" rx="'+(h*.2)+'" ry="'+(h*.36)+'" fill="'+f+'" stroke="rgba(0,0,0,.4)" stroke-width=".7"/>';
+    return s+'<line x1="'+(x0+2)+'" y1="'+(y-h*.16)+'" x2="'+(x0+l-2)+'" y2="'+(y-h*.16)+'" stroke="#2F2A24" stroke-width=".9"/></g>';
   }
+  var WB_DEFS='<defs><linearGradient id="wbHaar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B57A45"/><stop offset=".38" stop-color="#ECC08E"/><stop offset="1" stop-color="#9A6234"/></linearGradient></defs>';
   function strang(x1,y1,x2,y2,f){ return '<path d="M'+x1+' '+y1+' Q'+((x1+x2)/2+3)+' '+((y1+y2)/2)+' '+x2+' '+y2+'" stroke="'+(f||STRANG)+'" stroke-width="3" fill="none" stroke-linecap="round"/>'; }
   // Köpfe wie in der Schnittwerkstatt (gleiche Umrisse), hier mit Haarbereich in Farbe.
   // Die Pfade stehen in den Koordinaten der Schnittwerkstatt und werden per transform eingepasst.
@@ -676,7 +680,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     T.hl='M'+a.x.toFixed(1)+','+a.y.toFixed(1)+' Q195,132 '+b.x.toFixed(1)+','+b.y.toFixed(1); })();
   function swKopf(v,innen){
     var V=SW[v];
-    return '<rect width="300" height="260" fill="#FFFFFF"/><g transform="'+V.t+'"><g fill="'+KF+'" stroke="'+KL+'" stroke-width="2" stroke-linejoin="round">'+V.kopf+'</g>'+
+    return WB_DEFS+'<rect width="300" height="260" fill="#FFFFFF"/><g transform="'+V.t+'"><g fill="'+KF+'" stroke="'+KL+'" stroke-width="2" stroke-linejoin="round">'+V.kopf+'</g>'+
       '<path d="'+V.hl+'" fill="none" stroke="'+KL+'" stroke-width="1.3" stroke-dasharray="4 4" opacity=".75"/>'+V.extra+'</g>'+
       innen;
   }
@@ -751,12 +755,12 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   // ── Selbst wickeln: Kopf ohne Wickler, der Lehrling setzt sie selbst (nur in diesem Browser gespeichert) ──
   var WB_KEY='umf-wickelblatt-v1', wb={}; try{ wb=JSON.parse(localStorage.getItem(WB_KEY)||'{}')||{}; }catch(e){ wb={}; }
   var ANSICHTEN=[['back','Von hinten'],['side','Profil (Seite)'],['top','Von oben'],['front','Von vorne']];
-  var WGR=[{n:'sehr dünn',h:10,l:30},{n:'dünn',h:12,l:34},{n:'mittel',h:14,l:38},{n:'dick',h:16,l:42},{n:'sehr dick',h:18,l:46},{n:'Papillote',pap:1,l:48,f:PAP}];
+  var WGR=[{n:'sehr dünn',h:7.5,l:50},{n:'dünn',h:9,l:50},{n:'mittel',h:10.5,l:50},{n:'dick',h:12,l:50},{n:'sehr dick',h:14,l:50},{n:'Papillote',pap:1,h:10,l:50,f:PAP}];
   var WRICHT=[['quer ↔',0],['schräg ↗',-35],['schräg ↖',35],['längs ↕',90]];
-  var tech=TECH[0], ansicht=tech.v, wgr=2, wrot=0;
+  var tech=TECH[0], ansicht=tech.v, wgr=2, wrot=0, wmodus='setzen';
   function wbListe(){ var k=tech.id+'|'+ansicht; return wb[k]||(wb[k]=[]); }
   function wbSpeichern(){ try{ localStorage.setItem(WB_KEY,JSON.stringify(wb)); }catch(e){} }
-  function wicklerSvg(r){ var g=WGR[r[2]]; return g.pap?pap(r[0],r[1],g.l,r[3]):w(r[0],r[1],g.l,g.h,r[3]); }
+  function wicklerSvg(r){ var g=WGR[r[2]]; return g.pap?pap(r[0],r[1],g.l,r[3]):w(r[0],r[1],g.l,g.h,r[3],WF[r[2]]); }
   function techMalen(){
     var l=wbListe();
     $('#techSvg').innerHTML=swKopf(ansicht,l.map(wicklerSvg).join(''));
@@ -779,14 +783,27 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   $('#wbRichtung').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wrot=+b.dataset.r;techZeigen();});
   $('#wbZurueck').onclick=function(){ wbListe().pop(); wbSpeichern(); techMalen(); };
   $('#wbLeeren').onclick=function(){ var l=wbListe(); if(l.length&&!confirm('Alle Wickler in dieser Ansicht entfernen?')) return; l.length=0; wbSpeichern(); techMalen(); };
+  // Treffer auf einen Wickler? Liefert Index und Lage im Wickler (lx längs, ly quer)
+  function wbTreffer(l,p,rand){
+    for(var i=l.length-1;i>=0;i--){ var r=l[i], g=WGR[r[2]], t=r[3]*Math.PI/180, dx=p.x-r[0], dy=p.y-r[1];
+      var lx=dx*Math.cos(t)+dy*Math.sin(t), ly=-dx*Math.sin(t)+dy*Math.cos(t);
+      if(Math.abs(lx)<=g.l/2+(rand||0)&&Math.abs(ly)<=g.h/2+(rand||0)) return {i:i,lx:lx,ly:ly}; }
+    return null;
+  }
   $('#techSvg').addEventListener('click',function(e){
     var svg=this, pt=svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; var p=pt.matrixTransform(svg.getScreenCTM().inverse());
-    if(p.y>244) return;
-    var l=wbListe(), nah=-1, nd=12;
-    l.forEach(function(r,i){ var d=Math.hypot(r[0]-p.x,r[1]-p.y); if(d<nd){nd=d;nah=i;} });
-    if(nah>=0) l.splice(nah,1); else l.push([Math.round(p.x),Math.round(p.y),wgr,wrot]);
-    wbSpeichern(); techMalen();
+    if(p.y>250) return;
+    var l=wbListe(), tr=wbTreffer(l,p,2);
+    if(wmodus==='weg'){ if(tr){ l.splice(tr.i,1); wbSpeichern(); techMalen(); } return; }
+    var x=p.x, y=p.y;
+    if(tr){ // dicht an dicht: neuer Wickler direkt neben den getroffenen, auf der Seite, wo getippt wurde
+      var r=l[tr.i], t=r[3]*Math.PI/180, nx=-Math.sin(t), ny=Math.cos(t), sg=tr.ly<0?-1:1, ab=WGR[r[2]].h/2+WGR[wgr].h/2+.4;
+      x=r[0]+nx*sg*ab; y=r[1]+ny*sg*ab;
+      for(var k=0;k<40;k++){ var q=wbTreffer(l,{x:x,y:y},-1); if(!q) break; var rq=l[q.i]; ab=WGR[rq[2]].h/2+WGR[wgr].h/2+.4; x=rq[0]+nx*sg*ab; y=rq[1]+ny*sg*ab; }
+    }
+    l.push([+x.toFixed(1),+y.toFixed(1),wgr,wrot]); wbSpeichern(); techMalen();
   });
+  $('#wbModus').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wmodus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});});
   techZeigen();
 
   // ── Wickelregeln (farbige Skizzen, Schnitt durch Kopfhaut, Strähne und Wickler) ──
@@ -1054,6 +1071,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     };
     function setzen(p,n,d,g){ var m=wicklerMesh(p,n,d,g,false); kopf.add(m); gesetzt.push({p:p.clone(),n:n.clone(),d:d.clone(),g:g,mesh:m}); malen(); }
     // Drehen, Zoomen, Tippen
+    var stModus='setzen'; $('#stModus').onclick=function(e){var b=e.target.closest('button');if(!b)return;stModus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});};
     var yaw=Math.PI, pitch=.12, zeiger={}, start=null, ray=new T.Raycaster(), maus=new T.Vector2();
     function ansicht(v){ if(v==='hinten'){yaw=Math.PI;pitch=.12;} if(v==='seite'){yaw=Math.PI/2;pitch=.1;} if(v==='oben'){yaw=Math.PI;pitch=1.25;} if(v==='vorne'){yaw=0;pitch=.05;} kopf.rotation.set(pitch,yaw,0); malen(); }
     buehne.querySelector('.ansicht').onclick=function(e){var x=e.target.closest('button'); if(x) ansicht(x.dataset.v);};
@@ -1068,7 +1086,16 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     function tippen(e){
       var rc=canvas.getBoundingClientRect(); maus.set((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1); ray.setFromCamera(maus,cam);
       var treffer=ray.intersectObjects(gesetzt.map(function(w){return w.mesh;}),true);
-      if(treffer.length){ var obj=treffer[0].object; while(obj.parent&&obj.parent!==kopf) obj=obj.parent; var i=gesetzt.findIndex(function(w){return w.mesh===obj;}); if(i>=0){ kopf.remove(obj); gesetzt.splice(i,1); malen(); } return; }
+      if(treffer.length){ var obj=treffer[0].object; while(obj.parent&&obj.parent!==kopf) obj=obj.parent; var i=gesetzt.findIndex(function(w){return w.mesh===obj;}); if(i<0) return;
+        if(stModus==='weg'){ kopf.remove(obj); gesetzt.splice(i,1); malen(); return; }
+        // dicht an dicht: neben den getroffenen Wickler, auf der Seite, wo getippt wurde
+        var w0=gesetzt[i], quer=new T.Vector3().crossVectors(w0.n,w0.d).normalize(), hp=kopf.worldToLocal(treffer[0].point.clone()), sg=hp.clone().sub(w0.p).dot(quer)<0?-1:1;
+        var np=w0.p.clone().add(quer.clone().multiplyScalar(sg*(GR[w0.g].r+GR[groesse].r+.006)));
+        for(var k=0;k<40;k++){ var belegt=gesetzt.filter(function(x){ var d=np.clone().sub(x.p); return Math.abs(d.dot(new T.Vector3().crossVectors(x.n,x.d).normalize()))<GR[x.g].r+GR[groesse].r-.004&&Math.abs(d.dot(x.d))<LEN/2; })[0]; if(!belegt) break;
+          var q2=new T.Vector3().crossVectors(belegt.n,belegt.d).normalize(); if(q2.dot(quer)<0) q2.negate(); np=belegt.p.clone().add(q2.multiplyScalar(sg*(GR[belegt.g].r+GR[groesse].r+.006))); }
+        if(!istHaar(np.clone().normalize(),-.03)){ $('#stFb').className='fb no'; $('#stFb').textContent='Hier ist kein Haar mehr: Die Reihe endet am Haaransatz.'; return; }
+        $('#stFb').className='fb'; $('#stFb').textContent='';
+        var qq=ausPunkt(np), ff=rahmen(qq.psi,qq.lam); setzen(ff.p,ff.n,richtung(ff,alpha),groesse); return; }
       var h=ray.intersectObject(haar); if(!h.length) return;
       var lp=kopf.worldToLocal(h[0].point.clone());
       if($('#stRasten').checked&&vorlage.length){ var nah=null, nd=.2; vorlage.forEach(function(t){ var d=t.p.distanceTo(lp); if(d<nd){nd=d;nah=t;} }); if(nah) lp=nah.p.clone(); }
