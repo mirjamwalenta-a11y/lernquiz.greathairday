@@ -585,10 +585,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function wf(h){ return h<=10?WF[0]:h<=12?WF[1]:h<=14?WF[2]:h<=16?WF[3]:WF[4]; }
   function txt(x,y,t,o){ o=o||{}; return '<text x="'+x+'" y="'+y+'" text-anchor="'+(o.a||'middle')+'" font-size="'+(o.s||10)+'" font-weight="'+(o.w||600)+'" fill="'+(o.f||'#4A4336')+'" font-family="Poppins,system-ui">'+t+'</text>'; }
   function w(x,y,l,h,rot,farbe){
-    var f=farbe||wf(h), x0=x-l/2, y0=y-h/2;
-    return '<g transform="rotate('+(rot||0)+' '+x+' '+y+')"><rect x="'+x0+'" y="'+y0+'" width="'+l+'" height="'+h+'" rx="'+(h/2)+'" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1"/>'+
-      '<line x1="'+(x0+h/2)+'" y1="'+(y0+2.6)+'" x2="'+(x0+l-h/2)+'" y2="'+(y0+2.6)+'" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" stroke-linecap="round"/>'+
-      '<line x1="'+(x0+2)+'" y1="'+y+'" x2="'+(x0+l-2)+'" y2="'+y+'" stroke="#2F2A24" stroke-opacity=".55" stroke-width="1.1"/></g>';
+    var f=farbe||wf(h), x0=x-l/2, y0=y-h/2, e=Math.max(5,l*0.16), s;
+    s='<g transform="rotate('+(rot||0)+' '+x+' '+y+')"><rect x="'+x0+'" y="'+y0+'" width="'+l+'" height="'+h+'" rx="'+(h/2)+'" fill="'+f+'" stroke="rgba(0,0,0,.3)" stroke-width="1"/>';
+    s+='<rect x="'+(x0+e)+'" y="'+(y0-1.5)+'" width="'+(l-2*e)+'" height="'+(h+3)+'" rx="'+(h*0.35)+'" fill="#D3A06A" stroke="#5E3A1E" stroke-width="1"/>';
+    for(var k=x0+e+3;k<x0+l-e-1;k+=4) s+='<path d="M'+k+' '+(y0)+' Q'+(k+3)+' '+y+' '+(k+0.5)+' '+(y0+h)+'" stroke="#8A5A36" stroke-width=".9" fill="none"/>';
+    return s+'<line x1="'+(x0+2)+'" y1="'+y+'" x2="'+(x0+l-2)+'" y2="'+y+'" stroke="#2F2A24" stroke-opacity=".7" stroke-width="1.3"/></g>';
   }
   function strang(x1,y1,x2,y2,f){ return '<path d="M'+x1+' '+y1+' Q'+((x1+x2)/2+3)+' '+((y1+y2)/2)+' '+x2+' '+y2+'" stroke="'+(f||STRANG)+'" stroke-width="3" fill="none" stroke-linecap="round"/>'; }
   function kopf(innen){
@@ -688,32 +689,57 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   $('#techChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;tech=TECH.filter(function(t){return t.id===b.dataset.id;})[0];techZeigen();});
   techZeigen();
 
-  // ── Wickelregeln (farbige Skizzen, Ansicht im Schnitt) ──
-  var KH='<path d="M0 150 L0 132 Q120 98 240 132 L240 150 Z" fill="'+HAUT+'" stroke="'+HAUTR+'"/>';      // Kopfhaut im Schnitt
+  // ── Wickelregeln (farbige Skizzen, Schnitt durch Kopfhaut, Strähne und Wickler) ──
+  var WH='#B07A48', WH2='#5E3A1E', WL='#D9AD7A';   // gewickeltes Haar: Grundton, Kontur, Haarlinien
+  var KH='<path d="M0 150 L0 134 Q120 100 240 134 L240 150 Z" fill="'+HAUT+'" stroke="'+HAUTR+'"/>';      // Kopfhaut im Schnitt
   function strich(x1,y1,x2,y2){ return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#6B6455" stroke-width="1.4" stroke-dasharray="5 4"/>'; }
-  function rund(cx,cy,r,f){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+f+'" stroke="rgba(0,0,0,.3)"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*0.5)+'" fill="#fff" opacity=".8"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*0.2)+'" fill="'+f+'"/>'; }
   function pfeil(x1,y1,x2,y2,f){ f=f||'#211D17'; return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+f+'" stroke-width="1.4" marker-start="url(#rp)" marker-end="url(#rp)"/>'; }
   var DEF='<defs><marker id="rp" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#211D17"/></marker></defs>';
   function haken(x,y,ok){ return '<circle cx="'+x+'" cy="'+y+'" r="10" fill="'+(ok?OK:NEIN)+'"/>'+txt(x,y+4,ok?'✓':'✗',{f:'#fff',s:12,w:700}); }
+  // Strähne von der Basis (bl..br auf Höhe by) bis zur Rolle (tl..tr auf Höhe ty), mit einzelnen Haaren
+  function straehne(bl,br,by,tl,tr,ty){
+    var s='<path d="M'+bl+' '+by+' L'+br+' '+by+' L'+tr+' '+ty+' L'+tl+' '+ty+' Z" fill="'+WH+'" stroke="'+WH2+'" stroke-width="1"/>';
+    for(var i=1;i<6;i++){ var a=i/6; s+='<path d="M'+(bl+(br-bl)*a)+' '+(by-1)+' L'+(tl+(tr-tl)*a)+' '+ty+'" stroke="'+WL+'" stroke-width="1" opacity=".9"/>'; }
+    return s;
+  }
+  // Wickler von der Stirnseite: farbiger Wickler in der Mitte, Haar spiralig drumherum gedreht
+  function rolleEnde(cx,cy,r,f){
+    var R=r+11, s='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="'+WH+'" stroke="'+WH2+'" stroke-width="1.2"/>', p='';
+    for(var i=0;i<=200;i++){ var t=i/200*3*2*Math.PI, rr=r+1.5+(R-r-2.5)*i/200; p+=(i?' L':'M')+(cx+Math.cos(t)*rr).toFixed(1)+' '+(cy+Math.sin(t)*rr).toFixed(1); }
+    s+='<path d="'+p+'" fill="none" stroke="'+WL+'" stroke-width="1.3"/>';
+    s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+f+'" stroke="rgba(0,0,0,.35)"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*0.42)+'" fill="#fff" opacity=".85"/>';
+    return s;
+  }
+  // Wickler von vorne: farbige Enden schauen raus, dazwischen das aufgedrehte Haar, Gummi darüber
+  function rolleSeite(cx,cy,l,h,f,rot,gummiOk){
+    var x0=cx-l/2, y0=cy-h/2, s='<g transform="rotate('+(rot||0)+' '+cx+' '+cy+')">';
+    s+='<rect x="'+(x0-10)+'" y="'+(cy-h*0.32)+'" width="'+(l+20)+'" height="'+(h*0.64)+'" rx="'+(h*0.32)+'" fill="'+f+'" stroke="rgba(0,0,0,.35)"/>';
+    s+='<rect x="'+x0+'" y="'+y0+'" width="'+l+'" height="'+h+'" rx="'+(h*0.3)+'" fill="'+WH+'" stroke="'+WH2+'" stroke-width="1.2"/>';
+    for(var x=x0+4;x<x0+l-2;x+=5) s+='<path d="M'+x+' '+(y0+1.5)+' Q'+(x+4)+' '+cy+' '+(x+1)+' '+(y0+h-1.5)+'" stroke="'+WL+'" stroke-width="1.1" fill="none"/>';
+    if(gummiOk!==null) s+='<path d="M'+(x0-6)+' '+cy+' Q'+cx+' '+(y0-14)+' '+(x0+l+6)+' '+cy+'" stroke="#2F2A24" stroke-width="2.4" fill="none"/><circle cx="'+(x0+l+6)+'" cy="'+cy+'" r="3.2" fill="#2F2A24"/>';
+    return s+'</g>';
+  }
   var REGELN=[
     ['Winkel und Zugrichtung','Halte die Strähne so, dass sie senkrecht (90°) vom Kopf absteht, und rolle in genau diese Richtung auf.',
-      KH+'<path d="M102 117 L138 117 L132 54 L108 54 Z" fill="'+HAAR+'"/>'+rund(120,44,20,WF[2])+'<path d="M102 117 L102 104 L114 104" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+txt(84,104,'90°',{f:NEIN,s:12,w:700})+
-      [[40,128,-20],[200,128,20]].map(function(p){return '<g transform="rotate('+p[2]+' '+p[0]+' '+p[1]+')"><line x1="'+p[0]+'" y1="'+p[1]+'" x2="'+p[0]+'" y2="'+(p[1]-40)+'" stroke="'+HAAR+'" stroke-width="5" stroke-linecap="round"/></g>';}).join('')],
+      KH+[[30,131,-22],[60,122,-14],[180,122,14],[210,131,22]].map(function(p){return '<g transform="rotate('+p[2]+' '+p[0]+' '+p[1]+')"><path d="M'+(p[0]-4)+' '+p[1]+' L'+(p[0]+4)+' '+p[1]+' L'+(p[0]+2)+' '+(p[1]-46)+' L'+(p[0]-2)+' '+(p[1]-46)+' Z" fill="'+WH+'"/></g>';}).join('')+
+      straehne(102,138,118,100,140,52)+rolleEnde(120,46,12,WF[2])+'<path d="M102 118 L102 104 L114 104" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+txt(86,108,'90°',{f:NEIN,s:12,w:700})],
     ['A · Wickler auf der Abteilungslinie','Der Wickler liegt direkt über dem Feld, aus dem die Strähne kommt. Der Ansatz wellt voll mit.',
-      KH+strich(100,8,100,120)+strich(140,8,140,120)+'<path d="M100 117 L140 117 L136 62 L104 62 Z" fill="'+HAAR+'"/>'+rund(120,46,20,WF[2])+txt(120,142,'Basis',{s:9})],
+      KH+strich(97,6,97,122)+strich(143,6,143,122)+straehne(98,142,119,99,141,54)+rolleEnde(120,46,12,WF[2])+txt(120,144,'Basis',{s:9})],
     ['B · Wickler hinter der Abteilungslinie','Der Wickler liegt etwas hinter seinem Feld. Folge: Die ersten 1 bis 2 cm am Ansatz bekommen keine Welle.',
-      KH+strich(80,8,80,124)+strich(120,8,120,118)+'<path d="M80 121 L120 117 L170 62 L148 52 Z" fill="'+HAAR+'"/>'+rund(170,46,20,WF[2])+
-      '<path d="M76 128 Q100 132 124 124" stroke="'+NEIN+'" stroke-width="2.2" fill="none"/>'+txt(100,144,'1–2 cm glatt',{f:NEIN,s:10,w:700})],
+      KH+strich(78,6,78,126)+strich(120,6,120,120)+'<path d="M79 125 L119 119 L175 72 L150 52 Z" fill="'+WH+'" stroke="'+WH2+'"/>'+
+      [0.2,0.4,0.6,0.8].map(function(a){return '<line x1="'+(79+40*a)+'" y1="'+(125-6*a)+'" x2="'+(150+25*a)+'" y2="'+(52+20*a)+'" stroke="'+WL+'" stroke-width="1"/>';}).join('')+
+      rolleEnde(168,52,12,WF[2])+'<path d="M74 132 Q98 136 124 127" stroke="'+NEIN+'" stroke-width="2.4" fill="none"/>'+txt(100,147,'1–2 cm glatt',{f:NEIN,s:10,w:700})],
     ['C · Passeebreite = Durchmesser','Teile die Strähne nur so tief ab, wie der Wickler im Durchmesser misst. Dickere Strähnen wellen innen schlechter.',
-      DEF+KH+strich(98,8,98,120)+strich(142,8,142,120)+'<path d="M98 117 L142 117 L140 66 L100 66 Z" fill="'+HAAR+'"/>'+rund(120,44,22,WF[3])+pfeil(98,80,142,80,'#fff')+pfeil(98,128,142,128)],
+      DEF+KH+strich(104,6,104,122)+strich(136,6,136,122)+straehne(104,136,118,104,136,60)+rolleEnde(120,46,16,WF[3])+pfeil(104,134,136,134)],
     ['D · Passeelänge = Wicklerlänge','Die Strähne darf nicht breiter sein als der Wickler. Sonst rutschen Haare über den Rand und wellen ungleich.',
-      DEF+KH+'<path d="M70 112 L170 112 L156 56 L84 56 Z" fill="'+HAAR+'"/>'+w(120,46,110,22,0,WF[3])+pfeil(65,78,65,122)+pfeil(175,78,175,122)+strich(65,22,65,70)+strich(175,22,175,70)+pfeil(65,16,175,16)],
+      DEF+KH+straehne(68,172,114,74,166,56)+rolleSeite(120,48,96,22,WF[3],0,true)+pfeil(74,10,166,10)+strich(74,14,74,36)+strich(166,14,166,36)+pfeil(56,62,56,116)+pfeil(184,62,184,116)],
     ['E · Parallel wickeln','Roll gerade, also im selben Verlauf wie die Abteilung. Verkantet der Wickler, verziehen sich die Haare und es bilden sich Schlaufen.',
-      KH+'<path d="M20 120 L100 120 L94 72 L26 72 Z" fill="'+HAAR+'"/>'+w(60,62,92,18,0,WF[2])+haken(60,30,true)+
-      '<path d="M140 120 L220 120 L214 80 L146 70 Z" fill="'+HAAR+'"/>'+w(180,62,92,18,-14,WF[2])+'<path d="M206 80 q14 -2 10 12 q-6 8 -12 -2" stroke="'+HAAR2+'" stroke-width="3" fill="none"/>'+haken(180,22,false)],
+      KH+straehne(22,98,124,26,94,74)+rolleSeite(60,64,68,20,WF[2],0,true)+haken(60,24,true)+
+      straehne(142,218,124,148,212,82)+'<path d="M206 84 q20 -4 14 16 q-8 10 -16 -4" stroke="'+WH2+'" stroke-width="3" fill="none"/>'+rolleSeite(180,66,68,20,WF[2],-14,true)+haken(180,22,false)],
     ['F · Gummi ohne Druck','Der Gummi gehört auf das aufgerollte Haar, nicht in den Ansatz. Schneidet er ein, bleibt eine Kerbe zurück und das Haar kann an dieser Stelle brechen.',
-      KH+'<path d="M40 110 L80 110 L78 84 L42 84 Z" fill="'+HAAR+'"/>'+rund(60,72,22,WF[2])+'<path d="M38 64 Q60 44 82 64" stroke="#2F2A24" stroke-width="3" fill="none"/>'+haken(60,26,true)+
-      '<path d="M160 112 L200 112 L198 86 L162 86 Z" fill="'+HAAR+'"/>'+rund(180,72,22,WF[2])+'<path d="M156 66 Q180 46 204 66 L200 112 L160 112 Z" stroke="#2F2A24" stroke-width="3" fill="none"/>'+'<circle cx="160" cy="112" r="6" fill="none" stroke="'+NEIN+'" stroke-width="2"/><circle cx="200" cy="112" r="6" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+haken(180,26,false)]
+      KH+straehne(46,74,124,46,74,84)+rolleEnde(60,72,10,WF[2])+'<path d="M36 72 Q60 38 84 72" stroke="#2F2A24" stroke-width="3" fill="none"/>'+haken(60,22,true)+
+      straehne(166,194,120,166,194,84)+rolleEnde(180,72,10,WF[2])+'<path d="M160 70 L163 121 M200 70 L197 121" stroke="#2F2A24" stroke-width="3" fill="none"/><path d="M163 121 L197 121" stroke="#2F2A24" stroke-width="3"/>'+
+      '<circle cx="164" cy="121" r="7" fill="none" stroke="'+NEIN+'" stroke-width="2"/><circle cx="196" cy="121" r="7" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+haken(180,22,false)]
   ];
   $('#regeln').innerHTML=REGELN.map(function(r){return '<figure class="regel" style="margin:0"><svg viewBox="0 0 240 150" role="img" aria-label="'+esc(r[0])+'">'+'<rect width="240" height="150" fill="'+HG+'"/>'+r[2]+'</svg><p><b>'+esc(r[0])+'</b><br>'+esc(r[1])+'</p></figure>';}).join('');
   var WTIPPS=[
