@@ -244,7 +244,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="back-link" href="lerntool.html?v=20261114b">← Lern-Tool</a>
+    <a class="back-link" href="lerntool.html?v=20261114c">← Lern-Tool</a>
     <nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
     <button class="profile-chip" id="profileChip" data-a="profiles" aria-label="Lernprofil wechseln"></button>
   </div>
@@ -252,6 +252,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <main class="wrap" id="main"></main>
 <footer class="wrap">Orientiert sich an den Anforderungen der Zwischenprüfung im Friseurhandwerk. Verbindlich sind immer die aktuellen Prüfungsunterlagen der Landesinnung. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
 
+<script src="woerni-impulse.js?v=20261114"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
 <script>
 "use strict";
 /* ============================================================
@@ -1196,11 +1197,18 @@ function zuegeHTML(){return `<section class="stack"><p class="lead">Die Rasur wi
  <figure class="panel stack"><h3>Übersicht</h3>${zugOverviewSVG()}<figcaption>Wo die 15 Rasierzüge liegen. Blick von vorne auf den Kunden: seine rechte Seite ist im Bild links.</figcaption></figure>
  ${zugLegend}
  <ol class="steps">${ZUEGE.map(([n,g,t],i)=>`<li><div class="panel zug">${zugSVG(i)}<div class="stack"><div class="row" style="justify-content:space-between"><h3>${esc(n)}</h3>${g?`<span class="pill ${g==='Vorhandgriff'?'accent':'warn'}">${g}</span>`:''}</div><p>${esc(t)}</p>${i===4?'<p class="small" style="color:var(--accent);font-weight:700">↻ Kunde wendet den Kopf nach rechts, jetzt kommt die linke Gesichtshälfte.</p>':''}</div></div></li>`).join('')}</ol></section>`;}
+// Wörni V1 (docs/woerni-v1.md): ein ruhiger Satz vor dem Start einer Übung mit Timer,
+// einmal pro Übung (in V gemerkt), verschwindet mit dem Start. Nicht in der Prüfungstag-Simulation.
+function woerniVorUebung(){
+  if(!V.timer||!T||T.running||T.remain!==T.total) return '';
+  if(V.woerni===undefined) V.woerni=window.WOERNI?WOERNI.zeile('praxis',true):'';
+  return V.woerni||'';
+}
 function sessionHTML(){const p=PART[V.session];if(!DRAFT||DRAFT.part!==p.id)DRAFT={part:p.id,r:{},who:'selbst',note:''};
  const rated=Object.keys(DRAFT.r).length,total=allCrit(p).length;
  return `<button class="btn ghost back" data-a="part" data-id="${p.id}">← Zurück zu ${p.name}</button>
  <section class="stack"><div class="eyebrow">Übung</div><h1>${p.name}</h1></section>
- ${V.timer?`<section class="card">${timerHTML()}</section>`:''}
+ ${V.timer?`<section class="card">${woerniVorUebung()}${timerHTML()}</section>`:''}
  <section class="stack"><div class="row" style="justify-content:space-between"><h2>Bewertung</h2><div class="seg" role="group" aria-label="Wer bewertet?">${[['selbst','Ich selbst'],['ausb','Ausbilderin']].map(([k,l])=>`<button class="n" data-a="who" data-w="${k}" aria-pressed="${DRAFT.who===k}">${l}</button>`).join('')}</div></div>
  <p class="muted small">Bewerte nach der Übung jeden Punkt ehrlich. „Fast“ heißt: erkennbar, aber noch nicht prüfungssicher.</p>
  ${p.sections.map(s=>`<div class="panel"><h3>${esc(s.name)}</h3>${s.crit.map(c=>{const v=DRAFT.r[c.id];return `<div class="rate-row"><span>${esc(c.t)}</span><div class="seg" role="group" aria-label="${esc(c.t)}"><button class="g" data-a="rate" data-c="${c.id}" data-v="2" aria-pressed="${v===2}">Gut</button><button class="m" data-a="rate" data-c="${c.id}" data-v="1" aria-pressed="${v===1}">Fast</button><button class="b" data-a="rate" data-c="${c.id}" data-v="0" aria-pressed="${v===0}">Noch nicht</button></div></div>`;}).join('')}</div>`).join('')}
@@ -1353,7 +1361,7 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!
   case 'rate': DRAFT.r[ds.c]=+ds.v;{const row=el.parentElement;row.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el));const n=Object.keys(DRAFT.r).length;$('#ratedinfo').textContent=n+' von '+allCrit(PART[DRAFT.part]).length+' Punkten bewertet';$('[data-a="savesession"]').disabled=!n;}break;
   case 'who': DRAFT.who=ds.w;el.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el));break;
   case 'savesession':{const sec=V.timer&&T?Math.round(T.total-T.remain):null;D.praxis.push({part:DRAFT.part,date:Date.now(),who:DRAFT.who,r:DRAFT.r,note:DRAFT.note,sec:sec&&sec>0?sec:null});save();const pid=DRAFT.part;const sc=sessionScore(D.praxis[D.praxis.length-1]);DRAFT=null;stopTimer();T=null;go('praxis',{part:pid,sub:'hist'});toast('Gespeichert: '+pct(sc)+' %');break;}
-  case 'tstart': startTimer();break;
+  case 'tstart': startTimer();document.querySelectorAll('.woerni-zeile').forEach(e=>e.remove());break;
   case 'tpause': pauseTimer();break;
   case 'treset': if(T){stopTimer();T.remain=T.total;T.warned={};T.msg='';paintTimer();}break;
   case 'quiz': SIM=null;startQuiz(ds.cat,ds.type);break;
