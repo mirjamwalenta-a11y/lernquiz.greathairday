@@ -281,6 +281,9 @@ body.schnupper .spick-link{display:none}
 .score .num{font:600 1.5rem var(--mono);color:var(--accent)}
 footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 body.schnupper .nur-lern{display:none!important}
+/* Nur das Mischlabor (Schnuppertag, eingebettet): ohne Kopf, Reiter, andere Teile und Fuß */
+body.nur-mischen header.top,body.nur-mischen nav.tabs,body.nur-mischen main > section.block:not(#mischen),body.nur-mischen main > footer,body.nur-mischen #recht-fuss{display:none!important}
+body.nur-mischen #mischen{padding-top:8px}
 </style>
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
@@ -643,6 +646,12 @@ const VON={
 const von=new URLSearchParams(location.search).get('von');
 if(VON[von]){const a=$('#zurueck');a.href=VON[von][0];a.textContent=VON[von][1];}
 if(von==='schnuppertag')document.body.classList.add('schnupper');
+// ?nur=mischen (nur zusammen mit von=schnuppertag): nur das Mischlabor, jedes Mal frisch,
+// nichts gespeichert; Ergebnis per postMessage an den Schnuppertag (gleiche Herkunft).
+const NUR_MISCHEN=von==='schnuppertag'&&new URLSearchParams(location.search).get('nur')==='mischen';
+if(NUR_MISCHEN)document.body.classList.add('nur-mischen');
+function anSchnuppertag(daten){try{if(NUR_MISCHEN&&window.parent!==window)window.parent.postMessage(Object.assign({typ:'ghd-mischlabor'},daten),location.origin);}catch(e){}}
+if(NUR_MISCHEN&&window.ResizeObserver){new ResizeObserver(()=>anSchnuppertag({hoehe:document.documentElement.scrollHeight})).observe(document.body);}
 
 // ═════════ Farbmischung (RYB, wie beim Malen) ═════════
 // Gemischt wird im Rot-Gelb-Blau-Würfel: Ecken sind die echten Mal-Farben,
@@ -779,8 +788,8 @@ const AUFTRAEGE=[
 ];
 // mSterne: beste Sterne je Auftrag (bleibt), mRunde: Sterne dieser Runde (für Punkte)
 let mIdx=0, mFehler=0, mSterne=[], mRunde=[], mFertig=false;
-try{const g=JSON.parse(localStorage.getItem('farblabor-auftraege')||'null');if(g&&Array.isArray(g.s)){mSterne=g.s;mRunde=Array.isArray(g.r)?g.r:[];mIdx=Math.min(g.i||0,AUFTRAEGE.length-1);mFertig=!!g.f;}}catch(e){}
-const mMerken=()=>{try{localStorage.setItem('farblabor-auftraege',JSON.stringify({i:mIdx,s:mSterne,r:mRunde,f:mFertig}));}catch(e){}};
+try{const g=NUR_MISCHEN?null:JSON.parse(localStorage.getItem('farblabor-auftraege')||'null');if(g&&Array.isArray(g.s)){mSterne=g.s;mRunde=Array.isArray(g.r)?g.r:[];mIdx=Math.min(g.i||0,AUFTRAEGE.length-1);mFertig=!!g.f;}}catch(e){}
+const mMerken=()=>{if(NUR_MISCHEN){anSchnuppertag({runde:mRunde.slice(),anzahl:AUFTRAEGE.length});return;}try{localStorage.setItem('farblabor-auftraege',JSON.stringify({i:mIdx,s:mSterne,r:mRunde,f:mFertig}));}catch(e){}};
 const M=Mischfeld('m',()=>{$('#mMeldung').hidden=true;});
 function mZeige(){
   const a=AUFTRAEGE[mIdx];
