@@ -88,7 +88,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .kette{transition:transform 1s cubic-bezier(.5,0,.3,1)}
 .legende{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
 .legende span::before{content:"";display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
-.legende .l-hb::before{background:var(--hb)}.legende .l-salz::before{background:var(--salz)}.legende .l-ss::before{background:var(--ss)}
+.legende .l-kette::before{background:#9C8A63;height:5px}.legende .l-hb::before{background:var(--hb)}.legende .l-salz::before{background:var(--salz)}.legende .l-ss::before{background:var(--ss)}
 .bruecken-karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 .bk{border-radius:8px;padding:12px;border:1px solid var(--line);background:var(--surface);font-size:14px}
 .bk b{display:block;margin-bottom:4px}
@@ -239,7 +239,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <div class="labor">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="tag" id="labSchritt">Schritt 1 von 5</span>
-        <div class="legende"><span class="l-hb">Wasserstoffbrücke</span><span class="l-salz">Salzbrücke</span><span class="l-ss">Schwefelbrücke</span></div>
+        <div class="legende"><span class="l-kette">Keratin-Kette</span><span class="l-hb">Wasserstoffbrücke</span><span class="l-salz">Salzbrücke</span><span class="l-ss">Schwefelbrücke</span></div>
       </div>
       <svg id="labSvg" viewBox="0 0 360 300" role="img" aria-label="Links die Strähne, rechts unter der Lupe zwei Keratin-Ketten mit Brücken"></svg>
       <div class="schritt-text" id="labText" aria-live="polite"></div>
@@ -469,16 +469,16 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   // ═══════════ 1 CHEMIE-LABOR ═══════════
   // Links: die ganze Strähne (glatt → gewickelt → Locke).
   // Rechts, „unter der Lupe“: zwei Keratin-Ketten mit Brücken. Beim Wickeln biegen sich
-  // die Ketten um den Wickler. Die äußere Kette macht den größeren Bogen, darum stehen die
-  // offenen Schwefel-Enden danach nicht mehr ihrem alten Partner gegenüber. Die Fixierung
-  // verbindet sie mit neuen Partnern, und die Biegung bleibt auch ohne Wickler.
+  // die Ketten um den Wickler. Die äußere Kette macht den größeren Bogen, darum liegen die
+  // offenen Schwefel-Enden danach versetzt. Die Fixierung verbindet jedes Ende mit dem Ende,
+  // das ihm jetzt gegenüberliegt, und die Biegung bleibt auch ohne Wickler.
   var T6=[0.06,0.18,0.30,0.42,0.62,0.86], TYP=['hb','ss','salz','ss','hb','hb'];
   var FARBE={hb:'#3F83C9',salz:'#D9822B',ss:'#896C32'}, ROT='#C44030', KETTE='#9C8A63';
   var SCHRITTE=[
     {t:'1 · Ausgangszustand: glattes Haar',p:'Unter der Lupe: zwei Keratin-Ketten, verbunden durch Brücken. Die starken Schwefelbrücken (gold) halten das Haar in seiner Form, hier glatt.',f:'Gold = Schwefelbrücke',b:0,zust:'zu'},
     {t:'2 · Wellmittel öffnet die Brücken',p:'Das Wellmittel knackt die Schwefelbrücken. Aus jeder Brücke werden zwei offene Schwefel-Enden (rot). Das Haar ist jetzt formbar, sieht aber noch glatt aus. Das Fachwort für dieses Öffnen ist Reduktion.',f:'Schwefelbrücke + Wellmittel → 2 offene Enden',b:0,zust:'offen'},
-    {t:'3 · Wickeln: die Ketten biegen sich',p:'Das Haar liegt um den Wickler, die Ketten biegen sich mit. Die äußere Kette macht den größeren Bogen. Darum stehen die offenen Enden nicht mehr ihrem alten Partner gegenüber.',f:'Die Form gibt der Wickler vor',b:1,zust:'gewickelt'},
-    {t:'4 · Fixierung schließt neue Brücken',p:'Die Fixierung verbindet die offenen Schwefel-Enden wieder zu Schwefelbrücken, aber mit neuen Partnern, genau in der gebogenen Form. Das Fachwort für dieses Schließen ist Oxidation.',f:'offene Enden + Fixierung → neue Schwefelbrücke',b:1,zust:'fixiert'},
+    {t:'3 · Wickeln: die Ketten biegen sich',p:'Das Haar liegt um den Wickler, die beiden Keratin-Ketten biegen sich mit. Die äußere Kette muss einen größeren Bogen machen als die innere. Dadurch verschieben sich die offenen Enden (rot): Die zwei Enden, die vorher eine Brücke waren, liegen sich jetzt nicht mehr gegenüber, sondern versetzt.',f:'Die Form gibt der Wickler vor',b:1,zust:'gewickelt'},
+    {t:'4 · Fixierung schließt neue Brücken',p:'Die Fixierung verbindet die offenen Schwefel-Enden wieder zu Schwefelbrücken. Dabei verbindet sich jedes Ende mit dem Ende, das ihm jetzt gegenüberliegt, also genau in der gebogenen Form. Das Fachwort für dieses Schließen ist Oxidation.',f:'offene Enden + Fixierung → neue Schwefelbrücke',b:1,zust:'fixiert'},
     {t:'5 · Wickler raus: die Locke bleibt',p:'Der Wickler ist weg, aber die neuen Brücken halten die Biegung fest. Das ist die Locke. Sie bleibt, bis das Haar herauswächst.',f:'Neue Brücken = neue Form',b:1,zust:'fertig'}
   ];
   var lab=0, biegung=0, anim=null;
@@ -491,8 +491,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     return [gx+(bx-gx)*b, gy+(by-gy)*b];
   }
   function kettenPfad(k,b){ var d=''; for(var n=0;n<=60;n++){var q=punkt(k,n/60,b);d+=(n?' L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);} return d; }
-  // neuer Partner: Punkt der äußeren Kette, der in der gebogenen Form am nächsten liegt
-  // Kein Partner in Reichweite (Ende des inneren Bogens): null, dann keine Brücke
+  // neues Gegenüber: Punkt der äußeren Kette, der in der gebogenen Form am nächsten liegt
+  // Kein Gegenüber in Reichweite (Ende des inneren Bogens): null, dann keine Brücke
   function partner(i){ var p=punkt(0,T6[i],1), best=0, bd=1e9; for(var n=0;n<=100;n++){var q=punkt(1,n/100,1),dd=(q[0]-p[0])*(q[0]-p[0])+(q[1]-p[1])*(q[1]-p[1]);if(dd<bd){bd=dd;best=n/100;}} return Math.sqrt(bd)<=(M.r[1]-M.r[0])*1.25?best:null; }
   function linie(a,b2,farbe,breite,extra){ return '<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b2[0].toFixed(1)+'" y2="'+b2[1].toFixed(1)+'" stroke="'+farbe+'" stroke-width="'+breite+'" stroke-linecap="round"'+(extra||'')+'/>'; }
   function txt(x,y,t,farbe,gr,anker,fett){ return '<text x="'+x+'" y="'+y+'" fill="'+farbe+'" font-size="'+(gr||10)+'" text-anchor="'+(anker||'middle')+'"'+(fett?' font-weight="700"':'')+' font-family="Poppins,system-ui">'+t+'</text>'; }
@@ -543,12 +543,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     });
     g+='<path d="'+kettenPfad(0,b)+'" stroke="'+KETTE+'" stroke-width="5" fill="none" stroke-linecap="round"/>';
     g+='<path d="'+kettenPfad(1,b)+'" stroke="'+KETTE+'" stroke-width="5" fill="none" stroke-linecap="round"/>';
-    if(b<0.5) g+=txt(M.x[0]-8,286,'Kette','#9A9188',10,'end')+txt(M.x[1]+8,286,'Kette','#9A9188',10,'start');
     if(z==='offen') g+=txt(326,60,'⚡','#C44030',20)+txt(326,76,'Wellmittel','#C44030',10,'middle',true);
     if(z==='fixiert') g+=txt(326,60,'✚','#2F7D55',20)+txt(326,76,'Fixierung','#2F7D55',10,'middle',true);
     if(z==='fertig') g+=txt(326,60,'✓','#2F7D55',22)+txt(326,76,'Form bleibt','#2F7D55',10,'middle',true);
     if(neu&&b>.5) g+=txt(227,286,'gold = neue Schwefelbrücken','#896C32',10,'middle',true);
-    if(z==='gewickelt') g+=txt(227,286,'rot = offene Enden, alte Partner passen nicht mehr','#C44030',9.5,'middle',true);
+    if(z==='gewickelt') g+=txt(227,286,'rot = offene Enden, jetzt versetzt','#C44030',9.5,'middle',true);
     $('#labSvg').innerHTML=g;
   }
   function labSchritt(){
