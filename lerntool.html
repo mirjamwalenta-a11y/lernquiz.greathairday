@@ -403,7 +403,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>✂ Schnitt &amp; Form</h1>
   <div class="st-sub" style="margin-bottom:16px">Schneiden, Formwirkung und Werkzeug.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261114'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261107i'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261107i'"><div class="st-ic">🧰</div><div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></div></button>
   </div>
@@ -842,7 +842,7 @@ body.mit-leiste .leiste{display:flex}
       <div class="nav-desc">Rund, eckig, oval, herzförmig: Varianten, Do's &amp; Don'ts, Styling-Guides</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261107i'">
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261114'">
     <div class="nav-icon" style="margin:0">✂</div>
     <div>
       <div class="pm-lj">1. – 3. Lehrjahr</div>
@@ -4233,12 +4233,12 @@ var PMT_THEMEN = [
     {n:'Quiz: Strähnen', lj:[2], k:'quiz balayage', go:pmtStr('quiz')}
   ]},
   {i:'✂', n:'Schnitt', p:[
-    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261107i#formen')},
-    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261107i#winkel')},
-    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261107i#pony')},
-    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261107i#zeichnung')},
-    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261107i#quiz')},
-    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261107i#formwirkung')},
+    {n:'Grundformen', lj:[1,2,3], k:'kompakt graduiert stufen', go:pmtLink('schnittwerkstatt.html?v=20261114#formen')},
+    {n:'Winkel-Labor', lj:[1,2,3], k:'winkel elevation', go:pmtLink('schnittwerkstatt.html?v=20261114#winkel')},
+    {n:'Pony', lj:[1,2,3], k:'pony fransen', go:pmtLink('schnittwerkstatt.html?v=20261114#pony')},
+    {n:'Schnittzeichnung & Übungsblatt', lj:[1,2,3], k:'zeichnung übung', go:pmtLink('schnittwerkstatt.html?v=20261114#zeichnung')},
+    {n:'Wissens-Check Schnitt', lj:[1,2,3], k:'quiz schnitt', go:pmtLink('schnittwerkstatt.html?v=20261114#quiz')},
+    {n:'Beratung & Formwirkung', lj:[2,3], k:'gesichtsform beratung visagistik', go:pmtLink('schnittwerkstatt.html?v=20261114#formwirkung')},
     {n:'Schnittzeichnungs-Designer', lj:[1,2,3], k:'zeichnen designer', go:pmtLink('schnittdesigner.html?v=20261107i')}
   ]},
   {i:'👑', n:'Hochstecken & Styling', p:[
@@ -5102,6 +5102,12 @@ zeige = function(seite) {
   if (seite === 'praxis') ptLaden();
   // Wörni V1: einmal am Tag beim Öffnen der Praxis-Module (docs/woerni-v1.md)
   if (seite === 'praxis') { try { var wp = document.getElementById('woerni-praxis'); if (wp && window.WOERNI && !wp.innerHTML) wp.innerHTML = WOERNI.einmalAmTag('lerntool-praxis', 'praxis', true); } catch (e) {} }
+  // Wörnis Tipp zum Modul (woernis-tipps.js): einmal unter dem Untertitel einsetzen
+  var WT_MODUL = {'pm-wasch': 'waschen', 'pm-farbe': 'farbe', 'pm-hoch': 'hoch', 'b-pruefung': 'pruefung'}[seite];
+  if (WT_MODUL && window.woerniTippHTML) { try {
+    var pg = document.getElementById('p-' + seite), unter = pg && pg.querySelector('.sub, .st-sub');
+    if (unter && !pg.querySelector('.woerni')) { var wt = woerniTippHTML(WT_MODUL); if (wt) unter.insertAdjacentHTML('afterend', wt); }
+  } catch (e) {} }
 };
 
 (function(){
@@ -5148,7 +5154,7 @@ zeige = function(seite) {
 </script>
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#p-mlogin" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 <script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
-<script src="woernis-tipps.js?v=20261113b"></script>
+<script src="woernis-tipps.js?v=20261114b"></script>
 <script src="woerni-impulse.js?v=20261114"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
 <script>
 // Startseite: „Wörni sagt“ (Spruch des Tages). Nach 7 oder mehr Tagen ohne Lernrunde
