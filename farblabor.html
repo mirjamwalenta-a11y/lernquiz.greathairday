@@ -642,7 +642,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const VON={
   schnuppertag:['schnuppertag.html','← Schnuppertag'],
   handbuch:['https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/Mitarbeiterhandbuch_App.html','← Mitarbeiterhandbuch'],
-  meisterin:['lernquiz.html?v=20261114e#meisterin','← Meisterinnen-Bereich']
+  meisterin:['lernquiz.html?v=20261114f#meisterin','← Meisterinnen-Bereich']
 };
 const von=new URLSearchParams(location.search).get('von');
 if(VON[von]){const a=$('#zurueck');a.href=VON[von][0];a.textContent=VON[von][1];}

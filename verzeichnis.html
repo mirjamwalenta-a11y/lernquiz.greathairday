@@ -8,8 +8,12 @@
 <link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
 <!--
   A–Z-Verzeichnis aller Lern-Bereiche mit ihrem genauen Weg
-  (z. B. Zwischenprüfung › Praxis › Technikkopf). Statisch, keine Daten,
-  kein Login. Neue Bereiche einfach in EINTRAEGE ergänzen:
+  (z. B. Zwischenprüfung › Praxis › Technikkopf). Keine eigenen Daten.
+  Rolle: Lehrlinge, Stylistinnen und alle ohne Anmeldung sehen nur die Lern-
+  Einträge. Meisterin-Einträge und der Filter erscheinen erst, wenn der Server
+  (RPC ist_meisterin, meisterin-rolle.js) die Rolle bestätigt. Das blendet nur
+  Einträge aus – die Meisterin-Seiten selbst sind am Server geschützt (RLS).
+  Neue Bereiche einfach in EINTRAEGE ergänzen:
     [Name, [Weg …], Link, Rolle ('m' = nur Meisterin), Stichwörter für die Suche]
   Direktlinks: lerntool.html#seite=… / #modul=…, zwischenpruefung.html#tab=…&part=…&sub=…&nsub=…,
   beratung-formwirkung.html#view=…&kap=…, farblabor/schnittwerkstatt/werkzeugkunde #Abschnitt.
@@ -32,7 +36,8 @@ h1{font-size:24px;font-weight:600;line-height:1.2;margin:2px 0 6px}
 .buchstaben{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 .buchstaben a{min-width:28px;text-align:center;padding:4px 0;border-radius:7px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px;font-weight:600}
 .buchstaben a:hover{border-color:var(--accent);color:var(--accent)}
-.filter{display:flex;gap:6px;margin-top:8px}
+.filter{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.filter[hidden]{display:none}
 .filter button{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
 .filter button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 h2{font-size:18px;font-weight:700;color:var(--accent);margin:18px 0 6px;scroll-margin-top:150px}
@@ -56,9 +61,9 @@ mark{background:var(--soft);color:inherit;border-radius:3px;padding:0 1px}
 
   <div class="suche">
     <input type="search" id="q" placeholder="Suchen, z. B. Technikkopf, Balayage, Oxidant …" autocomplete="off" aria-label="Im Verzeichnis suchen">
-    <div class="filter" role="group" aria-label="Anzeigen">
+    <div class="filter" role="group" aria-label="Anzeigen" id="filter" hidden>
       <button type="button" data-f="alle" aria-pressed="true">Alle</button>
-      <button type="button" data-f="l" aria-pressed="false">Lehrlinge</button>
+      <button type="button" data-f="l" aria-pressed="false">Lehrlinge &amp; Team</button>
       <button type="button" data-f="m" aria-pressed="false">Meisterin</button>
     </div>
     <nav class="buchstaben" id="abc" aria-label="Buchstaben"></nav>
@@ -264,10 +269,13 @@ var EINTRAEGE = [
 
   // ── Meisterin ──
   [MB, [LQ,'Meisterin-Login'], 'lernquiz.html#meisterin', 'm', 'Dashboard Lehrlinge'],
-  ['Lehrling anlegen', [LQ,MB,'+ Lehrling anlegen'], 'lernquiz.html#meisterin', 'm', 'Neuer Lehrling PIN'],
-  ['Test-Zugänge anlegen', [LQ,MB,'+ Lehrling anlegen','Mehrere Test-Zugänge'], 'lernquiz.html#meisterin', 'm', 'Gast Testen'],
+  ['Lehrling anlegen', [LQ,MB,'+ Lehrling oder Stylistin anlegen'], 'lernquiz.html#meisterin', 'm', 'Neuer Lehrling PIN'],
+  ['Test-Zugänge anlegen', [LQ,MB,'+ Lehrling oder Stylistin anlegen','Mehrere Test-Zugänge'], 'lernquiz.html#meisterin', 'm', 'Gast Testen'],
   ['Lehrling bearbeiten oder sperren', [LQ,MB,'Lehrling antippen','Bearbeiten'], 'lernquiz.html#meisterin', 'm', 'Lehrjahr Wochenziel nur zum Testen'],
   ['Farb-Zeiten', [LQ,MB,'Farbe'], 'lernquiz.html#meisterin', 'm', 'Einwirkzeiten'],
+  ['Farb-Nummern', [LQ,MB,'Farbe'], 'lernquiz.html#meisterin', 'm', 'Farbkarte Nummern Firma Beispielnummer 7.21 Reflex Farblabor'],
+  ['Umformung', [LQ,MB,'Praxis'], 'umformung.html', 'm', 'Dauerwelle Glättung'],
+  ['Stylistin anlegen', [LQ,MB,'+ Lehrling oder Stylistin anlegen'], 'lernquiz.html#meisterin', 'm', 'Mitarbeiterin Team mitlernen Zugang'],
   ['Farb-Fälle verwalten', [LQ,MB,'Farbe','Farb-Fälle'], 'lernquiz.html#meisterin', 'm', 'Farbplan bewerten'],
   ['Praxis-Check', [LQ,MB,'Praxis'], 'lernquiz.html#meisterin', 'm', 'abhaken'],
   ['Praxis-Tagebuch aller Lehrlinge', [LQ,MB,'Praxis'], 'lernquiz.html#meisterin', 'm', 'bestätigen Notiz'],
@@ -283,6 +291,8 @@ var EINTRAEGE = [
   ['Mein Lernbereich', [LQ,MB,'Selbst ansehen'], 'meisterin.html', 'm', 'eigene Fragen Abzeichen'],
   ['Schnuppertag', [LQ,MB], 'schnuppertag.html', 'm', 'Bewerbung Eignungstest'],
   ['Eignungstest', ['Schnuppertag'], 'schnuppertag.html', 'm', 'Bewerbung Test'],
+  ['Praxis-Aufgaben im Schnuppertag', ['Schnuppertag','✂ Praxis'], 'schnuppertag.html', 'm', 'Papierschere Knoten Rollenspiel Bewerbung Eignungstest'],
+  ['Mischlabor im Schnuppertag', ['Schnuppertag','✂ Praxis'], 'schnuppertag.html', 'm', 'Farben mischen Bewerbung Eignungstest Farblabor'],
   ['Probezeit', ['Schnuppertag','Probezeiten'], 'schnuppertag.html', 'm', 'Probezeit anlegen Wochen Feedback'],
   ['Wochenquiz Probezeit', ['Schnuppertag','Probezeit'], 'schnuppertag.html', 'm', 'Quiz Link'],
   ['Archiv Bewerber', ['Schnuppertag'], 'schnuppertag.html', 'm', 'Bewerbung'],
@@ -301,8 +311,8 @@ EINTRAEGE[EINTRAEGE.length - 1][2] = '#feedback';
   var LISTE = EINTRAEGE.map(function (e) {
     return { n: e[0], w: e[1], l: e[2], r: e[3], s: norm(e[0] + ' ' + e[1].join(' ') + ' ' + (e[4] || '')) };
   }).sort(function (a, b) { return a.n.localeCompare(b.n, 'de', { sensitivity: 'base' }); });
-  var filter = 'alle', q = '';
-  try { filter = localStorage.getItem('az-filter') || 'alle'; } catch (e) {}
+  // Bis der Server die Meisterin bestätigt: nur Lern-Einträge (filter 'l'), kein Filter sichtbar
+  var filter = 'l', q = '';
 
   function markiere(t) {
     if (!q) return esc(t);
@@ -338,6 +348,26 @@ EINTRAEGE[EINTRAEGE.length - 1][2] = '#feedback';
     ev.preventDefault(); var fb = document.getElementById('fb-link'); if (fb) fb.click();
   });
   zeichnen();
+
+  // Rolle prüfen (am Server). Nur die Meisterin bekommt den Filter und ihre Einträge.
+  window.azMeisterin = function () {
+    try { filter = localStorage.getItem('az-filter') || 'alle'; } catch (e) { filter = 'alle'; }
+    document.getElementById('filter').hidden = false;
+    zeichnen();
+  };
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meisterin-rolle.js?v=20261108a"></script>
+<script>
+(function () {
+  var SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
+  try {
+    if (!window.supabase || !window.lqIstMeisterin) return;
+    var c = window.supabase.createClient(SB_URL, SB_KEY);
+    window.lqIstMeisterin(c).then(function (ja) { if (ja) window.azMeisterin(); }, function () {});
+  } catch (e) {}
 })();
 </script>
 <script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Feedback, Impressum, Datenschutz, Nutzungsbedingungen -->
