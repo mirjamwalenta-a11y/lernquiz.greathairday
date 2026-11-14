@@ -888,7 +888,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     document.head.appendChild(sc);
   };
   function studioInit(){
-    var T=window.THREE, A=1.0, B=1.16, C=1.1, HS=1.035, a=A*HS, b=B*HS, c=C*HS;
+    var T=window.THREE, A=.86, B=1.0, C=1.02, HS=1.035, a=A*HS, b=B*HS, c=C*HS;
     var GR=[{n:'sehr dünn',r:.034},{n:'dünn',r:.041},{n:'mittel',r:.049},{n:'dick',r:.057},{n:'sehr dick',r:.066}], LEN=.46;
     var RICHT=[['quer',0],['schräg ↖',35],['schräg ↗',-35],['längs',90]];
     var buehne=$('#studioBuehne'); $('#studioStartBox').remove(); $('#studioWerkzeug').hidden=false;
@@ -896,25 +896,35 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     var canvas=$('#stCanvas'), renderer=new T.WebGLRenderer({canvas:canvas,antialias:true});
     renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
     var scene=new T.Scene(); scene.background=new T.Color('#F3EBD9');
-    var cam=new T.PerspectiveCamera(32,1,.1,50); cam.position.set(0,.15,5.6);
+    var cam=new T.PerspectiveCamera(32,1,.1,50); cam.position.set(0,-.15,6.0);
     scene.add(new T.HemisphereLight(0xffffff,0x9a8a74,.85)); var dl=new T.DirectionalLight(0xffffff,.65); dl.position.set(2,3,4); scene.add(dl); var dl2=new T.DirectionalLight(0xffffff,.35); dl2.position.set(-2,1,-4); scene.add(dl2);
     var kopf=new T.Group(); scene.add(kopf);
+    // Kopf nach den Umrissen der Schnittwerkstatt (1 Einheit = 100 px dort):
+    // Schädel: von hinten 90×100, von oben 82×102, im Profil Kreis r=100.
+    // Gesicht/Kinn als zweite, nach vorne-unten versetzte Form; Ohr etwas vor der Mitte, Hals hinten bei −0,4.
     var hautM=new T.MeshStandardMaterial({color:0xF2D2B6,roughness:.85});
-    var hk=new T.Mesh(new T.SphereGeometry(1,48,36),hautM); hk.scale.set(A,B,C); kopf.add(hk);
-    var hals=new T.Mesh(new T.CylinderGeometry(.42,.5,1.1,32),hautM); hals.position.set(0,-1.25,-.12); kopf.add(hals);
-    var nase=new T.Mesh(new T.ConeGeometry(.1,.28,16),hautM); nase.rotation.x=Math.PI/2; nase.position.set(0,-.12,C+.05); kopf.add(nase);
-    function zAuf(x,y){ return C*Math.sqrt(Math.max(0,1-x*x/(A*A)-y*y/(B*B))); }
+    var hk=new T.Mesh(new T.SphereGeometry(1,64,48),hautM); hk.scale.set(A,B,C); kopf.add(hk);
+    var gesicht=new T.Mesh(new T.SphereGeometry(1,48,36),hautM); gesicht.scale.set(.78,.8,.8); gesicht.position.set(0,-.42,.22); kopf.add(gesicht);
+    var hals=new T.Mesh(new T.CylinderGeometry(.44,.48,1.5,32),hautM); hals.scale.set(1,1,.95); hals.position.set(0,-1.3,.0); kopf.add(hals);
+    var nase=new T.Mesh(new T.ConeGeometry(.09,.26,16),hautM); nase.rotation.x=Math.PI/2+.35; nase.position.set(0,-.46,1.0); kopf.add(nase);
+    function zAuf(x,y){ var z1=C*Math.sqrt(Math.max(0,1-x*x/(A*A)-y*y/(B*B))), q=1-x*x/.6084-Math.pow((y+.42)/.8,2), z2=q>0?.22+.8*Math.sqrt(q):0; return Math.max(z1,z2); }
     [-1,1].forEach(function(sx){
-      var o=new T.Mesh(new T.SphereGeometry(.17,16,12),hautM); o.scale.set(.4,1,.7); o.position.set(sx*A*.99,-.15,-.05); kopf.add(o);
-      var e=new T.Mesh(new T.SphereGeometry(.055,12,8),new T.MeshStandardMaterial({color:0x3a2a20})); e.position.set(sx*.33,.1,zAuf(.33,.1)-.02); kopf.add(e);
-      var br=new T.Mesh(new T.BoxGeometry(.22,.03,.04),new T.MeshStandardMaterial({color:0x5E3A1E})); br.position.set(sx*.33,.24,zAuf(.33,.24)); br.rotation.z=-sx*.12; kopf.add(br);
+      var o=new T.Mesh(new T.SphereGeometry(1,16,12),hautM); o.scale.set(.05,.19,.12); o.position.set(sx*.84,-.22,.12); kopf.add(o);
+      var e=new T.Mesh(new T.SphereGeometry(.05,12,8),new T.MeshStandardMaterial({color:0x3a2a20})); e.position.set(sx*.25,-.22,zAuf(.25,-.22)-.015); kopf.add(e);
+      var br=new T.Mesh(new T.BoxGeometry(.2,.028,.04),new T.MeshStandardMaterial({color:0x5E3A1E})); br.position.set(sx*.26,-.08,zAuf(.26,-.08)); br.rotation.z=-sx*.12; kopf.add(br);
     });
-    var mund=new T.Mesh(new T.BoxGeometry(.26,.04,.04),new T.MeshStandardMaterial({color:0xC0707A})); mund.position.set(0,-.48,zAuf(0,-.48)); kopf.add(mund);
-    // Haar-Kappe: Kugel, nur die Dreiecke im Haarbereich behalten
-    function grenze(lon){ return .40-1.15*Math.pow(Math.abs(lon)/Math.PI,1.3); }
-    function istHaar(v,rand){ var lat=Math.asin(Math.max(-1,Math.min(1,v.y))), lon=Math.atan2(v.x,v.z); return lat>grenze(lon)+(rand||0); }
-    var hg=new T.SphereGeometry(1,220,160), pos=hg.attributes.position, idx=hg.index.array, neu=[], va=new T.Vector3(), vb=new T.Vector3(), vc=new T.Vector3();
-    for(var i=0;i<idx.length;i+=3){ va.fromBufferAttribute(pos,idx[i]); vb.fromBufferAttribute(pos,idx[i+1]); vc.fromBufferAttribute(pos,idx[i+2]); if(istHaar(va.add(vb).add(vc).normalize())) neu.push(idx[i],idx[i+1],idx[i+2]); }
+    var mund=new T.Mesh(new T.BoxGeometry(.22,.035,.04),new T.MeshStandardMaterial({color:0xC0707A})); mund.position.set(0,-.86,zAuf(0,-.86)-.01); kopf.add(mund);
+    // Haaransatz wie die gestrichelte Linie der Schnittwerkstatt: Höhe (y) je Winkel um den Kopf (0° = Stirnmitte, 180° = Nacken)
+    var ANSATZ=[[0,.42],[30,.3],[50,.06],[70,-.02],[85,-.04],[100,-.2],[115,-.5],[140,-.8],[180,-.93]];
+    function grenze(lon){ var g=Math.abs(lon)*180/Math.PI; for(var i=1;i<ANSATZ.length;i++) if(g<=ANSATZ[i][0]){ var u=(g-ANSATZ[i-1][0])/(ANSATZ[i][0]-ANSATZ[i-1][0]); return ANSATZ[i-1][1]+u*(ANSATZ[i][1]-ANSATZ[i-1][1]); } return ANSATZ[ANSATZ.length-1][1]; }
+    function istHaar(v,rand){ return v.y>grenze(Math.atan2(v.x/A,v.z/C))+(rand||0); }
+    // Haar-Kappe: Kugel; Dreiecke am Rand bleiben, ihre äußeren Ecken werden unter die Haut gezogen → weicher Haaransatz
+    var hg=new T.SphereGeometry(1,200,150), pos=hg.attributes.position, idx=hg.index.array, neu=[], drin=[], va=new T.Vector3();
+    // Abstand zum Haaransatz je Ecke: innen volle Höhe, außen in einem schmalen Streifen weich unter die Haut auslaufen
+    var RAND=.05;
+    for(var i=0;i<pos.count;i++){ va.fromBufferAttribute(pos,i); var d=va.y-grenze(Math.atan2(va.x/A,va.z/C)); drin.push(d>-RAND);
+      if(d<0){ var u=Math.max(0,1+d/RAND), k=(.985/HS)+(1-.985/HS)*u*u; va.multiplyScalar(k); pos.setXYZ(i,va.x,va.y,va.z); } }
+    for(var i=0;i<idx.length;i+=3){ if(drin[idx[i]]&&drin[idx[i+1]]&&drin[idx[i+2]]) neu.push(idx[i],idx[i+1],idx[i+2]); }
     hg.setIndex(neu); hg.computeVertexNormals();
     var haar=new T.Mesh(hg,new T.MeshStandardMaterial({color:0x6E4528,roughness:.95,side:T.DoubleSide})); haar.scale.set(a,b,c); kopf.add(haar);
     // Fläche und lokale Richtungen
@@ -932,18 +942,18 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     function reihe(von,bis,schritt){ var r=[]; for(var x=von;schritt>0?x<=bis+1e-6:x>=bis-1e-6;x+=schritt) r.push(x); return r; }
     var VORLAGEN={
       frei:{n:'Freies Wickeln',l:function(){return [];}},
-      klassisch:{n:'Klassisch',l:function(){var o=[];reihe(1.0,-2.18,-.145).forEach(function(ps){o.push({psi:ps,lam:0,alpha:0,g:3});});[-.56,.56].forEach(function(la){reihe(.35,-2.05,-.14).forEach(function(ps){o.push({psi:ps,lam:la,alpha:0,g:2});});});return o;}},
-      ziegel:{n:'Ziegelstein',l:function(){var o=[];reihe(.95,-2.15,-.14).forEach(function(ps,i){var off=i%2?.25:0;[-1,-.5,0,.5,1].forEach(function(la){o.push({psi:ps,lam:la+off,alpha:0,g:2});});});return o;}},
-      spirale:{n:'Spirale',l:function(){var o=[];[-2.0,-1.45,-.9].forEach(function(ps,i){reihe(-.96,.96,.24).forEach(function(la){o.push({psi:ps,lam:la,alpha:90+(i%2?15:-15),g:0});});});return o;}},
-      fisch:{n:'Fischgräte',l:function(){var o=[];reihe(-.15,-2.1,-.19).forEach(function(ps){o.push({psi:ps,lam:.3,alpha:32,g:2});o.push({psi:ps,lam:-.3,alpha:-32,g:2});});return o;}},
+      klassisch:{n:'Klassisch',l:function(){var o=[];reihe(1.0,-2.55,-.145).forEach(function(ps){o.push({psi:ps,lam:0,alpha:0,g:3});});[-.5,.5].forEach(function(la){reihe(.35,-2.35,-.14).forEach(function(ps){o.push({psi:ps,lam:la,alpha:0,g:2});});});return o;}},
+      ziegel:{n:'Ziegelstein',l:function(){var o=[];reihe(.95,-2.5,-.14).forEach(function(ps,i){var off=i%2?.22:0;[-.9,-.45,0,.45,.9].forEach(function(la){o.push({psi:ps,lam:la+off,alpha:0,g:2});});});return o;}},
+      spirale:{n:'Spirale',l:function(){var o=[];[-2.4,-1.9,-1.4].forEach(function(ps,i){reihe(-1.0,1.0,.25).forEach(function(la){o.push({psi:ps,lam:la,alpha:90+(i%2?15:-15),g:0});});});return o;}},
+      fisch:{n:'Fischgräte',l:function(){var o=[];reihe(-.15,-2.45,-.19).forEach(function(ps){o.push({psi:ps,lam:.3,alpha:32,g:2});o.push({psi:ps,lam:-.3,alpha:-32,g:2});});return o;}},
       stern:{n:'Sternförmig',stern:true,l:function(){var o=[];[[.27,8,1],[.6,14,2]].forEach(function(ring){for(var k=0;k<ring[1];k++)o.push({rho:ring[0],phi:k/ring[1]*2*Math.PI,g:ring[2]});});return o;}},
-      trapez:{n:'Trapez',l:function(){var o=[];[[-1.55,[-.27,.27]],[-1.76,[-.52,0,.52]],[-1.97,[-.78,-.26,.26,.78]]].forEach(function(r){r[1].forEach(function(la){o.push({psi:r[0],lam:la,alpha:0,g:2});});});return o;}},
-      teil:{n:'Teilwelle Oberkopf',l:function(){var o=[];reihe(.9,-.55,-.15).forEach(function(ps){[-.5,0,.5].forEach(function(la){o.push({psi:ps,lam:la,alpha:0,g:3});});});return o;}}
+      trapez:{n:'Trapez',l:function(){var o=[];[[-1.85,[-.3,.3]],[-2.08,[-.58,0,.58]],[-2.31,[-.87,-.29,.29,.87]]].forEach(function(r){r[1].forEach(function(la){o.push({psi:r[0],lam:la,alpha:0,g:2});});});return o;}},
+      teil:{n:'Teilwelle Oberkopf',l:function(){var o=[];reihe(.9,-.55,-.15).forEach(function(ps){[-.54,0,.54].forEach(function(la){o.push({psi:ps,lam:la,alpha:0,g:3});});});return o;}}
     };
     function vorlageBauen(id){
       var V=VORLAGEN[id], roh=V.l(), aus=[];
       if(V.stern){
-        var w=vDir(-.62,0), e1=new T.Vector3(1,0,0), e2=new T.Vector3().crossVectors(w,e1).normalize(), pw=P(w);
+        var w=vDir(-.75,0), e1=new T.Vector3(1,0,0), e2=new T.Vector3().crossVectors(w,e1).normalize(), pw=P(w);
         roh.forEach(function(r){
           var v=w.clone().multiplyScalar(Math.cos(r.rho)).add(e1.clone().multiplyScalar(Math.sin(r.rho)*Math.cos(r.phi))).add(e2.clone().multiplyScalar(Math.sin(r.rho)*Math.sin(r.phi))).normalize();
           if(!istHaar(v,.07)) return; var q=ausPunkt(v), f=rahmen(q.psi,q.lam), d=f.p.clone().sub(pw); d.sub(f.n.clone().multiplyScalar(f.n.dot(d))).normalize();
