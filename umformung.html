@@ -136,6 +136,7 @@ dl.facts dd{margin:0}
 .wb-gr{appearance:none;border:2px solid var(--line);border-radius:999px;padding:3px 9px 3px 5px;display:inline-flex;gap:5px;align-items:center;font:600 11.5px Poppins,system-ui;background:#fff;cursor:pointer;color:var(--ink)}
 .wb-gr i{width:18px;height:9px;border-radius:5px;display:inline-block}
 .wb-gr[aria-pressed="true"]{border-color:var(--ink)}
+details.wb-pr-mehr{font-size:13px;margin-top:4px}details.wb-pr-mehr summary{cursor:pointer;color:var(--accent);font-weight:600}
 #techSvg{cursor:crosshair;touch-action:none;-webkit-user-select:none;user-select:none}
 #techSvg *{pointer-events:none}
 .winkel{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);flex:1 1 220px}
@@ -385,7 +386,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <div class="wb-leiste"><div class="chips" id="wbRichtung" role="group" aria-label="Richtung"></div></div>
         <div class="wb-leiste"><div class="chips" id="wbModus" role="group" aria-label="Modus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
         <div class="wb-leiste"><button class="btn ghost" id="wbZurueck">↶ Letzten weg</button><button class="btn ghost" id="wbLeeren">Alle weg</button><span class="muted" id="wbZahl" style="font-size:12px;margin-left:auto"></span></div>
-        <div class="wb-leiste"><button class="btn" id="wbPruefen" type="button">✔ Kontrollieren</button><span class="muted" style="font-size:12px">Prüft deine Wickler gegen die Regeln dieser Technik. Ungefähr richtig zählt als richtig.</span></div>
+        <div class="wb-leiste"><button class="btn" id="wbPruefen" type="button">✔ Kontrollieren</button><span class="muted" style="font-size:12px">Ungefähr richtig zählt als richtig. Ist etwas ungenau, rücken die Wickler an die richtige Stelle.</span></div>
         <div class="wb-pr" id="wbPruefung" aria-live="polite" hidden></div>
       </div>
       <article class="panel" id="techInfo" aria-live="polite"></article>
@@ -925,12 +926,62 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     var fehl=res.filter(function(r){return r[0]===false;}).length;
     return {res:res,bad:Object.keys(bad).map(Number),fehl:fehl};
   }
+  // Ausrichten: rückt ungenau gesetzte Wickler an die richtige Stelle (Winkel der Technik,
+  // gerade Reihen, dicht an dicht, nichts überlappt, alles im Haarbereich)
+  function wbAusgerichtet(l){
+    var K=wbKappe(ansicht), bb=K.bb, W=bb[2]-bb[0], H=bb[3]-bb[1], cx=(bb[0]+bb[2])/2, id=tech.id, hier=ansicht===tech.v;
+    var neu=l.map(function(r){return r.slice();});
+    function Ln(r){ return r[4]||WGR[r[2]].l; } function Hh(r){ return WGR[r[2]].h; }
+    function nw(a){ a=((a%180)+180)%180; return a>90?a-180:a; }
+    neu.forEach(function(r){ var a=nw(r[3]), z;
+      if(!hier||id==='flaeche'||id==='papillote') z=Math.round(a/45)*45;
+      else if(id==='spirale') z=90;
+      else if(id==='fisch') z=r[0]<cx?-45:45;
+      else if(id==='stern'){ var wy=bb[1]+H*.55; z=Math.atan2(r[1]-wy,r[0]-cx)*180/Math.PI; }
+      else z=0;
+      r[3]=nw(Math.round(z)); });
+    function gruppen(ids,wert,tol){ var o=ids.slice().sort(function(a,b){return wert(a)-wert(b);}), g=[];
+      o.forEach(function(i){ var z=g[g.length-1]; if(z&&Math.abs(wert(i)-z.m)<=tol(i)){ z.ids.push(i); z.m=(z.m*(z.ids.length-1)+wert(i))/z.ids.length; } else g.push({m:wert(i),ids:[i]}); }); return g; }
+    function dicht(ids,achse,abstand,luft){ // ids entlang der Achse (0=x,1=y) sortieren und kleine Lücken/Überlappungen schließen
+      ids.sort(function(a,b){return neu[a][achse]-neu[b][achse];});
+      for(var j=1;j<ids.length;j++){ var v=neu[ids[j-1]], c=neu[ids[j]], soll=v[achse]+abstand(v,c); if(c[achse]-soll<luft) c[achse]=+soll.toFixed(1); } }
+    var alleIds=neu.map(function(_,i){return i;});
+    if(hier&&['fach','teil','spitze','ansatz'].indexOf(id)>=0){ // Bahnen: waagrechte Wickler sauber untereinander
+      gruppen(alleIds,function(i){return neu[i][0];},function(i){return Ln(neu[i])*.4;}).forEach(function(z){
+        z.ids.forEach(function(i){ neu[i][0]=+z.m.toFixed(1); }); dicht(z.ids,1,function(v,c){return (Hh(v)+Hh(c))/2+.4;},16); });
+    }
+    if(hier&&(id==='ziegel'||id==='trapez')){ // Reihen: nebeneinander dicht, Reihen dicht übereinander
+      var rs=gruppen(alleIds,function(i){return neu[i][1];},function(i){return Hh(neu[i])*.45;});
+      rs.forEach(function(z){ z.ids.forEach(function(i){ neu[i][1]=+z.m.toFixed(1); }); dicht(z.ids,0,function(v,c){return (Ln(v)+Ln(c))/2+.5;},14); });
+      for(var j=1;j<rs.length;j++){ var ha=Math.max.apply(null,rs[j-1].ids.map(function(i){return Hh(neu[i]);})), hc=Math.max.apply(null,rs[j].ids.map(function(i){return Hh(neu[i]);})), y0=neu[rs[j-1].ids[0]][1], y1=neu[rs[j].ids[0]][1], soll=(ha+hc)/2+.4;
+        if(y1-y0<soll+7){ var sh=y0+soll-y1; for(var q=j;q<rs.length;q++) rs[q].ids.forEach(function(i){ neu[i][1]=+(neu[i][1]+sh).toFixed(1); }); } }
+    }
+    if(hier&&id==='spirale'){ // senkrechte Wickler: Reihen nebeneinander, Reihen dicht übereinander
+      var sr=gruppen(alleIds,function(i){return neu[i][1];},function(i){return Ln(neu[i])*.4;});
+      sr.forEach(function(z){ z.ids.forEach(function(i){ neu[i][1]=+z.m.toFixed(1); }); dicht(z.ids,0,function(v,c){return (Hh(v)+Hh(c))/2+.4;},8); });
+      for(var j=1;j<sr.length;j++){ var y0=neu[sr[j-1].ids[0]][1], y1=neu[sr[j].ids[0]][1], soll=(Ln(neu[sr[j-1].ids[0]])+Ln(neu[sr[j].ids[0]]))/2+.5;
+        if(y1-y0<soll+10){ var sh=y0+soll-y1; for(var q=j;q<sr.length;q++) sr[q].ids.forEach(function(i){ neu[i][1]=+(neu[i][1]+sh).toFixed(1); }); } }
+    }
+    var mx=cx, my=(bb[1]+bb[3])/2;
+    neu.forEach(function(r){ for(var t=0;t<40&&!K.drin(r[0],r[1]);t++){ r[0]=+(r[0]+(mx-r[0])*.08).toFixed(1); r[1]=+(r[1]+(my-r[1])*.08).toFixed(1); } });
+    return neu;
+  }
+  function wbGleiten(l,ziel,fertig){
+    var alt=l.map(function(r){return r.slice();}), t0=performance.now(), dauer=reduziert()?0:650, g=document.getElementById('wbStaebe');
+    function wd(a,b){ var d=b-a; while(d>90) d-=180; while(d<-90) d+=180; return d; }
+    (function bild(jetzt){ var u=dauer?Math.min(1,(jetzt-t0)/dauer):1, e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+      g.innerHTML=alt.map(function(r,i){ var z=ziel[i]; return wicklerSvg([r[0]+(z[0]-r[0])*e,r[1]+(z[1]-r[1])*e,r[2],r[3]+wd(r[3],z[3])*e,r[4]]); }).join('');
+      if(u<1) requestAnimationFrame(bild); else { ziel.forEach(function(z,i){ l[i]=z; }); wbSpeichern(); if(fertig) fertig(); } })(t0);
+  }
   function wbPruefAnzeigen(){
-    var o=wbPruefen(), box=document.getElementById('wbPruefung'), m=document.getElementById('wbMarken'), l=wbListe();
-    m.innerHTML=o.bad.map(function(i){ var r=l[i], L=r[4]||WGR[r[2]].l, h=WGR[r[2]].h; return '<g transform="rotate('+r[3]+' '+r[0]+' '+r[1]+')"><rect x="'+(r[0]-L/2-3)+'" y="'+(r[1]-h/2-3)+'" width="'+(L+6)+'" height="'+(h+6)+'" rx="4" fill="none" stroke="'+NEIN+'" stroke-width="1.6" stroke-dasharray="3 2"/></g>'; }).join('');
-    var kopf=o.fehl===undefined?'':o.fehl===0?'<p class="wb-pr-kopf ok">Sehr gut! Alles passt für diese Technik. Zeig es trotzdem deiner Ausbilderin.</p>':'<p class="wb-pr-kopf no">'+o.fehl+(o.fehl===1?' Punkt ist':' Punkte sind')+' noch nicht richtig. Die roten Rahmen zeigen dir, wo.</p>';
-    box.innerHTML=kopf+'<ul>'+o.res.map(function(r){ return '<li class="'+(r[0]===null?'info':r[0]?'ok':'no')+'"><b>'+(r[0]===null?'ℹ':r[0]?'✓':'✗')+'</b> '+esc(r[1])+'</li>'; }).join('')+'</ul>';
-    box.hidden=false;
+    var o=wbPruefen(), box=document.getElementById('wbPruefung'), l=wbListe();
+    document.getElementById('wbMarken').innerHTML='';
+    var liste='<details class="wb-pr-mehr"><summary>Was war ungenau?</summary><ul>'+o.res.map(function(r){ return '<li class="'+(r[0]===null?'info':r[0]?'ok':'no')+'"><b>'+(r[0]===null?'ℹ':r[0]?'✓':'✗')+'</b> '+esc(r[1])+'</li>'; }).join('')+'</ul></details>';
+    if(!l.length){ box.innerHTML='<p class="wb-pr-kopf no">Du hast noch keinen Wickler gesetzt.</p>'; box.hidden=false; return; }
+    if(!o.fehl){ box.innerHTML='<p class="wb-pr-kopf ok">Sehr gut! Die Wicklung passt. Zeig sie trotzdem deiner Ausbilderin.</p>'; box.hidden=false; return; }
+    box.innerHTML='<p class="wb-pr-kopf no">Die Wicklung soll noch genauer sein. Schau, wie die Wickler jetzt richtig liegen.</p>'+liste; box.hidden=false;
+    wbGleiten(l,wbAusgerichtet(l),function(){ var n=wbPruefen(); if(n.fehl){ var rest=n.res.filter(function(r){return r[0]===false;}).map(function(r){return '<li class="no"><b>•</b> '+esc(r[1])+'</li>';}).join('');
+      box.insertAdjacentHTML('beforeend','<p style="font-size:13px;margin-top:6px">Das kann das Ausrichten nicht für dich lösen:</p><ul>'+rest+'</ul>'); } });
   }
   $('#wbPruefen').onclick=wbPruefAnzeigen;
   techZeigen();
