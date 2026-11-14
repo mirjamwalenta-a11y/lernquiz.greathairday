@@ -404,7 +404,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <div class="werkzeug" id="studioWerkzeug" hidden>
         <div class="zeile" hidden><span>Technik</span><div class="chips" id="stTechnik"></div></div>
         <div class="zeile"><span>Größe</span><div id="stGroesse" style="display:flex;gap:8px"></div><span class="muted" id="stGroesseName" style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:600"></span></div>
-        <div class="zeile"><span>Länge</span><div class="chips" id="stLaenge"><button type="button" class="chip" data-f=".65" aria-pressed="false">kurz</button><button type="button" class="chip" data-f="1" aria-pressed="true">normal</button><button type="button" class="chip" data-f="1.32" aria-pressed="false">lang</button></div></div>
+        <div class="zeile"><span>Länge</span><div class="chips" id="stLaenge"><button type="button" class="chip" data-f=".65" aria-pressed="false">kurz</button><button type="button" class="chip" data-f="1" aria-pressed="true">normal</button></div></div>
         <div class="zeile"><span>Richtung</span><div class="chips" id="stRichtung"></div></div>
         <div class="zeile" hidden><label><input type="checkbox" id="stVorlage"> Vorlage einblenden</label><label><input type="checkbox" id="stRasten"> Einrasten</label></div>
         <div class="zeile"><span>Modus</span><div class="chips" id="stModus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
@@ -763,7 +763,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   var WGR=[{n:'sehr dünn',h:7.5,l:50},{n:'dünn',h:9,l:50},{n:'mittel',h:10.5,l:50},{n:'dick',h:12,l:50},{n:'sehr dick',h:14,l:50},{n:'Papillote',pap:1,h:10,l:50,f:PAP}];
   var WRICHT=[['gerade ↔',0],['schräg ↗',45],['schräg ↖',-45],['senkrecht ↕',90]];
   var tech=TECH[0], ansicht=tech.v, wgr=2, wwink=0, wmodus='setzen', wlen=50;
-  var WLAENGE=[['kurz',32],['normal',50],['lang',66]];
+  var WLAENGE=[['kurz',32],['normal',50]];
   function winkelText(u){ return u===0?'gerade':Math.abs(u)===90?'senkrecht':Math.abs(u)+'° '+(u>0?'↗':'↖'); }
   function wbListe(){ var k=tech.id+'|'+ansicht; return wb[k]||(wb[k]=[]); }
   function wbSpeichern(){ try{ localStorage.setItem(WB_KEY,JSON.stringify(wb)); }catch(e){} }
