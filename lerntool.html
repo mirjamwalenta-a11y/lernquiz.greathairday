@@ -368,7 +368,7 @@ body.mit-leiste .leiste{display:flex}
       <button class="st-kachel" onclick="zeige('b-ueben')"><div class="st-ic">❓</div><div class="st-t">Üben</div><div class="st-d">Quiz, Themen-Quiz, Wiederholen</div></button>
       <button class="st-kachel" onclick="zeige('b-farbe')"><div class="st-ic">🎨</div><div class="st-t">Farbe</div><div class="st-d">Farblabor, Farb-Fälle</div></button>
       <button class="st-kachel" onclick="zeige('b-schnitt')"><div class="st-ic">✂</div><div class="st-t">Schnitt &amp; Form</div><div class="st-d">Schnittwerkstatt, Schnitt-Designer, Werkzeug</div></button>
-      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Waschen, Farbe, Strähnen, Hochstecken</div></button>
+      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Waschen, Farbe, Strähnen, Umformung, Hochstecken</div></button>
       <button class="st-kachel" onclick="zeige('b-pruefung')"><div class="st-ic">🎓</div><div class="st-t">Prüfung</div><div class="st-d">Zwischenprüfung, LAP-Vorbereitung</div></button>
       <button class="st-kachel" onclick="zeige('b-lernplan')"><div class="st-ic">📅</div><div class="st-t">Lernplan &amp; Tipps</div><div class="st-d">Lernplan, Lerntipps, Englisch</div></button>
     </div>
@@ -799,6 +799,14 @@ body.mit-leiste .leiste{display:flex}
       <div class="pm-lj">2. Lehrjahr</div>
       <div class="nav-title">Strähnentechniken &amp; Balayage</div>
       <div class="nav-desc">Balayage-Alphabet, Abteilungen, Formen, Passée-Planer</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/umformung.html?v=20261114a'">
+    <div class="nav-icon" style="margin:0">🧪</div>
+    <div>
+      <div class="pm-lj">2. + 3. Lehrjahr · neu</div>
+      <div class="nav-title">Umformung: Dauerwelle &amp; Glättung</div>
+      <div class="nav-desc">Chemie-Labor, Arbeitsablauf, Wicklertechniken, Fehler-Detektiv, Glättung</div>
     </div>
   </button>
   <button class="nav-card pm-modul" onclick="pmColoristOeffnen()">
@@ -4236,6 +4244,14 @@ var PMT_THEMEN = [
     {n:'Gesichtsformen & passende Hochsteckfrisuren', lj:[3], k:'rund eckig oval herz dutt chignon top knot', go:pmtHoch('form')},
     {n:'Styling-Guides', lj:[3], k:'hochstecken schritte nadeln dutt chignon', go:pmtHoch('frisuren')},
     {n:'Quiz: Hochstecken', lj:[3], k:'quiz hochstecken', go:pmtHoch('quiz')}
+  ]},
+  {i:'🧪', n:'Umformung: Dauerwelle & Glättung', p:[
+    {n:'Chemie-Labor: Brücken im Haar', lj:[2,3], k:'dauerwelle disulfid reduktion oxidation chemie', go:pmtLink('umformung.html?v=20261114a#chemie')},
+    {n:'Arbeitsablauf Dauerwelle', lj:[2,3], k:'dauerwelle ablauf fixieren zwischenspülen', go:pmtLink('umformung.html?v=20261114a#ablauf')},
+    {n:'Wicklertechniken & Locken-Generator', lj:[2,3], k:'wickler fachwicklung spiral ziegel', go:pmtLink('umformung.html?v=20261114a#wickler')},
+    {n:'Fehler-Detektiv Dauerwelle', lj:[2,3], k:'fehler dauerwelle', go:pmtLink('umformung.html?v=20261114a#fehler')},
+    {n:'Glättung', lj:[2,3], k:'glättung glätten thio hydroxid keratin', go:pmtLink('umformung.html?v=20261114a#glaettung')},
+    {n:'Wissens-Check Umformung', lj:[2,3], k:'quiz dauerwelle umformung', go:pmtLink('umformung.html?v=20261114a#quiz')}
   ]},
   {i:'🧰', n:'Werkzeug & Hygiene', p:[
     {n:'Werkzeuge', lj:[1], k:'kamm bürste schere', go:pmtLink('werkzeugkunde.html?v=20261107i#werkzeuge')},
