@@ -293,7 +293,7 @@ body.schnupper .nur-lern{display:none!important}
 
 <div class="wrap">
   <header class="top">
-    <a class="back-link" id="zurueck" href="lerntool.html?v=20261113a">← Lern-Tool</a>
+    <a class="back-link" id="zurueck" href="lerntool.html?v=20261114a">← Lern-Tool</a>
     <span class="tag">greathairday · Farbenlehre</span>
     <h1>Farblabor 🎨</h1>
     <a class="spick-link" href="spickzettel.html?v=20261108k">🖨 Farb-Spickzettel drucken</a>
@@ -638,7 +638,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const VON={
   schnuppertag:['schnuppertag.html','← Schnuppertag'],
   handbuch:['https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/Mitarbeiterhandbuch_App.html','← Mitarbeiterhandbuch'],
-  meisterin:['lernquiz.html?v=20261113a#meisterin','← Meisterinnen-Bereich']
+  meisterin:['lernquiz.html?v=20261114a#meisterin','← Meisterinnen-Bereich']
 };
 const von=new URLSearchParams(location.search).get('von');
 if(VON[von]){const a=$('#zurueck');a.href=VON[von][0];a.textContent=VON[von][1];}
@@ -2230,6 +2230,6 @@ renderQuiz();
 })();
 </script>
 <script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" data-verstecken-bei="body.schnupper" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
-<script src="rechtliches-fuss.js?v=20261113" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 </body>
 </html>

@@ -244,7 +244,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="back-link" href="lerntool.html?v=20261113a">← Lern-Tool</a>
+    <a class="back-link" href="lerntool.html?v=20261114a">← Lern-Tool</a>
     <nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
     <button class="profile-chip" id="profileChip" data-a="profiles" aria-label="Lernprofil wechseln"></button>
   </div>
@@ -1387,9 +1387,21 @@ document.addEventListener('change',e=>{const el=e.target,a=el.dataset&&el.datase
  else if(a==='pack'){D.pack[el.dataset.k]=el.checked;save();el.closest('label').classList.toggle('done',el.checked);const tot=PACK.reduce((x,g)=>x+g.i.length,0),done=Object.values(D.pack).filter(Boolean).length;const pl=document.querySelector('.pack .pill');if(pl){pl.textContent=done+'/'+tot;pl.className='pill num '+(done===tot?'good':'accent');}}
  else if(a==='diag'){if(el.type==='radio')D.diag[el.dataset.k]=el.dataset.v;else D.diag[el.dataset.k]=el.checked;save();const h=diagHint();const hb=$('#dhint');if(hb)hb.innerHTML=h?'<strong>Einschätzung:</strong> '+h:'Kreuze die Hautoberfläche für T-Zone und Wange an, dann bekommst du hier eine Einschätzung des Hauttyps.';}});
 
+// Direktlink (z. B. aus dem A–Z-Verzeichnis): #tab=praxis&part=technik&sub=krit&nsub=ablauf
+(function(){
+  if(!location.hash||location.hash.indexOf('tab=')<0) return;
+  const h=new URLSearchParams(location.hash.slice(1)), tab=h.get('tab');
+  if(!TABS.some(t=>t[0]===tab)) return;
+  const v={tab};
+  const part=h.get('part'); if(part&&PARTS.some(p=>p.id===part)) v.part=part;
+  const sub=h.get('sub'); if(sub&&/^[a-z]{2,10}$/.test(sub)) v.sub=sub;
+  const nsub=h.get('nsub'); if(nsub&&/^[a-z]{2,10}$/.test(nsub)) v.nsub=nsub;
+  V=v;
+  try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+})();
 render();
 </script>
 <script src="lern-leiste.js?v=20261107w" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
-<script src="rechtliches-fuss.js?v=20261113" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 </body>
 </html>

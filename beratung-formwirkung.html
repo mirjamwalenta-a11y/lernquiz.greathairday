@@ -411,7 +411,7 @@ dl.steck dd{margin:0}
     <div class="go">
       <button class="btn-primary" id="fw-startBtn" disabled>Los geht's</button>
     </div>
-    <div class="notice" id="fw-noSample" hidden>Der Trainer braucht deine Anmeldung. Bitte melde dich zuerst im <a href="lerntool.html?v=20261113a">Lern-Tool</a> an und öffne danach diese Seite wieder.</div>
+    <div class="notice" id="fw-noSample" hidden>Der Trainer braucht deine Anmeldung. Bitte melde dich zuerst im <a href="lerntool.html?v=20261114a">Lern-Tool</a> an und öffne danach diese Seite wieder.</div>
   </section>
 
   <section id="fw-chatView" class="tw" hidden>
@@ -5056,6 +5056,16 @@ function kiSvg(xr, y, fs){
 
 
   window.FW_BILDQUELLEN = {VL:VL_BILDER, HB:HD_BILDER, HV:HD_VAR};
+  // Direktlink (z. B. aus dem A–Z-Verzeichnis): #view=wissen&kap=3
+  (function(){
+    if (!location.hash || location.hash.indexOf("view=") < 0) return;
+    var h = new URLSearchParams(location.hash.slice(1)), v = h.get("view");
+    if (!/^(pilot|baukasten|maschine|wissen|trainer|visagistik)$/.test(v || "")) return;
+    st.view = v;
+    var k = parseInt(h.get("kap"), 10);
+    if (v === "wissen" && k >= 0 && k < KAPITEL.length) st.kap = k;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  })();
   render();
 })();
 </script>
@@ -5311,6 +5321,6 @@ Regeln für Bilder (sehr wichtig):
 })();
 </script>
 <script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" data-verstecken-bei="#fw-composer" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
-<script src="rechtliches-fuss.js?v=20261113" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 </body>
 </html>

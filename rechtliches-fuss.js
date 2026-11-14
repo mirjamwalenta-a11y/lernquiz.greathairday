@@ -1,4 +1,4 @@
-// Kleiner Fuß unten auf jeder Seite: Knopf „Feedback geben“ und Links zu
+// Kleiner Fuß unten auf jeder Seite: Knöpfe „A–Z-Verzeichnis“ und „Feedback geben“, Links zu
 // Impressum, Datenschutz und Nutzungsbedingungen (rechtliches.html). Wird am
 // Ende von <body> angehängt; die Leiste unten (lern-leiste.js) lässt dafür
 // schon Platz frei.
@@ -29,7 +29,7 @@
     var f = document.createElement('footer');
     f.id = 'recht-fuss';
     f.innerHTML =
-      '<a class="fb" href="#" id="fb-link">💬 Feedback geben</a><br>' +
+      '<a class="fb" href="verzeichnis.html">🔎 A–Z-Verzeichnis</a> <a class="fb" href="#" id="fb-link">💬 Feedback geben</a><br>' +
       '<a href="rechtliches.html#impressum">Impressum</a>·' +
       '<a href="rechtliches.html#datenschutz">Datenschutz</a>·' +
       '<a href="rechtliches.html#nutzungsbedingungen">Nutzungsbedingungen</a>';

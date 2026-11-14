@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F8F4EA">
+<title>A–Z-Verzeichnis</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
+<!--
+  A–Z-Verzeichnis aller Lern-Bereiche mit ihrem genauen Weg
+  (z. B. Zwischenprüfung › Praxis › Technikkopf). Statisch, keine Daten,
+  kein Login. Neue Bereiche einfach in EINTRAEGE ergänzen:
+    [Name, [Weg …], Link, Rolle ('m' = nur Meisterin), Stichwörter für die Suche]
+  Direktlinks: lerntool.html#seite=… / #modul=…, zwischenpruefung.html#tab=…&part=…&sub=…&nsub=…,
+  beratung-formwirkung.html#view=…&kap=…, farblabor/schnittwerkstatt/werkzeugkunde #Abschnitt.
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8F4EA;--ink:#211D17;--muted:#6B6455;--line:#E4DBC5;--accent:#896C32;--soft:#F3EBD9;--card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}}
+:root[data-theme="dark"]{--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px 16px 48px}
+.wrap{max-width:720px;margin:0 auto}
+.zurueck{display:inline-block;color:var(--muted);font-size:13px;text-decoration:none;margin-bottom:12px}
+.zurueck:hover{color:var(--accent)}
+.tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-size:24px;font-weight:600;line-height:1.2;margin:2px 0 6px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.suche{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 10px}
+.suche input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.suche input:focus{outline:none;border-color:var(--accent)}
+.buchstaben{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.buchstaben a{min-width:28px;text-align:center;padding:4px 0;border-radius:7px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px;font-weight:600}
+.buchstaben a:hover{border-color:var(--accent);color:var(--accent)}
+.filter{display:flex;gap:6px;margin-top:8px}
+.filter button{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);cursor:pointer}
+.filter button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+h2{font-size:18px;font-weight:700;color:var(--accent);margin:18px 0 6px;scroll-margin-top:150px}
+ul{list-style:none}
+li a.e{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);margin-bottom:6px}
+li a.e:hover{border-color:var(--accent)}
+.n{font-weight:600;font-size:15px}
+.w{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.w b{font-weight:500;color:var(--ink)}
+.m{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:5px;padding:0 5px;vertical-align:2px}
+.leer{color:var(--muted);font-size:14px;padding:20px 0}
+mark{background:var(--soft);color:inherit;border-radius:3px;padding:0 1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="zurueck" href="lerntool.html">← Lern-Tool</a>
+  <div class="tag">Lernen · Suchen</div>
+  <h1>A–Z-Verzeichnis</h1>
+  <p class="sub">Alle Bereiche alphabetisch, jeweils mit dem Weg dorthin. Antippen öffnet den Bereich.</p>
+
+  <div class="suche">
+    <input type="search" id="q" placeholder="Suchen, z. B. Technikkopf, Balayage, Oxidant …" autocomplete="off" aria-label="Im Verzeichnis suchen">
+    <div class="filter" role="group" aria-label="Anzeigen">
+      <button type="button" data-f="alle" aria-pressed="true">Alle</button>
+      <button type="button" data-f="l" aria-pressed="false">Lehrlinge</button>
+      <button type="button" data-f="m" aria-pressed="false">Meisterin</button>
+    </div>
+    <nav class="buchstaben" id="abc" aria-label="Buchstaben"></nav>
+  </div>
+
+  <div id="liste"></div>
+</div>
+
+<script>
+// [Name, [Weg …], Link, Rolle ('' = alle, 'm' = Meisterin), Stichwörter]
+var LT='Lern-Tool', ZP='Zwischenprüfung', BF='Beratung & Formwirkung', FL='Farblabor', SW='Schnittwerkstatt', WK='Werkzeugkunde', EN='Englisch im Salon', LQ='Lernquiz', MB='Meisterin-Bereich';
+var EINTRAEGE = [
+  // ── Lern-Tool: Bereiche ──
+  ['Üben', [LT,'Bereiche'], 'lerntool.html#seite=b-ueben', '', 'Quiz'],
+  ['Farbe', [LT,'Bereiche'], 'lerntool.html#seite=b-farbe', '', ''],
+  ['Schnitt & Form', [LT,'Bereiche'], 'lerntool.html#seite=b-schnitt', '', 'Schneiden'],
+  ['Praxis-Module', [LT,'Bereiche','Praxis'], 'lerntool.html#seite=praxis', '', 'Praxis'],
+  ['Prüfung', [LT,'Bereiche'], 'lerntool.html#seite=b-pruefung', '', 'LAP Zwischenprüfung'],
+  ['Lernplan & Tipps', [LT,'Bereiche'], 'lerntool.html#seite=b-lernplan', '', ''],
+  ['Heute laut Lernplan', [LT,'Startseite'], 'lerntool.html', '', 'Thema des Tages'],
+  ['Wörni sagt', [LT,'Startseite'], 'lerntool.html', '', 'Spruch des Tages Wörnis Tipps'],
+  ['Themen-Quiz', [LT,'Üben'], 'lerntool.html#seite=quiz', '', 'Quiz nach Thema'],
+  ['Wiederholen', [LT,'Üben'], 'lernquiz.html#wiederholen', '', 'unsicher falsch'],
+  ['Farb-Fälle', [LT,'Farbe'], 'lerntool.html#farbfaelle', '', 'Farbplan Rezeptur Meisterin Rückmeldung'],
+  ['LAP-Vorbereitung', [LT,'Prüfung'], 'lerntool.html#seite=lap', '', 'Lehrabschlussprüfung Theorie Praxis Musterlösung'],
+  ['Lernplan', [LT,'Lernplan & Tipps'], 'lerntool.html#seite=lernplan', '', 'Wochenplan'],
+  ['Lerntipps', [LT,'Lernplan & Tipps'], 'lerntool.html#seite=fortschritt', '', ''],
+  ['Kompetenz-Landkarte', [LT,'Fortschritt'], 'lerntool.html#seite=progress', '', 'Fortschritt Stärken Schwächen'],
+  ['Praxis-Tagebuch', [LT,'Praxis'], 'lerntool.html#seite=praxis', '', 'Geübt eintragen Nachweis'],
+
+  // ── Lern-Tool: Praxis-Module ──
+  ['Haarwäsche & Kopfmassage', [LT,'Praxis','Praxis-Module'], 'lerntool.html#modul=wasch', '', 'Waschen 1. Lehrjahr'],
+  ['Ablauf der Haarwäsche', [LT,'Praxis','Haarwäsche & Kopfmassage','Ablauf'], 'lerntool.html#modul=wasch', '', 'Waschen'],
+  ['Wassertemperatur', [LT,'Praxis','Haarwäsche & Kopfmassage','Wasser'], 'lerntool.html#modul=wasch', '', 'Waschen'],
+  ['Kopfmassage', [LT,'Praxis','Haarwäsche & Kopfmassage','Massage'], 'lerntool.html#modul=wasch', '', 'Massagegriffe Waschen'],
+  ['Ablauf-Check Haarwäsche', [LT,'Praxis','Haarwäsche & Kopfmassage','Check'], 'lerntool.html#modul=wasch', '', ''],
+  ['Farbtechniken', [LT,'Praxis','Praxis-Module'], 'lerntool.html#modul=farbe', '', '1. Lehrjahr'],
+  ['Mischung & Einwirkzeit (Rechner)', [LT,'Praxis','Farbtechniken','Rechner'], 'lerntool.html#modul=farbe', '', 'Farbe mischen Gramm'],
+  ['Oxidanten', [LT,'Praxis','Farbtechniken','Oxidanten'], 'lerntool.html#modul=farbe', '', 'Wasserstoffperoxid Prozent Entwickler'],
+  ['Lernkarten Farbe', [LT,'Praxis','Farbtechniken','Lernkarten'], 'lerntool.html#modul=farbe', '', ''],
+  ['Strähnentechniken & Balayage', [LT,'Praxis','Praxis-Module'], 'lerntool.html#modul=straehnen', '', '2. Lehrjahr Foliensträhnen'],
+  ['Balayage-Alphabet', [LT,'Praxis','Strähnentechniken & Balayage','Alphabet'], 'lerntool.html#modul=straehnen', '', 'Balayage'],
+  ['Grundpfeiler Strähnen', [LT,'Praxis','Strähnentechniken & Balayage','Grundpfeiler'], 'lerntool.html#modul=straehnen', '', 'Balayage'],
+  ['Abteilungen & Formen (Strähnen)', [LT,'Praxis','Strähnentechniken & Balayage','Formen'], 'lerntool.html#modul=straehnen', '', 'Balayage'],
+  ['Passée-Planer', [LT,'Praxis','Strähnentechniken & Balayage','Passée'], 'lerntool.html#modul=straehnen', '', 'Passee Balayage'],
+  ['Strähnentechniken', [LT,'Praxis','Strähnentechniken & Balayage','Techniken'], 'lerntool.html#modul=straehnen', '', 'Balayage Folie'],
+  ['Colorist: Farbe verstehen', [LT,'Praxis','Praxis-Module'], 'lerntool.html#modul=colorist', '', '2. 3. Lehrjahr'],
+  ['Naturpigmente', [LT,'Praxis','Colorist: Farbe verstehen','Pigmente'], 'lerntool.html#modul=colorist', '', 'Eumelanin Phäomelanin'],
+  ['Kontraste', [LT,'Praxis','Colorist: Farbe verstehen','Kontraste'], 'lerntool.html#modul=colorist', '', 'Farbkreis'],
+  ['Farbdiagnose', [LT,'Praxis','Colorist: Farbe verstehen','Diagnose'], 'lerntool.html#modul=colorist', '', 'Diagnose'],
+  ['Produktwahl Farbe', [LT,'Praxis','Colorist: Farbe verstehen','Produkte'], 'lerntool.html#modul=colorist', '', 'Produkte'],
+  ['Colorist-Trainer', [LT,'Praxis','Colorist: Farbe verstehen','Trainer'], 'lerntool.html#modul=colorist', '', ''],
+  ['Haar & Farbe: Wissen', [LT,'Praxis','Praxis-Module'], 'lerntool.html#modul=wissen', '', ''],
+  ['Warm und kalt (Farbe)', [LT,'Praxis','Haar & Farbe: Wissen','Warm-Kalt'], 'lerntool.html#modul=wissen', '', 'Farbtemperatur'],
+  ['Dominanz (Farbe)', [LT,'Praxis','Haar & Farbe: Wissen','Dominanz'], 'lerntool.html#modul=wissen', '', ''],
+  ['Farbcodes', [LT,'Praxis','Haar & Farbe: Wissen','Farbcodes'], 'lerntool.html#modul=wissen', '', 'Farbnummern'],
+  ['Pigmentieren', [LT,'Praxis','Haar & Farbe: Wissen','Pigmentieren'], 'lerntool.html#modul=wissen', '', 'Vorpigmentieren'],
+  ['Farbabzug', [LT,'Praxis','Haar & Farbe: Wissen','Farbabzug'], 'lerntool.html#modul=wissen', '', 'Farbe entfernen'],
+  ['Hochstecken nach Gesichtsform', [LT,'Praxis','Praxis-Module'], 'lerntool.html#modul=hoch', '', '3. Lehrjahr Hochsteckfrisur'],
+  ['Styling-Guides Hochstecken', [LT,'Praxis','Hochstecken nach Gesichtsform','Styling-Guides'], 'lerntool.html#modul=hoch', '', 'Hochsteckfrisur'],
+
+  // ── Lernquiz ──
+  ['Schnell-Check', [LQ,'Modus'], 'lernquiz.html', '', '10 Fragen Quiz'],
+  ['Lerneinheit', [LQ,'Modus'], 'lernquiz.html', '', '15 Fragen Quiz'],
+  ['LAP-Quiz', [LQ,'Modus','LAP-Vorbereitung'], 'lernquiz.html', '', 'Lehrabschlussprüfung alle Fragen'],
+  ['Betriebs-Quiz', [LQ,'Lehrjahr','Betrieb'], 'lernquiz.html', '', 'Betrieb Salon'],
+  ['Mein Verlauf', [LQ,'Startseite'], 'lernquiz.html', '', 'Ergebnisse'],
+  ['Abzeichen', [LQ,'Startseite'], 'lernquiz.html', '', 'Badges'],
+
+  // ── Zwischenprüfung ──
+  ['Zwischenprüfung', [LT,'Prüfung'], 'zwischenpruefung.html', '', ''],
+  ['Prüfungsteile', [ZP,'Praxis'], 'zwischenpruefung.html#tab=praxis', '', 'Praxis'],
+  ['Technikkopf', [ZP,'Praxis'], 'zwischenpruefung.html#tab=praxis&part=technik', '', 'Wasserwelle Papillote Wickler'],
+  ['Handgelegte Wasserwellen', [ZP,'Praxis','Technikkopf','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=technik&sub=krit', '', 'Wasserwelle'],
+  ['Papillotieren', [ZP,'Praxis','Technikkopf','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=technik&sub=krit', '', 'Papilloten'],
+  ['Dauerwelle Fachwicklung', [ZP,'Praxis','Technikkopf','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=technik&sub=krit', '', 'Wickler Dauerwellwickler'],
+  ['Aufteilung am Technikkopf (Bilder)', [ZP,'Praxis','Technikkopf','Bilder'], 'zwischenpruefung.html#tab=praxis&part=technik&sub=bilder', '', 'Mustervorlage'],
+  ['Nagelpflege', [ZP,'Praxis'], 'zwischenpruefung.html#tab=praxis&part=nagel', '', 'Maniküre Nägel'],
+  ['Aufbau des Nagels', [ZP,'Praxis','Nagelpflege','Nagelaufbau & Maniküre','Aufbau des Nagels'], 'zwischenpruefung.html#tab=praxis&part=nagel&sub=aufbau&nsub=aufbau', '', 'Nagelbett Lunula Matrix'],
+  ['Ablauf der Maniküre', [ZP,'Praxis','Nagelpflege','Nagelaufbau & Maniküre','Ablauf der Maniküre'], 'zwischenpruefung.html#tab=praxis&part=nagel&sub=aufbau&nsub=ablauf', '', 'Nagelhaut Lackieren'],
+  ['Handmassage', [ZP,'Praxis','Nagelpflege','Nagelaufbau & Maniküre','Ablauf der Maniküre'], 'zwischenpruefung.html#tab=praxis&part=nagel&sub=aufbau&nsub=ablauf', '', 'Maniküre'],
+  ['Nagel beurteilen', [ZP,'Praxis','Nagelpflege','Nagelaufbau & Maniküre','Nagel beurteilen'], 'zwischenpruefung.html#tab=praxis&part=nagel&sub=aufbau&nsub=beurt', '', 'Nagelformen Nagelveränderungen'],
+  ['Reihenfolge üben (Maniküre)', [ZP,'Praxis','Nagelpflege','Nagelaufbau & Maniküre','Reihenfolge üben'], 'zwischenpruefung.html#tab=praxis&part=nagel&sub=aufbau&nsub=ueben', '', ''],
+  ['Schönheitspflege', [ZP,'Praxis'], 'zwischenpruefung.html#tab=praxis&part=schoen', '', 'Kosmetik Make-up'],
+  ['Reinigungsmassage', [ZP,'Praxis','Schönheitspflege','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=schoen&sub=krit', '', 'Gesichtsreinigung'],
+  ['Augenbrauen formen', [ZP,'Praxis','Schönheitspflege','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=schoen&sub=krit', '', 'Brauen zupfen'],
+  ['Brauen- und Wimpernfärben', [ZP,'Praxis','Schönheitspflege','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=schoen&sub=krit', '', 'Wimpern färben'],
+  ['Tages-Make-up', [ZP,'Praxis','Schönheitspflege','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=schoen&sub=krit', '', 'Make-up Schminken'],
+  ['Massagegriffe Gesicht', [ZP,'Praxis','Schönheitspflege','Massagegriffe'], 'zwischenpruefung.html#tab=praxis&part=schoen&sub=massage', '', 'Effleurage Petrissage Friktion Vibration Tapotement'],
+  ['Rasieren', [ZP,'Praxis'], 'zwischenpruefung.html#tab=praxis&part=rasur', '', 'Rasur Bart'],
+  ['Rasierzüge 1–15', [ZP,'Praxis','Rasieren','Rasierzüge 1–15'], 'zwischenpruefung.html#tab=praxis&part=rasur&sub=zuege', '', 'Rasur Vorhandgriff Rückhandgriff'],
+  ['Kompresse und Einseifen', [ZP,'Praxis','Rasieren','So wird bewertet'], 'zwischenpruefung.html#tab=praxis&part=rasur&sub=krit', '', 'Rasur Vorbereitung Nachbehandlung'],
+  ['Bewertungskriterien', [ZP,'Praxis','(Prüfungsteil wählen)','So wird bewertet'], 'zwischenpruefung.html#tab=praxis', '', 'Kriterien Punkteabzug Fehlerquellen'],
+  ['Zeitplan je Prüfungsteil', [ZP,'Praxis','(Prüfungsteil wählen)','Zeitplan'], 'zwischenpruefung.html#tab=praxis', '', 'Minuten Zeit'],
+  ['Fachgespräch', [ZP,'Fachgespräch'], 'zwischenpruefung.html#tab=theorie', '', 'Theorie mündlich'],
+  ['Lernrunde', [ZP,'Fachgespräch','Wissensfragen'], 'zwischenpruefung.html#tab=theorie', '', 'Quiz'],
+  ['Prüferfragen', [ZP,'Fachgespräch'], 'zwischenpruefung.html#tab=theorie', '', 'offene Fragen Musterantwort'],
+  ['Grundwissen-Fragen', [ZP,'Fachgespräch'], 'zwischenpruefung.html#tab=theorie', '', 'Berufsschule Musterantwort'],
+  ['Fachgespräch-Simulation', [ZP,'Fachgespräch','Generalprobe'], 'zwischenpruefung.html#tab=theorie', '', 'Probe'],
+  ['Fragen nach Themen', [ZP,'Fachgespräch','Nach Themen'], 'zwischenpruefung.html#tab=theorie', '', 'Hygiene Haut Haar Farbenlehre'],
+  ['Hautdiagnose', [ZP,'Hautdiagnose'], 'zwischenpruefung.html#tab=diagnose', '', 'Haut'],
+  ['Hautdiagnose-Fälle', [ZP,'Hautdiagnose','Fälle üben'], 'zwischenpruefung.html#tab=diagnose&sub=faelle', '', 'Fälle'],
+  ['Hauttypen & Behandlung', [ZP,'Hautdiagnose','Hauttypen & Behandlung'], 'zwischenpruefung.html#tab=diagnose&sub=typen', '', 'Sebostase Seborrhoe T-Zone Behandlungsplan'],
+  ['Massage: Arten und Wirkung', [ZP,'Hautdiagnose','Hauttypen & Behandlung'], 'zwischenpruefung.html#tab=diagnose&sub=typen', '', 'Massagegriffe'],
+  ['Diagnoseblatt ausfüllen', [ZP,'Hautdiagnose','Diagnoseblatt ausfüllen'], 'zwischenpruefung.html#tab=diagnose&sub=blatt', '', 'Hautbeurteilung Technikblatt'],
+  ['Prüfungstag', [ZP,'Prüfungstag'], 'zwischenpruefung.html#tab=tag', '', ''],
+  ['Packliste', [ZP,'Prüfungstag'], 'zwischenpruefung.html#tab=tag', '', 'mitbringen Werkzeugliste'],
+  ['Prüfungstag-Simulation', [ZP,'Prüfungstag','Generalprobe'], 'zwischenpruefung.html#tab=tag', '', 'Probe'],
+  ['Zeitplan Vormittag', [ZP,'Prüfungstag'], 'zwischenpruefung.html#tab=tag', '', ''],
+
+  // ── Beratung & Formwirkung ──
+  ['Beratung & Formwirkung', [LT,'Schnitt & Form',SW,'Beratung & Formwirkung'], 'beratung-formwirkung.html', '', 'Formwirkung Typberatung'],
+  ['Lange Nase im Profil', [BF,'Fälle','Fall 1'], 'beratung-formwirkung.html#view=pilot', '', 'Nase'],
+  ['Auge öffnen', [BF,'Fälle','Fall 2'], 'beratung-formwirkung.html#view=pilot', '', 'Augen'],
+  ['Doppelkinn', [BF,'Fälle','Fall 3'], 'beratung-formwirkung.html#view=pilot', '', 'Kinn Hals'],
+  ['Rundes Gesicht', [BF,'Fälle','Fall 4'], 'beratung-formwirkung.html#view=pilot', '', 'Gesichtsform'],
+  ['Hell-Dunkel', [BF,'Fälle','Fall 5'], 'beratung-formwirkung.html#view=pilot', '', 'Hair Contouring Farbe'],
+  ['Abstehende Ohren', [BF,'Fälle','Fall 6'], 'beratung-formwirkung.html#view=pilot', '', 'Ohren'],
+  ['Schnitt-Baukasten', [BF,'Baukasten'], 'beratung-formwirkung.html#view=baukasten', '', 'Zielform Gewicht Haupthebel'],
+  ['Graduierter Bob', [BF,'Baukasten','Fall 1'], 'beratung-formwirkung.html#view=baukasten', '', 'Bob'],
+  ['Kompakter Bob', [BF,'Baukasten','Fall 2'], 'beratung-formwirkung.html#view=baukasten', '', 'Bob'],
+  ['Gleichmäßig gestuft', [BF,'Baukasten','Fall 3'], 'beratung-formwirkung.html#view=baukasten', '', 'Stufen'],
+  ['Ansteigend gestuft', [BF,'Baukasten','Fall 4'], 'beratung-formwirkung.html#view=baukasten', '', 'Stufen'],
+  ['Maschinenhaarschnitt ohne Aufsteckkämme', [BF,'Maschine'], 'beratung-formwirkung.html#view=maschine', '', 'Verlauf Fade Haarschneidemaschine Herren'],
+  ['Wissen aus der Beratung', [BF,'Wissen'], 'beratung-formwirkung.html#view=wissen', '', 'Kapitel'],
+  ['Leitfaden für eine Beratung', [BF,'Wissen','Kapitel 1'], 'beratung-formwirkung.html#view=wissen&kap=0', '', ''],
+  ['Beratung mit Herz', [BF,'Wissen','Kapitel 2'], 'beratung-formwirkung.html#view=wissen&kap=1', '', ''],
+  ['Fundament, Mauern und dann das Dach', [BF,'Wissen','Kapitel 3'], 'beratung-formwirkung.html#view=wissen&kap=2', '', ''],
+  ['Kunden locken, Fans suchen Leistung', [BF,'Wissen','Kapitel 4'], 'beratung-formwirkung.html#view=wissen&kap=3', '', ''],
+  ['Gesichtsmerkmale ausgleichen', [BF,'Wissen','Kapitel 5'], 'beratung-formwirkung.html#view=wissen&kap=4', '', ''],
+  ['Gesichtsform-Analyse: Vorher & Optimiert', [BF,'Wissen','Kapitel 6'], 'beratung-formwirkung.html#view=wissen&kap=5', '', 'Gesichtsform'],
+  ['Haarfarbe und Wirkung', [BF,'Wissen','Kapitel 7'], 'beratung-formwirkung.html#view=wissen&kap=6', '', ''],
+  ['Die 7 Grundsymbole', [BF,'Wissen','Kapitel 8'], 'beratung-formwirkung.html#view=wissen&kap=7', '', ''],
+  ['Harmonie-Formen durch Farbe', [BF,'Wissen','Kapitel 9'], 'beratung-formwirkung.html#view=wissen&kap=8', '', ''],
+  ['Tonhöhe und Profil', [BF,'Wissen','Kapitel 10'], 'beratung-formwirkung.html#view=wissen&kap=9', '', ''],
+  ['Der Kunde kauft ein Ergebnis', [BF,'Wissen','Kapitel 11'], 'beratung-formwirkung.html#view=wissen&kap=10', '', ''],
+  ['Farb-Barometer', [BF,'Wissen','Kapitel 12'], 'beratung-formwirkung.html#view=wissen&kap=11', '', ''],
+  ['Small, Medium, Large', [BF,'Wissen','Kapitel 13'], 'beratung-formwirkung.html#view=wissen&kap=12', '', ''],
+  ['Die Mittel des Coiffeurs und des Kunden', [BF,'Wissen','Kapitel 14'], 'beratung-formwirkung.html#view=wissen&kap=13', '', ''],
+  ['Kunden-Beratungsgespräch', [BF,'Wissen','Kapitel 15'], 'beratung-formwirkung.html#view=wissen&kap=14', '', 'Gesprächsablauf Fragen'],
+  ['KI-Trainer (Agent Wörni)', [BF,'Trainer'], 'beratung-formwirkung.html#view=trainer', '', 'Wörni Fall analysieren'],
+  ['Visagistik-Vergleich', [BF,'Visagistik','Vergleich üben'], 'beratung-formwirkung.html#view=visagistik', '', 'Make-up'],
+  ['Augenbraue (Visagistik)', [BF,'Visagistik','Vergleich üben','Übung 1'], 'beratung-formwirkung.html#view=visagistik', '', 'Brauen'],
+  ['Licht & Schatten', [BF,'Visagistik','Vergleich üben','Übung 2'], 'beratung-formwirkung.html#view=visagistik', '', 'Contouring Make-up'],
+  ['Hochsteckfrisur (Visagistik)', [BF,'Visagistik','Vergleich üben','Übung 3'], 'beratung-formwirkung.html#view=visagistik', '', 'Hochstecken'],
+  ['Augenbrauen & Wimpern', [BF,'Visagistik'], 'beratung-formwirkung.html#view=visagistik', '', 'Brauen'],
+  ['Gesichtskompass', [BF,'Wissen'], 'https://mirjamwalenta-a11y.github.io/index.greathairday/gesichtskompass.html', '', 'Gesichtsform Styling Farbwirkung'],
+  ['Farbkompass', [BF,'Wissen'], 'https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/farbkompass-team.html?modus=lernen', '', 'Farbrichtung Beratung'],
+
+  // ── Farblabor ──
+  ['Farblabor', [LT,'Farbe'], 'farblabor.html', '', 'Spiel'],
+  ['Mischlabor', [FL,'1 · Mischen'], 'farblabor.html#mischen', '', 'Farben mischen'],
+  ['Farbkreis & Gegenfarben', [FL,'2 · Farbkreis'], 'farblabor.html#kreis', '', 'Komplementärfarben neutralisieren'],
+  ['Aufhellung & Untergrund', [FL,'3 · Aufhellung'], 'farblabor.html#aufhellung', '', 'Blondierung Aufhellstufen'],
+  ['Farbnummern verstehen', [FL,'4 · Farbnummern'], 'farblabor.html#nummern', '', 'Tonhöhe Nuance'],
+  ['Rezeptur-Planer', [FL,'5 · Rezeptur'], 'farblabor.html#rezeptur', '', 'Ist Soll Rezeptur'],
+  ['Mischen, Rechnen & Grauabdeckung', [FL,'6 · Mischen'], 'farblabor.html#mischstation', '', 'Grau Weißanteil Gramm'],
+  ['Fehlerbilder Farbe', [FL,'7 · Fehlerbilder'], 'farblabor.html#fehler', '', 'Grünstich fahl'],
+  ['Auftragen: was zuerst?', [FL,'8 · Auftragen'], 'farblabor.html#auftragen', '', 'Ansatz Längen'],
+  ['Neutralisier-Profi (Spiel)', [FL,'9 · Spiel'], 'farblabor.html#spiel', '', 'Spiel'],
+  ['Wissens-Check Farbe', [FL,'10 · Quiz'], 'farblabor.html#quiz', '', 'Quiz'],
+  ['Farb-Spickzettel', [FL,'oben: Farb-Spickzettel drucken'], 'spickzettel.html', '', 'A4 Ausdrucken Farbregeln'],
+
+  // ── Schnitt ──
+  ['Schnittwerkstatt', [LT,'Schnitt & Form'], 'schnittwerkstatt.html', '', ''],
+  ['Die vier Grundformen', [SW,'Grundformen'], 'schnittwerkstatt.html#formen', '', 'kompakt graduiert stufig'],
+  ['Winkel-Labor', [SW,'Winkel-Labor'], 'schnittwerkstatt.html#winkel', '', 'Elevation Grad'],
+  ['Pony & Vorderbereich', [SW,'Pony'], 'schnittwerkstatt.html#pony', '', 'Pony Curtain Bangs'],
+  ['Schnittzeichnung Schritt für Schritt', [SW,'Schnittzeichnung'], 'schnittwerkstatt.html#zeichnung', '', 'Zeichnen'],
+  ['Übungsblatt Schnitt', [SW,'Übungsblatt'], 'schnittwerkstatt.html#ueben', '', ''],
+  ['Wissens-Check Schnitt', [SW,'Wissens-Check'], 'schnittwerkstatt.html#quiz', '', 'Quiz'],
+  ['Schnitt-Designer', [LT,'Schnitt & Form'], 'schnittdesigner.html', '', 'Schnittzeichnung erstellen'],
+  ['Werkzeugkunde', [LT,'Schnitt & Form'], 'werkzeugkunde.html', '', ''],
+  ['Werkzeuge im Überblick', [WK,'Werkzeuge'], 'werkzeugkunde.html#werkzeuge', '', 'Schere Kamm Bürste Föhn Maschine'],
+  ['Aufbau der Schere', [WK,'Aufbau der Schere'], 'werkzeugkunde.html#schere', '', 'Schere'],
+  ['Pflege & Hygiene (Werkzeug)', [WK,'Pflege & Hygiene'], 'werkzeugkunde.html#hygiene', '', 'Desinfektion Reinigung'],
+  ['Welches Werkzeug? (Spiel)', [WK,'Welches Werkzeug?'], 'werkzeugkunde.html#spiel', '', 'Spiel'],
+  ['Wissens-Check Werkzeug', [WK,'Wissens-Check'], 'werkzeugkunde.html#quiz', '', 'Quiz'],
+
+  // ── Englisch ──
+  ['Englisch im Salon', [LT,'Lernplan & Tipps'], 'englisch-salon.html', '', 'Englisch'],
+  ['Begrüßung (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch'],
+  ['Beratung (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch'],
+  ['Beschwerden (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch Reklamation'],
+  ['Farbe (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch'],
+  ['Schnitt (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch'],
+  ['Termin (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch Appointment'],
+  ['Verabschiedung (Englisch)', [EN,'Kategorie'], 'englisch-salon.html', '', 'Englisch'],
+  ['Fachvokabular Englisch', [EN,'Kategorie'], 'englisch-salon.html', '', 'Vokabeln'],
+  ['Karteikarten Englisch', [EN,'Karten'], 'englisch-salon.html', '', 'Vokabeln Karten'],
+  ['Fachfragen Englisch', [EN,'Fachfragen'], 'englisch-salon.html', '', ''],
+
+  // ── Meisterin ──
+  [MB, [LQ,'Meisterin-Login'], 'lernquiz.html#meisterin', 'm', 'Dashboard Lehrlinge'],
+  ['Lehrling anlegen', [LQ,MB,'+ Lehrling anlegen'], 'lernquiz.html#meisterin', 'm', 'Neuer Lehrling PIN'],
+  ['Test-Zugänge anlegen', [LQ,MB,'+ Lehrling anlegen','Mehrere Test-Zugänge'], 'lernquiz.html#meisterin', 'm', 'Gast Testen'],
+  ['Lehrling bearbeiten oder sperren', [LQ,MB,'Lehrling antippen','Bearbeiten'], 'lernquiz.html#meisterin', 'm', 'Lehrjahr Wochenziel nur zum Testen'],
+  ['Farb-Zeiten', [LQ,MB,'Farbe'], 'lernquiz.html#meisterin', 'm', 'Einwirkzeiten'],
+  ['Farb-Fälle verwalten', [LQ,MB,'Farbe','Farb-Fälle'], 'lernquiz.html#meisterin', 'm', 'Farbplan bewerten'],
+  ['Praxis-Check', [LQ,MB,'Praxis'], 'lernquiz.html#meisterin', 'm', 'abhaken'],
+  ['Praxis-Tagebuch aller Lehrlinge', [LQ,MB,'Praxis'], 'lernquiz.html#meisterin', 'm', 'bestätigen Notiz'],
+  ['Prüfgespräch', [LQ,MB,'Prüfung'], 'lernquiz.html#meisterin', 'm', 'Lehrling erklärt bewerten'],
+  ['LAP-Fragen bearbeiten', [LQ,MB,'Prüfung','LAP-Fragen'], 'lernquiz.html#meisterin', 'm', 'Lehrabschlussprüfung'],
+  ['Betriebssystem testen', [LQ,MB,'Prüfung'], 'lernquiz.html#meisterin', 'm', 'Betriebs-Quiz'],
+  ['Lernquiz-Fragen bearbeiten', [LQ,MB,'Fragen & Lernpläne'], 'lernquiz.html#meisterin', 'm', 'Fragen'],
+  ['Themen-Quiz-Fragen bearbeiten', [LQ,MB,'Fragen & Lernpläne'], 'lernquiz.html#meisterin', 'm', 'Fragen'],
+  ['Lernpläne bearbeiten', [LQ,MB,'Fragen & Lernpläne'], 'lernquiz.html#meisterin', 'm', 'Wochenplan'],
+  ['Lerntipps bearbeiten', [LQ,MB,'Fragen & Lernpläne'], 'lernquiz.html#meisterin', 'm', 'Tipps'],
+  ['Englisch-Verlauf', [LQ,MB,'Fragen & Lernpläne'], 'meisterin.html#en-verlauf', 'm', 'Englisch Fortschritt'],
+  ['Wie Lehrlinge es sehen', [LQ,MB,'Selbst ansehen'], 'lernquiz.html#meisterin', 'm', 'Vorschau'],
+  ['Mein Lernbereich', [LQ,MB,'Selbst ansehen'], 'meisterin.html', 'm', 'eigene Fragen Abzeichen'],
+  ['Schnuppertag', [LQ,MB], 'schnuppertag.html', 'm', 'Bewerbung Eignungstest'],
+  ['Eignungstest', ['Schnuppertag'], 'schnuppertag.html', 'm', 'Bewerbung Test'],
+  ['Probezeit', ['Schnuppertag','Probezeiten'], 'schnuppertag.html', 'm', 'Probezeit anlegen Wochen Feedback'],
+  ['Wochenquiz Probezeit', ['Schnuppertag','Probezeit'], 'schnuppertag.html', 'm', 'Quiz Link'],
+  ['Archiv Bewerber', ['Schnuppertag'], 'schnuppertag.html', 'm', 'Bewerbung'],
+
+  // ── Sonstiges ──
+  ['Impressum, Datenschutz & Nutzungsbedingungen', ['Unten auf jeder Seite'], 'rechtliches.html', '', 'Rechtliches'],
+  ['Feedback geben', ['Unten auf jeder Seite'], 'rechtliches.html', '', 'Fehler melden Idee']
+];
+// Feedback-Eintrag öffnet den Knopf im Fuß, nicht die Rechtsseite
+EINTRAEGE[EINTRAEGE.length - 1][2] = '#feedback';
+
+(function () {
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss'); }
+  function buchstabe(n) { var b = norm(n).replace(/^[^a-z0-9]+/, '').charAt(0).toUpperCase(); return /[A-Z]/.test(b) ? b : '#'; }
+  var LISTE = EINTRAEGE.map(function (e) {
+    return { n: e[0], w: e[1], l: e[2], r: e[3], s: norm(e[0] + ' ' + e[1].join(' ') + ' ' + (e[4] || '')) };
+  }).sort(function (a, b) { return a.n.localeCompare(b.n, 'de', { sensitivity: 'base' }); });
+  var filter = 'alle', q = '';
+  try { filter = localStorage.getItem('az-filter') || 'alle'; } catch (e) {}
+
+  function markiere(t) {
+    if (!q) return esc(t);
+    var n = norm(t), i = n.indexOf(q);
+    return i < 0 || n.length !== t.length ? esc(t) : esc(t.slice(0, i)) + '<mark>' + esc(t.slice(i, i + q.length)) + '</mark>' + esc(t.slice(i + q.length));
+  }
+  function zeichnen() {
+    var worte = q.split(/\s+/).filter(Boolean);
+    var treffer = LISTE.filter(function (e) {
+      if (filter === 'l' && e.r === 'm') return false;
+      if (filter === 'm' && e.r !== 'm') return false;
+      return worte.every(function (w) { return e.s.indexOf(w) >= 0; });
+    });
+    var gruppen = {}, reihe = [];
+    treffer.forEach(function (e) { var b = buchstabe(e.n); if (!gruppen[b]) { gruppen[b] = []; reihe.push(b); } gruppen[b].push(e); });
+    document.getElementById('abc').innerHTML = reihe.map(function (b) { return '<a href="#b-' + b + '">' + b + '</a>'; }).join('');
+    document.getElementById('liste').innerHTML = treffer.length ? reihe.map(function (b) {
+      return '<h2 id="b-' + b + '">' + b + '</h2><ul>' + gruppen[b].map(function (e) {
+        return '<li><a class="e" href="' + esc(e.l) + '"' + (e.l === '#feedback' ? ' data-fb="1"' : '') + '><span class="n">' + markiere(e.n) + '</span>' +
+          (e.r === 'm' ? '<span class="m">Meisterin</span>' : '') +
+          '<span class="w">' + e.w.map(function (x, i) { return i === e.w.length - 1 ? '<b>' + esc(x) + '</b>' : esc(x); }).join(' › ') + '</span></a></li>';
+      }).join('') + '</ul>';
+    }).join('') : '<p class="leer">Nichts gefunden. Probier ein anderes Wort, z. B. „Farbe“ oder „Rasur“.</p>';
+    document.querySelectorAll('.filter button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.f === filter); });
+  }
+  document.getElementById('q').addEventListener('input', function () { q = norm(this.value.trim()); zeichnen(); });
+  document.querySelectorAll('.filter button').forEach(function (b) {
+    b.addEventListener('click', function () { filter = b.dataset.f; try { localStorage.setItem('az-filter', filter); } catch (e) {} zeichnen(); });
+  });
+  // „Feedback geben“: denselben Knopf wie im Fuß benutzen
+  document.getElementById('liste').addEventListener('click', function (ev) {
+    var a = ev.target.closest('a[data-fb]'); if (!a) return;
+    ev.preventDefault(); var fb = document.getElementById('fb-link'); if (fb) fb.click();
+  });
+  zeichnen();
+})();
+</script>
+<script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Feedback, Impressum, Datenschutz, Nutzungsbedingungen -->
+</body>
+</html>
