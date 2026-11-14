@@ -326,12 +326,15 @@ textarea{resize:vertical;margin-bottom:0}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Lernen ✂</h1>
   <p id="kopf-sub">Lernquiz, Lern-Tool, Praxis &amp; Prüfung – eine App</p>
 </div>
 
+<!-- Beim Öffnen mit gespeicherter Anmeldung: kurz „Einen Moment“ statt Login-Maske,
+     bis die Anmeldung geprüft ist (sonst sieht es aus, als wäre man abgemeldet) -->
+<div id="s-laden" class="seite"><div class="laden" style="padding-top:90px">Einen Moment, du bist angemeldet …</div></div>
 <div id="s-login" class="seite aktiv">
   <div style="padding-top:32px">
     <div class="lab" style="margin-bottom:16px;font-size:13px;color:#2C2C2C;text-transform:none;letter-spacing:0">Bitte einloggen</div>
@@ -409,7 +412,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -488,7 +491,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">💆 Praxis</h2>
     <p class="mb-sub">Am Kunden üben, abhaken und nachweisen.</p>
     <div class="mb-grid">
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/umformung.html?v=20261114s"><div class="mb-ic">🧪</div><b>Umformung</b><small>Dauerwelle &amp; Glättung</small></a>
       <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
       <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
@@ -504,7 +507,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="mb-grid">
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261114s"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
       <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
       <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
     </div>
   </div>
@@ -517,10 +520,10 @@ textarea{resize:vertical;margin-bottom:0}
     <p class="mb-sub">Inhalte pflegen und Lernfortschritt ansehen.</p>
     <div class="mb-grid">
       <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261114t#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
     </div>
   </div>
 </div>
@@ -531,8 +534,8 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">🏠 Selbst ansehen</h2>
     <p class="mb-sub">Die App so sehen, wie deine Lehrlinge sie sehen.</p>
     <div class="mb-grid">
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261107w"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261114t"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
     </div>
   </div>
 </div>
@@ -1620,7 +1623,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261114s'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261114t'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -1712,7 +1715,7 @@ async function loginLehrling(){
   if(error){zeigeFehler('login-fehler',/banned/i.test(error.message||'')?'Dein Zugang ist gesperrt. Bitte wende dich an deine Meisterin.':'Fehler: '+error.message);return;}
   var {data:ldat}=await sb.from('lehrlinge').select('*').eq('user_id',data.user.id).single();
   if(!ldat){zeigeFehler('login-fehler','Kein Lehrlingsprofil gefunden.');return;}
-  if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Zugang ist gesperrt. Bitte wende dich an deine Meisterin.');await sb.auth.signOut();return;}
+  if(ldat.aktiv===false){zeigeFehler('login-fehler','Dein Zugang ist gesperrt. Bitte wende dich an deine Meisterin.');await sb.auth.signOut({scope:'local'});return;}
   AKTLEHRLING=ldat;ISTMEISTERIN=false;LJ=ldat.lehrjahr||1;updateStart();
   // Abzeichen-Stand erst synchronisieren, dann zur Lern-Startseite
   try{ if(typeof streakSync==='function') await streakSync(ldat.id,LJ); }catch(e){}
@@ -1728,7 +1731,7 @@ async function loginMeisterin(){
   if(error){zeigeFehler('mlogin-fehler',(!navigator.onLine||/RetryableFetch/.test(error.name||'')||/fetch|network/i.test(error.message||''))?'Kein Internet – Einloggen geht nur mit Verbindung (WLAN oder mobile Daten). Bitte Verbindung einschalten und nochmal versuchen.':'E-Mail oder Passwort nicht korrekt.');return;}
   // Rolle serverseitig prüfen (Tabelle app_rollen, Funktion ist_meisterin) –
   // ein gültiges Lehrlings-Login reicht nicht mehr für den Meisterin-Bereich.
-  if(!(await istMeisterinServer())){await sb.auth.signOut();zeigeFehler('mlogin-fehler','Dieses Konto hat keinen Meisterinnen-Zugang.');return;}
+  if(!(await istMeisterinServer())){await sb.auth.signOut({scope:'local'});zeigeFehler('mlogin-fehler','Dieses Konto hat keinen Meisterinnen-Zugang.');return;}
   ISTMEISTERIN=true;AKTLEHRLING=null;
   // Kam die Meisterin von einer Pflege-Seite im Lern-Tool (#admin-…), dorthin zurück
   if(/#admin-[a-z]+$/.test(LQ_ZURUECK)){nachLoginWeiter();return;}
@@ -1739,7 +1742,7 @@ async function istMeisterinServer(){
 }
 
 async function logout(){
-  await sb.auth.signOut();AKTLEHRLING=null;ISTMEISTERIN=false;
+  await sb.auth.signOut({scope:'local'});AKTLEHRLING=null;ISTMEISTERIN=false;
   document.getElementById('login-pin').value='';zeige('s-login');
 }
 
@@ -3985,7 +3988,17 @@ function editiere(idx){
   zeige('s-editor');
 }
 
+// Gespeicherte Anmeldung vorhanden? Dann statt der Login-Maske „Einen Moment“ zeigen.
+var LQ_PRUEFT_SITZUNG=false;
+try{ LQ_PRUEFT_SITZUNG=!!localStorage.getItem('sb-wrxlaltgtgkdomklgrlj-auth-token'); }catch(e){}
+function loginZeigenFallsNoetig(){ if(document.getElementById('s-laden').classList.contains('aktiv')) zeige('s-login'); }
 window.addEventListener('DOMContentLoaded',function(){
+  if(LQ_PRUEFT_SITZUNG){
+    document.getElementById('s-login').classList.remove('aktiv');
+    document.getElementById('s-laden').classList.add('aktiv');
+    // Sicherheitsnetz: kommt gar keine Antwort, nach 15 s doch die Anmeldung zeigen
+    setTimeout(loginZeigenFallsNoetig,15000);
+  }
   document.getElementById('btn-login').addEventListener('click',loginLehrling);
   document.getElementById('login-pin').addEventListener('keydown',function(e){if(e.key==='Enter')loginLehrling();});
   document.getElementById('btn-zu-meisterin').addEventListener('click',function(){zeige('s-mlogin');});
@@ -4070,7 +4083,7 @@ window.addEventListener('DOMContentLoaded',function(){
   });
   document.getElementById('btn-ed-back').addEventListener('click',function(){zeige('s-verw');updateVerwListe();});
   // Beim Start: zuerst geänderte Fragen aus Supabase laden
-  ladeFragenAusSupabase().then(function(){
+  Promise.race([ladeFragenAusSupabase(),new Promise(function(r){setTimeout(r,5000);})]).then(function(){
     sb.auth.getSession().then(function(result){
       if(result.data&&result.data.session){
         sb.from('lehrlinge').select('*').eq('user_id',result.data.session.user.id).single().then(function(res){
@@ -4085,12 +4098,12 @@ window.addEventListener('DOMContentLoaded',function(){
           // Kein Lehrling, aber schon als Meisterin angemeldet (Rolle am Server
           // geprüft): gleich in den Meisterin-Bereich statt nochmal einloggen
           istMeisterinServer().then(async function(ok){
-            if(!ok) return;
+            if(!ok){ loginZeigenFallsNoetig(); return; }
             ISTMEISTERIN=true;AKTLEHRLING=null;
             if(location.hash==='#meisterin'){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
             await ladeDashboard();zeige('s-dashboard');
           });
-        });
+        },loginZeigenFallsNoetig);
       } else {
         // Kein eingeloggter User → Login zeigen, Verlauf bereinigen
         history.replaceState(null,'',window.location.pathname);

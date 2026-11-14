@@ -333,7 +333,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -359,7 +359,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -382,7 +382,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
@@ -424,7 +424,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>📅 Lernplan &amp; Tipps</h1>
   <div class="st-sub" style="margin-bottom:16px">Plan für die Woche, Tipps und Englisch im Salon.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261107w'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261114t'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
     <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
     <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
   </div>
@@ -654,7 +654,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -1791,7 +1791,7 @@ async function adminLogin() {
     document.getElementById('admin-pw').value = '';
     // Rolle serverseitig prüfen – ein Lehrlings-Login öffnet den Admin-Bereich nicht.
     if (!(await istMeisterinServer())) {
-      await sb2.auth.signOut();
+      await sb2.auth.signOut({scope:'local'});
       st.style.display = 'block';
       st.textContent = 'Dieses Konto hat keinen Meisterinnen-Zugang.';
       return;
@@ -1804,7 +1804,7 @@ async function adminLogin() {
 }
 
 async function adminLogout() {
-  await sb2.auth.signOut();
+  await sb2.auth.signOut({scope:'local'});
   document.getElementById('admin-hinweis').style.display = 'none';
   zeige('home');
 }
@@ -4406,14 +4406,14 @@ var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) f
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
 var ST_SITZT_NACH_TAGEN = 3;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
   return 'Im <a href="' + LQ_LOGIN + '">Lernquiz einloggen</a>, dann siehst du hier ' + text + '.';
 }
 async function stAbmelden() {
-  try { await sb2.auth.signOut(); } catch (e) {}
+  try { await sb2.auth.signOut({scope:'local'}); } catch (e) {}
   location.replace(LQ_LOGIN);
 }
 var ST_MEHR_KEY = 'lt_mehr_offen';
@@ -4636,7 +4636,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4784,7 +4784,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t';
 }
 
 function lkTipp(th) {
