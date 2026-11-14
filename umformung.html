@@ -19,7 +19,7 @@
 :root{
   --bg:#F8F4EA; --surface:#FFFFFF; --surface-2:#F0E9D8; --ink:#211D17; --muted:#6B6455; --line:#E4DBC5;
   --accent:#896C32; --accent-soft:#F3EBD9; --warn:#C44030; --warn-soft:#FDECEA; --ok:#4E7A5E; --ok-soft:#EAF3EC;
-  --lab:#1E1B2E; --lab-2:#2B2742; --lab-ink:#F4F0FF; --hb:#6FB7FF; --salz:#FF9F5A; --ss:#F2C94C; --red:#FF6B8B;
+  --hb:#3F83C9; --salz:#D9822B; --ss:#896C32; --red:#C44030;
   --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
@@ -29,28 +29,22 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Poppins,syste
 [hidden]{display:none!important}
 .wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
 h1,h2,h3{line-height:1.15;text-wrap:balance;margin:0}
-h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:700}
-h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:600}
+h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:600}
 h3{font-size:1.05rem;font-weight:600}
 p{margin:0;max-width:65ch}
 .tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
 .muted{color:var(--muted)}
 .back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
 
-/* ── Kopf: dunkles „Labor“ mit animierter Locke ── */
-.hero{background:radial-gradient(120% 140% at 85% 10%,#3D3566 0%,var(--lab) 55%);color:var(--lab-ink);border-radius:0 0 22px 22px;overflow:hidden}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;align-items:center;padding-block:18px 26px}
-@media (max-width:700px){.hero .wrap{grid-template-columns:1fr}.hero svg.locke{max-height:130px}}
-.hero .back-link{color:#BDB6D8}
-.hero .tag{color:var(--ss)}
-.hero p{color:#D7D1EE;margin-top:8px}
-.hero svg.locke{width:100%;height:auto;max-height:190px}
-.locke path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:zeichnen 3.2s ease forwards}
-.locke path.b{animation-delay:.6s}.locke path.a{animation-delay:1.2s}
-@keyframes zeichnen{to{stroke-dashoffset:0}}
-.pass{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.stempel{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px dashed #6C6496;color:#BDB6D8}
-.stempel.da{border-style:solid;border-color:var(--ss);background:rgba(242,201,76,.14);color:var(--ss)}
+/* ── Kopf: wie die anderen Lern-Module ── */
+header.top{padding-block:20px 18px;display:grid;gap:8px}
+.back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+header.top p{color:var(--muted)}
+.pass{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.stempel{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px dashed #D9CDAE;color:var(--muted);background:#fff}
+.stempel.da{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .stempel.da::before{content:"★"}
 .stempel:not(.da)::before{content:"☆"}
 
@@ -60,55 +54,52 @@ nav.tabs a{flex:none;color:var(--ink);text-decoration:none;font-weight:600;font-
 nav.tabs a:hover{background:var(--accent-soft);color:var(--accent)}
 section.block{padding-block:36px 4px;display:grid;gap:16px;scroll-margin-top:56px}
 section.block > header{display:grid;gap:6px}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px}
 .grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{appearance:none;border:1px solid #D9CDAE;background:transparent;color:var(--muted);font:600 13px Poppins,system-ui;padding:8px 13px;border-radius:999px;cursor:pointer}
+.chip{appearance:none;border:1px solid #D9CDAE;background:transparent;color:var(--muted);font:600 13px Poppins,system-ui;padding:8px 13px;border-radius:6px;cursor:pointer}
 .chip:hover{border-color:var(--accent);color:var(--accent)}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 14px Poppins,system-ui;padding:10px 16px;border-radius:8px;cursor:pointer}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 14px Poppins,system-ui;padding:10px 16px;border-radius:6px;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--accent)}
 .btn:disabled{opacity:.45;cursor:default}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.tip{background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
-.warnbox{background:var(--warn-soft);border:1px solid var(--warn);border-radius:10px;padding:10px 12px;font-size:14px;color:#7A2418}
+.tip{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px}
+.warnbox{background:var(--warn-soft);border:1px solid var(--warn);border-radius:8px;padding:10px 12px;font-size:14px;color:#7A2418}
 .fb{margin:0;font-size:14px}
 .fb.ok{color:var(--ok);font-weight:600}.fb.no{color:var(--warn)}
 
 /* ── Chemie-Labor ── */
-.labor{background:var(--lab);color:var(--lab-ink);border-radius:14px;padding:16px;display:grid;gap:12px}
-.labor .tag{color:var(--ss)}
-.labor svg{width:100%;height:auto;display:block;background:var(--lab-2);border-radius:10px}
-.labor .schritt-text h3{color:#fff;margin-bottom:4px}
-.labor .schritt-text p{color:#D7D1EE;font-size:14px}
-.labor .formel{font:600 13px var(--mono);color:var(--ss);background:rgba(242,201,76,.1);border-radius:6px;padding:6px 10px;display:inline-block;margin-top:6px}
+.labor{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px}
+.labor svg{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:8px}
+.labor .schritt-text h3{margin-bottom:4px}
+.labor .schritt-text p{color:var(--muted);font-size:14px}
+.labor .formel{font:600 13px var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:6px 10px;display:inline-block;margin-top:6px}
 .punkte{display:flex;gap:6px;justify-content:center}
-.punkte i{width:9px;height:9px;border-radius:50%;background:#4A4470;transition:background .3s}
-.punkte i.on{background:var(--ss)}
+.punkte i{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .3s}
+.punkte i.on{background:var(--accent)}
 .labor .knoepfe{display:flex;gap:8px;justify-content:space-between}
-.labor .btn{background:var(--ss);border-color:var(--ss);color:#1E1B2E}
-.labor .btn.ghost{background:transparent;color:var(--ss)}
 .bruecke{transition:opacity .6s, stroke .6s}
 .kette{transition:transform 1s cubic-bezier(.5,0,.3,1)}
-.legende{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:#D7D1EE}
-.legende span::before{content:"";display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle;background:currentColor}
-.legende .l-hb{color:var(--hb)}.legende .l-salz{color:var(--salz)}.legende .l-ss{color:var(--ss)}
+.legende{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+.legende span::before{content:"";display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.legende .l-hb::before{background:var(--hb)}.legende .l-salz::before{background:var(--salz)}.legende .l-ss::before{background:var(--ss)}
 .bruecken-karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.bk{border-radius:10px;padding:12px;border:1px solid var(--line);background:var(--surface)}
+.bk{border-radius:8px;padding:12px;border:1px solid var(--line);background:var(--surface);font-size:14px}
 .bk b{display:block;margin-bottom:4px}
-.bk .lös{font-size:13px;color:var(--muted)}
+.bk .lös{font-size:13px;color:var(--muted);margin-top:4px}
 .bk.hb{border-top:4px solid var(--hb)}.bk.salz{border-top:4px solid var(--salz)}.bk.ss{border-top:4px solid var(--ss)}
 
 /* ── Ablauf ── */
 .ablauf{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:a}
-.ablauf li{counter-increment:a;display:grid;grid-template-columns:34px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.ablauf li{counter-increment:a;display:grid;grid-template-columns:34px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
 .ablauf li::before{content:counter(a);width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
 .ablauf b{display:block}
 .ablauf .warum{font-size:13px;color:var(--muted)}
 .ablauf .warum::before{content:"Warum? ";font-weight:600;color:var(--accent)}
 .puzzle{display:grid;gap:6px}
-.puzzle button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:600 14px Poppins,system-ui;padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;gap:10px;align-items:center}
+.puzzle button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:600 14px Poppins,system-ui;padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;gap:10px;align-items:center}
 .puzzle button:hover:not(:disabled){border-color:var(--accent)}
 .puzzle button.fertig{border-color:var(--ok);background:var(--ok-soft);cursor:default}
 .puzzle button.falsch{animation:wackeln .35s}
@@ -118,7 +109,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .uhr{font:600 1.3rem var(--mono);color:var(--accent)}
 
 /* ── Wickler ── */
-.wickelbild{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wickelbild{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .wickelbild svg{width:100%;height:auto;display:block}
 dl.facts{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font-size:14px}
 dl.facts dt{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
@@ -127,36 +118,36 @@ dl.facts dd{margin:0}
 .gen label{display:grid;gap:4px;font-size:13px;font-weight:600}
 .gen input[type=range]{width:100%;accent-color:var(--accent)}
 .gen .wert{font:600 13px var(--mono);color:var(--accent)}
-.gen svg{width:100%;height:auto;background:linear-gradient(#FFFDF8,#F6EFDF);border-radius:10px;border:1px solid var(--line)}
+.gen svg{width:100%;height:auto;background:var(--surface-2);border-radius:8px}
 .ergebnis-badge{display:inline-block;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--accent);color:#fff}
 
 /* ── Fehler-Detektiv ── */
-.fall{background:linear-gradient(135deg,#FFF9EC,#F7EBD2);border:1px solid #E6D3A8;border-radius:14px;padding:16px;display:grid;gap:10px}
+.fall{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:10px}
 .fall .lupe{font-size:28px}
 .fall .symptom{font-size:17px;font-weight:600}
 .opts{display:grid;gap:6px}
-.opts button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:14px Poppins,system-ui;padding:10px 13px;border-radius:10px;cursor:pointer}
+.opts button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:14px Poppins,system-ui;padding:10px 13px;border-radius:8px;cursor:pointer}
 .opts button:hover:not(:disabled){border-color:var(--accent)}
 .opts button:disabled{cursor:default}
 .opts button.right{border-color:var(--ok);background:var(--ok-soft);font-weight:600}
 .opts button.wrong{border-color:var(--warn);background:var(--warn-soft);color:var(--warn)}
-.loesung{background:#fff;border-radius:10px;padding:10px 12px;font-size:14px;border:1px solid var(--line)}
+.loesung{background:var(--accent-soft);border-radius:8px;padding:10px 12px;font-size:14px;border:1px solid var(--line)}
 .loesung b{color:var(--accent)}
 
 /* ── Glättung ── */
 .vergleich{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:560px){.vergleich{grid-template-columns:1fr}}
-.vgl{border-radius:12px;padding:12px;border:1px solid var(--line);background:var(--surface);display:grid;gap:6px;align-content:start}
+.vgl{border-radius:8px;padding:12px;border:1px solid var(--line);background:var(--surface);display:grid;gap:6px;align-content:start}
 .vgl h3{font-size:15px}
 .vgl svg{width:100%;height:auto;max-height:120px}
 .vgl ol{margin:0;padding-left:18px;font-size:13.5px}
 .arten{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.art{border-radius:12px;padding:12px;border:1px solid var(--line);background:var(--surface);font-size:14px;display:grid;gap:6px;align-content:start}
+.art{border-radius:8px;padding:12px;border:1px solid var(--line);background:var(--surface);font-size:14px;display:grid;gap:6px;align-content:start}
 .art .haelt{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
 
 /* ── Quiz ── */
 .quiz{display:grid;gap:12px}
-.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:10px}
 .q h3{font-size:15px}
 .q .why{font-size:13px;color:var(--muted)}
 .score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -173,24 +164,14 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 </head>
 <body>
 
-<div class="hero">
-  <div class="wrap">
-    <div>
-      <a class="back-link" href="lerntool.html?v=20261114c#seite=praxis">← Praxis-Module</a>
-      <div class="tag" style="margin-top:10px">2. + 3. Lehrjahr · Praxis-Modul</div>
-      <h1>Umformung: Dauerwelle &amp; Glättung 🧪</h1>
-      <p>Wie wird aus glattem Haar eine Locke, und aus einer Locke glattes Haar? Hier knackst du die Chemie, planst den Ablauf, wählst den richtigen Wickler und löst echte Fehlerfälle.</p>
-      <div class="pass" id="pass" aria-label="Dein Umformungs-Pass"></div>
-    </div>
-    <svg class="locke" viewBox="0 0 300 190" aria-hidden="true">
-      <path class="c" d="M45.0 20.0 L45.0 21.5 L45.0 23.0 L45.0 24.5 L45.0 26.0 L45.0 27.5 L45.0 29.0 L45.0 30.5 L45.0 32.0 L45.0 33.5 L45.0 35.0 L45.0 36.5 L45.0 38.0 L45.0 39.5 L45.0 41.0 L45.0 42.5 L45.0 44.0 L45.0 45.5 L45.0 47.0 L45.0 48.5 L45.0 50.0 L45.0 51.5 L45.0 53.0 L45.0 54.5 L45.0 56.0 L45.0 57.5 L45.0 59.0 L45.0 60.5 L45.0 62.0 L45.0 63.5 L45.0 65.0 L45.0 66.5 L45.0 68.0 L45.0 69.5 L45.0 71.0 L45.0 72.5 L45.0 74.0 L45.0 75.5 L45.0 77.0 L45.0 78.5 L45.0 80.0 L45.0 81.5 L45.0 83.0 L45.0 84.5 L45.0 86.0 L45.0 87.5 L45.0 89.0 L45.0 90.5 L45.0 92.0 L45.0 93.5 L45.0 95.0 L45.0 96.5 L45.0 98.0 L45.0 99.5 L45.0 101.0 L45.0 102.5 L45.0 104.0 L45.0 105.5 L45.0 107.0 L45.0 108.5 L45.0 110.0 L45.0 111.5 L45.0 113.0 L45.0 114.5 L45.0 116.0 L45.0 117.5 L45.0 119.0 L45.0 120.5 L45.0 122.0 L45.0 123.5 L45.0 125.0 L45.0 126.5 L45.0 128.0 L45.0 129.5 L45.0 131.0 L45.0 132.5 L45.0 134.0 L45.0 135.5 L45.0 137.0 L45.0 138.5 L45.0 140.0 L45.0 141.5 L45.0 143.0 L45.0 144.5 L45.0 146.0 L45.0 147.5 L45.0 149.0 L45.0 150.5 L45.0 152.0 L45.0 153.5 L45.0 155.0 L45.0 156.5 L45.0 158.0 L45.0 159.5 L45.0 161.0 L45.0 162.5 L45.0 164.0 L45.0 165.5 L45.0 167.0 L45.0 168.5 L45.0 170.0" stroke="#6FB7FF" stroke-width="6"/>
-      <text x="45" y="186" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">glatt</text>
-      <path class="b" d="M140.0 20.0 L142.8 21.5 L145.6 23.0 L148.2 24.5 L150.6 26.0 L152.7 27.5 L154.6 29.0 L156.0 30.5 L157.1 32.0 L157.8 33.5 L158.0 35.0 L157.8 36.5 L157.1 38.0 L156.0 39.5 L154.6 41.0 L152.7 42.5 L150.6 44.0 L148.2 45.5 L145.6 47.0 L142.8 48.5 L140.0 50.0 L137.2 51.5 L134.4 53.0 L131.8 54.5 L129.4 56.0 L127.3 57.5 L125.4 59.0 L124.0 60.5 L122.9 62.0 L122.2 63.5 L122.0 65.0 L122.2 66.5 L122.9 68.0 L124.0 69.5 L125.4 71.0 L127.3 72.5 L129.4 74.0 L131.8 75.5 L134.4 77.0 L137.2 78.5 L140.0 80.0 L142.8 81.5 L145.6 83.0 L148.2 84.5 L150.6 86.0 L152.7 87.5 L154.6 89.0 L156.0 90.5 L157.1 92.0 L157.8 93.5 L158.0 95.0 L157.8 96.5 L157.1 98.0 L156.0 99.5 L154.6 101.0 L152.7 102.5 L150.6 104.0 L148.2 105.5 L145.6 107.0 L142.8 108.5 L140.0 110.0 L137.2 111.5 L134.4 113.0 L131.8 114.5 L129.4 116.0 L127.3 117.5 L125.4 119.0 L124.0 120.5 L122.9 122.0 L122.2 123.5 L122.0 125.0 L122.2 126.5 L122.9 128.0 L124.0 129.5 L125.4 131.0 L127.3 132.5 L129.4 134.0 L131.8 135.5 L134.4 137.0 L137.2 138.5 L140.0 140.0 L142.8 141.5 L145.6 143.0 L148.2 144.5 L150.6 146.0 L152.7 147.5 L154.6 149.0 L156.0 150.5 L157.1 152.0 L157.8 153.5 L158.0 155.0 L157.8 156.5 L157.1 158.0 L156.0 159.5 L154.6 161.0 L152.7 162.5 L150.6 164.0 L148.2 165.5 L145.6 167.0 L142.8 168.5 L140.0 170.0" stroke="#FF9F5A" stroke-width="6"/>
-      <text x="140" y="186" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Welle</text>
-      <path class="a" d="M257.0 22.0 L256.9 23.8 L256.6 25.7 L256.2 27.5 L255.5 29.2 L254.7 30.9 L253.8 32.5 L252.6 34.1 L251.4 35.5 L250.0 36.9 L248.5 38.1 L246.9 39.2 L245.3 40.1 L243.5 41.0 L241.8 41.7 L240.0 42.2 L238.2 42.6 L236.5 42.9 L234.7 43.0 L233.1 43.0 L231.5 42.9 L230.0 42.6 L228.6 42.3 L227.4 41.8 L226.2 41.2 L225.3 40.5 L224.5 39.8 L223.8 39.0 L223.4 38.2 L223.1 37.3 L223.0 36.5 L223.1 35.6 L223.4 34.7 L223.8 33.9 L224.5 33.1 L225.3 32.4 L226.2 31.7 L227.4 31.1 L228.6 30.6 L230.0 30.3 L231.5 30.0 L233.1 29.9 L234.7 29.9 L236.5 30.0 L238.2 30.3 L240.0 30.7 L241.8 31.2 L243.5 31.9 L245.3 32.8 L246.9 33.7 L248.5 34.8 L250.0 36.1 L251.4 37.4 L252.6 38.8 L253.8 40.4 L254.7 42.0 L255.5 43.7 L256.2 45.4 L256.6 47.2 L256.9 49.1 L257.0 50.9 L256.9 52.7 L256.6 54.6 L256.2 56.4 L255.5 58.1 L254.7 59.8 L253.8 61.4 L252.6 63.0 L251.4 64.4 L250.0 65.8 L248.5 67.0 L246.9 68.1 L245.3 69.0 L243.5 69.9 L241.8 70.6 L240.0 71.1 L238.2 71.5 L236.5 71.8 L234.7 71.9 L233.1 71.9 L231.5 71.8 L230.0 71.5 L228.6 71.2 L227.4 70.7 L226.2 70.1 L225.3 69.4 L224.5 68.7 L223.8 67.9 L223.4 67.1 L223.1 66.2 L223.0 65.4 L223.1 64.5 L223.4 63.6 L223.8 62.8 L224.5 62.0 L225.3 61.3 L226.2 60.6 L227.4 60.0 L228.6 59.5 L230.0 59.2 L231.5 58.9 L233.1 58.8 L234.7 58.8 L236.5 58.9 L238.2 59.2 L240.0 59.6 L241.8 60.1 L243.5 60.8 L245.3 61.7 L246.9 62.6 L248.5 63.7 L250.0 65.0 L251.4 66.3 L252.6 67.7 L253.8 69.3 L254.7 70.9 L255.5 72.6 L256.2 74.3 L256.6 76.1 L256.9 78.0 L257.0 79.8 L256.9 81.6 L256.6 83.5 L256.2 85.3 L255.5 87.0 L254.7 88.7 L253.8 90.3 L252.6 91.9 L251.4 93.3 L250.0 94.7 L248.5 95.9 L246.9 97.0 L245.3 97.9 L243.5 98.8 L241.8 99.5 L240.0 100.0 L238.2 100.4 L236.5 100.7 L234.7 100.8 L233.1 100.8 L231.5 100.7 L230.0 100.4 L228.6 100.1 L227.4 99.6 L226.2 99.0 L225.3 98.3 L224.5 97.6 L223.8 96.8 L223.4 96.0 L223.1 95.1 L223.0 94.3 L223.1 93.4 L223.4 92.5 L223.8 91.7 L224.5 90.9 L225.3 90.2 L226.2 89.5 L227.4 88.9 L228.6 88.4 L230.0 88.1 L231.5 87.8 L233.1 87.7 L234.7 87.7 L236.5 87.8 L238.2 88.1 L240.0 88.5 L241.8 89.0 L243.5 89.7 L245.3 90.6 L246.9 91.5 L248.5 92.6 L250.0 93.9 L251.4 95.2 L252.6 96.6 L253.8 98.2 L254.7 99.8 L255.5 101.5 L256.2 103.2 L256.6 105.0 L256.9 106.9 L257.0 108.7 L256.9 110.5 L256.6 112.4 L256.2 114.2 L255.5 115.9 L254.7 117.6 L253.8 119.2 L252.6 120.8 L251.4 122.2 L250.0 123.6 L248.5 124.8 L246.9 125.9 L245.3 126.9 L243.5 127.7 L241.8 128.4 L240.0 128.9 L238.2 129.3 L236.5 129.6 L234.7 129.7 L233.1 129.7 L231.5 129.6 L230.0 129.3 L228.6 129.0 L227.4 128.5 L226.2 127.9 L225.3 127.3 L224.5 126.5 L223.8 125.7 L223.4 124.9 L223.1 124.0 L223.0 123.2 L223.1 122.3 L223.4 121.4 L223.8 120.6 L224.5 119.8 L225.3 119.1 L226.2 118.4 L227.4 117.8 L228.6 117.4 L230.0 117.0 L231.5 116.7 L233.1 116.6 L234.7 116.6 L236.5 116.7 L238.2 117.0 L240.0 117.4 L241.8 117.9 L243.5 118.6 L245.3 119.5 L246.9 120.4 L248.5 121.5 L250.0 122.8 L251.4 124.1 L252.6 125.5 L253.8 127.1 L254.7 128.7 L255.5 130.4 L256.2 132.1 L256.6 133.9 L256.9 135.8 L257.0 137.6 L256.9 139.5 L256.6 141.3 L256.2 143.1 L255.5 144.8 L254.7 146.5 L253.8 148.1 L252.6 149.7 L251.4 151.1 L250.0 152.5 L248.5 153.7 L246.9 154.8 L245.3 155.8 L243.5 156.6 L241.8 157.3 L240.0 157.8 L238.2 158.2 L236.5 158.5 L234.7 158.6 L233.1 158.6 L231.5 158.5 L230.0 158.2 L228.6 157.9 L227.4 157.4 L226.2 156.8 L225.3 156.2 L224.5 155.4 L223.8 154.6 L223.4 153.8 L223.1 152.9 L223.0 152.1 L223.1 151.2 L223.4 150.3 L223.8 149.5 L224.5 148.7 L225.3 148.0 L226.2 147.3 L227.4 146.7 L228.6 146.3 L230.0 145.9 L231.5 145.6 L233.1 145.5 L234.7 145.5 L236.5 145.6 L238.2 145.9 L240.0 146.3 L241.8 146.8 L243.5 147.5 L245.3 148.4 L246.9 149.3 L248.5 150.4 L250.0 151.7 L251.4 153.0 L252.6 154.4 L253.8 156.0 L254.7 157.6 L255.5 159.3 L256.2 161.1 L256.6 162.8 L256.9 164.7 L257.0 166.5" stroke="#F2C94C" stroke-width="6"/>
-      <text x="240" y="186" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Locke</text>
-    </svg>
-  </div>
+<div class="wrap">
+  <header class="top">
+    <a class="back-link" href="lerntool.html?v=20261114c#seite=praxis">← Lern-Tool</a>
+    <span class="tag">greathairday · Praxis · 2. + 3. Lehrjahr</span>
+    <h1>Umformung: Dauerwelle &amp; Glättung 🧪</h1>
+    <p>Wie wird aus glattem Haar eine Locke, und aus einer Locke glattes Haar? Hier knackst du die Chemie, planst den Ablauf, wählst den richtigen Wickler und löst echte Fehlerfälle.</p>
+    <div class="pass" id="pass" aria-label="Dein Umformungs-Pass"></div>
+  </header>
 </div>
 
 <nav class="tabs" aria-label="Bereiche">
@@ -362,19 +343,19 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     var S=SCHRITTE[lab], z=S.zust, x1=120, x2=240, versatz=(z==='verschoben'||z==='neu'||z==='fertig')?32:0;
     var g='';
     // Ketten
-    g+='<line x1="'+x1+'" y1="14" x2="'+x1+'" y2="216" stroke="#C9C2EA" stroke-width="7" stroke-linecap="round"/>';
-    g+='<g class="kette" style="transform:translateY('+versatz+'px)"><line x1="'+x2+'" y1="-18" x2="'+x2+'" y2="216" stroke="#C9C2EA" stroke-width="7" stroke-linecap="round"/>'+
-      [-2].concat(EBENEN).map(function(y){return '<circle cx="'+x2+'" cy="'+y+'" r="5" fill="#2B2742" stroke="#C9C2EA" stroke-width="2"/>';}).join('')+'</g>';
-    g+=EBENEN.map(function(y){return '<circle cx="'+x1+'" cy="'+y+'" r="5" fill="#2B2742" stroke="#C9C2EA" stroke-width="2"/>';}).join('');
-    g+='<text x="'+x1+'" y="226" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Keratin-Kette</text>';
+    g+='<line x1="'+x1+'" y1="14" x2="'+x1+'" y2="216" stroke="#B9AC8C" stroke-width="7" stroke-linecap="round"/>';
+    g+='<g class="kette" style="transform:translateY('+versatz+'px)"><line x1="'+x2+'" y1="-18" x2="'+x2+'" y2="216" stroke="#B9AC8C" stroke-width="7" stroke-linecap="round"/>'+
+      [-2].concat(EBENEN).map(function(y){return '<circle cx="'+x2+'" cy="'+y+'" r="5" fill="#FFFFFF" stroke="#B9AC8C" stroke-width="2"/>';}).join('')+'</g>';
+    g+=EBENEN.map(function(y){return '<circle cx="'+x1+'" cy="'+y+'" r="5" fill="#FFFFFF" stroke="#B9AC8C" stroke-width="2"/>';}).join('');
+    g+='<text x="'+x1+'" y="226" fill="#9A9188" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Keratin-Kette</text>';
     EBENEN.forEach(function(y,i){
-      var t=TYP[i], farbe={hb:'#6FB7FF',salz:'#FF9F5A',ss:'#F2C94C'}[t];
+      var t=TYP[i], farbe={hb:'#3F83C9',salz:'#D9822B',ss:'#896C32'}[t];
       if(t==='ss'){
         if(z==='zu'){ g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+y+'" stroke="'+farbe+'" stroke-width="6"/><text x="180" y="'+(y-6)+'" fill="'+farbe+'" font-size="12" font-weight="700" text-anchor="middle" font-family="Poppins,system-ui">S–S</text>'; }
         else if(z==='offen'||z==='verschoben'){
           var yr=y+(z==='verschoben'?versatz:0);
-          g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+(x1+26)+'" y2="'+y+'" stroke="#FF6B8B" stroke-width="5"/><text x="'+(x1+31)+'" y="'+(y+4)+'" fill="#FF6B8B" font-size="11" font-weight="700" font-family="Poppins,system-ui">SH</text>';
-          g+='<line class="bruecke" x1="'+(x2-26)+'" y1="'+yr+'" x2="'+x2+'" y2="'+yr+'" stroke="#FF6B8B" stroke-width="5"/><text x="'+(x2-31)+'" y="'+(yr+4)+'" fill="#FF6B8B" font-size="11" font-weight="700" text-anchor="end" font-family="Poppins,system-ui">HS</text>';
+          g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+(x1+26)+'" y2="'+y+'" stroke="#C44030" stroke-width="5"/><text x="'+(x1+31)+'" y="'+(y+4)+'" fill="#C44030" font-size="11" font-weight="700" font-family="Poppins,system-ui">SH</text>';
+          g+='<line class="bruecke" x1="'+(x2-26)+'" y1="'+yr+'" x2="'+x2+'" y2="'+yr+'" stroke="#C44030" stroke-width="5"/><text x="'+(x2-31)+'" y="'+(yr+4)+'" fill="#C44030" font-size="11" font-weight="700" text-anchor="end" font-family="Poppins,system-ui">HS</text>';
         } else {
           // neu geschlossen: schräg zur verschobenen Kette
           var y2=y+versatz-32;
@@ -386,11 +367,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+(y+(z==='zu'||z==='offen'?0:versatz-32))+'" stroke="'+farbe+'" stroke-width="3" stroke-dasharray="'+(t==='hb'?'5 5':'0')+'" opacity="'+(off?.25:.9)+'"/>';
       }
     });
-    if(z==='offen'){ g+='<text x="300" y="40" fill="#FF6B8B" font-size="22" text-anchor="middle">⚡</text><text x="300" y="58" fill="#FF6B8B" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Wellmittel</text>'; }
-    if(z==='verschoben'){ g+='<circle cx="300" cy="115" r="26" fill="none" stroke="#C9C2EA" stroke-width="2" stroke-dasharray="4 4"/><text x="300" y="119" fill="#C9C2EA" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Wickler</text>'; }
-    if(z==='neu'){ g+='<text x="300" y="40" fill="#6FFFB0" font-size="22" text-anchor="middle">✚</text><text x="300" y="58" fill="#6FFFB0" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Fixierung</text>'; }
-    if(z==='fertig'){ g+='<text x="300" y="120" fill="#F2C94C" font-size="30" text-anchor="middle">✓</text>'; }
-    if(z==='zu'||z==='fertig') g+='<text x="50" y="119" fill="#9C95C2" font-size="11" text-anchor="middle" font-family="Poppins,system-ui">'+(z==='zu'?'Form: glatt':'Form: Locke')+'</text>';
+    if(z==='offen'){ g+='<text x="300" y="40" fill="#C44030" font-size="22" text-anchor="middle">⚡</text><text x="300" y="58" fill="#C44030" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Wellmittel</text>'; }
+    if(z==='verschoben'){ g+='<circle cx="300" cy="115" r="26" fill="none" stroke="#B9AC8C" stroke-width="2" stroke-dasharray="4 4"/><text x="300" y="119" fill="#B9AC8C" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Wickler</text>'; }
+    if(z==='neu'){ g+='<text x="300" y="40" fill="#2F7D55" font-size="22" text-anchor="middle">✚</text><text x="300" y="58" fill="#2F7D55" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Fixierung</text>'; }
+    if(z==='fertig'){ g+='<text x="300" y="120" fill="#896C32" font-size="30" text-anchor="middle">✓</text>'; }
+    if(z==='zu'||z==='fertig') g+='<text x="50" y="119" fill="#9A9188" font-size="11" text-anchor="middle" font-family="Poppins,system-ui">'+(z==='zu'?'Form: glatt':'Form: Locke')+'</text>';
     $('#labSvg').innerHTML=g;
     $('#labText').innerHTML='<h3>'+esc(S.t)+'</h3><p>'+esc(S.p)+'</p><span class="formel">'+esc(S.f)+'</span>';
     $('#labSchritt').textContent='Schritt '+(lab+1)+' von '+SCHRITTE.length;
