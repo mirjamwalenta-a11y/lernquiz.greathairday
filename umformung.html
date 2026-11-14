@@ -9,8 +9,9 @@
 <link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
 <!--
   Lern-Modul Umformung: Dauerwelle und Glättung (2. und 3. Lehrjahr).
-  Teile: Chemie-Labor (Animation der Haarbrücken), Arbeitsablauf mit
-  Reihenfolge-Puzzle, Wicklertechniken mit Locken-Generator, Fehler-Detektiv,
+  Teile: Chemie-Labor (Animation der Haarbrücken), Grundlagen + Arbeitsablauf
+  mit Reihenfolge-Puzzle, Wickelregeln + Wicklertechniken (farbige SVG-Schemata)
+  mit Locken-Generator, Fehler-Detektiv,
   Glättung, Wissens-Check. „Umformungs-Pass“: Stempel pro Teil (nur im
   Browser gespeichert, localStorage). Quiz-Ergebnis wie in den anderen
   Modulen über quiz-verlauf.js (nur mit Lehrlings-Login).
@@ -123,6 +124,26 @@ dl.facts dd{margin:0}
 .gen .wert{font:600 13px var(--mono);color:var(--accent)}
 .gen svg{width:100%;height:auto;background:var(--surface-2);border-radius:8px}
 .ergebnis-badge{display:inline-block;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--accent);color:#fff}
+.wickel-legende{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+.wickel-legende span{display:inline-flex;align-items:center;gap:5px}
+.wickel-legende i{width:18px;height:8px;border-radius:4px;display:inline-block}
+.regeln{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.regel{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:grid;align-content:start}
+.regel svg{width:100%;height:auto;display:block;background:#FBF7EE}
+.regel p{padding:10px 12px;font-size:13.5px}
+.regel p b{color:var(--accent)}
+
+/* ── Grundlagen (vor dem Wickeln) ── */
+.grund{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.gk{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:8px;align-content:start;font-size:14px;border-top:4px solid var(--accent)}
+.gk h3{font-size:15px}
+.gk ul{margin:0;padding-left:18px}
+.gk ul ul{margin-top:2px}
+.gk .wichtig{background:var(--accent-soft);border-radius:6px;padding:8px 10px;font-size:13px}
+.gk .wichtig::before{content:"Wichtig: ";font-weight:700;color:var(--accent)}
+.gk.b1{border-top-color:#3F83C9}.gk.b2{border-top-color:#8E5CC4}.gk.b3{border-top-color:#E0698F}.gk.b4{border-top-color:#4E9A5E}.gk.b5{border-top-color:#E58A2B}.gk.b6{border-top-color:#C44030}
+.mini-chips{display:flex;flex-wrap:wrap;gap:5px}
+.mini-chips span{font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
 
 /* ── Fehler-Detektiv ── */
 .fall{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:10px}
@@ -222,6 +243,71 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <h2>Arbeitsablauf Dauerwelle</h2>
       <p class="muted">Jeder Schritt hat einen Grund. Wer das Warum kennt, macht weniger Fehler.</p>
     </header>
+    <h3>Bevor gewickelt wird: Grundlagen</h3>
+    <div class="grund">
+      <div class="gk b1">
+        <h3>Andere Namen für die Wellbehandlung</h3>
+        <div class="mini-chips"><span>Stützwelle</span><span>Klassische Dauerwelle</span><span>Ansatzwelle</span><span>Clipswelle</span><span>Papillotenwelle</span><span>Teilwelle</span><span>Chemische Umformung</span></div>
+      </div>
+      <div class="gk b2">
+        <h3>Was bringt eine Umformung?</h3>
+        <ul>
+          <li>Mehr Fülle und eine Frisur, die länger hält</li>
+          <li>Neuer Typ, gezielte Veränderung</li>
+          <li>Hilft über die Zeit beim Wachsenlassen</li>
+          <li>Bändigt eine unruhige Naturwelle</li>
+          <li>Wirkt jeden Tag gepflegt</li>
+          <li>Lange Freude an der Frisur</li>
+        </ul>
+      </div>
+      <div class="gk b3">
+        <h3>Beratung</h3>
+        <p>Wunsch der Kundin herausfinden und das Frisurenziel gemeinsam festlegen: Haarlänge und Form. Damit die Frisur hält, achtest du auf:</p>
+        <div class="mini-chips"><span>Bewegung</span><span>Volumen</span><span>Stand</span><span>Proportion</span></div>
+        <div class="wichtig">Für die Kundin zählt die Frisur. Die Umformung ist nur das Werkzeug, mit dem du ihren Wunsch umsetzt.</div>
+      </div>
+      <div class="gk b4">
+        <h3>Diagnose</h3>
+        <p>Entscheidet über Vorbehandlung, Präparat, Wickler und das Well-Ergebnis. Du prüfst:</p>
+        <div class="mini-chips"><span>Kopfhaut</span><span>Haarlänge</span><span>Haarstärke</span><span>Haarstruktur</span><span>Frisur-Gewohnheiten</span></div>
+        <div class="wichtig">Der Zustand des Haares zeigt dir, wo die Grenzen des Machbaren liegen.</div>
+      </div>
+      <div class="gk b5">
+        <h3>Behelfe</h3>
+        <ul>
+          <li>Arbeitsplan, Beratung und Diagnose</li>
+          <li>Handtücher, Plastikumhang, Serviette</li>
+          <li>Spitzenpapier, Wickler, Stifte (Haltestäbchen)</li>
+          <li>Stielkamm, Wassersprühflasche</li>
+          <li>Schnurwatte</li>
+          <li>Climazon (Wärmegerät) und Zeitmesser</li>
+        </ul>
+      </div>
+      <div class="gk b6">
+        <h3>Materialien</h3>
+        <ul>
+          <li>Hautschutz</li>
+          <li>Shampoo</li>
+          <li>Vorbehandlung</li>
+          <li>Well-Lotion, passend zum Haar:
+            <ul><li>gefärbt</li><li>normal</li><li>fein</li><li>gesträhnt</li></ul></li>
+          <li>Fixierung:
+            <ul><li>1:1 (zum Mischen mit gleich viel Wasser)</li><li>1:9 (Konzentrat, stark verdünnen)</li><li>gebrauchsfertig</li></ul></li>
+          <li>Abschlussbehandlung und Pflege</li>
+        </ul>
+      </div>
+      <div class="gk b1">
+        <h3>Haarwäsche</h3>
+        <p><strong>Einmal</strong> mit neutralem Shampoo waschen. Nur das Haar sanft durchmassieren, <strong>nicht die Kopfhaut</strong>. So bleibt der natürliche Schutzfilm der Haut großteils erhalten.</p>
+      </div>
+      <div class="gk b2">
+        <h3>Vorbehandlung</h3>
+        <p>Gleicht ungleich poröses Haar aus: Teilchen in verschiedenen Größen setzen sich genau in die passenden Lücken im Haar. Zu viel geht nicht, der Rest löst sich wieder. Die Menge richtet sich nach der Porosität. Gezielt aufgetragen wird die Welle gleichmäßiger.</p>
+        <div class="wichtig">Erkläre der Kundin, dass die Vorbehandlung ihr Haar schützt und ausgleicht, damit das Ergebnis optimal wird.</div>
+      </div>
+    </div>
+    <div class="warnbox"><strong>Kein Wasser zwischendurch!</strong> Haar kann nur etwa 30 bis 50 % seines Eigengewichts an Flüssigkeit aufnehmen, egal ob Wasser, Vorbehandlung, Wellmittel oder Fixierung. Ist es schon mit Wasser vollgesogen, kommt das Präparat nicht mehr richtig hinein.</div>
+    <h3 style="margin-top:6px">Der Ablauf Schritt für Schritt</h3>
     <div class="grid2">
       <ol class="ablauf" id="ablaufListe"></ol>
       <div class="panel" style="position:sticky;top:64px">
@@ -242,11 +328,23 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <header>
       <span class="tag">Teil 3</span>
       <h2>Wicklertechniken: welche, wann und warum?</h2>
-      <p class="muted">Die Technik bestimmt, wo die Locke sitzt und wie sie fällt. Wähle eine Technik.</p>
+      <p class="muted">Zuerst die Regeln, die bei jeder Technik gelten. Danach wählst du eine Technik: Sie bestimmt, wo die Locke sitzt und wie sie fällt.</p>
     </header>
+    <h3>Die Wickelregeln</h3>
+    <p class="muted" style="font-size:14px">Achte auf die Wuchsrichtung: Wird gegen sie gewickelt, kann das Haar direkt an der Follikel-Öffnung abknicken. Und halte die Zugrichtung und den richtigen Winkel zur Kopfhaut ein.</p>
+    <div class="regeln" id="regeln"></div>
+    <div class="panel">
+      <h3>So wickelst du sauber</h3>
+      <ol class="ablauf" id="wickelTipps"></ol>
+    </div>
+    <h3 style="margin-top:6px">Techniken im Überblick</h3>
     <div class="chips" role="group" aria-label="Technik wählen" id="techChips"></div>
     <div class="grid2">
-      <div class="wickelbild"><svg id="techSvg" viewBox="0 0 300 260" role="img" aria-label="Wickelschema"></svg></div>
+      <div class="wickelbild"><svg id="techSvg" viewBox="0 0 300 260" role="img" aria-label="Wickelschema"></svg>
+        <div class="wickel-legende" aria-label="Farben der Wickler">
+          <span><i style="background:#E0698F"></i>sehr dünn</span><span><i style="background:#8E5CC4"></i>dünn</span><span><i style="background:#3F83C9"></i>mittel</span><span><i style="background:#4E9A5E"></i>dick</span><span><i style="background:#E58A2B"></i>sehr dick</span><span><i style="background:#F2C14E"></i>Papillote</span>
+        </div>
+      </div>
       <article class="panel" id="techInfo" aria-live="polite"></article>
     </div>
     <div class="panel gen">
@@ -306,7 +404,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <header>
       <span class="tag">Teil 6</span>
       <h2>Wissens-Check Umformung</h2>
-      <p class="muted">Ab 10 von 12 richtig bekommst du den letzten Stempel für deinen Umformungs-Pass.</p>
+      <p class="muted">Ab 13 von 16 richtig bekommst du den letzten Stempel für deinen Umformungs-Pass.</p>
     </header>
     <div class="score panel"><span class="num" id="scoreOut">0 / 0</span><span class="muted" id="scoreText">Noch keine Antwort.</span><span class="muted" id="scoreSpeicher" style="font-size:12px"></span><button class="btn ghost" id="quizReset">Neu starten</button></div>
     <div class="quiz" id="quizBox"></div>
@@ -438,9 +536,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   // ═══════════ 2 ABLAUF + PUZZLE ═══════════
   var ABLAUF=[
     ['Beratung und Haardiagnose','Haarstruktur, Vorbehandlung (gefärbt, blondiert), Zustand und Wunsch bestimmen das Wellmittel und die Wicklerstärke. Bei unklarer Vorbehandlung: Teststrähne.'],
-    ['Haare waschen, ohne Pflege','Mildes Shampoo, keine Kur und kein Conditioner, die Kopfhaut nicht kräftig massieren. Pflegeschichten bremsen das Wellmittel, eine gereizte Kopfhaut brennt.'],
-    ['Abteilen','Saubere Felder nach der gewählten Technik. Ordnung beim Abteilen ergibt eine gleichmäßige Welle.'],
-    ['Wickeln','Passee so breit wie der Wickler und nicht dicker als sein Durchmesser, gleichmäßige Spannung, Spitzen glatt im Spitzenpapier, Gummi ohne Knick.'],
+    ['Haare waschen, ohne Pflege','Einmal mit neutralem Shampoo, keine Kur und kein Conditioner. Nur das Haar massieren, nicht die Kopfhaut: So bleibt ihr Schutzfilm erhalten. Pflegeschichten bremsen das Wellmittel, eine gereizte Kopfhaut brennt.'],
+    ['Vorbehandlung auftragen','Gleicht poröse Stellen aus, damit die Welle überall gleich wird. Menge nach Porosität. Kein zusätzliches Wasser: Das Haar nimmt nur 30 bis 50 % seines Gewichts an Flüssigkeit auf.'],
+    ['Abteilen','Saubere Felder nach der gewählten Technik, Wuchsrichtung beachten. Ordnung beim Abteilen ergibt eine gleichmäßige Welle.'],
+    ['Wickeln','Passee im rechten Winkel (90°) zur Kopfhaut halten, so breit wie der Wickler lang ist und nicht tiefer als sein Durchmesser. Gleichmäßige Spannung, Spitzen glatt im Spitzenpapier, Gummi ohne Druck.'],
     ['Haut schützen','Schutzcreme am Haaransatz, Watte- oder Schutzband, Handschuhe, Umhang. Das Wellmittel darf nicht auf Haut und Augen laufen.'],
     ['Wellmittel auftragen','Gleichmäßig auf jeden Wickler, ohne Lücken. Ungleich aufgetragen heißt ungleich gewellt.'],
     ['Einwirken und Probewickler','Einwirkzeit nach Herstellerangabe. Einen Wickler halb abwickeln: Zeigt die Strähne eine klare S-Form, ist das Wellmittel fertig.'],
@@ -480,35 +579,100 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   if(window.woerniTippHTML){ var wt=window.woerniTippHTML('umformung'); if(wt) $('#woerni-umformung').innerHTML=wt; }
 
   // ═══════════ 3 WICKLER ═══════════
-  // Schema: Kopf von hinten, Wickler als abgerundete Rechtecke
-  function kopf(innen){ return '<ellipse cx="150" cy="130" rx="105" ry="118" fill="#F6EFDF" stroke="#D9CDAE" stroke-width="2"/><path d="M60 215 Q150 255 240 215" fill="none" stroke="#D9CDAE" stroke-width="2"/>'+innen+'<text x="150" y="254" text-anchor="middle" font-size="10" fill="#9A9188" font-family="Poppins,system-ui">Ansicht von hinten</text>'; }
-  function w(x,y,l,h,rot,farbe){ return '<rect x="'+(x-l/2)+'" y="'+(y-h/2)+'" width="'+l+'" height="'+h+'" rx="'+(h/2)+'" fill="'+(farbe||'#896C32')+'" opacity=".9" transform="rotate('+(rot||0)+' '+x+' '+y+')"/>'; }
+  // Farbige Schemata. Wicklerfarbe = Stärke (wie im Salon: jede Größe hat ihre Farbe).
+  var HAAR='#8A5A36', HAAR2='#6E4528', STRANG='#B98A5E', HAUT='#F2D2B6', HAUTR='#D9B08F', HG='#FBF7EE', OK='#4E7A5E', NEIN='#C44030';
+  var WF=['#E0698F','#8E5CC4','#3F83C9','#4E9A5E','#E58A2B'], PAP='#F2C14E';
+  function wf(h){ return h<=10?WF[0]:h<=12?WF[1]:h<=14?WF[2]:h<=16?WF[3]:WF[4]; }
+  function txt(x,y,t,o){ o=o||{}; return '<text x="'+x+'" y="'+y+'" text-anchor="'+(o.a||'middle')+'" font-size="'+(o.s||10)+'" font-weight="'+(o.w||600)+'" fill="'+(o.f||'#4A4336')+'" font-family="Poppins,system-ui">'+t+'</text>'; }
+  function w(x,y,l,h,rot,farbe){
+    var f=farbe||wf(h), x0=x-l/2, y0=y-h/2;
+    return '<g transform="rotate('+(rot||0)+' '+x+' '+y+')"><rect x="'+x0+'" y="'+y0+'" width="'+l+'" height="'+h+'" rx="'+(h/2)+'" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1"/>'+
+      '<line x1="'+(x0+h/2)+'" y1="'+(y0+2.6)+'" x2="'+(x0+l-h/2)+'" y2="'+(y0+2.6)+'" stroke="#fff" stroke-opacity=".5" stroke-width="1.5" stroke-linecap="round"/>'+
+      '<line x1="'+(x0+2)+'" y1="'+y+'" x2="'+(x0+l-2)+'" y2="'+y+'" stroke="#2F2A24" stroke-opacity=".55" stroke-width="1.1"/></g>';
+  }
+  function strang(x1,y1,x2,y2,f){ return '<path d="M'+x1+' '+y1+' Q'+((x1+x2)/2+3)+' '+((y1+y2)/2)+' '+x2+' '+y2+'" stroke="'+(f||STRANG)+'" stroke-width="3" fill="none" stroke-linecap="round"/>'; }
+  function kopf(innen){
+    return '<rect width="300" height="260" fill="'+HG+'"/><path d="M118 215 L112 260 L188 260 L182 215 Z" fill="'+HAUT+'"/>'+
+      '<ellipse cx="45" cy="140" rx="9" ry="20" fill="'+HAUT+'" stroke="'+HAUTR+'"/><ellipse cx="255" cy="140" rx="9" ry="20" fill="'+HAUT+'" stroke="'+HAUTR+'"/>'+
+      '<ellipse cx="150" cy="128" rx="104" ry="114" fill="'+HAAR+'" stroke="'+HAAR2+'" stroke-width="2"/>'+innen+txt(150,254,'Ansicht von hinten',{w:400,f:'#7A7266'});
+  }
+  function kopfSeite(innen){
+    return '<rect width="300" height="260" fill="'+HG+'"/>'+
+      '<path d="M78 112 Q66 140 72 150 L62 168 Q70 172 72 176 Q68 186 76 190 Q72 202 84 206 Q90 226 122 228 L140 260 L214 260 L206 214 Q236 196 242 150 Q240 110 200 92 Z" fill="'+HAUT+'" stroke="'+HAUTR+'"/>'+
+      '<path d="M76 120 Q80 26 170 22 Q262 26 262 130 Q262 192 226 214 L206 214 Q204 168 168 150 Q118 142 98 128 Q90 140 84 150 Z" fill="'+HAAR+'" stroke="'+HAAR2+'" stroke-width="2"/>'+
+      '<ellipse cx="170" cy="160" rx="11" ry="17" fill="'+HAUT+'" stroke="'+HAUTR+'"/>'+innen+txt(150,254,'Ansicht von der Seite',{w:400,f:'#7A7266'});
+  }
+  function kopfOben(innen){
+    return '<rect width="300" height="260" fill="'+HG+'"/><path d="M140 238 L150 252 L160 238 Z" fill="'+HAUT+'" stroke="'+HAUTR+'"/>'+
+      '<ellipse cx="52" cy="130" rx="8" ry="18" fill="'+HAUT+'" stroke="'+HAUTR+'"/><ellipse cx="248" cy="130" rx="8" ry="18" fill="'+HAUT+'" stroke="'+HAUTR+'"/>'+
+      '<ellipse cx="150" cy="130" rx="96" ry="110" fill="'+HAAR+'" stroke="'+HAAR2+'" stroke-width="2"/>'+innen+txt(150,256,'Ansicht von oben · Gesicht unten',{w:400,f:'#7A7266'});
+  }
+  function spiralW(x,y,len,tilt){
+    var s='<g transform="rotate('+tilt+' '+x+' '+y+')"><rect x="'+(x-5)+'" y="'+(y-len/2)+'" width="10" height="'+len+'" rx="5" fill="'+WF[1]+'" stroke="rgba(0,0,0,.28)"/>';
+    for(var k=y-len/2+4;k<y+len/2-4;k+=6) s+='<line x1="'+(x-6)+'" y1="'+k+'" x2="'+(x+6)+'" y2="'+(k+4)+'" stroke="'+STRANG+'" stroke-width="2.2" stroke-linecap="round"/>';
+    return s+'</g>';
+  }
+  function pap(x,y,l,rot,f){ f=f||PAP; return '<g transform="rotate('+rot+' '+x+' '+y+')"><rect x="'+(x-l/2)+'" y="'+(y-5)+'" width="'+l+'" height="10" rx="5" fill="'+f+'" stroke="rgba(0,0,0,.25)"/><circle cx="'+(x-l/2+5)+'" cy="'+(y-7)+'" r="5" fill="'+f+'" stroke="rgba(0,0,0,.25)"/><circle cx="'+(x+l/2-5)+'" cy="'+(y-7)+'" r="5" fill="'+f+'" stroke="rgba(0,0,0,.25)"/></g>'; }
+
   var TECH=[
-    {id:'fach',n:'Klassische Fachwicklung',bild:function(){var s='';[40,64,88,112,136,160,184].forEach(function(y){s+=w(150,y,44,16);});[70,96,122,148,174].forEach(function(y){s+=w(95,y,40,15,0,'#B08D4A')+w(205,y,40,15,0,'#B08D4A');});return kopf(s);},
+    {id:'fach',n:'Klassische Wickeltechnik',bild:function(){var s='';[40,64,88,112,136,160,184].forEach(function(y){s+=w(150,y,46,16);});[72,98,124,150,176].forEach(function(y){s+=w(95,y,40,14)+w(205,y,40,14);});return kopf(s);},
      wie:'Kopf in Felder abteilen: Mittelbahn vom Oberkopf zum Nacken, dann Seiten und Hinterkopf. Wickler in geraden Reihen, gleich große Passees, jeder Wickler sitzt auf seiner Basis.',
      warum:'Gleichmäßige Welle am ganzen Kopf. Die Grundtechnik für die Prüfung: Hier sieht man jede Ungenauigkeit.',
      achtung:'Saubere, gerade Abteilungen. Sonst bleiben sichtbare Scheitel und Lücken.'},
-    {id:'ziegel',n:'Versetzte Wicklung (Ziegelstein)',bild:function(){var s='';for(var r=0;r<7;r++){var y=44+r*25,off=r%2?22:0;for(var c=-2;c<=2;c++){var x=150+c*44+off;if(Math.abs(x-150)<95-r*2)s+=w(x,y,38,15);}}return kopf(s);},
+    {id:'ziegel',n:'Versetzte Wicklung (Ziegelstein)',bild:function(){var s='';for(var r=0;r<7;r++){var y=44+r*25,off=r%2?22:0;for(var c=-2;c<=2;c++){var x=150+c*44+off;if(Math.pow((x-150)/82,2)+Math.pow((y-128)/100,2)<1)s+=w(x,y,38,14);}}return kopf(s);},
      wie:'Jede Reihe ist um eine halbe Wicklerbreite versetzt, wie Ziegel in einer Mauer.',
      warum:'Keine sichtbaren Abteilungslinien, die Locken fallen natürlicher ineinander. Gut für kurze bis mittellange Haare.',
      achtung:'Dreieckige oder versetzte Abteilungen genau planen, damit kein Feld doppelt oder gar nicht gewickelt ist.'},
-    {id:'spirale',n:'Spiralwicklung',bild:function(){var s='';[70,110,150,190,230].forEach(function(x){for(var k=0;k<5;k++)s+=w(x,60+k*30,26,10,-25,k%2?'#B08D4A':'#896C32');});return kopf(s);},
-     wie:'Die Strähne wird spiralförmig um einen senkrecht hängenden (Spiral-)Wickler gelegt, vom Ansatz zur Spitze oder umgekehrt.',
-     warum:'Gleichmäßige Korkenzieherlocken über die ganze Länge, auch bei langem Haar. Die Locke ist am Ansatz genauso stark wie an der Spitze.',
-     achtung:'Strähne flach und überlappend führen, damit keine Treppen entstehen.'},
-    {id:'strahl',n:'Strahlen- oder Pivotwicklung',bild:function(){var s='';for(var a=-80;a<=80;a+=20){var r=a*Math.PI/180;s+=w(150+Math.sin(r)*60,150-Math.cos(r)*60,34,13,a);s+=w(150+Math.sin(r)*98,150-Math.cos(r)*98,34,13,a,'#B08D4A');}s+='<circle cx="150" cy="150" r="5" fill="#C44030"/>';return kopf(s);},
-     wie:'Die Wickler liegen strahlenförmig um einen Mittelpunkt, zum Beispiel um einen Wirbel oder rund um das Gesicht.',
-     warum:'Gibt der Locke eine Richtung, etwa vom Gesicht weg. Nützlich bei Wirbeln, damit die Locke mit dem Wuchs fällt.',
-     achtung:'Innen sind die Felder schmaler als außen: kleinere Passees nehmen, damit es gleichmäßig wird.'},
-    {id:'doppel',n:'Doppelwicklung (Huckepack)',bild:function(){var s='';[60,95,130,165].forEach(function(y,i){[100,150,200].forEach(function(x){s+=w(x,y,36,14)+w(x,y+16,30,11,0,'#C9A96A');});});return kopf(s);},
-     wie:'Zwei Wickler auf einer Strähne: einer am Ansatz, einer für die Längen und Spitzen.',
-     warum:'Bei langem Haar wird die Strähne auf einem Wickler sonst zu dick. So wellt sich das Haar über die ganze Länge gleichmäßig.',
-     achtung:'Beide Wickler fest, aber ohne Druck aufeinander. Spitzen trotzdem sauber im Spitzenpapier.'},
-    {id:'ansatz',n:'Ansatz- oder Volumenwicklung',bild:function(){var s='';[70,100,130].forEach(function(y){[100,150,200].forEach(function(x){s+=w(x,y,36,14);});});s+='<path d="M95 150 Q100 210 92 240 M150 150 Q152 210 150 240 M205 150 Q200 210 208 240" stroke="#B9AC8C" stroke-width="3" fill="none"/>';return kopf(s);},
+    {id:'flaeche',n:'Flächenwicklung',bild:function(){var s='';
+       [[104,46],[130,34],[158,28],[186,30],[214,40],[238,58]].forEach(function(p){s+=w(p[0],p[1]+8,30,14,90);});
+       [[108,92],[132,104],[120,124]].forEach(function(p){s+=w(p[0],p[1],32,14,-35);});
+       [[222,120],[238,148],[214,176],[232,196],[248,108]].forEach(function(p){s+=w(p[0],p[1],24,10,0);});
+       s+=txt(158,80,'Oberkopf senkrecht',{f:'#fff',s:9})+txt(8,96,'Schläfe schräg →',{a:'start',s:9})+txt(230,226,'Nacken kleiner',{s:9});
+       return kopfSeite(s);},
+     wie:'Oberkopf mit senkrecht gesetzten Wicklern, Schläfenpartie schräg nach hinten, im Nacken kleinere Wickler.',
+     warum:'Der Oberkopf bleibt eher flach und glatt, die Fülle sitzt im Konturenbereich rund ums Gesicht und im Nacken.',
+     achtung:'Im Nacken wirklich kleinere Wickler nehmen, sonst fehlt dort die Spannkraft.'},
+    {id:'gefaedelt',n:'Gefädelte Technik',bild:function(){var s='';[52,100,148,196].forEach(function(y,r){[90,130,170,210].forEach(function(x,i){var xx=x+(r%2?20:0); if(xx>235)return; if((i+r)%2){s+=w(xx,y,24,10);s+=strang(xx-4,y+5,xx-8,y+34)+strang(xx+4,y+5,xx+6,y+34);}else{s+=strang(xx,y-14,xx-2,y+30,'#D2A777')+strang(xx+5,y-14,xx+9,y+28,'#D2A777');}});});return kopf(s);},
+     wie:'Mit kleinen Stylern nur den Ansatz wickeln, die Spitzen bleiben glatt. Dazwischen einzelne Passees ganz ungewickelt lassen.',
+     warum:'Glatte, wegstehende Spitzen neben Ansatzvolumen: eine sehr auffällige Wirkung im Frisurenfinish.',
+     achtung:'Spitzen und ungewickelte Strähnen vor dem Wellmittel schützen, sonst werden sie mitgewellt.'},
+    {id:'stern',n:'Teilwelle sternförmig (Strahlen)',bild:function(){var s='',cx=150,cy=118;for(var a=0;a<360;a+=45){var r=a*Math.PI/180;s+=w(cx+Math.sin(r)*34,cy-Math.cos(r)*34,30,12,a+90);}for(var b=15;b<360;b+=30){var q=b*Math.PI/180;s+=w(cx+Math.sin(q)*72,cy-Math.cos(q)*72,34,15,b+90);}s+='<circle cx="'+cx+'" cy="'+cy+'" r="7" fill="'+NEIN+'" stroke="#fff" stroke-width="2"/>'+txt(cx,cy+108,'● Wirbel',{f:'#fff',s:9});return kopfOben(s);},
+     wie:'Die Wickler liegen wie die Strahlen eines Sterns rund um den Wirbel (oder einen anderen Mittelpunkt).',
+     warum:'Die Locke folgt dem Wuchs des Wirbels und bekommt eine klare Richtung. Als Teilwelle formst du so gezielt eine Partie um.',
+     achtung:'Innen sind die Felder schmaler als außen: innen kleinere Passees und dünnere Wickler nehmen.'},
+    {id:'teil',n:'Teilwelle',bild:function(){var s='';for(var x=60;x<=240;x+=14)s+=strang(x,150+Math.abs(150-x)*0.25,x+3,232-Math.abs(150-x)*0.35,'#A97A4D');[46,70,94,118].forEach(function(y,r){[105,150,195].forEach(function(x){s+=w(x+(r%2?0:0),y,40,16);});});s+='<path d="M80 136 Q150 150 220 136" stroke="#fff" stroke-dasharray="4 4" stroke-width="1.5" fill="none"/>'+txt(150,170,'nur diese Partie',{f:'#fff',s:9});return kopf(s);},
+     wie:'Nur eine bestimmte Partie wird gewickelt, zum Beispiel der Oberkopf oder der Hinterkopf. Der Rest bleibt glatt.',
+     warum:'Betont gezielt einen Bereich der Frisur, etwa für Stütze und Spannkraft am Oberkopf.',
+     achtung:'Die Grenze sauber abteilen und die übrigen Haare gut schützen, damit kein Wellmittel hinläuft.'},
+    {id:'doppel',n:'Doppeldeckerwicklung',bild:function(){var s='';[70,112,154,196].forEach(function(y,r){[95,150,205].forEach(function(x){s+=w(x,y,42,18);s+=w(x+(r%2?-14:14),y-16,30,12);});});s+=txt(150,228,'unten dick · oben 2 Nummern dünner',{f:'#fff',s:9});return kopf(s);},
+     wie:'Auf einen dickeren Wickler wird ein Styler gesetzt, der immer zwei Nummern kleiner ist als der untere (Doppeldecker-Prinzip).',
+     warum:'Es entsteht rund ein Drittel mehr Fülle und Volumen.',
+     achtung:'Immer genau zwei Nummern Unterschied. Der obere Wickler liegt fest auf, ohne den unteren einzudrücken.'},
+    {id:'zwilling',n:'Zwillingswicklung',bild:function(){var s='';[90,130,170,210].forEach(function(x){s+=strang(x,44,x,180);s+=w(x,108,28,11)+w(x,176,38,18);});s+='<path d="M70 40 L230 40" stroke="#fff" stroke-dasharray="4 4" stroke-width="1.5"/>'+txt(150,34,'Ansatz',{f:'#fff',s:9})+txt(150,140,'Mitte: klein',{f:'#fff',s:9})+txt(150,214,'Spitze: groß',{f:'#fff',s:9});return kopf(s);},
+     wie:'Zwei Wickler auf ein Passee: In der Mitte der Strähne sitzt ein kleinerer Wickler, in den Spitzen ein großer.',
+     warum:'Bei langem Haar wird die Strähne auf einem einzigen Wickler zu dick. Mit zwei Wicklern wellt sie sich über die ganze Länge.',
+     achtung:'Beide Wickler fest, aber ohne Druck. Spitzen trotzdem sauber im Spitzenpapier.'},
+    {id:'spirale',n:'Spiralwicklung',bild:function(){var s='';[196,150,104,58].forEach(function(y,r){[78,114,150,186,222].forEach(function(x){if(r===3&&(x<90||x>210))return;s+=spiralW(x,y,40,r%2?14:-14);});});s+='<path d="M150 246 L150 226" stroke="'+NEIN+'" stroke-width="2.5" marker-end="url(#pf)"/>'+'<defs><marker id="pf" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="'+NEIN+'"/></marker></defs>'+txt(196,236,'Start im Nacken',{f:'#fff',s:9});return kopf(s);},
+     wie:'Im Nacken beginnen, ca. 2 cm breite Passees abteilen. Wickler senkrecht halten und die Strähne von der Spitze zur Wurzel am Wickler aufkordeln. Gummi von unten nach oben schließen. Eine Reihe nach links, die nächste nach rechts wickeln.',
+     warum:'Gleichmäßige Korkenzieherlocken über die ganze Länge, auch bei langem Haar.',
+     achtung:'Sehr zeitaufwendig: am besten zu zweit wickeln. Strähne flach und überlappend führen, damit keine Treppen entstehen.'},
+    {id:'papillote',n:'Papillotenwickler',bild:function(){var s='';[[95,60,-30],[150,48,0],[205,60,30],[80,104,-60],[128,98,15],[175,100,-20],[222,108,60],[100,148,40],[150,146,-10],[200,150,-45],[118,192,-25],[180,192,25],[150,222,80]].forEach(function(p,i){s+=pap(p[0],p[1],48,p[2],i%4===3?'#F29A6B':PAP);});return kopf(s);},
+     wie:'Biegsame Schaumstoff-Wickler (Papilloten): Die Strähne aufwickeln und die Enden einfach umbiegen, ganz ohne Gummi.',
+     warum:'Weiche, natürliche Locken in verschiedenen Richtungen, auch für längeres Haar. Kein Gummi, also keine Druckstellen.',
+     achtung:'Die Enden fest umbiegen, damit die Papillote nicht aufgeht. Auch hier die Spitzen glatt einlegen.'},
+    {id:'trapez',n:'Trapezwicklung',bild:function(){var s='<path d="M98 150 L202 150 L232 222 L68 222 Z" fill="none" stroke="#fff" stroke-dasharray="5 4" stroke-width="1.6"/>';[[164,[124,176]],[186,[106,150,194]],[208,[92,128,172,208]]].forEach(function(r){r[1].forEach(function(x){s+=w(x,r[0],34,14);});});for(var x=80;x<=220;x+=16)s+=strang(x,30+Math.abs(150-x)*0.3,x+2,146,'#A97A4D');s+=txt(150,140,'Fülle im Nacken',{f:'#fff',s:9});return kopf(s);},
+     wie:'Im Nacken wird ein Feld in Trapezform abgeteilt, das nach unten breiter wird, und nur dieses Feld gewickelt.',
+     warum:'Gibt Fülle im Nacken.',
+     achtung:'Locken in den unteren Längen klappen nur, wenn das Haar dort fast gleich lang ist.'},
+    {id:'fisch',n:'Fischgrätenwicklung',bild:function(){var s='<path d="M150 22 L150 232" stroke="#fff" stroke-dasharray="4 4" stroke-width="1.4"/>';[44,72,100,128,156,184].forEach(function(y,i){s+=w(120,y+8,46,14,-28)+w(180,y+8,46,14,28);});return kopf(s);},
+     wie:'Die Wickler liegen schräg links und rechts einer Mittellinie, wie die Gräten eines Fisches.',
+     warum:'Kreative Technik mit weichem, natürlichem Fall. Besonders gut bei langem Deckhaar, auch als Teilwelle möglich.',
+     achtung:'Auf beiden Seiten denselben Winkel halten, sonst fällt die Frisur ungleich.'},
+    {id:'ansatz',n:'Ansatz- oder Volumenwicklung',bild:function(){var s='';[100,150,200].forEach(function(x){s+=strang(x-4,140,x-8,236)+strang(x+4,140,x+8,236);});[70,100,130].forEach(function(y){[100,150,200].forEach(function(x){s+=w(x,y,36,16);});});return kopf(s);},
      wie:'Nur der Ansatzbereich wird gewickelt, die Längen bleiben draußen oder werden geschützt.',
      warum:'Mehr Volumen und Stand am Ansatz, ohne dass die Längen lockig werden. Auch für den Nachwuchs bei einer früheren Dauerwelle.',
      achtung:'Längen mit Pflege oder Folie schützen, damit sie kein Wellmittel abbekommen.'},
-    {id:'spitze',n:'Spitzenwicklung',bild:function(){var s='';[150,180,205].forEach(function(y){[95,150,205].forEach(function(x){s+=w(x,y,34,13,0,'#B08D4A');});});s+='<path d="M95 40 Q98 100 95 140 M150 40 Q150 100 150 140 M205 40 Q202 100 205 140" stroke="#B9AC8C" stroke-width="3" fill="none"/>';return kopf(s);},
+    {id:'spitze',n:'Spitzenwicklung',bild:function(){var s='';[95,150,205].forEach(function(x){s+=strang(x-4,34,x-6,140)+strang(x+4,34,x+6,140);});[150,180,208].forEach(function(y){[95,150,205].forEach(function(x){s+=w(x,y,34,14);});});return kopf(s);},
      wie:'Nur Längen und Spitzen werden gewickelt, der Ansatz bleibt glatt.',
      warum:'Schwung und Bewegung in den Spitzen, ein natürlicher Look. Wächst ohne sichtbare Kante heraus.',
      achtung:'Gleiche Höhe für alle Wickler wählen, sonst wird die Welle stufig.'}
@@ -517,11 +681,50 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function techZeigen(){
     $('#techChips').innerHTML=TECH.map(function(t){return '<button type="button" class="chip" data-id="'+t.id+'" aria-pressed="'+(t===tech)+'">'+esc(t.n)+'</button>';}).join('');
     $('#techSvg').innerHTML=tech.bild();
+    $('#techSvg').setAttribute('aria-label','Wickelschema: '+tech.n);
     $('#techInfo').innerHTML='<h3>'+esc(tech.n)+'</h3><dl class="facts"><dt>So geht’s</dt><dd>'+esc(tech.wie)+'</dd><dt>Warum</dt><dd>'+esc(tech.warum)+'</dd><dt>Achtung</dt><dd>'+esc(tech.achtung)+'</dd></dl>'+
-      '<div class="tip"><strong>Für alle Techniken:</strong> Passee nicht breiter als der Wickler und nicht dicker als sein Durchmesser. So wellt sich jedes Haar gleich stark.</div>';
+      '<div class="tip"><strong>Für alle Techniken:</strong> Passee nicht breiter als der Wickler lang ist und nicht tiefer als sein Durchmesser. So wellt sich jedes Haar gleich stark.</div>';
   }
   $('#techChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;tech=TECH.filter(function(t){return t.id===b.dataset.id;})[0];techZeigen();});
   techZeigen();
+
+  // ── Wickelregeln (farbige Skizzen, Ansicht im Schnitt) ──
+  var KH='<path d="M0 150 L0 132 Q120 98 240 132 L240 150 Z" fill="'+HAUT+'" stroke="'+HAUTR+'"/>';      // Kopfhaut im Schnitt
+  function strich(x1,y1,x2,y2){ return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#6B6455" stroke-width="1.4" stroke-dasharray="5 4"/>'; }
+  function rund(cx,cy,r,f){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+f+'" stroke="rgba(0,0,0,.3)"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*0.5)+'" fill="#fff" opacity=".8"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*0.2)+'" fill="'+f+'"/>'; }
+  function pfeil(x1,y1,x2,y2,f){ f=f||'#211D17'; return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+f+'" stroke-width="1.4" marker-start="url(#rp)" marker-end="url(#rp)"/>'; }
+  var DEF='<defs><marker id="rp" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#211D17"/></marker></defs>';
+  function haken(x,y,ok){ return '<circle cx="'+x+'" cy="'+y+'" r="10" fill="'+(ok?OK:NEIN)+'"/>'+txt(x,y+4,ok?'✓':'✗',{f:'#fff',s:12,w:700}); }
+  var REGELN=[
+    ['Winkel und Zugrichtung','Das Passee im rechten Winkel (90°) zur Kopfhaut halten und in diese Richtung wickeln.',
+      KH+'<path d="M102 117 L138 117 L132 54 L108 54 Z" fill="'+HAAR+'"/>'+rund(120,44,20,WF[2])+'<path d="M102 117 L102 104 L114 104" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+txt(84,104,'90°',{f:NEIN,s:12,w:700})+
+      [[40,128,-20],[200,128,20]].map(function(p){return '<g transform="rotate('+p[2]+' '+p[0]+' '+p[1]+')"><line x1="'+p[0]+'" y1="'+p[1]+'" x2="'+p[0]+'" y2="'+(p[1]-40)+'" stroke="'+HAAR+'" stroke-width="5" stroke-linecap="round"/></g>';}).join('')],
+    ['A · Wickler auf der Abteilungslinie','Der Wickler sitzt genau über seiner Basis, zwischen den beiden Abteilungslinien.',
+      KH+strich(100,8,100,120)+strich(140,8,140,120)+'<path d="M100 117 L140 117 L136 62 L104 62 Z" fill="'+HAAR+'"/>'+rund(120,46,20,WF[2])+txt(120,142,'Basis',{s:9})],
+    ['B · Wickler hinter der Abteilungslinie','Der Wickler sitzt hinter seiner Basis. Der Haaransatz bleibt ca. 1 bis 2 cm glatt.',
+      KH+strich(80,8,80,124)+strich(120,8,120,118)+'<path d="M80 121 L120 117 L170 62 L148 52 Z" fill="'+HAAR+'"/>'+rund(170,46,20,WF[2])+
+      '<path d="M76 128 Q100 132 124 124" stroke="'+NEIN+'" stroke-width="2.2" fill="none"/>'+txt(100,144,'1–2 cm glatt',{f:NEIN,s:10,w:700})],
+    ['C · Passeebreite = Durchmesser','Das Passee ist so tief abgeteilt, wie der Wickler dick ist (Durchmesser).',
+      DEF+KH+strich(98,8,98,120)+strich(142,8,142,120)+'<path d="M98 117 L142 117 L140 66 L100 66 Z" fill="'+HAAR+'"/>'+rund(120,44,22,WF[3])+pfeil(98,80,142,80,'#fff')+pfeil(98,128,142,128)],
+    ['D · Passeelänge = Wicklerlänge','Das Passee ist genau so breit, wie der Wickler lang ist.',
+      DEF+KH+'<path d="M70 112 L170 112 L156 56 L84 56 Z" fill="'+HAAR+'"/>'+w(120,46,110,22,0,WF[3])+pfeil(65,78,65,122)+pfeil(175,78,175,122)+strich(65,22,65,70)+strich(175,22,175,70)+pfeil(65,16,175,16)],
+    ['E · Parallel wickeln','Den Wickler parallel zur Abteilungslinie aufrollen, ohne das Haar zu verziehen. So entstehen keine Schlaufen.',
+      KH+'<path d="M20 120 L100 120 L94 72 L26 72 Z" fill="'+HAAR+'"/>'+w(60,62,92,18,0,WF[2])+haken(60,30,true)+
+      '<path d="M140 120 L220 120 L214 80 L146 70 Z" fill="'+HAAR+'"/>'+w(180,62,92,18,-14,WF[2])+'<path d="M206 80 q14 -2 10 12 q-6 8 -12 -2" stroke="'+HAAR2+'" stroke-width="3" fill="none"/>'+haken(180,22,false)],
+    ['F · Gummi ohne Druck','Den Gummi sorgfältig befestigen: Er liegt auf dem gewickelten Haar und drückt nicht in den Ansatz. Sonst entstehen Druckstellen und das Haar kann dort abbrechen.',
+      KH+'<path d="M40 110 L80 110 L78 84 L42 84 Z" fill="'+HAAR+'"/>'+rund(60,72,22,WF[2])+'<path d="M38 64 Q60 44 82 64" stroke="#2F2A24" stroke-width="3" fill="none"/>'+haken(60,26,true)+
+      '<path d="M160 112 L200 112 L198 86 L162 86 Z" fill="'+HAAR+'"/>'+rund(180,72,22,WF[2])+'<path d="M156 66 Q180 46 204 66 L200 112 L160 112 Z" stroke="#2F2A24" stroke-width="3" fill="none"/>'+'<circle cx="160" cy="112" r="6" fill="none" stroke="'+NEIN+'" stroke-width="2"/><circle cx="200" cy="112" r="6" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+haken(180,26,false)]
+  ];
+  $('#regeln').innerHTML=REGELN.map(function(r){return '<figure class="regel" style="margin:0"><svg viewBox="0 0 240 150" role="img" aria-label="'+esc(r[0])+'">'+'<rect width="240" height="150" fill="'+HG+'"/>'+r[2]+'</svg><p><b>'+esc(r[0])+'</b><br>'+esc(r[1])+'</p></figure>';}).join('');
+  var WTIPPS=[
+    ['Passee abteilen','So breit und tief wie der Wickler, straff und sauber durchkämmen und senkrecht (90°) zum Kopf halten.'],
+    ['Zickzack geht auch','Eine Zickzack-Abteilung ist möglich (keine sichtbaren Scheitel). Entscheidend ist, wie du den Wickler führst.'],
+    ['Spitzen rund um den Wickler','Die Spitzen müssen sauber um den Wickler gedreht werden, damit sie nicht abknicken. Spitzenpapier erleichtert das Wickeln und verteilt das Haar gleichmäßig.'],
+    ['Gleichmäßig aufrollen','Ohne seitliches Verkanten aufrollen: Es bilden sich keine Schlaufen und der Ansatz wellt gut mit.'],
+    ['Gummi locker auflegen','Die Gummilasche sitzt ohne Druck auf dem gewickelten Haar.'],
+    ['Stäbchen einstecken','Plastiknadeln oder Haltestäbchen stabilisieren den Wickler und nehmen den Druck des Gummis vom Haar.']
+  ];
+  $('#wickelTipps').innerHTML=WTIPPS.map(function(t){return '<li><div><b>'+esc(t[0])+'</b><span style="font-size:13px;color:var(--muted)">'+esc(t[1])+'</span></div></li>';}).join('');
 
   // Locken-Generator
   var genBenutzt=0;
@@ -620,7 +823,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     ['Woran liegt es, wenn Spitzen wie Haken abstehen?','Sie wurden beim Wickeln umgeknickt',['Zu viel Fixierung','Sie wurden beim Wickeln umgeknickt','Das Haar war zu kurz'],'Spitzen gehören glatt ins Spitzenpapier. Sonst wird der Knick mitfixiert.'],
     ['Was ist bei Metallsalzen im Haar gefährlich?','Sie reagieren heftig mit Wasserstoffperoxid',['Sie machen die Welle zu schwach','Sie reagieren heftig mit Wasserstoffperoxid','Nichts, sie sind ungefährlich'],'Das Haar kann heiß werden, sich verfärben und abbrechen. Bei Verdacht: Teststrähne.'],
     ['Was haben Dauerwelle und Thio-Glättung gemeinsam?','Dieselbe Chemie: Brücken öffnen und in neuer Form schließen',['Beide brauchen Wickler','Dieselbe Chemie: Brücken öffnen und in neuer Form schließen','Beide halten nur bis zur nächsten Wäsche'],'Nur die Form ist anders: Bei der Glättung wird das Haar glatt gehalten statt gewickelt.'],
-    ['Darf man auf Hydroxid-geglättetes Haar eine Thio-Behandlung machen?','Nein, das Haar kann abbrechen',['Ja, ohne Probleme','Nein, das Haar kann abbrechen','Nur mit dickeren Wicklern'],'Hydroxid- und Thio-Produkte vertragen sich nicht. Darum ist die Haardiagnose mit Vorbehandlung so wichtig.']
+    ['Darf man auf Hydroxid-geglättetes Haar eine Thio-Behandlung machen?','Nein, das Haar kann abbrechen',['Ja, ohne Probleme','Nein, das Haar kann abbrechen','Nur mit dickeren Wicklern'],'Hydroxid- und Thio-Produkte vertragen sich nicht. Darum ist die Haardiagnose mit Vorbehandlung so wichtig.'],
+    ['Wie viel Flüssigkeit kann Haar ungefähr aufnehmen?','30 bis 50 % seines Eigengewichts',['Doppelt so viel wie sein Gewicht','30 bis 50 % seines Eigengewichts','Nur 5 %'],'Darum kein Wasser zwischendurch: Ist das Haar schon voll Wasser, kommen Vorbehandlung, Wellmittel und Fixierung nicht mehr richtig hinein.'],
+    ['Doppeldeckerwicklung: Wie groß ist der obere Styler?','Zwei Nummern kleiner als der untere',['Gleich groß wie der untere','Zwei Nummern kleiner als der untere','Zwei Nummern größer als der untere'],'Das ist das Doppeldecker-Prinzip. Es bringt rund ein Drittel mehr Fülle und Volumen.'],
+    ['Wo beginnst du bei der Spiralwicklung?','Im Nacken',['Am Oberkopf','An der Stirn','Im Nacken'],'Im Nacken mit ca. 2 cm breiten Passees beginnen, Wickler senkrecht halten, Reihe für Reihe abwechselnd nach links und rechts.'],
+    ['Wickler sitzt hinter der Abteilungslinie. Was passiert am Ansatz?','Er bleibt ca. 1 bis 2 cm glatt',['Er wird besonders lockig','Er bleibt ca. 1 bis 2 cm glatt','Das Haar bricht sofort ab'],'Sitzt der Wickler auf der Abteilungslinie, wellt der Ansatz mit. Sitzt er dahinter, bleibt der Ansatz flacher.']
   ];
   var antworten={};
   QUIZ.forEach(function(q){ q[2]=mische(q[2]); });
@@ -634,10 +841,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     }).join('');
     var n=Object.keys(antworten).length, ok=Object.keys(antworten).filter(function(k){return antworten[k]===QUIZ[k][1];}).length;
     $('#scoreOut').textContent=ok+' / '+n;
-    $('#scoreText').textContent=n<QUIZ.length?(n?'Weiter so!':'Noch keine Antwort.'):(ok>=10?'🏆 Stark! Stempel verdient.':'Fertig. Ab 10 richtigen gibt es den Stempel. Neu starten?');
+    $('#scoreText').textContent=n<QUIZ.length?(n?'Weiter so!':'Noch keine Antwort.'):(ok>=13?'🏆 Stark! Stempel verdient.':'Fertig. Ab 13 richtigen gibt es den Stempel. Neu starten?');
     if(n===QUIZ.length&&!quizZeigen.gespeichert){
       quizZeigen.gespeichert=true;
-      if(ok>=10) stempeln('quiz');
+      if(ok>=13) stempeln('quiz');
       if(window.ghdQuizSpeichern) window.ghdQuizSpeichern('Dauerwelle & Umformung',ok,QUIZ.length,'scoreSpeicher');
     }
   }
