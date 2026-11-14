@@ -75,6 +75,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .labor svg{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:8px}
 .labor .schritt-text h3{margin-bottom:4px}
 .labor .schritt-text p{color:var(--muted);font-size:14px}
+.fachwoerter{font-size:12.5px;line-height:1.5;color:var(--muted);background:var(--surface-2);border-radius:6px;padding:8px 10px;max-width:none}
+.fachwoerter em{font-style:normal;font-weight:600;color:var(--ink)}
 .labor .formel{font:600 13px var(--mono);color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:6px 10px;display:inline-block;margin-top:6px}
 .punkte{display:flex;gap:6px;justify-content:center}
 .punkte i{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .3s}
@@ -197,17 +199,18 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <div class="labor">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
         <span class="tag" id="labSchritt">Schritt 1 von 5</span>
-        <div class="legende"><span class="l-hb">Wasserstoffbrücke</span><span class="l-salz">Salzbrücke</span><span class="l-ss">Disulfidbrücke (S–S)</span></div>
+        <div class="legende"><span class="l-hb">Wasserstoffbrücke</span><span class="l-salz">Salzbrücke</span><span class="l-ss">Schwefelbrücke</span></div>
       </div>
       <svg id="labSvg" viewBox="0 0 360 300" role="img" aria-label="Links die Strähne, rechts unter der Lupe zwei Keratin-Ketten mit Brücken"></svg>
       <div class="schritt-text" id="labText" aria-live="polite"></div>
+      <p class="fachwoerter"><strong>Fachwörter für Schule und Prüfung:</strong> Schwefelbrücke = <em>Disulfidbrücke</em> (kurz S–S, S steht für Schwefel) · offenes Schwefel-Ende = <em>SH-Gruppe</em> (H steht für Wasserstoff) · Brücken öffnen = <em>Reduktion</em> · Brücken schließen = <em>Oxidation</em></p>
       <div class="punkte" id="labPunkte"></div>
       <div class="knoepfe"><button class="btn ghost" id="labZurueck">◀ Zurück</button><button class="btn" id="labWeiter">Weiter ▶</button></div>
     </div>
     <div class="bruecken-karten">
       <div class="bk hb"><b>Wasserstoffbrücken</b>Ganz viele, aber schwach.<div class="lös">Lösen sich durch <strong>Wasser</strong> und schließen sich beim Trocknen. Darum hält eine Föhnfrisur oder Wasserwelle nur bis zur nächsten Wäsche.</div></div>
       <div class="bk salz"><b>Salzbrücken</b>Mittelstark.<div class="lös">Reagieren auf den <strong>pH-Wert</strong>. Alkalische Produkte lockern sie, saure schließen sie wieder.</div></div>
-      <div class="bk ss"><b>Disulfidbrücken</b>Wenige, aber sehr stark.<div class="lös">Lösen sich nur <strong>chemisch</strong>: durch das Wellmittel. Erst wenn sie in neuer Form wieder geschlossen sind, ist die Umformung dauerhaft.</div></div>
+      <div class="bk ss"><b>Schwefelbrücken</b>Wenige, aber sehr stark. Fachwort: Disulfidbrücken.<div class="lös">Lösen sich nur <strong>chemisch</strong>: durch das Wellmittel. Erst wenn sie in neuer Form wieder geschlossen sind, ist die Umformung dauerhaft.</div></div>
     </div>
   </section>
 
@@ -287,7 +290,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     </div>
     <h3 style="margin-top:6px">Drei Arten der Glättung</h3>
     <div class="arten">
-      <div class="art"><span class="haelt">dauerhaft · bis zum Nachwuchs</span><b>Thio-Glättung</b>Arbeitet wie die Dauerwelle mit Thioglykolat und anschließender Fixierung. Für welliges bis lockiges Haar. Beim Nachbehandeln nur den Nachwuchs glätten.</div>
+      <div class="art"><span class="haelt">dauerhaft · bis zum Nachwuchs</span><b>Thio-Glättung</b>Arbeitet wie die Dauerwelle: Derselbe Wirkstoff (Thioglykolat) öffnet die Schwefelbrücken, danach kommt die Fixierung. Für welliges bis lockiges Haar. Beim Nachbehandeln nur den Nachwuchs glätten.</div>
       <div class="art"><span class="haelt">dauerhaft · sehr stark</span><b>Alkalische Glättung (Hydroxid)</b>Für sehr krauses Haar. Verändert die Brücken so, dass sie sich nicht mehr zurückbilden. Sehr aggressiv für Haar und Kopfhaut.<div class="warnbox" style="margin-top:4px">Nie Thio- und Hydroxid-Produkte auf demselben Haar mischen oder nacheinander anwenden: Das Haar kann abbrechen.</div></div>
       <div class="art"><span class="haelt">hält einige Monate · wäscht sich aus</span><b>Keratin- bzw. Glättungsbehandlung</b>Macht das Haar glatter und glänzender, wird mit dem Glätteisen versiegelt und lässt mit der Zeit nach.<div class="warnbox" style="margin-top:4px">Nur Produkte ohne Formaldehyd verwenden, gut lüften und die Gebrauchsanweisung genau einhalten.</div></div>
     </div>
@@ -337,10 +340,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   var T6=[0.06,0.18,0.30,0.42,0.62,0.86], TYP=['hb','ss','salz','ss','hb','hb'];
   var FARBE={hb:'#3F83C9',salz:'#D9822B',ss:'#896C32'}, ROT='#C44030', KETTE='#9C8A63';
   var SCHRITTE=[
-    {t:'1 · Ausgangszustand: glattes Haar',p:'Unter der Lupe: zwei Keratin-Ketten, verbunden durch Brücken. Die starken Disulfidbrücken (gold) halten das Haar in seiner Form, hier glatt.',f:'Disulfidbrücke = Cystin (S–S)',b:0,zust:'zu'},
-    {t:'2 · Wellmittel: Brücken öffnen (Reduktion)',p:'Das Wellmittel knackt die Disulfidbrücken. Aus jeder S–S-Brücke werden zwei offene Enden (rot). Das Haar ist jetzt formbar, sieht aber noch glatt aus.',f:'S–S + Wellmittel → SH + HS',b:0,zust:'offen'},
+    {t:'1 · Ausgangszustand: glattes Haar',p:'Unter der Lupe: zwei Keratin-Ketten, verbunden durch Brücken. Die starken Schwefelbrücken (gold) halten das Haar in seiner Form, hier glatt.',f:'Gold = Schwefelbrücke',b:0,zust:'zu'},
+    {t:'2 · Wellmittel öffnet die Brücken',p:'Das Wellmittel knackt die Schwefelbrücken. Aus jeder Brücke werden zwei offene Schwefel-Enden (rot). Das Haar ist jetzt formbar, sieht aber noch glatt aus. Das Fachwort für dieses Öffnen ist Reduktion.',f:'Schwefelbrücke + Wellmittel → 2 offene Enden',b:0,zust:'offen'},
     {t:'3 · Wickeln: die Ketten biegen sich',p:'Das Haar liegt um den Wickler, die Ketten biegen sich mit. Die äußere Kette macht den größeren Bogen. Darum stehen die offenen Enden nicht mehr ihrem alten Partner gegenüber.',f:'Die Form gibt der Wickler vor',b:1,zust:'gewickelt'},
-    {t:'4 · Fixierung: neue Brücken (Oxidation)',p:'Die Fixierung schließt die Schwefel-Enden wieder zu Disulfidbrücken, aber mit neuen Partnern, genau in der gebogenen Form.',f:'SH + HS + Fixierung → S–S (neu)',b:1,zust:'fixiert'},
+    {t:'4 · Fixierung schließt neue Brücken',p:'Die Fixierung verbindet die offenen Schwefel-Enden wieder zu Schwefelbrücken, aber mit neuen Partnern, genau in der gebogenen Form. Das Fachwort für dieses Schließen ist Oxidation.',f:'offene Enden + Fixierung → neue Schwefelbrücke',b:1,zust:'fixiert'},
     {t:'5 · Wickler raus: die Locke bleibt',p:'Der Wickler ist weg, aber die neuen Brücken halten die Biegung fest. Das ist die Locke. Sie bleibt, bis das Haar herauswächst.',f:'Neue Brücken = neue Form',b:1,zust:'fertig'}
   ];
   var lab=0, biegung=0, anim=null;
@@ -389,13 +392,13 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       var typ=TYP[i], a=punkt(0,t,b), alt=punkt(1,t,b), pt=partner(i), np=pt===null?null:punkt(1,pt,b);
       if(neu&&!np&&b>.5) return;   // am Ende des inneren Bogens kein Gegenüber
       if(typ==='ss'){
-        if(z==='zu') g+=linie(a,alt,FARBE.ss,5)+txt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'S–S',FARBE.ss,11,'middle',true);
-        else if(neu) g+=linie(a,np,FARBE.ss,5)+(b<.5?txt((a[0]+np[0])/2,(a[1]+np[1])/2-6,'S–S',FARBE.ss,11,'middle',true):'');
+        if(z==='zu') g+=linie(a,alt,FARBE.ss,5)+txt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'Brücke',FARBE.ss,10,'middle',true);
+        else if(neu) g+=linie(a,np,FARBE.ss,5)+(b<.5?txt((a[0]+np[0])/2,(a[1]+np[1])/2-6,'Brücke',FARBE.ss,10,'middle',true):'');
         else { // offen: zwei kurze rote Enden, jeweils an der eigenen Kette
           var ri=[alt[0]-a[0],alt[1]-a[1]], len=Math.hypot(ri[0],ri[1])||1; ri=[ri[0]/len*13,ri[1]/len*13];
           g+=linie(a,[a[0]+ri[0],a[1]+ri[1]],ROT,4)+linie(alt,[alt[0]-ri[0],alt[1]-ri[1]],ROT,4);
-          var pe=[ri[1]/13*9,-ri[0]/13*9];   // quer zum Ende, damit sich die Schrift nicht überlappt
-          g+=txt(a[0]+ri[0]*.6+pe[0],a[1]+ri[1]*.6+pe[1]+3,'SH',ROT,10,'middle',true)+txt(alt[0]-ri[0]*.6+pe[0],alt[1]-ri[1]*.6+pe[1]+3,'HS',ROT,10,'middle',true);
+          // ein Wort pro geöffneter Brücke, mittig zwischen den beiden Enden
+          if(b<.5) g+=txt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'offen',ROT,10,'middle',true);
         }
       } else {
         var offen=(z==='offen'||z==='gewickelt'||(z==='fixiert'&&typ==='hb'));
@@ -409,8 +412,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     if(z==='offen') g+=txt(326,60,'⚡','#C44030',20)+txt(326,76,'Wellmittel','#C44030',10,'middle',true);
     if(z==='fixiert') g+=txt(326,60,'✚','#2F7D55',20)+txt(326,76,'Fixierung','#2F7D55',10,'middle',true);
     if(z==='fertig') g+=txt(326,60,'✓','#2F7D55',22)+txt(326,76,'Form bleibt','#2F7D55',10,'middle',true);
-    if(neu&&b>.5) g+=txt(227,286,'gold = neue S–S-Brücken','#896C32',10,'middle',true);
-    if(z==='gewickelt') g+=txt(227,286,'rote Enden: alte Partner passen nicht mehr','#C44030',10,'middle',true);
+    if(neu&&b>.5) g+=txt(227,286,'gold = neue Schwefelbrücken','#896C32',10,'middle',true);
+    if(z==='gewickelt') g+=txt(227,286,'rot = offene Enden, alte Partner passen nicht mehr','#C44030',9.5,'middle',true);
     $('#labSvg').innerHTML=g;
   }
   function labSchritt(){
@@ -605,9 +608,9 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 
   // ═══════════ 6 QUIZ ═══════════
   var QUIZ=[
-    ['Welche Brücken öffnet das Wellmittel?','Die Disulfidbrücken',['Die Wasserstoffbrücken','Die Disulfidbrücken','Gar keine, es macht das Haar nur weich'],'Wasserstoffbrücken lösen sich schon durch Wasser. Für eine dauerhafte Umformung müssen die starken Disulfidbrücken chemisch geöffnet werden.'],
-    ['Wie heißt der chemische Vorgang beim Wellmittel?','Reduktion',['Oxidation','Reduktion','Neutralisation'],'Das Wellmittel reduziert: Es spaltet die S–S-Brücke in zwei SH-Gruppen.'],
-    ['Was macht die Fixierung?','Sie schließt die Brücken in der neuen Form (Oxidation)',['Sie färbt das Haar','Sie schließt die Brücken in der neuen Form (Oxidation)','Sie öffnet die Schuppenschicht'],'Die Fixierung mit verdünntem Wasserstoffperoxid oxidiert die SH-Gruppen wieder zu S–S-Brücken.'],
+    ['Welche Brücken öffnet das Wellmittel?','Die Schwefelbrücken (Disulfidbrücken)',['Die Wasserstoffbrücken','Die Schwefelbrücken (Disulfidbrücken)','Gar keine, es macht das Haar nur weich'],'Wasserstoffbrücken lösen sich schon durch Wasser. Für eine dauerhafte Umformung müssen die starken Schwefelbrücken chemisch geöffnet werden.'],
+    ['Wie heißt der chemische Vorgang beim Wellmittel?','Reduktion',['Oxidation','Reduktion','Neutralisation'],'Reduktion heißt hier: Das Wellmittel öffnet die Schwefelbrücke, es entstehen zwei offene Schwefel-Enden (Fachwort: SH-Gruppen).'],
+    ['Was macht die Fixierung?','Sie schließt die Brücken in der neuen Form (Oxidation)',['Sie färbt das Haar','Sie schließt die Brücken in der neuen Form (Oxidation)','Sie öffnet die Schuppenschicht'],'Die Fixierung mit verdünntem Wasserstoffperoxid verbindet die offenen Schwefel-Enden wieder zu Schwefelbrücken. Das Fachwort dafür ist Oxidation.'],
     ['Warum wäscht du vor der Dauerwelle ohne Conditioner?','Pflegeschichten bremsen das Wellmittel',['Damit das Haar besser riecht','Pflegeschichten bremsen das Wellmittel','Conditioner macht die Welle zu stark'],'Pflegefilme legen sich um das Haar und lassen das Wellmittel schlechter eindringen. Die Welle wird ungleichmäßig oder schwach.'],
     ['Wie prüfst du, ob das Wellmittel lange genug eingewirkt hat?','Probewickler halb abwickeln und auf eine klare S-Form achten',['Nach Gefühl','Probewickler halb abwickeln und auf eine klare S-Form achten','Wenn die Kundin sagt, dass es brennt'],'Die S-Form der Strähne zeigt, dass genug Brücken geöffnet sind. Danach sofort zwischenspülen.'],
     ['Warum tupfst du nach dem Zwischenspülen gut ab?','Sonst wird die Fixierung verdünnt',['Damit die Kundin nicht friert','Sonst wird die Fixierung verdünnt','Damit das Haar schneller trocknet'],'Zu viel Wasser im Haar verdünnt die Fixierung, sie schließt zu wenige Brücken, die Welle hält schlechter.'],
