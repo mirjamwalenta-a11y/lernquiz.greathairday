@@ -1009,7 +1009,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     {t:'Wickler an die Spitzen, Spitzen eindrehen',p:'Setz den Wickler quer an die Spitzen und dreh sie einmal ganz um ihn herum. Nichts darf abknicken.',z:{k:.08,pap:0,rod:1,gum:0,kamm:0}},
     {t:'Gleichmäßig bis zur Kopfhaut aufrollen',p:'Roll die Strähne mit gleicher Spannung nach unten auf. Der Wickler bleibt dabei gerade, links und rechts gleich weit vom Kopf.',z:{k:1,pap:0,rod:1,gum:0,kamm:0},lang:1},
     {t:'Gummi ohne Druck schließen',p:'Der Wickler sitzt jetzt auf seiner Basis. Spann den Gummi über das aufgerollte Haar, er darf nicht in den Ansatz drücken.',z:{k:1,pap:0,rod:1,gum:1,kamm:0}},
-    {t:'Stäbchen unter den Gummi stecken',p:'Steck die Haltestäbchen unter dem Gummi durch, senkrecht von oben bis ins Haar am Ansatz. Sie stützen den Wickler und halten den Druck des Gummis vom Haar fern.',z:{k:1,pap:0,rod:1,gum:1,kamm:0,stab:1}}
+    {t:'Stäbchen unter den Gummi stecken',p:'Steck das Haltestäbchen unter dem Gummi durch ins Haar. Von vorne siehst du nur seine Kugel. Es stützt den Wickler und hält den Druck des Gummis vom Haar fern.',z:{k:1,pap:0,rod:1,gum:1,kamm:0,stab:1}}
   ];
   var setzI=0, setzZ=JSON.parse(JSON.stringify(SETZ[0].z)), setzAnim=null, setzAuto=false;
   function setzZeichnen(z){
@@ -1027,10 +1027,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       '<path d="M'+(BX-L/2)+' '+BY+' L'+(BX-L/2)+' '+(BY-14)+' L'+(BX-L/2-12)+' '+(BY-14)+'" fill="none" stroke="'+NEIN+'" stroke-width="2" opacity="'+z.kamm+'"/>'+txt(BX-L/2-30,BY-16,'90°',{f:NEIN,s:13,w:700});
     if(z.rod>.01){
       var cy=top-h/2+2;
-      s+='<g opacity="'+z.rod+'">'+rolleSeite(BX,cy,L,h,WF[2],0,null)+'</g>';
-      // Stäbchen senkrecht, mit Kopf oben; der Gummi wird danach gezeichnet und liegt darüber
-      if(z.stab) [BX-L/4,BX+L/4].forEach(function(px){ s+='<line x1="'+px+'" y1="'+(cy-h/2-24)+'" x2="'+px+'" y2="'+(cy+h/2+5)+'" stroke="'+NEIN+'" stroke-width="3" stroke-linecap="round"/><circle cx="'+px+'" cy="'+(cy-h/2-26)+'" r="5" fill="'+NEIN+'"/>'; });
-      if(z.gum>.5){ var x0=BX-L/2; s+='<path d="M'+(x0-6)+' '+cy+' Q'+BX+' '+(cy-h/2-14)+' '+(x0+L+6)+' '+cy+'" stroke="#2F2A24" stroke-width="2.6" fill="none"/><circle cx="'+(x0+L+6)+'" cy="'+cy+'" r="3.4" fill="#2F2A24"/>'; }
+      s+='<g opacity="'+z.rod+'">'+rolleSeite(BX,cy,L,h,WF[2],0,z.gum>.5?true:null,z.stab)+'</g>';  // Stäbchen von vorne: nur die Kugel, unter dem Gummi
     }
     s+=txt(BX,224,'Basis · Ansicht von vorne',{s:10});
     $('#setzSvg').innerHTML=s;
