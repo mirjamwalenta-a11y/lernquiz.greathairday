@@ -782,8 +782,8 @@ async function istMeisterinServer(){
 // Lehrlinge ins Lern-Tool
 function zurueckAusEnglisch(){
   window.location.replace(IstMeisterin
-    ? 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114f#meisterin'
-    : 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114s');
+    ? 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t#meisterin'
+    : 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t');
 }
 function zurueckBeschriften(){
   var b=document.getElementById('zurueck-btn'); if(b) b.textContent=IstMeisterin?'← Meisterin-Bereich':'← Lern-Tool';
@@ -806,7 +806,7 @@ async function pinPruefen(){
   if(!email||!pw){fehler.textContent='Bitte E-Mail und Passwort eingeben.';return;}
   var res=await sb_client.auth.signInWithPassword({email:email,password:pw});
   if(res.error){fehler.textContent=(!navigator.onLine||/RetryableFetch/.test(res.error.name||'')||/fetch|network/i.test(res.error.message||''))?'Kein Internet – Einloggen geht nur mit Verbindung (WLAN oder mobile Daten). Bitte Verbindung einschalten und nochmal versuchen.':'E-Mail oder Passwort nicht korrekt.';document.getElementById('pin-input').value='';return;}
-  if(!(await istMeisterinServer())){await sb_client.auth.signOut();fehler.textContent='Dieses Konto hat keinen Meisterinnen-Zugang.';return;}
+  if(!(await istMeisterinServer())){await sb_client.auth.signOut({scope:'local'});fehler.textContent='Dieses Konto hat keinen Meisterinnen-Zugang.';return;}
   IstMeisterin=true;
   document.getElementById('pin-input').value='';
   pinSchliessen();
@@ -814,7 +814,7 @@ async function pinPruefen(){
 }
 async function meisterinAbmelden(){
   IstMeisterin=false;
-  try{ if(sb_client) await sb_client.auth.signOut(); }catch(e){}
+  try{ if(sb_client) await sb_client.auth.signOut({scope:'local'}); }catch(e){}
   renderStreakHome();
 }
 

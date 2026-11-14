@@ -1186,7 +1186,7 @@ async function loginMeisterin() {
   if (error) { fehlerEl.textContent = 'Fehler: ' + error.message; fehlerEl.style.display = 'block'; return; }
   // Rolle serverseitig prüfen – ein beliebiges gültiges Login reicht nicht.
   if (!(await istMeisterinServer())) {
-    await sb.auth.signOut();
+    await sb.auth.signOut({scope:'local'});
     fehlerEl.textContent = 'Dieses Konto hat keinen Meisterinnen-Zugang.'; fehlerEl.style.display = 'block'; return;
   }
   MEISTERIN_OK = true;
@@ -1199,7 +1199,7 @@ async function loginMeisterin() {
 }
 
 async function logout() {
-  await sb.auth.signOut();
+  await sb.auth.signOut({scope:'local'});
   MEISTERIN_OK = false;
   document.getElementById('home-login-box').style.display = 'block';
   document.getElementById('home-logout-box').style.display = 'none';
