@@ -199,7 +199,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <span class="tag" id="labSchritt">Schritt 1 von 5</span>
         <div class="legende"><span class="l-hb">Wasserstoffbrücke</span><span class="l-salz">Salzbrücke</span><span class="l-ss">Disulfidbrücke (S–S)</span></div>
       </div>
-      <svg id="labSvg" viewBox="0 0 360 230" role="img" aria-label="Zwei Keratin-Ketten mit Brücken"></svg>
+      <svg id="labSvg" viewBox="0 0 360 300" role="img" aria-label="Links die Strähne, rechts unter der Lupe zwei Keratin-Ketten mit Brücken"></svg>
       <div class="schritt-text" id="labText" aria-live="polite"></div>
       <div class="punkte" id="labPunkte"></div>
       <div class="knoepfe"><button class="btn ghost" id="labZurueck">◀ Zurück</button><button class="btn" id="labWeiter">Weiter ▶</button></div>
@@ -329,60 +329,107 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   passZeigen();
 
   // ═══════════ 1 CHEMIE-LABOR ═══════════
-  // Zwei Ketten (links fest, rechts beweglich), 6 Brücken-Ebenen
-  var EBENEN=[30,62,94,126,158,190], TYP=['hb','ss','salz','hb','ss','hb'];
+  // Links: die ganze Strähne (glatt → gewickelt → Locke).
+  // Rechts, „unter der Lupe“: zwei Keratin-Ketten mit Brücken. Beim Wickeln biegen sich
+  // die Ketten um den Wickler. Die äußere Kette macht den größeren Bogen, darum stehen die
+  // offenen Schwefel-Enden danach nicht mehr ihrem alten Partner gegenüber. Die Fixierung
+  // verbindet sie mit neuen Partnern, und die Biegung bleibt auch ohne Wickler.
+  var T6=[0.06,0.18,0.30,0.42,0.62,0.86], TYP=['hb','ss','salz','ss','hb','hb'];
+  var FARBE={hb:'#3F83C9',salz:'#D9822B',ss:'#896C32'}, ROT='#C44030', KETTE='#9C8A63';
   var SCHRITTE=[
-    {t:'Ausgangszustand: glattes Haar',p:'Zwei Keratin-Ketten liegen nebeneinander. Die Brücken halten sie in ihrer Form, hier glatt.',f:'Disulfidbrücke = Cystin (S–S)',zust:'zu'},
-    {t:'Wellmittel: Brücken öffnen (Reduktion)',p:'Das Wellmittel ist alkalisch: Das Haar quillt auf, die Schuppenschicht öffnet sich. Der Wirkstoff (z. B. Thioglykolat) knackt die Disulfidbrücken. Aus einer S–S-Brücke werden zwei offene Enden.',f:'S–S + Wellmittel → SH + HS',zust:'offen'},
-    {t:'Wickeln: Ketten verschieben sich',p:'Das Haar liegt jetzt um den Wickler. Dabei verschieben sich die Ketten gegeneinander. Die offenen Schwefel-Enden stehen sich in neuer Position gegenüber.',f:'Form kommt vom Wickler',zust:'verschoben'},
-    {t:'Fixierung: Brücken schließen (Oxidation)',p:'Nach dem Zwischenspülen kommt die Fixierung mit verdünntem Wasserstoffperoxid. Sie schließt die Schwefel-Enden wieder zu Disulfidbrücken, aber jetzt in der Lockenform.',f:'SH + HS + Fixierung → S–S',zust:'neu'},
-    {t:'Ergebnis: die Locke hält',p:'Die neuen Disulfidbrücken halten die Ketten in Lockenform, auch nach dem Waschen. Bis der Nachwuchs kommt, denn der ist wieder glatt.',f:'Dauerhaft bis zum Nachwuchs',zust:'fertig'}
+    {t:'1 · Ausgangszustand: glattes Haar',p:'Unter der Lupe: zwei Keratin-Ketten, verbunden durch Brücken. Die starken Disulfidbrücken (gold) halten das Haar in seiner Form, hier glatt.',f:'Disulfidbrücke = Cystin (S–S)',b:0,zust:'zu'},
+    {t:'2 · Wellmittel: Brücken öffnen (Reduktion)',p:'Das Wellmittel knackt die Disulfidbrücken. Aus jeder S–S-Brücke werden zwei offene Enden (rot). Das Haar ist jetzt formbar, sieht aber noch glatt aus.',f:'S–S + Wellmittel → SH + HS',b:0,zust:'offen'},
+    {t:'3 · Wickeln: die Ketten biegen sich',p:'Das Haar liegt um den Wickler, die Ketten biegen sich mit. Die äußere Kette macht den größeren Bogen. Darum stehen die offenen Enden nicht mehr ihrem alten Partner gegenüber.',f:'Die Form gibt der Wickler vor',b:1,zust:'gewickelt'},
+    {t:'4 · Fixierung: neue Brücken (Oxidation)',p:'Die Fixierung schließt die Schwefel-Enden wieder zu Disulfidbrücken, aber mit neuen Partnern, genau in der gebogenen Form.',f:'SH + HS + Fixierung → S–S (neu)',b:1,zust:'fixiert'},
+    {t:'5 · Wickler raus: die Locke bleibt',p:'Der Wickler ist weg, aber die neuen Brücken halten die Biegung fest. Das ist die Locke. Sie bleibt, bis das Haar herauswächst.',f:'Neue Brücken = neue Form',b:1,zust:'fertig'}
   ];
-  var lab=0;
-  function labZeichnen(){
-    var S=SCHRITTE[lab], z=S.zust, x1=120, x2=240, versatz=(z==='verschoben'||z==='neu'||z==='fertig')?32:0;
-    var g='';
-    // Ketten
-    g+='<line x1="'+x1+'" y1="14" x2="'+x1+'" y2="216" stroke="#B9AC8C" stroke-width="7" stroke-linecap="round"/>';
-    g+='<g class="kette" style="transform:translateY('+versatz+'px)"><line x1="'+x2+'" y1="-18" x2="'+x2+'" y2="216" stroke="#B9AC8C" stroke-width="7" stroke-linecap="round"/>'+
-      [-2].concat(EBENEN).map(function(y){return '<circle cx="'+x2+'" cy="'+y+'" r="5" fill="#FFFFFF" stroke="#B9AC8C" stroke-width="2"/>';}).join('')+'</g>';
-    g+=EBENEN.map(function(y){return '<circle cx="'+x1+'" cy="'+y+'" r="5" fill="#FFFFFF" stroke="#B9AC8C" stroke-width="2"/>';}).join('');
-    g+='<text x="'+x1+'" y="226" fill="#9A9188" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Keratin-Kette</text>';
-    EBENEN.forEach(function(y,i){
-      var t=TYP[i], farbe={hb:'#3F83C9',salz:'#D9822B',ss:'#896C32'}[t];
-      if(t==='ss'){
-        if(z==='zu'){ g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+y+'" stroke="'+farbe+'" stroke-width="6"/><text x="180" y="'+(y-6)+'" fill="'+farbe+'" font-size="12" font-weight="700" text-anchor="middle" font-family="Poppins,system-ui">S–S</text>'; }
-        else if(z==='offen'||z==='verschoben'){
-          var yr=y+(z==='verschoben'?versatz:0);
-          g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+(x1+26)+'" y2="'+y+'" stroke="#C44030" stroke-width="5"/><text x="'+(x1+31)+'" y="'+(y+4)+'" fill="#C44030" font-size="11" font-weight="700" font-family="Poppins,system-ui">SH</text>';
-          g+='<line class="bruecke" x1="'+(x2-26)+'" y1="'+yr+'" x2="'+x2+'" y2="'+yr+'" stroke="#C44030" stroke-width="5"/><text x="'+(x2-31)+'" y="'+(yr+4)+'" fill="#C44030" font-size="11" font-weight="700" text-anchor="end" font-family="Poppins,system-ui">HS</text>';
-        } else {
-          // neu geschlossen: schräg zur verschobenen Kette
-          var y2=y+versatz-32;
-          g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+(y2<0?y+versatz:y2)+'" stroke="'+farbe+'" stroke-width="6"/><text x="180" y="'+(y-8)+'" fill="'+farbe+'" font-size="12" font-weight="700" text-anchor="middle" font-family="Poppins,system-ui">S–S neu</text>';
+  var lab=0, biegung=0, anim=null;
+  // Punkt auf Kette k (0 innen, 1 außen) bei Anteil t, Biegung b (0 gerade … 1 um den Wickler)
+  var M={cx:232,cy:170,r:[48,96],L:236,x:[200,262],y0:46};
+  function punkt(k,t,b){
+    var gx=M.x[k], gy=M.y0+t*M.L;                       // gerade
+    var a=-Math.PI/2+t*M.L/M.r[k];                      // gebogen: gleiche Länge, anderer Radius
+    var bx=M.cx+M.r[k]*Math.cos(a), by=M.cy+M.r[k]*Math.sin(a);
+    return [gx+(bx-gx)*b, gy+(by-gy)*b];
+  }
+  function kettenPfad(k,b){ var d=''; for(var n=0;n<=60;n++){var q=punkt(k,n/60,b);d+=(n?' L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1);} return d; }
+  // neuer Partner: Punkt der äußeren Kette, der in der gebogenen Form am nächsten liegt
+  // Kein Partner in Reichweite (Ende des inneren Bogens): null, dann keine Brücke
+  function partner(i){ var p=punkt(0,T6[i],1), best=0, bd=1e9; for(var n=0;n<=100;n++){var q=punkt(1,n/100,1),dd=(q[0]-p[0])*(q[0]-p[0])+(q[1]-p[1])*(q[1]-p[1]);if(dd<bd){bd=dd;best=n/100;}} return Math.sqrt(bd)<=(M.r[1]-M.r[0])*1.25?best:null; }
+  function linie(a,b2,farbe,breite,extra){ return '<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b2[0].toFixed(1)+'" y2="'+b2[1].toFixed(1)+'" stroke="'+farbe+'" stroke-width="'+breite+'" stroke-linecap="round"'+(extra||'')+'/>'; }
+  function txt(x,y,t,farbe,gr,anker,fett){ return '<text x="'+x+'" y="'+y+'" fill="'+farbe+'" font-size="'+(gr||10)+'" text-anchor="'+(anker||'middle')+'"'+(fett?' font-weight="700"':'')+' font-family="Poppins,system-ui">'+t+'</text>'; }
+  function strähne(z){
+    // linke Spalte: die ganze Strähne
+    var g='<rect x="4" y="6" width="88" height="288" rx="8" fill="#FFFFFF" stroke="#E4DBC5"/>'+txt(48,24,'Strähne','#6B6455',11,'middle',true);
+    if(z==='zu'||z==='offen'){
+      g+='<path d="M48 42 L48 262" stroke="#5A3E1B" stroke-width="5" stroke-linecap="round"/>';
+      if(z==='offen') g+=txt(70,120,'⚡','#C44030',18)+txt(48,284,'formbar','#C44030',10,'middle',true);
+      else g+=txt(48,284,'glatt','#6B6455',10,'middle',true);
+    } else if(z==='gewickelt'||z==='fixiert'){
+      g+='<path d="M48 42 L48 108" stroke="#5A3E1B" stroke-width="5" stroke-linecap="round"/>';
+      g+='<rect x="28" y="108" width="40" height="96" rx="11" fill="#E9DFC6" stroke="#C9B88E"/>';
+      for(var n=0;n<8;n++){ g+='<path d="M28 '+(114+n*11.5)+' Q48 '+(107+n*11.5)+' 68 '+(114+n*11.5)+'" stroke="#5A3E1B" stroke-width="4" fill="none" stroke-linecap="round"/>'; }
+      g+=txt(48,284,'gewickelt','#6B6455',10,'middle',true);
+      if(z==='fixiert') g+=txt(78,100,'✚','#2F7D55',18);
+    } else {
+      var d='M48 42'; for(var n2=0;n2<=240;n2++){var t=n2/240*5*2*Math.PI; d+=' L'+(48+17*Math.cos(t)).toFixed(1)+' '+(48+6*t+12*Math.sin(t)).toFixed(1);}
+      g+='<path d="'+d+'" stroke="#5A3E1B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+txt(48,284,'Locke','#2F7D55',11,'middle',true);
+    }
+    return g;
+  }
+  function labZeichnen(b){
+    var S=SCHRITTE[lab], z=S.zust; if(b===undefined) b=biegung;
+    var g=strähne(z);
+    g+='<rect x="98" y="6" width="258" height="288" rx="8" fill="#FBF7EE" stroke="#E4DBC5"/>'+txt(227,24,'🔍 Unter der Lupe: im Haar','#6B6455',11,'middle',true);
+    var wickler=(z==='gewickelt'||z==='fixiert')&&b>0.5;
+    if(wickler) g+='<circle cx="'+M.cx+'" cy="'+M.cy+'" r="34" fill="#E9DFC6" stroke="#C9B88E" stroke-width="2"/>'+txt(M.cx,M.cy+4,'Wickler','#9A8A62',11);
+    // Brücken zuerst, Ketten darüber
+    var neu=(z==='fixiert'||z==='fertig');
+    T6.forEach(function(t,i){
+      var typ=TYP[i], a=punkt(0,t,b), alt=punkt(1,t,b), pt=partner(i), np=pt===null?null:punkt(1,pt,b);
+      if(neu&&!np&&b>.5) return;   // am Ende des inneren Bogens kein Gegenüber
+      if(typ==='ss'){
+        if(z==='zu') g+=linie(a,alt,FARBE.ss,5)+txt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'S–S',FARBE.ss,11,'middle',true);
+        else if(neu) g+=linie(a,np,FARBE.ss,5)+(b<.5?txt((a[0]+np[0])/2,(a[1]+np[1])/2-6,'S–S',FARBE.ss,11,'middle',true):'');
+        else { // offen: zwei kurze rote Enden, jeweils an der eigenen Kette
+          var ri=[alt[0]-a[0],alt[1]-a[1]], len=Math.hypot(ri[0],ri[1])||1; ri=[ri[0]/len*13,ri[1]/len*13];
+          g+=linie(a,[a[0]+ri[0],a[1]+ri[1]],ROT,4)+linie(alt,[alt[0]-ri[0],alt[1]-ri[1]],ROT,4);
+          var pe=[ri[1]/13*9,-ri[0]/13*9];   // quer zum Ende, damit sich die Schrift nicht überlappt
+          g+=txt(a[0]+ri[0]*.6+pe[0],a[1]+ri[1]*.6+pe[1]+3,'SH',ROT,10,'middle',true)+txt(alt[0]-ri[0]*.6+pe[0],alt[1]-ri[1]*.6+pe[1]+3,'HS',ROT,10,'middle',true);
         }
       } else {
-        // nass und alkalisch: Wasserstoff- und Salzbrücken gelockert; Salzbrücken schließen beim Fixieren (sauer), Wasserstoffbrücken beim Trocknen
-        var off=(z==='offen'||z==='verschoben')||(z==='neu'&&t==='hb');
-        g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+(y+(z==='zu'||z==='offen'?0:versatz-32))+'" stroke="'+farbe+'" stroke-width="3" stroke-dasharray="'+(t==='hb'?'5 5':'0')+'" opacity="'+(off?.25:.9)+'"/>';
+        var offen=(z==='offen'||z==='gewickelt'||(z==='fixiert'&&typ==='hb'));
+        var ziel=neu&&np?np:alt;
+        g+=linie(a,ziel,FARBE[typ],2.5,(typ==='hb'?' stroke-dasharray="4 4"':'')+' opacity="'+(offen?.25:.9)+'"');
       }
     });
-    if(z==='offen'){ g+='<text x="300" y="40" fill="#C44030" font-size="22" text-anchor="middle">⚡</text><text x="300" y="58" fill="#C44030" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Wellmittel</text>'; }
-    if(z==='verschoben'){ g+='<circle cx="300" cy="115" r="26" fill="none" stroke="#B9AC8C" stroke-width="2" stroke-dasharray="4 4"/><text x="300" y="119" fill="#B9AC8C" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Wickler</text>'; }
-    if(z==='neu'){ g+='<text x="300" y="40" fill="#2F7D55" font-size="22" text-anchor="middle">✚</text><text x="300" y="58" fill="#2F7D55" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Fixierung</text>'; }
-    if(z==='fertig'){ g+='<text x="300" y="120" fill="#896C32" font-size="30" text-anchor="middle">✓</text>'; }
-    if(z==='zu'||z==='fertig') g+='<text x="50" y="119" fill="#9A9188" font-size="11" text-anchor="middle" font-family="Poppins,system-ui">'+(z==='zu'?'Form: glatt':'Form: Locke')+'</text>';
+    g+='<path d="'+kettenPfad(0,b)+'" stroke="'+KETTE+'" stroke-width="5" fill="none" stroke-linecap="round"/>';
+    g+='<path d="'+kettenPfad(1,b)+'" stroke="'+KETTE+'" stroke-width="5" fill="none" stroke-linecap="round"/>';
+    if(b<0.5) g+=txt(M.x[0]-8,286,'Kette','#9A9188',10,'end')+txt(M.x[1]+8,286,'Kette','#9A9188',10,'start');
+    if(z==='offen') g+=txt(326,60,'⚡','#C44030',20)+txt(326,76,'Wellmittel','#C44030',10,'middle',true);
+    if(z==='fixiert') g+=txt(326,60,'✚','#2F7D55',20)+txt(326,76,'Fixierung','#2F7D55',10,'middle',true);
+    if(z==='fertig') g+=txt(326,60,'✓','#2F7D55',22)+txt(326,76,'Form bleibt','#2F7D55',10,'middle',true);
+    if(neu&&b>.5) g+=txt(227,286,'gold = neue S–S-Brücken','#896C32',10,'middle',true);
+    if(z==='gewickelt') g+=txt(227,286,'rote Enden: alte Partner passen nicht mehr','#C44030',10,'middle',true);
     $('#labSvg').innerHTML=g;
+  }
+  function labSchritt(){
+    var S=SCHRITTE[lab], ziel=S.b, start=biegung;
     $('#labText').innerHTML='<h3>'+esc(S.t)+'</h3><p>'+esc(S.p)+'</p><span class="formel">'+esc(S.f)+'</span>';
     $('#labSchritt').textContent='Schritt '+(lab+1)+' von '+SCHRITTE.length;
     $('#labPunkte').innerHTML=SCHRITTE.map(function(s,i){return '<i class="'+(i<=lab?'on':'')+'"></i>';}).join('');
     $('#labZurueck').disabled=lab===0;
     $('#labWeiter').textContent=lab===SCHRITTE.length-1?'Nochmal ↺':'Weiter ▶';
     if(lab===SCHRITTE.length-1) stempeln('chemie');
+    if(anim) cancelAnimationFrame(anim);
+    var reduziert=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(start===ziel||reduziert){ biegung=ziel; labZeichnen(ziel); return; }
+    var t0=performance.now(), dauer=900;
+    (function lauf(now){ var k=Math.min(1,(now-t0)/dauer), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; biegung=start+(ziel-start)*e; labZeichnen(biegung); if(k<1) anim=requestAnimationFrame(lauf); })(t0);
   }
-  $('#labWeiter').onclick=function(){ lab=lab===SCHRITTE.length-1?0:lab+1; labZeichnen(); };
-  $('#labZurueck').onclick=function(){ if(lab>0){lab--;labZeichnen();} };
-  labZeichnen();
+  $('#labWeiter').onclick=function(){ lab=lab===SCHRITTE.length-1?0:lab+1; labSchritt(); };
+  $('#labZurueck').onclick=function(){ if(lab>0){lab--;labSchritt();} };
+  labSchritt();
 
   // ═══════════ 2 ABLAUF + PUZZLE ═══════════
   var ABLAUF=[
