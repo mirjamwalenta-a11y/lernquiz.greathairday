@@ -880,39 +880,37 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   // ── Wickler setzen: Schritt für Schritt (Schnitt durch Kopfhaut, Strähne, Wickler) ──
   // Zustand: th = Winkel der Strähne (0 = senkrecht), k = wie weit aufgerollt (0..1),
   // pap/rod/gum/mark/kamm = Sichtbarkeit 0..1
+  // Ansicht von vorne (wie Regel D): Strähne steigt von der Basis auf, der Wickler liegt quer
+  // davor (farbige Enden, aufgedrehtes Haar, Gummi mit Knopf) und rollt nach unten.
+  // Zustand: k = wie weit aufgerollt (0..1), pap/rod/gum/kamm = Sichtbarkeit 0..1
   var SETZ=[
-    {t:'Passee abteilen',p:'Teile eine Strähne ab, die so breit ist wie der Wickler lang und so tief wie er dick ist. Die gestrichelten Linien zeigen die Abteilung.',z:{th:72,k:0,pap:0,rod:0,gum:0,mark:0,kamm:0}},
-    {t:'Straff hochkämmen, 90° zur Kopfhaut',p:'Kämme die Strähne glatt und mit leichtem Zug nach oben, bis sie im rechten Winkel vom Kopf absteht. In diese Richtung wird gewickelt.',z:{th:0,k:0,pap:0,rod:0,gum:0,mark:1,kamm:1}},
-    {t:'Spitzenpapier um die Spitzen',p:'Lege das Spitzenpapier um die Haarspitzen. So rutscht nichts weg und die Spitzen liegen glatt nebeneinander.',z:{th:0,k:0,pap:1,rod:0,gum:0,mark:1,kamm:0}},
-    {t:'Wickler an die Spitzen, Spitzen eindrehen',p:'Setz den Wickler an die Spitzen und dreh sie einmal ganz um ihn herum. Nichts darf abknicken.',z:{th:0,k:0.1,pap:0,rod:1,gum:0,mark:1,kamm:0}},
-    {t:'Gleichmäßig bis zur Kopfhaut aufrollen',p:'Roll die Strähne mit gleicher Spannung nach unten auf. Der Wickler bleibt dabei waagrecht, die Strähne bleibt bei 90°.',z:{th:0,k:1,pap:0,rod:1,gum:0,mark:1,kamm:0}},
-    {t:'Gummi ohne Druck schließen',p:'Der Wickler sitzt jetzt genau auf seiner Basis. Spann den Gummi über das aufgerollte Haar, er darf nicht in den Ansatz drücken.',z:{th:0,k:1,pap:0,rod:1,gum:1,mark:0,kamm:0}},
-    {t:'Stäbchen einstecken',p:'Schieb ein Haltestäbchen unter den Gummi. Es stützt den Wickler und hält den Druck vom Haar fern.',z:{th:0,k:1,pap:0,rod:1,gum:1,mark:0,kamm:0,stab:1}}
+    {t:'Passee abteilen und straff hochkämmen',p:'Teile eine Strähne ab, so breit wie der Wickler lang ist (gestrichelte Linien) und so tief wie er dick ist. Kämme sie glatt und mit leichtem Zug senkrecht vom Kopf weg, im rechten Winkel (90°).',z:{k:0,pap:0,rod:0,gum:0,kamm:1}},
+    {t:'Spitzenpapier um die Spitzen',p:'Lege das Spitzenpapier um die Haarspitzen. So rutscht nichts weg und die Spitzen liegen glatt nebeneinander.',z:{k:0,pap:1,rod:0,gum:0,kamm:0}},
+    {t:'Wickler an die Spitzen, Spitzen eindrehen',p:'Setz den Wickler quer an die Spitzen und dreh sie einmal ganz um ihn herum. Nichts darf abknicken.',z:{k:.08,pap:0,rod:1,gum:0,kamm:0}},
+    {t:'Gleichmäßig bis zur Kopfhaut aufrollen',p:'Roll die Strähne mit gleicher Spannung nach unten auf. Der Wickler bleibt dabei gerade, links und rechts gleich weit vom Kopf.',z:{k:1,pap:0,rod:1,gum:0,kamm:0},lang:1},
+    {t:'Gummi ohne Druck schließen',p:'Der Wickler sitzt jetzt auf seiner Basis. Spann den Gummi über das aufgerollte Haar, er darf nicht in den Ansatz drücken.',z:{k:1,pap:0,rod:1,gum:1,kamm:0}},
+    {t:'Stäbchen einstecken',p:'Schieb ein Haltestäbchen unter den Gummi. Es stützt den Wickler und hält den Druck vom Haar fern.',z:{k:1,pap:0,rod:1,gum:1,kamm:0,stab:1}}
   ];
   var setzI=0, setzZ=JSON.parse(JSON.stringify(SETZ[0].z)), setzAnim=null, setzAuto=false;
   function setzZeichnen(z){
-    var BX=160, BY=178, H=128, r=12, wick=2+9*z.k, R=r+wick, frei=Math.max(0,H*(1-z.k)-(z.rod?R:0));
-    if(!z.rod) frei=H;
+    var BX=160, BY=176, H=132, L=84, h=16+16*z.k, frei=z.rod>.01?Math.max(0,(H-h)*(1-z.k)):H, top=BY-frei;
     var s='<rect width="320" height="230" fill="#FFFFFF"/>';
     s+='<path d="M0 230 L0 200 Q160 150 320 200 L320 230 Z" fill="#FBF6EF"/><path d="M0 200 Q160 150 320 200" fill="none" stroke="#2C2C2C" stroke-width="2"/>';
-    s+=strich(BX-20,40,BX-20,182)+strich(BX+20,40,BX+20,182);
-    var g='<g transform="translate('+BX+' '+BY+') rotate('+z.th.toFixed(1)+')">';
-    g+='<path d="M-20 0 L20 0 L18 '+(-frei)+' L-18 '+(-frei)+' Z" fill="'+WH+'" stroke="'+WH2+'"/>';
-    for(var i=1;i<7;i++){ var x=-20+40*i/7; g+='<line x1="'+x+'" y1="-1" x2="'+(x*0.9)+'" y2="'+(-frei)+'" stroke="'+WL+'" stroke-width="1"/>'; }
-    if(z.pap>0.01) g+='<rect x="-21" y="'+(-frei)+'" width="42" height="22" fill="#fff" stroke="#C9BFA8" opacity="'+z.pap+'"/>';
-    if(z.kamm>0.01) g+='<g opacity="'+z.kamm+'" transform="translate(0 '+(-frei*0.55)+')"><rect x="-34" y="-5" width="68" height="8" rx="2" fill="#2F2A24"/>'+[...Array(13).keys()].map(function(j){return '<rect x="'+(-32+j*5)+'" y="3" width="2" height="7" fill="#2F2A24"/>';}).join('')+'<rect x="34" y="-3" width="30" height="4" rx="2" fill="#2F2A24"/></g>';
-    if(z.rod>0.01){
-      var cy=-frei-R, sp='';
-      for(var q=0;q<=120;q++){ var t=q/120*(1+3*z.k)*2*Math.PI, rr=r+1.2+(R-r-1.5)*q/120; sp+=(q?' L':'M')+(Math.cos(t)*rr).toFixed(1)+' '+(cy+Math.sin(t)*rr).toFixed(1); }
-      g+='<g opacity="'+z.rod+'"><circle cx="0" cy="'+cy+'" r="'+R+'" fill="'+WH+'" stroke="'+WH2+'"/><path d="'+sp+'" fill="none" stroke="'+WL+'" stroke-width="1.2"/>'+
-         '<circle cx="0" cy="'+cy+'" r="'+r+'" fill="'+WF[2]+'" stroke="rgba(0,0,0,.35)"/><circle cx="0" cy="'+cy+'" r="'+(r*0.42)+'" fill="#fff" opacity=".85"/></g>';
-      if(z.gum>0.01) g+='<path d="M'+(-R-4)+' '+cy+' Q0 '+(cy-R*2.1)+' '+(R+4)+' '+cy+'" stroke="#2F2A24" stroke-width="3" fill="none" opacity="'+z.gum+'"/>';
-      if(z.stab) g+='<line x1="-36" y1="'+(cy-R-6)+'" x2="40" y2="'+(cy-R+2)+'" stroke="'+NEIN+'" stroke-width="3" stroke-linecap="round"/><circle cx="-36" cy="'+(cy-R-6)+'" r="5" fill="'+NEIN+'"/>';
+    s+=strich(BX-L/2,26,BX-L/2,BY+6)+strich(BX+L/2,26,BX+L/2,BY+6);
+    // Strähne (von vorne): unten so breit wie der Wickler lang ist
+    s+='<path d="M'+(BX-L/2)+' '+BY+' L'+(BX+L/2)+' '+BY+' L'+(BX+L/2-3)+' '+top.toFixed(1)+' L'+(BX-L/2+3)+' '+top.toFixed(1)+' Z" fill="'+WH+'" stroke="'+WH2+'"/>';
+    for(var i=1;i<8;i++){ var x=BX-L/2+L*i/8; s+='<line x1="'+x.toFixed(1)+'" y1="'+(BY-1)+'" x2="'+x.toFixed(1)+'" y2="'+top.toFixed(1)+'" stroke="'+WL+'" stroke-width="1"/>'; }
+    if(z.pap>.01) s+='<rect x="'+(BX-L/2-2)+'" y="'+top.toFixed(1)+'" width="'+(L+4)+'" height="22" fill="#fff" stroke="#C9BFA8" opacity="'+z.pap+'"/>';
+    if(z.kamm>.01) s+='<g opacity="'+z.kamm+'"><rect x="'+(BX-L/2-8)+'" y="'+(top+frei*.45-5).toFixed(1)+'" width="'+(L+16)+'" height="8" rx="2" fill="#2F2A24"/>'+
+      [].concat.apply([],Array.apply(null,Array(19)).map(function(_,j){return ['<rect x="'+(BX-L/2-6+j*5)+'" y="'+(top+frei*.45+3).toFixed(1)+'" width="2" height="7" fill="#2F2A24"/>'];})).join('')+
+      '<rect x="'+(BX+L/2+8)+'" y="'+(top+frei*.45-3).toFixed(1)+'" width="34" height="4" rx="2" fill="#2F2A24"/></g>'+
+      '<path d="M'+(BX-L/2)+' '+BY+' L'+(BX-L/2)+' '+(BY-14)+' L'+(BX-L/2-12)+' '+(BY-14)+'" fill="none" stroke="'+NEIN+'" stroke-width="2" opacity="'+z.kamm+'"/>'+txt(BX-L/2-30,BY-16,'90°',{f:NEIN,s:13,w:700});
+    if(z.rod>.01){
+      var cy=top-h/2+2;
+      s+='<g opacity="'+z.rod+'">'+rolleSeite(BX,cy,L,h,WF[2],0,z.gum>.5?true:null)+'</g>';
+      if(z.stab) s+='<line x1="'+(BX-L/2-14)+'" y1="'+(cy-h/2-10)+'" x2="'+(BX+L/2+6)+'" y2="'+(cy-h/2-2)+'" stroke="'+NEIN+'" stroke-width="3" stroke-linecap="round"/><circle cx="'+(BX-L/2-14)+'" cy="'+(cy-h/2-10)+'" r="5" fill="'+NEIN+'"/>';
     }
-    g+='</g>';
-    s+=g;
-    if(z.mark>0.01) s+='<g opacity="'+z.mark+'"><path d="M'+(BX-20)+' '+(BY)+' L'+(BX-20)+' '+(BY-14)+' L'+(BX-6)+' '+(BY-14)+'" fill="none" stroke="'+NEIN+'" stroke-width="2"/>'+txt(BX-44,BY-12,'90°',{f:NEIN,s:13,w:700})+'</g>';
-    s+=txt(BX,224,'Basis',{s:10});
+    s+=txt(BX,224,'Basis · Ansicht von vorne',{s:10});
     $('#setzSvg').innerHTML=s;
   }
   function setzZeigen(){
@@ -921,11 +919,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     $('#setzText').innerHTML='<h3>'+esc(S.t)+'</h3><p>'+esc(S.p)+'</p>';
     $('#setzPunkte').innerHTML=SETZ.map(function(x,i){return '<i class="'+(i<=setzI?'on':'')+'"></i>';}).join('');
     $('#setzZurueck').disabled=setzI===0; $('#setzWeiter').textContent=setzI===SETZ.length-1?'Von vorn ↺':'Weiter ▶';
-    var von=JSON.parse(JSON.stringify(setzZ)), nach=S.z, t0=performance.now(), dauer=reduziert()?0:(setzI===4?1600:700);
+    var von=JSON.parse(JSON.stringify(setzZ)), nach=S.z, t0=performance.now(), dauer=reduziert()?0:(S.lang?1600:700);
     cancelAnimationFrame(setzAnim);
     (function schritt(jetzt){
       var a=dauer?Math.min(1,(jetzt-t0)/dauer):1, e=a<.5?2*a*a:1-Math.pow(-2*a+2,2)/2;
-      ['th','k','pap','rod','gum','mark','kamm'].forEach(function(k){ setzZ[k]=(von[k]||0)+((nach[k]||0)-(von[k]||0))*e; });
+      ['k','pap','rod','gum','kamm'].forEach(function(k){ setzZ[k]=(von[k]||0)+((nach[k]||0)-(von[k]||0))*e; });
       setzZ.stab=a===1?nach.stab:von.stab;
       if(nach.rod&&!von.rod) setzZ.rod=1; if(!nach.rod&&von.rod&&a<1) setzZ.rod=1-e;
       setzZeichnen(setzZ);
