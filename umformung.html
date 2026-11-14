@@ -902,20 +902,38 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     // Kopf nach den Umrissen der Schnittwerkstatt (1 Einheit = 100 px dort):
     // Schädel: von hinten 90×100, von oben 82×102, im Profil Kreis r=100.
     // Gesicht/Kinn als zweite, nach vorne-unten versetzte Form; Ohr etwas vor der Mitte, Hals hinten bei −0,4.
-    var hautM=new T.MeshStandardMaterial({color:0xF2D2B6,roughness:.85});
-    var hk=new T.Mesh(new T.SphereGeometry(1,64,48),hautM); hk.scale.set(A,B,C); kopf.add(hk);
-    var gesicht=new T.Mesh(new T.SphereGeometry(1,48,36),hautM); gesicht.scale.set(.78,.8,.8); gesicht.position.set(0,-.42,.22); kopf.add(gesicht);
-    var hals=new T.Mesh(new T.CylinderGeometry(.44,.48,1.5,32),hautM); hals.scale.set(1,1,.95); hals.position.set(0,-1.3,.0); kopf.add(hals);
-    var nase=new T.Mesh(new T.ConeGeometry(.09,.26,16),hautM); nase.rotation.x=Math.PI/2+.35; nase.position.set(0,-.46,1.0); kopf.add(nase);
-    function zAuf(x,y){ var z1=C*Math.sqrt(Math.max(0,1-x*x/(A*A)-y*y/(B*B))), q=1-x*x/.6084-Math.pow((y+.42)/.8,2), z2=q>0?.22+.8*Math.sqrt(q):0; return Math.max(z1,z2); }
+    var hautM=new T.MeshStandardMaterial({color:0xF0D3BC,roughness:.62});
+    // Kopf wie ein Übungskopf aus EINER Fläche: Schädel-Ellipsoid, darunter Kiefer und Kinn,
+    // im Gesicht weiche Formen (Gauß-Hügel) für Stirn, Brauen, Augenhöhlen, Nase, Wangen, Lippen, Kinn.
+    function glatt(a0,a1,x){ var t=Math.max(0,Math.min(1,(x-a0)/(a1-a0))); return t*t*(3-2*t); }
+    function hug(x,y,x0,y0,sx,sy){ return Math.exp(-Math.pow((x-x0)/sx,2)-Math.pow((y-y0)/sy,2)); }
+    function form(v){
+      var t=glatt(.1,.9,-v.y)*glatt(-.2,.6,v.z);                         // Kieferbereich: vorne unten
+      var x=v.x*A*(1+.1*t*glatt(.4,1,-v.y)), y=v.y*B-.24*t*glatt(.3,1,-v.y), z=v.z*C+t*(.17+.22*glatt(.5,.95,-v.y))*glatt(-.3,.4,v.z);
+      var vorn=glatt(.35,.85,v.z);
+      if(vorn>0) z+=vorn*(.14*hug(x,y,0,-.5,.06,.1)+.07*hug(x,y,0,-.32,.05,.13)+.025*hug(x,y,0,-1.02,.2,.12));  // Nase wie im Profil, weiches Kinn
+      return new T.Vector3(x,y,z);
+    }
+    var kg=new T.SphereGeometry(1,180,140), kp=kg.attributes.position, kv=new T.Vector3();
+    for(var i=0;i<kp.count;i++){ kv.fromBufferAttribute(kp,i); var q=form(kv); kp.setXYZ(i,q.x,q.y,q.z); }
+    kg.computeVertexNormals();
+    var hk=new T.Mesh(kg,hautM); kopf.add(hk); hk.updateMatrixWorld();
+    var hals=new T.Mesh(new T.CylinderGeometry(.4,.46,1.5,40),hautM); hals.position.set(0,-1.3,-.04); kopf.add(hals);
+    // Punkte auf der Gesichtsfläche finden (Strahl von vorne)
+    var fr=new T.Raycaster();
+    function zAuf(x,y){ fr.set(new T.Vector3(x,y,5),new T.Vector3(0,0,-1)); var h=fr.intersectObject(hk); return h.length?h[0].point.z:C; }
+    // Gesicht wie in der Schnittzeichnung: geschlossene Augen und Brauen als Bögen, Lächeln als Bogen
+    var linM=new T.MeshBasicMaterial({color:0x3A3330});
+    function bogen(r,bog,dicke,mitte,x,y,dz,neig){ var m=new T.Mesh(new T.TorusGeometry(r,dicke,8,40,bog),linM), oben=Math.sin(mitte)>0; m.rotation.set(0,neig||0,mitte-bog/2); m.position.set(x,y+(oben?-r:r),zAuf(x,y)+(dz||0)); kopf.add(m); return m; }  // y = Höhe der Bogenmitte
     [-1,1].forEach(function(sx){
-      var o=new T.Mesh(new T.SphereGeometry(1,16,12),hautM); o.scale.set(.05,.19,.12); o.position.set(sx*.84,-.22,.12); kopf.add(o);
-      var e=new T.Mesh(new T.SphereGeometry(.05,12,8),new T.MeshStandardMaterial({color:0x3a2a20})); e.position.set(sx*.25,-.22,zAuf(.25,-.22)-.015); kopf.add(e);
-      var br=new T.Mesh(new T.BoxGeometry(.2,.028,.04),new T.MeshStandardMaterial({color:0x5E3A1E})); br.position.set(sx*.26,-.08,zAuf(.26,-.08)); br.rotation.z=-sx*.12; kopf.add(br);
+      bogen(.1,1.5,.008,Math.PI/2,sx*.25,-.21,.004,sx*.3);    // Augenlid (geschlossen)
+      bogen(.13,1.3,.008,Math.PI/2,sx*.26,-.11,.004,sx*.3);   // Braue
+      var ohr=new T.Mesh(new T.SphereGeometry(1,24,16),hautM); ohr.scale.set(.055,.19,.12); ohr.position.set(sx*.83,-.25,.06); ohr.rotation.y=sx*.25; kopf.add(ohr);
+      var oi=new T.Mesh(new T.SphereGeometry(1,16,12),new T.MeshStandardMaterial({color:0xDDB49A,roughness:.7})); oi.scale.set(.03,.12,.07); oi.position.set(sx*.87,-.25,.07); oi.rotation.y=sx*.25; kopf.add(oi);
     });
-    var mund=new T.Mesh(new T.BoxGeometry(.22,.035,.04),new T.MeshStandardMaterial({color:0xC0707A})); mund.position.set(0,-.86,zAuf(0,-.86)-.01); kopf.add(mund);
+    bogen(.16,1.2,.009,-Math.PI/2,0,-.84,.004);             // Lächeln
     // Haaransatz wie die gestrichelte Linie der Schnittwerkstatt: Höhe (y) je Winkel um den Kopf (0° = Stirnmitte, 180° = Nacken)
-    var ANSATZ=[[0,.42],[30,.3],[50,.06],[70,-.02],[85,-.04],[100,-.2],[115,-.5],[140,-.8],[180,-.93]];
+    var ANSATZ=[[0,.44],[18,.42],[32,.36],[45,.24],[57,.1],[70,-.02],[85,-.04],[100,-.2],[115,-.5],[140,-.8],[180,-.93]];
     function grenze(lon){ var g=Math.abs(lon)*180/Math.PI; for(var i=1;i<ANSATZ.length;i++) if(g<=ANSATZ[i][0]){ var u=(g-ANSATZ[i-1][0])/(ANSATZ[i][0]-ANSATZ[i-1][0]); return ANSATZ[i-1][1]+u*(ANSATZ[i][1]-ANSATZ[i-1][1]); } return ANSATZ[ANSATZ.length-1][1]; }
     function istHaar(v,rand){ return v.y>grenze(Math.atan2(v.x/A,v.z/C))+(rand||0); }
     // Haar-Kappe: Kugel; Dreiecke am Rand bleiben, ihre äußeren Ecken werden unter die Haut gezogen → weicher Haaransatz
