@@ -288,7 +288,8 @@ body.nur-mischen #mischen{padding-top:8px}
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="farb-zeiten.js?v=20261108k"></script>  <!-- Farb-Zeiten laut Gebrauchsanweisung (Meisterin pflegt sie) -->
+<script src="farb-zeiten.js?v=20261108k"></script>
+<script src="farb-nummern.js?v=20261114"></script>  <!-- Farb-Nummern eurer Farbkarte (Meisterin pflegt sie) -->  <!-- Farb-Zeiten laut Gebrauchsanweisung (Meisterin pflegt sie) -->
 <script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 </head>
@@ -641,7 +642,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const VON={
   schnuppertag:['schnuppertag.html','← Schnuppertag'],
   handbuch:['https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/Mitarbeiterhandbuch_App.html','← Mitarbeiterhandbuch'],
-  meisterin:['lernquiz.html?v=20261114d#meisterin','← Meisterinnen-Bereich']
+  meisterin:['lernquiz.html?v=20261114e#meisterin','← Meisterinnen-Bereich']
 };
 const von=new URLSearchParams(location.search).get('von');
 if(VON[von]){const a=$('#zurueck');a.href=VON[von][0];a.textContent=VON[von][1];}
@@ -783,7 +784,7 @@ const AUFTRAEGE=[
   {ziel:'Blau', t:'Mische die <b>Gegenfarbe von Orange</b>.', vor:'Orange', tipp:'Orange = Rot + Gelb. Welche Grundfarbe fehlt?', gut:'Richtig: Blau, ganz ohne Mischen. Blau (Asch) neutralisiert Orange.'},
   {ziel:'Violett', t:'Mische die <b>Gegenfarbe von Gelb</b>.', vor:'Gelb', tipp:'In Gelb fehlen Rot und Blau.', gut:'Richtig: Violett. Violett (Irisé) nimmt den Gelbstich.'},
   {ziel:'Blau-Grün', t:'Mische <b>Blau-Grün</b>, die Gegenfarbe von Rot-Orange.', vor:'Rot-Orange', tipp:'Mehr Blau als Gelb, ungefähr doppelt so viel.', gut:'Blau-Grün neutralisiert den orangeroten Untergrund (Tonhöhe 5).'},
-  {ziel:'Blau-Violett', t:'Mische <b>Blau-Violett</b>, die Gegenfarbe von Gelb-Orange.', vor:'Gelb-Orange', tipp:'Mehr Blau als Rot, ungefähr doppelt so viel.', gut:'Blau-Violett neutralisiert den gelborangen Untergrund (Tonhöhe 7).'},
+  {ziel:'Blau-Violett', t:'Mische <b>Blau-Violett</b>, die Gegenfarbe von Gelb-Orange.', vor:'Gelb-Orange', tipp:'Mehr Blau als Rot, ungefähr doppelt so viel.', gut:'Blau-Violett, also Violett mit etwas Blau (im Salon Irisé-Asch), neutralisiert den gelborangen Untergrund.'},
   {ziel:'Neutral', t:'Letzter Auftrag: Mische <b>Neutral</b>.', tipp:'Nimm von allen drei Grundfarben gleich viel.', gut:'Alle drei Grundfarben gleich stark = Neutral. Genau das passiert beim Neutralisieren am Haar.'}
 ];
 // mSterne: beste Sterne je Auftrag (bleibt), mRunde: Sterne dieser Runde (für Punkte)
@@ -816,7 +817,9 @@ $('#mPruefen').onclick=()=>{
     m.className='meldung gut';
     const alleDa=AUFTRAEGE.every((_,i)=>mRunde[i]), fertig=alleDa&&!mFertig;
     const offen=AUFTRAEGE.findIndex((_,i)=>!mRunde[i]);
-    m.innerHTML='<span class="sterne">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span><br>'+a.gut+
+    const VOR_TH={'Rot':4,'Rot-Orange':5,'Orange':6,'Gelb-Orange':7,'Gelb':9};
+    const salon=a.vor&&VOR_TH[a.vor]&&REFLEX[a.ziel]?'<br><span class="muted" style="font-size:13px">Im Salon, z.&nbsp;B. bei Tonhöhe '+VOR_TH[a.vor]+': '+REFLEX[a.ziel]+beispielNr(a.ziel,VOR_TH[a.vor])+'</span>':'';
+    m.innerHTML='<span class="sterne">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span><br>'+a.gut+salon+
       (fertig?'<br><b>Alle Aufträge geschafft! 🎉</b>':alleDa?'<br>Mit „↻ Von vorn“ startest du eine neue Runde.':'');
     if(fertig){
       mFertig=true;
@@ -862,6 +865,9 @@ const KREIS=[
   {n:'Blau',r:'Asch',g:'Orange',teil:'Grundfarbe'},
   {n:'Grün',r:'Matt',g:'Rot',teil:'Gelb + Blau'}
 ];
+// Reflex-Nummer laut eurer Farbkarte (z. B. „Nummer .1“), leer wenn nicht eingetragen
+const REFLEX_KEY={'Gold':'gold','Kupfer':'kupfer','Rot':'rot','Irisé':'irise','Asch':'asch','Matt':'matt'};
+function reflexNr(r){const n=window.GHD_FN,c=n&&REFLEX_KEY[r]?n[REFLEX_KEY[r]]:'';return c?' (Nummer '+esc(n.trenner+c)+')':'';}
 const KOMP={Rot:[1,0,0],Gelb:[0,1,0],Blau:[0,0,1],Orange:[1,1,0],Grün:[0,1,1],Violett:[1,0,1]};
 let kWahl=0;
 function kZeichne(){
@@ -894,7 +900,7 @@ function kZeichne(){
     '<div class="gleichung">'+chip(f.n)+'<span class="gleich">+</span>'+chip(g.n)+'<span class="gleich">=</span>'+chip('Neutral')+'</div>'+
     '<p><b>'+f.n+'</b> ist '+(f.teil==='Grundfarbe'?'eine <b>Grundfarbe</b>.':'eine <b>Mischfarbe</b> aus '+f.teil+'.')+
     ' Darin fehlt '+fehlt.join(' und ')+', und '+(fehlt.length>1?'zusammen ergeben sie ':'das ist ')+'<b>'+g.n+'</b>, die Gegenfarbe.</p>'+
-    '<div class="legende"><span class="muted">Im Salon</span><span>'+f.n+' heißt als Reflex <b>'+f.r+'</b>, '+g.n+' heißt <b>'+g.r+'</b>.</span>'+
+    '<div class="legende"><span class="muted">Im Salon</span><span>'+f.n+' heißt als Reflex <b>'+f.r+'</b>'+reflexNr(f.r)+', '+g.n+' heißt <b>'+g.r+'</b>'+reflexNr(g.r)+'.</span>'+
     '<span class="muted">Merke</span><span>Will die Kundin weniger '+f.n+', nimm '+g.n+' ('+g.r+') dazu.</span></div>'+
     '<p class="muted" style="font-size:12px">● Punkt außen = Grundfarbe. In der Mitte siehst du, was beim Mischen der beiden herauskommt.</p>';
 }
@@ -913,7 +919,13 @@ const PIG=[
   {th:9,n:'Sehr hellblond',haar:'#D2AD78',u:'helles Gelb',uf:'#F4D65A',g:'Violett',k:[0,2,0]},
   {th:10,n:'Hell-Lichtblond',haar:'#E6CC9C',u:'zartes Gelb',uf:'#F6E6A0',g:'Violett',k:[0,2,0]}
 ];
-const REFLEX={'Grün':'Matt','Blau':'Asch','Violett':'Irisé','Blau-Grün':'Asch-Matt','Blau-Violett':'Asch-Irisé'};
+const REFLEX={'Grün':'Matt','Blau':'Asch','Violett':'Irisé','Blau-Grün':'Asch-Matt','Blau-Violett':'Irisé-Asch'};
+// Beispiel-Nummer der Gegenfarbe nach der Farbkarte des Salons (farb-nummern.js, Meisterin pflegt sie)
+const GEGEN_CODES={'Grün':['matt'],'Blau':['asch'],'Violett':['irise'],'Blau-Grün':['asch','matt'],'Blau-Violett':['irise','asch']};
+function beispielNr(g,th){
+  const n=window.ghdBeispielNummer&&GEGEN_CODES[g]?ghdBeispielNummer(th,GEGEN_CODES[g]):null;
+  return n?', z.&nbsp;B. <b>'+esc(n)+'</b>':', Nummer laut eurer Farbkarte';
+}
 // Neutraler Grundton je Tonhöhe: gleiche Helligkeit, ohne Stich
 function neutralTon(th){return lerp([38,33,30],[232,224,210],(th-1)/9);}
 const hell=h=>{const c=rgb(h);return (0.299*c[0]+0.587*c[1]+0.114*c[2])/255>0.62;};
@@ -937,7 +949,8 @@ function aZeichne(){
     '</div>'+
     '<div><b style="font-size:13px">Was steckt im Untergrund?</b><div class="anteile" style="margin-top:6px">'+ant+'</div></div>'+
     '<p class="pfeil-text">Im Untergrund fehlt '+fehlt.map(x=>'<b>'+x.n+'</b>').join(' und ')+'. '+
-    (fehlt.length>1?'Zusammen gemischt ergibt das ':'Das ist ')+chip(p.g)+', im Salon <b>'+REFLEX[p.g]+'</b>.</p>'+
+    (fehlt.length>1?'Zusammen gemischt ergibt das ':'Das ist ')+chip(p.g)+', im Salon <b>'+REFLEX[p.g]+'</b>'+beispielNr(p.g,p.th)+'.</p>'+
+    '<p class="muted" style="font-size:12px">Beispiel-Nummern nach eurer Farbkarte. Die Meisterin stellt sie im Meisterin-Bereich unter „Farb-Nummern“ ein.</p>'+
     '<p class="muted" style="font-size:13px">'+(p.th<=4?'Dunkle Tonhöhen: viel rotes Pigment. Rot verschwindet beim Aufhellen zuletzt aus dem Dunklen, darum braucht es Grün.':p.th<=7?'Mittlere Tonhöhen: Rot und Gelb mischen sich zu Orange. Je heller, desto mehr Gelb.':'Helle Tonhöhen: Es bleibt nur noch Gelb übrig, Violett macht es kühl-neutral.')+'</p>';
 }
 aZeichne();
@@ -2234,6 +2247,7 @@ function fzAnwenden(){
   try{rpWegZeige();}catch(e){} atBauen();atZeige(); arBauen(); if(!arErg.length&&!arPos)arZeige();
 }
 fzAnwenden(); ghdFarbZeitenLaden(fzAnwenden);
+if(window.ghdFarbNummernLaden) ghdFarbNummernLaden(()=>{try{aZeichne();kZeichne();}catch(e){}});
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
 })();

@@ -439,7 +439,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="mb-gruppe">
       <div class="lab" style="display:flex;justify-content:space-between;align-items:center">Bereiche <a href="verzeichnis.html?v=20261114" style="font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:#896C32;text-decoration:none">🔎 A–Z-Verzeichnis</a></div>
       <div class="mb-grid">
-        <button class="mb-k" data-mb-bereich="s-b-farbe"><div class="mb-ic">🎨</div><b>Farbe</b><small>Farblabor, Farbkompass, Farb-Fälle, Farb-Zeiten, Spickzettel</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-farbe"><div class="mb-ic">🎨</div><b>Farbe</b><small>Farblabor, Farbkompass, Farb-Fälle, Farb-Zeiten, Farb-Nummern, Spickzettel</small></button>
         <button class="mb-k" data-mb-bereich="s-b-schnitt"><div class="mb-ic">✂</div><b>Schnitt &amp; Form</b><small>Schnittwerkstatt, Schnitt-Designer, Gesichtskompass, Werkzeug</small></button>
         <button class="mb-k" data-mb-bereich="s-b-praxis"><div class="mb-ic">💆</div><b>Praxis</b><small>Praxis-Module, Umformung, Praxis-Check, Praxis-Tagebuch</small></button>
         <button class="mb-k" data-mb-bereich="s-b-pruefung"><div class="mb-ic">🎓</div><b>Prüfung</b><small>Zwischenprüfung, Prüfgespräch, LAP-Fragen, Betriebs-Quiz</small></button>
@@ -458,10 +458,11 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">🎨 Farbe</h2>
     <p class="mb-sub">Alles rund um Farbe – üben, beraten, echte Fälle.</p>
     <div class="mb-grid">
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261114g&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261114h&amp;von=meisterin"><div class="mb-ic">🧪</div><b>Farblabor</b><small>Mischen, Gegenfarben, Aufhellung</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/farbkompass-team.html?modus=lernen"><div class="mb-ic">🧭</div><b>Farbkompass</b><small>Farbrichtung beraten, mit Übungsfällen</small></a>
       <button class="mb-k mb-breit" id="btn-mb-ff"><div class="mb-ic">🎨</div><div><b>Farb-Fälle</b><small id="mb-ff-sub">Echte Fälle schicken – der Lehrling plant die Rezeptur</small></div></button>
       <button class="mb-k mb-breit" id="btn-mb-fz"><div class="mb-ic">⏱</div><div><b>Farb-Zeiten</b><small>Einwirkzeiten laut Gebrauchsanweisung – gelten im Farblabor und auf dem Spickzettel</small></div></button>
+      <button class="mb-k mb-breit" id="btn-mb-fn"><div class="mb-ic">🔢</div><div><b>Farb-Nummern</b><small>Nummern eurer Farbkarte – daraus macht das Farblabor Beispiele wie „7.21“</small></div></button>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/spickzettel.html?v=20261108k&amp;von=meisterin"><div class="mb-ic">🖨</div><div><b>Farb-Spickzettel</b><small>Alle Farb-Regeln auf einer A4-Seite zum Aufhängen</small></div></a>
     </div>
   </div>
@@ -553,6 +554,16 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">⏱ Farb-Zeiten</h2>
     <p class="mb-sub">Trag die Zeiten aus der Gebrauchsanweisung eurer Farbe ein. Sie gelten im Farblabor (Timer, Rezeptur, Auftragen, Spiele) und auf dem Spickzettel.</p>
     <div id="fz-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-farb-nummern" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-fn-back">← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🔢 Farb-Nummern</h2>
+    <p class="mb-sub">Trag ein, mit welcher Nummer eure Farbkarte jeden Reflex schreibt. Daraus macht das Farblabor die Beispiele, z.&nbsp;B. Tonhöhe 7 mit Irisé und Asch → 7.21. Ein leeres Feld heißt: dort steht „Nummer laut eurer Farbkarte“.</p>
+    <div id="fn-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
 
@@ -1585,7 +1596,7 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle'||id==='s-farb-zeiten');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-farb-faelle'||id==='s-farb-zeiten'||id==='s-farb-nummern');
 }
 var MB_BEREICH='';   // offener Meisterin-Bereich, damit „Zurück“ dorthin führt
 function zeige(id){
@@ -2509,6 +2520,45 @@ async function zeigeFarbZeiten(){
     if(u&&u.error){fe.textContent='Konnte nicht gespeichert werden: '+u.error.message;return;}
     da=true; try{localStorage.setItem('ghd-farb-zeiten',wert);}catch(e){}
     fe.style.color='#2F7D55'; fe.textContent='Gespeichert ✓ – gilt ab dem nächsten Öffnen im Farblabor und auf dem Spickzettel.';
+  };
+}
+
+// ── FARB-NUMMERN (Meisterin) ────────────────────────────────────────────────
+// Nummer je Reflex laut Farbkarte des Salons, gespeichert in lerntool_daten
+// (typ 'farb_einstellung', schluessel 'farb_einstellung|nummern'), gleiche RLS wie
+// die Farb-Zeiten. Gelesen von farb-nummern.js (Farblabor).
+var FN_FELDER=[['asch','Asch (Blau)'],['irise','Irisé (Violett)'],['gold','Gold (Gelb)'],['kupfer','Kupfer (Orange)'],['mahagoni','Mahagoni (Rotviolett)'],['rot','Rot'],['matt','Matt (Grün)']];
+var FN_STD={trenner:'.',asch:'1',irise:'2',gold:'3',kupfer:'4',mahagoni:'5',rot:'6',matt:''};
+async function zeigeFarbNummern(){
+  if(!ISTMEISTERIN) return;
+  zeige('s-farb-nummern');
+  var box=document.getElementById('fn-inhalt'), w=Object.assign({},FN_STD), da=false;
+  try{ var r=await sb.from('lerntool_daten').select('wert').eq('typ','farb_einstellung').eq('schluessel','farb_einstellung|nummern').limit(1);
+    if(r&&!r.error&&r.data&&r.data[0]){ da=true; try{Object.assign(w,JSON.parse(r.data[0].wert));}catch(e){} } }catch(e){}
+  box.innerHTML='<div class="tb-e" style="border-left-color:#896C32">'+
+    '<label class="fz-zeile" for="fn-trenner"><span>Trennzeichen nach der Tonhöhe</span><span class="fz-wert"><select id="fn-trenner" style="width:120px;margin:0"><option value=".">7.21</option><option value="/">7/21</option></select></span></label>'+
+    FN_FELDER.map(function(f){
+      return '<label class="fz-zeile" for="fn-'+f[0]+'"><span>'+escHtml(f[1])+'</span><span class="fz-wert"><input type="text" id="fn-'+f[0]+'" maxlength="3" autocomplete="off" value="'+escHtml(String(w[f[0]]||''))+'" placeholder="–"></span></label>';
+    }).join('')+
+    '<div id="fn-vorschau" class="tb-d" style="margin-top:6px"></div><div id="fn-fehler" class="pte-fehler"></div>'+
+    '<button class="btn btn-g" id="fn-speichern" style="margin-top:10px">Speichern</button><button class="mb-abm" id="fn-std" style="width:100%">Standard wiederherstellen</button></div>';
+  document.getElementById('fn-trenner').value=w.trenner==='/'?'/':'.';
+  function lesen(){var n={trenner:document.getElementById('fn-trenner').value==='/'?'/':'.'};FN_FELDER.forEach(function(f){n[f[0]]=document.getElementById('fn-'+f[0]).value.trim();});return n;}
+  function vorschau(){var n=lesen(),bsp=function(th,ks){var t='';for(var i=0;i<ks.length;i++){if(!n[ks[i]])return 'Nummer laut Farbkarte';t+=n[ks[i]];}return th+n.trenner+t;};
+    document.getElementById('fn-vorschau').innerHTML='So erscheint es im Farblabor:<br>Tonhöhe 7, Irisé-Asch: <b>'+escHtml(bsp(7,['irise','asch']))+'</b> · Tonhöhe 6, Asch: <b>'+escHtml(bsp(6,['asch']))+'</b> · Tonhöhe 4, Matt: <b>'+escHtml(bsp(4,['matt']))+'</b>';}
+  box.querySelectorAll('input,select').forEach(function(i){i.oninput=vorschau;i.onchange=vorschau;}); vorschau();
+  document.getElementById('fn-std').onclick=function(){document.getElementById('fn-trenner').value=FN_STD.trenner;FN_FELDER.forEach(function(f){document.getElementById('fn-'+f[0]).value=FN_STD[f[0]];});vorschau();};
+  document.getElementById('fn-speichern').onclick=async function(){
+    var fe=document.getElementById('fn-fehler'); fe.style.color=''; fe.textContent=''; var neu=lesen();
+    for(var i=0;i<FN_FELDER.length;i++){var v=neu[FN_FELDER[i][0]]; if(v&&!/^[0-9A-Za-z]{1,3}$/.test(v)){fe.textContent='Bei „'+FN_FELDER[i][1]+'“ bitte nur Ziffern oder Buchstaben (höchstens 3) eintragen.';return;}}
+    var b=this; b.disabled=true;
+    var wert=JSON.stringify(neu), u;
+    if(da) u=await sb.from('lerntool_daten').update({wert:wert}).eq('typ','farb_einstellung').eq('schluessel','farb_einstellung|nummern');
+    else u=await sb.from('lerntool_daten').insert({typ:'farb_einstellung',schluessel:'farb_einstellung|nummern',wert:wert});
+    b.disabled=false;
+    if(u&&u.error){fe.textContent='Konnte nicht gespeichert werden: '+u.error.message;return;}
+    da=true; try{localStorage.setItem('ghd-farb-nummern',wert);}catch(e){}
+    fe.style.color='#2F7D55'; fe.textContent='Gespeichert ✓ – gilt ab dem nächsten Öffnen im Farblabor.';
   };
 }
 
@@ -3948,6 +3998,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-mb-ff').addEventListener('click',zeigeFarbFaelle);
   document.getElementById('btn-mb-fz').addEventListener('click',zeigeFarbZeiten);
+  document.getElementById('btn-mb-fn').addEventListener('click',zeigeFarbNummern);
+  document.getElementById('btn-fn-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-fz-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-ff-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
