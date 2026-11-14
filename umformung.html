@@ -136,7 +136,7 @@ dl.facts dd{margin:0}
 .wb-gr{appearance:none;border:2px solid var(--line);border-radius:999px;padding:3px 9px 3px 5px;display:inline-flex;gap:5px;align-items:center;font:600 11.5px Poppins,system-ui;background:#fff;cursor:pointer;color:var(--ink)}
 .wb-gr i{width:18px;height:9px;border-radius:5px;display:inline-block}
 .wb-gr[aria-pressed="true"]{border-color:var(--ink)}
-#techSvg{cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+#techSvg{cursor:crosshair;touch-action:none;-webkit-user-select:none;user-select:none}
 #techSvg *{pointer-events:none}
 .winkel{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);flex:1 1 220px}
 .winkel input{flex:1;accent-color:var(--accent)}
@@ -374,7 +374,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <ol class="ablauf" id="wickelTipps"></ol>
     </div>
     <h3 style="margin-top:6px">Techniken: selbst wickeln</h3>
-    <p class="muted" style="font-size:14px">Wähle eine Technik und lies, wie sie geht. Dann setzt du die Wickler selbst auf den Kopf. Tippst du auf einen Wickler, kommt der nächste dicht daneben, auf der Seite, wo du getippt hast. So entstehen enge Reihen. Zum Wegnehmen auf „Entfernen“ umschalten. Deine Bilder bleiben in diesem Browser gespeichert.</p>
+    <p class="muted" style="font-size:14px">Wähle eine Technik und lies, wie sie geht. Dann setzt du die Wickler selbst auf den Kopf: <strong>Ziehen</strong> setzt einen Wickler in die Richtung, in die du ziehst (Finger dort aufsetzen, wo der Wickler beginnt). <strong>Tippen</strong> setzt ihn gerade, tippst du auf einen Wickler, kommt der nächste dicht daneben. Einen Wickler <strong>anfassen und ziehen</strong> verschiebt ihn. Zum Wegnehmen auf „Entfernen“ umschalten. Scrollen geht neben dem Kopf. Deine Bilder bleiben in diesem Browser gespeichert.</p>
     <div class="chips" role="group" aria-label="Technik wählen" id="techChips"></div>
     <div class="grid2">
       <div class="wickelbild">
@@ -742,7 +742,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function wbListe(){ var k=tech.id+'|'+ansicht; return wb[k]||(wb[k]=[]); }
   function wbSpeichern(){ try{ localStorage.setItem(WB_KEY,JSON.stringify(wb)); }catch(e){} }
   function wicklerSvg(r){ var g=WGR[r[2]]; var L=r[4]||g.l; return g.pap?pap(r[0],r[1],L,r[3]):w(r[0],r[1],L,g.h,r[3],WF[r[2]]); }
-  function wbInfo(){ var m=document.getElementById('wbMarken'), pb=document.getElementById('wbPruefung'); if(m) m.innerHTML=''; if(pb){ pb.hidden=true; pb.innerHTML=''; } var l=wbListe(); $('#wbZahl').textContent=l.length?l.length+' Wickler gesetzt':'Tippe auf den Kopf, um einen Wickler zu setzen'; }
+  function wbInfo(){ var m=document.getElementById('wbMarken'), pb=document.getElementById('wbPruefung'); if(m) m.innerHTML=''; if(pb){ pb.hidden=true; pb.innerHTML=''; } var l=wbListe(); $('#wbZahl').textContent=l.length?l.length+' Wickler gesetzt':'Ziehen oder tippen, um einen Wickler zu setzen'; }
   function wbStaebe(){ var g=document.getElementById('wbStaebe'); g.innerHTML=wbListe().map(wicklerSvg).join(''); wbInfo(); }
   function techMalen(){
     var l=wbListe();
@@ -777,14 +777,35 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       if(Math.abs(lx)<=(r[4]||g.l)/2+(rand||0)&&Math.abs(ly)<=g.h/2+(rand||0)) return {i:i,lx:lx,ly:ly}; }
     return null;
   }
+  // Bedienung: Tippen = Wickler setzen (bzw. dicht daneben) · auf leerem Kopf ziehen = Wickler in Zugrichtung setzen
+  // (Fingerstart = Anfang des Wicklers) · Wickler anfassen und ziehen = verschieben
   var wbDown=null;
-  $('#techSvg').addEventListener('pointerdown',function(e){ wbDown={x:e.clientX,y:e.clientY,id:e.pointerId}; });
-  $('#techSvg').addEventListener('pointercancel',function(){ wbDown=null; });
+  function wbPunkt(svg,e){ var pt=svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); }
+  function wbVorschau(html){ var v=document.getElementById('wbVorschau'); if(!v){ document.getElementById('wbStaebe').insertAdjacentHTML('afterend','<g id="wbVorschau" opacity=".65"></g>'); v=document.getElementById('wbVorschau'); } v.innerHTML=html||''; }
+  function wbZugWickler(p0,p){ var L=WGR[wgr].pap?WGR[wgr].l:wlen, a=Math.atan2(p.y-p0.y,p.x-p0.x), d=a*180/Math.PI;
+    if(d>90) d-=180; if(d<=-90) d+=180;
+    return [+(p0.x+Math.cos(a)*L/2).toFixed(1),+(p0.y+Math.sin(a)*L/2).toFixed(1),wgr,Math.round(d),wlen]; }
+  $('#techSvg').addEventListener('pointerdown',function(e){
+    var p=wbPunkt(this,e), l=wbListe(), tr=wmodus==='setzen'?wbTreffer(l,p,2):null;
+    wbDown={x:e.clientX,y:e.clientY,id:e.pointerId,p0:p,tr:tr,art:null,orig:tr?[l[tr.i][0],l[tr.i][1]]:null};
+    try{ this.setPointerCapture(e.pointerId); }catch(x){}
+  });
+  $('#techSvg').addEventListener('pointermove',function(e){
+    if(!wbDown||wbDown.id!==e.pointerId||wmodus!=='setzen') return;
+    if(!wbDown.art){ if(Math.hypot(e.clientX-wbDown.x,e.clientY-wbDown.y)<8) return; wbDown.art=wbDown.tr?'schieben':'zeichnen'; }
+    var p=wbPunkt(this,e), l=wbListe();
+    if(wbDown.art==='schieben'){ var i=wbDown.tr.i, r=l[i]; r[0]=+(wbDown.orig[0]+p.x-wbDown.p0.x).toFixed(1); r[1]=+(wbDown.orig[1]+p.y-wbDown.p0.y).toFixed(1);
+      var g=document.getElementById('wbStaebe').children[i]; if(g) g.outerHTML=wicklerSvg(r); }
+    else wbVorschau(wicklerSvg(wbZugWickler(wbDown.p0,p)));
+  });
+  $('#techSvg').addEventListener('pointercancel',function(){ if(wbDown&&wbDown.art==='schieben'){ var r=wbListe()[wbDown.tr.i]; r[0]=wbDown.orig[0]; r[1]=wbDown.orig[1]; wbStaebe(); } wbVorschau(''); wbDown=null; });
   $('#techSvg').addEventListener('pointerup',function(e){
-    if(!wbDown||wbDown.id!==e.pointerId||Math.hypot(e.clientX-wbDown.x,e.clientY-wbDown.y)>10){ wbDown=null; return; } wbDown=null;
-    var svg=this, pt=svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; var p=pt.matrixTransform(svg.getScreenCTM().inverse());
+    var d=wbDown; wbDown=null; if(!d||d.id!==e.pointerId) return;
+    var l=wbListe(), p=wbPunkt(this,e);
+    if(d.art==='schieben'){ wbSpeichern(); wbInfo(); return; }
+    if(d.art==='zeichnen'){ wbVorschau(''); var nz=wbZugWickler(d.p0,p); l.push(nz); wbSpeichern(); document.getElementById('wbStaebe').insertAdjacentHTML('beforeend',wicklerSvg(nz)); wbInfo(); return; }
     if(p.y>256) return;
-    var l=wbListe(), tr=wbTreffer(l,p,2);
+    var tr=wbTreffer(l,p,2);
     if(wmodus==='weg'){ if(tr){ l.splice(tr.i,1); wbSpeichern(); wbStaebe(); } return; }
     var x=p.x, y=p.y;
     if(tr){ // dicht an dicht: neuer Wickler direkt neben den getroffenen, auf der Seite, wo getippt wurde
@@ -792,7 +813,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       x=r[0]+nx*sg*ab; y=r[1]+ny*sg*ab;
       for(var k=0;k<40;k++){ var q=wbTreffer(l,{x:x,y:y},-1); if(!q) break; var rq=l[q.i]; ab=WGR[rq[2]].h/2+WGR[wgr].h/2+.4; x=rq[0]+nx*sg*ab; y=rq[1]+ny*sg*ab; }
     }
-    var neu=[+x.toFixed(1),+y.toFixed(1),wgr,-wwink,wlen]; l.push(neu); wbSpeichern();
+    var neu=[+x.toFixed(1),+y.toFixed(1),wgr,tr?l[tr.i][3]:-wwink,wlen]; l.push(neu); wbSpeichern();
     document.getElementById('wbStaebe').insertAdjacentHTML('beforeend',wicklerSvg(neu)); wbInfo();
   });
   $('#wbModus').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wmodus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});});
@@ -840,7 +861,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     function ueberlappung(ids){ var b=[]; for(var a=0;a<ids.length;a++) for(var c=a+1;c<ids.length;c++){ var i=ids[a], j=ids[c], dx=l[j][0]-l[i][0], dy=l[j][1]-l[i][1], t=l[i][3]*Math.PI/180, lx=dx*Math.cos(t)+dy*Math.sin(t), ly=-dx*Math.sin(t)+dy*Math.cos(t);
         if(Math.abs(wi(i)-wi(j))<10?(Math.abs(lx)<(len(i)+len(j))/2-2&&Math.abs(ly)<(gr(i).h+gr(j).h)/2-1.5):Math.hypot(dx,dy)<(gr(i).h+gr(j).h)/2-1) b.push(i,j); }
       pr(!b.length,b.length?'Wickler überlappen sich. Jeder Wickler braucht seinen eigenen Platz.':'Kein Wickler überlappt einen anderen.',b); }
-    function inKopf(){ var aus=alle().filter(function(i){ return !K.drin(l[i][0],l[i][1]); }); pr(!aus.length,aus.length?s(aus)+' sitzen aus2erhalb des Haarbereichs.':'Alle Wickler sitzen im Haarbereich.',aus); }
+    function inKopf(){ var aus=alle().filter(function(i){ return !K.drin(l[i][0],l[i][1]); }); pr(!aus.length,aus.length?s(aus)+' sitzen außerhalb des Haarbereichs.':'Alle Wickler sitzen im Haarbereich.',aus); }
     inKopf();
     if(id!=='doppel') ueberlappung(alle());
     if(!hier){ var vn=ANSICHTEN.filter(function(a){return a[0]===tech.v;})[0][1];
@@ -874,7 +895,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         pr(li.length>0&&re.length>0,li.length&&re.length?'Links und rechts der Mittellinie sind Wickler gesetzt.':'Setz Wickler auf beiden Seiten der Mittellinie.');
         var sf=ids.filter(function(i){return horDev(i)<20||vertDev(i)<20;}); pr(!sf.length,sf.length?s(sf)+' stehen zu gerade oder zu steil. Nimm etwa 45° (schräg).':'Alle Wickler sind schräg gesetzt.',sf);
         var fl=li.filter(function(i){return wi(i)>0;}), fr=re.filter(function(i){return wi(i)<0;});
-        pr(!fl.length&&!fr.length,(fl.length||fr.length)?'Die Richtung stimmt nicht: Links ↗, rechts ↖. Von der Mitte gehen die Wickler schräg nach unten aus2en.':'Die Richtung stimmt: von der Mitte schräg nach unten aus2en.',fl.concat(fr));
+        pr(!fl.length&&!fr.length,(fl.length||fr.length)?'Die Richtung stimmt nicht: Links ↗, rechts ↖. Von der Mitte gehen die Wickler schräg nach unten außen.':'Die Richtung stimmt: von der Mitte schräg nach unten außen.',fl.concat(fr));
         pr(Math.abs(li.length-re.length)<=1,Math.abs(li.length-re.length)<=1?'Links und rechts gleich viele Wickler.':'Links '+li.length+', rechts '+re.length+' Wickler. Beide Seiten gleich besetzen.');
       } else if(id==='spirale'){
         var gs=ids.filter(function(i){return vertDev(i)>15;}); pr(!gs.length,gs.length?s(gs)+' hängen nicht senkrecht. Bei der Spirale hängt der Wickler senkrecht.':'Alle Wickler hängen senkrecht.',gs);
@@ -895,10 +916,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         var mo=ok2.length?ok2.reduce(function(a,i){return a+l[i][2];},0)/ok2.length:0, gn=nk.filter(function(i){return l[i][2]>=mo;}); pr(nk.length>0&&ok2.length>0&&!gn.length,!nk.length?'Im Nacken fehlen Wickler. Dort nimmst du eine kleinere Größe.':gn.length?s(gn)+' im Nacken sind nicht kleiner als oben.':'Im Nacken sind die Wickler kleiner.',gn);
       } else if(id==='stern'){
         var wx=cx, wy=bb[1]+H*.55, ra=function(i){ return Math.atan2(l[i][1]-wy,l[i][0]-wx)*180/Math.PI; }, aus=ids.filter(function(i){ if(Math.hypot(l[i][0]-wx,l[i][1]-wy)<12) return false; var d=Math.abs((((ra(i)-l[i][3])%180)+180)%180); return Math.min(d,180-d)>25; });
-        pr(!aus.length,aus.length?s(aus)+' zeigen nicht vom Wirbel weg. Sie sollen wie Sonnenstrahlen nach aus2en zeigen.':'Alle Wickler zeigen strahlenförmig vom Wirbel weg.',aus);
+        pr(!aus.length,aus.length?s(aus)+' zeigen nicht vom Wirbel weg. Sie sollen wie Sonnenstrahlen nach außen zeigen.':'Alle Wickler zeigen strahlenförmig vom Wirbel weg.',aus);
         var q={}; ids.forEach(function(i){ q[(l[i][0]>wx?1:0)+(l[i][1]>wy?2:0)]=1; }); pr(Object.keys(q).length>=3,Object.keys(q).length>=3?'Die Strahlen gehen in alle Richtungen.':'Setz Wickler rund um den Wirbel, nicht nur auf einer Seite.');
         var di=ids.map(function(i){return Math.hypot(l[i][0]-wx,l[i][1]-wy);}), md=di.slice().sort(function(a,b){return a-b;})[Math.floor(di.length/2)], inn=[],aus2=[]; ids.forEach(function(i,k){ (di[k]<md?inn:aus2).push(l[i][2]); });
-        var av=function(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:0;}; pr(!inn.length||!aus2.length||av(inn)<=av(aus2),(!inn.length||!aus2.length||av(inn)<=av(aus2))?'Innen sind die Wickler dünner als aus2en.':'Innen sind die Felder schmaler: innen dünnere Wickler nehmen.');
+        var av=function(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:0;}; pr(!inn.length||!aus2.length||av(inn)<=av(aus2),(!inn.length||!aus2.length||av(inn)<=av(aus2))?'Innen sind die Wickler dünner als außen.':'Innen sind die Felder schmaler: innen dünnere Wickler nehmen.');
       }
     }
     var fehl=res.filter(function(r){return r[0]===false;}).length;
