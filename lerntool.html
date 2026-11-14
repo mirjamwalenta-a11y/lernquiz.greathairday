@@ -333,7 +333,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -359,7 +359,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -382,7 +382,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
@@ -414,7 +414,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>🎓 Prüfung</h1>
   <div class="st-sub" style="margin-bottom:16px">Zwischenprüfung und LAP vorbereiten.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261114a'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261114c'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
     <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
   </div>
 </div>
@@ -654,7 +654,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -772,6 +772,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Praxis</div>
   <h1>Praxis-Module</h1>
   <p class="sub">Schritt für Schritt üben, was du am Gast brauchst.</p>
+  <div id="woerni-praxis"></div>  <!-- Wörni V1: einmal am Tag vor der Praxis (woerni-impulse.js) -->
   <div class="pt-karte" id="pt-karte" hidden>
     <div class="pt-kopf"><b>📝 Mein Praxis-Tagebuch</b><span id="pt-summe"></span></div>
     <div id="pt-liste"></div>
@@ -4261,7 +4262,7 @@ var PMT_THEMEN = [
     {n:'Wissens-Check Werkzeug', lj:[1], k:'quiz werkzeug', go:pmtLink('werkzeugkunde.html?v=20261107i#quiz')}
   ]},
   {i:'🎓', n:'Prüfung', p:[
-    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261114a')},
+    {n:'Zwischenprüfung', lj:[2], k:'prüfungszeit fachgespräch hautdiagnose', go:pmtLink('zwischenpruefung.html?v=20261114c')},
     {n:'LAP-Vorbereitung', lj:[3], k:'lehrabschlussprüfung lap theorie praxis', go:pmtSeite('lap')}
   ]},
   {i:'🇬🇧', n:'Englisch im Salon', p:[
@@ -4403,7 +4404,7 @@ var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) f
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
 var ST_SITZT_NACH_TAGEN = 3;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
@@ -4593,6 +4594,7 @@ async function stLaden() {
   } finally {
     ST.geladen = true;
     stZeichnen();
+    if (typeof woerniStartFuellen === 'function') woerniStartFuellen();
   }
 }
 
@@ -4632,7 +4634,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4780,7 +4782,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114a';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114c';
 }
 
 function lkTipp(th) {
@@ -5098,6 +5100,8 @@ zeige = function(seite) {
   stLeiste(seite);
   if (seite === 'home') { stZeichnen(); stLaden(); }
   if (seite === 'praxis') ptLaden();
+  // Wörni V1: einmal am Tag beim Öffnen der Praxis-Module (docs/woerni-v1.md)
+  if (seite === 'praxis') { try { var wp = document.getElementById('woerni-praxis'); if (wp && window.WOERNI && !wp.innerHTML) wp.innerHTML = WOERNI.einmalAmTag('lerntool-praxis', 'praxis', true); } catch (e) {} }
 };
 
 (function(){
@@ -5145,6 +5149,25 @@ zeige = function(seite) {
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#p-mlogin" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 <script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 <script src="woernis-tipps.js?v=20261113b"></script>
-<script>try{var w=document.getElementById('woerni-sagt');if(w&&window.woerniSagtHTML)w.innerHTML=woerniSagtHTML();}catch(e){}</script>
+<script src="woerni-impulse.js?v=20261114"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
+<script>
+// Startseite: „Wörni sagt“ (Spruch des Tages). Nach 7 oder mehr Tagen ohne Lernrunde
+// steht dort stattdessen ein ruhiger Wiedereinstiegs-Impuls, bis wieder gelernt wurde.
+// Nur mit Vorgeschichte (mindestens eine frühere Runde), nie bei der Meisterin.
+function woerniStartFuellen(){
+  try{
+    var w=document.getElementById('woerni-sagt'); if(!w) return;
+    var html='';
+    if(window.WOERNI&&ST.lehrling&&ST.verlauf&&ST.verlauf.length&&ST.verlauf[0].erstellt_am){
+      var letzte=ST.verlauf[0].erstellt_am, tage=Math.floor((Date.now()-new Date(letzte).getTime())/86400000);
+      if(tage>=7) html=WOERNI.einstieg(String(letzte).slice(0,10));
+      if(html) html='<aside aria-label="Wörni" style="background:#F3EBD9;border:1px solid #E4DBC5;border-left:4px solid #896C32;border-radius:12px;padding:12px 14px;margin:0 0 16px">'+html.replace('woerni-zeile frei"','woerni-zeile frei" style="margin:0"')+'</aside>';
+    }
+    if(!html&&window.woerniSagtHTML) html=woerniSagtHTML();
+    w.innerHTML=html;
+  }catch(e){}
+}
+woerniStartFuellen();
+</script>
 </body>
 </html>
