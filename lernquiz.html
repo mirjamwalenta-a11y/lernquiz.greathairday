@@ -433,11 +433,11 @@ textarea{resize:vertical;margin-bottom:0}
 
     <div class="mb-gruppe" id="mb-lehrlinge">
       <div id="dashboard-liste"><div class="laden">Wird geladen…</div></div>
-      <button class="mb-neu" id="btn-lehrling-neu">+ Lehrling anlegen</button>
+      <button class="mb-neu" id="btn-lehrling-neu">+ Lehrling oder Stylistin anlegen</button>
     </div>
 
     <div class="mb-gruppe">
-      <div class="lab" style="display:flex;justify-content:space-between;align-items:center">Bereiche <a href="verzeichnis.html?v=20261114" style="font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:#896C32;text-decoration:none">🔎 A–Z-Verzeichnis</a></div>
+      <div class="lab" style="display:flex;justify-content:space-between;align-items:center">Bereiche <a href="verzeichnis.html?v=20261114b" style="font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:#896C32;text-decoration:none">🔎 A–Z-Verzeichnis</a></div>
       <div class="mb-grid">
         <button class="mb-k" data-mb-bereich="s-b-farbe"><div class="mb-ic">🎨</div><b>Farbe</b><small>Farblabor, Farbkompass, Farb-Fälle, Farb-Zeiten, Farb-Nummern, Spickzettel</small></button>
         <button class="mb-k" data-mb-bereich="s-b-schnitt"><div class="mb-ic">✂</div><b>Schnitt &amp; Form</b><small>Schnittwerkstatt, Schnitt-Designer, Gesichtskompass, Werkzeug</small></button>
@@ -618,19 +618,21 @@ textarea{resize:vertical;margin-bottom:0}
 
 <div id="s-neu-lehrling" class="seite">
   <div style="padding-top:20px">
-    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Neuen Lehrling anlegen</h2>
+    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:6px">Neuen Zugang anlegen</h2>
+    <p style="font-size:13px;color:#6B6455;line-height:1.5;margin-bottom:16px">Für einen Lehrling oder eine Stylistin, die mitlernt. Stylistinnen stehen im Meisterin-Bereich in einer eigenen Gruppe, ohne Prüfhinweise.</p>
     <div id="neu-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
     <input type="text" id="neu-name" placeholder="z.B. Lena">
-    <div class="lab">Lehrjahr</div>
+    <div class="lab">Lehrjahr oder Stylistin</div>
     <select id="neu-lj" style="margin-bottom:10px">
       <option value="1">1. Lehrjahr</option>
       <option value="2">2. Lehrjahr</option>
       <option value="3">3. Lehrjahr</option>
+      <option value="s">Stylistin (ausgelernt, lernt mit)</option>
     </select>
     <div class="lab">PIN (6 Stellen)</div>
     <input type="text" id="neu-pin" placeholder="z.B. 123456" maxlength="6" inputmode="numeric" style="margin-bottom:16px">
-    <button class="btn btn-g" id="btn-neu-speichern">Lehrling anlegen</button>
+    <button class="btn btn-g" id="btn-neu-speichern">Zugang anlegen</button>
     <button class="btn btn-h" id="btn-neu-back">← Zurück</button>
 
     <!-- Mehrere Test-Zugänge auf einmal (z. B. für einen Salon, der die App ausprobiert) -->
@@ -656,15 +658,16 @@ textarea{resize:vertical;margin-bottom:0}
 
 <div id="s-edit-lehrling" class="seite">
   <div style="padding-top:20px">
-    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Lehrling bearbeiten</h2>
+    <h2 style="font-family:Poppins,system-ui,sans-serif;font-weight:normal;font-size:20px;margin-bottom:20px">Zugang bearbeiten</h2>
     <div id="edit-fehler" class="fehler-box" style="display:none"></div>
     <div class="lab">Name</div>
     <input type="text" id="edit-name" placeholder="z.B. Lena">
-    <div class="lab">Lehrjahr</div>
+    <div class="lab">Lehrjahr oder Stylistin</div>
     <select id="edit-lj" style="margin-bottom:10px">
       <option value="1">1. Lehrjahr</option>
       <option value="2">2. Lehrjahr</option>
       <option value="3">3. Lehrjahr</option>
+      <option value="s">Stylistin (ausgelernt, lernt mit)</option>
     </select>
     <div class="lab">Lehrbeginn</div>
     <input type="date" id="edit-lb" style="margin-bottom:4px">
@@ -2333,15 +2336,16 @@ async function ladeDashboard(){
   var wocheVon={};
   (verlRes.data||[]).forEach(function(v){if(v.erstellt_am&&new Date(v.erstellt_am)>=mo)wocheVon[v.lehrling_id]=(wocheVon[v.lehrling_id]||0)+1;});
 
-  // Echte aktive Lehrlinge oben; pausierte und Testzugänge (nur_test) eingeklappt darunter
-  var echte=lehrlinge.filter(function(l){return l.nur_test!==true;});
+  // Echte aktive Lehrlinge oben, darunter Stylistinnen; pausierte und Testzugänge (nur_test) eingeklappt
+  var stylistinnen=lehrlinge.filter(function(l){return l.nur_test!==true&&istStylistin(l)&&l.aktiv!==false;});
+  var echte=lehrlinge.filter(function(l){return l.nur_test!==true&&!(istStylistin(l)&&l.aktiv!==false);});
   var aktive=echte.filter(function(l){return l.aktiv!==false;});
   var pausierte=echte.filter(function(l){return l.aktiv===false;});
   var tests=lehrlinge.filter(function(l){return l.nur_test===true;});
   MB_AKTIVE=aktive;
   function karte(l){
     var v=letztesVon[l.id];
-    var info=l.lehrjahr+'. Lehrjahr'+(v?' · zuletzt aktiv '+letztesWann(v.erstellt_am)+' · letztes Quiz '+Math.round(v.punkte/v.gesamt)+'/10':' · noch kein Quiz');
+    var info=ljText(l)+(v?' · zuletzt aktiv '+letztesWann(v.erstellt_am)+' · letztes Quiz '+Math.round(v.punkte/v.gesamt)+'/10':' · noch kein Quiz');
     var pausiert=l.aktiv===false;
     var ziel=wochenzielVon(l), n=wocheVon[l.id]||0;
     // grün: erreicht oder im Plan · gelb: etwas geübt, aber hinterher · rot: diese Woche noch nichts
@@ -2352,11 +2356,12 @@ async function ladeDashboard(){
       '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+
         (pto?' <span class="mb-l-pt">📝 '+pto+' zum Bestätigen</span>':'')+'</div>'+
       '<div class="mb-l-info">'+escHtml(info)+woche+'</div></div><div class="mb-l-pfeil">›</div></div>'+
-      (pausiert?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
+      (pausiert||istStylistin(l)?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
     '</button>';
   }
   var html='<div class="lab">'+(aktive.length===1?'Lehrling':'Lehrlinge')+'</div>'+
     (aktive.length?aktive.map(karte).join(''):'<p style="color:#9A9188;font-size:13px;margin-bottom:12px">Gerade kein aktiver Lehrling.</p>');
+  if(stylistinnen.length) html+='<div class="lab" style="margin-top:14px">'+(stylistinnen.length===1?'Stylistin':'Stylistinnen')+' (lernt mit)</div>'+stylistinnen.map(karte).join('');
   if(pausierte.length) html+='<details class="mb-test"><summary>Pausiert ('+pausierte.length+')</summary>'+pausierte.map(karte).join('')+'</details>';
   if(tests.length) html+='<details class="mb-test"><summary>Zum Testen ('+tests.length+')</summary>'+tests.map(karte).join('')+'</details>';
   liste.innerHTML=html;
@@ -2914,7 +2919,7 @@ async function zeigeDetailLehrling(lehrling){
   // Kopfzeile: Lehrjahr, Anzahl Quizze, zuletzt aktiv
   var anzahl=null;
   try{ var cRes=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lehrling.id); anzahl=cRes.count; }catch(e){}
-  var kopf=lehrling.lehrjahr+'. Lehrjahr'+(anzahl!=null?' · '+anzahl+(anzahl===1?' Quiz':' Quizze'):'')+
+  var kopf=ljText(lehrling)+(anzahl!=null?' · '+anzahl+(anzahl===1?' Quiz':' Quizze'):'')+
     (verlauf&&verlauf.length?' · zuletzt aktiv '+letztesWann(verlauf[0].erstellt_am):' · noch kein Quiz');
 
   var html='<div class="mb-d-info">'+escHtml(kopf)+'</div>'+
@@ -3560,6 +3565,11 @@ function pruefZurueck(){
 // Lehrling in die Liste eintragen – direkt mit dem Meisterin-Token (RLS-Policy
 // lehrlinge_meisterin über ist_meisterin()). Die frühere Edge Function
 // (rapid-function, insert_lehrling) trug seit Ende August nichts mehr ein.
+var LE_FEHLEND=[];
+// Stylistin = ausgelernte Mitarbeiterin, die mitlernt (Spalte art, supabase/20261114_lehrlinge_art_stylistin.sql).
+// Nur Anzeige im Meisterin-Bereich, keine zusätzlichen Rechte.
+function istStylistin(l){ return !!l && l.art==='stylistin'; }
+function ljText(l){ return istStylistin(l)?'Stylistin':(l.lehrjahr||'–')+'. Lehrjahr'; }
 async function lehrlingEintragen(meisterinToken,userId,name,lj,extra){
   if(!meisterinToken) return 'Meisterin nicht angemeldet – bitte neu einloggen.';
   try{
@@ -3570,8 +3580,10 @@ async function lehrlingEintragen(meisterinToken,userId,name,lj,extra){
       body:JSON.stringify(zeile)});
     if(r.ok) return null;
     var t=await r.text(), msg; try{ var j=JSON.parse(t); msg=j.message||t; }catch(e){ msg=t||('HTTP '+r.status); }
-    // Spalte nur_test fehlt (Migration 20261107_lehrlinge_nur_test.sql nicht ausgeführt): ohne Zusatzfelder eintragen
-    if(extra && /nur_test/.test(msg)) return lehrlingEintragen(meisterinToken,userId,name,lj,null);
+    // Zusatz-Spalte fehlt (Migration nicht ausgeführt, z. B. nur_test oder art): ohne sie eintragen und merken
+    var fehlt=extra&&Object.keys(extra).filter(function(k){return new RegExp(k).test(msg);})[0];
+    if(fehlt){ var rest={}; Object.keys(extra).forEach(function(k){if(k!==fehlt)rest[k]=extra[k];}); LE_FEHLEND.push(fehlt);
+      return lehrlingEintragen(meisterinToken,userId,name,lj,Object.keys(rest).length?rest:null); }
     return msg;
   }catch(e){ return e.message||String(e); }
 }
@@ -3621,13 +3633,16 @@ async function lehrlingKontoAnlegen(name,lj,pin,extra){
 async function speichereNeuenLehrling(){
   if(!ISTMEISTERIN) return;
   var name=document.getElementById('neu-name').value.trim();
-  var lj=parseInt(document.getElementById('neu-lj').value);
+  var ljWert=document.getElementById('neu-lj').value, sty=ljWert==='s';
+  var lj=sty?3:parseInt(ljWert);
   var pin=document.getElementById('neu-pin').value.trim();
   versteckeFehler('neu-fehler');
   if(!name||!pin){zeigeFehler('neu-fehler','Bitte alle Felder ausfüllen.');return;}
   if(pin.length!==6||!/^\d{6}$/.test(pin)){zeigeFehler('neu-fehler','PIN muss genau 6 Ziffern sein.');return;}
-  var r=await lehrlingKontoAnlegen(name,lj,pin,null);
+  LE_FEHLEND=[];
+  var r=await lehrlingKontoAnlegen(name,lj,pin,sty?{art:'stylistin'}:null);
   if(r){zeigeFehler('neu-fehler',r.text);return;}
+  if(LE_FEHLEND.indexOf('art')>=0) alert('Angelegt, aber noch als Lehrling (3. Lehrjahr): Für die Gruppe „Stylistinnen“ bitte supabase/20261114_lehrlinge_art_stylistin.sql ausführen und den Zugang danach unter „Bearbeiten“ auf Stylistin stellen.');
   document.getElementById('neu-name').value='';document.getElementById('neu-pin').value='';
   await ladeDashboard();zeige('s-dashboard');
 }
@@ -3711,7 +3726,7 @@ function zeigeEditLehrling(lehrling){
   if(!ISTMEISTERIN) return;
   EDIT_LEHRLING = lehrling;
   document.getElementById('edit-name').value = lehrling.name;
-  document.getElementById('edit-lj').value = lehrling.lehrjahr;
+  document.getElementById('edit-lj').value = istStylistin(lehrling) ? 's' : lehrling.lehrjahr;
   document.getElementById('edit-pin').value = '';
   versteckeFehler('edit-fehler');
   zeige('s-edit-lehrling');
@@ -3730,7 +3745,8 @@ async function speichereEditLehrling(){
   if(!ISTMEISTERIN) return;
   if(!EDIT_LEHRLING) return;
   var name = document.getElementById('edit-name').value.trim();
-  var lj = parseInt(document.getElementById('edit-lj').value);
+  var ljWert = document.getElementById('edit-lj').value, sty = ljWert === 's';
+  var lj = sty ? (istStylistin(EDIT_LEHRLING) ? EDIT_LEHRLING.lehrjahr || 3 : 3) : parseInt(ljWert);
   var pin = document.getElementById('edit-pin').value.trim();
   versteckeFehler('edit-fehler');
   if(!name){ zeigeFehler('edit-fehler','Bitte einen Namen eingeben.'); return; }
@@ -3745,11 +3761,12 @@ async function speichereEditLehrling(){
   var warAktiv = EDIT_LEHRLING.aktiv !== false;
   var lehrbeginn = document.getElementById('edit-lb').value || null;
   var upd = {name:name, lehrjahr:lj, aktiv:EDIT_AKTIV, wochenziel:EDIT_WZ, nur_test:nurTest, lehrbeginn:lehrbeginn};
+  if(sty || 'art' in EDIT_LEHRLING) upd.art = sty ? 'stylistin' : 'lehrling';
   var {error:dbErr} = await sb.from('lehrlinge').update(upd).eq('id', EDIT_LEHRLING.id);
   // Spalten, deren Migration noch nicht ausgeführt ist, weglassen und den Rest trotzdem speichern
   var fehlend = [];
-  for(var versuch=0; versuch<3 && dbErr; versuch++){
-    var spalte = ['wochenziel','nur_test','lehrbeginn'].filter(function(k){ return k in upd && new RegExp(k).test(dbErr.message||''); })[0];
+  for(var versuch=0; versuch<4 && dbErr; versuch++){
+    var spalte = ['wochenziel','nur_test','lehrbeginn','art'].filter(function(k){ return k in upd && new RegExp(k).test(dbErr.message||''); })[0];
     if(!spalte) break;
     delete upd[spalte]; fehlend.push(spalte);
     dbErr = (await sb.from('lehrlinge').update(upd).eq('id', EDIT_LEHRLING.id)).error;
@@ -3778,7 +3795,8 @@ async function speichereEditLehrling(){
   if(!wzFehlt) EDIT_LEHRLING.wochenziel = EDIT_WZ;
   if(fehlend.indexOf('nur_test') < 0) EDIT_LEHRLING.nur_test = nurTest;
   if(fehlend.indexOf('lehrbeginn') < 0) EDIT_LEHRLING.lehrbeginn = lehrbeginn;
-  if(fehlend.length) alert('Gespeichert. Noch nicht in der Datenbank: '+fehlend.map(function(k){return k==='wochenziel'?'Wochenziel (supabase/20261107_lehrlinge_wochenziel.sql)':k==='lehrbeginn'?'Lehrbeginn (supabase/20261107_lehrlinge_lehrbeginn.sql)':'„Nur zum Testen“ (supabase/20261107_lehrlinge_nur_test.sql)';}).join(', ')+'.');
+  if('art' in upd && fehlend.indexOf('art') < 0) EDIT_LEHRLING.art = upd.art;
+  if(fehlend.length) alert('Gespeichert. Noch nicht in der Datenbank: '+fehlend.map(function(k){return k==='wochenziel'?'Wochenziel (supabase/20261107_lehrlinge_wochenziel.sql)':k==='lehrbeginn'?'Lehrbeginn (supabase/20261107_lehrlinge_lehrbeginn.sql)':k==='art'?'Stylistin (supabase/20261114_lehrlinge_art_stylistin.sql)':'„Nur zum Testen“ (supabase/20261107_lehrlinge_nur_test.sql)';}).join(', ')+'.');
   await ladeDashboard();
   zeigeDetailLehrling(EDIT_LEHRLING);
 }
