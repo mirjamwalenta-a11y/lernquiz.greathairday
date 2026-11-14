@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c1917">
+<title>Umformung · Dauerwelle & Glättung</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
+<!--
+  Lern-Modul Umformung: Dauerwelle und Glättung (2. und 3. Lehrjahr).
+  Teile: Chemie-Labor (Animation der Haarbrücken), Arbeitsablauf mit
+  Reihenfolge-Puzzle, Wicklertechniken mit Locken-Generator, Fehler-Detektiv,
+  Glättung, Wissens-Check. „Umformungs-Pass“: Stempel pro Teil (nur im
+  Browser gespeichert, localStorage). Quiz-Ergebnis wie in den anderen
+  Modulen über quiz-verlauf.js (nur mit Lehrlings-Login).
+  Inhalte allgemein gehalten: Im Salon gelten immer die Herstellerangaben.
+-->
+<style>
+:root{
+  --bg:#F8F4EA; --surface:#FFFFFF; --surface-2:#F0E9D8; --ink:#211D17; --muted:#6B6455; --line:#E4DBC5;
+  --accent:#896C32; --accent-soft:#F3EBD9; --warn:#C44030; --warn-soft:#FDECEA; --ok:#4E7A5E; --ok-soft:#EAF3EC;
+  --lab:#1E1B2E; --lab-2:#2B2742; --lab-ink:#F4F0FF; --hb:#6FB7FF; --salz:#FF9F5A; --ss:#F2C94C; --red:#FF6B8B;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+h1,h2,h3{line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:700}
+h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0;max-width:65ch}
+.tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+.back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
+
+/* ── Kopf: dunkles „Labor“ mit animierter Locke ── */
+.hero{background:radial-gradient(120% 140% at 85% 10%,#3D3566 0%,var(--lab) 55%);color:var(--lab-ink);border-radius:0 0 22px 22px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;align-items:center;padding-block:18px 26px}
+@media (max-width:700px){.hero .wrap{grid-template-columns:1fr}.hero svg.locke{max-height:130px}}
+.hero .back-link{color:#BDB6D8}
+.hero .tag{color:var(--ss)}
+.hero p{color:#D7D1EE;margin-top:8px}
+.hero svg.locke{width:100%;height:auto;max-height:190px}
+.locke path{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:zeichnen 3.2s ease forwards}
+.locke path.b{animation-delay:.6s}.locke path.a{animation-delay:1.2s}
+@keyframes zeichnen{to{stroke-dashoffset:0}}
+.pass{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.stempel{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px dashed #6C6496;color:#BDB6D8}
+.stempel.da{border-style:solid;border-color:var(--ss);background:rgba(242,201,76,.14);color:var(--ss)}
+.stempel.da::before{content:"★"}
+.stempel:not(.da)::before{content:"☆"}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(248,244,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.tabs a{flex:none;color:var(--ink);text-decoration:none;font-weight:600;font-size:13px;padding:7px 11px;border-radius:6px}
+nav.tabs a:hover{background:var(--accent-soft);color:var(--accent)}
+section.block{padding-block:36px 4px;display:grid;gap:16px;scroll-margin-top:56px}
+section.block > header{display:grid;gap:6px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid #D9CDAE;background:transparent;color:var(--muted);font:600 13px Poppins,system-ui;padding:8px 13px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 14px Poppins,system-ui;padding:10px 16px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tip{background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
+.warnbox{background:var(--warn-soft);border:1px solid var(--warn);border-radius:10px;padding:10px 12px;font-size:14px;color:#7A2418}
+.fb{margin:0;font-size:14px}
+.fb.ok{color:var(--ok);font-weight:600}.fb.no{color:var(--warn)}
+
+/* ── Chemie-Labor ── */
+.labor{background:var(--lab);color:var(--lab-ink);border-radius:14px;padding:16px;display:grid;gap:12px}
+.labor .tag{color:var(--ss)}
+.labor svg{width:100%;height:auto;display:block;background:var(--lab-2);border-radius:10px}
+.labor .schritt-text h3{color:#fff;margin-bottom:4px}
+.labor .schritt-text p{color:#D7D1EE;font-size:14px}
+.labor .formel{font:600 13px var(--mono);color:var(--ss);background:rgba(242,201,76,.1);border-radius:6px;padding:6px 10px;display:inline-block;margin-top:6px}
+.punkte{display:flex;gap:6px;justify-content:center}
+.punkte i{width:9px;height:9px;border-radius:50%;background:#4A4470;transition:background .3s}
+.punkte i.on{background:var(--ss)}
+.labor .knoepfe{display:flex;gap:8px;justify-content:space-between}
+.labor .btn{background:var(--ss);border-color:var(--ss);color:#1E1B2E}
+.labor .btn.ghost{background:transparent;color:var(--ss)}
+.bruecke{transition:opacity .6s, stroke .6s}
+.kette{transition:transform 1s cubic-bezier(.5,0,.3,1)}
+.legende{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:#D7D1EE}
+.legende span::before{content:"";display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle;background:currentColor}
+.legende .l-hb{color:var(--hb)}.legende .l-salz{color:var(--salz)}.legende .l-ss{color:var(--ss)}
+.bruecken-karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.bk{border-radius:10px;padding:12px;border:1px solid var(--line);background:var(--surface)}
+.bk b{display:block;margin-bottom:4px}
+.bk .lös{font-size:13px;color:var(--muted)}
+.bk.hb{border-top:4px solid var(--hb)}.bk.salz{border-top:4px solid var(--salz)}.bk.ss{border-top:4px solid var(--ss)}
+
+/* ── Ablauf ── */
+.ablauf{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:a}
+.ablauf li{counter-increment:a;display:grid;grid-template-columns:34px 1fr;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.ablauf li::before{content:counter(a);width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.ablauf b{display:block}
+.ablauf .warum{font-size:13px;color:var(--muted)}
+.ablauf .warum::before{content:"Warum? ";font-weight:600;color:var(--accent)}
+.puzzle{display:grid;gap:6px}
+.puzzle button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:600 14px Poppins,system-ui;padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;gap:10px;align-items:center}
+.puzzle button:hover:not(:disabled){border-color:var(--accent)}
+.puzzle button.fertig{border-color:var(--ok);background:var(--ok-soft);cursor:default}
+.puzzle button.falsch{animation:wackeln .35s}
+.puzzle button .nr{width:26px;height:26px;border-radius:50%;border:1.5px dashed var(--line);display:grid;place-items:center;font-size:12px;flex:none}
+.puzzle button.fertig .nr{border:none;background:var(--ok);color:#fff}
+@keyframes wackeln{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.uhr{font:600 1.3rem var(--mono);color:var(--accent)}
+
+/* ── Wickler ── */
+.wickelbild{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wickelbild svg{width:100%;height:auto;display:block}
+dl.facts{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font-size:14px}
+dl.facts dt{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
+dl.facts dd{margin:0}
+.gen{display:grid;gap:12px}
+.gen label{display:grid;gap:4px;font-size:13px;font-weight:600}
+.gen input[type=range]{width:100%;accent-color:var(--accent)}
+.gen .wert{font:600 13px var(--mono);color:var(--accent)}
+.gen svg{width:100%;height:auto;background:linear-gradient(#FFFDF8,#F6EFDF);border-radius:10px;border:1px solid var(--line)}
+.ergebnis-badge{display:inline-block;font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;background:var(--accent);color:#fff}
+
+/* ── Fehler-Detektiv ── */
+.fall{background:linear-gradient(135deg,#FFF9EC,#F7EBD2);border:1px solid #E6D3A8;border-radius:14px;padding:16px;display:grid;gap:10px}
+.fall .lupe{font-size:28px}
+.fall .symptom{font-size:17px;font-weight:600}
+.opts{display:grid;gap:6px}
+.opts button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:14px Poppins,system-ui;padding:10px 13px;border-radius:10px;cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--accent)}
+.opts button:disabled{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-soft);font-weight:600}
+.opts button.wrong{border-color:var(--warn);background:var(--warn-soft);color:var(--warn)}
+.loesung{background:#fff;border-radius:10px;padding:10px 12px;font-size:14px;border:1px solid var(--line)}
+.loesung b{color:var(--accent)}
+
+/* ── Glättung ── */
+.vergleich{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.vergleich{grid-template-columns:1fr}}
+.vgl{border-radius:12px;padding:12px;border:1px solid var(--line);background:var(--surface);display:grid;gap:6px;align-content:start}
+.vgl h3{font-size:15px}
+.vgl svg{width:100%;height:auto;max-height:120px}
+.vgl ol{margin:0;padding-left:18px;font-size:13.5px}
+.arten{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.art{border-radius:12px;padding:12px;border:1px solid var(--line);background:var(--surface);font-size:14px;display:grid;gap:6px;align-content:start}
+.art .haelt{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+
+/* ── Quiz ── */
+.quiz{display:grid;gap:12px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px}
+.q h3{font-size:15px}
+.q .why{font-size:13px;color:var(--muted)}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score .num{font:600 1.5rem var(--mono);color:var(--accent)}
+footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
+</style>
+<link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
+<script src="woernis-tipps.js?v=20261114"></script>  <!-- Wörnis Tipps -->
+<link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <a class="back-link" href="lerntool.html?v=20261114b#seite=praxis">← Praxis-Module</a>
+      <div class="tag" style="margin-top:10px">2. + 3. Lehrjahr · Praxis-Modul</div>
+      <h1>Umformung: Dauerwelle &amp; Glättung 🧪</h1>
+      <p>Wie wird aus glattem Haar eine Locke, und aus einer Locke glattes Haar? Hier knackst du die Chemie, planst den Ablauf, wählst den richtigen Wickler und löst echte Fehlerfälle.</p>
+      <div class="pass" id="pass" aria-label="Dein Umformungs-Pass"></div>
+    </div>
+    <svg class="locke" viewBox="0 0 300 190" aria-hidden="true">
+      <path class="c" d="M45.0 20.0 L45.0 21.5 L45.0 23.0 L45.0 24.5 L45.0 26.0 L45.0 27.5 L45.0 29.0 L45.0 30.5 L45.0 32.0 L45.0 33.5 L45.0 35.0 L45.0 36.5 L45.0 38.0 L45.0 39.5 L45.0 41.0 L45.0 42.5 L45.0 44.0 L45.0 45.5 L45.0 47.0 L45.0 48.5 L45.0 50.0 L45.0 51.5 L45.0 53.0 L45.0 54.5 L45.0 56.0 L45.0 57.5 L45.0 59.0 L45.0 60.5 L45.0 62.0 L45.0 63.5 L45.0 65.0 L45.0 66.5 L45.0 68.0 L45.0 69.5 L45.0 71.0 L45.0 72.5 L45.0 74.0 L45.0 75.5 L45.0 77.0 L45.0 78.5 L45.0 80.0 L45.0 81.5 L45.0 83.0 L45.0 84.5 L45.0 86.0 L45.0 87.5 L45.0 89.0 L45.0 90.5 L45.0 92.0 L45.0 93.5 L45.0 95.0 L45.0 96.5 L45.0 98.0 L45.0 99.5 L45.0 101.0 L45.0 102.5 L45.0 104.0 L45.0 105.5 L45.0 107.0 L45.0 108.5 L45.0 110.0 L45.0 111.5 L45.0 113.0 L45.0 114.5 L45.0 116.0 L45.0 117.5 L45.0 119.0 L45.0 120.5 L45.0 122.0 L45.0 123.5 L45.0 125.0 L45.0 126.5 L45.0 128.0 L45.0 129.5 L45.0 131.0 L45.0 132.5 L45.0 134.0 L45.0 135.5 L45.0 137.0 L45.0 138.5 L45.0 140.0 L45.0 141.5 L45.0 143.0 L45.0 144.5 L45.0 146.0 L45.0 147.5 L45.0 149.0 L45.0 150.5 L45.0 152.0 L45.0 153.5 L45.0 155.0 L45.0 156.5 L45.0 158.0 L45.0 159.5 L45.0 161.0 L45.0 162.5 L45.0 164.0 L45.0 165.5 L45.0 167.0 L45.0 168.5 L45.0 170.0" stroke="#6FB7FF" stroke-width="6"/>
+      <text x="45" y="186" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">glatt</text>
+      <path class="b" d="M140.0 20.0 L142.8 21.5 L145.6 23.0 L148.2 24.5 L150.6 26.0 L152.7 27.5 L154.6 29.0 L156.0 30.5 L157.1 32.0 L157.8 33.5 L158.0 35.0 L157.8 36.5 L157.1 38.0 L156.0 39.5 L154.6 41.0 L152.7 42.5 L150.6 44.0 L148.2 45.5 L145.6 47.0 L142.8 48.5 L140.0 50.0 L137.2 51.5 L134.4 53.0 L131.8 54.5 L129.4 56.0 L127.3 57.5 L125.4 59.0 L124.0 60.5 L122.9 62.0 L122.2 63.5 L122.0 65.0 L122.2 66.5 L122.9 68.0 L124.0 69.5 L125.4 71.0 L127.3 72.5 L129.4 74.0 L131.8 75.5 L134.4 77.0 L137.2 78.5 L140.0 80.0 L142.8 81.5 L145.6 83.0 L148.2 84.5 L150.6 86.0 L152.7 87.5 L154.6 89.0 L156.0 90.5 L157.1 92.0 L157.8 93.5 L158.0 95.0 L157.8 96.5 L157.1 98.0 L156.0 99.5 L154.6 101.0 L152.7 102.5 L150.6 104.0 L148.2 105.5 L145.6 107.0 L142.8 108.5 L140.0 110.0 L137.2 111.5 L134.4 113.0 L131.8 114.5 L129.4 116.0 L127.3 117.5 L125.4 119.0 L124.0 120.5 L122.9 122.0 L122.2 123.5 L122.0 125.0 L122.2 126.5 L122.9 128.0 L124.0 129.5 L125.4 131.0 L127.3 132.5 L129.4 134.0 L131.8 135.5 L134.4 137.0 L137.2 138.5 L140.0 140.0 L142.8 141.5 L145.6 143.0 L148.2 144.5 L150.6 146.0 L152.7 147.5 L154.6 149.0 L156.0 150.5 L157.1 152.0 L157.8 153.5 L158.0 155.0 L157.8 156.5 L157.1 158.0 L156.0 159.5 L154.6 161.0 L152.7 162.5 L150.6 164.0 L148.2 165.5 L145.6 167.0 L142.8 168.5 L140.0 170.0" stroke="#FF9F5A" stroke-width="6"/>
+      <text x="140" y="186" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Welle</text>
+      <path class="a" d="M257.0 22.0 L256.9 23.8 L256.6 25.7 L256.2 27.5 L255.5 29.2 L254.7 30.9 L253.8 32.5 L252.6 34.1 L251.4 35.5 L250.0 36.9 L248.5 38.1 L246.9 39.2 L245.3 40.1 L243.5 41.0 L241.8 41.7 L240.0 42.2 L238.2 42.6 L236.5 42.9 L234.7 43.0 L233.1 43.0 L231.5 42.9 L230.0 42.6 L228.6 42.3 L227.4 41.8 L226.2 41.2 L225.3 40.5 L224.5 39.8 L223.8 39.0 L223.4 38.2 L223.1 37.3 L223.0 36.5 L223.1 35.6 L223.4 34.7 L223.8 33.9 L224.5 33.1 L225.3 32.4 L226.2 31.7 L227.4 31.1 L228.6 30.6 L230.0 30.3 L231.5 30.0 L233.1 29.9 L234.7 29.9 L236.5 30.0 L238.2 30.3 L240.0 30.7 L241.8 31.2 L243.5 31.9 L245.3 32.8 L246.9 33.7 L248.5 34.8 L250.0 36.1 L251.4 37.4 L252.6 38.8 L253.8 40.4 L254.7 42.0 L255.5 43.7 L256.2 45.4 L256.6 47.2 L256.9 49.1 L257.0 50.9 L256.9 52.7 L256.6 54.6 L256.2 56.4 L255.5 58.1 L254.7 59.8 L253.8 61.4 L252.6 63.0 L251.4 64.4 L250.0 65.8 L248.5 67.0 L246.9 68.1 L245.3 69.0 L243.5 69.9 L241.8 70.6 L240.0 71.1 L238.2 71.5 L236.5 71.8 L234.7 71.9 L233.1 71.9 L231.5 71.8 L230.0 71.5 L228.6 71.2 L227.4 70.7 L226.2 70.1 L225.3 69.4 L224.5 68.7 L223.8 67.9 L223.4 67.1 L223.1 66.2 L223.0 65.4 L223.1 64.5 L223.4 63.6 L223.8 62.8 L224.5 62.0 L225.3 61.3 L226.2 60.6 L227.4 60.0 L228.6 59.5 L230.0 59.2 L231.5 58.9 L233.1 58.8 L234.7 58.8 L236.5 58.9 L238.2 59.2 L240.0 59.6 L241.8 60.1 L243.5 60.8 L245.3 61.7 L246.9 62.6 L248.5 63.7 L250.0 65.0 L251.4 66.3 L252.6 67.7 L253.8 69.3 L254.7 70.9 L255.5 72.6 L256.2 74.3 L256.6 76.1 L256.9 78.0 L257.0 79.8 L256.9 81.6 L256.6 83.5 L256.2 85.3 L255.5 87.0 L254.7 88.7 L253.8 90.3 L252.6 91.9 L251.4 93.3 L250.0 94.7 L248.5 95.9 L246.9 97.0 L245.3 97.9 L243.5 98.8 L241.8 99.5 L240.0 100.0 L238.2 100.4 L236.5 100.7 L234.7 100.8 L233.1 100.8 L231.5 100.7 L230.0 100.4 L228.6 100.1 L227.4 99.6 L226.2 99.0 L225.3 98.3 L224.5 97.6 L223.8 96.8 L223.4 96.0 L223.1 95.1 L223.0 94.3 L223.1 93.4 L223.4 92.5 L223.8 91.7 L224.5 90.9 L225.3 90.2 L226.2 89.5 L227.4 88.9 L228.6 88.4 L230.0 88.1 L231.5 87.8 L233.1 87.7 L234.7 87.7 L236.5 87.8 L238.2 88.1 L240.0 88.5 L241.8 89.0 L243.5 89.7 L245.3 90.6 L246.9 91.5 L248.5 92.6 L250.0 93.9 L251.4 95.2 L252.6 96.6 L253.8 98.2 L254.7 99.8 L255.5 101.5 L256.2 103.2 L256.6 105.0 L256.9 106.9 L257.0 108.7 L256.9 110.5 L256.6 112.4 L256.2 114.2 L255.5 115.9 L254.7 117.6 L253.8 119.2 L252.6 120.8 L251.4 122.2 L250.0 123.6 L248.5 124.8 L246.9 125.9 L245.3 126.9 L243.5 127.7 L241.8 128.4 L240.0 128.9 L238.2 129.3 L236.5 129.6 L234.7 129.7 L233.1 129.7 L231.5 129.6 L230.0 129.3 L228.6 129.0 L227.4 128.5 L226.2 127.9 L225.3 127.3 L224.5 126.5 L223.8 125.7 L223.4 124.9 L223.1 124.0 L223.0 123.2 L223.1 122.3 L223.4 121.4 L223.8 120.6 L224.5 119.8 L225.3 119.1 L226.2 118.4 L227.4 117.8 L228.6 117.4 L230.0 117.0 L231.5 116.7 L233.1 116.6 L234.7 116.6 L236.5 116.7 L238.2 117.0 L240.0 117.4 L241.8 117.9 L243.5 118.6 L245.3 119.5 L246.9 120.4 L248.5 121.5 L250.0 122.8 L251.4 124.1 L252.6 125.5 L253.8 127.1 L254.7 128.7 L255.5 130.4 L256.2 132.1 L256.6 133.9 L256.9 135.8 L257.0 137.6 L256.9 139.5 L256.6 141.3 L256.2 143.1 L255.5 144.8 L254.7 146.5 L253.8 148.1 L252.6 149.7 L251.4 151.1 L250.0 152.5 L248.5 153.7 L246.9 154.8 L245.3 155.8 L243.5 156.6 L241.8 157.3 L240.0 157.8 L238.2 158.2 L236.5 158.5 L234.7 158.6 L233.1 158.6 L231.5 158.5 L230.0 158.2 L228.6 157.9 L227.4 157.4 L226.2 156.8 L225.3 156.2 L224.5 155.4 L223.8 154.6 L223.4 153.8 L223.1 152.9 L223.0 152.1 L223.1 151.2 L223.4 150.3 L223.8 149.5 L224.5 148.7 L225.3 148.0 L226.2 147.3 L227.4 146.7 L228.6 146.3 L230.0 145.9 L231.5 145.6 L233.1 145.5 L234.7 145.5 L236.5 145.6 L238.2 145.9 L240.0 146.3 L241.8 146.8 L243.5 147.5 L245.3 148.4 L246.9 149.3 L248.5 150.4 L250.0 151.7 L251.4 153.0 L252.6 154.4 L253.8 156.0 L254.7 157.6 L255.5 159.3 L256.2 161.1 L256.6 162.8 L256.9 164.7 L257.0 166.5" stroke="#F2C94C" stroke-width="6"/>
+      <text x="240" y="186" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Locke</text>
+    </svg>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Bereiche">
+  <div class="wrap">
+    <a href="#chemie">1 · Chemie-Labor</a>
+    <a href="#ablauf">2 · Arbeitsablauf</a>
+    <a href="#wickler">3 · Wicklertechniken</a>
+    <a href="#fehler">4 · Fehler-Detektiv</a>
+    <a href="#glaettung">5 · Glättung</a>
+    <a href="#quiz">6 · Wissens-Check</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ═══════════ 1 CHEMIE ═══════════ -->
+  <section class="block" id="chemie">
+    <header>
+      <span class="tag">Teil 1</span>
+      <h2>Chemie-Labor: Was passiert im Haar?</h2>
+      <p class="muted">Im Haar halten drei Arten von Brücken die Keratin-Ketten zusammen. Für eine Dauerwelle musst du die stärksten davon öffnen und in neuer Form wieder schließen. Klick dich durch das Experiment.</p>
+    </header>
+    <div class="labor">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <span class="tag" id="labSchritt">Schritt 1 von 5</span>
+        <div class="legende"><span class="l-hb">Wasserstoffbrücke</span><span class="l-salz">Salzbrücke</span><span class="l-ss">Disulfidbrücke (S–S)</span></div>
+      </div>
+      <svg id="labSvg" viewBox="0 0 360 230" role="img" aria-label="Zwei Keratin-Ketten mit Brücken"></svg>
+      <div class="schritt-text" id="labText" aria-live="polite"></div>
+      <div class="punkte" id="labPunkte"></div>
+      <div class="knoepfe"><button class="btn ghost" id="labZurueck">◀ Zurück</button><button class="btn" id="labWeiter">Weiter ▶</button></div>
+    </div>
+    <div class="bruecken-karten">
+      <div class="bk hb"><b>Wasserstoffbrücken</b>Ganz viele, aber schwach.<div class="lös">Lösen sich durch <strong>Wasser</strong> und schließen sich beim Trocknen. Darum hält eine Föhnfrisur oder Wasserwelle nur bis zur nächsten Wäsche.</div></div>
+      <div class="bk salz"><b>Salzbrücken</b>Mittelstark.<div class="lös">Reagieren auf den <strong>pH-Wert</strong>. Alkalische Produkte lockern sie, saure schließen sie wieder.</div></div>
+      <div class="bk ss"><b>Disulfidbrücken</b>Wenige, aber sehr stark.<div class="lös">Lösen sich nur <strong>chemisch</strong>: durch das Wellmittel. Erst wenn sie in neuer Form wieder geschlossen sind, ist die Umformung dauerhaft.</div></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ 2 ABLAUF ═══════════ -->
+  <section class="block" id="ablauf">
+    <header>
+      <span class="tag">Teil 2</span>
+      <h2>Arbeitsablauf Dauerwelle</h2>
+      <p class="muted">Jeder Schritt hat einen Grund. Wer das Warum kennt, macht weniger Fehler.</p>
+    </header>
+    <div class="grid2">
+      <ol class="ablauf" id="ablaufListe"></ol>
+      <div class="panel" style="position:sticky;top:64px">
+        <span class="tag">Challenge</span>
+        <h3>Reihenfolge-Puzzle ⏱</h3>
+        <p class="muted" style="font-size:14px">Tippe die Schritte in der richtigen Reihenfolge an. Schaffst du es ohne Fehler und unter 60 Sekunden?</p>
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="uhr" id="puzUhr">0,0 s</span><span class="muted" id="puzFehler" style="font-size:13px">0 Fehler</span></div>
+        <div class="puzzle" id="puzzle"></div>
+        <p class="fb" id="puzFb"></p>
+        <button class="btn ghost" id="puzNeu" style="justify-self:start">Neu mischen</button>
+      </div>
+    </div>
+    <div id="woerni-umformung"></div>
+  </section>
+
+  <!-- ═══════════ 3 WICKLER ═══════════ -->
+  <section class="block" id="wickler">
+    <header>
+      <span class="tag">Teil 3</span>
+      <h2>Wicklertechniken: welche, wann und warum?</h2>
+      <p class="muted">Die Technik bestimmt, wo die Locke sitzt und wie sie fällt. Wähle eine Technik.</p>
+    </header>
+    <div class="chips" role="group" aria-label="Technik wählen" id="techChips"></div>
+    <div class="grid2">
+      <div class="wickelbild"><svg id="techSvg" viewBox="0 0 300 260" role="img" aria-label="Wickelschema"></svg></div>
+      <article class="panel" id="techInfo" aria-live="polite"></article>
+    </div>
+    <div class="panel gen">
+      <span class="tag">Experiment</span>
+      <h3>Locken-Generator 🌀</h3>
+      <p class="muted" style="font-size:14px">Stell Wicklerstärke und Haarlänge ein und sieh, welche Locke entsteht.</p>
+      <label>Wicklerdurchmesser <span class="wert" id="genDOut"></span><input type="range" id="genD" min="6" max="30" step="1" value="12"></label>
+      <label>Haarlänge der Strähne <span class="wert" id="genLOut"></span><input type="range" id="genL" min="3" max="40" step="1" value="15"></label>
+      <svg id="genSvg" viewBox="0 0 320 170" role="img" aria-label="Vorschau der Locke"></svg>
+      <p id="genText" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ═══════════ 4 FEHLER ═══════════ -->
+  <section class="block" id="fehler">
+    <header>
+      <span class="tag">Teil 4</span>
+      <h2>Fehler-Detektiv 🔍</h2>
+      <p class="muted">Eine Kundin kommt mit einem Problem zurück. Finde die Ursache und lerne, wie es nicht passiert.</p>
+    </header>
+    <div class="fall" id="fall"></div>
+  </section>
+
+  <!-- ═══════════ 5 GLÄTTUNG ═══════════ -->
+  <section class="block" id="glaettung">
+    <header>
+      <span class="tag">Teil 5</span>
+      <h2>Glättung: die Dauerwelle rückwärts</h2>
+      <p class="muted">Eine chemische Glättung arbeitet mit derselben Chemie wie die Dauerwelle. Der Unterschied: Das Haar wird nicht gewickelt, sondern glatt gehalten, während die Brücken offen sind.</p>
+    </header>
+    <div class="vergleich">
+      <div class="vgl">
+        <h3>🌀 Dauerwelle</h3>
+        <svg viewBox="0 0 200 90" aria-hidden="true"><path d="M10 45 C 30 10, 50 80, 70 45 S 110 10, 130 45 S 170 80, 190 45" fill="none" stroke="#896C32" stroke-width="6" stroke-linecap="round"/></svg>
+        <ol><li>Brücken öffnen (Wellmittel)</li><li><strong>Haar um Wickler formen</strong></li><li>Brücken in Lockenform schließen (Fixierung)</li></ol>
+      </div>
+      <div class="vgl">
+        <h3>➖ Glättung</h3>
+        <svg viewBox="0 0 200 90" aria-hidden="true"><path d="M10 45 L 190 45" fill="none" stroke="#896C32" stroke-width="6" stroke-linecap="round"/></svg>
+        <ol><li>Brücken öffnen (Glättcreme)</li><li><strong>Haar glatt halten</strong> (kämmen oder plätten, ohne zu ziehen)</li><li>Brücken in glatter Form schließen (Fixierung)</li></ol>
+      </div>
+    </div>
+    <h3 style="margin-top:6px">Drei Arten der Glättung</h3>
+    <div class="arten">
+      <div class="art"><span class="haelt">dauerhaft · bis zum Nachwuchs</span><b>Thio-Glättung</b>Arbeitet wie die Dauerwelle mit Thioglykolat und anschließender Fixierung. Für welliges bis lockiges Haar. Beim Nachbehandeln nur den Nachwuchs glätten.</div>
+      <div class="art"><span class="haelt">dauerhaft · sehr stark</span><b>Alkalische Glättung (Hydroxid)</b>Für sehr krauses Haar. Verändert die Brücken so, dass sie sich nicht mehr zurückbilden. Sehr aggressiv für Haar und Kopfhaut.<div class="warnbox" style="margin-top:4px">Nie Thio- und Hydroxid-Produkte auf demselben Haar mischen oder nacheinander anwenden: Das Haar kann abbrechen.</div></div>
+      <div class="art"><span class="haelt">hält einige Monate · wäscht sich aus</span><b>Keratin- bzw. Glättungsbehandlung</b>Macht das Haar glatter und glänzender, wird mit dem Glätteisen versiegelt und lässt mit der Zeit nach.<div class="warnbox" style="margin-top:4px">Nur Produkte ohne Formaldehyd verwenden, gut lüften und die Gebrauchsanweisung genau einhalten.</div></div>
+    </div>
+    <div class="panel">
+      <h3>Ablauf Thio-Glättung</h3>
+      <ol class="ablauf" id="glattListe"></ol>
+    </div>
+  </section>
+
+  <!-- ═══════════ 6 QUIZ ═══════════ -->
+  <section class="block" id="quiz">
+    <header>
+      <span class="tag">Teil 6</span>
+      <h2>Wissens-Check Umformung</h2>
+      <p class="muted">Ab 10 von 12 richtig bekommst du den letzten Stempel für deinen Umformungs-Pass.</p>
+    </header>
+    <div class="score panel"><span class="num" id="scoreOut">0 / 0</span><span class="muted" id="scoreText">Noch keine Antwort.</span><span class="muted" id="scoreSpeicher" style="font-size:12px"></span><button class="btn ghost" id="quizReset">Neu starten</button></div>
+    <div class="quiz" id="quizBox"></div>
+  </section>
+
+  <footer>Umformung · greathairday Lern-Tool · Im Salon gelten immer die Angaben des Herstellers. Nie ohne Handschuhe und Hautschutz arbeiten.</footer>
+</main>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function mische(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;} return a; }
+
+  // ── Umformungs-Pass (Stempel nur in diesem Browser) ──
+  var PASS_KEY='umf-pass-v1', STEMPEL=[['chemie','Chemie'],['puzzle','Ablauf'],['generator','Locken'],['detektiv','Detektiv'],['quiz','Check']];
+  var pass={}; try{ pass=JSON.parse(localStorage.getItem(PASS_KEY)||'{}')||{}; }catch(e){ pass={}; }
+  function passZeigen(){
+    var n=STEMPEL.filter(function(s){return pass[s[0]];}).length;
+    $('#pass').innerHTML=STEMPEL.map(function(s){return '<span class="stempel'+(pass[s[0]]?' da':'')+'">'+s[1]+'</span>';}).join('')+
+      '<span class="stempel'+(n===5?' da':'')+'" style="border-style:solid">'+(n===5?'Umformungs-Profi!':'Pass '+n+' / 5')+'</span>';
+  }
+  function stempeln(k){ if(pass[k]) return; pass[k]=true; try{localStorage.setItem(PASS_KEY,JSON.stringify(pass));}catch(e){} passZeigen(); }
+  passZeigen();
+
+  // ═══════════ 1 CHEMIE-LABOR ═══════════
+  // Zwei Ketten (links fest, rechts beweglich), 6 Brücken-Ebenen
+  var EBENEN=[30,62,94,126,158,190], TYP=['hb','ss','salz','hb','ss','hb'];
+  var SCHRITTE=[
+    {t:'Ausgangszustand: glattes Haar',p:'Zwei Keratin-Ketten liegen nebeneinander. Die Brücken halten sie in ihrer Form, hier glatt.',f:'Disulfidbrücke = Cystin (S–S)',zust:'zu'},
+    {t:'Wellmittel: Brücken öffnen (Reduktion)',p:'Das Wellmittel ist alkalisch: Das Haar quillt auf, die Schuppenschicht öffnet sich. Der Wirkstoff (z. B. Thioglykolat) knackt die Disulfidbrücken. Aus einer S–S-Brücke werden zwei offene Enden.',f:'S–S + Wellmittel → SH + HS',zust:'offen'},
+    {t:'Wickeln: Ketten verschieben sich',p:'Das Haar liegt jetzt um den Wickler. Dabei verschieben sich die Ketten gegeneinander. Die offenen Schwefel-Enden stehen sich in neuer Position gegenüber.',f:'Form kommt vom Wickler',zust:'verschoben'},
+    {t:'Fixierung: Brücken schließen (Oxidation)',p:'Nach dem Zwischenspülen kommt die Fixierung mit verdünntem Wasserstoffperoxid. Sie schließt die Schwefel-Enden wieder zu Disulfidbrücken, aber jetzt in der Lockenform.',f:'SH + HS + Fixierung → S–S',zust:'neu'},
+    {t:'Ergebnis: die Locke hält',p:'Die neuen Disulfidbrücken halten die Ketten in Lockenform, auch nach dem Waschen. Bis der Nachwuchs kommt, denn der ist wieder glatt.',f:'Dauerhaft bis zum Nachwuchs',zust:'fertig'}
+  ];
+  var lab=0;
+  function labZeichnen(){
+    var S=SCHRITTE[lab], z=S.zust, x1=120, x2=240, versatz=(z==='verschoben'||z==='neu'||z==='fertig')?32:0;
+    var g='';
+    // Ketten
+    g+='<line x1="'+x1+'" y1="14" x2="'+x1+'" y2="216" stroke="#C9C2EA" stroke-width="7" stroke-linecap="round"/>';
+    g+='<g class="kette" style="transform:translateY('+versatz+'px)"><line x1="'+x2+'" y1="-18" x2="'+x2+'" y2="216" stroke="#C9C2EA" stroke-width="7" stroke-linecap="round"/>'+
+      [-2].concat(EBENEN).map(function(y){return '<circle cx="'+x2+'" cy="'+y+'" r="5" fill="#2B2742" stroke="#C9C2EA" stroke-width="2"/>';}).join('')+'</g>';
+    g+=EBENEN.map(function(y){return '<circle cx="'+x1+'" cy="'+y+'" r="5" fill="#2B2742" stroke="#C9C2EA" stroke-width="2"/>';}).join('');
+    g+='<text x="'+x1+'" y="226" fill="#9C95C2" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Keratin-Kette</text>';
+    EBENEN.forEach(function(y,i){
+      var t=TYP[i], farbe={hb:'#6FB7FF',salz:'#FF9F5A',ss:'#F2C94C'}[t];
+      if(t==='ss'){
+        if(z==='zu'){ g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+y+'" stroke="'+farbe+'" stroke-width="6"/><text x="180" y="'+(y-6)+'" fill="'+farbe+'" font-size="12" font-weight="700" text-anchor="middle" font-family="Poppins,system-ui">S–S</text>'; }
+        else if(z==='offen'||z==='verschoben'){
+          var yr=y+(z==='verschoben'?versatz:0);
+          g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+(x1+26)+'" y2="'+y+'" stroke="#FF6B8B" stroke-width="5"/><text x="'+(x1+31)+'" y="'+(y+4)+'" fill="#FF6B8B" font-size="11" font-weight="700" font-family="Poppins,system-ui">SH</text>';
+          g+='<line class="bruecke" x1="'+(x2-26)+'" y1="'+yr+'" x2="'+x2+'" y2="'+yr+'" stroke="#FF6B8B" stroke-width="5"/><text x="'+(x2-31)+'" y="'+(yr+4)+'" fill="#FF6B8B" font-size="11" font-weight="700" text-anchor="end" font-family="Poppins,system-ui">HS</text>';
+        } else {
+          // neu geschlossen: schräg zur verschobenen Kette
+          var y2=y+versatz-32;
+          g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+(y2<0?y+versatz:y2)+'" stroke="'+farbe+'" stroke-width="6"/><text x="180" y="'+(y-8)+'" fill="'+farbe+'" font-size="12" font-weight="700" text-anchor="middle" font-family="Poppins,system-ui">S–S neu</text>';
+        }
+      } else {
+        // nass und alkalisch: Wasserstoff- und Salzbrücken gelockert; Salzbrücken schließen beim Fixieren (sauer), Wasserstoffbrücken beim Trocknen
+        var off=(z==='offen'||z==='verschoben')||(z==='neu'&&t==='hb');
+        g+='<line class="bruecke" x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+(y+(z==='zu'||z==='offen'?0:versatz-32))+'" stroke="'+farbe+'" stroke-width="3" stroke-dasharray="'+(t==='hb'?'5 5':'0')+'" opacity="'+(off?.25:.9)+'"/>';
+      }
+    });
+    if(z==='offen'){ g+='<text x="300" y="40" fill="#FF6B8B" font-size="22" text-anchor="middle">⚡</text><text x="300" y="58" fill="#FF6B8B" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Wellmittel</text>'; }
+    if(z==='verschoben'){ g+='<circle cx="300" cy="115" r="26" fill="none" stroke="#C9C2EA" stroke-width="2" stroke-dasharray="4 4"/><text x="300" y="119" fill="#C9C2EA" font-size="10" text-anchor="middle" font-family="Poppins,system-ui">Wickler</text>'; }
+    if(z==='neu'){ g+='<text x="300" y="40" fill="#6FFFB0" font-size="22" text-anchor="middle">✚</text><text x="300" y="58" fill="#6FFFB0" font-size="9" text-anchor="middle" font-family="Poppins,system-ui">Fixierung</text>'; }
+    if(z==='fertig'){ g+='<text x="300" y="120" fill="#F2C94C" font-size="30" text-anchor="middle">✓</text>'; }
+    if(z==='zu'||z==='fertig') g+='<text x="50" y="119" fill="#9C95C2" font-size="11" text-anchor="middle" font-family="Poppins,system-ui">'+(z==='zu'?'Form: glatt':'Form: Locke')+'</text>';
+    $('#labSvg').innerHTML=g;
+    $('#labText').innerHTML='<h3>'+esc(S.t)+'</h3><p>'+esc(S.p)+'</p><span class="formel">'+esc(S.f)+'</span>';
+    $('#labSchritt').textContent='Schritt '+(lab+1)+' von '+SCHRITTE.length;
+    $('#labPunkte').innerHTML=SCHRITTE.map(function(s,i){return '<i class="'+(i<=lab?'on':'')+'"></i>';}).join('');
+    $('#labZurueck').disabled=lab===0;
+    $('#labWeiter').textContent=lab===SCHRITTE.length-1?'Nochmal ↺':'Weiter ▶';
+    if(lab===SCHRITTE.length-1) stempeln('chemie');
+  }
+  $('#labWeiter').onclick=function(){ lab=lab===SCHRITTE.length-1?0:lab+1; labZeichnen(); };
+  $('#labZurueck').onclick=function(){ if(lab>0){lab--;labZeichnen();} };
+  labZeichnen();
+
+  // ═══════════ 2 ABLAUF + PUZZLE ═══════════
+  var ABLAUF=[
+    ['Beratung und Haardiagnose','Haarstruktur, Vorbehandlung (gefärbt, blondiert), Zustand und Wunsch bestimmen das Wellmittel und die Wicklerstärke. Bei unklarer Vorbehandlung: Teststrähne.'],
+    ['Haare waschen, ohne Pflege','Mildes Shampoo, keine Kur und kein Conditioner, die Kopfhaut nicht kräftig massieren. Pflegeschichten bremsen das Wellmittel, eine gereizte Kopfhaut brennt.'],
+    ['Abteilen','Saubere Felder nach der gewählten Technik. Ordnung beim Abteilen ergibt eine gleichmäßige Welle.'],
+    ['Wickeln','Passee so breit wie der Wickler und nicht dicker als sein Durchmesser, gleichmäßige Spannung, Spitzen glatt im Spitzenpapier, Gummi ohne Knick.'],
+    ['Haut schützen','Schutzcreme am Haaransatz, Watte- oder Schutzband, Handschuhe, Umhang. Das Wellmittel darf nicht auf Haut und Augen laufen.'],
+    ['Wellmittel auftragen','Gleichmäßig auf jeden Wickler, ohne Lücken. Ungleich aufgetragen heißt ungleich gewellt.'],
+    ['Einwirken und Probewickler','Einwirkzeit nach Herstellerangabe. Einen Wickler halb abwickeln: Zeigt die Strähne eine klare S-Form, ist das Wellmittel fertig.'],
+    ['Zwischenspülen','Gründlich mit lauwarmem Wasser ausspülen, dann gut abtupfen. Reste von Wellmittel und Wasser schwächen sonst die Fixierung.'],
+    ['Fixieren','Fixierung gleichmäßig auftragen und einwirken lassen. Jetzt schließen sich die Brücken in der neuen Form.'],
+    ['Vorsichtig abwickeln und nachfixieren','Wickler ohne Zug entfernen, Längen und Spitzen noch einmal fixieren.'],
+    ['Ausspülen und saure Pflege','Gründlich spülen, eine saure Pflege schließt die Schuppenschicht und gleicht den pH-Wert aus.'],
+    ['Stylen und Tipps für zu Hause','Die Kundin soll das Haar 24 bis 48 Stunden nicht waschen und nicht stark föhnen oder zusammenbinden, damit die Form sich festigen kann.']
+  ];
+  $('#ablaufListe').innerHTML=ABLAUF.map(function(a){return '<li><div><b>'+esc(a[0])+'</b><span class="warum">'+esc(a[1])+'</span></div></li>';}).join('');
+  var puz={naechst:0,fehler:0,start:0,timer:null,fertig:false};
+  function puzNeu(){
+    clearInterval(puz.timer); puz={naechst:0,fehler:0,start:0,timer:null,fertig:false};
+    $('#puzUhr').textContent='0,0 s'; $('#puzFehler').textContent='0 Fehler'; $('#puzFb').textContent=''; $('#puzFb').className='fb';
+    $('#puzzle').innerHTML=mische(ABLAUF.map(function(a,i){return i;})).map(function(i){return '<button type="button" data-i="'+i+'"><span class="nr">?</span>'+esc(ABLAUF[i][0])+'</button>';}).join('');
+  }
+  $('#puzzle').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b||b.classList.contains('fertig')||puz.fertig) return;
+    if(!puz.start){ puz.start=Date.now(); puz.timer=setInterval(function(){ $('#puzUhr').textContent=((Date.now()-puz.start)/1000).toFixed(1).replace('.',',')+' s'; },100); }
+    if(+b.dataset.i===puz.naechst){
+      b.classList.add('fertig'); b.querySelector('.nr').textContent=puz.naechst+1; puz.naechst++;
+      if(puz.naechst===ABLAUF.length){
+        clearInterval(puz.timer); puz.fertig=true; var s=(Date.now()-puz.start)/1000;
+        var top=puz.fehler===0&&s<60;
+        $('#puzFb').className='fb ok';
+        $('#puzFb').textContent=top?'🏆 Perfekt! Ohne Fehler in '+s.toFixed(1).replace('.',',')+' Sekunden. Stempel verdient!':'Geschafft in '+s.toFixed(1).replace('.',',')+' s mit '+puz.fehler+' Fehler'+(puz.fehler===1?'':'n')+'. Für den Stempel: ohne Fehler und unter 60 Sekunden.';
+        if(top) stempeln('puzzle');
+        var box=$('#puzzle'); Array.prototype.slice.call(box.children).sort(function(a,b){return a.dataset.i-b.dataset.i;}).forEach(function(x){box.appendChild(x);});
+      }
+    } else {
+      puz.fehler++; $('#puzFehler').textContent=puz.fehler+' Fehler';
+      b.classList.remove('falsch'); void b.offsetWidth; b.classList.add('falsch');
+      $('#puzFb').className='fb no'; $('#puzFb').textContent='Noch nicht. Was kommt nach „'+(puz.naechst?ABLAUF[puz.naechst-1][0]:'dem Start')+'“?';
+    }
+  });
+  $('#puzNeu').onclick=puzNeu; puzNeu();
+  if(window.woerniTippHTML){ var wt=window.woerniTippHTML('umformung'); if(wt) $('#woerni-umformung').innerHTML=wt; }
+
+  // ═══════════ 3 WICKLER ═══════════
+  // Schema: Kopf von hinten, Wickler als abgerundete Rechtecke
+  function kopf(innen){ return '<ellipse cx="150" cy="130" rx="105" ry="118" fill="#F6EFDF" stroke="#D9CDAE" stroke-width="2"/><path d="M60 215 Q150 255 240 215" fill="none" stroke="#D9CDAE" stroke-width="2"/>'+innen+'<text x="150" y="254" text-anchor="middle" font-size="10" fill="#9A9188" font-family="Poppins,system-ui">Ansicht von hinten</text>'; }
+  function w(x,y,l,h,rot,farbe){ return '<rect x="'+(x-l/2)+'" y="'+(y-h/2)+'" width="'+l+'" height="'+h+'" rx="'+(h/2)+'" fill="'+(farbe||'#896C32')+'" opacity=".9" transform="rotate('+(rot||0)+' '+x+' '+y+')"/>'; }
+  var TECH=[
+    {id:'fach',n:'Klassische Fachwicklung',bild:function(){var s='';[40,64,88,112,136,160,184].forEach(function(y){s+=w(150,y,44,16);});[70,96,122,148,174].forEach(function(y){s+=w(95,y,40,15,0,'#B08D4A')+w(205,y,40,15,0,'#B08D4A');});return kopf(s);},
+     wie:'Kopf in Felder abteilen: Mittelbahn vom Oberkopf zum Nacken, dann Seiten und Hinterkopf. Wickler in geraden Reihen, gleich große Passees, jeder Wickler sitzt auf seiner Basis.',
+     warum:'Gleichmäßige Welle am ganzen Kopf. Die Grundtechnik für die Prüfung: Hier sieht man jede Ungenauigkeit.',
+     achtung:'Saubere, gerade Abteilungen. Sonst bleiben sichtbare Scheitel und Lücken.'},
+    {id:'ziegel',n:'Versetzte Wicklung (Ziegelstein)',bild:function(){var s='';for(var r=0;r<7;r++){var y=44+r*25,off=r%2?22:0;for(var c=-2;c<=2;c++){var x=150+c*44+off;if(Math.abs(x-150)<95-r*2)s+=w(x,y,38,15);}}return kopf(s);},
+     wie:'Jede Reihe ist um eine halbe Wicklerbreite versetzt, wie Ziegel in einer Mauer.',
+     warum:'Keine sichtbaren Abteilungslinien, die Locken fallen natürlicher ineinander. Gut für kurze bis mittellange Haare.',
+     achtung:'Dreieckige oder versetzte Abteilungen genau planen, damit kein Feld doppelt oder gar nicht gewickelt ist.'},
+    {id:'spirale',n:'Spiralwicklung',bild:function(){var s='';[70,110,150,190,230].forEach(function(x){for(var k=0;k<5;k++)s+=w(x,60+k*30,26,10,-25,k%2?'#B08D4A':'#896C32');});return kopf(s);},
+     wie:'Die Strähne wird spiralförmig um einen senkrecht hängenden (Spiral-)Wickler gelegt, vom Ansatz zur Spitze oder umgekehrt.',
+     warum:'Gleichmäßige Korkenzieherlocken über die ganze Länge, auch bei langem Haar. Die Locke ist am Ansatz genauso stark wie an der Spitze.',
+     achtung:'Strähne flach und überlappend führen, damit keine Treppen entstehen.'},
+    {id:'strahl',n:'Strahlen- oder Pivotwicklung',bild:function(){var s='';for(var a=-80;a<=80;a+=20){var r=a*Math.PI/180;s+=w(150+Math.sin(r)*60,150-Math.cos(r)*60,34,13,a);s+=w(150+Math.sin(r)*98,150-Math.cos(r)*98,34,13,a,'#B08D4A');}s+='<circle cx="150" cy="150" r="5" fill="#C44030"/>';return kopf(s);},
+     wie:'Die Wickler liegen strahlenförmig um einen Mittelpunkt, zum Beispiel um einen Wirbel oder rund um das Gesicht.',
+     warum:'Gibt der Locke eine Richtung, etwa vom Gesicht weg. Nützlich bei Wirbeln, damit die Locke mit dem Wuchs fällt.',
+     achtung:'Innen sind die Felder schmaler als außen: kleinere Passees nehmen, damit es gleichmäßig wird.'},
+    {id:'doppel',n:'Doppelwicklung (Huckepack)',bild:function(){var s='';[60,95,130,165].forEach(function(y,i){[100,150,200].forEach(function(x){s+=w(x,y,36,14)+w(x,y+16,30,11,0,'#C9A96A');});});return kopf(s);},
+     wie:'Zwei Wickler auf einer Strähne: einer am Ansatz, einer für die Längen und Spitzen.',
+     warum:'Bei langem Haar wird die Strähne auf einem Wickler sonst zu dick. So wellt sich das Haar über die ganze Länge gleichmäßig.',
+     achtung:'Beide Wickler fest, aber ohne Druck aufeinander. Spitzen trotzdem sauber im Spitzenpapier.'},
+    {id:'ansatz',n:'Ansatz- oder Volumenwicklung',bild:function(){var s='';[70,100,130].forEach(function(y){[100,150,200].forEach(function(x){s+=w(x,y,36,14);});});s+='<path d="M95 150 Q100 210 92 240 M150 150 Q152 210 150 240 M205 150 Q200 210 208 240" stroke="#B9AC8C" stroke-width="3" fill="none"/>';return kopf(s);},
+     wie:'Nur der Ansatzbereich wird gewickelt, die Längen bleiben draußen oder werden geschützt.',
+     warum:'Mehr Volumen und Stand am Ansatz, ohne dass die Längen lockig werden. Auch für den Nachwuchs bei einer früheren Dauerwelle.',
+     achtung:'Längen mit Pflege oder Folie schützen, damit sie kein Wellmittel abbekommen.'},
+    {id:'spitze',n:'Spitzenwicklung',bild:function(){var s='';[150,180,205].forEach(function(y){[95,150,205].forEach(function(x){s+=w(x,y,34,13,0,'#B08D4A');});});s+='<path d="M95 40 Q98 100 95 140 M150 40 Q150 100 150 140 M205 40 Q202 100 205 140" stroke="#B9AC8C" stroke-width="3" fill="none"/>';return kopf(s);},
+     wie:'Nur Längen und Spitzen werden gewickelt, der Ansatz bleibt glatt.',
+     warum:'Schwung und Bewegung in den Spitzen, ein natürlicher Look. Wächst ohne sichtbare Kante heraus.',
+     achtung:'Gleiche Höhe für alle Wickler wählen, sonst wird die Welle stufig.'}
+  ];
+  var tech=TECH[0];
+  function techZeigen(){
+    $('#techChips').innerHTML=TECH.map(function(t){return '<button type="button" class="chip" data-id="'+t.id+'" aria-pressed="'+(t===tech)+'">'+esc(t.n)+'</button>';}).join('');
+    $('#techSvg').innerHTML=tech.bild();
+    $('#techInfo').innerHTML='<h3>'+esc(tech.n)+'</h3><dl class="facts"><dt>So geht’s</dt><dd>'+esc(tech.wie)+'</dd><dt>Warum</dt><dd>'+esc(tech.warum)+'</dd><dt>Achtung</dt><dd>'+esc(tech.achtung)+'</dd></dl>'+
+      '<div class="tip"><strong>Für alle Techniken:</strong> Passee nicht breiter als der Wickler und nicht dicker als sein Durchmesser. So wellt sich jedes Haar gleich stark.</div>';
+  }
+  $('#techChips').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;tech=TECH.filter(function(t){return t.id===b.dataset.id;})[0];techZeigen();});
+  techZeigen();
+
+  // Locken-Generator
+  var genBenutzt=0;
+  function gen(){
+    var d=+$('#genD').value, L=+$('#genL').value, umd=(L*10)/(Math.PI*d);
+    $('#genDOut').textContent=d+' mm'; $('#genLOut').textContent=L+' cm';
+    var art, text;
+    if(umd<1){art='Kaum Welle';text='Die Strähne schafft nicht einmal eine Umdrehung um den Wickler. Es entsteht höchstens etwas Schwung. Dünneren Wickler wählen oder die Haare sind zu kurz.';}
+    else if(d<=9){art='Enge Locke';text='Dünne Wickler geben kleine, kräftige Locken. Gut für kurzes Haar oder wenn die Kundin richtig Locke möchte.';}
+    else if(d<=16){art='Klassische Locke';text='Mittlere Wickler: deutliche, elastische Locken. Der Allrounder.';}
+    else if(d<=22){art='Weiche Welle';text='Dicke Wickler geben große, weiche Wellen und Bewegung, eher Volumen als Locke.';}
+    else {art='Volumen & Schwung';text='Sehr dicke Wickler sorgen vor allem für Stand und Volumen am Ansatz.';}
+    // Vorschau: Welle mit Amplitude ~ Durchmesser, Wellenlänge ~ Umfang
+    // Strähne wie eine Feder von der Seite: entlang = a·t + c·sin t, quer = B·cos t.
+    // Schleifen (Locke), wenn c > a; ohne c nur eine Welle. B wächst mit dem Wicklerdurchmesser.
+    var B=Math.min(48,4+d*1.5), k=d<=9?[0.35,0.85]:d<=16?[0.5,0.7]:d<=22?[0.9,0.25]:[1.3,0], a=B*k[0], cc=B*k[1];
+    var T=Math.max(0.6,umd)*2*Math.PI;
+    if(umd<1){ B=B*0.3; a=B*3; cc=0; }
+    var breite=a*T+2*cc, f=breite>280?280/breite:1, p='';
+    for(var i=0;i<=360;i++){
+      var t=i/360*T, x=22+(a*t+cc*Math.sin(t))*f, y=85-B*Math.cos(t)*Math.min(1,f*1.6);
+      p+=(i?' L':'M')+x.toFixed(1)+' '+y.toFixed(1);
+    }
+    $('#genSvg').innerHTML='<rect x="6" y="66" width="10" height="38" rx="4" fill="#896C32"/><text x="4" y="116" font-size="9" fill="#9A9188" font-family="Poppins,system-ui">Ansatz</text>'+
+      '<path d="'+p+'" fill="none" stroke="#5A3E1B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<path d="'+p+'" fill="none" stroke="#C9A36A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>';
+    $('#genText').innerHTML='<span class="ergebnis-badge">'+art+'</span> &nbsp;≈ '+umd.toFixed(1).replace('.',',')+' Umdrehungen um den Wickler.<br><span class="muted" style="font-size:14px">'+esc(text)+'</span>';
+    if(++genBenutzt>=4) stempeln('generator');
+  }
+  $('#genD').addEventListener('input',gen); $('#genL').addEventListener('input',gen); genBenutzt=-1; gen();
+
+  // ═══════════ 4 FEHLER-DETEKTIV ═══════════
+  var FAELLE=[
+    {s:'„Die Welle ist nach einer Woche fast weg.“',r:'Fixierung zu kurz oder auf zu nassem Haar',f:['Wickler waren zu dünn','Kundin hat zu viel Locke bekommen','Fixierung zu kurz oder auf zu nassem Haar'],
+     l:'Ist das Haar nach dem Zwischenspülen nicht gut abgetupft, wird die Fixierung verdünnt und schließt zu wenige Brücken. Auch eine zu kurze Einwirkzeit des Wellmittels oder Pflegereste im Haar machen die Welle schwach.',v:'Nach dem Zwischenspülen gründlich abtupfen, Einwirkzeiten genau einhalten, vorher ohne Pflege waschen.'},
+    {s:'„Das ist viel zu kraus, wie ein Pudel!“',r:'Wellmittel zu lange oder zu stark, Wickler zu dünn',f:['Wellmittel zu lange oder zu stark, Wickler zu dünn','Zu wenig Wellmittel aufgetragen','Fixierung vergessen'],
+     l:'Zu lange Einwirkzeit oder ein zu starkes Wellmittel öffnen zu viele Brücken, dünne Wickler machen die Locke zusätzlich eng.',v:'Probewickler rechtzeitig prüfen, Wellmittel nach Haardiagnose wählen, Wicklerstärke mit der Kundin abstimmen.'},
+    {s:'„Die Spitzen stehen ab wie kleine Haken.“',r:'Spitzen beim Wickeln umgeknickt',f:['Spitzen beim Wickeln umgeknickt','Haar war zu trocken','Zu viel Fixierung'],
+     l:'Liegen die Spitzen nicht glatt im Spitzenpapier, werden sie umgebogen und in dieser Knickform fixiert („Fischhaken“).',v:'Spitzen immer glatt und gerade im Spitzenpapier einarbeiten, dann erst wickeln.'},
+    {s:'„Bei mir brechen die Haare an einer Linie ab.“',r:'Gummi hat die Haare abgeknickt',f:['Wickler zu dick','Gummi hat die Haare abgeknickt','Zu kurz eingewirkt'],
+     l:'Drückt der Gummi zu fest oder schräg auf das Haar, entsteht ein Knick. Genau dort ist das Haar nach der Behandlung geschwächt und bricht.',v:'Gummi parallel zum Wickler legen, nicht zu fest. Bei empfindlichem Haar mit Stiften abstecken.'},
+    {s:'„Der Ansatz ist glatt, nur die Längen sind lockig.“',r:'Zu wenig Spannung am Ansatz, Wickler nicht auf Basis',f:['Zu wenig Spannung am Ansatz, Wickler nicht auf Basis','Zu viel Wellmittel','Haare zu kurz geschnitten'],
+     l:'Wird die Strähne locker oder schräg gewickelt, sitzt der Wickler nicht auf seiner Basis und der Ansatz bekommt kaum Form.',v:'Passee im richtigen Winkel abheben, gleichmäßig spannen, Wickler direkt auf die Basis setzen.'},
+    {s:'„Meine Kopfhaut brennt und ist ganz rot.“',r:'Wellmittel auf die Kopfhaut gelaufen, kein Hautschutz',f:['Zu dicke Wickler','Wellmittel auf die Kopfhaut gelaufen, kein Hautschutz','Haar war gefärbt'],
+     l:'Wellmittel reizt die Haut. Kräftiges Waschen vorher, fehlende Schutzcreme oder ein nasses Watteband verstärken das.',v:'Kopfhaut beim Waschen schonen, Schutzcreme und Schutzband verwenden, Wellmittel vorsichtig auftragen, bei Verletzungen der Kopfhaut keine Dauerwelle.'},
+    {s:'„Die Haare fühlen sich an wie Stroh und reißen.“',r:'Vorschädigung (z. B. Blondierung) nicht beachtet',f:['Vorschädigung (z. B. Blondierung) nicht beachtet','Zu wenig Spannung','Wickler zu dick'],
+     l:'Blondiertes oder stark gefärbtes Haar ist schon geschwächt. Mit einem normalen Wellmittel wird es überbehandelt.',v:'Gründliche Haardiagnose mit Zugtest, schonendes Wellmittel für vorbehandeltes Haar, im Zweifel eine Teststrähne.'},
+    {s:'„Ein Teil ist schön lockig, ein anderer kaum.“',r:'Ungleich abgeteilt, gespannt oder aufgetragen',f:['Fixierung zu lange','Ungleich abgeteilt, gespannt oder aufgetragen','Haare waren frisch gewaschen'],
+     l:'Unterschiedlich dicke Passees, ungleiche Spannung oder Lücken beim Auftragen ergeben eine ungleiche Welle.',v:'Gleich große Passees, gleichmäßige Spannung, jeden Wickler vollständig mit Wellmittel benetzen.'},
+    {s:'„Beim Fixieren wurde die Strähne heiß und hat geraucht!“',r:'Metallsalze im Haar (z. B. aus Pflanzenfarben)',f:['Wasser war zu heiß','Metallsalze im Haar (z. B. aus Pflanzenfarben)','Zu viel Wellmittel'],
+     l:'Manche Farben enthalten Metallsalze. Sie reagieren heftig mit Wasserstoffperoxid: Das Haar kann sich erhitzen, verfärben und abbrechen.',v:'Bei Verdacht auf Pflanzen- oder Metallsalzfarben vorher eine Teststrähne mit Fixierung machen. Reagiert sie, keine Dauerwelle.'}
+  ];
+  var reihe=mische(FAELLE.map(function(f,i){return i;})), fi=0, gelöst=0;
+  function fallZeigen(){
+    var F=FAELLE[reihe[fi]], opts=mische(F.f);
+    $('#fall').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">Fall '+(fi+1)+' von '+FAELLE.length+'</span><span class="tag">'+gelöst+' gelöst</span></div>'+
+      '<div class="lupe">🔍</div><p class="symptom">'+esc(F.s)+'</p><p class="muted" style="font-size:14px">Was ist die wahrscheinlichste Ursache?</p>'+
+      '<div class="opts">'+opts.map(function(o){return '<button type="button" data-o="'+esc(o)+'">'+esc(o)+'</button>';}).join('')+'</div><div id="fallLsg"></div>';
+  }
+  $('#fall').addEventListener('click',function(e){
+    var b=e.target.closest('.opts button'); if(b){
+      var F=FAELLE[reihe[fi]], ok=b.dataset.o===F.r;
+      $('#fall').querySelectorAll('.opts button').forEach(function(x){x.disabled=true;if(x.dataset.o===F.r)x.classList.add('right');else if(x===b)x.classList.add('wrong');});
+      if(ok) gelöst++;
+      if(gelöst>=5) stempeln('detektiv');
+      $('#fallLsg').innerHTML='<p class="fb '+(ok?'ok':'no')+'">'+(ok?'✓ Fall gelöst!':'✗ Knapp daneben.')+'</p><div class="loesung"><b>Darum:</b> '+esc(F.l)+'<br><b>So passiert es nicht:</b> '+esc(F.v)+'</div>'+
+        '<button class="btn" id="fallWeiter" style="justify-self:start;margin-top:4px">'+(fi<FAELLE.length-1?'Nächster Fall ▶':'Alle Fälle nochmal ↺')+'</button>';
+      return;
+    }
+    if(e.target.id==='fallWeiter'){ if(fi<FAELLE.length-1) fi++; else {fi=0;gelöst=0;reihe=mische(reihe);} fallZeigen(); }
+  });
+  fallZeigen();
+
+  // ═══════════ 5 GLÄTTUNG ═══════════
+  var GLATT=[
+    ['Haardiagnose und Beratung','Welche Vorbehandlung? Thio- und Hydroxid-Produkte nie mischen. Bei unklarer Vorbehandlung: Teststrähne.'],
+    ['Waschen ohne Pflege, Haut schützen','Wie bei der Dauerwelle: keine Pflegeschichten, Schutzcreme an den Haaransatz.'],
+    ['Glättcreme in feinen Abteilungen auftragen','Bei einer Nachbehandlung nur den Nachwuchs. Bereits geglättete Längen nicht noch einmal behandeln.'],
+    ['Glatt halten und einwirken lassen','Haar sanft glatt kämmen bzw. nach Gebrauchsanweisung plätten, ohne zu ziehen. Mit einer Teststrähne prüfen, ob die Welle nachgibt.'],
+    ['Gründlich ausspülen','Alle Glättcreme-Reste entfernen und das Haar vorsichtig abtupfen.'],
+    ['Fixieren','Die Fixierung schließt die Brücken in der glatten Form. Dabei das Haar glatt lassen.'],
+    ['Spülen und saure Pflege','Schuppenschicht schließen. In den ersten Tagen nicht zusammenbinden und nicht hinter die Ohren klemmen.']
+  ];
+  $('#glattListe').innerHTML=GLATT.map(function(a){return '<li><div><b>'+esc(a[0])+'</b><span class="warum">'+esc(a[1])+'</span></div></li>';}).join('');
+
+  // ═══════════ 6 QUIZ ═══════════
+  var QUIZ=[
+    ['Welche Brücken öffnet das Wellmittel?','Die Disulfidbrücken',['Die Wasserstoffbrücken','Die Disulfidbrücken','Gar keine, es macht das Haar nur weich'],'Wasserstoffbrücken lösen sich schon durch Wasser. Für eine dauerhafte Umformung müssen die starken Disulfidbrücken chemisch geöffnet werden.'],
+    ['Wie heißt der chemische Vorgang beim Wellmittel?','Reduktion',['Oxidation','Reduktion','Neutralisation'],'Das Wellmittel reduziert: Es spaltet die S–S-Brücke in zwei SH-Gruppen.'],
+    ['Was macht die Fixierung?','Sie schließt die Brücken in der neuen Form (Oxidation)',['Sie färbt das Haar','Sie schließt die Brücken in der neuen Form (Oxidation)','Sie öffnet die Schuppenschicht'],'Die Fixierung mit verdünntem Wasserstoffperoxid oxidiert die SH-Gruppen wieder zu S–S-Brücken.'],
+    ['Warum wäscht du vor der Dauerwelle ohne Conditioner?','Pflegeschichten bremsen das Wellmittel',['Damit das Haar besser riecht','Pflegeschichten bremsen das Wellmittel','Conditioner macht die Welle zu stark'],'Pflegefilme legen sich um das Haar und lassen das Wellmittel schlechter eindringen. Die Welle wird ungleichmäßig oder schwach.'],
+    ['Wie prüfst du, ob das Wellmittel lange genug eingewirkt hat?','Probewickler halb abwickeln und auf eine klare S-Form achten',['Nach Gefühl','Probewickler halb abwickeln und auf eine klare S-Form achten','Wenn die Kundin sagt, dass es brennt'],'Die S-Form der Strähne zeigt, dass genug Brücken geöffnet sind. Danach sofort zwischenspülen.'],
+    ['Warum tupfst du nach dem Zwischenspülen gut ab?','Sonst wird die Fixierung verdünnt',['Damit die Kundin nicht friert','Sonst wird die Fixierung verdünnt','Damit das Haar schneller trocknet'],'Zu viel Wasser im Haar verdünnt die Fixierung, sie schließt zu wenige Brücken, die Welle hält schlechter.'],
+    ['Welche Wicklerstärke gibt die engste Locke?','Ein dünner Wickler',['Ein dünner Wickler','Ein dicker Wickler','Das ist egal'],'Je dünner der Wickler, desto kleiner und enger die Locke.'],
+    ['Wofür ist die Spiralwicklung besonders gut?','Gleichmäßige Locken über die ganze Länge bei langem Haar',['Nur für Volumen am Ansatz','Gleichmäßige Locken über die ganze Länge bei langem Haar','Für ganz kurzes Haar'],'Die Strähne liegt spiralförmig am Wickler, so wird sie nicht dicker und wellt sich vom Ansatz bis zur Spitze gleich.'],
+    ['Woran liegt es, wenn Spitzen wie Haken abstehen?','Sie wurden beim Wickeln umgeknickt',['Zu viel Fixierung','Sie wurden beim Wickeln umgeknickt','Das Haar war zu kurz'],'Spitzen gehören glatt ins Spitzenpapier. Sonst wird der Knick mitfixiert.'],
+    ['Was ist bei Metallsalzen im Haar gefährlich?','Sie reagieren heftig mit Wasserstoffperoxid',['Sie machen die Welle zu schwach','Sie reagieren heftig mit Wasserstoffperoxid','Nichts, sie sind ungefährlich'],'Das Haar kann heiß werden, sich verfärben und abbrechen. Bei Verdacht: Teststrähne.'],
+    ['Was haben Dauerwelle und Thio-Glättung gemeinsam?','Dieselbe Chemie: Brücken öffnen und in neuer Form schließen',['Beide brauchen Wickler','Dieselbe Chemie: Brücken öffnen und in neuer Form schließen','Beide halten nur bis zur nächsten Wäsche'],'Nur die Form ist anders: Bei der Glättung wird das Haar glatt gehalten statt gewickelt.'],
+    ['Darf man auf Hydroxid-geglättetes Haar eine Thio-Behandlung machen?','Nein, das Haar kann abbrechen',['Ja, ohne Probleme','Nein, das Haar kann abbrechen','Nur mit dickeren Wicklern'],'Hydroxid- und Thio-Produkte vertragen sich nicht. Darum ist die Haardiagnose mit Vorbehandlung so wichtig.']
+  ];
+  var antworten={};
+  QUIZ.forEach(function(q){ q[2]=mische(q[2]); });
+  function quizZeigen(){
+    $('#quizBox').innerHTML=QUIZ.map(function(q,i){
+      var a=antworten[i];
+      return '<div class="q"><h3>'+(i+1)+'. '+esc(q[0])+'</h3><div class="opts">'+q[2].map(function(o){
+        var cls=a?(o===q[1]?'right':(o===a?'wrong':'')):'';
+        return '<button type="button" data-q="'+i+'" data-o="'+esc(o)+'" class="'+cls+'"'+(a?' disabled':'')+'>'+esc(o)+'</button>';}).join('')+'</div>'+
+        (a?'<p class="why">'+(a===q[1]?'✓ ':'✗ ')+esc(q[3])+'</p>':'')+'</div>';
+    }).join('');
+    var n=Object.keys(antworten).length, ok=Object.keys(antworten).filter(function(k){return antworten[k]===QUIZ[k][1];}).length;
+    $('#scoreOut').textContent=ok+' / '+n;
+    $('#scoreText').textContent=n<QUIZ.length?(n?'Weiter so!':'Noch keine Antwort.'):(ok>=10?'🏆 Stark! Stempel verdient.':'Fertig. Ab 10 richtigen gibt es den Stempel. Neu starten?');
+    if(n===QUIZ.length&&!quizZeigen.gespeichert){
+      quizZeigen.gespeichert=true;
+      if(ok>=10) stempeln('quiz');
+      if(window.ghdQuizSpeichern) window.ghdQuizSpeichern('Dauerwelle & Umformung',ok,QUIZ.length,'scoreSpeicher');
+    }
+  }
+  $('#quizBox').addEventListener('click',function(e){var b=e.target.closest('button[data-q]');if(!b||antworten[b.dataset.q])return;antworten[b.dataset.q]=b.dataset.o;quizZeigen();});
+  $('#quizReset').onclick=function(){antworten={};quizZeigen.gespeichert=false;quizZeigen();};
+  quizZeigen();
+})();
+</script>
+<script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="rechtliches-fuss.js?v=20261114" defer></script>  <!-- Feedback, A–Z, Impressum, Datenschutz, Nutzungsbedingungen -->
+</body>
+</html>

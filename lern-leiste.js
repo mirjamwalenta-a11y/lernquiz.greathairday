@@ -14,7 +14,7 @@
   var skript = document.currentScript;
   var aktiv = (skript && skript.getAttribute('data-aktiv')) || '';
   var versteckenBei = (skript && skript.getAttribute('data-verstecken-bei')) || '';
-  var ZIEL = 'lerntool.html?v=20261114a';
+  var ZIEL = 'lerntool.html?v=20261114b';
 
   var KNOEPFE = [
     {id: 'heute', ic: '🏠', t: 'Heute', h: ''},
