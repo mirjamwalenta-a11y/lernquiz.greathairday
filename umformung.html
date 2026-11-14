@@ -385,7 +385,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
         <div class="wb-leiste"><div class="chips" id="wbRichtung" role="group" aria-label="Richtung"></div></div>
         <div class="wb-leiste"><div class="chips" id="wbModus" role="group" aria-label="Modus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
         <div class="wb-leiste"><button class="btn ghost" id="wbZurueck">↶ Letzten weg</button><button class="btn ghost" id="wbLeeren">Alle weg</button><span class="muted" id="wbZahl" style="font-size:12px;margin-left:auto"></span></div>
-        <div class="wb-leiste"><button class="btn" id="wbPruefen" type="button">✔ Kontrollieren</button><span class="muted" style="font-size:12px">Prüft deine Wickler gegen die Regeln dieser Technik.</span></div>
+        <div class="wb-leiste"><button class="btn" id="wbPruefen" type="button">✔ Kontrollieren</button><span class="muted" style="font-size:12px">Prüft deine Wickler gegen die Regeln dieser Technik. Ungefähr richtig zählt als richtig.</span></div>
         <div class="wb-pr" id="wbPruefung" aria-live="polite" hidden></div>
       </div>
       <article class="panel" id="techInfo" aria-live="polite"></article>
@@ -850,18 +850,18 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     function s(x){ return x.length===1?'1 Wickler':x.length+' Wickler'; }
     function gleich(ids,text){ var m={}; ids.forEach(function(i){ m[l[i][2]]=(m[l[i][2]]||0)+1; }); var ks=Object.keys(m);
       if(ks.length<2) return pr(true,text+' passt: alle gleich groß.');
-      var haupt=ks.sort(function(a,b){return m[b]-m[a];})[0]; pr(false,'Die Größe wechselt. Nimm für diese Technik überall dieselbe Größe.',ids.filter(function(i){return String(l[i][2])!==haupt;})); }
+      var haupt=ks.sort(function(a,b){return m[b]-m[a];})[0], ab=ids.filter(function(i){return String(l[i][2])!==haupt;}); if(ab.length<=1&&ids.length>=5) return pr(true,text+' passt fast überall.'); pr(false,'Die Größe wechselt. Nimm für diese Technik überall dieselbe Größe.',ab); }
     function reihen(ids,tol){ var o=ids.slice().sort(function(a,b){return l[a][1]-l[b][1];}), r=[]; o.forEach(function(i){ var z=r[r.length-1]; if(z&&Math.abs(l[i][1]-z.y)<=tol){ z.ids.push(i); z.y=(z.y*(z.ids.length-1)+l[i][1])/z.ids.length; } else r.push({y:l[i][1],ids:[i]}); }); r.forEach(function(z){ z.ids.sort(function(a,b){return l[a][0]-l[b][0];}); }); return r; }
-    function reihenCheck(ids){ var r=reihen(ids,4), allein=[], luecke=[];
+    function reihenCheck(ids){ var r=reihen(ids,9), allein=[], luecke=[];
       r.forEach(function(z){ if(z.ids.length===1&&ids.length>=4) allein=allein.concat(z.ids);
-        for(var k=1;k<z.ids.length;k++){ var a=z.ids[k-1], b=z.ids[k]; if(l[b][0]-l[a][0]-(len(a)+len(b))/2>6) luecke.push(a,b); } });
+        for(var k=1;k<z.ids.length;k++){ var a=z.ids[k-1], b=z.ids[k]; if(l[b][0]-l[a][0]-(len(a)+len(b))/2>14) luecke.push(a,b); } });
       pr(!allein.length,allein.length?s(allein)+' stehen nicht in einer geraden Reihe.':'Die Wickler stehen in geraden Reihen.',allein);
       pr(!luecke.length,luecke.length?'In der Reihe sind Lücken. Wickler dicht an dicht setzen.':'Keine Lücken in den Reihen.',luecke);
       return r; }
     function ueberlappung(ids){ var b=[]; for(var a=0;a<ids.length;a++) for(var c=a+1;c<ids.length;c++){ var i=ids[a], j=ids[c], dx=l[j][0]-l[i][0], dy=l[j][1]-l[i][1], t=l[i][3]*Math.PI/180, lx=dx*Math.cos(t)+dy*Math.sin(t), ly=-dx*Math.sin(t)+dy*Math.cos(t);
-        if(Math.abs(wi(i)-wi(j))<10?(Math.abs(lx)<(len(i)+len(j))/2-2&&Math.abs(ly)<(gr(i).h+gr(j).h)/2-1.5):Math.hypot(dx,dy)<(gr(i).h+gr(j).h)/2-1) b.push(i,j); }
+        if(Math.abs(wi(i)-wi(j))<10?(Math.abs(lx)<(len(i)+len(j))/2-8&&Math.abs(ly)<(gr(i).h+gr(j).h)/2-4):Math.hypot(dx,dy)<(gr(i).h+gr(j).h)/2-4) b.push(i,j); }
       pr(!b.length,b.length?'Wickler überlappen sich. Jeder Wickler braucht seinen eigenen Platz.':'Kein Wickler überlappt einen anderen.',b); }
-    function inKopf(){ var aus=alle().filter(function(i){ return !K.drin(l[i][0],l[i][1]); }); pr(!aus.length,aus.length?s(aus)+' sitzen außerhalb des Haarbereichs.':'Alle Wickler sitzen im Haarbereich.',aus); }
+    function inKopf(){ var aus=alle().filter(function(i){ var x=l[i][0], y=l[i][1]; return !(K.drin(x,y)||K.drin(x+8,y)||K.drin(x-8,y)||K.drin(x,y+8)||K.drin(x,y-8)); }); pr(!aus.length,aus.length?s(aus)+' sitzen außerhalb des Haarbereichs.':'Alle Wickler sitzen im Haarbereich.',aus); }
     inKopf();
     if(id!=='doppel') ueberlappung(alle());
     if(!hier){ var vn=ANSICHTEN.filter(function(a){return a[0]===tech.v;})[0][1];
@@ -871,51 +871,51 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       var ids=alle();
       if(id==='fach'||id==='ziegel'){
         gleich(ids,'Größe');
-        var sch=ids.filter(function(i){return horDev(i)>10;}); pr(!sch.length,sch.length?s(sch)+' liegen schräg. Hier alle gerade (↔) setzen.':'Alle Wickler liegen gerade.',sch);
+        var sch=ids.filter(function(i){return horDev(i)>22;}); pr(!sch.length,sch.length?s(sch)+' liegen schräg. Hier alle gerade (↔) setzen.':'Alle Wickler liegen gerade.',sch);
         var r=reihenCheck(ids);
-        if(id==='ziegel'){ var falsch=[]; for(var k=1;k<r.length;k++) r[k].ids.forEach(function(i){ var d=1e9, L=len(i); r[k-1].ids.forEach(function(j){ d=Math.min(d,Math.abs(l[i][0]-l[j][0])); }); var m=d%L; if(r[k-1].ids.length&&(m<.3*L||m>.7*L)) falsch.push(i); });
+        if(id==='ziegel'){ var falsch=[]; for(var k=1;k<r.length;k++) r[k].ids.forEach(function(i){ var d=1e9, L=len(i); r[k-1].ids.forEach(function(j){ d=Math.min(d,Math.abs(l[i][0]-l[j][0])); }); var m=d%L; if(r[k-1].ids.length&&(m<.18*L||m>.82*L)) falsch.push(i); });
           pr(r.length>1&&!falsch.length,r.length<2?'Setz mindestens zwei Reihen, damit man den Versatz sieht.':falsch.length?s(falsch)+' sind nicht um eine halbe Wicklerbreite zur Reihe darüber versetzt.':'Jede Reihe ist um eine halbe Wicklerbreite versetzt.',r.length<2?[]:falsch); }
         var mx=Math.max.apply(null,ids.map(function(i){return l[i][0]+len(i)/2;})), mn=Math.min.apply(null,ids.map(function(i){return l[i][0]-len(i)/2;})), my=Math.max.apply(null,ids.map(function(i){return l[i][1];})), ny=Math.min.apply(null,ids.map(function(i){return l[i][1];}));
-        pr(n>=6&&(mx-mn)>=.6*W&&(my-ny)>=.5*H,'Der ganze Kopf soll gewickelt sein. '+((mx-mn)>=.6*W&&(my-ny)>=.5*H&&n>=6?'Das ist erledigt.':'Es fehlen noch Bereiche.'));
+        pr(n>=6&&(mx-mn)>=.5*W&&(my-ny)>=.4*H,'Der ganze Kopf soll gewickelt sein. '+((mx-mn)>=.5*W&&(my-ny)>=.4*H&&n>=6?'Das ist erledigt.':'Es fehlen noch Bereiche.'));
       } else if(id==='teil'){
         gleich(ids,'Größe'); reihenCheck(ids);
         var bw=Math.max.apply(null,ids.map(function(i){return l[i][0]+len(i)/2;}))-Math.min.apply(null,ids.map(function(i){return l[i][0]-len(i)/2;})), bh=Math.max.apply(null,ids.map(function(i){return l[i][1];}))-Math.min.apply(null,ids.map(function(i){return l[i][1];}))+gr(0).h;
-        pr(bw*bh<=.55*W*H,bw*bh<=.55*W*H?'Nur ein Bereich ist gewickelt, der Rest bleibt frei.':'Zu viel Fläche. Bei der Teilwelle wickelst du nur einen Bereich, z. B. Oberkopf.');
+        pr(bw*bh<=.65*W*H,bw*bh<=.65*W*H?'Nur ein Bereich ist gewickelt, der Rest bleibt frei.':'Zu viel Fläche. Bei der Teilwelle wickelst du nur einen Bereich, z. B. Oberkopf.');
       } else if(id==='trapez'){
-        gleich(ids,'Größe'); var hoch=ids.filter(function(i){return yR(i)<.5;}); pr(!hoch.length,hoch.length?s(hoch)+' sitzen zu hoch. Die Trapezwicklung liegt unten am Hinterkopf.':'Alle Wickler sitzen unten am Hinterkopf.',hoch);
+        gleich(ids,'Größe'); var hoch=ids.filter(function(i){return yR(i)<.38;}); pr(!hoch.length,hoch.length?s(hoch)+' sitzen zu hoch. Die Trapezwicklung liegt unten am Hinterkopf.':'Alle Wickler sitzen unten am Hinterkopf.',hoch);
         var r2=reihenCheck(ids), br=r2.map(function(z){ var a=z.ids[0], b=z.ids[z.ids.length-1]; return l[b][0]-l[a][0]+len(b); }), fa=[];
-        for(var k2=1;k2<br.length;k2++) if(br[k2]<br[k2-1]-6) fa=fa.concat(r2[k2].ids);
+        for(var k2=1;k2<br.length;k2++) if(br[k2]<br[k2-1]-14) fa=fa.concat(r2[k2].ids);
         pr(r2.length>1&&!fa.length,r2.length<2?'Setz mindestens zwei Reihen. Nach unten wird jede Reihe breiter.':fa.length?'Die Reihen werden nach unten schmaler. Beim Trapez werden sie breiter.':'Die Reihen werden nach unten breiter, wie ein Trapez.',r2.length<2?[]:fa);
       } else if(id==='spitze'){
-        gleich(ids,'Höhe'); var ob=ids.filter(function(i){return yR(i)<.4;}); pr(!ob.length,ob.length?s(ob)+' sitzen am Ansatz. Bei der Spitzenwicklung bleibt der Ansatz glatt.':'Der Ansatz bleibt frei.',ob); reihenCheck(ids);
+        gleich(ids,'Höhe'); var ob=ids.filter(function(i){return yR(i)<.3;}); pr(!ob.length,ob.length?s(ob)+' sitzen am Ansatz. Bei der Spitzenwicklung bleibt der Ansatz glatt.':'Der Ansatz bleibt frei.',ob); reihenCheck(ids);
       } else if(id==='ansatz'){
         var lg=ids.filter(function(i){return len(i)>40;}); pr(!lg.length,lg.length?s(lg)+' sind zu lang. Für den Ansatz die kurze Länge nehmen.':'Alle Wickler sind kurz, passend für den Ansatz.',lg); gleich(ids,'Größe');
       } else if(id==='fisch'){
         var li=ids.filter(function(i){return l[i][0]<cx-4;}), re=ids.filter(function(i){return l[i][0]>cx+4;});
         pr(li.length>0&&re.length>0,li.length&&re.length?'Links und rechts der Mittellinie sind Wickler gesetzt.':'Setz Wickler auf beiden Seiten der Mittellinie.');
-        var sf=ids.filter(function(i){return horDev(i)<20||vertDev(i)<20;}); pr(!sf.length,sf.length?s(sf)+' stehen zu gerade oder zu steil. Nimm etwa 45° (schräg).':'Alle Wickler sind schräg gesetzt.',sf);
+        var sf=ids.filter(function(i){return horDev(i)<12||vertDev(i)<12;}); pr(!sf.length,sf.length?s(sf)+' stehen zu gerade oder zu steil. Nimm etwa 45° (schräg).':'Alle Wickler sind schräg gesetzt.',sf);
         var fl=li.filter(function(i){return wi(i)>0;}), fr=re.filter(function(i){return wi(i)<0;});
         pr(!fl.length&&!fr.length,(fl.length||fr.length)?'Die Richtung stimmt nicht: Links ↗, rechts ↖. Von der Mitte gehen die Wickler schräg nach unten außen.':'Die Richtung stimmt: von der Mitte schräg nach unten außen.',fl.concat(fr));
-        pr(Math.abs(li.length-re.length)<=1,Math.abs(li.length-re.length)<=1?'Links und rechts gleich viele Wickler.':'Links '+li.length+', rechts '+re.length+' Wickler. Beide Seiten gleich besetzen.');
+        pr(Math.abs(li.length-re.length)<=2,Math.abs(li.length-re.length)<=2?'Links und rechts gleich viele Wickler.':'Links '+li.length+', rechts '+re.length+' Wickler. Beide Seiten gleich besetzen.');
       } else if(id==='spirale'){
-        var gs=ids.filter(function(i){return vertDev(i)>15;}); pr(!gs.length,gs.length?s(gs)+' hängen nicht senkrecht. Bei der Spirale hängt der Wickler senkrecht.':'Alle Wickler hängen senkrecht.',gs);
-        pr(yR(0)>.55,yR(0)>.55?'Du hast unten im Nacken begonnen.':'Beginne unten im Nacken. Dein erster Wickler sitzt zu hoch.',yR(0)>.55?[]:[0]); gleich(ids,'Größe');
+        var gs=ids.filter(function(i){return vertDev(i)>28;}); pr(!gs.length,gs.length?s(gs)+' hängen nicht senkrecht. Bei der Spirale hängt der Wickler senkrecht.':'Alle Wickler hängen senkrecht.',gs);
+        pr(yR(0)>.42,yR(0)>.42?'Du hast unten im Nacken begonnen.':'Beginne unten im Nacken. Dein erster Wickler sitzt zu hoch.',yR(0)>.42?[]:[0]); gleich(ids,'Größe');
       } else if(id==='papillote'){
         var np=ids.filter(function(i){return !gr(i).pap;}); pr(!np.length,np.length?s(np)+' sind keine Papilloten. Wähle die Größe „Papillote“.':'Alle Wickler sind Papilloten.',np);
       } else if(id==='doppel'||id==='zwilling'){
-        var ben={}, P=[], bg=[]; ids.forEach(function(i){ if(ben[i]) return; var b=-1, bd=1e9; ids.forEach(function(j){ if(j===i||ben[j]||Math.abs(wi(i)-wi(j))>15) return; var dx=Math.abs(l[j][0]-l[i][0]), dy=Math.abs(l[j][1]-l[i][1]);
-            var ok=id==='doppel'?(dx<len(i)/2&&dy<=(gr(i).h+gr(j).h)/2+3):(dx<len(i)/3&&dy<=(gr(i).h+gr(j).h)/2+30&&dy>=(gr(i).h+gr(j).h)/2-2); var d=dx+dy; if(ok&&d<bd){ b=j; bd=d; } });
+        var ben={}, P=[], bg=[]; ids.forEach(function(i){ if(ben[i]) return; var b=-1, bd=1e9; ids.forEach(function(j){ if(j===i||ben[j]||Math.abs(wi(i)-wi(j))>25) return; var dx=Math.abs(l[j][0]-l[i][0]), dy=Math.abs(l[j][1]-l[i][1]);
+            var ok=id==='doppel'?(dx<len(i)*.7&&dy<=(gr(i).h+gr(j).h)/2+9):(dx<len(i)/2&&dy<=(gr(i).h+gr(j).h)/2+40&&dy>=(gr(i).h+gr(j).h)/2-6); var d=dx+dy; if(ok&&d<bd){ b=j; bd=d; } });
           if(b>=0){ ben[i]=ben[b]=1; P.push([i,b]); } });
         var los=ids.filter(function(i){return !ben[i];}); pr(P.length>0&&!los.length,!P.length?'Setz Wickler paarweise: '+(id==='doppel'?'einen dicken und genau darauf einen kleineren.':'einen dünnen und einen dicken auf derselben Strähne.'):los.length?s(los)+' haben keinen Partner.':'Alle Wickler sitzen paarweise.',P.length?los:[]);
         if(id==='doppel'){ var fd=[]; P.forEach(function(p){ if(Math.abs(l[p[0]][2]-l[p[1]][2])!==2) fd.push(p[0],p[1]); }); pr(P.length>0&&!fd.length,fd.length?'Der Größenunterschied stimmt nicht. Der obere Wickler ist genau zwei Größen kleiner.':P.length?'Bei jedem Paar sind es genau zwei Größen Unterschied.':'Ohne Paare lässt sich der Größenunterschied nicht prüfen.',fd); }
         else { var fz=[]; P.forEach(function(p){ var o=l[p[0]][1]<l[p[1]][1]?p[0]:p[1], u=o===p[0]?p[1]:p[0]; if(l[o][2]>=l[u][2]) fz.push(p[0],p[1]); }); pr(P.length>0&&!fz.length,fz.length?'Der dünne Wickler gehört nach oben (Mitte der Länge), der dicke nach unten (Spitzen).':P.length?'Oben dünn, unten dick. Das stimmt.':'Ohne Paare lässt sich die Reihenfolge nicht prüfen.',fz); }
       } else if(id==='flaeche'){
         var ok2=ids.filter(function(i){return yR(i)<.35;}), sl=ids.filter(function(i){return xR(i)>.62&&yR(i)>=.2&&yR(i)<.7;}), nk=ids.filter(function(i){return yR(i)>=.7&&xR(i)<.55;});
-        var gs2=ok2.filter(function(i){return vertDev(i)>20;}); pr(ok2.length>0&&!gs2.length,!ok2.length?'Am Oberkopf fehlen Wickler. Dort stehen sie aufrecht.':gs2.length?s(gs2)+' am Oberkopf stehen nicht aufrecht (↕).':'Am Oberkopf stehen die Wickler aufrecht.',gs2);
-        var gs3=sl.filter(function(i){return horDev(i)<20||vertDev(i)<20;}); pr(sl.length>0&&!gs3.length,!sl.length?'An den Schläfen fehlen Wickler. Dort zeigen sie schräg nach hinten.':gs3.length?s(gs3)+' an den Schläfen sind zu gerade oder zu steil. Nimm schräg.':'An den Schläfen sitzen die Wickler schräg.',gs3);
+        var gs2=ok2.filter(function(i){return vertDev(i)>30;}); pr(ok2.length>0&&!gs2.length,!ok2.length?'Am Oberkopf fehlen Wickler. Dort stehen sie aufrecht.':gs2.length?s(gs2)+' am Oberkopf stehen nicht aufrecht (↕).':'Am Oberkopf stehen die Wickler aufrecht.',gs2);
+        var gs3=sl.filter(function(i){return horDev(i)<12||vertDev(i)<12;}); pr(sl.length>0&&!gs3.length,!sl.length?'An den Schläfen fehlen Wickler. Dort zeigen sie schräg nach hinten.':gs3.length?s(gs3)+' an den Schläfen sind zu gerade oder zu steil. Nimm schräg.':'An den Schläfen sitzen die Wickler schräg.',gs3);
         var mo=ok2.length?ok2.reduce(function(a,i){return a+l[i][2];},0)/ok2.length:0, gn=nk.filter(function(i){return l[i][2]>=mo;}); pr(nk.length>0&&ok2.length>0&&!gn.length,!nk.length?'Im Nacken fehlen Wickler. Dort nimmst du eine kleinere Größe.':gn.length?s(gn)+' im Nacken sind nicht kleiner als oben.':'Im Nacken sind die Wickler kleiner.',gn);
       } else if(id==='stern'){
-        var wx=cx, wy=bb[1]+H*.55, ra=function(i){ return Math.atan2(l[i][1]-wy,l[i][0]-wx)*180/Math.PI; }, aus=ids.filter(function(i){ if(Math.hypot(l[i][0]-wx,l[i][1]-wy)<12) return false; var d=Math.abs((((ra(i)-l[i][3])%180)+180)%180); return Math.min(d,180-d)>25; });
+        var wx=cx, wy=bb[1]+H*.55, ra=function(i){ return Math.atan2(l[i][1]-wy,l[i][0]-wx)*180/Math.PI; }, aus=ids.filter(function(i){ if(Math.hypot(l[i][0]-wx,l[i][1]-wy)<12) return false; var d=Math.abs((((ra(i)-l[i][3])%180)+180)%180); return Math.min(d,180-d)>38; });
         pr(!aus.length,aus.length?s(aus)+' zeigen nicht vom Wirbel weg. Sie sollen wie Sonnenstrahlen nach außen zeigen.':'Alle Wickler zeigen strahlenförmig vom Wirbel weg.',aus);
         var q={}; ids.forEach(function(i){ q[(l[i][0]>wx?1:0)+(l[i][1]>wy?2:0)]=1; }); pr(Object.keys(q).length>=3,Object.keys(q).length>=3?'Die Strahlen gehen in alle Richtungen.':'Setz Wickler rund um den Wirbel, nicht nur auf einer Seite.');
         var di=ids.map(function(i){return Math.hypot(l[i][0]-wx,l[i][1]-wy);}), md=di.slice().sort(function(a,b){return a-b;})[Math.floor(di.length/2)], inn=[],aus2=[]; ids.forEach(function(i,k){ (di[k]<md?inn:aus2).push(l[i][2]); });
