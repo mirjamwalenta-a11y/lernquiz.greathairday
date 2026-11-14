@@ -2,6 +2,15 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<script>
+// Automatisch abmelden nach 15 min ohne Bedienung (ghd-sitzung.js), wie auf den anderen Lern-Seiten.
+// Im Schnuppertag (Mischlabor als iframe) prüft die Seite außen; hier zählt nur das Antippen als Aktivität.
+if (window.top !== window) {
+  ['pointerdown', 'keydown'].forEach(function (e) { addEventListener(e, function () { try { localStorage.setItem('ghd-letzte-aktivitaet', String(Date.now())); } catch (x) {} }, { passive: true, capture: true }); });
+} else {
+  document.write('<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"><\/script>');
+}
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#1c1917">
 <title>Farblabor · A Great Hair Day</title>
@@ -297,10 +306,10 @@ body.nur-mischen #mischen{padding-top:8px}
 
 <div class="wrap">
   <header class="top">
-    <a class="back-link" id="zurueck" href="lerntool.html?v=20261114d">← Lern-Tool</a>
+    <a class="back-link" id="zurueck" href="lerntool.html?v=20261114s">← Lern-Tool</a>
     <span class="tag">greathairday · Farbenlehre</span>
     <h1>Farblabor 🎨</h1>
-    <a class="spick-link" href="spickzettel.html?v=20261108k">🖨 Farb-Spickzettel drucken</a>
+    <a class="spick-link" href="spickzettel.html?v=20261114s">🖨 Farb-Spickzettel drucken</a>
     <p>Mit nur drei Farben, Gelb, Rot und Blau, mischst du jede Farbe selbst. Du entdeckst die Gegenfarben, siehst, welcher Untergrund beim Aufhellen zum Vorschein kommt, und neutralisierst ihn im Spiel.<span class="nur-lern"> Mischlabor, Spiel und Quiz bringen Punkte für deine Serie 🔥.</span></p>
   </header>
 </div>
