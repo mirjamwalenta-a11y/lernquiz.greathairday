@@ -132,6 +132,9 @@ dl.facts dd{margin:0}
 .wb-gr i{width:18px;height:9px;border-radius:5px;display:inline-block}
 .wb-gr[aria-pressed="true"]{border-color:var(--ink)}
 #techSvg{cursor:crosshair;touch-action:manipulation}
+.winkel{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);flex:1 1 220px}
+.winkel input{flex:1;accent-color:var(--accent)}
+.winkel b{min-width:56px;color:var(--ink)}
 .wickel-legende{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 12px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
 .wickel-legende span{display:inline-flex;align-items:center;gap:5px}
 .wickel-legende i{width:18px;height:8px;border-radius:4px;display:inline-block}
@@ -401,7 +404,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <div class="werkzeug" id="studioWerkzeug" hidden>
         <div class="zeile" hidden><span>Technik</span><div class="chips" id="stTechnik"></div></div>
         <div class="zeile"><span>Größe</span><div id="stGroesse" style="display:flex;gap:8px"></div><span class="muted" id="stGroesseName" style="font-size:12px;text-transform:none;letter-spacing:0;font-weight:600"></span></div>
-        <div class="zeile"><span>Länge</span><div class="chips" id="stLaenge"><button type="button" class="chip" data-f="1" aria-pressed="true">normal</button><button type="button" class="chip" data-f=".65" aria-pressed="false">kurz</button></div></div>
+        <div class="zeile"><span>Länge</span><div class="chips" id="stLaenge"><button type="button" class="chip" data-f=".65" aria-pressed="false">kurz</button><button type="button" class="chip" data-f="1" aria-pressed="true">normal</button><button type="button" class="chip" data-f="1.32" aria-pressed="false">lang</button></div></div>
         <div class="zeile"><span>Richtung</span><div class="chips" id="stRichtung"></div></div>
         <div class="zeile" hidden><label><input type="checkbox" id="stVorlage"> Vorlage einblenden</label><label><input type="checkbox" id="stRasten"> Einrasten</label></div>
         <div class="zeile"><span>Modus</span><div class="chips" id="stModus"><button type="button" class="chip" data-m="setzen" aria-pressed="true">✚ Setzen</button><button type="button" class="chip" data-m="weg" aria-pressed="false">✖ Entfernen</button></div></div>
@@ -758,9 +761,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   var WB_KEY='umf-wickelblatt-v1', wb={}; try{ wb=JSON.parse(localStorage.getItem(WB_KEY)||'{}')||{}; }catch(e){ wb={}; }
   var ANSICHTEN=[['back','Von hinten'],['side','Profil (Seite)'],['top','Von oben'],['front','Von vorne']];
   var WGR=[{n:'sehr dünn',h:7.5,l:50},{n:'dünn',h:9,l:50},{n:'mittel',h:10.5,l:50},{n:'dick',h:12,l:50},{n:'sehr dick',h:14,l:50},{n:'Papillote',pap:1,h:10,l:50,f:PAP}];
-  var WRICHT=[['quer ↔',0],['schräg ↗',-35],['schräg ↖',35],['längs ↕',90]];
-  var tech=TECH[0], ansicht=tech.v, wgr=2, wrot=0, wmodus='setzen', wlen=50;
-  var WLAENGE=[['normal',50],['kurz',32]];
+  var WRICHT=[['gerade ↔',0],['schräg ↗',45],['schräg ↖',-45],['senkrecht ↕',90]];
+  var tech=TECH[0], ansicht=tech.v, wgr=2, wwink=0, wmodus='setzen', wlen=50;
+  var WLAENGE=[['kurz',32],['normal',50],['lang',66]];
+  function winkelText(u){ return u===0?'gerade':Math.abs(u)===90?'senkrecht':Math.abs(u)+'° '+(u>0?'↗':'↖'); }
   function wbListe(){ var k=tech.id+'|'+ansicht; return wb[k]||(wb[k]=[]); }
   function wbSpeichern(){ try{ localStorage.setItem(WB_KEY,JSON.stringify(wb)); }catch(e){} }
   function wicklerSvg(r){ var g=WGR[r[2]]; var L=r[4]||g.l; return g.pap?pap(r[0],r[1],L,r[3]):w(r[0],r[1],L,g.h,r[3],WF[r[2]]); }
@@ -775,7 +779,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     $('#wbAnsicht').innerHTML=ANSICHTEN.map(function(a){return '<button type="button" data-v="'+a[0]+'" aria-pressed="'+(a[0]===ansicht)+'">'+a[1]+'</button>';}).join('');
     $('#wbGroesse').innerHTML=WGR.map(function(g,i){return '<button type="button" class="wb-gr" data-g="'+i+'" aria-pressed="'+(i===wgr)+'"><i style="background:'+(g.f||WF[i])+'"></i>'+g.n+'</button>';}).join('');
     $('#wbLaenge').innerHTML='<span class="muted" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase">Länge</span>'+WLAENGE.map(function(x){return '<button type="button" class="chip" data-l="'+x[1]+'" aria-pressed="'+(x[1]===wlen)+'">'+x[0]+'</button>';}).join('');
-    $('#wbRichtung').innerHTML=WRICHT.map(function(r){return '<button type="button" class="chip" data-r="'+r[1]+'" aria-pressed="'+(r[1]===wrot)+'">'+r[0]+'</button>';}).join('');
+    $('#wbRichtung').innerHTML=WRICHT.map(function(r){return '<button type="button" class="chip" data-r="'+r[1]+'" aria-pressed="'+(r[1]===wwink)+'">'+r[0]+'</button>';}).join('')+
+      '<label class="winkel">Winkel <input type="range" id="wbWinkel" min="-90" max="90" step="5" value="'+wwink+'" aria-label="Winkel des Wicklers"><b>'+winkelText(wwink)+'</b></label>';
     techMalen();
     $('#techInfo').innerHTML='<h3>'+esc(tech.n)+'</h3><dl class="facts"><dt>So geht’s</dt><dd>'+esc(tech.wie)+'</dd><dt>Warum</dt><dd>'+esc(tech.warum)+'</dd><dt>Achtung</dt><dd>'+esc(tech.achtung)+'</dd></dl>'+
       '<div class="tip"><strong>Deine Aufgabe:</strong> Setz die Wickler für diese Technik selbst auf den Kopf. Wechsle die Ansicht, um alle Bereiche zu wickeln. Danach mit deiner Ausbilderin besprechen.</div>'+
@@ -785,7 +790,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   $('#wbAnsicht').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;ansicht=b.dataset.v;techZeigen();});
   $('#wbGroesse').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wgr=+b.dataset.g;techZeigen();});
   $('#wbLaenge').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wlen=+b.dataset.l;techZeigen();});
-  $('#wbRichtung').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wrot=+b.dataset.r;techZeigen();});
+  $('#wbRichtung').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wwink=+b.dataset.r;techZeigen();});
+  $('#wbRichtung').addEventListener('input',function(e){ if(e.target.id!=='wbWinkel') return; wwink=+e.target.value; e.target.nextElementSibling.textContent=winkelText(wwink); Array.prototype.forEach.call(this.querySelectorAll('.chip'),function(x){x.setAttribute('aria-pressed',+x.dataset.r===wwink);}); });
   $('#wbZurueck').onclick=function(){ wbListe().pop(); wbSpeichern(); techMalen(); };
   $('#wbLeeren').onclick=function(){ var l=wbListe(); if(l.length&&!confirm('Alle Wickler in dieser Ansicht entfernen?')) return; l.length=0; wbSpeichern(); techMalen(); };
   // Treffer auf einen Wickler? Liefert Index und Lage im Wickler (lx längs, ly quer)
@@ -806,7 +812,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       x=r[0]+nx*sg*ab; y=r[1]+ny*sg*ab;
       for(var k=0;k<40;k++){ var q=wbTreffer(l,{x:x,y:y},-1); if(!q) break; var rq=l[q.i]; ab=WGR[rq[2]].h/2+WGR[wgr].h/2+.4; x=rq[0]+nx*sg*ab; y=rq[1]+ny*sg*ab; }
     }
-    l.push([+x.toFixed(1),+y.toFixed(1),wgr,wrot,wlen]); wbSpeichern(); techMalen();
+    l.push([+x.toFixed(1),+y.toFixed(1),wgr,-wwink,wlen]); wbSpeichern(); techMalen();
   });
   $('#wbModus').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;wmodus=b.dataset.m;Array.prototype.forEach.call(this.children,function(x){x.setAttribute('aria-pressed',x===b);});});
   techZeigen();
@@ -952,19 +958,20 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function studioInit(){
     var T=window.THREE, A=.86, B=1.0, C=1.02, HS=1.035, a=A*HS, b=B*HS, c=C*HS;
     var GR=[{n:'sehr dünn',r:.034},{n:'dünn',r:.041},{n:'mittel',r:.049},{n:'dick',r:.057},{n:'sehr dick',r:.066}], LEN=.46;
-    var RICHT=[['quer',0],['schräg ↖',35],['schräg ↗',-35],['längs',90]];
+    var RICHT=[['gerade ↔',0],['schräg ↗',-45],['schräg ↖',45],['senkrecht ↕',90]];
     var buehne=$('#studioBuehne'); $('#studioStartBox').remove(); $('#studioWerkzeug').hidden=false;
     buehne.insertAdjacentHTML('afterbegin','<canvas id="stCanvas" aria-label="3D-Kopf zum Wickeln"></canvas><div class="ansicht"><button data-v="hinten">Hinten</button><button data-v="seite">Seite</button><button data-v="oben">Oben</button><button data-v="vorne">Vorne</button></div>');
     var canvas=$('#stCanvas'), renderer=new T.WebGLRenderer({canvas:canvas,antialias:true});
     renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
-    var scene=new T.Scene(); scene.background=new T.Color('#F3EBD9');
+    var scene=new T.Scene(); scene.background=new T.Color('#FFFFFF');
     var cam=new T.PerspectiveCamera(32,1,.1,50); cam.position.set(0,-.15,6.0);
     scene.add(new T.HemisphereLight(0xffffff,0x9a8a74,.85)); var dl=new T.DirectionalLight(0xffffff,.65); dl.position.set(2,3,4); scene.add(dl); var dl2=new T.DirectionalLight(0xffffff,.35); dl2.position.set(-2,1,-4); scene.add(dl2);
     var kopf=new T.Group(); scene.add(kopf);
     // Kopf nach den Umrissen der Schnittwerkstatt (1 Einheit = 100 px dort):
     // Schädel: von hinten 90×100, von oben 82×102, im Profil Kreis r=100.
     // Gesicht/Kinn als zweite, nach vorne-unten versetzte Form; Ohr etwas vor der Mitte, Hals hinten bei −0,4.
-    var hautM=new T.MeshStandardMaterial({color:0xF0D3BC,roughness:.62});
+    var hautM=new T.MeshStandardMaterial({color:0xFBF8F4,roughness:.9}), umrissM=new T.MeshBasicMaterial({color:0x2C2C2C,side:T.BackSide});
+    function umriss(mesh,k){ var o=new T.Mesh(mesh.geometry,umrissM); o.position.copy(mesh.position); o.rotation.copy(mesh.rotation); o.scale.copy(mesh.scale).multiplyScalar(k||1.015); kopf.add(o); }
     // Kopf wie ein Übungskopf aus EINER Fläche: Schädel-Ellipsoid, darunter Kiefer und Kinn,
     // im Gesicht weiche Formen (Gauß-Hügel) für Stirn, Brauen, Augenhöhlen, Nase, Wangen, Lippen, Kinn.
     function glatt(a0,a1,x){ var t=Math.max(0,Math.min(1,(x-a0)/(a1-a0))); return t*t*(3-2*t); }
@@ -980,7 +987,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     for(var i=0;i<kp.count;i++){ kv.fromBufferAttribute(kp,i); var q=form(kv); kp.setXYZ(i,q.x,q.y,q.z); }
     kg.computeVertexNormals();
     var hk=new T.Mesh(kg,hautM); kopf.add(hk); hk.updateMatrixWorld();
-    var hals=new T.Mesh(new T.CylinderGeometry(.4,.46,1.5,40),hautM); hals.position.set(0,-1.3,-.04); kopf.add(hals);
+    var hals=new T.Mesh(new T.CylinderGeometry(.4,.46,1.5,40),hautM); hals.position.set(0,-1.3,-.04); kopf.add(hals); umriss(hk,1.012); var hu=new T.Mesh(hals.geometry,umrissM); hu.position.copy(hals.position); hu.scale.set(1.03,1,1.03); kopf.add(hu);
     // Punkte auf der Gesichtsfläche finden (Strahl von vorne)
     var fr=new T.Raycaster();
     function zAuf(x,y){ fr.set(new T.Vector3(x,y,5),new T.Vector3(0,0,-1)); var h=fr.intersectObject(hk); return h.length?h[0].point.z:C; }
@@ -990,8 +997,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     [-1,1].forEach(function(sx){
       bogen(.1,1.5,.008,Math.PI/2,sx*.25,-.21,.004,sx*.3);    // Augenlid (geschlossen)
       bogen(.13,1.3,.008,Math.PI/2,sx*.26,-.11,.004,sx*.3);   // Braue
-      var ohr=new T.Mesh(new T.SphereGeometry(1,24,16),hautM); ohr.scale.set(.055,.19,.12); ohr.position.set(sx*.83,-.25,.06); ohr.rotation.y=sx*.25; kopf.add(ohr);
-      var oi=new T.Mesh(new T.SphereGeometry(1,16,12),new T.MeshStandardMaterial({color:0xDDB49A,roughness:.7})); oi.scale.set(.03,.12,.07); oi.position.set(sx*.87,-.25,.07); oi.rotation.y=sx*.25; kopf.add(oi);
+      var ohr=new T.Mesh(new T.SphereGeometry(1,24,16),hautM); ohr.scale.set(.055,.19,.12); ohr.position.set(sx*.83,-.25,.06); ohr.rotation.y=sx*.25; kopf.add(ohr); umriss(ohr,1.08);
+      var oi=new T.Mesh(new T.SphereGeometry(1,16,12),new T.MeshStandardMaterial({color:0xEDE6DD,roughness:.9})); oi.scale.set(.03,.12,.07); oi.position.set(sx*.87,-.25,.07); oi.rotation.y=sx*.25; kopf.add(oi);
     });
     bogen(.16,1.2,.009,-Math.PI/2,0,-.84,.004);             // Lächeln
     // Haaransatz wie die gestrichelte Linie der Schnittwerkstatt: Höhe (y) je Winkel um den Kopf (0° = Stirnmitte, 180° = Nacken)
@@ -1006,7 +1013,11 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       if(d<0){ var u=Math.max(0,1+d/RAND), k=(.985/HS)+(1-.985/HS)*u*u; va.multiplyScalar(k); pos.setXYZ(i,va.x,va.y,va.z); } }
     for(var i=0;i<idx.length;i+=3){ if(drin[idx[i]]&&drin[idx[i+1]]&&drin[idx[i+2]]) neu.push(idx[i],idx[i+1],idx[i+2]); }
     hg.setIndex(neu); hg.computeVertexNormals();
-    var haar=new T.Mesh(hg,new T.MeshStandardMaterial({color:0x6E4528,roughness:.95,side:T.DoubleSide})); haar.scale.set(a,b,c); kopf.add(haar);
+    var haar=new T.Mesh(hg,new T.MeshStandardMaterial({color:0xF3ECE1,roughness:.95,side:T.DoubleSide})); haar.scale.set(a,b,c); kopf.add(haar);
+    var hu2=new T.Mesh(hg,umrissM); hu2.scale.set(a*1.012,b*1.012,c*1.012); kopf.add(hu2);
+    // gestrichelter Haaransatz wie in der Schnittzeichnung
+    var hl=[]; for(var g=-180;g<=180;g+=2){ var lo=g*Math.PI/180, yy=grenze(lo), rh=Math.sqrt(Math.max(0,1-yy*yy)), ph=Math.atan2(Math.sin(lo)*A,Math.cos(lo)*C); hl.push(new T.Vector3(rh*Math.sin(ph)*a*1.004,yy*b*1.004,rh*Math.cos(ph)*c*1.004)); }
+    var hlin=new T.Line(new T.BufferGeometry().setFromPoints(hl),new T.LineDashedMaterial({color:0x2C2C2C,dashSize:.05,gapSize:.035})); hlin.computeLineDistances(); kopf.add(hlin);
     // Fläche und lokale Richtungen
     function vDir(psi,lam){ var cl=Math.cos(lam); return new T.Vector3(Math.sin(lam),cl*Math.cos(psi),cl*Math.sin(psi)); }
     function P(v){ return v.clone().multiplyScalar(1/Math.sqrt(v.x*v.x/(a*a)+v.y*v.y/(b*b)+v.z*v.z/(c*c))); }
@@ -1052,16 +1063,19 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     // Bedienelemente
     $('#stTechnik').innerHTML=Object.keys(VORLAGEN).map(function(k){return '<button type="button" class="chip" data-t="'+k+'" aria-pressed="'+(k===technik)+'">'+esc(VORLAGEN[k].n)+'</button>';}).join('');
     $('#stGroesse').innerHTML=GR.map(function(g,i){return '<button type="button" class="farbe" data-g="'+i+'" style="background:'+WF[i]+'" aria-label="'+g.n+'" aria-pressed="'+(i===groesse)+'"></button>';}).join('');
-    $('#stRichtung').innerHTML=RICHT.map(function(r){return '<button type="button" class="chip" data-a="'+r[1]+'" aria-pressed="'+(r[1]===alpha)+'">'+r[0]+'</button>';}).join('');
+    $('#stRichtung').innerHTML=RICHT.map(function(r){return '<button type="button" class="chip" data-a="'+r[1]+'" aria-pressed="'+(r[1]===alpha)+'">'+r[0]+'</button>';}).join('')+
+      '<label class="winkel">Winkel <input type="range" id="stWinkel" min="-90" max="90" step="5" value="0" aria-label="Winkel des Wicklers"><b>gerade</b></label>';
+    function stWinkelText(a){ var u=-a; return u===0?'gerade':Math.abs(u)===90?'senkrecht':Math.abs(u)+'° '+(u>0?'↗':'↖'); }
     function knoepfe(){ $('#stGroesseName').textContent=GR[groesse].n;
       Array.prototype.forEach.call(document.querySelectorAll('#stTechnik .chip'),function(x){x.setAttribute('aria-pressed',x.dataset.t===technik);});
       Array.prototype.forEach.call(document.querySelectorAll('#stGroesse .farbe'),function(x){x.setAttribute('aria-pressed',+x.dataset.g===groesse);});
-      Array.prototype.forEach.call(document.querySelectorAll('#stRichtung .chip'),function(x){x.setAttribute('aria-pressed',+x.dataset.a===alpha);}); }
+      Array.prototype.forEach.call(document.querySelectorAll('#stRichtung .chip'),function(x){x.setAttribute('aria-pressed',+x.dataset.a===alpha);}); var sw=$('#stWinkel'); if(sw){ sw.value=-alpha; sw.nextElementSibling.textContent=stWinkelText(alpha); } }
     var TIPP={frei:'Wähle Größe und Richtung und setz die Wickler auf den Kopf. Mit den Knöpfen oben links wechselst du die Ansicht.'};
     function technikWahl(t){ technik=t; vorlage=vorlageBauen(t); geisterZeigen(); knoepfe(); $('#stFb').className='fb'; $('#stFb').textContent=TIPP[t]||'Setz die Wickler frei auf den Kopf.'; ansicht('hinten'); }
     $('#stTechnik').onclick=function(e){var x=e.target.closest('.chip'); if(x) technikWahl(x.dataset.t);};
     $('#stGroesse').onclick=function(e){var x=e.target.closest('.farbe'); if(x){groesse=+x.dataset.g; knoepfe();}};
     $('#stRichtung').onclick=function(e){var x=e.target.closest('.chip'); if(x){alpha=+x.dataset.a; knoepfe();}};
+    $('#stRichtung').oninput=function(e){ if(e.target.id==='stWinkel'){ alpha=-(+e.target.value); knoepfe(); } };
     $('#stVorlage').onchange=geisterZeigen;
     $('#stZurueck').onclick=function(){ var w=gesetzt.pop(); if(w){kopf.remove(w.mesh); malen();} };
     $('#stLeeren').onclick=function(){ gesetzt.forEach(function(w){kopf.remove(w.mesh);}); gesetzt=[]; $('#stFb').textContent=''; malen(); };
