@@ -641,28 +641,28 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   function strang(x1,y1,x2,y2,f){ return '<path d="M'+x1+' '+y1+' Q'+((x1+x2)/2+3)+' '+((y1+y2)/2)+' '+x2+' '+y2+'" stroke="'+(f||STRANG)+'" stroke-width="3" fill="none" stroke-linecap="round"/>'; }
   // Köpfe wie in der Schnittwerkstatt (gleiche Umrisse), hier mit Haarbereich in Farbe.
   // Die Pfade stehen in den Koordinaten der Schnittwerkstatt und werden per transform eingepasst.
-  var KL='#2C2C2C', KF='#F1E6DA', KH_='#C9A27A';
+  var KL='#2C2C2C', KF='#FFFFFF';
   var SW={
     back:{t:'translate(150 116) scale(1.08) translate(-195 -170)',
       kopf:'<ellipse cx="103" cy="205" rx="9" ry="22"/><ellipse cx="287" cy="205" rx="9" ry="22"/><path d="M150,345 L150,280 C130,270 116,252 110,228 C105,208 105,188 105,170 A90,100 0 0,1 285,170 C285,188 285,208 280,228 C274,252 260,270 240,280 L240,345"/>',
       cap:'M105,170 A90,100 0 0,1 285,170 C285,190 284,207 280,224 C268,236 257,252 244,268 Q195,286 146,268 C133,252 122,236 110,224 C106,207 105,190 105,170 Z',
       hl:'M110,224 C122,236 133,252 146,268 Q195,286 244,268 C257,252 268,236 280,224', extra:'', label:'Ansicht von hinten'},
-    side:{t:'translate(165 120) scale(-1.05 1.05) translate(-190 -175)',
+    side:{t:'translate(135 120) scale(1.05) translate(-190 -175)',
       kopf:'<path d="M150,345 L150,267 A100,100 0 1,1 280,135 C288,158 286,178 291,194 L309,222 L293,229 C297,240 295,250 289,257 C293,268 287,285 271,292 C257,298 243,296 233,290 L233,345"/>',
       cap:'M151,267 A100,100 0 1,1 281,134 C272,150 263,160 258,172 C248,176 232,171 222,175 C212,170 198,172 193,188 C188,212 190,236 182,254 C174,264 162,268 151,267 Z',
       hl:'M281,134 C272,150 263,160 258,172 C248,176 232,171 222,175 C212,170 198,172 193,188 C188,212 190,236 182,254 C174,264 162,268 151,267',
       extra:'<ellipse cx="205" cy="195" rx="11" ry="19" fill="'+KF+'" stroke="'+KL+'" stroke-width="2"/><path d="M209,183 q-7,5 -3,12 q4,7 -2,13 M266,178 q6,-3 12,0" fill="none" stroke="'+KL+'" stroke-width="1.4"/>', label:'Ansicht von der Seite'},
     top:{t:'translate(150 136) scale(1.0 .98) translate(-195 -200)',
       kopf:'<ellipse cx="111" cy="205" rx="7" ry="18"/><ellipse cx="279" cy="205" rx="7" ry="18"/><path d="M184,101 L195,84 L206,101"/><ellipse cx="195" cy="200" rx="82" ry="102"/>',
-      cap:null, hl:null, extra:'', label:'Ansicht von oben · Gesicht oben'}
+      cap:null, hl:null, extra:'', label:'Ansicht von oben · vorne (Gesicht) ist oben'}
   };
   (function(){ var T=SW.top, rad=function(d){return d*Math.PI/180;}, tp=function(t){return {x:195+82*Math.cos(rad(t)),y:200+102*Math.sin(rad(t))};}, a=tp(300), b=tp(240);
     T.cap='M'+a.x.toFixed(1)+','+a.y.toFixed(1)+' A82,102 0 1,1 '+b.x.toFixed(1)+','+b.y.toFixed(1)+' Q195,132 '+a.x.toFixed(1)+','+a.y.toFixed(1)+' Z';
     T.hl='M'+a.x.toFixed(1)+','+a.y.toFixed(1)+' Q195,132 '+b.x.toFixed(1)+','+b.y.toFixed(1); })();
   function swKopf(v,innen){
     var V=SW[v];
-    return '<rect width="300" height="260" fill="'+HG+'"/><g transform="'+V.t+'"><g fill="'+KF+'" stroke="'+KL+'" stroke-width="2" stroke-linejoin="round">'+V.kopf+'</g>'+
-      '<path d="'+V.cap+'" fill="'+KH_+'" opacity=".6"/><path d="'+V.hl+'" fill="none" stroke="'+KL+'" stroke-width="1.3" stroke-dasharray="4 4" opacity=".75"/>'+V.extra+'</g>'+
+    return '<rect width="300" height="260" fill="#FFFFFF"/><g transform="'+V.t+'"><g fill="'+KF+'" stroke="'+KL+'" stroke-width="2" stroke-linejoin="round">'+V.kopf+'</g>'+
+      '<path d="'+V.hl+'" fill="none" stroke="'+KL+'" stroke-width="1.3" stroke-dasharray="4 4" opacity=".75"/>'+V.extra+'</g>'+
       innen+txt(150,254,V.label,{w:400,f:'#7A7266'});
   }
   function kopf(innen){ return swKopf('back',innen); }
@@ -685,10 +685,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
      warum:'Keine sichtbaren Abteilungslinien, die Locken fallen natürlicher ineinander. Gut für kurze bis mittellange Haare.',
      achtung:'Dreieckige oder versetzte Abteilungen genau planen, damit kein Feld doppelt oder gar nicht gewickelt ist.'},
     {id:'flaeche',n:'Flächenwicklung',bild:function(){var s='';
-       [[104,46],[130,34],[158,28],[186,30],[214,40],[238,58]].forEach(function(p){s+=w(p[0],p[1]+8,30,14,90);});
-       [[108,92],[132,104],[120,124]].forEach(function(p){s+=w(p[0],p[1],32,14,-35);});
-       [[222,120],[238,148],[214,176],[232,196],[248,108]].forEach(function(p){s+=w(p[0],p[1],24,10,0);});
-       s+=txt(158,80,'Oberkopf senkrecht',{f:'#4A4336',s:9})+txt(8,96,'Schläfe schräg →',{a:'start',s:9})+txt(230,226,'Nacken kleiner',{s:9});
+       [[104,46],[130,34],[158,28],[186,30],[214,40],[238,58]].forEach(function(p){s+=w(300-p[0],p[1]+8,30,14,90);});
+       [[108,92],[132,104],[120,124]].forEach(function(p){s+=w(300-p[0],p[1],32,14,35);});
+       [[222,120],[238,148],[214,176],[232,196],[248,108]].forEach(function(p){s+=w(300-p[0],p[1],24,10,0);});
+       s+=txt(142,80,'Oberkopf senkrecht',{s:9})+txt(296,40,'Schläfe schräg ↙',{a:'end',s:9})+txt(70,226,'Nacken kleiner',{s:9});
        return kopfSeite(s);},
      wie:'Am Oberkopf stehen die Wickler aufrecht, an den Schläfen zeigen sie schräg nach hinten, und im Nacken nimmst du eine kleinere Größe.',
      warum:'Oben bleibt die Frisur flach, das Volumen sitzt an den Rändern: rund ums Gesicht und im Nacken.',
