@@ -495,45 +495,45 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   // Kein Gegenüber in Reichweite (Ende des inneren Bogens): null, dann keine Brücke
   function partner(i){ var p=punkt(0,T6[i],1), best=0, bd=1e9; for(var n=0;n<=100;n++){var q=punkt(1,n/100,1),dd=(q[0]-p[0])*(q[0]-p[0])+(q[1]-p[1])*(q[1]-p[1]);if(dd<bd){bd=dd;best=n/100;}} return Math.sqrt(bd)<=(M.r[1]-M.r[0])*1.25?best:null; }
   function linie(a,b2,farbe,breite,extra){ return '<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b2[0].toFixed(1)+'" y2="'+b2[1].toFixed(1)+'" stroke="'+farbe+'" stroke-width="'+breite+'" stroke-linecap="round"'+(extra||'')+'/>'; }
-  function txt(x,y,t,farbe,gr,anker,fett){ return '<text x="'+x+'" y="'+y+'" fill="'+farbe+'" font-size="'+(gr||10)+'" text-anchor="'+(anker||'middle')+'"'+(fett?' font-weight="700"':'')+' font-family="Poppins,system-ui">'+t+'</text>'; }
+  function labTxt(x,y,t,farbe,gr,anker,fett){ return '<text x="'+x+'" y="'+y+'" fill="'+farbe+'" font-size="'+(gr||10)+'" text-anchor="'+(anker||'middle')+'"'+(fett?' font-weight="700"':'')+' font-family="Poppins,system-ui">'+t+'</text>'; }
   function strähne(z){
     // linke Spalte: die ganze Strähne
-    var g='<rect x="4" y="6" width="88" height="288" rx="8" fill="#FFFFFF" stroke="#E4DBC5"/>'+txt(48,24,'Strähne','#6B6455',11,'middle',true);
+    var g='<rect x="4" y="6" width="88" height="288" rx="8" fill="#FFFFFF" stroke="#E4DBC5"/>'+labTxt(48,24,'Strähne','#6B6455',11,'middle',true);
     if(z==='zu'||z==='offen'){
       g+='<path d="M48 42 L48 262" stroke="#5A3E1B" stroke-width="5" stroke-linecap="round"/>';
-      if(z==='offen') g+=txt(70,120,'⚡','#C44030',18)+txt(48,284,'formbar','#C44030',10,'middle',true);
-      else g+=txt(48,284,'glatt','#6B6455',10,'middle',true);
+    if(z==='offen') g+=labTxt(70,120,'⚡','#C44030',18)+labTxt(48,284,'formbar','#C44030',10,'middle',true);
+      else g+=labTxt(48,284,'glatt','#6B6455',10,'middle',true);
     } else if(z==='gewickelt'||z==='fixiert'){
       g+='<path d="M48 42 L48 108" stroke="#5A3E1B" stroke-width="5" stroke-linecap="round"/>';
       g+='<rect x="28" y="108" width="40" height="96" rx="11" fill="#E9DFC6" stroke="#C9B88E"/>';
       for(var n=0;n<8;n++){ g+='<path d="M28 '+(114+n*11.5)+' Q48 '+(107+n*11.5)+' 68 '+(114+n*11.5)+'" stroke="#5A3E1B" stroke-width="4" fill="none" stroke-linecap="round"/>'; }
-      g+=txt(48,284,'gewickelt','#6B6455',10,'middle',true);
-      if(z==='fixiert') g+=txt(78,100,'✚','#2F7D55',18);
+      g+=labTxt(48,284,'gewickelt','#6B6455',10,'middle',true);
+      if(z==='fixiert') g+=labTxt(78,100,'✚','#2F7D55',18);
     } else {
       var d='M48 42'; for(var n2=0;n2<=240;n2++){var t=n2/240*5*2*Math.PI; d+=' L'+(48+17*Math.cos(t)).toFixed(1)+' '+(48+6*t+12*Math.sin(t)).toFixed(1);}
-      g+='<path d="'+d+'" stroke="#5A3E1B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+txt(48,284,'Locke','#2F7D55',11,'middle',true);
+      g+='<path d="'+d+'" stroke="#5A3E1B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+labTxt(48,284,'Locke','#2F7D55',11,'middle',true);
     }
     return g;
   }
   function labZeichnen(b){
     var S=SCHRITTE[lab], z=S.zust; if(b===undefined) b=biegung;
     var g=strähne(z);
-    g+='<rect x="98" y="6" width="258" height="288" rx="8" fill="#FBF7EE" stroke="#E4DBC5"/>'+txt(227,24,'🔍 Unter der Lupe: im Haar','#6B6455',11,'middle',true);
+    g+='<rect x="98" y="6" width="258" height="288" rx="8" fill="#FBF7EE" stroke="#E4DBC5"/>'+labTxt(227,24,'🔍 Unter der Lupe: im Haar','#6B6455',11,'middle',true);
     var wickler=(z==='gewickelt'||z==='fixiert')&&b>0.5;
-    if(wickler) g+='<circle cx="'+M.cx+'" cy="'+M.cy+'" r="34" fill="#E9DFC6" stroke="#C9B88E" stroke-width="2"/>'+txt(M.cx,M.cy+4,'Wickler','#9A8A62',11);
+    if(wickler) g+='<circle cx="'+M.cx+'" cy="'+M.cy+'" r="34" fill="#E9DFC6" stroke="#C9B88E" stroke-width="2"/>'+labTxt(M.cx,M.cy+4,'Wickler','#9A8A62',11);
     // Brücken zuerst, Ketten darüber
     var neu=(z==='fixiert'||z==='fertig');
     T6.forEach(function(t,i){
       var typ=TYP[i], a=punkt(0,t,b), alt=punkt(1,t,b), pt=partner(i), np=pt===null?null:punkt(1,pt,b);
       if(neu&&!np&&b>.5) return;   // am Ende des inneren Bogens kein Gegenüber
       if(typ==='ss'){
-        if(z==='zu') g+=linie(a,alt,FARBE.ss,5)+txt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'Brücke',FARBE.ss,10,'middle',true);
-        else if(neu) g+=linie(a,np,FARBE.ss,5)+(b<.5?txt((a[0]+np[0])/2,(a[1]+np[1])/2-6,'Brücke',FARBE.ss,10,'middle',true):'');
+        if(z==='zu') g+=linie(a,alt,FARBE.ss,5)+labTxt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'Brücke',FARBE.ss,10,'middle',true);
+        else if(neu) g+=linie(a,np,FARBE.ss,5)+(b<.5?labTxt((a[0]+np[0])/2,(a[1]+np[1])/2-6,'Brücke',FARBE.ss,10,'middle',true):'');
         else { // offen: zwei kurze rote Enden, jeweils an der eigenen Kette
           var ri=[alt[0]-a[0],alt[1]-a[1]], len=Math.hypot(ri[0],ri[1])||1; ri=[ri[0]/len*13,ri[1]/len*13];
           g+=linie(a,[a[0]+ri[0],a[1]+ri[1]],ROT,4)+linie(alt,[alt[0]-ri[0],alt[1]-ri[1]],ROT,4);
           // ein Wort pro geöffneter Brücke, mittig zwischen den beiden Enden
-          if(b<.5) g+=txt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'offen',ROT,10,'middle',true);
+          if(b<.5) g+=labTxt((a[0]+alt[0])/2,(a[1]+alt[1])/2-6,'offen',ROT,10,'middle',true);
         }
       } else {
         var offen=(z==='offen'||z==='gewickelt'||(z==='fixiert'&&typ==='hb'));
@@ -543,11 +543,12 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     });
     g+='<path d="'+kettenPfad(0,b)+'" stroke="'+KETTE+'" stroke-width="5" fill="none" stroke-linecap="round"/>';
     g+='<path d="'+kettenPfad(1,b)+'" stroke="'+KETTE+'" stroke-width="5" fill="none" stroke-linecap="round"/>';
-    if(z==='offen') g+=txt(326,60,'⚡','#C44030',20)+txt(326,76,'Wellmittel','#C44030',10,'middle',true);
-    if(z==='fixiert') g+=txt(326,60,'✚','#2F7D55',20)+txt(326,76,'Fixierung','#2F7D55',10,'middle',true);
-    if(z==='fertig') g+=txt(326,60,'✓','#2F7D55',22)+txt(326,76,'Form bleibt','#2F7D55',10,'middle',true);
-    if(neu&&b>.5) g+=txt(227,286,'gold = neue Schwefelbrücken','#896C32',10,'middle',true);
-    if(z==='gewickelt') g+=txt(227,286,'rot = offene Enden, jetzt versetzt','#C44030',9.5,'middle',true);
+    if(b<0.5) g+=labTxt(M.x[0]-12,272,'Kette','#7A6B4A',10,'end')+labTxt(M.x[1]+12,272,'Kette','#7A6B4A',10,'start');
+    if(z==='offen') g+=labTxt(326,60,'⚡','#C44030',20)+labTxt(326,76,'Wellmittel','#C44030',10,'middle',true);
+    if(z==='fixiert') g+=labTxt(326,60,'✚','#2F7D55',20)+labTxt(326,76,'Fixierung','#2F7D55',10,'middle',true);
+    if(z==='fertig') g+=labTxt(326,60,'✓','#2F7D55',22)+labTxt(326,76,'Form bleibt','#2F7D55',10,'middle',true);
+    if(neu&&b>.5) g+=labTxt(227,286,'gold = neue Schwefelbrücken','#896C32',10,'middle',true);
+    if(z==='gewickelt') g+=labTxt(227,286,'rot = offene Enden, jetzt versetzt','#C44030',9.5,'middle',true);
     $('#labSvg').innerHTML=g;
   }
   function labSchritt(){
