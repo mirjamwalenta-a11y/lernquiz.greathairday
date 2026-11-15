@@ -11,7 +11,8 @@
 
   function sb() {
     if (window.sb2) return window.sb2;
-    if (!client && window.supabase) client = window.supabase.createClient(SB_URL, SB_KEY);
+    // eine gemeinsame Verbindung pro Seite (sonst erneuern zwei gleichzeitig die Anmeldung)
+    if (!client && window.supabase) client = window.__ghdSb || (window.__ghdSb = window.supabase.createClient(SB_URL, SB_KEY));
     return client;
   }
 

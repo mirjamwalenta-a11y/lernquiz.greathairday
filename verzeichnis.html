@@ -367,7 +367,7 @@ EINTRAEGE[EINTRAEGE.length - 1][2] = '#feedback';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
   try {
     if (!window.supabase || !window.lqIstMeisterin) return;
-    var c = window.supabase.createClient(SB_URL, SB_KEY);
+    var c = window.__ghdSb || (window.__ghdSb = window.supabase.createClient(SB_URL, SB_KEY));
     window.lqIstMeisterin(c).then(function (ja) { if (ja) window.azMeisterin(); }, function () {});
   } catch (e) {}
 })();
