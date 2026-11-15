@@ -66,12 +66,12 @@ die Test-Zugänge eines Partnersalons).
 ## Impulse V1
 
 Stehen mit fester `id` in `woerni-impulse.js` (f1–f5, w1–w6, e1–e8, p1–p5,
-r1–r3, c1–c3). Neue Sätze dort anhängen, bestehende `id`s nie umbenennen.
+r1–r3, c1–c4). Neue Sätze dort anhängen, bestehende `id`s nie umbenennen.
 Regeln für neue Sätze: genau ein Satz, höchstens 14 Wörter, keine Frage,
 kein Ausrufezeichen, keine Emojis, keine Floskeln, Haltung statt Fachwissen.
 
 **Coach-Sätze (2026-11-15):** `c1` (Moment falsch, „Leucht-Turm“), `c2`
-(Wiedereinstieg, „Energie-Fresser“) und `c3` (Wiedereinstieg, „Kraft-Akt“) sind bewusste Ausnahmen von diesen
+(Wiedereinstieg, „Energie-Fresser“) `c3` (Wiedereinstieg, „Kraft-Akt“) und `c4` (Praxis, „Joy-Ride“) sind bewusste Ausnahmen von diesen
 Satzregeln: länger, direkter, mit Ausrufezeichen. Sie laufen in der normalen
 Rotation mit (14-Tage-Sperre, höchstens ein Impuls pro Runde). Derselbe Text
 steht auch als Spruch in `woernis-tipps.js`.
