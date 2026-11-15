@@ -54,6 +54,26 @@ window.WOERNIS_TIPPS = [
     titel: 'Der Kamm zeigt dir die Wahrheit',
     text: 'Kämm nach dem Schnitt noch einmal gegen die Richtung durch. Was dann absteht oder ungleich fällt, musst du noch ausbessern.' },
 
+  // ── Coach-Sätze zum Lernen (freigegeben 2026-11-15) ──
+  { id: 'energie-fresser', art: 'spruch', modul: '',
+    titel: 'Energie-Fresser: Aufschieben',
+    text: 'Schluss mit dem „Ich-müsste-noch“-Kopfkino. Such dir eine Sache aus, leg das Handy weg und mach jetzt den ersten Schritt!' },
+  { id: 'lang-strecke', art: 'spruch', modul: '',
+    titel: 'Lang-Strecke statt Insta-Druck',
+    text: 'Vergiss den Insta-Druck, niemand wird über Nacht zur Meisterin oder zum Meister. Schau, was du schon gerockt hast, und bleib einfach jeden Tag dran!' },
+  { id: 'wert-schaetzung', art: 'spruch', modul: '',
+    titel: 'Wert-Schätzung',
+    text: 'Hör auf, dich kleinzumachen! Was dir leichtfällt, ist für andere sauschwer. Erkenne, was du draufhast, und bring es auf die Straße!' },
+  { id: 'joy-ride', art: 'spruch', modul: '',
+    titel: 'Joy-Ride statt Null Bock',
+    text: 'Lernen soll keine Qual sein, sondern Bock machen. Fühl dich jetzt schon wie ein Profi und genieß den Weg dorthin!' },
+  { id: 'leucht-turm', art: 'spruch', modul: '',
+    titel: 'Leucht-Turm: Fehler sind Training',
+    text: 'Keiner erwartet Perfektion, echte Profis stehen zu ihren Patzern. Fehler sind dein Trainingslager: Lerne daraus und mach’s beim nächsten Mal besser!' },
+  { id: 'kraft-akt', art: 'spruch', modul: '',
+    titel: 'Kraft-Akt: Handy weg und machen',
+    text: 'Schraub deinen Anspruch für den Start nach unten, bis du keine Ausrede mehr hast. Handy weg und machen, und zwar JETZT!' },
+
   // ── Tipps zu einem Lern-Modul (höchstens einer pro Modul) ──
   { id: 't-beratung', art: 'tipp', modul: 'beratung',
     titel: 'Die Kundin zeigen lassen',

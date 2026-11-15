@@ -42,7 +42,12 @@
 
     { id: 'r1', moment: 'richtig_nach_fehler', ton: 'bestärkend', text: 'Diese Frage war beim letzten Mal falsch, jetzt hast du sie richtig.' },
     { id: 'r2', moment: 'richtig_nach_fehler', ton: 'ruhig', text: 'Merk dir, was du diesmal anders überlegt hast.' },
-    { id: 'r3', moment: 'richtig_nach_fehler', ton: 'ruhig', text: 'Wiederhol sie in ein paar Tagen noch einmal, dann sitzt sie.' }
+    { id: 'r3', moment: 'richtig_nach_fehler', ton: 'ruhig', text: 'Wiederhol sie in ein paar Tagen noch einmal, dann sitzt sie.' },
+
+    // Coach-Sätze (2026-11-15): bewusst länger und mit Ausrufezeichen, Ausnahme von den
+    // V1-Satzregeln. Text gleich wie in woernis-tipps.js (ids leucht-turm, energie-fresser).
+    { id: 'c1', moment: 'falsch', ton: 'coach', text: 'Keiner erwartet Perfektion, echte Profis stehen zu ihren Patzern. Fehler sind dein Trainingslager: Lerne daraus und mach’s beim nächsten Mal besser!' },
+    { id: 'c2', moment: 'wiedereinstieg', ton: 'coach', text: 'Schluss mit dem „Ich-müsste-noch“-Kopfkino. Such dir eine Sache aus, leg das Handy weg und mach jetzt den ersten Schritt!' }
   ];
   var KEY = 'woerni-v1', SPERRE_TAGE = 14, TAG = 86400000;
 
