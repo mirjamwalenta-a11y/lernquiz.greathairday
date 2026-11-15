@@ -297,16 +297,16 @@ body.nur-mischen #mischen{padding-top:8px}
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="farb-zeiten.js?v=20261108k"></script>
-<script src="farb-nummern.js?v=20261114"></script>  <!-- Farb-Nummern eurer Farbkarte (Meisterin pflegt sie) -->  <!-- Farb-Zeiten laut Gebrauchsanweisung (Meisterin pflegt sie) -->
-<script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
+<script src="farb-zeiten.js?v=20261115"></script>
+<script src="farb-nummern.js?v=20261115"></script>  <!-- Farb-Nummern eurer Farbkarte (Meisterin pflegt sie) -->  <!-- Farb-Zeiten laut Gebrauchsanweisung (Meisterin pflegt sie) -->
+<script src="quiz-verlauf.js?v=20261115"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 </head>
 <body>
 
 <div class="wrap">
   <header class="top">
-    <a class="back-link" id="zurueck" href="lerntool.html?v=20261114t">← Lern-Tool</a>
+    <a class="back-link" id="zurueck" href="lerntool.html?v=20261115b">← Lern-Tool</a>
     <span class="tag">greathairday · Farbenlehre</span>
     <h1>Farblabor 🎨</h1>
     <a class="spick-link" href="spickzettel.html?v=20261114s">🖨 Farb-Spickzettel drucken</a>
@@ -651,7 +651,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const VON={
   schnuppertag:['schnuppertag.html','← Schnuppertag'],
   handbuch:['https://mirjamwalenta-a11y.github.io/Mitarbeiterhandbuch/Mitarbeiterhandbuch_App.html','← Mitarbeiterhandbuch'],
-  meisterin:['lernquiz.html?v=20261114t#meisterin','← Meisterinnen-Bereich']
+  meisterin:['lernquiz.html?v=20261115b#meisterin','← Meisterinnen-Bereich']
 };
 const von=new URLSearchParams(location.search).get('von');
 if(VON[von]){const a=$('#zurueck');a.href=VON[von][0];a.textContent=VON[von][1];}

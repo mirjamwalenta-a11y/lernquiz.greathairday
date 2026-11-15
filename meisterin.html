@@ -421,7 +421,7 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 const SB_URL='https://wrxlaltgtgkdomklgrlj.supabase.co';
 const SB_KEY='sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
 var sb_m=null;
-try{sb_m=supabase.createClient(SB_URL,SB_KEY);}catch(e){}
+try{sb_m=window.__ghdSb || (window.__ghdSb = supabase.createClient(SB_URL,SB_KEY));}catch(e){}
 
 var EnVerlaufAktLehrling=null;
 

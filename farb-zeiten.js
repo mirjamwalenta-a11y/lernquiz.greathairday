@@ -21,7 +21,7 @@
   window.ghdFarbZeitenLaden = function(onFertig){
     var fertig = function(){ try { if (onFertig) onFertig(window.FZ); } catch(e) {} };
     try {
-      var c = window.sb2 || window.sb || (window.supabase && window.supabase.createClient(SB_URL, SB_KEY));
+      var c = window.sb2 || window.__ghdSb || (window.supabase && (window.__ghdSb = window.supabase.createClient(SB_URL, SB_KEY)));
       if (!c || !c.from) { fertig(); return; }
       c.from('lerntool_daten').select('wert').eq('typ','farb_einstellung').eq('schluessel','farb_einstellung|zeiten').limit(1)
         .then(function(r){

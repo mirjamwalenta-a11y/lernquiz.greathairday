@@ -9,7 +9,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
-<script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis auch im Lernquiz-Verlauf speichern -->
+<script src="quiz-verlauf.js?v=20261115"></script>  <!-- Quiz-Ergebnis auch im Lernquiz-Verlauf speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 <style>
@@ -386,7 +386,7 @@ h1{font-size:26px;font-weight:600;color:#211D17;margin-bottom:4px}
 const SB_URL='https://wrxlaltgtgkdomklgrlj.supabase.co';
 const SB_KEY='sb_publishable_Wjo5ae59LH97g2QEZ3RlGw_PYFsKUop';
 var sb_client=null;
-try{sb_client=supabase.createClient(SB_URL,SB_KEY);}catch(e){}
+try{sb_client=window.__ghdSb || (window.__ghdSb = supabase.createClient(SB_URL,SB_KEY));}catch(e){}
 
 // Aktuell laufende Quiz-Info für Verlauf
 var AktKategorie='Alle';
@@ -782,8 +782,8 @@ async function istMeisterinServer(){
 // Lehrlinge ins Lern-Tool
 function zurueckAusEnglisch(){
   window.location.replace(IstMeisterin
-    ? 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261114t#meisterin'
-    : 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261114t');
+    ? 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261115b#meisterin'
+    : 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261115b');
 }
 function zurueckBeschriften(){
   var b=document.getElementById('zurueck-btn'); if(b) b.textContent=IstMeisterin?'← Meisterin-Bereich':'← Lern-Tool';
