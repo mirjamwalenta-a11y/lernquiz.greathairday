@@ -81,6 +81,22 @@
     addEventListener('scroll', function () { if (warte) return; warte = setTimeout(function () { warte = 0; abstandSetzen(); }, 250); }, { passive: true });
     try { new MutationObserver(function () { pinLinkZeigen(); abstandSetzen(); }).observe(document.body, { childList: true }); } catch (e) {}
   }
+  // „← Zurück“-Links (z. B. Spickzettel → Meisterin-Bereich, Farblabor → Lern-Tool):
+  // Kam man genau von dieser Seite, einen echten Schritt zurückgehen. So landet man
+  // wieder im Bereich, aus dem man kam (z. B. Farbe), statt auf der Startseite.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || a.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    var zurueckLink = /^\s*←/.test(a.textContent) || /zurueck|zurück|back/i.test((a.id || '') + ' ' + (a.className || ''));
+    if (!zurueckLink || !document.referrer || history.length < 2) return;
+    try {
+      var ziel = new URL(a.href, location.href), her = new URL(document.referrer);
+      if (ziel.origin === location.origin && her.origin === location.origin && ziel.pathname === her.pathname) {
+        e.preventDefault();
+        history.back();
+      }
+    } catch (x) { /* dann eben normal öffnen */ }
+  }, true);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', anhaengen);
   else anhaengen();
 })();
