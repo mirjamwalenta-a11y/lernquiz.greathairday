@@ -7,13 +7,17 @@
 //
 //   var merken = ghdVerlauf({ zeigen: function (id) { … }, ohneVerlauf: ['s-login'] });
 //   merken('s-start');   // nach jedem Bildschirmwechsel aufrufen
+//   ghdVerlaufGemerkt()  // Bildschirm, auf dem man war, bevor man eine andere Seite
+//                        // (Spickzettel, Farbkompass …) geöffnet hat und zurückkam
 //
 // ohneVerlauf: Bildschirme, die den aktuellen Eintrag ersetzen statt einen neuen
 // anzulegen (Anmeldung, Laden). Speichert nichts, sendet nichts.
 (function () {
   window.ghdVerlauf = function (opt) {
     var ohne = {}; (opt.ohneVerlauf || []).forEach(function (id) { ohne[id] = 1; });
-    var stapel = [], ausPop = false, popIgnorieren = false;
+    // Der Stapel steckt auch im Verlaufseintrag: kommt man von einer anderen Seite
+    // zurück (Seite wird neu geladen), ist er wieder da.
+    var stapel = (history.state && history.state.stapel) ? history.state.stapel.slice() : [], ausPop = false, popIgnorieren = false;
     function stand() { var s = history.state; return s && s.ghdSeite ? s : null; }
     function merken(id) {
       if (ausPop || !id) return;
@@ -22,7 +26,7 @@
         if (!s || ohne[id] || ohne[s.ghdSeite]) {
           // erster Bildschirm (oder Anmeldung): aktuellen Eintrag ersetzen
           i = Math.max(i, 1); stapel.length = i; stapel[i - 1] = id;
-          history.replaceState({ ghdSeite: id, i: i }, '');
+          history.replaceState({ ghdSeite: id, i: i, stapel: stapel.slice() }, '');
           return;
         }
         if (s.ghdSeite === id) return;
@@ -34,17 +38,18 @@
           return;
         }
         stapel.length = i; stapel.push(id);
-        history.pushState({ ghdSeite: id, i: i + 1 }, '');
+        history.pushState({ ghdSeite: id, i: i + 1, stapel: stapel.slice() }, '');
       } catch (e) { /* ohne Verlauf geht es auch */ }
     }
     addEventListener('popstate', function (e) {
       if (popIgnorieren) { popIgnorieren = false; return; }
       var s = e.state;
       if (!s || !s.ghdSeite) return;
-      stapel.length = s.i; stapel[s.i - 1] = s.ghdSeite;
+      stapel = s.stapel ? s.stapel.slice() : stapel; stapel.length = s.i; stapel[s.i - 1] = s.ghdSeite;
       ausPop = true;
       try { opt.zeigen(s.ghdSeite); } catch (x) { /* egal */ } finally { ausPop = false; }
     });
     return merken;
   };
+  window.ghdVerlaufGemerkt = function () { var s = history.state; return s && s.ghdSeite ? s.ghdSeite : null; };
 })();
