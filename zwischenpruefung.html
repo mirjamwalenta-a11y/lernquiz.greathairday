@@ -207,6 +207,28 @@ figure.panel figcaption{font-size:.875rem;color:var(--muted)}
 .dia.nail{max-width:440px;margin-inline:auto}
 .dia.nail.side{max-width:760px}
 .qfig .dia.nail{max-width:380px}
+.tk-seg{display:flex;flex-wrap:wrap;gap:4px;background:#EEE6D6;border-radius:12px;padding:4px;align-self:flex-start}
+.tk-seg button{border:0;background:none;padding:8px 14px;border-radius:9px;cursor:pointer;font-weight:700;color:var(--muted);display:flex;gap:8px;align-items:center;min-height:40px}
+.tk-seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.pill.neu{background:var(--warn-soft);color:var(--warn)}
+.tk-banner{border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:6px;padding:12px 14px}
+.tk-views{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.tk-view{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.tk-view .stage{aspect-ratio:1/1.08;padding:5%;background:#fff;border-bottom:1px solid var(--line)}
+.tk-view .stage img{display:block;width:100%;height:100%;object-fit:contain}
+.tk-view figcaption{padding:12px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.tk-view figcaption b{font-size:.95rem}
+.tk-num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;margin-right:6px;vertical-align:1px}
+.tk-hint{display:flex;gap:6px;align-items:flex-start;font-weight:600;color:#3E4A6B}
+.tk-hint i{flex:none;width:12px;height:12px;border-radius:3px;background:#5B6478;margin-top:5px}
+.tk-view .tk-edit{align-self:flex-start;margin-top:auto;padding:4px 0;min-height:32px;font-size:.85rem}
+.tk-view.edit{grid-column:1/-1}
+.tk-view.edit .stage{aspect-ratio:auto;height:200px}
+.tk-form{display:flex;flex-direction:column;gap:8px}
+.tk-form label{display:flex;flex-direction:column;gap:2px;font-size:.8rem;font-weight:700;color:var(--muted)}
+.tk-form input,.tk-form textarea{border:1px solid var(--line);border-radius:6px;padding:8px;font-size:.9rem;font-weight:400;color:var(--ink);background:#fff;width:100%}
+.tk-form textarea{resize:vertical;min-height:64px}
+@media(max-width:620px){.tk-views{gap:8px}.tk-view figcaption{padding:8px 10px}}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{display:inline-block;width:18px;height:4px;border-radius:2px}
@@ -239,7 +261,8 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="quiz-verlauf.js?v=20261107i"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
+<script src="quiz-verlauf.js?v=20261107i"></script>
+<script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle (Server-Prüfung): blendet „Text bearbeiten“ beim Technikkopf 2027 ein -->  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 </head>
 <body>
@@ -1036,10 +1059,49 @@ function wicklerSVG(){const u=++_uid;
   return s;};
  h+=`${TX(10,134,'Spitzen','font-weight="700"')}${fig(80,true)}${fig(240,false)}`;
  h+=`${TX(80,248,'✓ gerade im','text-anchor="middle" fill="'+C_ACC+'" font-weight="700"')}${TX(80,263,'Spitzenpapier','text-anchor="middle"')}${TX(240,248,'✗ Spitze','text-anchor="middle" fill="'+C_RED+'" font-weight="700"')}${TX(240,263,'umgebogen','text-anchor="middle"')}</svg>`;return h;}
-function bilderHTML(){return `<p class="muted small">Die Schemas unten zeigen einzelne Techniken im Detail. Das fertige Ergebnis muss genau der Mustervorlage der Landesinnung entsprechen.</p>
+/* Technikkopf: bisherige Mustervorlage (bis Februar 2027) und neue ab März 2027 */
+const TK_NEU_AB='2027-03-01';
+const TK_STANDARD=[ // eingebaute Texte; die Meisterin kann sie in der App ändern (Tabelle technikkopf_bildtexte)
+ {titel:'Seitenansicht',text:'Wasserwellen über die Seite, Wickler am Hinterkopf',hinweis:''},
+ {titel:'Oberkopf von oben',text:'Handgelegte Wellen über den ganzen Oberkopf',hinweis:''},
+ {titel:'Hinterkopf schräg',text:'Papilloten in Reihen, mit Stiften fixiert',hinweis:''},
+ {titel:'Hinterkopf',text:'Wickler in Reihen',hinweis:'Blaue Wickler = Dauerwellwickler, alle anderen = Wasserwellwickler'}];
+const TK={v:new Date().toISOString().slice(0,10)>=TK_NEU_AB?'neu':'alt',txt:TK_STANDARD.map(t=>({...t})),geladen:false,meisterin:false,edit:null,busy:false};
+let tkClient=null;
+function tkSb(){if(!tkClient&&window.supabase){try{tkClient=window.supabase.createClient('https://wrxlaltgtgkdomklgrlj.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g');}catch(e){}}return tkClient;}
+// Texte vom Server holen (nur angemeldet, siehe supabase/20261115_technikkopf_bildtexte.sql). Ohne Netz/Login: Standardtexte.
+async function tkLaden(){if(TK.geladen)return;TK.geladen=true;const c=tkSb();if(!c)return;
+ try{const s=(await c.auth.getSession()).data.session;if(!s)return;
+  const r=await c.from('technikkopf_bildtexte').select('ansicht,titel,text,hinweis');
+  if(!r.error&&r.data)r.data.forEach(z=>{const t=TK.txt[z.ansicht-1];if(t){t.titel=z.titel;t.text=z.text||'';t.hinweis=z.hinweis||'';}});
+  // Nur Anzeige: die Schreibrechte prüft der Server (Policy mit ist_meisterin()).
+  if(window.lqIstMeisterin)TK.meisterin=await window.lqIstMeisterin(c);
+ }catch(e){}
+ if(V.sub==='bilder')tkRepaint();}
+function tkRepaint(){const el=$('#tkNeu');if(el)el.outerHTML=tkNeuHTML();}
+async function tkSpeichern(i){const c=tkSb();const f=k=>($('#tk-'+k+'-'+i)||{}).value||'';
+ const z={ansicht:i+1,titel:f('titel').trim().slice(0,80),text:f('text').trim().slice(0,400),hinweis:f('hinweis').trim().slice(0,300)};
+ if(!z.titel){toast('Bitte einen Titel eintragen');return;}
+ if(!c){toast('Keine Verbindung zum Server');return;}
+ TK.busy=true;tkRepaint();
+ try{const r=await c.from('technikkopf_bildtexte').upsert(z,{onConflict:'ansicht'});
+  if(r.error)throw r.error;
+  Object.assign(TK.txt[i],{titel:z.titel,text:z.text,hinweis:z.hinweis});TK.edit=null;toast('Text gespeichert');
+ }catch(e){toast(window.lqNetzFehler&&window.lqNetzFehler(e)?'Kein Netz – nicht gespeichert':'Nicht gespeichert (keine Berechtigung?)');}
+ TK.busy=false;tkRepaint();}
+function tkNeuHTML(){return `<section class="panel stack" id="tkNeu"><h3>Neue Mustervorlage – 4 Ansichten</h3>
+ <p class="muted small">So muss der Technikkopf ab März 2027 aussehen. Vergleiche dein Ergebnis aus allen vier Richtungen.</p>
+ <div class="tk-views">${TK.txt.map((t,i)=>`<figure class="tk-view${TK.edit===i?' edit':''}"><div class="stage"><img src="bilder/technikkopf-2027/ansicht${i+1}.jpg?v=1" alt="Technikkopf ab März 2027, Ansicht ${i+1}: ${esc(t.titel)}" loading="lazy"></div>
+  <figcaption>${TK.edit===i?`<div class="tk-form"><label>Titel<input id="tk-titel-${i}" maxlength="80" value="${esc(t.titel)}"></label><label>Beschreibung<textarea id="tk-text-${i}" maxlength="400">${esc(t.text)}</textarea></label><label>Hinweis (farbig, optional)<textarea id="tk-hinweis-${i}" maxlength="300">${esc(t.hinweis)}</textarea></label>
+   <div class="row" style="gap:6px"><button class="btn primary" data-a="tksave" data-i="${i}" ${TK.busy?'disabled':''}>${TK.busy?'Speichert …':'Speichern'}</button><button class="btn ghost" data-a="tkcancel">Abbrechen</button></div></div>`
+  :`<b><span class="tk-num">${i+1}</span>${esc(t.titel)}</b>${t.text?`<span class="muted small">${esc(t.text)}</span>`:''}${t.hinweis?`<span class="tk-hint small"><i></i>${esc(t.hinweis)}</span>`:''}${TK.meisterin?`<button class="btn ghost tk-edit" data-a="tkedit" data-i="${i}">Text bearbeiten</button>`:''}`}</figcaption></figure>`).join('')}</div></section>`;}
+function bilderHTML(){tkLaden();const neu=TK.v==='neu';
+ return `<div class="tk-seg" role="group" aria-label="Prüfungsversion"><button data-a="tkv" data-v="alt" aria-pressed="${!neu}">Bis Februar 2027</button><button data-a="tkv" data-v="neu" aria-pressed="${neu}">Ab März 2027 <span class="pill neu">NEU</span></button></div>
+ ${neu?`<div class="tk-banner small"><strong>Wird 2027 geändert:</strong> Ab der Zwischenprüfung im März 2027 gilt diese neue Mustervorlage. Wer vorher antritt, übt weiter die bisherige Aufteilung („Bis Februar 2027“).</div>
+ ${tkNeuHTML()}`:`<p class="muted small">Die Schemas unten zeigen einzelne Techniken im Detail. Das fertige Ergebnis muss genau der Mustervorlage der Landesinnung entsprechen.</p>
  <section class="panel stack"><h3>Aufteilung am Technikkopf (verbindlich)</h3><p>Der Technikkopf muss genau so aussehen wie die Mustervorlage (Foto in der Broschüre der Landesinnung). Nichts anders machen!</p>
  <ul class="clean weak"><li><span><strong>Rechte Kopfseite</strong></span><span class="muted small" style="text-align:right">10 Papilloten in Reihen, in Wellenform</span></li><li><span><strong>Oberkopf und linke Seite</strong></span><span class="muted small" style="text-align:right">Handgelegte Wellen, Enden in Papilloten</span></li><li><span><strong>Nacken</strong></span><span class="muted small" style="text-align:right">10 Wickler: 4 liegend in der Mitte, je 3 stehend an den Seiten</span></li><li><span><strong>Oberkopf hinten</strong></span><span class="muted small" style="text-align:right">Restliches Haar als Knoten</span></li></ul>
- <p class="small muted">Rechts und links von der Puppe aus gesehen. Vergleiche dein Ergebnis immer mit dem Foto der Mustervorlage.</p></section>
+ <p class="small muted">Rechts und links von der Puppe aus gesehen. Vergleiche dein Ergebnis immer mit dem Foto der Mustervorlage.</p></section>`}
  <section class="figs"><figure class="panel"><h3>Handgelegte Wasserwellen</h3>${wasserwelleSVG()}<figcaption>Die Wellenkanten sind gleichmäßig, die Wellen gleich breit und bis zum Grund durchgearbeitet.</figcaption></figure>
  <figure class="panel"><h3>Papilloten</h3>${papilloteSVG()}<figcaption>Die Spitzen liegen innen. Der Clip sitzt am Papillotenhals und darf die Rundung nicht verändern.</figcaption></figure>
  <figure class="panel"><h3>Dauerwellwickler</h3>${wicklerSVG()}<figcaption>Der Wickler sitzt auf der eigenen Basis. Die Spitzen liegen gerade im Spitzenpapier und sind nie umgebogen.</figcaption></figure></section>`;}
@@ -1359,6 +1421,10 @@ document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!
   case 'pdel': profiles.list=profiles.list.filter(p=>p.id!==ds.id);store.del('zwp:data:'+ds.id);if(profiles.active===ds.id){profiles.active=profiles.list[0].id;D=loadData();}delPending=null;save();render();toast('Profil gelöscht');break;
   case 'part': stopTimer();SIM=null;go('praxis',{part:ds.id});break;
   case 'sub': V.sub=ds.s;render();break;
+  case 'tkv': TK.v=ds.v==='neu'?'neu':'alt';TK.edit=null;{const y=window.scrollY;render();window.scrollTo(0,y);}break;
+  case 'tkedit': if(TK.meisterin){TK.edit=+ds.i;tkRepaint();const f=$('#tk-titel-'+ds.i);f&&f.focus();}break;
+  case 'tkcancel': TK.edit=null;tkRepaint();break;
+  case 'tksave': if(!TK.busy)tkSpeichern(+ds.i);break;
   case 'session': DRAFT=null;newTimer(PART[ds.id].min,PART[ds.id].name);go('praxis',{session:ds.id,timer:true});break;
   case 'rateonly': stopTimer();SIM=null;DRAFT=null;T=null;go('praxis',{session:ds.id,timer:false});break;
   case 'rate': DRAFT.r[ds.c]=+ds.v;{const row=el.parentElement;row.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===el));const n=Object.keys(DRAFT.r).length;$('#ratedinfo').textContent=n+' von '+allCrit(PART[DRAFT.part]).length+' Punkten bewertet';$('[data-a="savesession"]').disabled=!n;}break;
