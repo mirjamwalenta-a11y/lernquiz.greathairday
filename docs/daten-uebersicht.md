@@ -56,7 +56,7 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 | Tabelle | Inhalt | Personenbezug |
 |---|---|---|
 | `praxis_eintraege` | Praxis-Tagebuch: Datum, Bereich, Dauer, Details, kontrolliert von, Notiz, Bestätigung, **Notiz der Meisterin** | Ja, Bewertung |
-| `praxis_fotos` + Storage-Bucket `praxis-fotos` (privat) | Bis zu 3 Fotos pro Praxis-Eintrag (verkleinert, ohne Bild-Metadaten wie den Aufnahmeort), Motiv (Übungskopf oder Modell ohne Gesicht), Häkchen „Einverständnis des Modells liegt vor“. Sehen: der Lehrling die eigenen, die Meisterin alle. Seit 2026-11-16, `supabase/20261116_praxis_fotos.sql` | Ja, Bilder; bei Modellen auch Dritte |
+| `praxis_fotos` + Storage-Bucket `praxis-fotos` (privat) | Bis zu 3 Fotos pro Praxis-Eintrag (verkleinert, ohne Bild-Metadaten wie den Aufnahmeort), Motiv (Übungskopf oder Modell ohne Gesicht), Häkchen „Einverständnis des Modells liegt vor“. Sehen: der Lehrling die eigenen, die Meisterin alle. Markierungen der Meisterin (Striche, Kreise, Pfeile) als eigene Ebene, das Foto bleibt unverändert (`20261116_praxis_fotos_zeichnung.sql`). Seit 2026-11-16, `supabase/20261116_praxis_fotos.sql` | Ja, Bilder; bei Modellen auch Dritte |
 | `pruefgespraeche` | Prüfgespräche und Praxis-Checks: Thema, Frage, Ergebnis (verstanden/teilweise/nicht), Notiz, Checkliste | Ja, Bewertung |
 | `farb_faelle` | Übungsfälle der Meisterin (Inhalte) | Nein |
 | `farb_plaene` | Farbpläne der Lehrlinge mit Rezeptur, Begründung, Status und Rückmeldung der Meisterin | Ja, Bewertung |
