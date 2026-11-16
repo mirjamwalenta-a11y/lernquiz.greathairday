@@ -15,6 +15,10 @@
 //     data-unter (optional): CSS-Selektoren der Fragen, getrennt durch „;“.
 //       Ist eine Sprache gewählt, steht unter der Frage eine Zeile mit den
 //       Fachbegriffen und ihrer Übersetzung („Oxidant = oksidan · …“).
+//       Für Lern-Seiten mit Abschnitten: „anker | bereich“, z. B.
+//       „section.block > header > p | section.block“ – die Zeile steht nach
+//       dem Anker und zeigt die Begriffe aus dem ganzen Abschnitt.
+//       Ohne gewählte Sprache steht dort „🌐 Sprache für Fachbegriffe wählen“.
 //     data-nur-uebersetzung (optional): nur Übersetzung zeigen, keine deutsche
 //       Erklärung – für Tests (Schnuppertag), damit nichts verraten wird.
 //     Nie markiert wird Text in Knöpfen, Links, Chips, Formularfeldern und in
@@ -357,7 +361,9 @@
     el.setAttribute('data-fb', String(el.textContent.length) + ':' + el.textContent.slice(0, 40));
   }
   // ── Begriffe-Zeile unter der Frage (nur mit gewählter Sprache) ──────
-  var UNTER = ((skript && skript.getAttribute('data-unter')) || '').split(';').map(function (x) { return x.trim(); }).filter(Boolean);
+  var UNTER = ((skript && skript.getAttribute('data-unter')) || '').split(';').map(function (x) {
+    var t = x.split('|'); return {a: t[0].trim(), b: (t[1] || '').trim()};
+  }).filter(function (x) { return x.a; });
   function begriffeIn(text) {
     var gef = [], schon = {}, m;
     RE.lastIndex = 0;
@@ -368,10 +374,11 @@
     }
     return gef;
   }
-  function zeileFuer(el, spr) {
+  function zeileFuer(el, spr, bereich) {
     var nb = el.nextElementSibling, alt = nb && nb.classList.contains('fb-begriffe') ? nb : null;
-    var k = el.cloneNode(true);
-    k.querySelectorAll('.vl-btn, button').forEach(function (x) { x.remove(); });
+    // Mit Bereich: Begriffe aus dem ganzen Abschnitt, Zeile trotzdem direkt nach dem Anker
+    var k = ((bereich && el.closest(bereich)) || el).cloneNode(true);
+    k.querySelectorAll('.vl-btn, button, .fb-begriffe, .fb-blatt, script, style, select, textarea, input').forEach(function (x) { x.remove(); });
     var liste = begriffeIn(k.textContent), html = '';
     if (liste.length && spr) {
       html = liste.map(function (x) {
@@ -381,20 +388,21 @@
       // Noch keine Sprache: sichtbar anbieten (sonst nur über das Fenster eines Begriffs)
       html = '🌐 <button type="button" class="fb-wahl">Sprache für Fachbegriffe wählen</button>';
     }
+    if (html && bereich && spr) html = '🌐 ' + html;   // auf Lern-Seiten gut auffindbar
     if (!html) { if (alt) alt.remove(); return; }
     if (alt && alt.getAttribute('data-html') === html) return;   // nichts geändert: kein neuer Umbau
     var z = alt || document.createElement('div');
     z.className = 'fb-begriffe';
     z.style.color = getComputedStyle(el).color;   // Farbe der Frage (z. B. hell auf dunkler Karte)
     z.setAttribute('data-html', html);
-    z.setAttribute('aria-label', spr ? 'Fachbegriffe in der Frage, übersetzt' : 'Sprache für Fachbegriffe');
+    z.setAttribute('aria-label', spr ? (bereich ? 'Fachbegriffe in diesem Abschnitt, übersetzt' : 'Fachbegriffe in der Frage, übersetzt') : 'Sprache für Fachbegriffe');
     z.innerHTML = html;
     if (!alt) el.parentNode.insertBefore(z, el.nextSibling);
   }
   function alleZeilen() {
     if (!UNTER.length) return;
     var sp = spracheHolen(), spr = SPRACHEN.filter(function (x) { return x.k === sp; })[0] || null;
-    UNTER.forEach(function (sel) { try { document.querySelectorAll(sel).forEach(function (el) { zeileFuer(el, spr); }); } catch (e) {} });
+    UNTER.forEach(function (u) { try { document.querySelectorAll(u.a).forEach(function (el) { zeileFuer(el, spr, u.b); }); } catch (e) {} });
   }
 
   function alleMarkieren() {
@@ -430,7 +438,7 @@
     if (!b) {
       // Nur die Sprachauswahl (aus der Zeile unter der Frage)
       blatt.innerHTML = '<div class="fb-karte"><div class="fb-kopf"><b>Sprache für Fachbegriffe</b><button type="button" class="fb-zu" aria-label="Schließen">×</button></div>' +
-        '<p class="fb-e">Wähle deine Sprache. Dann stehen unter jeder Frage die Fachbegriffe übersetzt. Ein unterstrichenes Wort antippen zeigt mehr.</p>' +
+        '<p class="fb-e">Wähle deine Sprache. Dann stehen die Fachbegriffe übersetzt unter den Fragen und Abschnitten. Ein unterstrichenes Wort antippen zeigt mehr.</p>' +
         '<div class="fb-zeile"><label>Meine Sprache: <select class="fb-sprache"><option value="">– keine, nur Deutsch –</option>' +
         SPRACHEN.map(function (s) { return '<option value="' + s.k + '"' + (s.k === sp ? ' selected' : '') + '>' + escHtml(s.n + ' · ' + s.e) + '</option>'; }).join('') +
         '</select></label></div></div>';
