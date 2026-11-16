@@ -73,3 +73,15 @@ das Sicherheitsnetz für den Fall, dass eine davon trotzdem übersehen wird.
   Code-Fix in `index.greathairday`
 - Private E-Mail hartcodiert in `salon-checklist.html` und drei Stellen
   in `lernquiz.greathairday` → entfernt, rollenbasiert ersetzt
+
+# Design und Farben
+
+**Design und Farben der Apps nicht verändern.** Das gilt für jede Aufgabe,
+auch wenn sie eigentlich etwas anderes betrifft (z. B. eine neue Funktion).
+
+- Keine neuen Farben, Schriften, Abstände oder Layouts; bestehende
+  Gestaltung nicht „verbessern“ oder vereinheitlichen.
+- Neue Funktionen bauen auf dem vorhandenen Aussehen auf und verwenden
+  nur die bereits vorhandenen Farben und Stile der jeweiligen Seite.
+- Ist eine sichtbare Änderung am Design wirklich nötig, vorher bei der
+  Inhaberin nachfragen und erst nach Zustimmung umsetzen.
