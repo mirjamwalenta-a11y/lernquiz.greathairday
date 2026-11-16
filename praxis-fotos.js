@@ -9,6 +9,8 @@
 //                                            mit Vorschaubildern; antippen = groß ansehen
 //   PraxisFotos.hochladen(sb, {lehrlingId, eintragId, datei, motiv, einverstaendnis})
 //   PraxisFotos.loeschen(sb, fotos)         Dateien (Storage-API) und Zeilen löschen
+//   PraxisFotos.vergleich(sb, lehrlingId, {titel}) Vorher-Nachher-Ansicht
+//   PraxisFotos.anzahl(sb, lehrlingId)       wie viele Fotos ein Lehrling hat
 //   PraxisFotos.eintragLeeren(sb, eintragId)  alle Fotos eines Eintrags löschen
 //   PraxisFotos.lehrlingLeeren(sb, lehrlingId) alle Fotos eines Lehrlings löschen
 //
@@ -39,6 +41,17 @@
     '.pf-gross button{border:1px solid #896C32;background:transparent;color:#896C32;border-radius:6px;padding:10px 14px;font:600 13px Poppins,system-ui,sans-serif;cursor:pointer;min-height:44px}' +
     '.pf-gross button[aria-pressed="true"],.pf-gross button[data-pfk="speichern"]{background:#896C32;color:#fff}' +
     '.pf-gross .pf-info{color:#6B6455;font:12px Poppins,system-ui,sans-serif;text-align:center}' +
+    // Vorher-Nachher: gleiche Box, gleiche Tasten
+    '.pf-vg-titel{font:600 15px Poppins,system-ui,sans-serif;color:#211D17;align-self:flex-start}' +
+    '.pf-vg-paar{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}' +
+    '.pf-gross button.pf-vg-seite{padding:6px;display:flex;flex-direction:column;gap:6px;align-items:stretch;min-height:0;background:#fff;color:#211D17;border:1.5px solid #E4DBC5}' +
+    '.pf-gross button.pf-vg-seite[aria-pressed="true"]{border:2px solid #896C32;background:#fff;color:#211D17}' +
+    '.pf-vg-seite img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px;max-height:none}' +
+    '.pf-vg-seite small{display:block;font:600 10px Poppins,system-ui,sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:#896C32}' +
+    '.pf-vg-seite span{display:block;font:12px Poppins,system-ui,sans-serif;color:#6B6455}' +
+    '.pf-vg-reihe{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%}' +
+    '.pf-gross .pf-vg-reihe button.pf-bild{padding:0;min-height:0;border:1px solid #E4DBC5;background:#F8F4EA}' +
+    '.pf-gross .pf-vg-reihe button.pf-bild[aria-pressed="true"]{border:2px solid #896C32;background:#F8F4EA}' +
     // Häkchen „Einverständnis“ im Lern-Tool-Formular: Aussehen wie .pm-check,
     // nicht wie die Großbuchstaben-Überschriften (.pt-f label)
     '.pt-f label.pm-check{text-transform:none;letter-spacing:0;font-weight:400;font-size:14px;color:#2C2C2C;margin:6px 0;display:flex}' +
@@ -363,7 +376,127 @@
     return proEintrag;
   }
 
+  // ── Vorher-Nachher ────────────────────────────────────────────────
+  // Alle Fotos eines Lehrlings, nach Bereich (aus praxis_eintraege) gruppiert,
+  // zeitlich sortiert. Vorher = ältestes, Nachher = neuestes Foto; beide lassen
+  // sich frei wählen. Lesen nur über die bestehenden Regeln (Lehrling: eigene,
+  // Meisterin: alle).
+  async function anzahl(sb, lehrlingId) {
+    if (!(await verfuegbar(sb))) return 0;
+    try {
+      var r = await sb.from('praxis_fotos').select('id', {count: 'exact', head: true}).eq('lehrling_id', lehrlingId);
+      return r.error ? 0 : (r.count || 0);
+    } catch (e) { return 0; }
+  }
+  function datumText(tag) {
+    var d = new Date(tag + 'T12:00:00');
+    return d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+  }
+  function monateZwischen(a, b) {
+    var x = new Date(a + 'T12:00:00'), y = new Date(b + 'T12:00:00');
+    return Math.max(0, Math.round((y - x) / (30.44 * 864e5)));
+  }
+  var VG = null; // {gruppen, bereich, vorher, nachher, seite}
+  function vgBauen() {
+    var el = document.getElementById('pf-vergleich');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'pf-vergleich'; el.className = 'pf-gross'; el.hidden = true;
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Vorher – Nachher');
+    el.innerHTML = '<div class="pf-box"><div class="pf-vg-titel"></div><div class="pf-k" data-vg="bereiche"></div>' +
+      '<div class="pf-vg-paar"></div><div class="pf-info"></div><div class="pf-vg-reihe"></div>' +
+      '<div class="pf-k"><button type="button" data-vgk="zu">Schließen</button></div></div>';
+    el.addEventListener('click', function (ev) {
+      var t = ev.target.closest ? ev.target.closest('button') : null;
+      if (ev.target === el || (t && t.getAttribute('data-vgk') === 'zu')) { el.hidden = true; VG = null; return; }
+      if (!t || !VG) return;
+      if (t.hasAttribute('data-vgb')) { vgBereich(t.getAttribute('data-vgb')); return; }
+      if (t.hasAttribute('data-vgs')) { VG.seite = t.getAttribute('data-vgs'); vgZeigen(); return; }
+      if (t.hasAttribute('data-vgi')) {
+        VG[VG.seite] = Number(t.getAttribute('data-vgi'));
+        // Reihenfolge halten: Vorher ist immer das ältere Foto
+        if (VG.vorher > VG.nachher) { var h = VG.vorher; VG.vorher = VG.nachher; VG.nachher = h; }
+        vgZeigen();
+      }
+    });
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !el.hidden) { el.hidden = true; VG = null; } });
+    document.body.appendChild(el);
+    return el;
+  }
+  function vgBereich(name) {
+    VG.bereich = name;
+    var n = VG.gruppen[name].length;
+    VG.vorher = 0; VG.nachher = n - 1; VG.seite = 'nachher';
+    vgZeigen();
+  }
+  function vgZeigen() {
+    var el = vgBauen(), liste = VG.gruppen[VG.bereich] || [];
+    el.querySelector('[data-vg="bereiche"]').innerHTML = Object.keys(VG.gruppen).map(function (b) {
+      return '<button type="button" data-vgb="' + escAttr(b) + '" aria-pressed="' + (b === VG.bereich) + '">' + escAttr(b) + ' (' + VG.gruppen[b].length + ')</button>';
+    }).join('');
+    var paar = el.querySelector('.pf-vg-paar'), info = el.querySelector('.pf-info');
+    if (liste.length < 2) {
+      paar.innerHTML = liste.length ? '<button type="button" class="pf-vg-seite" disabled><small>Foto</small><img alt="" src="' + escAttr(liste[0].url) + '"><span>' + datumText(liste[0].datum) + '</span></button>' : '';
+      info.textContent = 'Für einen Vergleich braucht es mindestens zwei Fotos in diesem Bereich.';
+    } else {
+      var a = liste[VG.vorher], b = liste[VG.nachher], m = monateZwischen(a.datum, b.datum);
+      paar.innerHTML = [['vorher', 'Vorher', a], ['nachher', 'Nachher', b]].map(function (x) {
+        return '<button type="button" class="pf-vg-seite" data-vgs="' + x[0] + '" aria-pressed="' + (VG.seite === x[0]) + '"><small>' + x[1] + '</small>' +
+          '<img alt="' + x[1] + ': Foto vom ' + datumText(x[2].datum) + '" src="' + escAttr(x[2].url) + '"><span>' + datumText(x[2].datum) + '</span></button>';
+      }).join('');
+      info.textContent = (a.datum === b.datum ? 'Am selben Tag' : m < 1 ? 'Weniger als ein Monat dazwischen' : 'Nach ' + m + (m === 1 ? ' Monat' : ' Monaten')) +
+        ' · Tippe oben auf Vorher oder Nachher, dann unten auf ein Foto.';
+    }
+    el.querySelector('.pf-vg-reihe').innerHTML = liste.length < 2 ? '' : liste.map(function (f, i) {
+      return '<button type="button" class="pf-bild" data-vgi="' + i + '" aria-pressed="' + (i === VG.vorher || i === VG.nachher) + '" aria-label="Foto vom ' + datumText(f.datum) + '"><img alt="" src="' + escAttr(f.url) + '"></button>';
+    }).join('');
+    el.hidden = false;
+  }
+  function escAttr(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]; }); }
+
+  async function vergleich(sb, lehrlingId, o) {
+    o = o || {};
+    stil();
+    var el = vgBauen();
+    el.querySelector('.pf-vg-titel').textContent = '📷 Vorher – Nachher' + (o.titel ? ' · ' + o.titel : '');
+    el.querySelector('[data-vg="bereiche"]').innerHTML = '';
+    el.querySelector('.pf-vg-paar').innerHTML = '';
+    el.querySelector('.pf-vg-reihe').innerHTML = '';
+    el.querySelector('.pf-info').textContent = 'Wird geladen …';
+    el.hidden = false;
+    var fehler = function (t) { el.querySelector('.pf-info').textContent = t; };
+    try {
+      var r = await sb.from('praxis_fotos').select('id,eintrag_id,pfad,erstellt_am').eq('lehrling_id', lehrlingId);
+      if (r.error) throw r.error;
+      var fotos = r.data || [];
+      if (!fotos.length) { fehler('Noch keine Fotos im Praxis-Tagebuch.'); return; }
+      var ids = fotos.map(function (f) { return f.eintrag_id; }).filter(function (x, i, a) { return a.indexOf(x) === i; });
+      var e = await sb.from('praxis_eintraege').select('id,datum,bereich').in('id', ids);
+      if (e.error) throw e.error;
+      var ein = {}; (e.data || []).forEach(function (x) { ein[x.id] = x; });
+      var s = await sb.storage.from(BUCKET).createSignedUrls(fotos.map(function (f) { return f.pfad; }), 3600);
+      if (s.error) throw s.error;
+      var url = {}; (s.data || []).forEach(function (x) { if (x && x.signedUrl && !x.error) url[x.path] = x.signedUrl; });
+      var gruppen = {};
+      fotos.forEach(function (f) {
+        var x = ein[f.eintrag_id]; if (!x || !url[f.pfad]) return;
+        (gruppen[x.bereich] = gruppen[x.bereich] || []).push({url: url[f.pfad], datum: x.datum, t: f.erstellt_am});
+      });
+      Object.keys(gruppen).forEach(function (b) { gruppen[b].sort(function (a, c) { return (a.datum + a.t) < (c.datum + c.t) ? -1 : 1; }); });
+      var namen = Object.keys(gruppen);
+      if (!namen.length) { fehler('Noch keine Fotos im Praxis-Tagebuch.'); return; }
+      // Start: der Bereich mit den meisten Fotos
+      namen.sort(function (a, c) { return gruppen[c].length - gruppen[a].length; });
+      var sortiert = {}; namen.forEach(function (n) { sortiert[n] = gruppen[n]; });
+      VG = {gruppen: sortiert};
+      vgBereich(namen[0]);
+    } catch (err) {
+      fehler('Die Fotos konnten nicht geladen werden' + (navigator.onLine === false ? ' – keine Internetverbindung.' : '.'));
+    }
+  }
+
   window.PraxisFotos = {
+    vergleich: vergleich, anzahl: anzahl,
     MAX: MAX, verfuegbar: verfuegbar, fuellen: fuellen, hochladen: hochladen, loeschen: loeschen,
     eintragLeeren: eintragLeeren, lehrlingLeeren: lehrlingLeeren, stil: stil
   };
