@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<!--
+  Startseite des Demo-Modus (Erklärung in demo.js).
+  Erfundene Lehrlinge und Ergebnisse, alles nur im Browser – zum Ausprobieren
+  für Jury, Videoaufnahmen und Vorführungen. Keine echten Daten, kein Server.
+-->
+<script src="demo.js?v=20261116a"></script>
+<script src="lern-themen.js?v=20261107e"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Demo · Lern-App A Great Hair Day</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8F4EA;--ink:#211D17;--muted:#6B6455;--line:#E4DBC5;--accent:#896C32;--soft:#F3EBD9;--card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}}
+:root[data-theme="dark"]{--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px 48px}
+.wrap{max-width:560px;margin:0 auto}
+.tag{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h1{font-size:26px;line-height:1.2;font-weight:600;margin-bottom:10px}
+p{margin-bottom:12px;color:var(--ink)}
+.sub{color:var(--muted);font-size:14px}
+.wahl{display:grid;gap:10px;margin:20px 0}
+.wahl button{display:flex;gap:14px;align-items:center;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;font:inherit;color:var(--ink);cursor:pointer}
+.wahl button:hover,.wahl button:focus-visible{border-color:var(--accent);outline:none}
+.wahl .ic{font-size:26px;flex:none}
+.wahl b{display:block;font-size:16px}
+.wahl small{display:block;color:var(--muted);font-size:13px;line-height:1.4}
+.box{background:var(--soft);border-left:3px solid var(--accent);border-radius:10px;padding:12px 14px;font-size:13px;margin-bottom:14px}
+.box b{display:block;margin-bottom:2px}
+ul{padding-left:18px;margin:4px 0 0}
+li{margin:3px 0}
+.ok{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+a{color:var(--accent)}
+.fuss{margin-top:26px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="tag">Lern-App · Demo</div>
+  <h1>Die Lern-App ausprobieren</h1>
+  <p class="sub">Mit erfundenen Lehrlingen und Ergebnissen aus einem Salon-Jahr. So sieht die App für die Meisterin und für einen Lehrling aus.</p>
+
+  <div id="beendet" class="ok" hidden>✓ Der Demo ist beendet. Die erfundenen Daten sind von diesem Gerät gelöscht.</div>
+
+  <div class="wahl">
+    <button type="button" data-rolle="meisterin"><span class="ic">👩‍🏫</span><span><b>Als Meisterin ansehen</b><small>Übersicht aller Lehrlinge, Praxis bestätigen, Prüfgespräch, Ausbildungsbericht</small></span></button>
+    <button type="button" data-rolle="lehrling"><span class="ic">✂</span><span><b>Als Lehrling ansehen</b><small>Mia, 3. Lehrjahr: Lern-Startseite, Quiz, Lern-Module, Praxis-Tagebuch</small></span></button>
+  </div>
+
+  <div class="box"><b>Was im Demo passiert</b>
+    <ul>
+      <li>Alle Namen und Ergebnisse sind erfunden.</li>
+      <li>Nichts wird an einen Server geschickt. Was du im Demo änderst, bleibt nur in diesem Browser.</li>
+      <li>Der KI-Trainer ist im Demo ausgeschaltet.</li>
+      <li>Mit „Demo beenden“ oben im Banner wird alles wieder gelöscht.</li>
+    </ul>
+  </div>
+  <div class="box" id="warnung"><b>Bist du auf diesem Gerät in einer Great-Hair-Day-App angemeldet?</b>
+    Der Demo meldet dich ab. Am besten ein privates Fenster oder einen anderen Browser verwenden.
+  </div>
+
+  <p class="fuss"><a href="lerntool.html">Zur echten Lern-App</a> · <a href="rechtliches.html">Impressum &amp; Datenschutz</a></p>
+</div>
+<script>
+(function () {
+  try { if (/[?&]beendet=1/.test(location.search)) document.getElementById('beendet').hidden = false; } catch (e) {}
+  var ZIEL = { meisterin: 'lernquiz.html?v=20261116a#meisterin', lehrling: 'lerntool.html?v=20261116a' };
+  var angemeldet = false;
+  try { var t = JSON.parse(localStorage.getItem('sb-wrxlaltgtgkdomklgrlj-auth-token') || 'null'); angemeldet = !!(t && t.access_token && !(window.GHD_DEMO)); } catch (e) {}
+  document.querySelectorAll('[data-rolle]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (angemeldet && !confirm('Du bist auf diesem Gerät angemeldet. Der Demo meldet dich ab. Weiter?')) return;
+      window.ghdDemo.starten(b.dataset.rolle);
+      location.href = ZIEL[b.dataset.rolle];
+    });
+  });
+})();
+</script>
+</body>
+</html>
