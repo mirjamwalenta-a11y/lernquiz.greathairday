@@ -255,7 +255,7 @@ window.LEICHT = {
   '3-vp4': 'Der alkalische Farbabzug arbeitet mit Blondiermittel. Er macht auch die Naturfarbe heller. Der saure Farbabzug nimmt nur künstliche Farbe heraus. Er wirkt am besten bei frisch gefärbtem Haar. Die Naturfarbe bleibt.',
 
   // ── Hygiene & Schutzmaßnahmen ─────────────────────────────────────────
-  '1-1': 'Es gibt drei Stufen: 1. Reinigen. 2. Desinfizieren. 3. Sterilisieren. Im Salon reicht meistens Desinfizieren.',
+  '1-1': 'Es gibt drei Stufen. Erstens: reinigen. Zweitens: desinfizieren. Drittens: sterilisieren. Im Salon reicht meistens Desinfizieren.',
   '1-1-z1': 'Zuerst reinigen, dann desinfizieren. Unter Schmutz sind Keime geschützt. Dort wirkt das Desinfektionsmittel nicht.',
   '1-2': 'Auf Kämmen und Bürsten können Bakterien und Pilze sein. Ohne Desinfektion bekommt der nächste Gast sie. Dann kann er eine Hautkrankheit bekommen.',
   '1-2-z1': 'Auf dem Kamm können Pilze oder Bakterien sein. Auch wenn man nichts sieht. Erst reinigen, dann desinfizieren. Sonst bekommt sie der nächste Gast.',
@@ -405,7 +405,7 @@ window.LEICHT = {
   '2-mc21-z1': 'Die Aufzeichnung hilft. Nur damit kannst du die Farbe genau gleich machen. Egal, wer im Team färbt.',
   '2-mc22': 'Cross-Selling heißt: Nach der Behandlung empfiehlst du das passende Pflegeprodukt. Das hilft dem Gast.',
   '2-mc22-z1': 'Nach dem Blondieren braucht das Haar Aufbau. Eine Aufbau-Pflege hilft ihr wirklich. Die Empfehlung muss zur Behandlung passen.',
-  '3-10': 'Die 6 Punkte: 1. Wunsch des Gastes. 2. Was wurde schon gemacht? 3. Haaranalyse. 4. Wie lebt der Gast? 5. Pflege-Tipp. 6. Nächster Termin.',
+  '3-10': 'Es gibt 6 Punkte. Erstens: der Wunsch des Gastes. Zweitens: Was wurde schon gemacht? Drittens: Haaranalyse. Viertens: Wie lebt der Gast? Fünftens: Pflege-Tipp. Sechstens: nächster Termin.',
   '3-10-z1': 'Dann weiß die Kundin, wann Ansatz oder Schnitt wieder dran sind. So bleibt das Ergebnis schön.',
   '3-11': 'Einwand heißt: Der Gast hat Bedenken. Nimm sie ernst. Erkläre den Nutzen. Diskutiere sie nie weg.',
   '3-11-z1': 'Nimm den Einwand ernst. Erkläre, was die Kur bringt. Nicht streiten. Nicht ignorieren.',
