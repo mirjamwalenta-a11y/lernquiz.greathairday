@@ -9,6 +9,11 @@
 //       <script src="fachbegriffe.js?v=…" data-ziele="#q-txt ; #q-feedback" defer></script>
 //     data-ziele: CSS-Selektoren, getrennt durch „;“. Antwort-Knöpfe NICHT
 //     angeben (Antippen würde sonst die Antwort wählen).
+//     data-gruppe (optional): CSS-Selektor eines Abschnitts. Ein Begriff wird
+//       pro Abschnitt nur einmal unterstrichen (für lange Lern-Seiten).
+//     data-max (optional): höchstens so viele Begriffe pro Feld (Standard 5).
+//     Nie markiert wird Text in Knöpfen, Links, Chips, Formularfeldern und in
+//     allem, was antippbar ist (onclick, data-a, data-act, role=button, tabindex).
 //
 // Keine Daten am Server. Gemerkt wird nur die gewählte Sprache, im Browser
 // (localStorage „fb_sprache“), als Bequemlichkeit.
@@ -238,7 +243,10 @@
   formen.sort(function (a, b) { return b.length - a.length; });
   function esc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
   var RE = new RegExp('(^|[^\\p{L}\\d])(' + formen.map(esc).join('|') + ')(?:e|en|n|s|es|er|ern)?(?![\\p{L}\\d])', 'giu');
-  var MAX_PRO_FELD = 5;
+  var MAX_PRO_FELD = Number((skript && skript.getAttribute('data-max')) || 5) || 5;
+  var GRUPPE = (skript && skript.getAttribute('data-gruppe')) || '';
+  var NICHT = '.fb-w, button, a, label, summary, textarea, input, select, option, script, style, svg, .vl-btn, ' +
+    '[contenteditable], [onclick], [data-a], [data-act], [role="button"], [tabindex]:not([tabindex="-1"]), .chip, .fb-blatt';
 
   var css =
     '.fb-w{text-decoration:underline dotted #896C32;text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help}' +
@@ -270,10 +278,13 @@
     // Schon markierte Begriffe mitzählen (z. B. wenn die Seite nur etwas anhängt)
     var schon = {}, anzahl = 0;
     el.querySelectorAll('.fb-w').forEach(function (w) { schon[w.getAttribute('data-fb-i')] = true; anzahl++; });
+    // Mit data-gruppe: im ganzen Abschnitt schon markierte Begriffe nicht nochmal
+    var gr = GRUPPE && el.closest(GRUPPE);
+    if (gr) gr.querySelectorAll('.fb-w').forEach(function (w) { schon[w.getAttribute('data-fb-i')] = true; });
     var gehen = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
       acceptNode: function (n) {
         var p = n.parentNode;
-        if (!p || p.closest('.fb-w, button, a, textarea, input, select, script, style, .vl-btn, [contenteditable]')) return NodeFilter.FILTER_REJECT;
+        if (!p || p.closest(NICHT)) return NodeFilter.FILTER_REJECT;
         return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
       }
     });
