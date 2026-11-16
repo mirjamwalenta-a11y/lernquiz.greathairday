@@ -56,6 +56,7 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 | Tabelle | Inhalt | Personenbezug |
 |---|---|---|
 | `praxis_eintraege` | Praxis-Tagebuch: Datum, Bereich, Dauer, Details, kontrolliert von, Notiz, Bestätigung, **Notiz der Meisterin** | Ja, Bewertung |
+| `praxis_fotos` + Storage-Bucket `praxis-fotos` (privat) | Bis zu 3 Fotos pro Praxis-Eintrag (verkleinert, ohne Bild-Metadaten wie den Aufnahmeort), Motiv (Übungskopf oder Modell ohne Gesicht), Häkchen „Einverständnis des Modells liegt vor“. Sehen: der Lehrling die eigenen, die Meisterin alle. Seit 2026-11-16, `supabase/20261116_praxis_fotos.sql` | Ja, Bilder; bei Modellen auch Dritte |
 | `pruefgespraeche` | Prüfgespräche und Praxis-Checks: Thema, Frage, Ergebnis (verstanden/teilweise/nicht), Notiz, Checkliste | Ja, Bewertung |
 | `farb_faelle` | Übungsfälle der Meisterin (Inhalte) | Nein |
 | `farb_plaene` | Farbpläne der Lehrlinge mit Rezeptur, Begründung, Status und Rückmeldung der Meisterin | Ja, Bewertung |
@@ -74,12 +75,18 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 Verlässt ein Lehrling den Salon, ersetzt die Meisterin den Namen durch
 „Ehemalige:r Lehrling <Jahr> · <Nr.>“. Das Anmelde-Konto wird gelöscht, die
 Freitexte (Notizen, Details, „kontrolliert von“, Begründungen, Rückmeldungen)
-werden geleert. Erhalten bleiben die Lernzahlen ohne Namen (Quiz-Verlauf,
+werden geleert, die **Praxis-Fotos gelöscht** (vorher, über die Storage-API; der
+Server lässt das Ausscheiden sonst nicht zu). Erhalten bleiben die Lernzahlen ohne Namen (Quiz-Verlauf,
 Themenstand, Praxis-Datum/-Bereich/-Dauer, Ergebnisse der Prüfgespräche,
 Status der Farb-Pläne), damit der Ausbildungsbericht sie weiter zählt. Lehrjahr
 und Zeitraum bleiben, daher ist das in einem kleinen Betrieb eher
 **pseudonym als anonym**. Wie lange diese Zahlen bleiben dürfen, gehört zu den
 offenen Löschfristen.
+
+**Praxis-Fotos von Modellen:** Die App fragt nur ein Häkchen „Einverständnis
+liegt vor“ ab. Die Einwilligung selbst (schriftlich, mit Zweck und Widerruf)
+holt und verwahrt der Salon. Muster dafür und ein Satz in der
+Datenschutzerklärung sind noch offen.
 
 **Wichtig für die Anwältin:** Leistungsbeurteilungen und Bewerbungsdaten von
 oft minderjährigen Personen sind besonders schutzwürdig. Speicherdauer und

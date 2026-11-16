@@ -334,7 +334,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -360,7 +360,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -383,7 +383,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
@@ -462,6 +462,23 @@ body.mit-leiste .leiste{display:flex}
     <datalist id="pt-namen"></datalist>
     <label for="pt-notiz">Notiz (optional)</label>
     <textarea id="pt-notiz" rows="2" maxlength="500" placeholder="Was lief gut, was übst du nochmal?"></textarea>
+    <!-- Fotos (praxis-fotos.js, Migration 20261116_praxis_fotos.sql); ohne Migration bleibt der Block versteckt -->
+    <div id="pt-foto-box" hidden>
+      <label>Fotos (optional, bis zu 3)</label>
+      <div id="pt-fotos-da"></div>
+      <div id="pt-fotos-neu" class="pf-reihe"></div>
+      <div class="pt-dauer" id="pt-foto-knopf"><button type="button" onclick="document.getElementById('pt-foto-datei').click()">📷 Foto hinzufügen</button></div>
+      <input type="file" id="pt-foto-datei" accept="image/*" multiple hidden onchange="ptFotoGewaehlt(this)">
+      <div id="pt-motiv-box" hidden>
+        <label>Was ist auf dem Foto?</label>
+        <div class="pt-dauer" id="pt-motiv">
+          <button type="button" data-motiv="uebungskopf" onclick="ptMotivWahl('uebungskopf')">Übungskopf</button>
+          <button type="button" data-motiv="modell_ohne_gesicht" onclick="ptMotivWahl('modell_ohne_gesicht')">Modell (ohne Gesicht)</button>
+        </div>
+        <label class="pm-check" id="pt-einv-box" hidden><input type="checkbox" id="pt-einv"><span>Das Modell ist einverstanden, dass ich das Foto hochlade.</span></label>
+      </div>
+      <p class="pt-info">Kein Gesicht, keine Namen. Die Fotos sehen nur du und deine Meisterin.</p>
+    </div>
     <div id="pt-fehler" class="pt-fehler" aria-live="polite"></div>
     <button class="btn-primary" id="pt-speichern" onclick="ptSpeichern()" style="margin-top:14px">Speichern</button>
     <p class="pt-info">Deine Meisterin bestätigt den Eintrag. Bestätigte Einträge zählen für die Praxis-Abzeichen.</p>
@@ -655,7 +672,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -4407,7 +4424,7 @@ var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) f
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
 var ST_SITZT_NACH_TAGEN = 3;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
@@ -4637,7 +4654,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4785,7 +4802,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116c';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261116d';
 }
 
 function lkTipp(th) {
@@ -4945,7 +4962,7 @@ async function fflSenden() {
 // 20261107_praxis_eintraege.sql erscheint ein Hinweis statt des Tagebuchs.
 var PT_BEREICHE = ['Haarwäsche & Kopfmassage', 'Föhnen', 'Farbe', 'Strähnen & Balayage', 'Hochstecken',
   'Damenschnitt', 'Herrenschnitt', 'Dauerwelle & Umformung', 'Rasur & Bart', 'Nagelpflege', 'Beratung am Gast'];
-var PT = {eintraege: [], an: false, dauer: 45, bearbeiten: null};
+var PT = {eintraege: [], an: false, dauer: 45, bearbeiten: null, neueFotos: [], fotosDa: 0, motiv: null};
 function ptDauerText(min) { var h = Math.floor(min / 60), m = min % 60; return (h ? h + ' Std' + (m ? ' ' : '') : '') + (m || !h ? m + ' Min' : ''); }
 function ptDatumText(tag) { var d = new Date(tag + 'T12:00:00'); return ['So','Mo','Di','Mi','Do','Fr','Sa'][d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.'; }
 
@@ -4990,6 +5007,7 @@ function ptZeichnen() {
     if (e.rezeptur) w.appendChild(lkEl('span', 'pt-notiz', '🧪 ' + e.rezeptur));
     if (e.notiz) w.appendChild(lkEl('span', 'pt-notiz', '„' + e.notiz + '“'));
     if (e.meisterin_notiz) w.appendChild(lkEl('span', 'pt-mnotiz', '💬 Meisterin: ' + e.meisterin_notiz));
+    var pf = lkEl('div'); pf.setAttribute('data-pf-eintrag', String(e.id)); w.appendChild(pf);
     z.appendChild(w);
     var rechts = lkEl('div', 'pt-rechts');
     rechts.appendChild(lkEl('span', 'pt-ok ' + (e.bestaetigt ? 'ja' : 'wartet'), e.bestaetigt ? '✓ bestätigt' : 'wartet'));
@@ -5005,6 +5023,7 @@ function ptZeichnen() {
     z.appendChild(rechts);
     liste.appendChild(z);
   });
+  if (window.PraxisFotos) PraxisFotos.fuellen(liste, sb2);
 }
 
 function ptFormOeffnen(e) {
@@ -5036,7 +5055,73 @@ function ptFormOeffnen(e) {
   PT.eintraege.map(function(e){ return e.kontrolliert_von; }).filter(function(n, i, a){ return n && a.indexOf(n) === i; })
     .forEach(function(n){ var o = document.createElement('option'); o.value = n; dl.appendChild(o); });
   document.getElementById('pt-fehler').textContent = '';
+  ptFotosVorbereiten();
   zeige('praxis-eintrag');
+}
+
+// ── Fotos im Formular (praxis-fotos.js) ──────────────────────────────
+// Neue Fotos werden erst beim Speichern hochgeladen (dann gibt es die
+// Eintrags-ID). Vorhandene Fotos lassen sich in der Großansicht löschen,
+// solange der Eintrag nicht bestätigt ist (RLS).
+function ptFotosVorbereiten() {
+  PT.neueFotos.forEach(function(f){ URL.revokeObjectURL(f.url); });
+  PT.neueFotos = []; PT.fotosDa = 0; PT.motiv = null;
+  document.getElementById('pt-foto-datei').value = '';
+  document.getElementById('pt-einv').checked = false;
+  document.getElementById('pt-fotos-da').innerHTML = '';
+  ptMotivWahl(null);
+  ptFotosNeuZeichnen();
+  var box = document.getElementById('pt-foto-box');
+  box.hidden = true;
+  if (!window.PraxisFotos) return;
+  PraxisFotos.verfuegbar(sb2).then(function(ja){
+    if (!ja) return;
+    PraxisFotos.stil();
+    box.hidden = false;
+    ptFotosDaLaden();
+  });
+}
+async function ptFotosDaLaden() {
+  var da = document.getElementById('pt-fotos-da');
+  da.innerHTML = '';
+  if (!PT.bearbeiten) { PT.fotosDa = 0; ptFotosNeuZeichnen(); return; }
+  var platz = document.createElement('div');
+  platz.setAttribute('data-pf-eintrag', String(PT.bearbeiten));
+  da.appendChild(platz);
+  var r = await PraxisFotos.fuellen(da, sb2, {loeschen: true, nachher: ptFotosDaLaden});
+  PT.fotosDa = (r && r[PT.bearbeiten]) ? r[PT.bearbeiten].length : 0;
+  ptFotosNeuZeichnen();
+}
+function ptFotoGewaehlt(input) {
+  var frei = PraxisFotos.MAX - PT.fotosDa - PT.neueFotos.length;
+  var dateien = Array.prototype.slice.call(input.files || []).filter(function(d){ return /^image\//.test(d.type); });
+  if (dateien.length > frei) alert('Höchstens ' + PraxisFotos.MAX + ' Fotos pro Eintrag' + (frei > 0 ? ' – es werden nur ' + frei + ' übernommen.' : '.'));
+  dateien.slice(0, Math.max(0, frei)).forEach(function(d){ PT.neueFotos.push({datei: d, url: URL.createObjectURL(d)}); });
+  input.value = '';
+  ptFotosNeuZeichnen();
+}
+function ptFotosNeuZeichnen() {
+  var box = document.getElementById('pt-fotos-neu');
+  box.innerHTML = '';
+  PT.neueFotos.forEach(function(f, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'pf-bild';
+    b.setAttribute('aria-label', 'Neues Foto ' + (i + 1) + ' wieder entfernen');
+    var img = document.createElement('img'); img.src = f.url; img.alt = '';
+    b.appendChild(img);
+    b.onclick = function(){
+      if (!confirm('Dieses Foto wieder entfernen?')) return;
+      URL.revokeObjectURL(f.url); PT.neueFotos.splice(i, 1); ptFotosNeuZeichnen();
+    };
+    box.appendChild(b);
+  });
+  document.getElementById('pt-motiv-box').hidden = !PT.neueFotos.length;
+  document.getElementById('pt-foto-knopf').hidden = PT.fotosDa + PT.neueFotos.length >= (window.PraxisFotos ? PraxisFotos.MAX : 3);
+}
+function ptMotivWahl(m) {
+  PT.motiv = m;
+  document.querySelectorAll('#pt-motiv button').forEach(function(b){ b.classList.toggle('on', b.dataset.motiv === m); });
+  document.getElementById('pt-einv-box').hidden = m !== 'modell_ohne_gesicht';
 }
 function ptBereichWahl() {
   var bw = document.getElementById('pt-bereich').value;
@@ -5061,6 +5146,8 @@ async function ptSpeichern() {
   if (!bereich) { f.textContent = 'Bitte eintragen, was du geübt hast.'; return; }
   if (!(dauer >= 1 && dauer <= 600)) { f.textContent = 'Bitte die Dauer in Minuten eintragen (1 bis 600).'; return; }
   if (!datum || datum > stISO(new Date())) { f.textContent = 'Bitte ein Datum bis heute wählen.'; return; }
+  if (PT.neueFotos.length && !PT.motiv) { f.textContent = 'Bitte wählen, was auf dem Foto ist.'; return; }
+  if (PT.neueFotos.length && PT.motiv === 'modell_ohne_gesicht' && !document.getElementById('pt-einv').checked) { f.textContent = 'Bitte bestätigen, dass das Modell einverstanden ist.'; return; }
   var eintrag = {
     lehrling_id: ST.lehrling.id, datum: datum, bereich: bereich.slice(0, 80), dauer_min: dauer,
     details: document.getElementById('pt-details').value.trim().slice(0, 300) || null,
@@ -5079,12 +5166,28 @@ async function ptSpeichern() {
       if (r.error && /rezeptur/.test(r.error.message || '')) { delete eintrag.rezeptur; r = await sb2.from('praxis_eintraege').update(eintrag).eq('id', PT.bearbeiten).eq('bestaetigt', false).select('id'); }
       if (!r.error && (!r.data || !r.data.length)) { f.textContent = 'Dieser Eintrag ist schon bestätigt und kann nicht mehr geändert werden.'; return; }
     } else {
-      r = await sb2.from('praxis_eintraege').insert(eintrag);
-      if (r.error && /rezeptur/.test(r.error.message || '')) { delete eintrag.rezeptur; r = await sb2.from('praxis_eintraege').insert(eintrag); }
+      r = await sb2.from('praxis_eintraege').insert(eintrag).select('id');
+      if (r.error && /rezeptur/.test(r.error.message || '')) { delete eintrag.rezeptur; r = await sb2.from('praxis_eintraege').insert(eintrag).select('id'); }
     }
     if (r.error) throw r.error;
+    var eintragId = PT.bearbeiten || (r.data && r.data[0] && r.data[0].id);
     PT.bearbeiten = null;
+    // Fotos erst jetzt hochladen: dafür braucht es die Eintrags-ID
+    var fehlgeschlagen = 0;
+    if (PT.neueFotos.length && eintragId && window.PraxisFotos) {
+      b.textContent = 'Fotos werden hochgeladen…';
+      for (var i = 0; i < PT.neueFotos.length; i++) {
+        try {
+          await PraxisFotos.hochladen(sb2, {lehrlingId: ST.lehrling.id, eintragId: eintragId, datei: PT.neueFotos[i].datei,
+            motiv: PT.motiv, einverstaendnis: PT.motiv === 'modell_ohne_gesicht' && document.getElementById('pt-einv').checked});
+        } catch (e) { fehlgeschlagen++; }
+      }
+      PT.neueFotos.forEach(function(x){ URL.revokeObjectURL(x.url); });
+      PT.neueFotos = [];
+    }
     zeige('praxis');
+    if (fehlgeschlagen) alert('Der Eintrag ist gespeichert, aber ' + (fehlgeschlagen === 1 ? '1 Foto konnte' : fehlgeschlagen + ' Fotos konnten') +
+      ' nicht hochgeladen werden' + (navigator.onLine === false ? ' (keine Internetverbindung)' : '') + '. Über „bearbeiten“ kannst du es nochmal versuchen.');
   } catch (e) {
     f.textContent = 'Konnte nicht gespeichert werden' + (navigator.onLine === false ? ' – keine Internetverbindung.' : '.');
   } finally { b.disabled = false; b.textContent = 'Speichern'; }
@@ -5092,7 +5195,12 @@ async function ptSpeichern() {
 
 async function ptLoeschen(id) {
   if (!confirm('Diesen Eintrag löschen?')) return;
-  try { await sb2.from('praxis_eintraege').delete().eq('id', id); } catch (e) {}
+  try {
+    // Fotos zuerst löschen: Der Server lässt den Eintrag sonst nicht löschen
+    if (window.PraxisFotos) await PraxisFotos.eintragLeeren(sb2, id);
+    var r = await sb2.from('praxis_eintraege').delete().eq('id', id);
+    if (r && r.error) throw r.error;
+  } catch (e) { alert('Konnte nicht gelöscht werden' + (navigator.onLine === false ? ' – keine Internetverbindung.' : '.')); }
   ptLaden();
 }
 
@@ -5170,6 +5278,7 @@ zeige = function(seite) {
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#p-mlogin" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 <script src="vorlesen.js?v=20261116a" data-ziele="#quiz-bereich > p | #quiz-bereich .opt-btn ; #quiz-bereich .muster ; #lap-frage ; #lap-antwort-txt" defer></script>  <!-- 🔊 Vorlesen: Frage, Antworten, Erklärung -->
 <script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="praxis-fotos.js?v=20261116a"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="woernis-tipps.js?v=20261115"></script>
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
 <script>
