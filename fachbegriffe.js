@@ -284,14 +284,16 @@
   var css =
     '.fb-w{text-decoration:underline dotted #896C32;text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help}' +
     '.fb-w:focus-visible{outline:2px solid #896C32;outline-offset:1px;border-radius:2px}' +
-    '.fb-blatt{position:fixed;left:0;right:0;bottom:0;z-index:990;display:flex;justify-content:center;padding:0 8px calc(8px + env(safe-area-inset-bottom,0px))}' +
+    // Wie die vorhandenen Fenster der App (.mb-wahl / .mb-wahl-box): abgedunkelter
+    // Hintergrund, beige Box #F8F4EA ohne Rand, unten
+    '.fb-blatt{position:fixed;inset:0;z-index:990;background:rgba(33,29,23,.45);display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}' +
     '.fb-blatt[hidden]{display:none}' +
-    '.fb-karte{width:100%;max-width:560px;max-height:70vh;overflow:auto;background:#fff;border:1.5px solid #896C32;border-radius:14px;padding:14px 16px;box-shadow:0 -4px 24px rgba(33,29,23,.18);font-family:Poppins,system-ui,sans-serif;color:#211D17;text-align:left}' +
+    '.fb-karte{width:100%;max-width:420px;max-height:70vh;overflow:auto;background:#F8F4EA;border-radius:14px;padding:16px;font-family:Poppins,system-ui,sans-serif;color:#211D17;text-align:left}' +
     '.fb-kopf{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}' +
     '.fb-kopf b{font-size:17px;line-height:1.3}' +
     '.fb-zu{border:none;background:none;font-size:22px;line-height:1;color:#6B6455;cursor:pointer;padding:0 2px;min-width:32px;min-height:32px}' +
     '.fb-e{font-size:14px;line-height:1.5;margin:6px 0 10px}' +
-    '.fb-ue{background:#F3EBD9;border-radius:10px;padding:10px 12px;margin-bottom:8px}' +
+    '.fb-ue{background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px}' +
     '.fb-ue small{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6B6455;margin-bottom:2px}' +
     '.fb-ue span{font-size:16px;font-weight:600}' +
     '.fb-sag{border:1.5px solid #E4DBC5;background:#fff;color:#896C32;border-radius:50%;width:32px;height:32px;font-size:14px;line-height:1;cursor:pointer;padding:0;vertical-align:middle;margin-inline-start:8px;flex:none}' +
@@ -412,7 +414,7 @@
       blatt.setAttribute('role', 'dialog'); blatt.setAttribute('aria-label', 'Fachbegriff');
       blatt.addEventListener('click', function (ev) {
         ev.stopPropagation();
-        if (ev.target.closest('.fb-zu')) zu();
+        if (ev.target === blatt || ev.target.closest('.fb-zu')) zu();
         var sag = ev.target.closest('.fb-sag');
         if (sag && aktiv) sprichFremd(aktiv.t[sag.getAttribute('data-sag')], sag.getAttribute('data-sag'));
       });
