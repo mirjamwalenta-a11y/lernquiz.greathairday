@@ -24,18 +24,21 @@
     '.pf-bild{width:56px;height:56px;border-radius:8px;border:1px solid #E4DBC5;background:#F8F4EA;padding:0;overflow:hidden;cursor:pointer;flex:none}' +
     '.pf-bild img{width:100%;height:100%;object-fit:cover;display:block}' +
     '.pf-bild:focus-visible{outline:2px solid #896C32;outline-offset:2px}' +
-    '.pf-gross{position:fixed;inset:0;z-index:1000;background:rgba(33,29,23,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:12px}' +
+    // Großansicht wie die vorhandenen Fenster der App (.mb-wahl / .mb-wahl-box):
+    // helle Box #F8F4EA auf abgedunkeltem Hintergrund, Tasten in Gold #896C32
+    '.pf-gross{position:fixed;inset:0;z-index:1000;background:rgba(33,29,23,.45);display:flex;align-items:center;justify-content:center;padding:16px}' +
     '.pf-gross[hidden]{display:none}' +
+    '.pf-box{background:#F8F4EA;border-radius:14px;padding:16px;width:100%;max-width:560px;max-height:100%;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:12px;font-family:Poppins,system-ui,sans-serif}' +
     '.pf-buehne{position:relative;display:inline-block;max-width:100%;line-height:0}' +
-    '.pf-gross img{max-width:100%;max-height:calc(100vh - 170px);border-radius:8px;background:#fff}' +
+    '.pf-gross img{max-width:100%;max-height:calc(100vh - 260px);border-radius:8px;background:#fff}' +
     '.pf-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}' +
     '.pf-malen .pf-svg{pointer-events:auto;touch-action:none;cursor:crosshair}' +
-    '.pf-gross button[aria-pressed="true"]{background:#fff;color:#211D17}' +
     '.pf-gross [hidden],.pf-gross .pf-k[hidden]{display:none!important}' +
-    '.pf-bild.pf-markiert{border:2px solid #C44030}' +
-    '.pf-gross .pf-k{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}' +
-    '.pf-gross button{border:1px solid #fff;background:none;color:#fff;border-radius:8px;padding:10px 16px;font:600 13px Poppins,system-ui,sans-serif;cursor:pointer;min-height:44px}' +
-    '.pf-gross .pf-info{color:#E4DBC5;font:12px Poppins,system-ui,sans-serif;text-align:center}' +
+    '.pf-bild.pf-markiert{border:2px solid #896C32}' +
+    '.pf-gross .pf-k{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}' +
+    '.pf-gross button{border:1px solid #896C32;background:transparent;color:#896C32;border-radius:6px;padding:10px 14px;font:600 13px Poppins,system-ui,sans-serif;cursor:pointer;min-height:44px}' +
+    '.pf-gross button[aria-pressed="true"],.pf-gross button[data-pfk="speichern"]{background:#896C32;color:#fff}' +
+    '.pf-gross .pf-info{color:#6B6455;font:12px Poppins,system-ui,sans-serif;text-align:center}' +
     // Häkchen „Einverständnis“ im Lern-Tool-Formular: Aussehen wie .pm-check,
     // nicht wie die Großbuchstaben-Überschriften (.pt-f label)
     '.pt-f label.pm-check{text-transform:none;letter-spacing:0;font-weight:400;font-size:14px;color:#2C2C2C;margin:6px 0;display:flex}' +
@@ -139,7 +142,7 @@
   // des Fotos). Das Foto selbst wird nie verändert.
   // Zeichnen nur mit o.zeichnen (Meisterin-Bereich); speichern darf am
   // Server ohnehin nur die Meisterin (supabase/20261116_praxis_fotos_zeichnung.sql).
-  var ROT = '#C44030';   // vorhandenes Rot der App, auf Fotos gut sichtbar
+  var GOLD = '#896C32';  // Gold der App; der weiße Rand darunter macht es auf jedem Foto sichtbar
   var GROSS = null;      // {fotos, i, sb, loeschen, zeichnen, nachher, an, modus, werkzeug, striche, neu}
   function rund(x) { return Math.round(x * 10) / 10; }
   function svgEl(name, attr) {
@@ -155,7 +158,9 @@
   }
   function zeichne(svg, striche, r) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-    var stil = {fill: 'none', stroke: ROT, 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke'};
+    // Jede Form zweimal: zuerst breit in Weiß (Rand), darüber in Gold
+    [{stroke: '#fff', 'stroke-width': 7}, {stroke: GOLD, 'stroke-width': 4}].forEach(function (lage) {
+    var stil = {fill: 'none', stroke: lage.stroke, 'stroke-width': lage['stroke-width'], 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke'};
     (striche || []).forEach(function (x) {
       var a = Object.assign({}, stil);
       if (x.t === 'p' && x.p && x.p.length > 1) { a.points = x.p.map(function (q) { return q.join(','); }).join(' '); svg.appendChild(svgEl('polyline', a)); }
@@ -168,6 +173,7 @@
         var b2 = Object.assign({}, stil); b2.points = spitze(x.a, x.b, r).map(function (q) { return q.join(','); }).join(' ');
         svg.appendChild(svgEl('polyline', b2));
       }
+    });
     });
   }
   function verhaeltnis(img) { return img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1; }
@@ -183,7 +189,7 @@
     el = document.createElement('div');
     el.id = 'pf-gross'; el.className = 'pf-gross'; el.hidden = true;
     el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Foto');
-    el.innerHTML = '<div class="pf-buehne"><img alt=""><svg class="pf-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>' +
+    el.innerHTML = '<div class="pf-box"><div class="pf-buehne"><img alt=""><svg class="pf-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>' +
       '<div class="pf-info"></div>' +
       '<div class="pf-k" data-leiste="normal">' +
         '<button type="button" data-pfk="vor">‹ Voriges</button><button type="button" data-pfk="nach">Nächstes ›</button>' +
@@ -193,7 +199,7 @@
         '<button type="button" data-pfw="p" aria-pressed="true">Stift</button><button type="button" data-pfw="k" aria-pressed="false">Kreis</button>' +
         '<button type="button" data-pfw="f" aria-pressed="false">Pfeil</button>' +
         '<button type="button" data-pfk="zurueck">↶ Rückgängig</button><button type="button" data-pfk="leeren">Alles löschen</button>' +
-        '<button type="button" data-pfk="speichern">Speichern</button><button type="button" data-pfk="abbrechen">Abbrechen</button></div>';
+        '<button type="button" data-pfk="speichern">Speichern</button><button type="button" data-pfk="abbrechen">Abbrechen</button></div></div>';
     el.querySelector('img').addEventListener('load', neuZeichnen);
     el.addEventListener('click', async function (ev) {
       var t = ev.target.closest ? ev.target.closest('button') : null;
