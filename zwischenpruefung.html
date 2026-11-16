@@ -268,7 +268,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="back-link" href="lerntool.html?v=20261116g">← Lern-Tool</a>
+    <a class="back-link" href="lerntool.html?v=20261116i">← Lern-Tool</a>
     <nav class="tabs" id="tabs" aria-label="Bereiche"></nav>
     <button class="profile-chip" id="profileChip" data-a="profiles" aria-label="Lernprofil wechseln"></button>
   </div>
@@ -277,6 +277,7 @@ footer{padding-block:0 32px;color:var(--muted);font-size:.8rem}
 <footer class="wrap">Orientiert sich an den Anforderungen der Zwischenprüfung im Friseurhandwerk. Verbindlich sind immer die aktuellen Prüfungsunterlagen der Landesinnung. Dein Lernfortschritt bleibt nur auf diesem Gerät gespeichert.</footer>
 
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
+<script src="leichte-sprache-zp.js?v=20261116a"></script>  <!-- „Einfacher erklärt“ in den Lernrunden -->
 <script>
 "use strict";
 /* ============================================================
@@ -1308,6 +1309,10 @@ function startQuiz(cat,type){const kind=type;let items;
  QZ={kind,cat,items:items.map(q=>({q,opts:q.type==='mc'?shuffle([q.a,...q.w]):null,res:null,pick:null,shown:false})),i:0};
  go('theorie');}
 
+/* „Einfacher erklärt“ (leichte-sprache-zp.js, Schlüssel = Fragen-id). Inline-onclick ohne data-a:
+   der Text ersetzt nur die Taste, bis zur nächsten Frage (dann wird ohnehin neu gezeichnet). */
+function zpLeichtKnopf(q){const t=window.LEICHT_ZP&&q&&LEICHT_ZP[q.id];return t?`<div><button type="button" class="btn ghost small" style="padding-inline:0;min-height:36px" onclick="zpLeichtZeigen(this)" data-ls="${esc(q.id)}">Einfacher erklärt</button></div>`:'';}
+function zpLeichtZeigen(b){const d=document.createElement('div');d.className='small';d.style.cssText='margin-top:8px;padding-top:8px;border-top:1px solid var(--line);white-space:pre-line';d.textContent=LEICHT_ZP[b.dataset.ls]||'';b.parentNode.replaceChild(d,b);}
 function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
  const dots=`<div class="progress-dots" aria-hidden="true">${QZ.items.map((x,i)=>`<i class="${x.res==='yes'?'ok':x.res==='no'?'no':x.res==='part'?'part':i===QZ.i?'cur':''}"></i>`).join('')}</div>`;
  const title=QZ.kind==='sim'?'Fachgespräch-Simulation':QZ.kind==='open'?'Prüferfragen':QZ.kind==='katalog'?'Grundwissen-Fragen':QZ.kind==='zug'?'Rasierzüge':QZ.kind==='massage'?'Massagegriffe':QZ.kind==='nagelbau'?'Nägel & Maniküre':(QZ.cat?CAT[QZ.cat].name:'Lernrunde');
@@ -1325,8 +1330,8 @@ function quizHTML(){const it=QZ.items[QZ.i],n=QZ.items.length;
   const titel=it.res==='yes'?'Richtig!':ok?'Richtig – aber geraten. Die Frage kommt morgen wieder.':it.sicherFalsch?'Leider falsch – obwohl du dir sicher warst.':'Leider falsch.';
   body=`<div class="answers">${it.opts.map((o,k)=>{let cls='';if(it.pick!=null){if(o===q.a)cls='right';else if(k===it.pick)cls='wrong';}else if(k===it.sel)cls='sel';return `<button data-a="sel" data-k="${k}" class="${cls}" ${it.pick!=null?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>
   ${it.pick==null&&it.sel!=null?`<div class="stack"><div class="small muted" style="text-align:center">Wie sicher bist du dir?</div><div class="row"><button class="btn primary" data-a="ans" data-s="1" style="flex:1">Sicher – prüfen</button><button class="btn" data-a="ans" data-s="0" style="flex:1">Geraten – prüfen</button></div></div>`:''}
-  ${it.pick!=null?`<div class="explain"><strong>${titel}</strong> ${ok?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
- else{body=it.shown?`<div class="model"><div class="eyebrow">${q.src==='katalog'?'Musterantwort':'Das sollte in deiner Antwort vorkommen'}</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+  ${it.pick!=null?`<div class="explain"><strong>${titel}</strong> ${ok?'':'Richtig ist: '+esc(q.a)+'. '}${esc(q.e)}${zpLeichtKnopf(q)}</div><button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:''}`;}
+ else{body=it.shown?`<div class="model"><div class="eyebrow">${q.src==='katalog'?'Musterantwort':'Das sollte in deiner Antwort vorkommen'}</div><ul>${q.pts.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>${zpLeichtKnopf(q)}</div>
   ${it.res?`<button class="btn primary" data-a="next">${QZ.i+1<n?'Nächste Frage':'Ergebnis ansehen'}</button>`:`<div class="stack"><div class="small muted">Wie gut war die Antwort?</div><div class="row"><button class="btn" data-a="self" data-r="yes" style="border-color:var(--good);color:var(--good)">Gewusst</button><button class="btn" data-a="self" data-r="part" style="border-color:var(--warn);color:var(--warn)">Teilweise</button><button class="btn" data-a="self" data-r="no" style="border-color:var(--bad);color:var(--bad)">Noch nicht</button></div></div>`}`
   :`<p class="muted">Antworte laut und in ganzen Sätzen, so wie bei der Prüfung. Danach die Musterantwort ansehen.</p><button class="btn primary" data-a="show">Musterantwort zeigen</button>`;}
  return `<div class="quiz"><div class="row" style="justify-content:space-between"><span class="eyebrow">${esc(title)} · ${esc(CAT[q.cat].name)}</span><span class="small muted num">Frage ${QZ.i+1} von ${n}</span></div>${dots}
