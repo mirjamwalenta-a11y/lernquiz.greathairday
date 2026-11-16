@@ -97,7 +97,10 @@
   function sprich(text, schluessel) {
     try { synth.cancel(); } catch (e) {}
     aktuell = schluessel;
-    var saetze = text.replace(/([.!?:;])\s+/g, '$1\n').split('\n').filter(Boolean);
+    var saetze = text.replace(/([.!?:;])\s+/g, '$1\n').split('\n').filter(Boolean)
+      // „6.“ am Satzende liest die Stimme als „sechste“. Jeder Satz wird
+      // ohnehin einzeln gesprochen, der Punkt ist für die Pause nicht nötig.
+      .map(function (s) { return s.replace(/(\d)\.\s*$/, '$1'); });
     saetze.forEach(function (s, i) {
       var u = new SpeechSynthesisUtterance(s);
       u.lang = stimme ? stimme.lang : 'de-AT';
