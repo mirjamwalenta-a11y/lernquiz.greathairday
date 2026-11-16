@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung; Antippen hier zählt für alle Lern-Seiten -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F8F4EA">
+<title>Fachbegriffe</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
+<!--
+  Fachbegriff-Wörterbuch: einfache Erklärung + Übersetzung in 7 Sprachen
+  (Englisch, Türkisch, BKS, Arabisch, Dari/Farsi, Ukrainisch, Rumänisch).
+  Daten in fachbegriffe.js (dort auch „geprüft“ je Sprache). Keine Daten am
+  Server, kein Login nötig. Gemerkt wird nur die gewählte Sprache im Browser.
+  Aussehen wie verzeichnis.html (gleiche Farben und Bausteine).
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8F4EA;--ink:#211D17;--muted:#6B6455;--line:#E4DBC5;--accent:#896C32;--soft:#F3EBD9;--card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}}
+:root[data-theme="dark"]{--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px 16px 48px}
+.wrap{max-width:720px;margin:0 auto}
+.zurueck{display:inline-block;color:var(--muted);font-size:13px;text-decoration:none;margin-bottom:12px}
+.zurueck:hover{color:var(--accent)}
+.tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-size:24px;font-weight:600;line-height:1.2;margin:2px 0 6px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.suche{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 10px}
+.suche input,.suche select{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.suche input:focus,.suche select:focus{outline:none;border-color:var(--accent)}
+.suche select{margin-top:8px;font-size:15px;padding:10px 12px}
+.buchstaben{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.buchstaben a{min-width:28px;text-align:center;padding:4px 0;border-radius:7px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px;font-weight:600}
+.buchstaben a:hover{border-color:var(--accent);color:var(--accent)}
+h2{font-size:18px;font-weight:700;color:var(--accent);margin:18px 0 6px;scroll-margin-top:200px}
+ul{list-style:none}
+li.e{display:block;padding:10px 12px;border-radius:10px;color:var(--ink);background:var(--card);border:1px solid var(--line);margin-bottom:6px}
+.n{font-weight:600;font-size:15px}
+.w{display:block;font-size:13.5px;color:var(--muted);margin-top:2px}
+.ue{margin-top:6px;background:var(--soft);border-radius:8px;padding:6px 10px;font-size:15px;font-weight:600}
+.ue small{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+details{margin-top:6px;font-size:13px}
+summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:12px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin-top:6px}
+dt{color:var(--muted);font-size:12px}
+dd{margin:0}
+.ue span[dir="rtl"],dd[dir="rtl"]{display:block;text-align:right}
+.hinweis{font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.leer{color:var(--muted);font-size:14px;padding:20px 0}
+mark{background:var(--soft);color:inherit;border-radius:3px;padding:0 1px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="zurueck" href="lerntool.html">← Lern-Tool</a>
+  <div class="tag">Lernen · Sprache</div>
+  <h1>Fachbegriffe</h1>
+  <p class="sub">Wichtige Wörter aus dem Friseurhandwerk, einfach erklärt und übersetzt. Im Quiz kannst du gepunktet unterstrichene Wörter antippen.</p>
+  <p class="hinweis" id="hinweis" hidden></p>
+
+  <div class="suche">
+    <input type="search" id="q" placeholder="Suchen, z. B. Oxidant, Scheitel, kepek …" autocomplete="off" aria-label="Fachbegriff suchen">
+    <select id="sprache" aria-label="Meine Sprache"></select>
+    <nav class="buchstaben" id="abc" aria-label="Buchstaben"></nav>
+  </div>
+
+  <div id="liste"></div>
+</div>
+
+<script src="fachbegriffe.js?v=20261116a"></script>
+<script>
+(function () {
+  var FB = window.FACHBEGRIFFE, SP = FB.sprachen;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  function buchstabe(w) { var b = norm(w).charAt(0).toUpperCase(); return /[A-Z]/.test(b) ? b : '#'; }
+
+  var LISTE = FB.liste.slice().sort(function (a, b) { return a.w.localeCompare(b.w, 'de'); });
+  LISTE.forEach(function (b) {
+    b.s = norm([b.w, b.formen.join(' '), b.e].concat(SP.map(function (s) { return b.t[s.k]; })).join(' '));
+  });
+
+  var sprache = FB.spracheHolen();
+  var sel = document.getElementById('sprache');
+  sel.innerHTML = '<option value="">Meine Sprache wählen …</option>' + SP.map(function (s) {
+    return '<option value="' + s.k + '"' + (s.k === sprache ? ' selected' : '') + '>' + esc(s.n + ' · ' + s.e) + '</option>';
+  }).join('');
+  sel.addEventListener('change', function () { sprache = sel.value; FB.spracheSetzen(sprache); zeichnen(); });
+
+  var offen = SP.filter(function (s) { return !FB.geprueft[s.k]; });
+  if (offen.length) {
+    var h = document.getElementById('hinweis');
+    h.textContent = 'Die Übersetzungen sind ein KI-Entwurf und noch nicht von Muttersprachler:innen geprüft' +
+      (offen.length < SP.length ? ' (' + offen.map(function (s) { return s.n; }).join(', ') + ')' : '') +
+      '. Wenn dir etwas falsch vorkommt, sag es deiner Meisterin.';
+    h.hidden = false;
+  }
+
+  var q = '';
+  function markiere(t) {
+    var e = esc(t);
+    if (!q) return e;
+    q.split(/\s+/).filter(Boolean).forEach(function (w) {
+      var i = norm(e).indexOf(w);
+      if (i >= 0 && norm(e).length === e.length) e = e.slice(0, i) + '<mark>' + e.slice(i, i + w.length) + '</mark>' + e.slice(i + w.length);
+    });
+    return e;
+  }
+  function zeichnen() {
+    var worte = q.split(/\s+/).filter(Boolean);
+    var treffer = LISTE.filter(function (b) { return worte.every(function (w) { return b.s.indexOf(w) >= 0; }); });
+    var gruppen = {}, reihe = [];
+    treffer.forEach(function (b) { var k = buchstabe(b.w); if (!gruppen[k]) { gruppen[k] = []; reihe.push(k); } gruppen[k].push(b); });
+    document.getElementById('abc').innerHTML = reihe.map(function (k) { return '<a href="#b-' + k + '">' + k + '</a>'; }).join('');
+    var spr = SP.filter(function (s) { return s.k === sprache; })[0];
+    document.getElementById('liste').innerHTML = treffer.length ? reihe.map(function (k) {
+      return '<h2 id="b-' + k + '">' + k + '</h2><ul>' + gruppen[k].map(function (b) {
+        return '<li class="e"><div class="kopf"><span class="n">' + markiere(b.w) + '</span><span class="w">' + markiere(b.e) + '</span></div>' +
+          (spr ? '<div class="ue"><small>' + esc(spr.n) + '</small><span lang="' + spr.k + '"' + (spr.rtl ? ' dir="rtl"' : '') + '>' + esc(b.t[spr.k]) + '</span></div>' : '') +
+          '<details><summary>Alle Sprachen</summary><dl>' + SP.map(function (s) {
+            return '<dt>' + esc(s.n) + '</dt><dd lang="' + s.k + '"' + (s.rtl ? ' dir="rtl"' : '') + '>' + esc(b.t[s.k]) + '</dd>';
+          }).join('') + '</dl></details></li>';
+      }).join('') + '</ul>';
+    }).join('') : '<p class="leer">Nichts gefunden. Probier ein anderes Wort, z. B. „Farbe“ oder „Haar“.</p>';
+  }
+  document.getElementById('q').addEventListener('input', function () { q = norm(this.value.trim()); zeichnen(); });
+  zeichnen();
+})();
+</script>
+<script src="vorlesen.js?v=20261116a" data-ziele="li.e > .kopf" defer></script>  <!-- 🔊 Begriff + Erklärung auf Deutsch vorlesen -->
+<script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Feedback, Impressum, Datenschutz, Nutzungsbedingungen -->
+</body>
+</html>
