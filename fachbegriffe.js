@@ -298,6 +298,7 @@
     '.fb-ue-in{display:flex;align-items:center;justify-content:space-between;gap:8px}' +
     '.fb-begriffe{font-size:12px;line-height:1.5;opacity:.8;margin:2px 0 8px;font-weight:400}' +
     '.fb-begriffe b{font-weight:600}' +
+    '.fb-wahl{background:none;border:none;padding:2px 0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}' +
     '.fb-zeile{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:#6B6455}' +
     '.fb-zeile select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #E4DBC5;border-radius:6px;background:#fff;color:#211D17;width:auto}' +
     '.fb-alle{margin-top:8px;font-size:13px}' +
@@ -369,17 +370,22 @@
     var nb = el.nextElementSibling, alt = nb && nb.classList.contains('fb-begriffe') ? nb : null;
     var k = el.cloneNode(true);
     k.querySelectorAll('.vl-btn, button').forEach(function (x) { x.remove(); });
-    var liste = spr ? begriffeIn(k.textContent) : [];
-    var html = liste.map(function (x) {
-      return '<b>' + escHtml(x.wort) + '</b> = <bdi lang="' + spr.k + '">' + escHtml(x.b.t[spr.k]) + '</bdi>';
-    }).join(' · ');
+    var liste = begriffeIn(k.textContent), html = '';
+    if (liste.length && spr) {
+      html = liste.map(function (x) {
+        return '<b>' + escHtml(x.wort) + '</b> = <bdi lang="' + spr.k + '">' + escHtml(x.b.t[spr.k]) + '</bdi>';
+      }).join(' · ') + ' · <button type="button" class="fb-wahl" aria-label="Sprache für Fachbegriffe ändern">ändern</button>';
+    } else if (liste.length) {
+      // Noch keine Sprache: sichtbar anbieten (sonst nur über das Fenster eines Begriffs)
+      html = '🌐 <button type="button" class="fb-wahl">Sprache für Fachbegriffe wählen</button>';
+    }
     if (!html) { if (alt) alt.remove(); return; }
     if (alt && alt.getAttribute('data-html') === html) return;   // nichts geändert: kein neuer Umbau
     var z = alt || document.createElement('div');
     z.className = 'fb-begriffe';
     z.style.color = getComputedStyle(el).color;   // Farbe der Frage (z. B. hell auf dunkler Karte)
     z.setAttribute('data-html', html);
-    z.setAttribute('aria-label', 'Fachbegriffe in der Frage, übersetzt');
+    z.setAttribute('aria-label', spr ? 'Fachbegriffe in der Frage, übersetzt' : 'Sprache für Fachbegriffe');
     z.innerHTML = html;
     if (!alt) el.parentNode.insertBefore(z, el.nextSibling);
   }
@@ -411,11 +417,25 @@
         if (sag && aktiv) sprichFremd(aktiv.t[sag.getAttribute('data-sag')], sag.getAttribute('data-sag'));
       });
       blatt.addEventListener('change', function (ev) {
-        if (ev.target.classList.contains('fb-sprache')) { spracheSetzen(ev.target.value); zeigen(aktiv); alleZeilen(); }
+        if (ev.target.classList.contains('fb-sprache')) {
+          spracheSetzen(ev.target.value); alleZeilen();
+          if (aktiv) zeigen(aktiv); else zu();   // reine Sprachauswahl: nach der Wahl schließen
+        }
       });
       document.body.appendChild(blatt);
     }
     var sp = spracheHolen(), spr = SPRACHEN.filter(function (s) { return s.k === sp; })[0];
+    if (!b) {
+      // Nur die Sprachauswahl (aus der Zeile unter der Frage)
+      blatt.innerHTML = '<div class="fb-karte"><div class="fb-kopf"><b>Sprache für Fachbegriffe</b><button type="button" class="fb-zu" aria-label="Schließen">×</button></div>' +
+        '<p class="fb-e">Wähle deine Sprache. Dann stehen unter jeder Frage die Fachbegriffe übersetzt. Ein unterstrichenes Wort antippen zeigt mehr.</p>' +
+        '<div class="fb-zeile"><label>Meine Sprache: <select class="fb-sprache"><option value="">– keine, nur Deutsch –</option>' +
+        SPRACHEN.map(function (s) { return '<option value="' + s.k + '"' + (s.k === sp ? ' selected' : '') + '>' + escHtml(s.n + ' · ' + s.e) + '</option>'; }).join('') +
+        '</select></label></div></div>';
+      blatt.hidden = false;
+      blatt.querySelector('.fb-sprache').focus();
+      return;
+    }
     var h = '<div class="fb-karte"><div class="fb-kopf"><b>' + escHtml(b.w) + '</b><button type="button" class="fb-zu" aria-label="Schließen">×</button></div>' +
       (NUR_UE ? (spr ? '' : '<p class="fb-e">Wähle unten deine Sprache, dann siehst du hier die Übersetzung.</p>')
               : '<p class="fb-e">' + escHtml(b.e) + '</p>');
@@ -445,6 +465,8 @@
 
   // Ein Handler für alle Begriffe (übersteht innerHTML-Umbauten der Seiten)
   document.addEventListener('click', function (ev) {
+    var wahl = ev.target && ev.target.closest && ev.target.closest('.fb-wahl');
+    if (wahl) { ev.preventDefault(); ev.stopPropagation(); vorher = wahl; zeigen(null); return; }
     var w = ev.target && ev.target.closest && ev.target.closest('.fb-w');
     if (w) {
       ev.preventDefault(); ev.stopPropagation();
