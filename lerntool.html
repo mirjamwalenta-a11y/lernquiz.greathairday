@@ -648,6 +648,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="muster" id="lap-antwort" style="display:none">
       <div class="muster-lab">Musterlösung</div>
       <div id="lap-antwort-txt"></div>
+      <div id="lap-leicht"></div>
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
       <button class="btn-ghost" onclick="lapZeigAntwort()">Antwort zeigen</button>
@@ -1505,6 +1506,20 @@ function zeigeFrage(f) {
   });
   document.getElementById('quiz-bereich').innerHTML = html + ltSicherZeile() + '</div>';
 }
+// ── „Einfacher erklärt“ (leichte-sprache-lt.js) ──────────────────────
+// Quiz: Schlüssel = Fragetext (die Fragen haben keine id), LAP: id.
+// Ohne einfache Fassung keine Taste. Stil wie die vorhandenen Gold-Links.
+function ltLeichtKnopf(text) {
+  if (!text) return '';
+  return '<div><button type="button" onclick="ltLeichtZeigen(this)" data-ls="'+String(text).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'" style="background:none;border:none;color:#896C32;font-size:13px;cursor:pointer;text-decoration:underline;padding:8px 0 0;font-family:Poppins,system-ui">Einfacher erklärt</button></div>';
+}
+function ltLeichtZeigen(b) {
+  var d = document.createElement('div');
+  d.style.cssText = 'margin-top:8px;padding-top:8px;border-top:1px solid #0001;font-size:13px;color:#2C2C2C;line-height:1.55;white-space:pre-line';
+  d.textContent = b.getAttribute('data-ls');
+  b.parentNode.replaceChild(d, b);
+}
+
 function quizPruefeAuswahl(i, sicher) {
   quizPruefe(document.getElementById('opt-'+i), i, LT_FRAGE.r, LT_FRAGE.e, sicher);
 }
@@ -1521,7 +1536,8 @@ function quizPruefe(btn, gewaehlt, richtig, erklaerung, sicher) {
   if (QUIZ_PUFFER.length >= 10) quizPufferSpeichern();
   var fb = document.createElement('div');
   fb.className = sfb.klasse;
-  fb.innerHTML = '<strong style="color:'+(ok && sicher?'#6E5527':ok?'#8A7A30':'#C44030')+'">'+(kor?'✓ ':ok?'✓ ':'✗ ')+sfb.titel+'</strong>'+sfb.zusatz+'<div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>';
+  fb.innerHTML = '<strong style="color:'+(ok && sicher?'#6E5527':ok?'#8A7A30':'#C44030')+'">'+(kor?'✓ ':ok?'✓ ':'✗ ')+sfb.titel+'</strong>'+sfb.zusatz+'<div class="muster" style="margin-top:8px"><div class="muster-lab">Erklärung</div>'+erklaerung+'</div>'+
+    ltLeichtKnopf(window.LEICHT_LT && LT_FRAGE && LEICHT_LT.quiz[LT_FRAGE.f]);
   var nb = document.createElement('button');
   nb.className = 'btn-primary';
   nb.style.marginTop = '10px';
@@ -1611,6 +1627,7 @@ function lapNeu() {
   ant.style.display = 'none';
   document.getElementById('lap-antwort-txt').textContent = f.a;
   ant.dataset.txt = f.a;
+  document.getElementById('lap-leicht').innerHTML = ltLeichtKnopf(window.LEICHT_LT && LEICHT_LT.lap[f.id]);
   document.getElementById('lap-ergebnis').style.display = 'block';
   window.scrollTo(0, document.getElementById('lap-ergebnis').offsetTop - 20);
 }
@@ -5280,6 +5297,7 @@ zeige = function(seite) {
 <script src="vorlesen.js?v=20261116b" data-ziele="#quiz-bereich > p | #quiz-bereich .opt-btn ; #quiz-bereich .muster ; #lap-frage ; #lap-antwort-txt" defer></script>  <!-- 🔊 Vorlesen: Frage, Antworten, Erklärung -->
 <script src="fachbegriffe.js?v=20261116a" data-ziele="#quiz-bereich > p ; #quiz-bereich .muster ; #lap-frage ; #lap-antwort-txt" defer></script>  <!-- 📖 Fachbegriffe antippen: Erklärung + Übersetzung -->
 <script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+<script src="leichte-sprache-lt.js?v=20261116a"></script>  <!-- „Einfacher erklärt“ im Themen-Quiz und bei LAP-Fragen -->
 <script src="praxis-fotos.js?v=20261116a"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="woernis-tipps.js?v=20261115"></script>
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
