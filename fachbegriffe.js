@@ -12,6 +12,8 @@
 //     data-gruppe (optional): CSS-Selektor eines Abschnitts. Ein Begriff wird
 //       pro Abschnitt nur einmal unterstrichen (für lange Lern-Seiten).
 //     data-max (optional): höchstens so viele Begriffe pro Feld (Standard 5).
+//     data-nur-uebersetzung (optional): nur Übersetzung zeigen, keine deutsche
+//       Erklärung – für Tests (Schnuppertag), damit nichts verraten wird.
 //     Nie markiert wird Text in Knöpfen, Links, Chips, Formularfeldern und in
 //     allem, was antippbar ist (onclick, data-a, data-act, role=button, tabindex).
 //
@@ -245,6 +247,8 @@
   var RE = new RegExp('(^|[^\\p{L}\\d])(' + formen.map(esc).join('|') + ')(?:e|en|n|s|es|er|ern)?(?![\\p{L}\\d])', 'giu');
   var MAX_PRO_FELD = Number((skript && skript.getAttribute('data-max')) || 5) || 5;
   var GRUPPE = (skript && skript.getAttribute('data-gruppe')) || '';
+  // Im Schnuppertag-Test (auch das eingebettete Mischlabor: ?von=schnuppertag) nur übersetzen
+  var NUR_UE = !!(skript && skript.hasAttribute('data-nur-uebersetzung')) || /[?&]von=schnuppertag\b/.test(location.search);
   var NICHT = '.fb-w, button, a, label, summary, textarea, input, select, option, script, style, svg, .vl-btn, ' +
     '[contenteditable], [onclick], [data-a], [data-act], [role="button"], [tabindex]:not([tabindex="-1"]), .chip, .fb-blatt';
 
@@ -342,7 +346,8 @@
     }
     var sp = spracheHolen(), spr = SPRACHEN.filter(function (s) { return s.k === sp; })[0];
     var h = '<div class="fb-karte"><div class="fb-kopf"><b>' + escHtml(b.w) + '</b><button type="button" class="fb-zu" aria-label="Schließen">×</button></div>' +
-      '<p class="fb-e">' + escHtml(b.e) + '</p>';
+      (NUR_UE ? (spr ? '' : '<p class="fb-e">Wähle unten deine Sprache, dann siehst du hier die Übersetzung.</p>')
+              : '<p class="fb-e">' + escHtml(b.e) + '</p>');
     if (spr) {
       h += '<div class="fb-ue"><small>' + escHtml(spr.n) + '</small><span lang="' + spr.k + '"' + (spr.rtl ? ' dir="rtl"' : '') + '>' + escHtml(b.t[spr.k]) + '</span></div>';
     }
