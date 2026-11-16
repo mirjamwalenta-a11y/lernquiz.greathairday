@@ -12,6 +12,9 @@
 //     data-gruppe (optional): CSS-Selektor eines Abschnitts. Ein Begriff wird
 //       pro Abschnitt nur einmal unterstrichen (für lange Lern-Seiten).
 //     data-max (optional): höchstens so viele Begriffe pro Feld (Standard 5).
+//     data-unter (optional): CSS-Selektoren der Fragen, getrennt durch „;“.
+//       Ist eine Sprache gewählt, steht unter der Frage eine Zeile mit den
+//       Fachbegriffen und ihrer Übersetzung („Oxidant = oksidan · …“).
 //     data-nur-uebersetzung (optional): nur Übersetzung zeigen, keine deutsche
 //       Erklärung – für Tests (Schnuppertag), damit nichts verraten wird.
 //     Nie markiert wird Text in Knöpfen, Links, Chips, Formularfeldern und in
@@ -229,6 +232,31 @@
   // ── Sprache merken (nur Bequemlichkeit, im Browser) ─────────────────
   function spracheHolen() { try { return localStorage.getItem('fb_sprache') || ''; } catch (e) { return ''; } }
   function spracheSetzen(k) { try { localStorage.setItem('fb_sprache', k); } catch (e) {} }
+  // ── Übersetzung vorlesen (Stimme des Geräts in der jeweiligen Sprache) ──
+  var STIMM_LANG = {en: ['en-GB', 'en-US', 'en'], tr: ['tr'], bs: ['bs', 'hr', 'sr'], ar: ['ar'], fa: ['fa'], uk: ['uk'], ro: ['ro']};
+  function stimmeFuer(k) {
+    if (!('speechSynthesis' in window)) return null;
+    var alle = speechSynthesis.getVoices() || [], pref = STIMM_LANG[k] || [k];
+    for (var i = 0; i < pref.length; i++) {
+      for (var j = 0; j < alle.length; j++) if (alle[j].lang.toLowerCase().replace('_', '-').indexOf(pref[i].toLowerCase()) === 0) return alle[j];
+    }
+    return null;
+  }
+  // Taste nur zeigen, wenn das Gerät die Sprache sprechen kann. Sind die
+  // Stimmen noch nicht geladen (leere Liste), Taste zeigen und beim Antippen prüfen.
+  function kannSprechen(k) {
+    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return false;
+    return !(speechSynthesis.getVoices() || []).length || !!stimmeFuer(k);
+  }
+  function sprichFremd(text, k) {
+    var v = stimmeFuer(k);
+    if (!v) { alert('Dieses Handy hat keine Stimme für diese Sprache.'); return; }
+    try { speechSynthesis.cancel(); } catch (e) {}
+    var u = new SpeechSynthesisUtterance(String(text).replace(/[()]/g, ', '));
+    u.lang = v.lang; u.rate = 0.9;
+    try { u.voice = v; } catch (e) {}
+    speechSynthesis.speak(u);
+  }
   window.FACHBEGRIFFE.spracheHolen = spracheHolen;
   window.FACHBEGRIFFE.spracheSetzen = spracheSetzen;
 
@@ -250,7 +278,7 @@
   // Im Schnuppertag-Test (auch das eingebettete Mischlabor: ?von=schnuppertag) nur übersetzen
   var NUR_UE = !!(skript && skript.hasAttribute('data-nur-uebersetzung')) || /[?&]von=schnuppertag\b/.test(location.search);
   var NICHT = '.fb-w, button, a, label, summary, textarea, input, select, option, script, style, svg, .vl-btn, ' +
-    '[contenteditable], [onclick], [data-a], [data-act], [role="button"], [tabindex]:not([tabindex="-1"]), .chip, .fb-blatt';
+    '[contenteditable], [onclick], [data-a], [data-act], [role="button"], [tabindex]:not([tabindex="-1"]), .chip, .fb-blatt, .fb-begriffe';
 
   var css =
     '.fb-w{text-decoration:underline dotted #896C32;text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help}' +
@@ -265,6 +293,10 @@
     '.fb-ue{background:#F3EBD9;border-radius:10px;padding:10px 12px;margin-bottom:8px}' +
     '.fb-ue small{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#6B6455;margin-bottom:2px}' +
     '.fb-ue span{font-size:16px;font-weight:600}' +
+    '.fb-sag{border:1.5px solid #E4DBC5;background:#fff;color:#896C32;border-radius:50%;width:32px;height:32px;font-size:14px;line-height:1;cursor:pointer;padding:0;vertical-align:middle;margin-inline-start:8px;flex:none}' +
+    '.fb-ue-in{display:flex;align-items:center;justify-content:space-between;gap:8px}' +
+    '.fb-begriffe{font-size:12px;line-height:1.5;opacity:.8;margin:2px 0 8px;font-weight:400}' +
+    '.fb-begriffe b{font-weight:600}' +
     '.fb-zeile{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:#6B6455}' +
     '.fb-zeile select{font:inherit;font-size:13px;padding:6px 8px;border:1px solid #E4DBC5;border-radius:6px;background:#fff;color:#211D17;width:auto}' +
     '.fb-alle{margin-top:8px;font-size:13px}' +
@@ -320,6 +352,42 @@
     });
     el.setAttribute('data-fb', String(el.textContent.length) + ':' + el.textContent.slice(0, 40));
   }
+  // ── Begriffe-Zeile unter der Frage (nur mit gewählter Sprache) ──────
+  var UNTER = ((skript && skript.getAttribute('data-unter')) || '').split(';').map(function (x) { return x.trim(); }).filter(Boolean);
+  function begriffeIn(text) {
+    var gef = [], schon = {}, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(text)) && gef.length < 6) {
+      var b = FORM_ZU[m[2].toLowerCase()];
+      // Das Wort so zeigen, wie es in der Frage steht („Handschuhe“, nicht „Schutzhandschuhe“)
+      if (b && !schon[b.i]) { schon[b.i] = true; gef.push({b: b, wort: m[0].slice(m[1].length)}); }
+    }
+    return gef;
+  }
+  function zeileFuer(el, spr) {
+    var nb = el.nextElementSibling, alt = nb && nb.classList.contains('fb-begriffe') ? nb : null;
+    var k = el.cloneNode(true);
+    k.querySelectorAll('.vl-btn, button').forEach(function (x) { x.remove(); });
+    var liste = spr ? begriffeIn(k.textContent) : [];
+    var html = liste.map(function (x) {
+      return '<b>' + escHtml(x.wort) + '</b> = <bdi lang="' + spr.k + '">' + escHtml(x.b.t[spr.k]) + '</bdi>';
+    }).join(' · ');
+    if (!html) { if (alt) alt.remove(); return; }
+    if (alt && alt.getAttribute('data-html') === html) return;   // nichts geändert: kein neuer Umbau
+    var z = alt || document.createElement('div');
+    z.className = 'fb-begriffe';
+    z.style.color = getComputedStyle(el).color;   // Farbe der Frage (z. B. hell auf dunkler Karte)
+    z.setAttribute('data-html', html);
+    z.setAttribute('aria-label', 'Fachbegriffe in der Frage, übersetzt');
+    z.innerHTML = html;
+    if (!alt) el.parentNode.insertBefore(z, el.nextSibling);
+  }
+  function alleZeilen() {
+    if (!UNTER.length) return;
+    var sp = spracheHolen(), spr = SPRACHEN.filter(function (x) { return x.k === sp; })[0] || null;
+    UNTER.forEach(function (sel) { try { document.querySelectorAll(sel).forEach(function (el) { zeileFuer(el, spr); }); } catch (e) {} });
+  }
+
   function alleMarkieren() {
     ziele.forEach(function (sel) {
       try { document.querySelectorAll(sel).forEach(markieren); } catch (e) {}
@@ -338,9 +406,11 @@
       blatt.addEventListener('click', function (ev) {
         ev.stopPropagation();
         if (ev.target.closest('.fb-zu')) zu();
+        var sag = ev.target.closest('.fb-sag');
+        if (sag && aktiv) sprichFremd(aktiv.t[sag.getAttribute('data-sag')], sag.getAttribute('data-sag'));
       });
       blatt.addEventListener('change', function (ev) {
-        if (ev.target.classList.contains('fb-sprache')) { spracheSetzen(ev.target.value); zeigen(aktiv); }
+        if (ev.target.classList.contains('fb-sprache')) { spracheSetzen(ev.target.value); zeigen(aktiv); alleZeilen(); }
       });
       document.body.appendChild(blatt);
     }
@@ -349,13 +419,14 @@
       (NUR_UE ? (spr ? '' : '<p class="fb-e">Wähle unten deine Sprache, dann siehst du hier die Übersetzung.</p>')
               : '<p class="fb-e">' + escHtml(b.e) + '</p>');
     if (spr) {
-      h += '<div class="fb-ue"><small>' + escHtml(spr.n) + '</small><span lang="' + spr.k + '"' + (spr.rtl ? ' dir="rtl"' : '') + '>' + escHtml(b.t[spr.k]) + '</span></div>';
+      h += '<div class="fb-ue"><small>' + escHtml(spr.n) + '</small><div class="fb-ue-in"><span lang="' + spr.k + '"' + (spr.rtl ? ' dir="rtl"' : '') + '>' + escHtml(b.t[spr.k]) + '</span>' +
+        (kannSprechen(spr.k) ? '<button type="button" class="fb-sag" data-sag="' + spr.k + '" aria-label="Auf ' + escHtml(spr.n) + ' vorlesen">🔊</button>' : '') + '</div></div>';
     }
     h += '<div class="fb-zeile"><label>Meine Sprache: <select class="fb-sprache"><option value="">– wählen –</option>' +
       SPRACHEN.map(function (s) { return '<option value="' + s.k + '"' + (s.k === sp ? ' selected' : '') + '>' + escHtml(s.n + ' · ' + s.e) + '</option>'; }).join('') +
       '</select></label></div>' +
       '<details class="fb-alle"><summary>Alle Sprachen</summary><dl>' +
-      SPRACHEN.map(function (s) { return '<dt>' + escHtml(s.n) + '</dt><dd lang="' + s.k + '"' + (s.rtl ? ' dir="rtl"' : '') + '>' + escHtml(b.t[s.k]) + '</dd>'; }).join('') +
+      SPRACHEN.map(function (s) { return '<dt>' + escHtml(s.n) + (kannSprechen(s.k) ? '<button type="button" class="fb-sag" data-sag="' + s.k + '" aria-label="Auf ' + escHtml(s.n) + ' vorlesen">🔊</button>' : '') + '</dt><dd lang="' + s.k + '"' + (s.rtl ? ' dir="rtl"' : '') + '>' + escHtml(b.t[s.k]) + '</dd>'; }).join('') +
       '</dl></details>';
     var offen = SPRACHEN.filter(function (s) { return !GEPRUEFT[s.k]; });
     if (offen.length) h += '<div class="fb-hinweis">KI-Übersetzung, noch nicht geprüft' + (offen.length < SPRACHEN.length ? ' (' + offen.map(function (s) { return s.n; }).join(', ') + ')' : '') + '.</div>';
@@ -390,13 +461,14 @@
   function start() {
     var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
     alleMarkieren();
+    alleZeilen();
     var geplant = false;
     new MutationObserver(function (liste) {
       // Eigene Änderungen (Blatt) nicht beachten
       if (liste.every(function (m) { return blatt && blatt.contains(m.target); })) return;
       if (geplant) return;
       geplant = true;
-      requestAnimationFrame(function () { geplant = false; alleMarkieren(); });
+      requestAnimationFrame(function () { geplant = false; alleMarkieren(); alleZeilen(); });
     }).observe(document.body, {childList: true, subtree: true, characterData: true});
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
