@@ -23,8 +23,9 @@
 // Keine Daten am Server. Gemerkt wird nur die gewählte Sprache, im Browser
 // (localStorage „fb_sprache“), als Bequemlichkeit.
 //
-// ÜBERSETZUNGEN: KI-Entwurf (2026-11-16), noch NICHT von Muttersprachler:innen
-// geprüft. Sobald eine Sprache gegengelesen ist, hier in GEPRUEFT auf true
+// ÜBERSETZUNGEN: KI-Entwurf (2026-11-16), Korrekturen aus der Durchsicht vom
+// 2026-11-16 eingearbeitet (26 Begriffe). Noch NICHT von Muttersprachler:innen
+// bestätigt. Sobald eine Sprache gegengelesen ist, hier in GEPRUEFT auf true
 // setzen – dann fällt der Hinweis „noch nicht geprüft“ für sie weg.
 // Neue Begriffe: [Begriff, 'Formen|im|Text' (für das Erkennen, ohne Endungen
 // wie -e/-en/-s), Erklärung in einfachem Deutsch, [en, tr, bks, ar, fa, uk, ro]]
@@ -69,7 +70,7 @@
     ['Wirbel', 'Wirbel|Haarwirbel', 'Eine Stelle, an der die Haare im Kreis wachsen. Wichtig beim Schneiden.',
       ['cowlick (whorl)', 'saç dönmesi (girdap)', 'vrtlog (kose)', 'دوامة الشعر', 'چرخش مو', 'вихор (волосся)', 'vârtej (de păr)']],
     ['Haarausfall', 'Haarausfall|Alopezie', 'Wenn mehr Haare ausfallen als nachwachsen. Fachwort: Alopezie.',
-      ['hair loss (alopecia)', 'saç dökülmesi (alopesi)', 'opadanje kose (alopecija)', 'تساقط الشعر (الثعلبة)', 'ریزش مو (آلوپسی)', 'випадіння волосся (алопеція)', 'căderea părului (alopecie)']],
+      ['hair loss (alopecia)', 'saç dökülmesi (alopesi)', 'opadanje kose (alopecija)', 'تساقط الشعر', 'ریزش مو', 'випадіння волосся (алопеція)', 'căderea părului (alopecie)']],
 
     // ── Haut & Kopfhaut ──
     ['Kopfhaut', 'Kopfhaut', 'Die Haut auf dem Kopf, auf der die Haare wachsen.',
@@ -79,7 +80,7 @@
     ['Lederhaut', 'Lederhaut|Dermis', 'Die Schicht unter der Oberhaut. Dort sitzen Haarwurzeln, Talgdrüsen und Blutgefäße.',
       ['dermis', 'dermis', 'dermis (koža)', 'الأدمة', 'درم', 'дерма', 'derm']],
     ['Talg', 'Talg|Talgdrüse|Sebum', 'Das natürliche Fett der Haut. Es kommt aus den Talgdrüsen und schützt Haut und Haar.',
-      ['sebum (sebaceous gland)', 'sebum (yağ bezi)', 'loj (žlijezda lojnica)', 'الزهم (الغدة الدهنية)', 'چربی پوست (غده چربی)', 'шкірне сало (сальна залоза)', 'sebum (glandă sebacee)']],
+      ['sebum', 'sebum (cilt yağı)', 'sebum (loj)', 'الزهم (دهون البشرة)', 'چربی پوست (سبوم)', 'шкірне сало (себум)', 'sebum']],
     ['Seborrhoe', 'Seborrhoe|Seborrhö', 'Die Haut bildet zu viel Talg. Haare und Kopfhaut werden schnell fettig.',
       ['seborrhoea (oily skin)', 'sebore (yağlı deri)', 'seboreja', 'الزهام (دهون زائدة)', 'سبوره (چربی زیاد پوست)', 'себорея', 'seboree']],
     ['Schuppen', 'Kopfschuppen|Schuppen', 'Kleine weiße Hautteilchen von der Kopfhaut, trocken oder fettig.',
@@ -87,7 +88,7 @@
     ['Ekzem', 'Ekzem|Kontaktekzem', 'Eine entzündete, rote, juckende Haut. Bei Friseur:innen oft an den Händen, z. B. durch Wasser oder Chemie.',
       ['eczema', 'egzama', 'ekcem', 'الإكزيما', 'اگزما', 'екзема', 'eczemă']],
     ['Läuse', 'Läuse|Kopfläuse|Nissen', 'Kleine Insekten im Haar. Nissen sind ihre Eier. Dann wird nicht behandelt.',
-      ['lice (nits)', 'bit (sirke)', 'uši (gnjide)', 'القمل (الصئبان)', 'شپش (رشک)', 'воші (гниди)', 'păduchi (ouă de păduchi)']],
+      ['lice', 'bit', 'uši (vaši)', 'القمل', 'شپش', 'воші', 'păduchi']],
 
     // ── Sicherheit & Hygiene ──
     ['Allergietest', 'Allergietest|Epikutantest|Hauttest', 'Ein Test vor der Farbe: etwas Farbe auf die Haut, 48 Stunden warten. Wird die Haut rot oder juckt, keine Farbe.',
@@ -123,7 +124,7 @@
     ['Pigment', 'Pigment|Farbpigment|Naturpigment', 'Kleinste Farbteilchen. Im Haar natürliche (Melanin) oder künstliche aus der Farbe.',
       ['pigment', 'pigment', 'pigment', 'الصباغ (الصبغة)', 'رنگدانه', 'пігмент', 'pigment']],
     ['Blondierung', 'Blondierung|blondieren|Blondiermittel|Bleiche', 'Das Haar stark aufhellen. Dabei werden die natürlichen Pigmente zerstört.',
-      ['bleaching (lightening)', 'saç açma (açıcı)', 'blajhanje (posvjetljivanje)', 'تفتيح الشعر (سحب اللون)', 'دکلره', 'освітлення (блондування)', 'decolorare']],
+      ['bleaching (lightening)', 'saç açma (açıcı)', 'blajhanje (posvjetljivanje)', 'تفتيح الشعر (سحب اللون)', 'دکلره (رنگ‌بری مو)', 'блондування (знебарвлення)', 'decolorare']],
     ['Aufhellen', 'aufhellen|Aufhellung', 'Das Haar heller machen, mit Farbe oder Blondierung.',
       ['lightening', 'açmak (renk açma)', 'posvjetljivanje', 'التفتيح', 'روشن کردن', 'освітлення', 'deschiderea culorii']],
     ['Grauabdeckung', 'Grauabdeckung|Grauanteil', 'Wie gut die Farbe graue oder weiße Haare färbt.',
@@ -151,21 +152,21 @@
     ['Dauerwelle', 'Dauerwelle|Dauerwellen', 'Das Haar wird dauerhaft gewellt oder gelockt: wickeln, Wellmittel, fixieren.',
       ['perm', 'perma', 'trajna ondulacija', 'التمويج الدائم (البيرم)', 'فر دائم (پرم)', 'хімічна завивка', 'permanent']],
     ['Wickler', 'Wickler|Dauerwellwickler', 'Kleine Rollen, auf die das Haar bei der Dauerwelle gewickelt wird. Die Größe bestimmt die Locke.',
-      ['perm rod (curler)', 'bigudi', 'vikler (papilotna)', 'لفافة الشعر (البكرة)', 'بیگودی', 'бігуді (коклюшка)', 'bigudiu']],
+      ['perm rod (curler)', 'bigudi', 'vikleri (uvijači)', 'لفافة الشعر (البكرة)', 'بیگودی', 'бігуді (коклюшка)', 'bigudiu']],
     ['Wellmittel', 'Wellmittel|Umformungsmittel|Dauerwellflüssigkeit', 'Die Flüssigkeit, die das Haar weich macht, damit es die Form der Wickler annimmt.',
       ['perm lotion (waving lotion)', 'perma losyonu', 'sredstvo za trajnu', 'محلول التمويج', 'محلول فر', 'завивальний склад', 'soluție de permanent']],
     ['Fixierung', 'Fixierung|fixieren|Fixiermittel|Fixierer', 'Der letzte Schritt der Dauerwelle. Er macht die neue Form im Haar fest.',
-      ['neutraliser (fixing)', 'nötralizan (sabitleme)', 'fiksiranje (fiksir)', 'التثبيت (المثبت)', 'فیکساتور (تثبیت)', 'фіксація (фіксаж)', 'fixare (neutralizare)']],
+      ['neutralising (fixing)', 'sabitleme (nötralizasyon)', 'fiksiranje', 'التثبيت (المثبت)', 'فیکساتور (تثبیت)', 'фіксація (фіксаж)', 'fixare (neutralizare)']],
     ['Disulfidbrücke', 'Disulfidbrücke|Schwefelbrücke|Doppelschwefelbrücke', 'Feste Verbindungen im Haar. Sie geben die Form. Die Dauerwelle öffnet und schließt sie neu.',
       ['disulphide bond', 'disülfit bağı', 'disulfidna veza', 'الرابطة ثنائية الكبريتيد', 'پیوند دی‌سولفید', 'дисульфідний зв’язок', 'legătură disulfurică']],
     ['Glättung', 'Glättung|glätten|Haarglättung', 'Lockiges oder welliges Haar glatt machen, mit Chemie oder Hitze.',
       ['straightening', 'düzleştirme', 'ravnanje kose', 'فرد الشعر', 'صاف کردن مو', 'випрямлення', 'îndreptare']],
     ['Wasserwelle', 'Wasserwelle|Wasserwellen', 'Wellen, die mit Kamm und Fingern ins nasse Haar gelegt werden.',
-      ['finger waves', 'su dalgası (parmak dalgası)', 'vodeni val', 'موجات الأصابع (التمويج المائي)', 'موج انگشتی', 'холодна хвиля', 'valuri cu degetele']],
+      ['finger waves', 'su dalgası (parmak dalgası)', 'vodeni val', 'موجات الأصابع (التمويج المائي)', 'موج انگشتی', 'холодна хвиля', 'ondulație cu apă (valuri cu degetele)']],
 
     // ── Schnitt & Form ──
     ['Abteilung', 'Abteilung|abteilen|Abteilungen', 'Das Haar in Bereiche teilen, damit man sauber und Schritt für Schritt arbeitet.',
-      ['section (sectioning)', 'bölüm (bölme)', 'dijeljenje na sekcije', 'تقسيم الشعر (قسم)', 'بخش‌بندی مو', 'сектор (поділ на зони)', 'secțiune (secționare)']],
+      ['section (sectioning)', 'ayırma (bölme)', 'dijeljenje na sekcije', 'تقسيم الشعر (قسم)', 'بخش‌بندی مو', 'сектор (поділ на зони)', 'secțiune (secționare)']],
     ['Scheitel', 'Scheitel|Mittelscheitel|Seitenscheitel', 'Die Linie, an der das Haar nach zwei Seiten fällt.',
       ['parting', 'saç ayrımı', 'razdjeljak', 'فرق الشعر', 'فرق سر', 'проділ', 'cărare']],
     ['Kontur', 'Kontur|Konturen|Konturenschnitt', 'Der äußere Rand der Frisur, z. B. an Stirn, Ohren und Nacken.',
@@ -175,9 +176,9 @@
     ['Graduierung', 'Graduierung|graduiert|Graduation', 'Die Haare werden schräg geschnitten, so dass sie aufeinander liegen. Gibt Fülle, z. B. im Nacken beim Bob.',
       ['graduation', 'degrade (gradasyon)', 'graduacija', 'التدرج', 'گرادوئه (تدریجی)', 'градуювання', 'graduare']],
     ['Effilieren', 'effilieren|Effilierschere|Effilation', 'Das Haar ausdünnen, damit es leichter und weicher fällt. Mit Effilierschere oder Messer.',
-      ['thinning (texturising)', 'efile (inceltme)', 'stanjivanje (efiliranje)', 'ترقيق الشعر', 'پیتاژ کردن', 'філірування', 'efilare']],
+      ['thinning (texturising)', 'efile (inceltme)', 'stanjivanje (efiliranje)', 'ترقيق الشعر', 'پیتاژ کردن (کم‌پشت کردن مو)', 'філірування', 'efilare']],
     ['Fallrichtung', 'Fallrichtung|Wuchsrichtung', 'In welche Richtung das Haar natürlich fällt oder wächst.',
-      ['direction of fall (growth)', 'düşüş (çıkış) yönü', 'smjer pada (rasta) kose', 'اتجاه نمو الشعر', 'جهت ریزش (رشد) مو', 'напрям росту волосся', 'direcția de creștere']],
+      ['direction of fall (growth)', 'saçın düşüş (çıkış) yönü', 'smjer pada (rasta) kose', 'اتجاه نمو الشعر', 'جهت ریزش (رشد) مو', 'напрям росту волосся', 'direcția de creștere']],
     ['Oberkopf', 'Oberkopf', 'Der obere Bereich des Kopfes.',
       ['top of the head', 'tepe', 'tjeme', 'أعلى الرأس', 'بالای سر', 'тім’яна зона', 'creștet']],
     ['Hinterkopf', 'Hinterkopf', 'Der hintere, gewölbte Bereich des Kopfes.',
