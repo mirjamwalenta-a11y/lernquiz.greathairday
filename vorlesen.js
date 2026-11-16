@@ -12,6 +12,11 @@
 //                         wird vorgelesen.
 //                Extra  = optionaler CSS-Selektor, dessen Texte danach
 //                         gelesen werden (z. B. die Antwortmöglichkeiten).
+//                         Mit „~“ davor: nur die folgenden Geschwister des
+//                         Ankers (z. B. „section > header h2 | ~ p“ liest die
+//                         Überschrift und den Einleitungstext darunter).
+// Ist der Anker ein Flex- oder Grid-Container, sitzt die Taste oben rechts
+// darüber (position:absolute), damit sich das Layout nicht verschiebt.
 //
 // Die Seiten bauen Fragen oft per innerHTML neu: ein MutationObserver hängt
 // die Taste dann wieder an. Wechselt der Text (neue Frage), hört das Lesen auf.
@@ -69,6 +74,13 @@
   function textVon(el) {
     var k = el.cloneNode(true);
     k.querySelectorAll('.vl-btn, button, svg, script, style, [aria-hidden="true"]').forEach(function (x) { x.remove(); });
+    // Überschriften und Absätze nicht zusammenkleben („Worum es gehtManche …“)
+    k.querySelectorAll('h1, h2, h3, h4, h5, h6, b, strong').forEach(function (h) {
+      if (/^H\d$/.test(h.tagName) && !/[.!?:]\s*$/.test(h.textContent)) h.appendChild(document.createTextNode('.'));
+    });
+    k.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, dt, dd, td, th, div, br, section, article').forEach(function (x) {
+      x.appendChild(document.createTextNode(' '));
+    });
     return sauber(k.textContent);
   }
   function satzEnde(t) { return /[.!?:]$/.test(t) ? t : t + '.'; }
@@ -76,7 +88,10 @@
   function ankerText(el) { return textVon(el); }
   function lesetext(el, z) {
     var teile = [satzEnde(ankerText(el))];
-    if (z.extra) {
+    if (z.extra && z.extra.charAt(0) === '~') {
+      var sel = z.extra.slice(1).trim(), n = el.nextElementSibling;
+      for (; n; n = n.nextElementSibling) if (n.matches(sel)) { var tt = textVon(n); if (tt) teile.push(satzEnde(tt)); }
+    } else if (z.extra) {
       document.querySelectorAll(z.extra).forEach(function (o) {
         var t = sauber(o.textContent).replace(/^([A-F])\)\s*/, '$1, ');
         if (t) teile.push(satzEnde(t));
@@ -117,7 +132,7 @@
   // ── Tasten anhängen ───────────────────────────────────────────────
   function zustand() {
     document.querySelectorAll('.vl-btn').forEach(function (b) {
-      var an = aktuell !== null && b.parentNode && ankerText(b.parentNode) === aktuell;
+      var a = anker(b), an = aktuell !== null && a && ankerText(a) === aktuell;
       var zeichen = an ? '⏹' : '🔊';
       // Nur ändern, was sich ändert: sonst löst jede Änderung den
       // MutationObserver erneut aus (Endlosschleife).
@@ -128,17 +143,43 @@
       b.textContent = zeichen;
     });
   }
+  // Der Anker trägt data-vl-a; die Taste kann auch in einem Kind sitzen.
+  function anker(b) { return b && b.closest('[data-vl-a]'); }
+  function eigeneTaste(el) {
+    var t = el.querySelectorAll('.vl-btn');
+    for (var i = 0; i < t.length; i++) if (anker(t[i]) === el) return t[i];
+    return null;
+  }
   function anhaengen() {
     var gefunden = false;
     ziele.forEach(function (z, zi) {
       document.querySelectorAll(z.anker).forEach(function (el) {
         if (!ankerText(el)) return;
-        if (el.querySelector(':scope > .vl-btn')) { if (aktuell !== null && ankerText(el) === aktuell) gefunden = true; return; }
+        // Liegt der Anker in einem anderen Anker (z. B. Hinweis-Kasten in einem
+        // Abschnitt mit Taste), liest dessen Taste ihn schon mit: keine zweite.
+        if (el.parentElement && el.parentElement.closest('[data-vl-a]')) return;
+        if (eigeneTaste(el)) { if (aktuell !== null && ankerText(el) === aktuell) gefunden = true; return; }
+        el.setAttribute('data-vl-a', '');
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'vl-btn';
         b.setAttribute('data-vl', String(zi));
-        el.insertBefore(b, el.firstChild);
+        var ziel = el, anz = getComputedStyle(el).display;
+        if (/flex|grid/.test(anz)) {
+          // In Flex/Grid bekäme die Taste eine eigene Zeile: in das erste
+          // Text-Kind setzen (dort fließt der Text um sie herum) …
+          ziel = null;
+          for (var c = el.firstElementChild; c; c = c.nextElementSibling) {
+            if (/^(block|list-item)$/.test(getComputedStyle(c).display) && textVon(c)) { ziel = c; break; }
+          }
+          if (!ziel) {
+            // … oder, wenn es keines gibt, oben rechts darüber legen
+            ziel = el;
+            if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+            b.style.cssText = 'position:absolute;top:6px;right:6px;margin:0;float:none';
+          }
+        }
+        ziel.insertBefore(b, ziel.firstChild);
         if (aktuell !== null && ankerText(el) === aktuell) gefunden = true;
       });
     });
@@ -152,7 +193,7 @@
     if (!b) return;
     ev.preventDefault();
     ev.stopPropagation();
-    var el = b.parentNode, z = ziele[Number(b.getAttribute('data-vl'))] || {};
+    var el = anker(b) || b.parentNode, z = ziele[Number(b.getAttribute('data-vl'))] || {};
     var schluessel = ankerText(el);
     if (aktuell === schluessel && synth.speaking) { stopp(); return; }
     sprich(lesetext(el, z), schluessel);
