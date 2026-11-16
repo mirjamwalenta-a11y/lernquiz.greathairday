@@ -151,6 +151,7 @@ textarea{resize:vertical;margin-bottom:0}
 .paz-m{display:block;color:#7A5E28;font-size:11px;margin-top:2px}
 .paz-t{color:#6B6455;white-space:nowrap}
 .pt-auszug-k{display:block;width:100%;background:#fff;border:1.5px solid #896C32;color:#896C32;border-radius:10px;padding:10px;font:600 13px Poppins,system-ui;cursor:pointer;margin:0 0 14px}
+.mb-d-ehemalig{background:#F3EBD9;border-left:3px solid #896C32;border-radius:8px;padding:10px 12px;font-size:12px;color:#211D17;margin:0 0 14px;line-height:1.45}
 .ber-anon{display:flex;gap:10px;align-items:flex-start;background:#F3EBD9;border-radius:10px;padding:10px 12px;font-size:12px;color:#211D17;margin-bottom:12px;cursor:pointer}
 .ber-anon input{width:auto;margin:2px 0 0;flex:none}
 .ber-anon small{display:block;color:#6B6455;font-size:11px}
@@ -2393,20 +2394,21 @@ async function ladeDashboard(){
   var stylistinnen=lehrlinge.filter(function(l){return l.nur_test!==true&&istStylistin(l)&&l.aktiv!==false;});
   var echte=lehrlinge.filter(function(l){return l.nur_test!==true&&!(istStylistin(l)&&l.aktiv!==false);});
   var aktive=echte.filter(function(l){return l.aktiv!==false;});
-  var pausierte=echte.filter(function(l){return l.aktiv===false;});
+  var ehemalige=echte.filter(function(l){return !!l.ausgeschieden_am;});
+  var pausierte=echte.filter(function(l){return l.aktiv===false&&!l.ausgeschieden_am;});
   var tests=lehrlinge.filter(function(l){return l.nur_test===true;});
   MB_AKTIVE=aktive;
   function karte(l){
     var v=letztesVon[l.id];
     var info=ljText(l)+(v?' · zuletzt aktiv '+letztesWann(v.erstellt_am)+' · letztes Quiz '+Math.round(v.punkte/v.gesamt)+'/10':' · noch kein Quiz');
-    var pausiert=l.aktiv===false;
+    var pausiert=l.aktiv===false, ehem=!!l.ausgeschieden_am;
     var ziel=wochenzielVon(l), n=wocheVon[l.id]||0;
     // grün: erreicht oder im Plan · gelb: etwas geübt, aber hinterher · rot: diese Woche noch nichts
     var wzFarbe=(n>=ziel||n>=Math.floor(ziel*(tagNr+1)/7))?'#5B8A4A':n>0?'#A08A20':'#C44030';
     var woche=pausiert?'':' · <b style="color:'+wzFarbe+'">Woche '+Math.min(n,ziel)+'/'+ziel+(n>=ziel?' ✓':'')+'</b>';
     var pto=ptOffenVon[l.id]||0;
     return '<button class="mb-l'+(pausiert?' pausiert':'')+'" id="dl-'+escHtml(String(l.id))+'">'+
-      '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+
+      '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(ehem?' <span class="mb-l-pause">🎓 ausgeschieden</span>':pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+
         (pto?' <span class="mb-l-pt">📝 '+pto+' zum Bestätigen</span>':'')+'</div>'+
       '<div class="mb-l-info">'+escHtml(info)+woche+'</div></div><div class="mb-l-pfeil">›</div></div>'+
       (pausiert||istStylistin(l)?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
@@ -2416,6 +2418,7 @@ async function ladeDashboard(){
     (aktive.length?aktive.map(karte).join(''):'<p style="color:#9A9188;font-size:13px;margin-bottom:12px">Gerade kein aktiver Lehrling.</p>');
   if(stylistinnen.length) html+='<div class="lab" style="margin-top:14px">'+(stylistinnen.length===1?'Stylistin':'Stylistinnen')+' (lernt mit)</div>'+stylistinnen.map(karte).join('');
   if(pausierte.length) html+='<details class="mb-test"><summary>Pausiert ('+pausierte.length+')</summary>'+pausierte.map(karte).join('')+'</details>';
+  if(ehemalige.length) html+='<details class="mb-test"><summary>Ehemalige ('+ehemalige.length+') · ohne Namen</summary>'+ehemalige.map(karte).join('')+'</details>';
   if(tests.length) html+='<details class="mb-test"><summary>Zum Testen ('+tests.length+')</summary>'+tests.map(karte).join('')+'</details>';
   liste.innerHTML=html;
   lehrlinge.forEach(function(l){
@@ -2967,7 +2970,7 @@ function berEntw(a,e){
   return berProz(a)+' → '+berProz(e)+' <span class="'+(d>0?'ber-plus':d<0?'ber-minus':'')+'">('+(d>0?'+':'')+d+')</span>';
 }
 var BER_METHODE=[
-  'Gezählt werden nur echte Lehrlinge: keine Testzugänge, keine Stylistinnen. Pausierte Lehrlinge zählen, solange sie im Zeitraum geübt haben.',
+  'Gezählt werden nur echte Lehrlinge: keine Testzugänge, keine Stylistinnen. Pausierte und ausgeschiedene Lehrlinge zählen, wenn sie im Zeitraum geübt haben – Ausgeschiedene ohne Namen.',
   'Lerntage: Tage mit mindestens einem Quiz oder einem bestätigten Praxis-Eintrag.',
   'Trefferquote am Anfang und am Ende: Durchschnitt der ersten 5 und der letzten 5 Quizze im Zeitraum, nur bei Lehrlingen mit mindestens 10 Quizzen. Die Quiz-Arten (Schnell-Check, Lerneinheit, LAP) sind gemischt, die Zahl zeigt die Richtung, keine Note.',
   'Praxis: nur Einträge im Praxis-Tagebuch, die die Meisterin bestätigt hat.',
@@ -2998,7 +3001,7 @@ function berZeigen(){
   }
   h+='<div class="lab" style="margin-top:4px">Pro Lehrling</div>'+c.zeilen.map(function(z){
     function k(wert,text){ return '<div><b>'+wert+'</b><small>'+text+'</small></div>'; }
-    return '<div class="paz-karte ber-l"><div class="ber-l-k"><b>'+escHtml(z.titel)+'</b><span>'+escHtml(ljText(z.l))+(z.l.aktiv===false?' · pausiert':'')+'</span></div>'+
+    return '<div class="paz-karte ber-l"><div class="ber-l-k"><b>'+escHtml(z.titel)+'</b><span>'+escHtml(ljText(z.l))+(z.l.ausgeschieden_am?' · ausgeschieden':z.l.aktiv===false?' · pausiert':'')+'</span></div>'+
       '<div class="ber-l-t">'+(z.anfang==null?'Trefferquote: noch unter 10 Quizzen im Zeitraum':'Trefferquote '+berEntw(z.anfang,z.ende))+'</div>'+
       '<div class="ber-l-g">'+k(z.quiz,'Quizze')+k(z.tage,'Lerntage')+k(z.praxisMin?escHtml(ptDauer(z.praxisMin)):'–','Praxis')+
         k((z.pgN+z.pxN)?(z.pgOk+z.pxOk)+' / '+(z.pgN+z.pxN):'–','Gespräche verstanden')+
@@ -3038,7 +3041,7 @@ function berDrucken(c){
     }).join('')+'</table>';
   h+='<h2>Pro Lehrling</h2><table><tr><th>Lehrling</th><th class="r">Quizze</th><th class="r">Lerntage</th><th>Trefferquote Anfang → Ende</th><th class="r">Praxis</th><th class="r">Gespräche verstanden</th><th class="r">Wochenziel</th><th class="r">Themen sitzen</th></tr>'+
     c.zeilen.map(function(z){
-      return '<tr><td><b>'+escHtml(z.titel)+'</b><br>'+escHtml(ljText(z.l))+(z.l.aktiv===false?' · pausiert':'')+'</td><td class="r">'+z.quiz+'</td><td class="r">'+z.tage+'</td>'+
+      return '<tr><td><b>'+escHtml(z.titel)+'</b><br>'+escHtml(ljText(z.l))+(z.l.ausgeschieden_am?' · ausgeschieden':z.l.aktiv===false?' · pausiert':'')+'</td><td class="r">'+z.quiz+'</td><td class="r">'+z.tage+'</td>'+
         '<td>'+(z.anfang==null?'–':berProz(z.anfang)+' → '+berProz(z.ende))+'</td><td class="r">'+(z.praxisMin?escHtml(ptDauer(z.praxisMin)):'–')+'</td>'+
         '<td class="r">'+((z.pgN+z.pxN)?(z.pgOk+z.pxOk)+' / '+(z.pgN+z.pxN):'–')+'</td><td class="r">'+(z.wochen?berProz(z.erreicht/z.wochen):'–')+'</td><td class="r">'+(z.themen?z.sitzt+' / '+z.themen:'–')+'</td></tr>';
     }).join('')+'</table>'+
@@ -3200,12 +3203,14 @@ async function zeigeDetailLehrling(lehrling){
   var kopf=ljText(lehrling)+(anzahl!=null?' · '+anzahl+(anzahl===1?' Quiz':' Quizze'):'')+
     (verlauf&&verlauf.length?' · zuletzt aktiv '+letztesWann(verlauf[0].erstellt_am):' · noch kein Quiz');
 
+  var ehemalig=!!lehrling.ausgeschieden_am;
   var html='<div class="mb-d-info">'+escHtml(kopf)+'</div>'+
-    '<div class="mb-d-aktion">'+
+    (ehemalig?'<div class="mb-d-ehemalig">🎓 Ausgeschieden am '+escHtml(pazDatum(lehrling.ausgeschieden_am))+'. Name, Konto und Notizen sind entfernt. Die Lernzahlen bleiben ohne Namen und zählen im Ausbildungsbericht.</div>':'')+
+    '<div class="mb-d-aktion"'+(ehemalig?' hidden':'')+'>'+
       '<button class="btn btn-g" id="btn-pruef-start">🗣 Prüfgespräch</button>'+
       '<button class="btn btn-g" id="btn-praxis-start">✂ Praxis-Check</button>'+
     '</div>'+
-    '<div class="mb-d-hilfe">Prüfgespräch: Der Lehrling erklärt in eigenen Worten. Praxis-Check: Du schaust bei einer echten Behandlung zu und hakst ab.</div>'+
+    '<div class="mb-d-hilfe"'+(ehemalig?' hidden':'')+'>Prüfgespräch: Der Lehrling erklärt in eigenen Worten. Praxis-Check: Du schaust bei einer echten Behandlung zu und hakst ab.</div>'+
     '<div class="mb-tabs" role="tablist">'+
       '<button role="tab" data-dtab="karte" aria-selected="true">🗺 Landkarte</button>'+
       '<button role="tab" data-dtab="gespr" aria-selected="false">💬 Gespräche'+(gliste&&gliste.length?' ('+gliste.length+')':'')+'</button>'+
@@ -3262,8 +3267,9 @@ async function zeigeDetailLehrling(lehrling){
   html+='<div class="mb-panel" data-dpanel="praxis" hidden><div class="laden">Wird geladen…</div></div>';
 
   html+='<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">'+
-    '<button class="btn btn-h" id="btn-edit-lehrling" style="flex:1;min-width:120px">✎ Bearbeiten</button>'+
-    '<button class="btn btn-h" id="btn-reset-verlauf" style="flex:1;min-width:120px">↺ Verlauf zurückstellen</button>'+
+    '<button class="btn btn-h" id="btn-edit-lehrling" style="flex:1;min-width:120px"'+(ehemalig?' hidden':'')+'>✎ Bearbeiten</button>'+
+    '<button class="btn btn-h" id="btn-reset-verlauf" style="flex:1;min-width:120px"'+(ehemalig?' hidden':'')+'>↺ Verlauf zurückstellen</button>'+
+    (ehemalig||istStylistin(lehrling)||lehrling.nur_test===true?'':'<button class="btn btn-h" id="btn-ausscheiden" style="flex:1;min-width:120px">🎓 Ausgeschieden</button>')+
     '<button class="btn btn-r" id="btn-del-lehrling" style="flex:1;min-width:120px">✕ Löschen</button>'+
   '</div>';
   document.getElementById('detail-inhalt').innerHTML=html;
@@ -3295,14 +3301,44 @@ async function zeigeDetailLehrling(lehrling){
     alert('Verlauf von '+lehrling.name+' wurde zurückgestellt.');
     zeigeDetailLehrling(lehrling);
   });
+  var bA=document.getElementById('btn-ausscheiden');
+  if(bA) bA.addEventListener('click',function(){ lehrlingAusscheiden(lehrling,bA); });
   document.getElementById('btn-del-lehrling').addEventListener('click',async function(){
-    if(!confirm(lehrling.name+' wirklich löschen?\n\nDabei gehen Lernstand, Abzeichen und Praxis-Tagebuch verloren. Nur den Zugang sperren geht über „Bearbeiten“ → Zugang aktiv: AUS.')) return;
+    if(!confirm(lehrling.name+' wirklich löschen?\n\nDabei gehen Lernstand, Abzeichen und Praxis-Tagebuch verloren – auch für den Ausbildungsbericht.'+(lehrling.ausgeschieden_am?'':'\n\nHat der Lehrling den Salon verlassen? Dann besser „🎓 Ausgeschieden“: Die Lernzahlen bleiben ohne Namen erhalten.\nNur den Zugang sperren geht über „Bearbeiten“ → Zugang aktiv: AUS.'))) return;
     // Konto zuerst am Server sperren – das Löschen der Zeile allein beendet die Anmeldung nicht
     try{ await sb.rpc('lehrling_zugang_sperren',{target_user_id: lehrling.user_id, gesperrt: true}); }catch(e){}
     await sb.from('lehrlinge').delete().eq('id',lehrling.id);
     await ladeDashboard();zeige('s-dashboard');
   });  // Aus der Übersicht „Prüfgespräch“/„Praxis-Check“ gewählt: gleich starten
   if(DETAIL_START_KLICK){var sk=document.getElementById(DETAIL_START_KLICK);DETAIL_START_KLICK=null;if(sk)sk.click();}
+}
+
+// ── AUSGESCHIEDEN (Meisterin) ──────────────────────────────────────────────
+// Lehrling hat den Salon verlassen: Name, Konto und Notizen weg, Lernzahlen
+// bleiben ohne Namen (für den Ausbildungsbericht). Alles in EINER
+// Server-Funktion, die nur die Meisterin aufrufen darf
+// (supabase/20261116_lehrling_ausscheiden.sql). Nicht rückgängig zu machen.
+async function lehrlingAusscheiden(lehrling,knopf){
+  if(!ISTMEISTERIN||!lehrling) return;
+  if(!confirm(lehrling.name+' ist ausgeschieden?\n\n'+
+    'Das passiert:\n'+
+    '• Der Name wird zu „Ehemalige:r Lehrling '+new Date().getFullYear()+'“.\n'+
+    '• Das Konto wird gelöscht, die Anmeldung geht nicht mehr.\n'+
+    '• Notizen, Details und „kontrolliert von“ werden geleert.\n'+
+    '• Quiz-Ergebnisse, Themenstand, Praxisstunden und Prüfgespräch-Ergebnisse bleiben ohne Namen erhalten und zählen im Ausbildungsbericht.\n\n'+
+    'Brauchst du einen Praxis-Nachweis mit Namen? Dann vorher unter „Praxis“ → „Auszug & Nachweis“ drucken.\n\n'+
+    'Das lässt sich nicht rückgängig machen.')) return;
+  knopf.disabled=true; knopf.textContent='Wird erledigt…';
+  var r; try{ r=await sb.rpc('lehrling_ausscheiden',{p_lehrling_id:String(lehrling.id)}); }catch(e){ r={error:e}; }
+  if(r.error){
+    knopf.disabled=false; knopf.textContent='🎓 Ausgeschieden';
+    var m=String(r.error.message||r.error);
+    alert(/lehrling_ausscheiden|function|schema cache/i.test(m)
+      ?'Das geht erst, wenn am Server supabase/20261116_lehrling_ausscheiden.sql ausgeführt ist. Es wurde nichts geändert.'
+      :'Das hat nicht geklappt, es wurde nichts geändert: '+m);
+    return;
+  }
+  await ladeDashboard(); zeige('s-dashboard');
 }
 
 // ── PRÜFGESPRÄCH (Meisterin) ─────────────────────────────────────────────────

@@ -34,7 +34,7 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 | Tabelle | Inhalt | Personenbezug |
 |---|---|---|
 | `auth.users` (Supabase) | Konto-Adresse, Passwort bzw. PIN (nur als Hash), Zeitpunkt der letzten Anmeldung | Ja |
-| `lehrlinge` | Name, Lehrjahr, aktiv/gesperrt, Wochenziel, Lehrbeginn, „nur zum Testen“, Verknüpfung zum Konto | Ja, Minderjährige möglich |
+| `lehrlinge` | Name, Lehrjahr, aktiv/gesperrt, Wochenziel, Lehrbeginn, „nur zum Testen“, Verknüpfung zum Konto, ausgeschieden am | Ja, Minderjährige möglich. Nach „Ausgeschieden“: Name ersetzt, kein Konto mehr (siehe unten) |
 | `app_rollen` | Wer Meisterin ist | Ja |
 | `registrierung_vorgemerkt` | Vorgemerkte Konto-Adressen, 10 Minuten gültig | Ja, kurzlebig |
 
@@ -69,6 +69,17 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 | `probezeit_wochen` | Wöchentliche Einschätzung (Fachliches, Team, Kundenkontakt, Pünktlichkeit, Lernbereitschaft) + Notiz | Ja, Leistungsbeurteilung |
 | `probezeit_monats_feedback` | Monats-Rückmeldung + Status | Ja, Leistungsbeurteilung |
 | `probezeit_ziele`, `probezeit_quiz`, `probezeit_quiz_fragen` | Ziele und Wochenquiz der Probezeit | Ja |
+
+**Ausgeschieden** (seit 2026-11-16, `supabase/20261116_lehrling_ausscheiden.sql`):
+Verlässt ein Lehrling den Salon, ersetzt die Meisterin den Namen durch
+„Ehemalige:r Lehrling <Jahr> · <Nr.>“. Das Anmelde-Konto wird gelöscht, die
+Freitexte (Notizen, Details, „kontrolliert von“, Begründungen, Rückmeldungen)
+werden geleert. Erhalten bleiben die Lernzahlen ohne Namen (Quiz-Verlauf,
+Themenstand, Praxis-Datum/-Bereich/-Dauer, Ergebnisse der Prüfgespräche,
+Status der Farb-Pläne), damit der Ausbildungsbericht sie weiter zählt. Lehrjahr
+und Zeitraum bleiben, daher ist das in einem kleinen Betrieb eher
+**pseudonym als anonym**. Wie lange diese Zahlen bleiben dürfen, gehört zu den
+offenen Löschfristen.
 
 **Wichtig für die Anwältin:** Leistungsbeurteilungen und Bewerbungsdaten von
 oft minderjährigen Personen sind besonders schutzwürdig. Speicherdauer und
