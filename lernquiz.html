@@ -2087,6 +2087,7 @@ function pruefeMC(gew,sicher){
   fb.style.display='block';
   // Richtig geraten zählt nicht als gewusst: halbe Punkte, kommt in die Wiederholung
   QANT.push({q:q,korrekt:kor&&sicher,punkte:kor?(sicher?10:5):0,geraten:geraten,sicherFalsch:sicherFalsch});
+  fb.innerHTML+=leichtKnopf(q);
   if(kor&&sicher&&q.zf&&q.zf.length&&!q.haupt) fb.innerHTML+=zusatzHinweis();
   nachAntwort(q,kor&&sicher);
   zeigeWeiter();
@@ -2113,6 +2114,23 @@ function pruefeOffen(){
   if(kor&&q.zf&&q.zf.length&&!q.haupt) document.getElementById('q-feedback').innerHTML+=zusatzHinweis();
 }
 
+// ── Leichte Sprache (leichte-sprache.js): „Einfacher erklärt“ unter der
+// Erklärung. Nur wenn es für diese Frage eine einfache Fassung gibt.
+// Zusatzfragen haben die id <Hauptfrage>-z<Nr>. Inline-onclick, weil die
+// Rückmeldung danach noch per innerHTML+= ergänzt wird.
+function leichtKnopf(q){
+  if(!q||!q.id||!window.LEICHT||!LEICHT[q.id]) return '';
+  return '<div class="ls-box"><button type="button" class="pt-edit-k" onclick="leichtZeigen(this)" data-ls="'+escHtml(String(q.id))+'">Einfacher erklärt</button></div>';
+}
+function leichtZeigen(b){
+  var box=b.parentNode, t=window.LEICHT&&LEICHT[b.getAttribute('data-ls')];
+  if(!t) return;
+  var d=document.createElement('div');
+  d.style.cssText='margin-top:6px;padding-top:8px;border-top:1px solid #0001;font-size:13px;color:#2C2C2C;line-height:1.55';
+  d.textContent=t;
+  box.replaceChild(d,b);
+}
+
 function zusatzHinweis(){
   return '<div style="margin-top:10px;padding-top:8px;border-top:1px solid #0001;font-size:12px;color:#6B6560">➜ Jetzt kommt eine Zusatzfrage: Zeig, dass du auch verstanden hast, <i>warum</i>.</div>';
 }
@@ -2129,7 +2147,8 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
     '<div style="font-weight:700;font-size:14px;color:#2C2C2C">'+note+'</div>'+
     '<div style="font-family:Poppins,system-ui,sans-serif;font-size:22px;font-weight:700;color:'+col+'">'+punkte+'/10</div>'+
   '</div>'+(staerke?'<div style="font-size:12px;color:'+(punkte>=7?'#6E5527':'#8A7A30')+';margin-bottom:4px">'+(punkte>=7?'✓ ':'')+staerke+'</div>':'')+
-  '<div class="ml-box"><div class="ml-lab">Musterlösung</div><div class="ml-txt">'+muster+'</div></div>';
+  '<div class="ml-box"><div class="ml-lab">Musterlösung</div><div class="ml-txt">'+muster+'</div></div>'+
+  leichtKnopf(QFRAGEN[QIDX]);
   fb.style.display='block';
   zeigeWeiter();
 }
@@ -4788,6 +4807,7 @@ async function claudeAnfrage(system, userText, maxTokens) {
 <script src="https://mirjamwalenta-a11y.github.io/index.greathairday/ghd-verzeichnis.js" data-verstecken-bei="#s-login" data-unten="84" defer></script>  <!-- Alle Apps: Inhaltsverzeichnis -->
 <div id="druck" aria-hidden="true"></div>
 <script src="vorlesen.js?v=20261116a" data-ziele="#q-txt | #q-antwort .opt ; #q-feedback" defer></script>  <!-- 🔊 Vorlesen: Frage, Antworten, Erklärung -->
+<script src="leichte-sprache.js?v=20261116a"></script>  <!-- „Einfacher erklärt“: einfache Fassungen der Erklärungen -->
 <script src="praxis-fotos.js?v=20261116a"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="fachbegriffe.js?v=20261116a" data-ziele="#q-txt ; #q-feedback" defer></script>  <!-- 📖 Fachbegriffe antippen: Erklärung + Übersetzung -->
 <script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
