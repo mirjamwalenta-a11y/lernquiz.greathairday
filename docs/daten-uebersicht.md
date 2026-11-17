@@ -60,6 +60,7 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 | `pruefgespraeche` | Prüfgespräche und Praxis-Checks: Thema, Frage, Ergebnis (verstanden/teilweise/nicht), Notiz, Checkliste | Ja, Bewertung |
 | `farb_faelle` | Übungsfälle der Meisterin (Inhalte) | Nein |
 | `farb_plaene` | Farbpläne der Lehrlinge mit Rezeptur, Begründung, Status und Rückmeldung der Meisterin | Ja, Bewertung |
+| `lehrlinge_rueckmeldung` | Rückmeldung des Lehrlings zur Lern-App: wie hilfreich (1–5), leichter als mit Unterlagen (ja/teils/nein), was am meisten hilft, zwei Freitexte, Einwilligung „Zitat ohne Namen verwenden“ (`zitat_ok`, nur der Lehrling selbst kann sie geben oder zurücknehmen). Sehen: der Lehrling die eigenen, die Meisterin alle (mit Namen); die Meisterin kann löschen, aber nichts ändern. Freigegebene Zitate erscheinen ohne Namen im Ausbildungsbericht. Seit 2026-11-17, `supabase/20261117_lehrlinge_rueckmeldung.sql` | Ja, Meinung; Zitate nur mit Einwilligung, bei Minderjährigen auch der Erziehungsberechtigten |
 
 ### Bewerbung und Probezeit (nur die Meisterin sieht das)
 

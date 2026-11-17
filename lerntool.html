@@ -346,6 +346,12 @@ body.mit-leiste .leiste{display:flex}
     <span class="st-wh-los">Los →</span>
   </a>
 
+  <a class="st-wh" id="st-rm" hidden href="#rueckmeldung" onclick="zeige('rueckmeldung');return false;">
+    <span class="st-wh-ic">💬</span>
+    <span class="st-wh-text"><b>Wie hilft dir die App?</b><small>2 Minuten – deine Meinung macht die App besser</small></span>
+    <span class="st-wh-los">Los →</span>
+  </a>
+
   <div class="st-heute">
     <div class="label">Heute laut Lernplan</div>
     <h2 id="st-heute-thema"></h2>
@@ -429,6 +435,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
     <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='fachbegriffe.html?v=20261116s'"><div class="st-ic">📖</div><div><div class="st-t">Fachbegriffe</div><div class="st-d">Einfach erklärt, in 7 Sprachen</div></div></button>
+    <button class="st-kachel st-breit" onclick="zeige('rueckmeldung')"><div class="st-ic">💬</div><div><div class="st-t">Deine Meinung zur App</div><div class="st-d">Was hilft dir, was fehlt dir?</div></div></button>
   </div>
 </div>
 
@@ -483,6 +490,45 @@ body.mit-leiste .leiste{display:flex}
     <div id="pt-fehler" class="pt-fehler" aria-live="polite"></div>
     <button class="btn-primary" id="pt-speichern" onclick="ptSpeichern()" style="margin-top:14px">Speichern</button>
     <p class="pt-info">Deine Meisterin bestätigt den Eintrag. Bestätigte Einträge zählen für die Praxis-Abzeichen.</p>
+  </div>
+</div>
+
+<!-- ── RÜCKMELDUNG ZUR APP (Tabelle lehrlinge_rueckmeldung) ── -->
+<div id="p-rueckmeldung" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Deine Meinung</div>
+  <h1>💬 Wie hilft dir die App?</h1>
+  <p class="sub">Dauert 2 Minuten. Es gibt keine falschen Antworten – sag ehrlich, was du denkst.</p>
+  <div class="pt-karte" id="rm-frueher" hidden>
+    <div class="pt-kopf"><b>Deine Rückmeldungen</b></div>
+    <div id="rm-frueher-liste"></div>
+  </div>
+  <div id="rm-form">
+  <div class="pt-f">
+    <label>Wie sehr hilft dir die App beim Lernen?</label>
+    <div class="pt-dauer" id="rm-hilfreich"></div>
+    <p class="pt-info" style="margin-top:0">1 = gar nicht · 5 = sehr</p>
+    <label>Lernst du mit der App leichter als nur mit Buch und Unterlagen?</label>
+    <div class="pt-dauer" id="rm-leichter"></div>
+    <label>Was hilft dir am meisten? <span style="text-transform:none;letter-spacing:0;font-weight:400">(mehrere möglich)</span></label>
+    <div class="pt-dauer" id="rm-hilft"></div>
+    <label for="rm-veraendert">Was ist anders, seit du mit der App lernst? (optional)</label>
+    <textarea id="rm-veraendert" rows="3" maxlength="600" placeholder="z. B. Bei der Farbberatung trau ich mich jetzt mehr zu"></textarea>
+    <label for="rm-verbessern">Was fehlt dir oder soll besser werden? (optional)</label>
+    <textarea id="rm-verbessern" rows="3" maxlength="600" placeholder="z. B. mehr Übungen zum Föhnen"></textarea>
+  </div>
+    <label class="pm-check" style="margin-top:10px"><input type="checkbox" id="rm-zitat"><span>Meine Meisterin darf Sätze aus meiner Antwort <b>ohne meinen Namen</b> verwenden – z. B. für eine Preis-Einreichung oder die Website.</span></label>
+    <div id="rm-fehler" class="pt-fehler" aria-live="polite"></div>
+    <button class="btn-primary" id="rm-speichern" onclick="rmSpeichern()" style="margin-top:14px">Abschicken</button>
+    <p class="pt-info">Deine Meisterin sieht deine Antwort mit deinem Namen. Die Erlaubnis für Zitate kannst du hier jederzeit zurücknehmen.</p>
+  </div>
+  <div class="pt-karte" id="rm-danke" hidden>
+    <div class="pt-kopf"><b>Danke! 💛</b></div>
+    <p class="pt-leer">Deine Rückmeldung ist bei deiner Meisterin angekommen.</p>
+    <button class="btn-primary" onclick="zeige('home')" style="margin-top:10px">Zur Startseite</button>
+  </div>
+  <div class="pt-karte" id="rm-aus" hidden>
+    <p class="pt-leer" id="rm-aus-text"></p>
   </div>
 </div>
 
@@ -4572,6 +4618,7 @@ function stZeichnen() {
     document.getElementById('st-wz').hidden = true;
     document.getElementById('st-wh').hidden = true;
     document.getElementById('st-ff').hidden = true;
+    document.getElementById('st-rm').hidden = true;
     document.getElementById('st-wdh-desc').textContent = 'Was noch wackelt';
     return;
   }
@@ -4585,6 +4632,7 @@ function stZeichnen() {
   wh.hidden = !whN;
   if (whN) document.getElementById('st-wh-titel').textContent = whN + (whN === 1 ? ' Frage heute fällig' : ' Fragen heute fällig');
   fflBanner();
+  document.getElementById('st-rm').hidden = !rmFaellig();
 
   var wdh = stWiederholListe().length;
   var sitzt = 0, offen = 0;
@@ -4627,6 +4675,7 @@ async function stLaden() {
       if (!w.error) ST.whFaellig = w.count || 0;
     } catch (e) {}
     ST.verlauf = res[1].data || [];
+    await rmLaden();
     await fflLaden();
   } catch (e) {
     // offline oder Fehler: Startseite trotzdem zeigen
@@ -4975,6 +5024,134 @@ async function fflSenden() {
   }
 }
 
+// ── RÜCKMELDUNG ZUR APP (Tabelle lehrlinge_rueckmeldung) ──────────────
+// Lehrling sagt kurz, was ihm die App bringt; die Meisterin sieht es im
+// Meisterin-Bereich und im Ausbildungsbericht. Rechte (RLS, Migration
+// 20261117_lehrlinge_rueckmeldung.sql): Lehrling liest und legt nur eigene an
+// und darf danach nur zitat_ok ändern; die Meisterin liest und löscht.
+// Ohne Migration bleibt alles ausgeblendet.
+var RM_HILFT = ['Quiz & Wiederholen', 'Farblabor & Farb-Fälle', 'Schnittwerkstatt', 'Praxis-Module', 'Praxis-Tagebuch',
+  'Zwischenprüfung & LAP', 'Fachbegriffe & Übersetzung', 'Vorlesen & Leichte Sprache', 'Englisch im Salon',
+  'Lernplan & Wochenziel', 'Rückmeldung der Meisterin'];
+var RM_ABSTAND_TAGE = 90;   // so lange nach einer Rückmeldung erscheint der Hinweis nicht mehr
+var RM = {an: false, liste: [], hilfreich: 0, leichter: '', hilft: {}};
+
+async function rmLaden() {
+  RM.an = false; RM.liste = [];
+  if (!ST.lehrling) return;
+  try {
+    var r = await sb2.from('lehrlinge_rueckmeldung').select('id,hilfreich,zitat_ok,erstellt_am')
+      .eq('lehrling_id', ST.lehrling.id).order('erstellt_am', {ascending: false}).limit(10);
+    if (!r.error) { RM.an = true; RM.liste = r.data || []; }
+  } catch (e) {}
+}
+// Hinweis auf der Startseite: erst wenn die App ein paar Mal genutzt wurde,
+// dann höchstens alle 90 Tage
+function rmFaellig() {
+  if (!RM.an || !ST.lehrling || (ST.verlauf || []).length < 3) return false;
+  if (!RM.liste.length) return true;
+  return (Date.now() - new Date(RM.liste[0].erstellt_am).getTime()) > RM_ABSTAND_TAGE * 864e5;
+}
+
+async function rmOeffnen() {
+  var form = document.getElementById('rm-form'), aus = document.getElementById('rm-aus');
+  document.getElementById('rm-danke').hidden = true;
+  if (!ST.geladen) await stLaden();
+  if (!ST.lehrling || !RM.an) {
+    form.hidden = true; document.getElementById('rm-frueher').hidden = true; aus.hidden = false;
+    document.getElementById('rm-aus-text').textContent = !ST.lehrling
+      ? 'Bitte zuerst im Lernquiz einloggen – dann kannst du hier deine Meinung sagen.'
+      : 'Diese Funktion ist noch nicht eingerichtet – die Meisterin muss sie einmal freischalten.';
+    return;
+  }
+  aus.hidden = true; form.hidden = false;
+  RM.hilfreich = 0; RM.leichter = ''; RM.hilft = {};
+  document.getElementById('rm-veraendert').value = '';
+  document.getElementById('rm-verbessern').value = '';
+  document.getElementById('rm-zitat').checked = false;
+  document.getElementById('rm-fehler').textContent = '';
+  document.getElementById('rm-speichern').disabled = false;
+  rmKnoepfe();
+  rmFrueherZeichnen();
+}
+
+function rmKnoepfe() {
+  function reihe(id, werte, an, klick) {
+    var box = document.getElementById(id); box.innerHTML = '';
+    werte.forEach(function(w){
+      var b = lkEl('button', an(w[0]) ? 'on' : '', w[1]);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', an(w[0]) ? 'true' : 'false');
+      b.onclick = function(){ klick(w[0]); document.getElementById('rm-fehler').textContent = ''; rmKnoepfe(); };
+      box.appendChild(b);
+    });
+  }
+  reihe('rm-hilfreich', [[1,'1'],[2,'2'],[3,'3'],[4,'4'],[5,'5']],
+    function(v){ return RM.hilfreich === v; }, function(v){ RM.hilfreich = v; });
+  reihe('rm-leichter', [['ja','Ja'],['teils','Teils'],['nein','Nein']],
+    function(v){ return RM.leichter === v; }, function(v){ RM.leichter = RM.leichter === v ? '' : v; });
+  reihe('rm-hilft', RM_HILFT.map(function(t){ return [t, t]; }),
+    function(v){ return !!RM.hilft[v]; }, function(v){ if (RM.hilft[v]) delete RM.hilft[v]; else RM.hilft[v] = 1; });
+}
+
+function rmFrueherZeichnen() {
+  var box = document.getElementById('rm-frueher'), liste = document.getElementById('rm-frueher-liste');
+  liste.innerHTML = '';
+  box.hidden = !RM.liste.length;
+  RM.liste.slice(0, 5).forEach(function(x){
+    var z = lkEl('div', 'pt-e');
+    z.appendChild(lkEl('div', 'pt-d', ptDatumText(String(x.erstellt_am).slice(0, 10))));
+    var w = lkEl('div', 'pt-w', 'Hilft mir: ' + x.hilfreich + ' von 5');
+    w.appendChild(lkEl('small', null, x.zitat_ok ? 'Zitat ohne Namen erlaubt' : 'Zitat nicht erlaubt'));
+    z.appendChild(w);
+    var rechts = lkEl('div', 'pt-rechts');
+    var b = lkEl('button', 'pt-weg', x.zitat_ok ? 'Erlaubnis zurücknehmen' : 'Zitat erlauben');
+    b.onclick = function(){ rmZitatSetzen(x, !x.zitat_ok, b); };
+    rechts.appendChild(b);
+    z.appendChild(rechts);
+    liste.appendChild(z);
+  });
+}
+
+async function rmZitatSetzen(x, wert, knopf) {
+  knopf.disabled = true;
+  try {
+    var r = await sb2.from('lehrlinge_rueckmeldung').update({zitat_ok: wert}).eq('id', x.id).select('id');
+    if (!r.error && r.data && r.data.length) x.zitat_ok = wert;
+  } catch (e) {}
+  rmFrueherZeichnen();
+}
+
+async function rmSpeichern() {
+  var fehler = document.getElementById('rm-fehler'), knopf = document.getElementById('rm-speichern');
+  fehler.textContent = '';
+  if (!RM.hilfreich) { fehler.textContent = 'Bitte wähl bei der ersten Frage eine Zahl von 1 bis 5.'; return; }
+  var veraendert = document.getElementById('rm-veraendert').value.trim().slice(0, 600);
+  var verbessern = document.getElementById('rm-verbessern').value.trim().slice(0, 600);
+  var zeile = {
+    lehrling_id: ST.lehrling.id,
+    hilfreich: RM.hilfreich,
+    leichter: RM.leichter || null,
+    hilft: RM_HILFT.filter(function(t){ return RM.hilft[t]; }),
+    veraendert: veraendert || null,
+    verbessern: verbessern || null,
+    zitat_ok: document.getElementById('rm-zitat').checked
+  };
+  knopf.disabled = true;
+  var r;
+  try { r = await sb2.from('lehrlinge_rueckmeldung').insert(zeile).select('id,hilfreich,zitat_ok,erstellt_am'); } catch (e) { r = {error: e}; }
+  if (r.error) {
+    knopf.disabled = false;
+    fehler.textContent = navigator.onLine === false ? 'Keine Internetverbindung – bitte später nochmal abschicken.' : 'Konnte nicht gespeichert werden. Bitte nochmal versuchen.';
+    return;
+  }
+  if (r.data && r.data[0]) RM.liste.unshift(r.data[0]);
+  document.getElementById('rm-form').hidden = true;
+  document.getElementById('rm-frueher').hidden = true;
+  document.getElementById('rm-danke').hidden = false;
+  window.scrollTo(0, 0);
+}
+
 // ── PRAXIS-TAGEBUCH (Tabelle praxis_eintraege) ────────────────────────
 // Lehrling trägt ein, was geübt wurde; die Meisterin bestätigt im
 // Meisterin-Bereich. Selbst bestätigen geht nicht (RLS). Ohne Migration
@@ -5237,6 +5414,7 @@ zeige = function(seite) {
   stLeiste(seite);
   if (seite === 'home') { stZeichnen(); stLaden(); }
   if (seite === 'praxis') ptLaden();
+  if (seite === 'rueckmeldung') rmOeffnen();
   // Wörni V1: einmal am Tag beim Öffnen der Praxis-Module (docs/woerni-v1.md)
   if (seite === 'praxis') { try { var wp = document.getElementById('woerni-praxis'); if (wp && window.WOERNI && !wp.innerHTML) wp.innerHTML = WOERNI.einmalAmTag('lerntool-praxis', 'praxis', true); } catch (e) {} }
   // Wörnis Tipp zum Modul (woernis-tipps.js): einmal unter dem Untertitel einsetzen
@@ -5285,7 +5463,7 @@ zeige = function(seite) {
     });
   }
   // Sprungziele aus der Leiste der anderen Lern-Seiten (lern-leiste.js)
-  var sprung = {'#ueben': function(){ pmtOeffnen(); }, '#praxis': function(){ zeige('praxis'); }, '#fortschritt': function(){ zeige('progress'); }, '#farbfaelle': function(){ fflOeffnen(); }}[location.hash];
+  var sprung = {'#ueben': function(){ pmtOeffnen(); }, '#praxis': function(){ zeige('praxis'); }, '#fortschritt': function(){ zeige('progress'); }, '#farbfaelle': function(){ fflOeffnen(); }, '#rueckmeldung': function(){ zeige('rueckmeldung'); }}[location.hash];
   // Direktlinks aus dem A–Z-Verzeichnis: #seite=b-farbe, #modul=wasch (nur feste Ziele)
   var hz = new URLSearchParams(location.hash.slice(1));
   var SEITEN = ['b-ueben', 'b-farbe', 'b-schnitt', 'b-pruefung', 'b-lernplan', 'praxis', 'quiz', 'lernplan', 'fortschritt', 'progress', 'lap'];

@@ -478,6 +478,7 @@ textarea{resize:vertical;margin-bottom:0}
         <button class="mb-k" data-mb-bereich="s-b-inhalte"><div class="mb-ic">❓</div><b>Fragen &amp; Lernpläne</b><small>Quiz-Fragen, Lernpläne, Lerntipps, Englisch</small></button>
         <button class="mb-k" data-mb-bereich="s-b-selbst"><div class="mb-ic">🏠</div><b>Selbst ansehen</b><small>Wie Lehrlinge es sehen, Mein Lernbereich</small></button>
         <button class="mb-k mb-breit" id="btn-mb-bericht"><div class="mb-ic">📊</div><div><b>Ausbildungsbericht</b><small>Entwicklung aller Lehrlinge in Zahlen – zum Drucken, z. B. für Preis-Einreichungen</small></div></button>
+        <button class="mb-k mb-breit" id="btn-mb-rm"><div class="mb-ic">💬</div><div><b>Rückmeldungen der Lehrlinge</b><small>Was die App deinen Lehrlingen bringt – mit freigegebenen Zitaten</small></div></button>
       </div>
     </div>
   </div>
@@ -627,6 +628,16 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">📊 Ausbildungsbericht</h2>
     <p class="mb-sub">So entwickeln sich deine Lehrlinge – aus Quiz, Praxis-Tagebuch, Prüfgesprächen und Farb-Fällen. Testzugänge und Stylistinnen zählen nicht mit.</p>
     <div id="ber-inhalt"></div>
+  </div>
+</div>
+
+<div id="s-rueckmeldungen" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">💬 Rückmeldungen der Lehrlinge</h2>
+    <p class="mb-sub">Was deine Lehrlinge über die Lern-App sagen. Sie werden im Lern-Tool etwa alle drei Monate gefragt und können jederzeit unter „Lernplan &amp; Tipps“ antworten.</p>
+    <div id="rm-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
 
@@ -1644,7 +1655,7 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-bericht'||id==='s-farb-faelle'||id==='s-farb-zeiten'||id==='s-farb-nummern');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-bericht'||id==='s-rueckmeldungen'||id==='s-farb-faelle'||id==='s-farb-zeiten'||id==='s-farb-nummern');
 }
 var MB_BEREICH='';   // offener Meisterin-Bereich, damit „Zurück“ dorthin führt
 function zeige(id){
@@ -2894,12 +2905,13 @@ async function zeigeBericht(){
     berAlle(function(){return sb.from('praxis_eintraege').select('id,lehrling_id,datum,dauer_min,bestaetigt').in('lehrling_id',ids).eq('bestaetigt',true).order('id');}),
     berAlle(function(){return sb.from('pruefgespraeche').select('id,lehrling_id,art,ergebnis,erstellt_am').in('lehrling_id',ids).order('id');}),
     berAlle(function(){return sb.from('farb_plaene').select('id,lehrling_id,status,erstellt_am').in('lehrling_id',ids).order('id');}),
-    sb.from('kompetenz').select('*').in('lehrling_id',ids)
+    sb.from('kompetenz').select('*').in('lehrling_id',ids),
+    sb.from('lehrlinge_rueckmeldung').select('lehrling_id,hilfreich,leichter,veraendert,zitat_ok,erstellt_am').in('lehrling_id',ids).order('erstellt_am',{ascending:false}).limit(1000)
   ].map(function(x){return Promise.resolve(x).catch(function(e){return {error:e};});}));
   if(r[0].error){ box.innerHTML=fehler; return; }
   // Praxis, Prüfgespräche, Farb-Fälle und Kompetenz sind optional (ohne Migration → leer)
   function daten(x){ return x&&!x.error?(x.data||[]):[]; }
-  BER_DATEN={alle:alle,verlauf:daten(r[0]),praxis:daten(r[1]),pg:daten(r[2]),ff:daten(r[3]),komp:daten(r[4])};
+  BER_DATEN={alle:alle,verlauf:daten(r[0]),praxis:daten(r[1]),pg:daten(r[2]),ff:daten(r[3]),komp:daten(r[4]),rm:daten(r[5])};
   berZeigen();
 }
 
@@ -2974,7 +2986,13 @@ function berRechnen(){
   var monatsZeilen=mk.map(function(k){ var m=monate[k]||{quiz:0,q:[],min:0,pg:0,pgOk:0}; return {k:k,quiz:m.quiz,q:berSchnitt(m.q),min:m.min,pg:m.pg,pgOk:m.pgOk}; });
 
   var pgN=summe('pgN')+summe('pxN'), pgOk=summe('pgOk')+summe('pxOk');
+  // Rückmeldungen der Lehrlinge im Zeitraum; Zitate nur mit Erlaubnis (zitat_ok) und ohne Namen
+  var rm=(B.rm||[]).filter(function(x){return ids[x.lehrling_id]&&x.erstellt_am&&drin(pazISO(new Date(x.erstellt_am)));});
+  var rmL=rm.filter(function(x){return x.leichter;});
+  var rmZitate=rm.filter(function(x){return x.zitat_ok&&x.veraendert;}).map(function(x){return x.veraendert;}).slice(0,6);
   return {zr:zr, zeilen:zeilen, monate:monatsZeilen,
+    rmN:rm.length, rmHilfreich:berSchnitt(rm.map(function(x){return x.hilfreich;})),
+    rmLeichter:rmL.length?rmL.filter(function(x){return x.leichter==='ja';}).length/rmL.length:null, rmZitate:rmZitate,
     aktivN:zeilen.filter(function(z){return z.aktivImZeitraum;}).length,
     quiz:summe('quiz'), tage:summe('tage'), praxisMin:summe('praxisMin'),
     pgN:pgN, pgOk:pgOk, ffN:summe('ffN'), ffPasst:summe('ffPasst'),
@@ -2995,7 +3013,8 @@ var BER_METHODE=[
   'Praxis: nur Einträge im Praxis-Tagebuch, die die Meisterin bestätigt hat.',
   'Prüfgespräche und Praxis-Checks führt die Meisterin persönlich. „Verstanden“ heißt: im Gespräch erklärt bzw. in der Praxis sicher gezeigt.',
   'Wochenziel: Anteil der abgeschlossenen Wochen (Mo–So), in denen der Lehrling sein Wochenziel an Quizzen erreicht hat – ab Lehrbeginn bzw. erstem Quiz. Es gilt das heute eingestellte Wochenziel.',
-  'Themen sitzen: Stand heute, unabhängig vom Zeitraum. „Sitzt“ heißt mindestens 80 % richtig, mehrfach geübt und nach ein paar Tagen bestätigt.'
+  'Themen sitzen: Stand heute, unabhängig vom Zeitraum. „Sitzt“ heißt mindestens 80 % richtig, mehrfach geübt und nach ein paar Tagen bestätigt.',
+  'Rückmeldungen: Die Lehrlinge beantworten im Lern-Tool selbst ein paar kurze Fragen. Zitate erscheinen nur, wenn der Lehrling die Verwendung ohne Namen erlaubt hat.'
 ];
 
 function berZeigen(){
@@ -3009,6 +3028,7 @@ function berZeigen(){
     '<div class="tb-summe"><div><b>'+escHtml(ptDauer(c.praxisMin))+'</b><small>Praxis bestätigt</small></div><div><b>'+c.pgN+'</b><small>Prüfgespräche &amp; Praxis-Checks'+(c.pgN?' · '+berProz(c.pgOk/c.pgN)+' verstanden':'')+'</small></div><div><b>'+(c.wochen?berProz(c.erreicht/c.wochen):'–')+'</b><small>der Wochen Wochenziel erreicht</small></div></div>';
   if(c.entwN) h+='<div class="paz-karte"><div class="lab">Entwicklung der Trefferquote</div><p style="font-size:20px;font-weight:600;color:#211D17;margin:2px 0 4px">'+berEntw(c.anfang,c.ende)+'</p><p class="mb-sub" style="font-size:11px;margin:0">Erste 5 → letzte 5 Quizze im Zeitraum, Durchschnitt über '+c.entwN+(c.entwN===1?' Lehrling':' Lehrlinge')+' mit mindestens 10 Quizzen.</p></div>';
   else h+='<p class="mb-sub" style="font-size:11px">Die Entwicklung der Trefferquote erscheint, sobald ein Lehrling im Zeitraum mindestens 10 Quizze gemacht hat.</p>';
+  if(c.rmN) h+='<div class="paz-karte"><div class="lab">Das sagen die Lehrlinge</div>'+berRmText(c,false)+'</div>';
   if(c.ffN) h+='<p class="mb-sub" style="font-size:12px">🎨 '+c.ffN+(c.ffN===1?' Farb-Plan':' Farb-Pläne')+' mit deiner Rückmeldung, davon '+c.ffPasst+' „passt“.</p>';
 
   if(c.monate.length){
@@ -3064,11 +3084,79 @@ function berDrucken(c){
         '<td>'+(z.anfang==null?'–':berProz(z.anfang)+' → '+berProz(z.ende))+'</td><td class="r">'+(z.praxisMin?escHtml(ptDauer(z.praxisMin)):'–')+'</td>'+
         '<td class="r">'+((z.pgN+z.pxN)?(z.pgOk+z.pxOk)+' / '+(z.pgN+z.pxN):'–')+'</td><td class="r">'+(z.wochen?berProz(z.erreicht/z.wochen):'–')+'</td><td class="r">'+(z.themen?z.sitzt+' / '+z.themen:'–')+'</td></tr>';
     }).join('')+'</table>'+
-    '<h2>So wird gezählt</h2><ul class="dr-meth">'+BER_METHODE.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
+    (c.rmN?'<h2>Das sagen die Lehrlinge</h2>'+berRmText(c,true):'')+'<h2>So wird gezählt</h2><ul class="dr-meth">'+BER_METHODE.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
     '<div class="dr-fuss">Erstellt am '+escHtml(pazDatum(pazISO(new Date())))+' aus den Daten der Lern-App (Quiz, Praxis-Tagebuch, Prüfgespräche, Farb-Fälle).'+(BER.anon?' Ohne Namen.':' Enthält Namen – nur für den Betrieb.')+'</div>';
   var d=document.getElementById('druck'); d.innerHTML=h;
   var alt=document.title; document.title='Ausbildungsbericht '+pazDatum(pazISO(new Date()));
   setTimeout(function(){ window.print(); document.title=alt; },50);
+}
+
+// Rückmeldungen im Ausbildungsbericht (Bildschirm und Ausdruck)
+function berRmText(c,druck){
+  var t=c.rmN+(c.rmN===1?' Rückmeldung':' Rückmeldungen')+
+    (c.rmHilfreich!=null?' · Die App hilft beim Lernen: Ø '+c.rmHilfreich.toFixed(1).replace('.',',')+' von 5':'')+
+    (c.rmLeichter!=null?' · '+berProz(c.rmLeichter)+' lernen damit leichter als nur mit Unterlagen':'');
+  var st=druck?'':'font-size:12px;margin-bottom:6px;', kl=druck?'':' class="mb-sub"';
+  var h='<p'+kl+(st?' style="'+st+'"':'')+'>'+escHtml(t)+'</p>';
+  c.rmZitate.forEach(function(z){ h+='<p'+kl+' style="'+st+'font-style:italic">„'+escHtml(z)+'“</p>'; });
+  return h;
+}
+
+// ── RÜCKMELDUNGEN DER LEHRLINGE (Meisterin) ─────────────────────────────────
+// Tabelle lehrlinge_rueckmeldung (Migration 20261117_lehrlinge_rueckmeldung.sql).
+// Die Meisterin darf lesen und löschen, aber nichts anlegen oder ändern – auch
+// nicht die Erlaubnis für Zitate (zitat_ok). Das erzwingt die RLS.
+async function zeigeRueckmeldungen(){
+  if(!ISTMEISTERIN) return;
+  if(!document.getElementById('s-rueckmeldungen').classList.contains('aktiv')) zeige('s-rueckmeldungen');
+  var box=document.getElementById('rm-inhalt'); box.innerHTML='<div class="laden">Wird geladen…</div>';
+  var res;
+  try{
+    res=await Promise.all([
+      sb.from('lehrlinge').select('*').order('name'),
+      sb.from('lehrlinge_rueckmeldung').select('*').order('erstellt_am',{ascending:false}).limit(500)
+    ]);
+  }catch(e){ res=[{data:[]},{error:e}]; }
+  if(res[1].error){ box.innerHTML='<p class="mb-sub">Die Rückmeldungen brauchen noch die Datenbank-Änderung (supabase/20261117_lehrlinge_rueckmeldung.sql).</p>'; return; }
+  var lv={}; (res[0].data||[]).forEach(function(l){lv[l.id]=l;});
+  var alle=(res[1].data||[]).filter(function(x){return lv[x.lehrling_id];});
+  // Zahlen nur aus echten Lehrlingen (wie im Ausbildungsbericht)
+  var echt=alle.filter(function(x){var l=lv[x.lehrling_id];return l.nur_test!==true&&!istStylistin(l);});
+  var rmL=echt.filter(function(x){return x.leichter;});
+  var schnitt=berSchnitt(echt.map(function(x){return x.hilfreich;}));
+  var h='<div class="tb-summe"><div><b>'+echt.length+'</b><small>Rückmeldungen</small></div>'+
+    '<div><b>'+(schnitt==null?'–':escHtml(schnitt.toFixed(1).replace('.',','))+' / 5')+'</b><small>hilft beim Lernen</small></div>'+
+    '<div><b>'+(rmL.length?berProz(rmL.filter(function(x){return x.leichter==='ja';}).length/rmL.length):'–')+'</b><small>lernen leichter</small></div></div>';
+  var zaehl={}; echt.forEach(function(x){(x.hilft||[]).forEach(function(t){zaehl[t]=(zaehl[t]||0)+1;});});
+  var top=Object.keys(zaehl).sort(function(a,b){return zaehl[b]-zaehl[a]||a.localeCompare(b,'de');});
+  if(top.length) h+='<div class="paz-karte"><div class="lab">Was am meisten hilft</div><table class="ber-tab">'+
+    top.map(function(t){return '<tr><td>'+escHtml(t)+'</td><td class="r">'+zaehl[t]+'×</td></tr>';}).join('')+'</table></div>';
+  var zitate=echt.filter(function(x){return x.zitat_ok&&x.veraendert;});
+  if(zitate.length) h+='<div class="paz-karte"><div class="lab">Zitate für Einreichungen (ohne Namen)</div>'+
+    zitate.map(function(x){return '<p class="mb-sub" style="font-size:13px;font-style:italic;margin-bottom:8px">„'+escHtml(x.veraendert)+'“</p>';}).join('')+
+    '<p class="ber-meth">Diese Lehrlinge haben erlaubt, ihre Sätze ohne Namen zu verwenden. Bei Minderjährigen vor dem Weitergeben auch die Erziehungsberechtigten fragen.</p></div>';
+  if(!alle.length) h+='<p class="mb-sub">Noch keine Rückmeldungen. Die Lehrlinge sehen im Lern-Tool auf der Startseite den Hinweis „Wie hilft dir die App?“, sobald sie ein paar Quizze gemacht haben.</p>';
+  else h+='<div class="lab" style="margin-top:4px">Alle Rückmeldungen</div>'+alle.map(function(x){
+    var l=lv[x.lehrling_id], test=l.nur_test===true||istStylistin(l);
+    var leicht={ja:'Ja',teils:'Teils',nein:'Nein'}[x.leichter];
+    return '<div class="tb-e'+(x.hilfreich>=4?' ok':'')+'"><div class="tb-k"><span>'+escHtml(pazDatum(pazISO(new Date(x.erstellt_am))))+' · <b>'+escHtml(l.name)+'</b>'+(test?' · zählt nicht mit':'')+'</span><span>hilft '+x.hilfreich+' / 5</span></div>'+
+      (leicht?'<div class="tb-d">Leichter als nur mit Unterlagen: '+leicht+'</div>':'')+
+      ((x.hilft||[]).length?'<div class="tb-d">Hilft am meisten: '+escHtml(x.hilft.join(', '))+'</div>':'')+
+      (x.veraendert?'<div class="tb-w" style="font-weight:400;font-style:italic">„'+escHtml(x.veraendert)+'“</div>':'')+
+      (x.verbessern?'<div class="tb-mnotiz">Wunsch: '+escHtml(x.verbessern)+'</div>':'')+
+      '<div class="tb-knoepfe"><span class="'+(x.zitat_ok?'tb-ok':'tb-d')+'" style="margin:0">'+(x.zitat_ok?'✓ Zitat ohne Namen erlaubt':'Zitat nicht erlaubt')+'</span>'+
+      '<button class="tb-edit" data-rmweg="'+escHtml(String(x.id))+'">Löschen</button></div></div>';
+  }).join('');
+  box.innerHTML=h;
+  box.querySelectorAll('[data-rmweg]').forEach(function(b){
+    b.addEventListener('click',async function(){
+      if(!confirm('Diese Rückmeldung wirklich löschen?')) return;
+      b.disabled=true;
+      var u=await sb.from('lehrlinge_rueckmeldung').delete().eq('id',b.dataset.rmweg);
+      if(u&&u.error){ b.disabled=false; alert('Konnte nicht gelöscht werden: '+u.error.message); return; }
+      zeigeRueckmeldungen();
+    });
+  });
 }
 
 // ── PRAXIS-TAGEBUCH aller Lehrlinge (Meisterin) ─────────────────────────────
@@ -4385,6 +4473,7 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-pt-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-mb-ff').addEventListener('click',zeigeFarbFaelle);
   document.getElementById('btn-mb-bericht').addEventListener('click',function(){zeigeBericht();});
+  document.getElementById('btn-mb-rm').addEventListener('click',function(){zeigeRueckmeldungen();});
   document.getElementById('btn-mb-fz').addEventListener('click',zeigeFarbZeiten);
   document.getElementById('btn-mb-fn').addEventListener('click',zeigeFarbNummern);
   document.getElementById('btn-fn-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
