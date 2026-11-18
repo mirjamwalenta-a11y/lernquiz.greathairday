@@ -82,6 +82,47 @@ Pausen-Impulse wie „Warte nicht auf viel freie Zeit, eine kurze Runde zählt
 genauso.“ oder „Lernen kurz vor der Prüfung ersetzt nicht das Üben
 zwischendurch.“
 
+## Kurz sortieren (2026-11-18)
+
+Umsetzung: `woerni-sortieren.js`, Seite `p-sortieren` im Lern-Tool
+(Kachel „Kurz sortieren“ auf der Startseite, Sprungziel
+`lerntool.html#sortieren` bzw. `#sortieren=unsicher`).
+
+Ein Bereich für Stress-, Unsicherheits- und Lernmomente im Ausbildungsalltag.
+Ziel: in **unter einer Minute** zurück zu einem klaren nächsten Lern- oder
+Handlungsschritt (drei Antipper: Bereich, Situation, Option).
+
+- Der Lehrling **wählt selbst** eine von fünf Situationen: nervös vor einem
+  Schritt · Fehler gemacht · alles zu viel · bei einem Schritt unsicher ·
+  hänge nach Rückmeldung.
+- Pro Situation **ein sehr kurzer Impuls** zur Einordnung und **genau drei
+  Optionen**, die in bestehende Wege führen: Praxis-Module (inkl.
+  Praxis-Tagebuch), Themen-Quiz, Wiederholen, heutiger Lernplan-Schritt,
+  Schnell-Check im Lernquiz, A–Z-Verzeichnis, oder eine fertige Formulierung,
+  um die Meisterin direkt anzusprechen.
+- Wörni **deutet keine Gefühle**, ersetzt keine Meisterin und führt keine
+  Gespräche. Unter der Auswahl steht ein Satz, bei Verletzung, Hautreaktion
+  oder wenn es länger nicht gut geht, sofort jemandem im Salon Bescheid zu geben.
+
+**Automatisch** erscheint in V1 nur ein dezenter Hinweis (eine Wörni-Zeile mit
+Link „Kurz sortieren →“, Situation „unsicher“ vorausgewählt):
+
+| Auslöser | Wo |
+|---|---|
+| Wiederholtes Nachschlagen: derselbe Reiter eines Praxis-Moduls im Lern-Tool zum 3. Mal innerhalb von 10 Minuten geöffnet | unter den Reitern des Moduls |
+| Wiederholte Probleme im selben Mikro-Thema: 2. Fehler im selben Thema derselben Quizrunde (nicht im LAP-Modus) | im Lernquiz unter der Erklärung, statt des Wörni-Impulses für diese Antwort |
+
+Anti-Nerv-Regeln: höchstens **einmal am Tag** (geräteweit), im Quiz höchstens
+einmal pro Runde, nicht innerhalb von 30 Minuten, nachdem „Kurz sortieren“
+offen war. Gemerkt wird nur auf dem Gerät (`localStorage`, Schlüssel
+`woerni-sortieren`: Tag des letzten Hinweises, Zeitpunkt des letzten
+Öffnens). **Welche Situation gewählt wurde, wird nirgends gespeichert**, es
+gibt keine neue Tabelle und nichts geht an den Server.
+
+Nicht in V1: Hinweis in den eigenständigen Lern-Seiten (Umformung,
+Schnittwerkstatt, Farblabor …) und im Themen-Quiz des Lern-Tools; Auswertung,
+welche Situationen gewählt werden.
+
 ## Noch nicht in V1
 
 - Themen-Quiz im Lern-Tool und die Quizze in den Lern-Modulen (Farblabor,

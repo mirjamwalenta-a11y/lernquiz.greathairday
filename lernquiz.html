@@ -14,7 +14,8 @@
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-verlauf.js?v=20261115b"></script>  <!-- Zurück-Taste des Handys: Schritt für Schritt innerhalb der App -->
 <script src="lern-themen.js?v=20261107e"></script>
-<script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
+<script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
+<script src="woerni-sortieren.js?v=20261118a"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -356,7 +357,7 @@ textarea{resize:vertical;margin-bottom:0}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Great Hair Day Academy ✂</h1>
   <p id="kopf-sub">Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk</p>
@@ -442,7 +443,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -523,7 +524,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">💆 Praxis</h2>
     <p class="mb-sub">Am Kunden üben, abhaken und nachweisen.</p>
     <div class="mb-grid">
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/umformung.html?v=20261116s"><div class="mb-ic">🧪</div><b>Umformung</b><small>Dauerwelle &amp; Glättung</small></a>
       <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
       <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
@@ -539,7 +540,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="mb-grid">
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261116s"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
       <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
       <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
     </div>
   </div>
@@ -552,9 +553,9 @@ textarea{resize:vertical;margin-bottom:0}
     <p class="mb-sub">Inhalte pflegen und Lernfortschritt ansehen.</p>
     <div class="mb-grid">
       <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
     </div>
   </div>
@@ -566,7 +567,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">🏠 Selbst ansehen</h2>
     <p class="mb-sub">Die App so sehen, wie deine Lehrlinge sie sehen.</p>
     <div class="mb-grid">
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
     </div>
   </div>
@@ -1686,7 +1687,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261117a'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261118a'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -1922,7 +1923,7 @@ function whStarten(){
   QUIZ_ART='wiederholung';
   QFRAGEN=mischen(f);
   WH_DIESMAL={};QFRAGEN.forEach(function(q){WH_DIESMAL[q.id]=true;});
-  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;zeigeFrage();zeige('s-quiz');
+  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;WS_RUNDE=false;zeigeFrage();zeige('s-quiz');
   return true;
 }
 // Am Quiz-Ende den neuen Stand speichern und eine Zusammenfassung liefern
@@ -1969,7 +1970,7 @@ function starteQuiz(){
   QUIZ_ART='normal';
   if(MODUS==='schnell'||MODUS==='tief') QFRAGEN=whEinmischen(QFRAGEN);
   WH_DIESMAL={};QFRAGEN.forEach(function(q){if(q.id&&whFaellig(q.id))WH_DIESMAL[q.id]=true;});
-  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;zeigeFrage();zeige('s-quiz');
+  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;WS_RUNDE=false;zeigeFrage();zeige('s-quiz');
 }
 
 // ── ZUSATZFRAGEN (Verständnis-Check) ─────────────────────────────────────────
@@ -2173,12 +2174,20 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
 // oder 2. Fehler im selben Thema) vor falscher Antwort; richtig nach früherem Fehler nur,
 // wenn sonst nichts kam. Geratene Treffer und „sicher, aber falsch“ (beim ersten Fehler)
 // bekommen keinen Impuls, dafür zeigt die App schon einen eigenen Hinweis.
-var WOERNI_RUNDE=false;
+// „Kurz sortieren“ (woerni-sortieren.js): beim 2. Fehler im selben Thema einer Runde
+// statt des Impulses eine Zeile mit Link ins Lern-Tool, höchstens einmal am Tag und
+// einmal pro Runde; zählt nicht gegen den einen Wörni-Impuls der Runde.
+var WOERNI_RUNDE=false, WS_RUNDE=false;
 function woerniNachAntwort(){
   try{
-    if(!window.WOERNI||WOERNI_RUNDE||MODUS==='lap') return;
+    if(MODUS==='lap') return;
     var a=QANT[QANT.length-1]; if(!a) return;
     var q=a.q, h=q.haupt||q, fb=document.getElementById('q-feedback'); if(!fb) return;
+    if(window.WOERNI_SORTIEREN&&!WS_RUNDE&&!a.korrekt&&!a.geraten&&QANT.filter(function(x){return !x.korrekt&&!x.geraten&&x.q.th===q.th;}).length>=2){
+      var ws=WOERNI_SORTIEREN.wiederholterFehler();
+      if(ws){ fb.innerHTML+=ws; WS_RUNDE=true; return; }
+    }
+    if(!window.WOERNI||WOERNI_RUNDE) return;
     var frueher=!!(h.id&&WH[h.id]);
     var moment=null;
     if(!a.korrekt&&!a.geraten){
