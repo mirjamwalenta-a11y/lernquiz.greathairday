@@ -7,7 +7,8 @@
 <meta charset="UTF-8">
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lern-Tool · A Great Hair Day</title>
+<title>Great Hair Day Academy</title>
+<meta name="description" content="Great Hair Day Academy – Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk">
 <link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -307,8 +308,8 @@ body.mit-leiste .leiste{display:flex}
   <div class="st-kopf">
     <div style="min-width:0">
       <div class="tag">greathairday · Lernen</div>
-      <h1 id="st-hallo">Lern-Tool ✂</h1>
-      <div class="st-sub" id="st-sub">Lehrlings-Begleitung</div>
+      <h1 id="st-hallo">Great Hair Day Academy ✂</h1>
+      <div class="st-sub" id="st-sub">Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk</div>
     </div>
     <div class="st-rechts">
       <label class="st-lj" title="Lehrjahr wählen">
@@ -4609,8 +4610,8 @@ function stZeichnen() {
   var stats = document.getElementById('st-stats');
   var hinweis = document.getElementById('st-login-hinweis');
   if (!ST.lehrling) {
-    hallo.textContent = 'Lern-Tool ✂';
-    sub.textContent = 'Lehrlings-Begleitung';
+    hallo.textContent = 'Great Hair Day Academy ✂';
+    sub.textContent = 'Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk';
     stats.style.display = 'none';
     hinweis.innerHTML = stOhneLehrling('deinen Lernstand');
     hinweis.style.display = ST.geladen ? 'block' : 'none';
