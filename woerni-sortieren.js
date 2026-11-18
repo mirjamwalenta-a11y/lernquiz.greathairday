@@ -17,44 +17,44 @@
   // ziel: Schlüssel, den die aufrufende Seite auflöst (siehe zeichnen(..., ziele)).
   // satz: statt eines Links eine fertige Formulierung zum Nachfragen.
   var SITUATIONEN = [
-    { id: 'nervoes', ic: '⏱', titel: 'Ich bin nervös vor einem Schritt',
-      impuls: 'Vor einem Schritt, den du noch nicht oft gemacht hast, ist Anspannung normal. Am meisten hilft, den Ablauf klar vor Augen zu haben.',
-      optionen: [
-        { ic: '💆', t: 'Ablauf einmal durchgehen', d: 'Reihenfolge im Praxis-Modul ansehen', ziel: 'praxis' },
-        { ic: '🗣', t: 'Beim ersten Handgriff zuschauen lassen', d: 'Ein Satz an deine Meisterin genügt',
-          satz: 'Ich mache gleich … und bin noch nicht ganz sicher. Schaust du beim ersten Handgriff kurz zu?' },
-        { ic: '🎯', t: 'Thema kurz auffrischen', d: 'Ein paar Fragen im Themen-Quiz', ziel: 'quiz' }
-      ] },
     { id: 'fehler', ic: '🩹', titel: 'Ich habe einen Fehler gemacht',
-      impuls: 'Fehler gehören zur Ausbildung. Wichtig ist jetzt: Bescheid geben, verstehen, was passiert ist, und es beim nächsten Mal anders machen.',
+      impuls: 'Ein Fehler ist kein Drama. Wichtig ist jetzt: Bescheid geben, verstehen, was passiert ist, und es beim nächsten Mal anders machen.',
       optionen: [
         { ic: '🗣', t: 'Sofort Bescheid geben', d: 'Lieber jetzt als später',
           satz: 'Mir ist gerade bei … etwas passiert. Was mache ich jetzt am besten?' },
-        { ic: '📝', t: 'Festhalten, was du anders machst', d: 'Im Praxis-Tagebuch auf der Praxis-Seite', ziel: 'praxis' },
+        { ic: '📝', t: 'Fürs nächste Mal notieren', d: 'Im Praxis-Tagebuch festhalten', ziel: 'praxis' },
         { ic: '🔁', t: 'Das Thema wiederholen', d: 'Was noch wackelt, kurz üben', ziel: 'wiederholen' }
+      ] },
+    { id: 'nervoes', ic: '⏱', titel: 'Ich bin nervös vor einem Schritt',
+      impuls: 'Vor einem Schritt, den du noch nicht oft gemacht hast, ist Anspannung normal. Jetzt hilft ein klarer Blick auf den Ablauf.',
+      optionen: [
+        { ic: '💆', t: 'Ablauf einmal durchgehen', d: 'Ablauf im Praxis-Modul ansehen', ziel: 'praxis' },
+        { ic: '🗣', t: 'Beim ersten Schritt zuschauen lassen', d: 'Ein Satz an deine Meisterin genügt',
+          satz: 'Ich mache gleich … und bin noch nicht ganz sicher. Schaust du beim ersten Schritt kurz zu?' },
+        { ic: '🎯', t: 'Thema kurz auffrischen', d: 'Ein paar Fragen im Themen-Quiz', ziel: 'quiz' }
       ] },
     { id: 'zuviel', ic: '🧺', titel: 'Mir ist gerade alles zu viel',
       impuls: 'Du musst nicht alles gleichzeitig lösen. Such dir nur den einen nächsten Schritt.',
       optionen: [
-        { ic: '📅', t: 'Nur den heutigen Lernschritt ansehen', d: 'Ein Thema laut Lernplan, sonst nichts', ziel: 'heute' },
+        { ic: '📅', t: 'Heutigen Lernschritt ansehen', d: 'Ein Thema laut Lernplan, sonst nichts', ziel: 'heute' },
         { ic: '🗣', t: 'Fragen, was zuerst kommt', d: 'Deine Meisterin hilft beim Sortieren',
           satz: 'Bei mir ist gerade viel auf einmal. Was ist jetzt als Erstes wichtig?' },
-        { ic: '❓', t: 'Eine kurze Runde', d: 'Schnell-Check im Quiz, ein paar Minuten', ziel: 'quizkurz' }
+        { ic: '❓', t: 'Kurz ins Quiz', d: 'Schnell-Check, nur ein paar Minuten', ziel: 'quizkurz' }
       ] },
     { id: 'unsicher', ic: '❔', titel: 'Ich bin bei einem Schritt unsicher',
-      impuls: 'Unsicher heißt: Eine Frage ist noch offen. Klär sie, bevor du weitermachst, das ist sicherer als raten.',
+      impuls: 'Unsicher heißt: Eine Frage ist noch offen. Klär sie, bevor du weitermachst. Das ist besser als raten.',
       optionen: [
-        { ic: '💆', t: 'Im Praxis-Modul nachsehen', d: 'Ablauf, Check, Lernkarten', ziel: 'praxis' },
+        { ic: '💆', t: 'Im Praxis-Modul nachsehen', d: 'Ablauf und Hinweise ansehen', ziel: 'praxis' },
         { ic: '🔎', t: 'Begriff oder Thema suchen', d: 'Im A–Z-Verzeichnis', ziel: 'verzeichnis' },
         { ic: '🗣', t: 'Kurz nachfragen', d: 'Ein Satz an deine Meisterin genügt',
           satz: 'Bei … bin ich nicht sicher. Kannst du mir das kurz zeigen?' }
       ] },
     { id: 'rueckmeldung', ic: '💬', titel: 'Ich hänge nach einer Rückmeldung fest',
-      impuls: 'Eine Rückmeldung betrifft deine Arbeit, nicht dich als Person. Nimm einen Punkt mit, den du beim nächsten Mal umsetzt.',
+      impuls: 'Eine Rückmeldung kann kurz treffen. Wichtig ist der eine Punkt, den du beim nächsten Mal anders machst.',
       optionen: [
-        { ic: '🗣', t: 'Nachfragen, was genau gemeint war', d: 'Damit du weißt, was du ändern sollst',
+        { ic: '🗣', t: 'Genau nachfragen', d: 'Damit klar ist, was du ändern sollst',
           satz: 'Damit ich es richtig verstehe: Was soll ich beim nächsten Mal anders machen?' },
-        { ic: '📝', t: 'Den einen Punkt notieren', d: 'Im Praxis-Tagebuch auf der Praxis-Seite', ziel: 'praxis' },
+        { ic: '📝', t: 'Den einen Punkt notieren', d: 'Im Praxis-Tagebuch festhalten', ziel: 'praxis' },
         { ic: '🎯', t: 'Das passende Thema üben', d: 'Ein paar Fragen im Themen-Quiz', ziel: 'quiz' }
       ] }
   ];
