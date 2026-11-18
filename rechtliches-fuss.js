@@ -11,7 +11,7 @@
   var FEEDBACK_AN = 'walenta@greathairday.at';
   function feedbackLink() {
     var seite = (location.pathname.split('/').pop() || 'Startseite') + (location.hash || '');
-    var betreff = 'Feedback Lern-App: ' + (document.title || seite);
+    var betreff = 'Feedback Great Hair Day Academy: ' + (document.title || seite);
     var text = 'Seite: ' + seite + '\n\n' +
       'Was ist passiert oder was wünschst du dir?\n\n\n' +
       '(Ein Screenshot hilft sehr, gern einfach anhängen.)';

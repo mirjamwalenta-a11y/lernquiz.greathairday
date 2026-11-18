@@ -7,7 +7,8 @@
 <meta charset="UTF-8">
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lernquiz · A Great Hair Day</title>
+<title>Great Hair Day Academy</title>
+<meta name="description" content="Great Hair Day Academy – Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk">
 <link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
@@ -357,8 +358,8 @@ textarea{resize:vertical;margin-bottom:0}
 <div class="kopf">
   <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261117a" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
-  <h1 id="kopf-titel">Lernen ✂</h1>
-  <p id="kopf-sub">Lernquiz, Lern-Tool, Praxis &amp; Prüfung – eine App</p>
+  <h1 id="kopf-titel">Great Hair Day Academy ✂</h1>
+  <p id="kopf-sub">Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk</p>
 </div>
 
 <!-- Beim Öffnen mit gespeicherter Anmeldung: kurz „Einen Moment“ statt Login-Maske,
@@ -636,7 +637,7 @@ textarea{resize:vertical;margin-bottom:0}
     <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
     <div class="mb-tag">greathairday · Meisterin</div>
     <h2 class="mb-h">💬 Rückmeldungen der Lehrlinge</h2>
-    <p class="mb-sub">Was deine Lehrlinge über die Lern-App sagen. Sie werden im Lern-Tool etwa alle drei Monate gefragt und können jederzeit unter „Lernplan &amp; Tipps“ antworten.</p>
+    <p class="mb-sub">Was deine Lehrlinge über die Great Hair Day Academy sagen. Sie werden im Lern-Tool etwa alle drei Monate gefragt und können jederzeit unter „Lernplan &amp; Tipps“ antworten.</p>
     <div id="rm-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
@@ -1651,8 +1652,8 @@ function kopfSetzen(id){
   var quiz=QUIZ_SEITEN.indexOf(id)>=0&&!ISTMEISTERIN&&!(AKTLEHRLING&&AKTLEHRLING.id==='meisterin-test');
   document.getElementById('kopf-zurueck').hidden=!quiz;
   document.getElementById('kopf-klein').textContent=quiz?'greathairday · Üben':'greathairday · Lernen';
-  document.getElementById('kopf-titel').textContent=quiz?'Quiz ❓':'Lernen ✂';
-  document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Lernquiz, Lern-Tool, Praxis & Prüfung – eine App';
+  document.getElementById('kopf-titel').textContent=quiz?'Quiz ❓':'Great Hair Day Academy ✂';
+  document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
   document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-bericht'||id==='s-rueckmeldungen'||id==='s-farb-faelle'||id==='s-farb-zeiten'||id==='s-farb-nummern');
@@ -3063,7 +3064,7 @@ function berKlicks(box){
 }
 function berDrucken(c){
   var zr=c.zr, von=zr.von||(c.monate.length?c.monate[0].k+'-01':'');
-  var h='<div class="dr-k"><div><h1>Ausbildungsbericht</h1><div class="dr-s">A Great Hair Day · Lehrlingsausbildung Friseur:in</div></div><div class="dr-r">greathairday<br>Lern-App</div></div>'+
+  var h='<div class="dr-k"><div><h1>Ausbildungsbericht</h1><div class="dr-s">A Great Hair Day · Lehrlingsausbildung Friseur:in</div></div><div class="dr-r">greathairday<br>Academy</div></div>'+
     '<div class="dr-info dr-info6">'+
       '<div><small>Zeitraum</small><b>'+escHtml((von?pazDatum(von):'Beginn')+' – '+pazDatum(zr.bis))+'</b></div>'+
       '<div><small>Lehrlinge haben geübt</small><b>'+c.aktivN+'</b></div>'+
@@ -3085,7 +3086,7 @@ function berDrucken(c){
         '<td class="r">'+((z.pgN+z.pxN)?(z.pgOk+z.pxOk)+' / '+(z.pgN+z.pxN):'–')+'</td><td class="r">'+(z.wochen?berProz(z.erreicht/z.wochen):'–')+'</td><td class="r">'+(z.themen?z.sitzt+' / '+z.themen:'–')+'</td></tr>';
     }).join('')+'</table>'+
     (c.rmN?'<h2>Das sagen die Lehrlinge</h2>'+berRmText(c,true):'')+'<h2>So wird gezählt</h2><ul class="dr-meth">'+BER_METHODE.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
-    '<div class="dr-fuss">Erstellt am '+escHtml(pazDatum(pazISO(new Date())))+' aus den Daten der Lern-App (Quiz, Praxis-Tagebuch, Prüfgespräche, Farb-Fälle).'+(BER.anon?' Ohne Namen.':' Enthält Namen – nur für den Betrieb.')+'</div>';
+    '<div class="dr-fuss">Erstellt am '+escHtml(pazDatum(pazISO(new Date())))+' aus den Daten der Great Hair Day Academy (Quiz, Praxis-Tagebuch, Prüfgespräche, Farb-Fälle).'+(BER.anon?' Ohne Namen.':' Enthält Namen – nur für den Betrieb.')+'</div>';
   var d=document.getElementById('druck'); d.innerHTML=h;
   var alt=document.title; document.title='Ausbildungsbericht '+pazDatum(pazISO(new Date()));
   setTimeout(function(){ window.print(); document.title=alt; },50);
@@ -4126,7 +4127,7 @@ async function testZugaengeAnlegen(){
   }
   btn.disabled=false;
   var url='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html';
-  var text='Test-Zugänge Lern-App ('+lj+'. Lehrjahr)\nAnmelden: '+url+'\nName und PIN eingeben:\n'+ok.map(function(z){return z.name+' – PIN '+z.pin;}).join('\n');
+  var text='Test-Zugänge Great Hair Day Academy ('+lj+'. Lehrjahr)\nAnmelden: '+url+'\nName und PIN eingeben:\n'+ok.map(function(z){return z.name+' – PIN '+z.pin;}).join('\n');
   var h='';
   if(ok.length){
     h+='<div style="margin-top:14px;background:#F3EBD9;border:1px solid #896C32;border-radius:10px;padding:12px 14px">'+
