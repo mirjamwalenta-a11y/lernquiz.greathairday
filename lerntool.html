@@ -379,6 +379,7 @@ body.mit-leiste .leiste{display:flex}
       <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Waschen, Farbe, Strähnen, Umformung, Hochstecken</div></button>
       <button class="st-kachel" onclick="zeige('b-pruefung')"><div class="st-ic">🎓</div><div class="st-t">Prüfung</div><div class="st-d">Zwischenprüfung, LAP-Vorbereitung</div></button>
       <button class="st-kachel" onclick="zeige('b-lernplan')"><div class="st-ic">📅</div><div class="st-t">Lernplan &amp; Tipps</div><div class="st-d">Lernplan, Lerntipps, Englisch</div></button>
+      <button class="st-kachel st-breit" onclick="sortierenOeffnen()"><div class="st-ic">🧭</div><div><div class="st-t">Kurz sortieren</div><div class="st-d">Nervös, Fehler gemacht, unsicher? In einer Minute zum nächsten Schritt</div></div></button>
     </div>
   </div>
 </div>
@@ -531,6 +532,15 @@ body.mit-leiste .leiste{display:flex}
   <div class="pt-karte" id="rm-aus" hidden>
     <p class="pt-leer" id="rm-aus-text"></p>
   </div>
+</div>
+
+<!-- ── KURZ SORTIEREN (Wörni V1, woerni-sortieren.js, docs/woerni-v1.md) ── -->
+<div id="p-sortieren" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Wörni</div>
+  <h1>🧭 Kurz sortieren</h1>
+  <p class="sub">Wähl, was gerade passt. Danach weißt du deinen nächsten Schritt.</p>
+  <div id="so-inhalt"></div>
 </div>
 
 <!-- ── FARB-FÄLLE ── -->
@@ -5405,6 +5415,26 @@ async function ptLoeschen(id) {
   ptLaden();
 }
 
+// Wörni V1 · „Kurz sortieren“ (woerni-sortieren.js): fünf Situationen, je ein kurzer
+// Impuls und drei Wege zurück in bestehende Lern- oder Unterstützungswege.
+var SO_ZIELE = {
+  praxis: function(){ zeige('praxis'); },
+  quiz: function(){ zeige('quiz'); },
+  wiederholen: function(){ stWiederholenOeffnen(); },
+  heute: function(){ heuteOeffnen(); },
+  quizkurz: function(){ window.location.href = LQ_LOGIN; },
+  verzeichnis: function(){ window.location.href = 'verzeichnis.html'; }
+};
+function sortierenZeichnen(situation) {
+  var el = document.getElementById('so-inhalt');
+  if (window.WOERNI_SORTIEREN) WOERNI_SORTIEREN.zeichnen(el, situation || '', SO_ZIELE);
+  else document.addEventListener('DOMContentLoaded', function(){ if (window.WOERNI_SORTIEREN) WOERNI_SORTIEREN.zeichnen(el, situation || '', SO_ZIELE); });
+}
+function sortierenOeffnen(situation) {
+  zeige('sortieren');
+  sortierenZeichnen(situation);
+}
+
 // Zurück-Taste des Handys: zum vorigen Bildschirm statt aus der App (lern-verlauf.js)
 var ltVerlaufMerken = window.ghdVerlauf ? ghdVerlauf({ zeigen: function(id){ if (document.getElementById('p-' + id)) zeige(id); } }) : function(){};
 var _zeigeOhneLeiste = zeige;
@@ -5416,6 +5446,7 @@ zeige = function(seite) {
   if (seite === 'home') { stZeichnen(); stLaden(); }
   if (seite === 'praxis') ptLaden();
   if (seite === 'rueckmeldung') rmOeffnen();
+  if (seite === 'sortieren') { var so = document.getElementById('so-inhalt'); if (so && !so.innerHTML) sortierenZeichnen(''); }
   // Wörni V1: einmal am Tag beim Öffnen der Praxis-Module (docs/woerni-v1.md)
   if (seite === 'praxis') { try { var wp = document.getElementById('woerni-praxis'); if (wp && window.WOERNI && !wp.innerHTML) wp.innerHTML = WOERNI.einmalAmTag('lerntool-praxis', 'praxis', true); } catch (e) {} }
   // Wörnis Tipp zum Modul (woernis-tipps.js): einmal unter dem Untertitel einsetzen
@@ -5471,6 +5502,7 @@ zeige = function(seite) {
   var MODULE = {wasch: pmWaschOeffnen, farbe: pmFarbeOeffnen, straehnen: pmStraehnenOeffnen, colorist: pmColoristOeffnen, wissen: pmWissenOeffnen, hoch: pmHochOeffnen};
   if (!sprung && SEITEN.indexOf(hz.get('seite')) >= 0) sprung = function(){ zeige(hz.get('seite')); };
   if (!sprung && MODULE[hz.get('modul')]) sprung = function(){ MODULE[hz.get('modul')](); };
+  if (!sprung && hz.has('sortieren')) sprung = function(){ sortierenOeffnen(hz.get('sortieren')); };
   if (sprung) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
     sprung();
@@ -5485,6 +5517,31 @@ zeige = function(seite) {
 <script src="praxis-fotos.js?v=20261116d"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="woernis-tipps.js?v=20261115"></script>
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
+<script src="woerni-sortieren.js?v=20261118a"></script>  <!-- Wörni V1: „Kurz sortieren“ (docs/woerni-v1.md) -->
+<script>
+// „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
+// Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten
+// zum dritten Mal geöffnet, erscheint unter den Reitern eine Wörni-Zeile mit Link
+// (höchstens einmal am Tag, Regeln in woerni-sortieren.js).
+(function(){
+  if (!window.WOERNI_SORTIEREN) return;
+  var TABS = {pmWaschTab: 'pm-wasch', pmFarbeTab: 'pm-farbe', pmStraehnenTab: 'pm-straehnen', pmColoristTab: 'pm-colorist', pmHochTab: 'pm-hoch', pmWissenTab: 'pm-wissen'};
+  Object.keys(TABS).forEach(function(name){
+    var orig = window[name]; if (typeof orig !== 'function') return;
+    window[name] = function(tab){
+      var r = orig.apply(this, arguments);
+      try {
+        var pg = document.getElementById('p-' + TABS[name]), reiter = pg && pg.querySelector('.pm-tabs');
+        if (reiter && !pg.querySelector('.ws-hinweis')) {
+          var html = WOERNI_SORTIEREN.nachschlagen(TABS[name] + ':' + tab);
+          if (html) reiter.insertAdjacentHTML('afterend', '<div class="ws-hinweis">' + html + '</div>');
+        }
+      } catch (e) {}
+      return r;
+    };
+  });
+})();
+</script>
 <script>
 // Startseite: „Wörni sagt“ (Spruch des Tages). Nach 7 oder mehr Tagen ohne Lernrunde
 // steht dort stattdessen ein ruhiger Wiedereinstiegs-Impuls, bis wieder gelernt wurde.

@@ -14,7 +14,8 @@
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-verlauf.js?v=20261115b"></script>  <!-- Zurück-Taste des Handys: Schritt für Schritt innerhalb der App -->
 <script src="lern-themen.js?v=20261107e"></script>
-<script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
+<script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
+<script src="woerni-sortieren.js?v=20261118a"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1922,7 +1923,7 @@ function whStarten(){
   QUIZ_ART='wiederholung';
   QFRAGEN=mischen(f);
   WH_DIESMAL={};QFRAGEN.forEach(function(q){WH_DIESMAL[q.id]=true;});
-  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;zeigeFrage();zeige('s-quiz');
+  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;WS_RUNDE=false;zeigeFrage();zeige('s-quiz');
   return true;
 }
 // Am Quiz-Ende den neuen Stand speichern und eine Zusammenfassung liefern
@@ -1969,7 +1970,7 @@ function starteQuiz(){
   QUIZ_ART='normal';
   if(MODUS==='schnell'||MODUS==='tief') QFRAGEN=whEinmischen(QFRAGEN);
   WH_DIESMAL={};QFRAGEN.forEach(function(q){if(q.id&&whFaellig(q.id))WH_DIESMAL[q.id]=true;});
-  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;zeigeFrage();zeige('s-quiz');
+  QIDX=0;QANT=[];WIEDERHOLUNG=false;WH_R1=null;WOERNI_RUNDE=false;WS_RUNDE=false;zeigeFrage();zeige('s-quiz');
 }
 
 // ── ZUSATZFRAGEN (Verständnis-Check) ─────────────────────────────────────────
@@ -2173,12 +2174,20 @@ function zeigeOffen(punkte,hinweis,staerke,muster){
 // oder 2. Fehler im selben Thema) vor falscher Antwort; richtig nach früherem Fehler nur,
 // wenn sonst nichts kam. Geratene Treffer und „sicher, aber falsch“ (beim ersten Fehler)
 // bekommen keinen Impuls, dafür zeigt die App schon einen eigenen Hinweis.
-var WOERNI_RUNDE=false;
+// „Kurz sortieren“ (woerni-sortieren.js): beim 2. Fehler im selben Thema einer Runde
+// statt des Impulses eine Zeile mit Link ins Lern-Tool, höchstens einmal am Tag und
+// einmal pro Runde; zählt nicht gegen den einen Wörni-Impuls der Runde.
+var WOERNI_RUNDE=false, WS_RUNDE=false;
 function woerniNachAntwort(){
   try{
-    if(!window.WOERNI||WOERNI_RUNDE||MODUS==='lap') return;
+    if(MODUS==='lap') return;
     var a=QANT[QANT.length-1]; if(!a) return;
     var q=a.q, h=q.haupt||q, fb=document.getElementById('q-feedback'); if(!fb) return;
+    if(window.WOERNI_SORTIEREN&&!WS_RUNDE&&!a.korrekt&&!a.geraten&&QANT.filter(function(x){return !x.korrekt&&!x.geraten&&x.q.th===q.th;}).length>=2){
+      var ws=WOERNI_SORTIEREN.wiederholterFehler();
+      if(ws){ fb.innerHTML+=ws; WS_RUNDE=true; return; }
+    }
+    if(!window.WOERNI||WOERNI_RUNDE) return;
     var frueher=!!(h.id&&WH[h.id]);
     var moment=null;
     if(!a.korrekt&&!a.geraten){
