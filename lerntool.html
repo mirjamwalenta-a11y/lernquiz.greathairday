@@ -345,7 +345,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -364,11 +364,12 @@ body.mit-leiste .leiste{display:flex}
   </a>
 
   <div class="st-heute">
-    <div class="label">Heute laut Lernplan</div>
+    <div class="label" id="st-heute-label">Heute laut Lernplan</div>
     <h2 id="st-heute-thema"></h2>
     <p id="st-heute-info"></p>
-    <button onclick="stHeuteStarten()">Jetzt starten →</button>
-    <button class="st-heute-link" onclick="heuteOeffnen()">Lerntipp ansehen · später lernen</button>
+    <p id="st-heute-salon" hidden></p>
+    <button id="st-heute-los" onclick="stHeuteStarten()">Jetzt starten →</button>
+    <button class="st-heute-link" id="st-heute-link" onclick="stHeuteLink()">Lerntipp ansehen · später lernen</button>
   </div>
 
   <div class="st-stats" id="st-stats" style="display:none">
@@ -377,7 +378,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -401,7 +402,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
@@ -575,13 +576,21 @@ body.mit-leiste .leiste{display:flex}
 <div id="p-heute" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
   <div class="tag">greathairday · Heute</div>
-  <h1>Heute laut Lernplan</h1>
+  <h1 id="heute-titel">Heute laut Lernplan</h1>
 
   <div class="card">
     <div class="label">Thema</div>
     <div id="heute-thema" style="font-size:16px;font-weight:600;color:#211D17;margin-bottom:16px"></div>
+    <div id="heute-warum-wrap" hidden>
+      <div class="label">Warum gerade das</div>
+      <div id="heute-warum" style="font-size:14px;color:#211D17;line-height:1.5;margin-bottom:16px"></div>
+    </div>
     <div class="label">Dauer</div>
     <div id="heute-dauer" style="font-size:14px;color:#211D17;margin-bottom:16px"></div>
+    <div id="heute-salon-wrap" hidden>
+      <div class="label">Im Salon</div>
+      <div id="heute-salon" style="font-size:14px;color:#211D17;line-height:1.5;margin-bottom:16px"></div>
+    </div>
     <div class="label">Lerntipp</div>
     <div id="heute-tipp" style="font-size:13px;color:#211D17;line-height:1.6;background:#F3EBD9;border-radius:6px;padding:12px;margin-bottom:20px"></div>
     <button class="btn-primary" onclick="heuteStarten()">Jetzt starten →</button>
@@ -735,7 +744,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -1698,7 +1707,11 @@ function lapNeu() {
 var HEUTE_VERSCHOBEN = false;
 
 function heuteOeffnen() {
-  // Heutiges Thema bestimmen — erstes Thema des gewählten Lehrjahrs als Beispiel
+  // Angemeldeter Lehrling: „Heute für dich“ nach Lernstand (htVorschlag)
+  if (ST.lehrling) { htSeiteFuellen(); zeige('heute'); return; }
+  document.getElementById('heute-titel').textContent = 'Heute laut Lernplan';
+  document.getElementById('heute-warum-wrap').hidden = document.getElementById('heute-salon-wrap').hidden = true;
+  // Ohne Anmeldung: Thema nach Wochentag
   var themen = THEMEN[LEHRJAHR] || [];
   if (!themen.length) { zeige('home'); return; }
 
@@ -1732,6 +1745,7 @@ function heuteOeffnen() {
 }
 
 function heuteStarten() {
+  if (ST.lehrling) { htStarten(); return; }
   // Thema im Quiz vorauswählen und Quiz öffnen
   var thema = document.getElementById('heute-thema').textContent;
   zeige('quiz');
@@ -4370,7 +4384,7 @@ var PMT_THEMEN = [
   ]},
   {i:'📋', n:'Lernen & Fortschritt', p:[
     {n:'Quiz starten', lj:[1,2,3], k:'quiz fragen', go:pmtSeite('quiz')},
-    {n:'Heute laut Lernplan', lj:[1,2,3], k:'heute plan', go:function(){ heuteOeffnen(); }},
+    {n:'Heute für dich', lj:[1,2,3], k:'heute plan lernplan tagesthema', go:function(){ heuteOeffnen(); }},
     {n:'Lernplan', lj:[1,2,3], k:'wochenplan', go:pmtSeite('lernplan')},
     {n:'Lerntipps', lj:[1,2,3], k:'tipps', go:pmtSeite('fortschritt')},
     {n:'Mein Fortschritt', lj:[1,2,3], k:'fortschritt lernstand', go:pmtSeite('progress')}
@@ -4504,7 +4518,7 @@ var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) f
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
 var ST_SITZT_NACH_TAGEN = GHD_STAND.SITZT_NACH_TAGEN;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
@@ -4598,17 +4612,25 @@ function stHeuteThema() {
   return themen.length ? themen[new Date().getDay() % themen.length] : '';
 }
 
-function stZeichnen() {
-  var hallo = document.getElementById('st-hallo');
-  var sub = document.getElementById('st-sub');
-  document.getElementById('st-lj').value = LEHRJAHR;
-
-  // Heute laut Lernplan
+function stHeuteLernplan() {
+  document.getElementById('st-heute-label').textContent = 'Heute laut Lernplan';
+  document.getElementById('st-heute-los').textContent = 'Jetzt starten →';
+  document.getElementById('st-heute-link').textContent = 'Lerntipp ansehen · später lernen';
+  document.getElementById('st-heute-salon').hidden = true;
   var thema = stHeuteThema();
   document.getElementById('st-heute-thema').textContent = thema || '—';
   var tipp = (FORTSCHRITT_TIPPS[thema] || '').split('\n')[0].replace(/^[^A-Za-zÄÖÜäöü„"]+/, '');
   if (tipp.length > 90) tipp = tipp.slice(0, 88).replace(/\s+\S*$/, '') + ' …';
   document.getElementById('st-heute-info').textContent = 'ca. 20 Min' + (tipp ? ' · ' + tipp : '');
+}
+
+function stZeichnen() {
+  var hallo = document.getElementById('st-hallo');
+  var sub = document.getElementById('st-sub');
+  document.getElementById('st-lj').value = LEHRJAHR;
+
+  // Heute: mit Anmeldung nach Lernstand (htZeichnen), sonst laut Lernplan (Wochentag)
+  if (ST.lehrling) htZeichnen(); else stHeuteLernplan();
 
   var stats = document.getElementById('st-stats');
   var hinweis = document.getElementById('st-login-hinweis');
@@ -4681,6 +4703,7 @@ async function stLaden() {
     ST.verlauf = res[1].data || [];
     await rmLaden();
     await fflLaden();
+    try { await lkDatenLaden(); } catch (e) {}   // Praxis-Tagebuch + Ergebnisse der Meisterin (Landkarte, „Heute für dich“)
   } catch (e) {
     // offline oder Fehler: Startseite trotzdem zeigen
   } finally {
@@ -4698,8 +4721,106 @@ function stLjWahl(lj) {
 }
 
 function stHeuteStarten() {
+  if (ST.lehrling) { htStarten(); return; }
   heuteOeffnen();   // füllt Thema & Tipp auf der Heute-Seite
   heuteStarten();   // und öffnet gleich das Quiz zum Thema
+}
+function stHeuteLink() {
+  // Ohne Quiz-Thema (alles sitzt / Praxis-Hinweis): freies Üben im Quiz
+  if (ST.lehrling && HT && !HT.thema) { zeige('quiz'); return; }
+  heuteOeffnen();
+}
+
+// ── HEUTE FÜR DICH (angemeldeter Lehrling) ────────────────────────
+// Wählt das Tagesthema nach Lernstand statt nach Wochentag. Regeln, wichtigste
+// zuerst, je Quiz-Thema einer Kompetenz (kompetenzen.js):
+//   0 „sicher, aber falsch“ ≥ 2× offen   1 Meisterin: „noch nicht sicher/verstanden“
+//   2 wiederholen fällig   3 unsicher   4 wackelt   5 noch nicht geübt (eigenes Lehrjahr)
+// Gleichstand: eigenes Lehrjahr zuerst, dann am längsten nicht geübt. Heute schon
+// gut geübte Themen werden übersprungen. Ohne offenes Quiz-Thema: Praxis-Hinweis.
+// Englisch im Salon hat seine Fragen im eigenen Modul (englisch-salon.html).
+var HT = null;
+var HT_ENGLISCH = 'Englisch im Salon';
+var HT_MINUTEN = 10;
+function htHatFragen(th) { return th === HT_ENGLISCH || (FRAGEN[th] || []).length > 0; }
+
+function htVorschlag() {
+  var heute = stISO(new Date()), lj = THEMEN[LEHRJAHR] || [];
+  var alle = lkAlle(), kandidaten = [], gesehen = {};
+  alle.forEach(function(s){
+    var k = lkKomp(s.id);
+    var meisterinNein = s.warnungen.filter(function(w){ return w.art === 'praxis' || w.art === 'gespraech'; });
+    s.wissen.themen.forEach(function(t){
+      if (gesehen[t.thema] || !htHatFragen(t.thema)) return;
+      var d = ST.komp[t.thema] || {};
+      if (d.zuletzt_am === heute && (t.stand === 'sitzt' || t.stand === 'wartet')) return;
+      var g = d.richtig + d.falsch, r = null, grund = '';
+      var sf = d.sicher_falsch_offen || 0;
+      var mw = meisterinNein.filter(function(w){ return w.art === 'praxis' || w.bezug === t.thema; })[0];
+      if (sf >= 2) { r = 0; grund = 'Hier warst du ' + sf + '× sicher, aber es war falsch. Heute klären wir das Missverständnis.'; }
+      else if (mw && t.stand !== 'sitzt') { r = 1; grund = (mw.art === 'praxis' ? 'Beim Praxis-Check' : 'Im Prüfgespräch') + ' war es noch nicht sicher. Mit dem Wissen dahinter klappt es beim nächsten Mal.'; }
+      else if (t.stand === 'faellig') { r = 2; grund = 'Vor ' + stTage(d.gut_seit, heute) + ' Tagen konntest du es gut. Heute schauen wir, ob es noch sitzt.'; }
+      else if (t.stand === 'unsicher') { r = 3; grund = 'Beim letzten Mal ' + d.richtig + ' von ' + g + ' richtig. Heute wird es sicherer.'; }
+      else if (t.stand === 'wackelt') { r = 4; grund = 'Fast geschafft: ' + d.richtig + ' von ' + g + ' richtig. Noch eine Runde, dann sitzt es.'; }
+      else if (t.stand === 'offen' && lj.indexOf(t.thema) >= 0) { r = 5; grund = 'Neues Thema aus deinem ' + LEHRJAHR + '. Lehrjahr.'; }
+      if (r === null) return;
+      gesehen[t.thema] = true;
+      kandidaten.push({r:r, thema:t.thema, s:s, k:k, grund:grund, imLj:lj.indexOf(t.thema) >= 0 ? 0 : 1, zuletzt:d.zuletzt_am || ''});
+    });
+  });
+  kandidaten.sort(function(a, b){ return a.r - b.r || a.imLj - b.imLj || (a.zuletzt < b.zuletzt ? -1 : a.zuletzt > b.zuletzt ? 1 : 0); });
+  var v = kandidaten[0];
+  if (v) { v.salon = htSalon(v.s, v.k); return v; }
+  // Kein Quiz-Thema offen: zuerst Praxis-Warnung der Meisterin, dann bereit für einen Praxis-Check
+  var praxisNein = alle.filter(function(s){ return s.warnungen.some(function(w){ return w.art === 'praxis'; }); })[0];
+  if (praxisNein) return {r:6, thema:null, s:praxisNein,
+    grund:'Beim Praxis-Check war „' + praxisNein.name + '“ noch nicht sicher. Das Wissen sitzt – jetzt zählt die Übung.',
+    salon:'Üb am Übungskopf und frag deine Meisterin nach einem neuen Praxis-Check.'};
+  var bereit = alle.filter(function(s){ return s.stand === 'salon'; })[0];
+  return {r:7, thema:null, s:bereit || null, grund:'Alle Quiz-Themen sitzen gerade – stark!', salon:bereit ? htSalon(bereit, lkKomp(bereit.id)) : ''};
+}
+
+// Salon-Hinweis zur Kompetenz: mitmachen (Stufe ③) oder Praxis-Check holen (Stufe ④)
+function htSalon(s, k) {
+  if (!s || !k || !k.praxis.length) return '';
+  if (!s.stufen.salon) return 'Mach bei der nächsten Gelegenheit bei „' + k.praxis[0] + '“ mit und trag es ins Praxis-Tagebuch ein (' + s.salon.eintraege + ' von ' + s.salon.noetig + ').';
+  if (!s.stufen.bestaetigt) return 'Du hast „' + k.praxis[0] + '“ schon ' + s.salon.eintraege + '× gemacht – frag deine Meisterin nach einem Praxis-Check.';
+  return '';
+}
+
+function htZeichnen() {
+  HT = htVorschlag();
+  document.getElementById('st-heute-label').textContent = 'Heute für dich';
+  document.getElementById('st-heute-thema').textContent = HT.thema || (HT.s ? HT.s.name : 'Alles im grünen Bereich');
+  document.getElementById('st-heute-info').textContent = HT.grund + (HT.thema ? ' · ca. ' + HT_MINUTEN + ' Min' : '');
+  var salon = document.getElementById('st-heute-salon');
+  salon.textContent = HT.salon ? '✂ Im Salon: ' + HT.salon : '';
+  salon.hidden = !HT.salon;
+  document.getElementById('st-heute-los').textContent = HT.thema ? 'Jetzt üben →' : 'Zur Kompetenz-Landkarte →';
+  document.getElementById('st-heute-link').textContent = HT.thema ? 'Warum dieses Thema? · später lernen' : 'Freies Üben im Quiz';
+}
+
+function htSeiteFuellen() {
+  HT = htVorschlag();
+  document.getElementById('heute-titel').textContent = 'Heute für dich';
+  document.getElementById('heute-thema').textContent = HT.thema || (HT.s ? HT.s.name : 'Alles im grünen Bereich');
+  document.getElementById('heute-warum').textContent = HT.grund + (HT.thema && HT.s ? ' (zählt für „' + HT.s.name + '“)' : '');
+  document.getElementById('heute-warum-wrap').hidden = false;
+  document.getElementById('heute-dauer').textContent = HT.thema ? 'ca. ' + HT_MINUTEN + ' Minuten' : '–';
+  document.getElementById('heute-salon').textContent = HT.salon || '';
+  document.getElementById('heute-salon-wrap').hidden = !HT.salon;
+  document.getElementById('heute-tipp').textContent = (HT.thema && FORTSCHRITT_TIPPS[HT.thema]) || 'Lies die Fragen genau durch. Nimm dir Zeit für jede Antwort.';
+  var vWrap = document.getElementById('heute-verschieben-wrap'), msg = document.getElementById('heute-msg');
+  vWrap.style.display = HEUTE_VERSCHOBEN ? 'none' : 'block';
+  msg.style.display = HEUTE_VERSCHOBEN ? 'block' : 'none';
+  if (HEUTE_VERSCHOBEN) msg.textContent = 'Du hast deinen Lernmoment heute bereits verschoben.';
+}
+
+function htStarten() {
+  if (!HT) HT = htVorschlag();
+  if (!HT.thema) { zeige('progress'); return; }
+  if (HT.thema === HT_ENGLISCH) { window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261116s'; return; }
+  stThemaUeben(HT.thema);
 }
 
 function stMehrMerken(offen) { try { localStorage.setItem(ST_MEHR_KEY, offen ? '1' : '0'); } catch (e) {} }
@@ -4726,7 +4847,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4902,15 +5023,14 @@ async function lkDatenLaden() {
 
 async function lkLaden() {
   lkZeichnen();          // sofort mit dem, was schon da ist
-  await stLaden();
-  try { await lkDatenLaden(); } catch (e) {}
+  await stLaden();       // lädt auch Praxis-Tagebuch und Ergebnisse der Meisterin (lkDatenLaden)
   lkZeichnen();
 }
 
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119b';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c';
 }
 
 function lkTipp(th) {
