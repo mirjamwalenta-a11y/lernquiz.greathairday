@@ -168,7 +168,7 @@ a.btn{display:inline-block;text-decoration:none}
     <header>
       <span class="tag">Selbst ausprobieren</span>
       <h2>Make-up-Labor</h2>
-      <p class="muted">Wähle Modell, Ansicht, Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. In der Ansicht „Augen“ übst du Lidschatten – mit geschlossenen und mit offenen Augen. Tippst du eine aufgetragene Stelle an, kannst du sie mit Reglern anpassen: Stärke, Länge, Breite, Winkel und Weichheit.</p>
+      <p class="muted">Wähle Ansicht, Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. In den Ansichten „Augen offen“ und „Augen geschlossen“ übst du Lidschatten. Tippst du eine aufgetragene Stelle an, kannst du sie mit Reglern anpassen: Stärke, Länge, Breite, Winkel und Weichheit.</p>
     </header>
     <div class="labor">
       <div class="panel" style="justify-items:center">
@@ -177,15 +177,11 @@ a.btn{display:inline-block;text-decoration:none}
       </div>
       <div class="panel">
         <div>
-          <div class="lab">Modell</div>
-          <div class="chips" id="modelle"></div>
-        </div>
-        <div>
           <div class="lab">Ansicht</div>
           <div class="chips" id="ansichten"></div>
         </div>
         <div>
-          <div class="lab">Gesichtsform</div>
+          <div class="lab" id="formen-lab">Gesichtsform</div>
           <div class="chips" id="formen"></div>
           <p class="muted" id="form-info" style="font-size:13px;margin-top:6px"></p>
         </div>
@@ -287,11 +283,7 @@ const AUGEN={
   std:{n:'Augen',ziel:'Drei Töne: innen hell, nach außen dunkler – alles weich ineinander verblendet.',
     soll:{braue:'L',innen:'L',lid:'M',falte:'M',aussen:'D'},
     meiden:{braue:['D','Dunkel unter der Braue macht das Auge schwer.'],innen:['D','Dunkel im inneren Augenwinkel lässt die Augen enger zusammenstehen.']},
-    warum:{braue:'Hell unter der Braue hebt den Brauenbogen.',innen:'Hell im inneren Augenwinkel öffnet den Blick.',lid:'Der mittlere Ton auf dem beweglichen Lid gibt Farbe.',falte:'Der mittlere Ton in der Lidfalte verbindet und gibt Tiefe.',aussen:'Dunkel im äußeren Winkel gibt Tiefe und zieht das Auge nach außen.'}},
-  reif:{n:'Augen (reife Haut)',ziel:'Matte Töne, wenig Schimmer. Der Übergang sitzt etwas höher, damit man ihn auch bei offenem Auge sieht.',
-    soll:{braue:'L',innen:'L',lid:'L',falte:'M',aussen:'D'},
-    meiden:{braue:['D','Dunkel unter der Braue macht das Auge schwer.'],innen:['D','Dunkel im inneren Augenwinkel lässt die Augen enger zusammenstehen.'],unten:['D','Dunkel unten am Wimpernkranz lässt reife Augen kleiner und müde wirken.'],lid:['D','Dunkel auf dem ganzen Lid verschwindet bei Schlupflidern und wirkt schwer.']},
-    warum:{braue:'Hell und matt unter der Braue hebt.',innen:'Hell im inneren Augenwinkel macht wacher.',lid:'Ein heller, matter Ton auf dem beweglichen Lid lässt es größer wirken.',falte:'Der mittlere Ton etwas über der natürlichen Lidfalte: so sieht man ihn auch bei offenem Auge.',aussen:'Dunkel nur außen und schräg nach oben verblendet – das hebt das Auge.'}}
+    warum:{braue:'Hell unter der Braue hebt den Brauenbogen.',innen:'Hell im inneren Augenwinkel öffnet den Blick.',lid:'Der mittlere Ton auf dem beweglichen Lid gibt Farbe.',falte:'Der mittlere Ton in der Lidfalte verbindet und gibt Tiefe.',aussen:'Dunkel im äußeren Winkel gibt Tiefe und zieht das Auge nach außen.'}}
 };
 // ── Gesichtsformen und Regeln (Inhalte zur Durchsicht durch die Inhaberin) ──
 // soll: Zone → Produkt · meiden: Zone → [Produkt, warum] · warum: Zone → Begründung
@@ -325,27 +317,20 @@ const FORMEN={
     meiden:{kiefer:['H','Licht am Kiefer macht die breite untere Partie noch breiter.'],kinn_spitze:['C','Schatten an der Kinnspitze macht das Gesicht unten noch flächiger.']},
     warum:{stirn_mitte:'Licht in der Stirnmitte holt die schmale Stirn nach vorne.',stirn_seiten:'Licht an den Stirnseiten macht oben breiter.',kiefer:'Schatten an den Kieferseiten macht unten schmaler.',wangenknochen:'Rouge schräg auf dem Wangenknochen Richtung Schläfe zieht den Blick nach oben.'}}
 };
-// Bilder je Modell (Vorlagen der Inhaberin): „reif“ = Augen offen (reife Haut), „zu“ = Augen geschlossen
-const BILDER=Object.assign({},{"zu":{"oval":{"bild":"zu-oval","B":[152,243],"A":{"cx":76,"ansatz":38,"braue":111,"auge":129,"ad":30,"nase":160,"mund":181,"kinn":216,"schlaefe":47,"wange":50,"kiefer":28}},"rund":{"bild":"zu-rund","B":[158,253],"A":{"cx":79,"ansatz":47,"braue":119,"auge":138,"ad":31,"nase":169,"mund":187,"kinn":224,"schlaefe":53,"wange":58,"kiefer":44}},"eckig":{"bild":"zu-eckig","B":[157,251],"A":{"cx":79,"ansatz":39,"braue":118,"auge":136,"ad":31,"nase":167,"mund":187,"kinn":223,"schlaefe":45,"wange":49,"kiefer":41}},"herz":{"bild":"zu-herz","B":[149,238],"A":{"cx":75,"ansatz":68,"braue":110,"auge":129,"ad":29,"nase":162,"mund":180,"kinn":215,"schlaefe":42,"wange":43,"kiefer":22}},"diamant":{"bild":"zu-diamant","B":[154,252],"A":{"cx":77,"ansatz":35,"braue":88,"auge":105,"ad":30,"nase":136,"mund":155,"kinn":192,"schlaefe":44,"wange":54,"kiefer":33}},"lang":{"bild":"zu-lang","B":[152,249],"A":{"cx":76,"ansatz":48,"braue":86,"auge":104,"ad":30,"nase":135,"mund":153,"kinn":191,"schlaefe":40,"wange":44,"kiefer":28}},"birne":{"bild":"zu-birne","B":[154,252],"A":{"cx":77,"ansatz":46,"braue":88,"auge":105,"ad":30,"nase":138,"mund":155,"kinn":192,"schlaefe":44,"wange":51,"kiefer":40}}},"reif":{"oval":{"bild":"reif-oval","B":[130,256],"A":{"cx":65,"ansatz":56,"braue":105,"auge":119,"ad":27,"nase":154,"mund":173,"kinn":210,"schlaefe":45,"wange":48,"kiefer":33}},"rund":{"bild":"reif-rund","B":[132,259],"A":{"cx":66,"ansatz":60,"braue":108,"auge":121,"ad":32,"nase":156,"mund":176,"kinn":213,"schlaefe":48,"wange":53,"kiefer":43}},"eckig":{"bild":"reif-eckig","B":[130,256],"A":{"cx":65,"ansatz":56,"braue":105,"auge":120,"ad":29,"nase":154,"mund":173,"kinn":210,"schlaefe":48,"wange":49,"kiefer":33}},"herz":{"bild":"reif-herz","B":[128,252],"A":{"cx":64,"ansatz":52,"braue":104,"auge":120,"ad":28,"nase":153,"mund":173,"kinn":209,"schlaefe":44,"wange":45,"kiefer":19}},"diamant":{"bild":"reif-diamant","B":[128,252],"A":{"cx":64,"ansatz":48,"braue":93,"auge":109,"ad":27,"nase":143,"mund":162,"kinn":198,"schlaefe":44,"wange":51,"kiefer":24}},"lang":{"bild":"reif-lang","B":[124,243],"A":{"cx":62,"ansatz":50,"braue":88,"auge":103,"ad":24,"nase":138,"mund":156,"kinn":193,"schlaefe":43,"wange":46,"kiefer":27}},"birne":{"bild":"reif-birne","B":[124,244],"A":{"cx":62,"ansatz":50,"braue":94,"auge":110,"ad":25,"nase":144,"mund":164,"kinn":199,"schlaefe":44,"wange":49,"kiefer":39}}}});
-const MODELLE={reif:'Augen offen (reife Haut)',zu:'Augen geschlossen'};
-const ANSICHTEN={gesicht:'Ganzes Gesicht',augen:'Augen'};
+// Bilder (Vorlagen der Inhaberin): Gesichter mit geschlossenen Augen, Augenpartie mit offenen Augen
+const BILDER={zu:{"oval":{"bild":"zu-oval","B":[152,243],"A":{"cx":76,"ansatz":38,"braue":111,"auge":129,"ad":30,"nase":160,"mund":181,"kinn":216,"schlaefe":47,"wange":50,"kiefer":28}},"rund":{"bild":"zu-rund","B":[158,253],"A":{"cx":79,"ansatz":47,"braue":119,"auge":138,"ad":31,"nase":169,"mund":187,"kinn":224,"schlaefe":53,"wange":58,"kiefer":44}},"eckig":{"bild":"zu-eckig","B":[157,251],"A":{"cx":79,"ansatz":39,"braue":118,"auge":136,"ad":31,"nase":167,"mund":187,"kinn":223,"schlaefe":45,"wange":49,"kiefer":41}},"herz":{"bild":"zu-herz","B":[149,238],"A":{"cx":75,"ansatz":68,"braue":110,"auge":129,"ad":29,"nase":162,"mund":180,"kinn":215,"schlaefe":42,"wange":43,"kiefer":22}},"diamant":{"bild":"zu-diamant","B":[154,252],"A":{"cx":77,"ansatz":35,"braue":88,"auge":105,"ad":30,"nase":136,"mund":155,"kinn":192,"schlaefe":44,"wange":54,"kiefer":33}},"lang":{"bild":"zu-lang","B":[152,249],"A":{"cx":76,"ansatz":48,"braue":86,"auge":104,"ad":30,"nase":135,"mund":153,"kinn":191,"schlaefe":40,"wange":44,"kiefer":28}},"birne":{"bild":"zu-birne","B":[154,252],"A":{"cx":77,"ansatz":46,"braue":88,"auge":105,"ad":30,"nase":138,"mund":155,"kinn":192,"schlaefe":44,"wange":51,"kiefer":40}}},
+  // Augenpartie, Augen offen (eine Vorlage für alle Gesichtsformen)
+  offen:{bild:"offen-augen",B:[96.5,51.7],A:{cx:48.2,braue:17.8,auge:31.8,ad:22.6}}};
+const ANSICHTEN={gesicht:'Ganzes Gesicht',offen:'Augen offen',zu:'Augen geschlossen'};
 
-let form='oval', modell='reif', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
-const zu=()=>modell==='zu';
-const bild=()=>BILDER[modell][form];
-const zonen=()=>ansicht==='augen'?AUGEN_ZONEN:ZONEN;
-const werkz=()=>ansicht==='augen'?AUGEN_WERKZEUG:WERKZEUG;
+let form='oval', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
+const zu=()=>ansicht==='zu', augen=()=>ansicht!=='gesicht';
+const bild=()=>ansicht==='offen'?BILDER.offen:BILDER.zu[form];
+const zonen=()=>augen()?AUGEN_ZONEN:ZONEN;
+const werkz=()=>augen()?AUGEN_WERKZEUG:WERKZEUG;
 const ALLE_WERKZEUGE=Object.assign({},WERKZEUG,AUGEN_WERKZEUG);
-// Regeln: Augen (nach Modell) oder Gesichtsform; bei reifer Haut kein Licht unter den Augen
-function regeln(){
-  if(ansicht==='augen') return modell==='reif'?AUGEN.reif:AUGEN.std;
-  const f=FORMEN[form]; if(modell!=='reif') return f;
-  const soll=Object.assign({},f.soll), warum=Object.assign({},f.warum), meiden=Object.assign({},f.meiden);
-  if(soll.unter_augen==='H'){ delete soll.unter_augen;
-    if(!soll.wangenknochen){ soll.wangenknochen='H'; warum.wangenknochen='Licht oben auf dem Wangenknochen hebt – bei reifer Haut besser als unter den Augen.'; } }
-  meiden.unter_augen=['H','Highlighter unter den Augen betont bei reifer Haut die Fältchen. Lieber matt abdecken und das Licht auf den Wangenknochen setzen.'];
-  return Object.assign({},f,{soll,warum,meiden,ziel:f.ziel+' Reife Haut: cremige Texturen, wenig Puder und Schimmer.'});
-}
+// Regeln: Augen oder Gesichtsform
+function regeln(){ return augen()?AUGEN.std:FORMEN[form]; }
 // Regler je aufgetragener Stelle: Stärke, Länge, Breite, Winkel, Weichheit (links/rechts gespiegelt)
 const REGLER=[
   {k:'s',n:'Stärke',min:15,max:100,schritt:5,ein:'%'},
@@ -358,7 +343,7 @@ function standard(id){ const d=zonen()[id].d||{}; return {s:75, l:Math.round((d.
 
 // ── Zeichnen ────────────────────────────────────────────────────────────────
 function zonePos(z,f,seite,e){
-  const A=f.A, aw=A.ad*.5, p=ansicht==='augen'?z.pos(A,aw,A.auge-A.braue,zu()):z.pos(A), w=((z.rot||0)+(e?e.r:0))*seite, rx=p.rx*(e?e.l/100:1);
+  const A=f.A, aw=A.ad*.5, p=augen()?z.pos(A,aw,A.auge-A.braue,zu()):z.pos(A), w=((z.rot||0)+(e?e.r:0))*seite, rx=p.rx*(e?e.l/100:1);
   // „aussen“: am Ohr verankert – wird die Fläche länger, wächst sie Richtung Gesichtsmitte
   let x=f.A.cx+seite*p.x, y=p.y;
   if(e&&z.aussen){ const d=(rx-p.rx)*.8, a=w*Math.PI/180; x-=seite*d*Math.cos(a); y-=seite*d*Math.sin(a); }
@@ -366,16 +351,16 @@ function zonePos(z,f,seite,e){
 }
 function zeichnen(markierung){
   const f=bild(), r=regeln(), Z=zonen(), svg=$('#gesicht');
-  if(ansicht==='augen'){ // Ausschnitt nur mit der Augenpartie
+  if(augen()){ // Ausschnitt nur mit der Augenpartie
     const A=f.A, aw=A.ad*.5, g=A.auge-A.braue, x0=A.cx-(A.ad+aw*2.2), y0=A.braue-g*1.1, y1=A.auge+(zu()?g*1.1:aw*1.4);
     svg.setAttribute('viewBox',[x0,y0,2*(A.ad+aw*2.2),y1-y0].map(v=>v.toFixed(1)).join(' '));
   } else svg.setAttribute('viewBox','0 0 '+f.B[0]+' '+f.B[1]);
-  svg.setAttribute('aria-label',(ansicht==='augen'?'Augenpartie':'Gesicht')+' zum Schminken: '+FORMEN[form].n+', '+MODELLE[modell]);
+  svg.setAttribute('aria-label',(augen()?'Augenpartie':'Gesicht')+' zum Schminken'+(ansicht==='offen'?'':': '+FORMEN[form].n));
   // Weich verblendet: Verlauf von der Mitte nach außen plus Weichzeichner, keine Kontur
   let s='<defs>'+[1,2,3,4,5,6,7,8,9].map(n=>`<filter id="weich-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*1.1}"/></filter><filter id="weicha-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*.45}"/></filter>`).join('')+
     Object.entries(ALLE_WERKZEUGE).map(([k,w])=>`<radialGradient id="vl-${k}"><stop offset="0" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${w.rgb})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
   s+=`<image href="bilder/makeup/${f.bild}.jpg" x="0" y="0" width="${f.B[0]}" height="${f.B[1]}"/>`;
-  const klein=ansicht==='augen';
+  const klein=augen();
   Object.entries(Z).forEach(([id,z])=>{
     if(z.nurOffen&&zu()) return;
     const t=gesetzt[id], soll=markierung&&r.soll[id];
@@ -416,15 +401,13 @@ function reglerZeigen(){
 }
 function neu(){gesetzt={};einst={};auswahl=null;$('#rueckmeldung').innerHTML='';chips();zeichnen();reglerZeigen();}
 function chips(){
-  if(!BILDER[modell][form]) form='oval';
   if(!werkz()[werkzeug]) werkzeug=Object.keys(werkz())[0];
   const knopf=(attr,k,txt,an)=>`<button class="chip" data-${attr}="${k}" aria-pressed="${an}">${esc(txt)}</button>`;
-  $('#modelle').innerHTML=Object.entries(MODELLE).map(([k,n])=>knopf('modell',k,n,k===modell)).join('');
   $('#ansichten').innerHTML=Object.entries(ANSICHTEN).map(([k,n])=>knopf('ansicht',k,n,k===ansicht)).join('');
-  $('#formen').innerHTML=Object.entries(FORMEN).filter(([k])=>BILDER[modell][k]).map(([k,f])=>knopf('form',k,f.n,k===form)).join('');
+  $('#formen').innerHTML=ansicht==='offen'?'':Object.keys(FORMEN).map(k=>knopf('form',k,FORMEN[k].n,k===form)).join('');
+  $('#formen-lab').hidden=ansicht==='offen';
   $('#werkzeuge').innerHTML=Object.entries(werkz()).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
   $('#form-info').textContent='Ziel: '+regeln().ziel;
-  document.querySelectorAll('[data-modell]').forEach(b=>b.onclick=()=>{modell=b.dataset.modell;neu();});
   document.querySelectorAll('[data-ansicht]').forEach(b=>b.onclick=()=>{ansicht=b.dataset.ansicht;neu();});
   document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{form=b.dataset.form;neu();});
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{werkzeug=b.dataset.w;chips();});
@@ -443,7 +426,7 @@ function pruefen(){
     if(f.soll[z]) return;
     const m=f.meiden[z];
     if(m&&m[0]===t) falsch.push(`${Z[z].n}: ${m[1]}`);
-    else extra.push(`${WERKZEUG[t].ic} ${Z[z].n}: ${ansicht==='augen'?'hier nicht nötig.':'bei dieser Gesichtsform nicht nötig.'}`);
+    else extra.push(`${WERKZEUG[t].ic} ${Z[z].n}: ${augen()?'hier nicht nötig.':'bei dieser Gesichtsform nicht nötig.'}`);
   });
   const alles=!fehlt.length&&!falsch.length;
   $('#rueckmeldung').innerHTML=
