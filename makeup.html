@@ -491,8 +491,8 @@ function reglerZeigen(){
   $('#rg-weg').onclick=()=>{ delete gesetzt[auswahl]; delete einst[auswahl]; auswahl=null; zeichnen(); reglerZeigen(); };
   $('#rg-fertig').onclick=()=>{ auswahl=null; zeichnen(); reglerZeigen(); };
 }
-// Vorbilder (fertig geschminkt) der Inhaberin – für Diamant und Birnenförmig gibt es keines
-const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1};
+// Vorbilder (fertig geschminkt) der Inhaberin für alle Gesichtsformen
+const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1,diamant:1,birne:1};
 function vorbild(zeigen){
   const ok=zeigen&&ansicht==='gesicht'&&NACHHER[form];
   $('#vorbild').hidden=!ok;
