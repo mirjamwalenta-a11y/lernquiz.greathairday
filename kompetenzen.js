@@ -42,7 +42,7 @@
 
     {id:'beratung', name:'Beratung & Kundengespräch',
      themen:['Beratungsgespräch & Kundenkommunikation','Kundenberatung','Kundenkommunikation Fortgeschritten'],
-     module:['Beratung & Formwirkung','Kurz sortieren'], anwenden:null,
+     module:['Beratung & Formwirkung','Farbtyp-Beratung','Kurz sortieren'], anwenden:null,
      praxis:['Beratung am Gast'], praxisCheck:['empfang']},
 
     // Kein Praxis-Bereich: „Beratung am Gast“ sagt nicht, ob auf Englisch beraten wurde.
