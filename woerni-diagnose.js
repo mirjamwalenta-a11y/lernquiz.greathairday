@@ -1,6 +1,6 @@
 // Wörni · „Woran liegt's?“ – Fehlerdiagnose
 // Farbe, Herrenschnitt, Blondierung: von der Inhaberin geprüft (2026-11-19).
-// Dauerwelle, Föhnen: neu, zur Durchsicht durch die Inhaberin.
+// Dauerwelle, Föhnen, Make-up: neu, zur Durchsicht durch die Inhaberin.
 // Der Lehrling wählt einen typischen Fehler, beantwortet 2–3 Fragen und bekommt
 // die wahrscheinliche Ursache, wie es beim nächsten Mal geht, und einen
 // passenden Lernschritt. Regelbasiert, keine KI (Wörni-Grundsatz, docs/woerni-v1.md).
@@ -165,7 +165,63 @@
           erklaerung: 'Vor allem feines Haar braucht etwas, das die Form stützt.',
           naechstes: 'Je nach Haar ein leichtes Volumen- oder Föhnspray verwenden.' }
       ],
-      satz: 'Meine Föhnfrisur fällt schnell zusammen. Kannst du mir beim nächsten Mal kurz zuschauen?' }
+      satz: 'Meine Föhnfrisur fällt schnell zusammen. Kannst du mir beim nächsten Mal kurz zuschauen?' },
+    { id: 'makeup-maske', ic: '💄', titel: 'Das Make-up wirkt maskenhaft', komp: 'makeup',
+      fragen: [
+        { id: 'ton', f: 'Wo hast du den Farbton der Grundierung abgestimmt?',
+          o: [['kiefer', 'Am Kiefer, bei Tageslicht'], ['hand', 'Auf dem Handrücken'], ['nicht', 'Gar nicht, nach Gefühl']] },
+        { id: 'menge', f: 'Wie viel Grundierung hast du aufgetragen?',
+          o: [['duenn', 'Dünn, nur wo nötig'], ['viel', 'Deckend im ganzen Gesicht']] },
+        { id: 'rand', f: 'Hast du die Ränder zu Hals und Haaransatz ausgeblendet?',
+          o: [['ja', 'Ja'], ['nein', 'Nein']] },
+        { id: 'haut', f: 'Wurde die Haut vorher gereinigt und gepflegt?',
+          o: [['ja', 'Ja'], ['nein', 'Nein']] }
+      ],
+      ergebnisse: [
+        { wenn: { ton: ['hand', 'nicht'] },
+          ursache: 'Der Farbton passt nicht zur Haut.',
+          erklaerung: 'Der Handrücken hat oft einen anderen Ton als das Gesicht. Am Kiefer siehst du, ob die Grundierung mit Gesicht und Hals verschmilzt.',
+          naechstes: 'Zwei oder drei Töne als Streifen am Kiefer testen und bei Tageslicht den wählen, der verschwindet.' },
+        { wenn: { rand: ['nein'] },
+          ursache: 'Man sieht, wo die Grundierung aufhört.',
+          erklaerung: 'Ein harter Rand am Kiefer oder Haaransatz lässt das Gesicht wie eine Maske wirken.',
+          naechstes: 'Die Ränder zu Hals, Ohren und Haaransatz mit dem Schwämmchen weich auslaufen lassen.' },
+        { wenn: { menge: ['viel'] },
+          ursache: 'Zu viel Grundierung.',
+          erklaerung: 'Eine dicke Schicht deckt auch das Natürliche der Haut ab und wirkt schwer.',
+          naechstes: 'Dünn beginnen und nur dort mehr nehmen, wo es nötig ist, zum Beispiel mit Concealer.' },
+        { wenn: { haut: ['nein'] },
+          ursache: 'Die Haut war nicht vorbereitet.',
+          erklaerung: 'Auf trockener Haut setzt sich Grundierung in Schüppchen und Linien ab.',
+          naechstes: 'Vorher reinigen und eine passende Pflege kurz einziehen lassen.' }
+      ],
+      lernen: { thema: 'Make-up & Visagistik' }, modul: 'makeup',
+      satz: 'Mein Make-up hat maskenhaft gewirkt. Kannst du mir beim Abstimmen der Grundierung zeigen, worauf du achtest?' },
+    { id: 'makeup-schatten', ic: '🖌', titel: 'Contouring oder Rouge wirken fleckig', komp: 'makeup',
+      fragen: [
+        { id: 'verblendet', f: 'Hast du die Farbe nach dem Auftragen verblendet?',
+          o: [['ja', 'Ja, bis keine Kante mehr zu sehen war'], ['kurz', 'Nur kurz'], ['nein', 'Nein']] },
+        { id: 'menge', f: 'Wie hast du die Farbe aufgenommen?',
+          o: [['wenig', 'Wenig, in Schichten aufgebaut'], ['viel', 'Viel auf einmal']] },
+        { id: 'platz', f: 'Wo sitzt der Schatten?',
+          o: [['form', 'Passend zur Gesichtsform'], ['weiss', 'Weiß ich nicht genau']] }
+      ],
+      ergebnisse: [
+        { wenn: { verblendet: ['kurz', 'nein'] },
+          ursache: 'Die Farbe wurde nicht genug verblendet.',
+          erklaerung: 'Schatten und Rouge sollen weich in die Haut übergehen, ohne sichtbaren Anfang und Ende.',
+          naechstes: 'Mit einem sauberen Pinsel in kleinen Kreisen ausblenden, bis keine Kante mehr zu sehen ist.' },
+        { wenn: { menge: ['viel'] },
+          ursache: 'Zu viel Farbe auf einmal.',
+          erklaerung: 'Viel Farbe lässt sich schlecht verteilen und bleibt als Fleck stehen.',
+          naechstes: 'Wenig Farbe aufnehmen, überschüssige abklopfen und Schicht für Schicht aufbauen.' },
+        { wenn: { platz: ['weiss'] },
+          ursache: 'Der Platz passt vielleicht nicht zur Gesichtsform.',
+          erklaerung: 'Wo Licht und Schatten hingehören, hängt von der Gesichtsform ab. Am falschen Platz wirkt der Schatten wie ein Fleck.',
+          naechstes: 'Im Make-up-Labor die Gesichtsform durchspielen und dann am Gast anwenden.' }
+      ],
+      lernen: { thema: 'Make-up & Visagistik' }, modul: 'makeup',
+      satz: 'Mein Contouring ist fleckig geworden. Kannst du mir zeigen, wie du verblendest?' }
   ];
 
   var BASIS = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/';
@@ -173,7 +229,8 @@
     farblabor:   { t: 'Im Farblabor üben', url: BASIS + 'farblabor.html?v=20261116s' },
     spickzettel: { t: 'Farb-Spickzettel ansehen', url: BASIS + 'spickzettel.html' },
     maschine:    { t: 'Im Modul „Maschine“ üben', url: BASIS + 'beratung-formwirkung.html#view=maschine' },
-    umformung:   { t: 'Im Modul „Umformung“ üben', url: BASIS + 'umformung.html?v=20261116s' }
+    umformung:   { t: 'Im Modul „Umformung“ üben', url: BASIS + 'umformung.html?v=20261116s' },
+    makeup:      { t: 'Im Make-up-Labor üben', url: BASIS + 'makeup.html?v=20261119i' }
   };
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }

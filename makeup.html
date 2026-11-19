@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c1917">
+<title>Make-up & Visagistik · A Great Hair Day</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
+<!--
+  Make-up & Visagistik: Make-up-Labor (schematisches Gesicht in fünf Gesichtsformen,
+  Highlighter / Contouring / Rouge setzen, regelbasierte Rückmeldung), Regeln je
+  Gesichtsform, Verweis auf die Make-up-Farben in der Farbtyp-Beratung, Quiz mit
+  „sicher oder geraten?“ (quiz-verlauf.js, Thema „Make-up & Visagistik“).
+  Keine Fotos, keine Kamera, nichts gespeichert außer dem Quiz-Ergebnis.
+  Aussehen wie farbtyp.html / werkzeugkunde.html. Inhalte zur Durchsicht durch die Inhaberin.
+-->
+<style>
+:root{
+  --bg:#F8F4EA; --surface:#FFFFFF; --surface-2:#F0E9D8; --ink:#211D17; --muted:#6B6455; --line:#E4DBC5;
+  --accent:#896C32; --accent-soft:#F3EBD9; --accent-ink:#FFFFFF; --warn:#B8336A; --warn-soft:#FBEFF4;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+h1,h2,h3{line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:600}
+h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:600}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0;max-width:65ch}
+.tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+header.top{padding-block:20px 18px;display:grid;gap:8px}
+.back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+header.top p{color:var(--muted)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(248,244,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.tabs a{flex:none;color:var(--ink);text-decoration:none;font-weight:600;font-size:13px;padding:7px 11px;border-radius:6px}
+nav.tabs a:hover{background:var(--accent-soft);color:var(--accent)}
+section.block{padding-block:36px 4px;display:grid;gap:16px;scroll-margin-top:56px}
+section.block > header{display:grid;gap:6px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid #D9CDAE;background:transparent;color:var(--muted);font:600 13px Poppins,system-ui;padding:8px 13px;border-radius:6px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tip{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 14px Poppins,system-ui;padding:10px 16px;border-radius:6px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+dl.facts{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font-size:14px}
+dl.facts dt{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
+dl.facts dd{margin:0}
+dd.safe{color:var(--warn)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.checks label{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+.checks input{accent-color:var(--accent);width:18px;height:18px;margin-top:2px;flex:none}
+.checks label.done{color:var(--muted);text-decoration:line-through}
+/* Farbtypen */
+.merk{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.merk div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+.merk b{display:block;font-size:13px;margin-bottom:2px}
+.typen{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.typ h3{display:flex;justify-content:space-between;align-items:baseline;gap:4px 8px;flex-wrap:wrap;padding-right:44px}
+.typ h3 small{font-size:12px;color:var(--muted);font-weight:600}
+.faecher{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px}
+.faecher i{display:block;aspect-ratio:1;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
+/* Tücher */
+.buehne{position:relative;border-radius:10px;overflow:hidden;background:#2B2620;aspect-ratio:3/4;max-width:420px;width:100%;justify-self:center}
+.buehne video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.buehne .tuch{position:absolute;left:-10%;right:-10%;bottom:-6%;height:34%;border-radius:50% 50% 0 0/38% 38% 0 0;box-shadow:inset 0 10px 18px rgba(255,255,255,.18),inset 0 -12px 22px rgba(0,0,0,.18);transition:background .25s}
+.buehne .leer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#E8E0CF;padding:24px;font-size:14px}
+.buehne .tuchname{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;font:600 12px Poppins,system-ui;padding:4px 9px;border-radius:999px}
+.schritt{display:grid;gap:10px}
+.ab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ab button{appearance:none;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:10px;font:600 13px Poppins,system-ui;cursor:pointer;display:flex;gap:8px;align-items:center;color:var(--ink)}
+.ab button i{width:22px;height:22px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.12)}
+.ab button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.vergleich{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vergleich figure{margin:0;background:var(--surface-2);border-radius:8px;overflow:hidden;min-height:60px}
+.vergleich img{display:block;width:100%;height:auto}
+.vergleich figcaption{font-size:12px;font-weight:600;text-align:center;padding:4px}
+.antwort{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.antwort .chip{text-align:center;padding:8px 6px}
+.ergebnis{border:2px solid var(--accent)}
+.fortschritt{display:flex;gap:6px}
+.fortschritt i{flex:1;height:5px;border-radius:3px;background:var(--surface-2)}
+.fortschritt i.an{background:var(--accent)}
+/* Quiz (wie Werkzeugkunde) */
+.quiz{display:grid;gap:12px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:10px}
+.q h3{font-size:15px}
+.q .opts{display:grid;gap:6px}
+.q button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:14px Poppins,system-ui;padding:10px 13px;border-radius:8px;cursor:pointer}
+.q button:hover:not(:disabled){border-color:var(--accent)}
+.q button:disabled{cursor:default}
+.q button.right{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.q button.wrong{border-color:#C44030;background:#FDECEA;color:#C44030}
+.q button.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.q .sicher-frage{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 6px}
+.q .sicher-knoepfe{display:flex;gap:8px}
+.q button.pruef{flex:1;text-align:center;font-weight:600}
+.q button.pruef.s{background:var(--accent);border-color:var(--accent);color:#fff}
+.q .why.geraten{color:#B4602A}
+.q .why.sicherfalsch{color:#C44030}
+.q .why{font-size:13px;color:var(--muted)}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score .num{font:600 1.5rem var(--mono);color:var(--accent)}
+footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
+/* Make-up-Labor */
+.labor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:760px){.labor{grid-template-columns:minmax(0,1fr)}}
+#gesicht{width:100%;max-width:320px;height:auto;display:block}
+#gesicht .p-C,#gesicht .p-R{mix-blend-mode:multiply}
+#gesicht image,#gesicht .produkt,#gesicht .auswahl,#gesicht .fehlt{pointer-events:none}
+.ki-zeile{font-size:11px;color:var(--muted)}
+.tipp{fill:transparent;cursor:pointer}
+.tipp:hover{fill:rgba(137,108,50,.14)}
+.produkt{stroke-width:1}
+.fehlt{fill:none;stroke-width:1.6;stroke-dasharray:4 3}
+.auswahl{fill:none;stroke:var(--accent);stroke-width:1.2;stroke-dasharray:2 3}
+.regler{display:grid;gap:6px;background:var(--surface-2);border-radius:8px;padding:12px}
+.regel{display:grid;grid-template-columns:5.5em minmax(0,1fr) 3.2em;gap:8px;align-items:center;font-size:13px}
+.regel input{width:100%;accent-color:var(--accent)}
+.regel b{font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.lab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+ul.rm{margin:4px 0 8px;padding-left:18px;font-size:14px;display:grid;gap:4px}
+.formen-liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+a.btn{display:inline-block;text-decoration:none}
+</style>
+<link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="quiz-verlauf.js?v=20261115"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar -->
+<link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="back-link" href="lerntool.html?v=20261119i">← Lern-Tool</a>
+    <span class="tag">greathairday · Visagistik</span>
+    <h1>Make-up & Visagistik 💄</h1>
+    <p>Licht und Schatten formen ein Gesicht. Im Make-up-Labor setzt du Highlighter, Contouring und Rouge selbst und siehst, wie jede Gesichtsform am besten wirkt.</p>
+  </header>
+</div>
+
+<nav class="tabs" aria-label="Bereiche">
+  <div class="wrap">
+    <a href="#labor">Make-up-Labor</a>
+    <a href="#regeln">Die Regeln</a>
+    <a href="#farben">Farben zum Farbtyp</a>
+    <a href="#ueben">Üben</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="block" id="labor">
+    <header>
+      <span class="tag">Selbst ausprobieren</span>
+      <h2>Make-up-Labor</h2>
+      <p class="muted">Wähle eine Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. Tippst du eine aufgetragene Stelle an, kannst du sie mit Reglern anpassen: Stärke, Länge, Breite, Winkel und Weichheit.</p>
+    </header>
+    <div class="labor">
+      <div class="panel" style="justify-items:center">
+        <svg id="gesicht" viewBox="0 0 250 275" role="img" aria-label="Gesicht zum Schminken"></svg>
+        <span class="ki-zeile">KI-generiert</span>
+      </div>
+      <div class="panel">
+        <div>
+          <div class="lab">Gesichtsform</div>
+          <div class="chips" id="formen"></div>
+          <p class="muted" id="form-info" style="font-size:13px;margin-top:6px"></p>
+        </div>
+        <div>
+          <div class="lab">Produkt</div>
+          <div class="chips" id="werkzeuge"></div>
+        </div>
+        <div id="regler" class="regler" hidden></div>
+        <div class="chips">
+          <button class="btn" id="pruefen">Prüfen</button>
+          <button class="btn ghost" id="loesung">Lösung zeigen</button>
+          <button class="btn ghost" id="leeren">Alles abwischen</button>
+        </div>
+        <div id="rueckmeldung"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="regeln">
+    <header>
+      <span class="tag">Grundlagen</span>
+      <h2>Licht holt nach vorne, Schatten schiebt zurück</h2>
+      <p class="muted">Das Ziel ist fast immer ein ausgewogenes, ovales Wirken. Was zu breit, zu lang oder zu kantig wirkt, wird mit Schatten zurückgenommen und mit Licht ausgeglichen.</p>
+    </header>
+    <div class="merk">
+      <div><b>✨ Highlighter (Licht)</b>Hebt hervor und lässt Flächen größer und näher wirken: Wangenknochen, Nasenrücken, Stirn- und Kinnmitte, unter den Augen.</div>
+      <div><b>🟤 Contouring (Schatten)</b>Nimmt zurück und lässt Flächen schmaler wirken: Schläfen, unter dem Wangenknochen, Kieferlinie, Haaransatz. Immer kühl-bräunlich und gut verblendet.</div>
+      <div><b>🌸 Rouge</b>Bringt Frische. Die Richtung formt mit: schräg zur Schläfe macht schmaler, waagrecht macht breiter, rund auf dem Wangenapfel macht weicher.</div>
+    </div>
+    <div class="formen-liste" id="formen-liste"></div>
+  </section>
+
+  <section class="block" id="farben">
+    <header>
+      <span class="tag">Farbtyp</span>
+      <h2>Make-up-Farben zum Farbtyp</h2>
+      <p class="muted">Welche Lippen-, Lid- und Rougefarben passen, hängt vom Farbtyp ab. Den Typ findest du in der Farbtyp-Beratung mit den Tüchern.</p>
+    </header>
+    <p><a class="btn ghost" href="farbtyp.html?v=20261119b#makeup">Zu den Make-up-Farben in der Farbtyp-Beratung →</a></p>
+  </section>
+
+  <section class="block" id="ueben">
+    <header>
+      <span class="tag">Quiz</span>
+      <h2>Weißt du, wohin Licht und Schatten gehören?</h2>
+      <p class="muted">Bei jeder Frage sagst du, ob du dir sicher bist. Richtig geraten zählt noch nicht als gewusst.</p>
+    </header>
+    <div class="quiz" id="quizBox"></div>
+    <div class="score"><span class="num" id="scoreOut">0 / 0</span><span id="scoreText" class="muted"></span><button class="btn ghost" id="quizReset">Neu starten</button></div>
+    <div id="scoreSpeicher" style="font-size:12px"></div>
+  </section>
+</main>
+
+<footer>A Great Hair Day · Make-up & Visagistik</footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// ── Produkte ────────────────────────────────────────────────────────────────
+const WERKZEUG={
+  H:{name:'Highlighter',ic:'✨',rgb:'255,226,140',deck:.85,rand:'#C9A44C'},
+  C:{name:'Contouring',ic:'🟤',rgb:'110,70,42',deck:.9,rand:'#6E4E36'},
+  R:{name:'Rouge',ic:'🌸',rgb:'226,84,118',deck:.55,rand:'#B8506A'}
+};
+// ── Zonen: Lage aus den Messpunkten der Zeichnung (A), „paar“ = links und rechts ──
+const ZONEN={
+  haaransatz:{n:'Haaransatz',d:{w:5},pos:A=>({x:0,y:A.ansatz,rx:A.schlaefe*.8,ry:7})},
+  stirn_mitte:{n:'Stirnmitte',pos:A=>({x:0,y:(A.ansatz+A.braue)/2,rx:A.schlaefe*.35,ry:9})},
+  stirn_seiten:{n:'Stirnseiten',paar:1,d:{l:1.2,b:1.2,w:5},pos:A=>({x:A.schlaefe*.68,y:A.ansatz+(A.braue-A.ansatz)*.4,rx:A.schlaefe*.24,ry:10})},
+  schlaefen:{n:'Schläfen',paar:1,d:{l:1.4,b:1.3,w:5},pos:A=>({x:A.schlaefe*.92,y:A.braue+2,rx:7,ry:13})},
+  unter_augen:{n:'unter den Augen',paar:1,rot:-12,d:{l:1.3,b:1.4,w:3},pos:A=>({x:A.ad,y:A.auge+12,rx:14,ry:5})},
+  wangenknochen:{n:'Wangenknochen (oben)',paar:1,rot:-14,aussen:1,d:{l:1.25,b:1.2,w:4},pos:A=>({x:A.wange*.76,y:A.auge+(A.nase-A.auge)*.48,rx:A.wange*.26,ry:6})},
+  wangen_hohl:{n:'unter dem Wangenknochen',paar:1,rot:-16,aussen:1,d:{l:1.3,b:1.3,w:5},pos:A=>({x:A.wange*.7,y:A.nase+4,rx:A.wange*.27,ry:5})},
+  wangenapfel:{n:'Wangenapfel',paar:1,d:{l:1.3,b:1.3,w:5},pos:A=>({x:A.wange*.52,y:A.nase-3,rx:11,ry:8})},
+  nasenruecken:{n:'Nasenrücken',d:{b:1.3,w:2},pos:A=>({x:0,y:(A.auge+A.nase)/2,rx:4,ry:(A.nase-A.auge)/2.4})},
+  kiefer:{n:'Kieferwinkel',paar:1,rot:-45,d:{l:2.2,b:.8,w:5},pos:A=>({x:A.kiefer*.74,y:(A.mund+A.kinn)/2,rx:10,ry:12})},
+  kinn_mitte:{n:'Kinnmitte',d:{w:4},pos:A=>({x:0,y:A.kinn-14,rx:13,ry:6})},
+  kinn_spitze:{n:'Kinnspitze',d:{w:4},pos:A=>({x:0,y:A.kinn-3,rx:15,ry:4})}
+};
+// ── Gesichtsformen und Regeln (Inhalte zur Durchsicht durch die Inhaberin) ──
+// soll: Zone → Produkt · meiden: Zone → [Produkt, warum] · warum: Zone → Begründung
+const FORMEN={
+  oval:{n:'Oval',bild:'oval',B:[250,275],A:{cx:125,ansatz:58,braue:105,auge:120,ad:30,nase:155,mund:178,kinn:210,schlaefe:40,wange:50,kiefer:38},ziel:'Ausgewogen – nur natürlich betonen.',
+    soll:{stirn_mitte:'H',nasenruecken:'H',wangenknochen:'H',kinn_mitte:'H',wangen_hohl:'C',wangenapfel:'R'},
+    meiden:{},
+    warum:{stirn_mitte:'Licht in der Mitte gibt Frische.',nasenruecken:'Ein feiner Lichtstreifen betont die Nase.',wangenknochen:'Licht oben auf dem Wangenknochen lässt ihn leuchten.',kinn_mitte:'Licht am Kinn rundet ab.',wangen_hohl:'Ein leichter Schatten darunter gibt Kontur.',wangenapfel:'Rouge auf dem Wangenapfel, leicht schräg verblendet, wirkt frisch.'}},
+  rund:{n:'Rund',bild:'rund',B:[250,285],A:{cx:125,ansatz:65,braue:112,auge:125,ad:32,nase:160,mund:182,kinn:215,schlaefe:40,wange:52,kiefer:42},ziel:'Schmaler und länger wirken lassen.',
+    soll:{stirn_mitte:'H',nasenruecken:'H',kinn_mitte:'H',schlaefen:'C',wangen_hohl:'C',kiefer:'C',wangenknochen:'R'},
+    meiden:{wangenapfel:['R','Rouge rund auf dem Wangenapfel macht das Gesicht noch runder.']},
+    warum:{stirn_mitte:'Licht in der Mitte zieht den Blick in die Länge.',nasenruecken:'Eine senkrechte Lichtlinie streckt.',kinn_mitte:'Licht am Kinn verlängert nach unten.',schlaefen:'Schatten an den Schläfen nimmt Breite.',wangen_hohl:'Schräger Schatten unter dem Wangenknochen formt und streckt.',kiefer:'Schatten an den Kieferseiten macht unten schmaler.',wangenknochen:'Rouge schräg vom Wangenknochen zur Schläfe streckt.'}},
+  lang:{n:'Lang',bild:'lang',B:[296,420],A:{cx:150,ansatz:118,braue:152,auge:170,ad:42,nase:225,mund:255,kinn:305,schlaefe:62,wange:76,kiefer:55},ziel:'Kürzer und etwas breiter wirken lassen.',
+    soll:{wangenknochen:'H',unter_augen:'H',haaransatz:'C',kinn_spitze:'C',wangenapfel:'R'},
+    meiden:{nasenruecken:['H','Ein langer Lichtstreifen auf der Nase verlängert das Gesicht noch mehr.'],wangen_hohl:['C','Schatten unter dem Wangenknochen macht das Gesicht schmaler – das verstärkt die Länge.']},
+    warum:{wangenknochen:'Licht außen am Wangenknochen macht breiter.',unter_augen:'Licht unter den Augen betont die Mitte in der Breite.',haaransatz:'Schatten am Haaransatz kürzt die Stirn.',kinn_spitze:'Schatten an der Kinnspitze kürzt nach unten.',wangenapfel:'Rouge waagrecht Richtung Ohr verblendet macht breiter.'}},
+  eckig:{n:'Eckig',bild:'eckig',B:[290,315],A:{cx:142,ansatz:72,braue:125,auge:142,ad:36,nase:185,mund:210,kinn:250,schlaefe:48,wange:63,kiefer:55},ziel:'Weicher wirken lassen, Ecken abrunden.',
+    soll:{stirn_mitte:'H',kinn_mitte:'H',wangenknochen:'H',kiefer:'C',stirn_seiten:'C',wangenapfel:'R'},
+    meiden:{},
+    warum:{stirn_mitte:'Licht in der Mitte lenkt von den Ecken weg.',kinn_mitte:'Licht am Kinn rundet die Kinnpartie.',wangenknochen:'Licht auf dem Wangenknochen hebt die Mitte.',kiefer:'Schatten am Kieferwinkel nimmt die Ecke weg.',stirn_seiten:'Schatten an den Stirnecken rundet oben ab.',wangenapfel:'Rouge rund auf dem Wangenapfel macht weicher.'}},
+  herz:{n:'Herzförmig',bild:'herz',B:[340,403],A:{cx:170,ansatz:112,braue:145,auge:160,ad:37,nase:205,mund:230,kinn:278,schlaefe:62,wange:68,kiefer:45},ziel:'Stirn schmaler, Kinnpartie ausgleichen.',
+    soll:{unter_augen:'H',kinn_mitte:'H',stirn_seiten:'C',schlaefen:'C',kinn_spitze:'C',wangenapfel:'R'},
+    meiden:{stirn_seiten:['H','Licht an den Stirnseiten macht die ohnehin breite Stirn noch breiter.']},
+    warum:{unter_augen:'Licht unter den Augen holt die Mitte nach vorne.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',stirn_seiten:'Schatten an den Stirnseiten nimmt Breite oben.',schlaefen:'Schatten an den Schläfen macht oben schmaler.',kinn_spitze:'Ein Hauch Schatten an der Kinnspitze nimmt die Spitze weg.',wangenapfel:'Rouge etwas tiefer auf dem Wangenapfel gleicht unten aus.'}}
+};
+
+let form='oval', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
+// Regler je aufgetragener Stelle: Stärke, Länge, Breite, Winkel, Weichheit (links/rechts gespiegelt)
+const REGLER=[
+  {k:'s',n:'Stärke',min:15,max:100,schritt:5,ein:'%'},
+  {k:'l',n:'Länge',min:50,max:250,schritt:5,ein:'%'},
+  {k:'b',n:'Breite',min:50,max:250,schritt:5,ein:'%'},
+  {k:'r',n:'Winkel',min:-60,max:60,schritt:2,ein:'°'},
+  {k:'w',n:'Weichheit',min:1,max:9,schritt:1,ein:''}
+];
+function standard(id){ const d=ZONEN[id].d||{}; return {s:75, l:Math.round((d.l||1)*100), b:Math.round((d.b||1)*100), r:0, w:d.w||4}; }
+
+// ── Zeichnen ────────────────────────────────────────────────────────────────
+function zonePos(z,f,seite,e){
+  const p=z.pos(f.A), w=((z.rot||0)+(e?e.r:0))*seite, rx=p.rx*(e?e.l/100:1);
+  // „aussen“: am Ohr verankert – wird die Fläche länger, wächst sie Richtung Gesichtsmitte
+  let x=f.A.cx+seite*p.x, y=p.y;
+  if(e&&z.aussen){ const d=(rx-p.rx)*.8, a=w*Math.PI/180; x-=seite*d*Math.cos(a); y-=seite*d*Math.sin(a); }
+  return {x, y, rx, ry:p.ry*(e?e.b/100:1), t:w?` transform="rotate(${w} ${x} ${y})"`:''};
+}
+function zeichnen(markierung){
+  const f=FORMEN[form], svg=$('#gesicht');
+  svg.setAttribute('viewBox','0 0 '+f.B[0]+' '+f.B[1]);
+  svg.setAttribute('aria-label','Gesicht zum Schminken: '+f.n);
+  // Weich verblendet: Verlauf von der Mitte nach außen plus Weichzeichner, keine Kontur
+  let s='<defs>'+[1,2,3,4,5,6,7,8,9].map(n=>`<filter id="weich-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*1.1}"/></filter>`).join('')+
+    Object.entries(WERKZEUG).map(([k,w])=>`<radialGradient id="vl-${k}"><stop offset="0" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${w.rgb})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
+  s+=`<image href="bilder/makeup/${f.bild}.jpg" x="0" y="0" width="${f.B[0]}" height="${f.B[1]}"/>`;
+  Object.entries(ZONEN).forEach(([id,z])=>{
+    const t=gesetzt[id], soll=markierung&&f.soll[id];
+    (z.paar?[-1,1]:[1]).forEach(seite=>{
+      const p=zonePos(z,f,seite), e=t&&(einst[id]||(einst[id]=standard(id)));
+      if(t){
+        const q=zonePos(z,f,seite,e), o=e.s/100, w=e.w;
+        // Hauch außen (breit, sehr weich) und Kern (kräftiger) – zusammen ein weicher Verlauf ohne Flecken
+        // Drehung auf der Gruppe, Weichzeichner auf den Flächen – so rechnet der Browser die Unschärfe im gedrehten Bild
+        s+=`<g class="produkt p-${t}"${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.35}" ry="${q.ry*1.8}" fill="url(#vl-${t})" opacity="${(o*.5).toFixed(2)}" filter="url(#weich-${Math.min(9,w+2)})"/>`+
+           `<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="url(#vl-${t})" opacity="${o.toFixed(2)}" filter="url(#weich-${w})"/></g>`;
+        if(auswahl===id) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
+      }
+      if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${WERKZEUG[soll].rand}"/>`;
+      s+=`<ellipse class="tipp"${p.t} data-z="${id}" cx="${p.x}" cy="${p.y}" rx="${Math.max(p.rx,12)}" ry="${Math.max(p.ry,10)}"><title>${esc(z.n)}</title></ellipse>`;
+    });
+  });
+  svg.innerHTML=s;
+  svg.querySelectorAll('.tipp').forEach(e=>e.addEventListener('click',()=>{
+    const id=e.dataset.z;
+    // Leere Stelle: Produkt auftragen. Aufgetragene Stelle: auswählen und mit den Reglern anpassen.
+    if(!gesetzt[id]){ gesetzt[id]=werkzeug; einst[id]=standard(id); }
+    auswahl=id; $('#rueckmeldung').innerHTML=''; zeichnen(); reglerZeigen();
+  }));
+}
+function reglerZeigen(){
+  const box=$('#regler');
+  if(!auswahl||!gesetzt[auswahl]){ box.hidden=true; return; }
+  const t=gesetzt[auswahl], e=einst[auswahl];
+  box.hidden=false;
+  box.innerHTML=`<div class="lab">Ausgewählt: ${WERKZEUG[t].ic} ${esc(WERKZEUG[t].name)} · ${esc(ZONEN[auswahl].n)}</div>`+
+    REGLER.map(r=>`<label class="regel"><span>${r.n}</span><input type="range" id="rg-${r.k}" min="${r.min}" max="${r.max}" step="${r.schritt}" value="${e[r.k]}"><b id="rw-${r.k}">${e[r.k]}${r.ein}</b></label>`).join('')+
+    `<div class="chips"><button class="btn ghost" id="rg-zurueck">Zurücksetzen</button><button class="btn ghost" id="rg-weg">Entfernen</button><button class="btn ghost" id="rg-fertig">Fertig</button></div>`;
+  REGLER.forEach(r=>{ const i=$('#rg-'+r.k); i.oninput=()=>{ e[r.k]=+i.value; $('#rw-'+r.k).textContent=i.value+r.ein; zeichnen(); }; });
+  $('#rg-zurueck').onclick=()=>{ einst[auswahl]=standard(auswahl); zeichnen(); reglerZeigen(); };
+  $('#rg-weg').onclick=()=>{ delete gesetzt[auswahl]; delete einst[auswahl]; auswahl=null; zeichnen(); reglerZeigen(); };
+  $('#rg-fertig').onclick=()=>{ auswahl=null; zeichnen(); reglerZeigen(); };
+}
+function chips(){
+  $('#formen').innerHTML=Object.entries(FORMEN).map(([k,f])=>`<button class="chip" data-form="${k}" aria-pressed="${k===form}">${esc(f.n)}</button>`).join('');
+  $('#werkzeuge').innerHTML=Object.entries(WERKZEUG).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
+  $('#form-info').textContent='Ziel: '+FORMEN[form].ziel;
+  document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{form=b.dataset.form;gesetzt={};einst={};auswahl=null;$('#rueckmeldung').innerHTML='';chips();zeichnen();reglerZeigen();});
+  document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{werkzeug=b.dataset.w;chips();});
+}
+
+// ── Prüfen ──────────────────────────────────────────────────────────────────
+function pruefen(){
+  const f=FORMEN[form], gut=[], fehlt=[], falsch=[], extra=[];
+  Object.entries(f.soll).forEach(([z,t])=>{
+    const ist=gesetzt[z], name=ZONEN[z].n;
+    if(ist===t) gut.push(`${WERKZEUG[t].ic} ${name}: ${f.warum[z]}`);
+    else if(!ist) fehlt.push(`${WERKZEUG[t].ic} ${WERKZEUG[t].name} – ${name}: ${f.warum[z]}`);
+    else falsch.push(`${name}: hier gehört ${WERKZEUG[t].name} hin, nicht ${WERKZEUG[ist].name}. ${f.warum[z]}`);
+  });
+  Object.entries(gesetzt).forEach(([z,t])=>{
+    if(f.soll[z]) return;
+    const m=f.meiden[z];
+    if(m&&m[0]===t) falsch.push(`${ZONEN[z].n}: ${m[1]}`);
+    else extra.push(`${WERKZEUG[t].ic} ${ZONEN[z].n}: bei dieser Gesichtsform nicht nötig.`);
+  });
+  const alles=!fehlt.length&&!falsch.length;
+  $('#rueckmeldung').innerHTML=
+    `<div class="tip"><b>${alles?'✓ Stimmig! ':''}${gut.length} von ${Object.keys(f.soll).length} Stellen richtig.</b> ${esc('Ziel: '+f.ziel)}</div>`+
+    (falsch.length?`<div class="lab" style="color:#C44030">Ändern</div><ul class="rm">${falsch.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'')+
+    (fehlt.length?`<div class="lab">Fehlt noch</div><ul class="rm">${fehlt.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'')+
+    (gut.length?`<div class="lab">Richtig</div><ul class="rm">${gut.map(x=>`<li>✓ ${esc(x)}</li>`).join('')}</ul>`:'')+
+    (extra.length?`<ul class="rm muted">${extra.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'');
+  zeichnen(true);
+}
+$('#pruefen').onclick=pruefen;
+$('#loesung').onclick=()=>{gesetzt=Object.assign({},FORMEN[form].soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
+$('#leeren').onclick=()=>{gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+chips(); zeichnen();
+
+// Regeln je Gesichtsform (Übersicht)
+$('#formen-liste').innerHTML=Object.values(FORMEN).map(f=>{
+  const nach=t=>Object.entries(f.soll).filter(([,x])=>x===t).map(([z])=>ZONEN[z].n).join(', ')||'–';
+  const m=Object.entries(f.meiden).map(([z,v])=>v[1]);
+  return `<article class="panel"><h3>${esc(f.n)}</h3><p class="muted" style="font-size:13px">${esc(f.ziel)}</p>`+
+    `<dl class="facts"><dt>✨ Licht</dt><dd>${esc(nach('H'))}</dd><dt>🟤 Schatten</dt><dd>${esc(nach('C'))}</dd><dt>🌸 Rouge</dt><dd>${esc(nach('R'))}</dd>`+
+    (m.length?`<dt>Vorsicht</dt><dd class="safe">${esc(m.join(' '))}</dd>`:'')+`</dl></article>`;}).join('');
+
+// ── Quiz ────────────────────────────────────────────────────────────────────
+const QUIZ=[
+  ['Was macht ein Highlighter?',['Er holt Flächen nach vorne und lässt sie größer wirken','Er lässt Flächen schmaler wirken','Er färbt die Lippen','Er ersetzt die Grundierung'],0,'Licht holt nach vorne, Schatten schiebt zurück.'],
+  ['Ein Gesicht wirkt rund. Wohin kommt das Rouge?',['Schräg vom Wangenknochen Richtung Schläfe','Rund auf den Wangenapfel','Auf die Kinnspitze','Auf den Nasenrücken'],0,'Schräg nach oben streckt. Rund auf dem Wangenapfel würde das Gesicht noch runder machen.'],
+  ['Ein Gesicht wirkt lang. Wohin kommt Contouring?',['An den Haaransatz und die Kinnspitze','Unter den Wangenknochen','Auf den Nasenrücken','An die Schläfen und Kieferseiten'],0,'Schatten oben und unten kürzt. Schatten unter dem Wangenknochen würde noch schmaler und länger machen.'],
+  ['Ein Gesicht wirkt eckig. Was nimmt die Ecken weg?',['Schatten am Kieferwinkel und an den Stirnecken','Licht am Kieferwinkel','Rouge schräg zur Schläfe','Viel Puder'],0,'Schatten auf den Ecken rundet ab, Rouge rund auf dem Wangenapfel macht zusätzlich weicher.'],
+  ['Ein herzförmiges Gesicht hat eine breite Stirn. Was solltest du vermeiden?',['Highlighter an den Stirnseiten','Licht unter den Augen','Schatten an den Schläfen','Rouge auf dem Wangenapfel'],0,'Licht an den Stirnseiten macht die breite Stirn noch breiter. Dort gehört eher Schatten hin.'],
+  ['Welcher Farbton eignet sich zum Contouring?',['Kühl-bräunlich, ein bis zwei Töne dunkler als die Haut','Orange-Bronze mit Schimmer','Rosé','Weiß'],0,'Ein natürlicher Schatten ist kühl-bräunlich und matt. Schimmer oder Orange wirken nicht wie Schatten.'],
+  ['Was ist beim Contouring am wichtigsten?',['Gut verblenden – keine sichtbaren Kanten','Möglichst viel Produkt','Erst ganz zum Schluss Grundierung','Mit dem Finger tupfen, nie verblenden'],0,'Schatten wirkt nur natürlich, wenn er weich ausläuft.'],
+  ['Hygiene: Was gilt für Mascara und Lippenprodukte am Gast?',['Einwegapplikatoren verwenden, nie direkt aus der Packung','Ein Bürstchen für alle Gäste reicht','Mit Wasser reinigen genügt','Nur bei Stammgästen gemeinsam verwenden'],0,'Augen und Lippen übertragen leicht Keime. Deshalb Einwegapplikatoren und Spatel.']
+];
+let answers={}, quizGespeichert=false;
+function mischen(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function renderQuiz(){
+  const box=$('#quizBox');box.innerHTML='';
+  QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
+    d.innerHTML='<h3>'+(i+1)+'. '+esc(q[0])+'</h3><div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef">Geraten – prüfen</button></div></div><p class="why" hidden></p>';
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why'),sz=d.querySelector('.sicher');let wahl=null;
+    mischen(q[1].map((_,j)=>j)).forEach(j=>{const b=document.createElement('button');b.textContent=q[1][j];b.dataset.j=j;
+      b.onclick=()=>{wahl=j;opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sz.hidden=false;};
+      opts.appendChild(b);});
+    sz.querySelectorAll('.pruef').forEach(p=>p.onclick=()=>{
+      if(wahl===null)return;
+      const sicher=p.classList.contains('s'),ok=wahl===q[2];
+      answers[i]={j:wahl,sicher};sz.hidden=true;
+      opts.querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.remove('sel');if(+x.dataset.j===q[2])x.classList.add('right');else if(+x.dataset.j===wahl)x.classList.add('wrong');});
+      why.hidden=false;
+      why.textContent=(ok&&!sicher?'Richtig – aber geraten. Richtig geraten zählt noch nicht als gewusst. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+q[3];
+      if(ok&&!sicher)why.classList.add('geraten');if(!ok&&sicher)why.classList.add('sicherfalsch');
+      score();});
+    box.appendChild(d);});
+  score();
+}
+function score(){const e=Object.entries(answers),n=e.length;
+  const r=e.filter(([i,a])=>QUIZ[i][2]===a.j&&a.sicher).length;
+  const ger=e.filter(([i,a])=>QUIZ[i][2]===a.j&&!a.sicher).length,sf=e.filter(([i,a])=>QUIZ[i][2]!==a.j&&a.sicher).length;
+  $('#scoreOut').textContent=r+' / '+QUIZ.length;
+  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du weißt, wie Licht und Schatten wirken.':r>=QUIZ.length*.5?'Gute Basis. Probier die Gesichtsformen im Labor noch einmal.':'Schau dir die Regeln oben noch einmal an.')+
+    (ger?' '+ger+'× richtig geraten.':'')+(sf?' '+sf+'× sicher, aber falsch – schau dir diese Fragen nochmal an.':'');
+  if(n===0){quizGespeichert=false;$('#scoreSpeicher').textContent='';}
+  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichernAntworten){quizGespeichert=true;
+    ghdQuizSpeichernAntworten(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Make-up & Visagistik',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
+}
+$('#quizReset').onclick=()=>{answers={};renderQuiz();};
+renderQuiz();
+})();
+</script>
+<script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="fachbegriffe.js?v=20261118a" data-ziele="p ; li ; dd ; .tip" data-gruppe="section, article, .panel" defer></script>  <!-- Fachbegriffe mit Übersetzung -->
+<script src="vorlesen.js?v=20261116c" data-ziele="section.block > header h2 | ~ p ; article.panel ; .tip" defer></script>  <!-- 🔊 Vorlesen pro Abschnitt -->
+<script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+</body>
+</html>

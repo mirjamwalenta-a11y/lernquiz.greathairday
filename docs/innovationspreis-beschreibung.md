@@ -28,7 +28,7 @@ Die App macht aus einzelnen Bausteinen einen geschlossenen Kreislauf:
 
 ### 1. Kompetenz-Landkarte statt Punkte
 
-16 Kompetenzen des Friseurhandwerks (z. B. Farbe & Rezeptur, Damenschnitt,
+17 Kompetenzen des Friseurhandwerks (z. B. Farbe & Rezeptur, Damenschnitt,
 Beratung & Kundengespräch). Jede hat vier Stufen:
 
 1. **Weiß ich** – die Quiz-Themen sitzen, auch Tage später noch
@@ -98,7 +98,7 @@ werden nur mit Einwilligung und ohne Namen verwendet.
 
 ## Bilder (Beispieldaten)
 
-1. **Kompetenz-Landkarte des Lehrlings** – Übersicht mit 16 Kompetenzen
+1. **Kompetenz-Landkarte des Lehrlings** – Übersicht mit 17 Kompetenzen
 2. **Kompetenz „Farbe & Rezeptur“** – die vier Stufen im Detail
 3. **„Heute für dich“** – Tagesthema mit Begründung und Salon-Hinweis
 4. **Meisterin: „Wo braucht dich Lena?“** – Coaching-Ansicht
