@@ -61,7 +61,7 @@
 
   var KEY = 'woerni-sortieren';
   var NACHSCHLAGEN_MAL = 3, NACHSCHLAGEN_FENSTER = 10 * 60000, PAUSE_NACH_OEFFNEN = 30 * 60000;
-  var LINK_AUSSEN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#sortieren=';
+  var LINK_AUSSEN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#sortieren=';
 
   function lesen() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
   function schreiben(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }

@@ -1,7 +1,7 @@
 # Kompetenz-Landkarte V2 – Plan
 
 **Stand:** 2026-11-19 · Entscheidungen der Inhaberin eingetragen.
-**Status:** Schritte 1–3 gebaut (`kompetenzen.js`, `kompetenz-stand.js`, Landkarte im Lern-Tool). Meisterin-Ansicht folgt.
+**Status:** Schritte 1–4 gebaut (`kompetenzen.js`, `kompetenz-stand.js`, Landkarte im Lern-Tool, Meisterin-Bereich).
 **Heute:** Landkarte im Lern-Tool (`lerntool.html`, Seite „Fortschritt“,
 `lkZeichnen`), Themen in `lern-themen.js`, Meisterin-Ansicht in
 `lernquiz.html` (`renderKompetenz`, `ampelStand`).
@@ -153,8 +153,17 @@ Tabelle. Bis die Fragen da sind, zählen dort nur Stufe ③ und ④.
    den Quiz-Themen. Keine Lehrjahr-Auswahl mehr auf dieser Seite.
    „Auf dem Weg“ (hellgrün) fasst Wissen / Anwenden / Salon zusammen –
    bestehende Farben, keine neuen.
-4. Meisterin-Bereich: dieselbe Landkarte, dazu „Wo braucht mich mein
-   Lehrling?“.
+4. ✓ Meisterin-Bereich (Entwurf freigegeben, 2026-11-19):
+   - Übersicht: Lehrlingskarte zeigt „x von 16 Kompetenzen bestätigt“ mit
+     Balken und „✓ n bereit zum Bestätigen“; „Heute zu tun“ hat den Punkt
+     „Bereit zum Bestätigen“. „Bitte nachprüfen“ bleibt hier.
+   - Lehrling, Reiter „Landkarte“: „Wo braucht dich <Vorname>?“ (höchstens
+     4: Warnungen → Prüfhinweise → bereit zum Bestätigen → mitarbeiten
+     lassen), darunter die 16 Kompetenzen in denselben Gruppen. Antippen
+     startet den passenden Praxis-Check bzw. ein Prüfgespräch. Der rote Kasten
+     „Bitte nachprüfen“ ist hier in „Wo braucht dich …?“ aufgegangen.
+   - Reiter (Landkarte / Gespräche / Verlauf / Praxis) haben jetzt einen
+     Stil (hatten nie einen; Zustimmung der Inhaberin).
 5. Danach: „Heute üben“ nach der schwächsten Kompetenz statt nach
    Wochentag.
 
