@@ -385,6 +385,22 @@ dl.steck dd{margin:0}
       <button class="mode" data-mode="pruef" aria-pressed="false"><strong>Prüf mich</strong><span>Quizfragen, eine nach der anderen, mit Begründung.</span></button>
       <button class="mode" data-mode="training" aria-pressed="false"><strong>Übung</strong><span>Ein Fall, Schritt für Schritt. Du denkst selbst, ich führe.</span></button>
       <button class="mode" data-mode="analyse" aria-pressed="false"><strong>Analysiere</strong><span>Ein echter Salonfall mit fertiger Lösung und Beratungssatz.</span></button>
+      <button class="mode" data-mode="rolle" aria-pressed="false"><strong>Kundengespräch</strong><span>Ich spiele die Kundin, du berätst. Am Ende bekommst du Rückmeldung.</span></button>
+    </div>
+
+    <div id="fw-rolleBox" hidden>
+      <div class="step-label"><span class="n">2</span>Welche Kundin?</div>
+      <div class="levels" role="group" aria-label="Kundin">
+        <button class="level" data-kundin="fuelle" aria-pressed="false"><b>Fülle im Nacken</b><small>Sagt, was sie will – aber nur in Kundensprache</small></button>
+        <button class="level" data-kundin="pflegeleicht" aria-pressed="false"><b>Pflegeleicht</b><small>Föhnt nie, hat morgens kaum Zeit</small></button>
+        <button class="level" data-kundin="traum" aria-pressed="false"><b>Traumfarbe</b><small>Will heute noch von Dunkelbraun zu Platinblond</small></button>
+        <button class="level" data-kundin="zufall" aria-pressed="true"><b>Überrasch mich</b><small>Eine zufällige Kundin</small></button>
+      </div>
+      <div class="step-label"><span class="n">3</span>Welche Sprache spricht die Kundin?</div>
+      <div class="levels" role="group" aria-label="Sprache">
+        <button class="level" data-sprache="de" aria-pressed="true"><b>Deutsch</b><small>Beratung wie im Salon-Alltag</small></button>
+        <button class="level" data-sprache="en" aria-pressed="false"><b>Englisch</b><small>Kundin spricht nur Englisch – Rückmeldung auf Deutsch</small></button>
+      </div>
     </div>
 
     <div id="fw-levelBox" hidden>
@@ -5127,7 +5143,29 @@ Regeln für Bilder (sehr wichtig):
     + "Sprache: einfach und in kurzen Sätzen, denn viele Nutzer:innen sind Lehrlinge. Erkläre jeden Fachbegriff beim ersten Vorkommen in wenigen Wörtern.\n\n"
     + SKETCH_RULES;
 
+  // ---- Kundengespräch (Rollenspiel): die KI spielt die Kundin, am Ende Rückmeldung
+  const KUNDIN = {
+    fuelle: "Kundin, schulterlanges, mittelstarkes Haar. Sie möchte „mehr Fülle im Nacken, aber nicht zu kurz“ und „irgendwas Frisches“. Sie drückt sich nur in Alltagssprache aus.",
+    pflegeleicht: "Kundin mit viel Arbeit und zwei Kindern. Haar dicht und leicht wellig, schulterlang. Sie föhnt nie und möchte „was Pflegeleichtes, das trotzdem gut aussieht“.",
+    traum: "Kundin mit dunkelbraunem, schon gefärbtem Haar. Sie möchte heute noch Platinblond wie auf einem Foto aus dem Internet und ist etwas ungeduldig.",
+    zufall: "Denk dir selbst eine realistische Kundin aus (Schnitt, Farbe oder Pflege) – mit einem Wunsch, der gut nachgefragt werden muss."
+  };
+  const RULES_ROLLE = "Du bist der Beratungs-Trainer in einer Lern-App für Friseur-Lehrlinge und Stylist:innen. MODUS KUNDENGESPRÄCH (Rollenspiel).\n\n"
+    + "1. Du spielst eine Kundin im Salon. Die lernende Person ist die Friseurin oder der Friseur und berät dich. Bleib in der Rolle, bis sie „Gespräch beenden“ schreibt oder das Gespräch nach etwa 8 eigenen Nachrichten mit einer Zusammenfassung abschließt.\n"
+    + "2. Als Kundin antwortest du kurz (1–3 Sätze), natürlich und in Alltagssprache, ohne Fachbegriffe. Details (Haarzustand, Vorbehandlung, Alltag, Zeit, Budget, Bedenken) verrätst du nur, wenn danach gefragt wird. Bleib freundlich und realistisch. Ist dein Wunsch unrealistisch, bleib höflich, aber hartnäckig, bis gut begründet und eine Alternative angeboten wird.\n"
+    + "3. Leg zu Beginn ein stimmiges Profil fest (Gesichtsform, Haar, Länge, Alltag, Wunsch) und bleib dabei.\n"
+    + "4. Erste Nachricht: eine Zeile in Klammern zur Situation (z. B. „(Die Kundin setzt sich, Haar schulterlang, offen getragen.)“), danach der erste Satz der Kundin. Nichts verraten, was man nicht sieht oder hört.\n"
+    + "5. „Tipp bitte“: geh kurz aus der Rolle mit „💡 Tipp:“ und gib genau einen kurzen Hinweis, was jetzt sinnvoll wäre. Danach weiter als Kundin.\n"
+    + "6. „Neue Kundin“: neues Profil, wieder mit Punkt 4 beginnen.\n"
+    + "7. Rückmeldung am Ende: geh aus der Rolle, Überschrift „### Rückmeldung“. Kurze Liste mit ✓ (gelungen) und → (nächstes Mal) entlang dieser Punkte: offene Fragen gestellt und zugehört; Wunsch, Alltag und Haarzustand geklärt; Kundensprache in Fachsprache übersetzt (z. B. „Fülle im Nacken“ heißt Gewicht in der unteren Zone); ehrlich bei unrealistischen Wünschen und eine Alternative angeboten; Ergebnis verständlich zusammengefasst und Einverständnis eingeholt; Pflege- oder Stylingtipp gegeben. Danach ein besserer Beratungssatz als Zitat mit „> “. Höchstens 12 Zeilen. Lob nur, wo es verdient ist.\n"
+    + "8. Englisch: Ist die Kundin englischsprachig, sprichst du in der Rolle einfaches, freundliches Englisch (Niveau A2–B1). Tipps und Rückmeldung schreibst du auf Deutsch, dazu 2–3 bessere englische Sätze für den Salon.\n"
+    + "9. Fragt die lernende Person nach Allergien, Haut oder Unverträglichkeiten, antwortest du realistisch; in der Rückmeldung zählt das als Pluspunkt. Stelle keine medizinischen Diagnosen.\n"
+    + "10. Keine Bilder in diesem Modus. Format: kurzes Markdown, handytauglich. Sprache der Rückmeldung: einfach und in kurzen Sätzen.\n\n"
+    + "Fachwissen für die Rückmeldung (nur als Wissensgrundlage, nicht als Ablauf):\n" + $("#fw-rules").textContent.trim();
+  let kundin = "zufall", sprache = "de";
+
   const MODES = {
+    rolle:   { label: "Kundengespräch", quick: ["Gespräch beenden & Rückmeldung", "Tipp bitte", "Neue Kundin"] },
     pruef:   { label: "Prüfen", quick: ["Weiß ich nicht", "Tipp bitte", "Zwischenstand", "Stufe höher"] },
     training:{ label: "Übung", quick: ["Tipp bitte", "Lösung zeigen", "Nächster Fall", "Stufe höher"] },
     analyse: { label: "Analyse", quick: ["Als Übung durchdenken", "Kundin will es trotzdem so", "Prüf mich dazu"] },
@@ -5182,14 +5220,23 @@ Regeln für Bilder (sehr wichtig):
   T.querySelectorAll(".mode").forEach(b => b.onclick = () => {
     mode = b.dataset.mode;
     T.querySelectorAll(".mode").forEach(x => x.setAttribute("aria-pressed", x === b));
-    $("#fw-levelBox").hidden = mode === "analyse";
+    $("#fw-levelBox").hidden = mode === "analyse" || mode === "rolle";
     $("#fw-caseBox").hidden = mode !== "analyse";
+    $("#fw-rolleBox").hidden = mode !== "rolle";
     if (mode === "analyse") $("#fw-caseText").focus();
     updateStart();
   });
   T.querySelectorAll(".level").forEach(b => b.onclick = () => {
     level = +b.dataset.level;
     T.querySelectorAll(".level").forEach(x => x.setAttribute("aria-pressed", x === b));
+  });
+  T.querySelectorAll("[data-kundin]").forEach(b => b.onclick = () => {
+    kundin = b.dataset.kundin;
+    T.querySelectorAll("[data-kundin]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  });
+  T.querySelectorAll("[data-sprache]").forEach(b => b.onclick = () => {
+    sprache = b.dataset.sprache;
+    T.querySelectorAll("[data-sprache]").forEach(x => x.setAttribute("aria-pressed", x === b));
   });
   T.querySelectorAll("[data-ex]").forEach(b => b.onclick = () => { $("#fw-caseText").value = b.dataset.ex; updateStart(); });
   $("#fw-caseText").oninput = updateStart;
@@ -5198,7 +5245,8 @@ Regeln für Bilder (sehr wichtig):
   }
 
   $("#fw-startBtn").onclick = () => {
-    const first = mode === "pruef" ? `Prüf mich, Stufe ${level}.`
+    const first = mode === "rolle" ? `Kundengespräch starten. Kundin: ${KUNDIN[kundin]} Sprache der Kundin: ${sprache === "en" ? "Englisch" : "Deutsch"}.`
+      : mode === "pruef" ? `Prüf mich, Stufe ${level}.`
       : mode === "training" ? `Übung, Stufe ${level}. Gib mir einen Fall.`
       : `Analysiere: ${$("#fw-caseText").value.trim()}`;
     $("#fw-start").hidden = true;
@@ -5206,9 +5254,11 @@ Regeln für Bilder (sehr wichtig):
     $("#fw-composer").hidden = false;
     $("#fw-restart").hidden = false;
     $("#fw-modePill").hidden = false;
-    $("#fw-modePill").textContent = MODES[mode].label + (mode === "analyse" ? "" : " · Stufe " + level);
+    $("#fw-modePill").textContent = MODES[mode].label + (mode === "rolle" ? (sprache === "en" ? " · English" : "") : mode === "analyse" ? "" : " · Stufe " + level);
+    $("#fw-input").placeholder = mode === "rolle" ? "Was sagst du zur Kundin?" : "Deine Antwort …";
     renderQuick();
-    send(first);
+    // Kundengespräch: die Beschreibung der Kundin bekommt nur die KI, der Lehrling soll erst fragen
+    send(first, mode === "rolle" ? (sprache === "en" ? "Kundengespräch starten (Englisch)" : "Kundengespräch starten") : undefined);
   };
 
   $("#fw-restart").onclick = () => {
@@ -5224,7 +5274,8 @@ Regeln für Bilder (sehr wichtig):
     const q = $("#fw-quick"); q.innerHTML = "";
     MODES[mode].quick.forEach(t => {
       const b = document.createElement("button"); b.textContent = t;
-      b.onclick = () => { if (!busy) send(t === "Als Übung durchdenken" ? "Übung: denselben Fall bitte Schritt für Schritt mit mir durchdenken." : t); };
+      b.onclick = () => { if (!busy) send(t === "Als Übung durchdenken" ? "Übung: denselben Fall bitte Schritt für Schritt mit mir durchdenken."
+        : t === "Gespräch beenden & Rückmeldung" ? "Gespräch beenden. Bitte gib mir jetzt die Rückmeldung." : t); };
       q.append(b);
     });
   }
@@ -5247,8 +5298,9 @@ Regeln für Bilder (sehr wichtig):
     $("#fw-chat").append(d); d.scrollIntoView({ block: "end", behavior: "smooth" }); return d;
   }
 
-  async function send(text) {
-    const u = bubble("user", ""); u.textContent = text;
+  // anzeige (optional): was in der Sprechblase steht, wenn es vom Text an die KI abweicht
+  async function send(text, anzeige) {
+    const u = bubble("user", ""); u.textContent = anzeige || text;
     turns.push({ role: "user", content: text });
     const b = bubble("bot", '<span class="thinking">Denkt nach …</span>');
     setBusy(true);
@@ -5258,7 +5310,7 @@ Regeln für Bilder (sehr wichtig):
     const recent = turns.slice(-30);
     while (recent.length && recent[0].role !== "user") recent.shift();
     try {
-      const { text: answer, truncated } = await sample([{ role: "user", content: RULES }, ...recent], {
+      const { text: answer, truncated } = await sample([{ role: "user", content: mode === "rolle" ? RULES_ROLLE : RULES }, ...recent], {
         cache: false, signal: ctl.signal,
         onText: ({ text }) => { b.innerHTML = md(text); },
       });
