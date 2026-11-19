@@ -421,7 +421,7 @@ window.LEICHT = {
   'b-kompass4': 'Bleib ehrlich. Das ist unser Grundsatz. Die Team-Version sagt das in so einem Fall auch.',
   'b-kompass5': 'Blondierung bricht Verbindungen im Inneren vom Haar. Absolut Repair Molecular hilft genau dort. Metal DX nimmt beim Färben und Blondieren Metalle aus dem Haar.',
   'b-fkompass1': 'Auf greathairday.at/farbkompass/ sieht die Kundin ihre Farbrichtung. Die Team-Version im Mitarbeiterhandbuch hat dieselben Fragen. Dazu Hilfen für das Gespräch und Übungsfälle.',
-  'b-fkompass2': 'Der Farbkompass zeigt eine Farbrichtung, zum Beispiel „Frisch und lichtvoll“. Es gibt sechs Richtungen. Keine Farbtypen, keine Farbnummern, keine Rezepturen.',
+  'b-fkompass2': 'Der Farbkompass zeigt eine Farbrichtung, zum Beispiel „Frisch und lichtvoll“. Es gibt sechs Richtungen. Keine Farbnummern, keine Rezepturen. Den Farbtyp prüfst du danach mit der Farbtyp-Beratung.',
   'b-fkompass3': 'Zuerst die Wirkung, dann die Technik. Die erste Frage ist: „Wie möchtest du mit deiner Haarfarbe wirken?“ Hautton, Augenfarbe und Gesichtsform fragt er absichtlich nicht.',
   'b-fkompass4': 'Alle drei Antworten geben „Lebendig mit mehr Höhe“ einen Punkt. Das sind 3 Punkte. „Frisch und lichtvoll“ hat nur 1 Punkt.',
   'b-fkompass5': 'Bei gleichen Punkten zählt zuerst Frage 1 (Wunsch-Wirkung). Dann Frage 3 (was am wichtigsten ist). Hilft das auch nicht, gilt eine feste Reihenfolge.',
