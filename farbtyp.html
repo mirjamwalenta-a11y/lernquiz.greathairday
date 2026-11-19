@@ -71,6 +71,9 @@ dd.safe{color:var(--warn)}
 .merk div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
 .merk b{display:block;font-size:13px;margin-bottom:2px}
 .typen{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.sw{display:inline-flex;align-items:center;gap:6px;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;background:var(--surface)}
+.sw i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
+.lab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
 .typ h3{display:flex;justify-content:space-between;align-items:baseline;gap:4px 8px;flex-wrap:wrap;padding-right:44px}
 .typ h3 small{font-size:12px;color:var(--muted);font-weight:600}
 .faecher{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px}
@@ -140,6 +143,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
   <div class="wrap">
     <a href="#typen">Die 4 Typen</a>
     <a href="#tuecher">Tücher auflegen</a>
+    <a href="#makeup">Make-up</a>
     <a href="#ueben">Üben</a>
   </div>
 </nav>
@@ -190,6 +194,15 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
       <div class="fortschritt" id="fortschritt" aria-hidden="true"></div>
       <div class="schritt" id="schritt"></div>
     </div>
+  </section>
+
+  <section class="block" id="makeup">
+    <header>
+      <span class="tag">Make-up</span>
+      <h2>Make-up-Farben zum Farbtyp</h2>
+      <p class="muted">Auch beim Make-up gilt: warme Typen tragen warme, kühle Typen kühle Farben. Wohin Licht und Schatten gehören, übst du im <a href="makeup.html?v=20261119a#labor" style="color:var(--accent);font-weight:600">Make-up-Labor</a>.</p>
+    </header>
+    <div class="typen" id="makeup-liste"></div>
   </section>
 
   <section class="block" id="ueben">
@@ -247,6 +260,32 @@ $('#typen-liste').innerHTML=Object.entries(TYPEN).map(([id,t])=>
   '<div class="faecher" aria-label="Farbfächer '+esc(t.name)+'">'+t.faecher.map(c=>'<i style="background:'+c+'"></i>').join('')+'</div>'+
   '<dl class="facts"><dt>Haut</dt><dd>'+esc(t.haut)+'</dd><dt>Augen</dt><dd>'+esc(t.augen)+'</dd><dt>Naturhaar</dt><dd>'+esc(t.haar)+'</dd>'+
   '<dt>Haarfarbe</dt><dd>'+esc(t.haarfarbe)+'</dd><dt>Eher meiden</dt><dd class="safe">'+esc(t.meiden)+'</dd></dl></article>').join('');
+
+// ── Make-up-Farben je Farbtyp (Inhalte zur Durchsicht durch die Inhaberin) ──
+// [Name, Farbe] – die Farben sind Beispiele zur Orientierung, keine Produktnummern
+const MAKEUP={
+  fruehling:{lippen:[['Koralle','#F2735C'],['Pfirsich','#F5A98A'],['Warmes Rosé','#E68E86']],
+    augen:[['Champagner','#EBD3A8'],['Goldbraun','#B48443'],['Warmes Grün','#7FA45A']],
+    rouge:[['Apricot','#F4A47C'],['Pfirsich','#F6B394']],
+    dazu:'Grundierung mit gelblichem Unterton. Kajal und Mascara braun statt schwarz.'},
+  sommer:{lippen:[['Rosé','#D98FA3'],['Altrosa','#C68A94'],['Beere hell','#A65A7A']],
+    augen:[['Taupe','#A59A90'],['Graublau','#8095AE'],['Flieder','#B3A4CC']],
+    rouge:[['Kühles Rosa','#E5A3B4'],['Altrosa','#D29AA5']],
+    dazu:'Grundierung mit rosigem oder neutralem Unterton. Kajal grau oder graubraun.'},
+  herbst:{lippen:[['Terracotta','#B4583F'],['Ziegelrot','#A3402F'],['Karamell','#B97A52']],
+    augen:[['Bronze','#9C6A35'],['Olive','#6F7340'],['Kupfer','#B3602F']],
+    rouge:[['Terracotta','#C77455'],['Warmes Braunrosé','#B77A66']],
+    dazu:'Grundierung mit goldenem Unterton. Kajal braun oder olivgrün.'},
+  winter:{lippen:[['Kirschrot','#B3122E'],['Fuchsia','#C8237A'],['Beere dunkel','#7A1F45']],
+    augen:[['Silbergrau','#A3A8B0'],['Anthrazit','#3E434B'],['Pflaume','#5E3A5A']],
+    rouge:[['Kühles Pink','#D9668F'],['Beerenrosé','#B6577A']],
+    dazu:'Grundierung mit kühlem Unterton. Kajal und Mascara schwarz – der Kontrast steht.'}
+};
+function swatches(l){return '<div class="chips">'+l.map(x=>'<span class="sw"><i style="background:'+x[1]+'"></i>'+esc(x[0])+'</span>').join('')+'</div>';}
+$('#makeup-liste').innerHTML=Object.entries(MAKEUP).map(([id,m])=>
+  '<article class="panel"><h3>'+esc(TYPEN[id].name)+' <small class="muted" style="font-size:12px">'+esc(TYPEN[id].kurz)+'</small></h3>'+
+  '<div class="lab">Lippen</div>'+swatches(m.lippen)+'<div class="lab">Augen</div>'+swatches(m.augen)+'<div class="lab">Rouge</div>'+swatches(m.rouge)+
+  '<p style="font-size:14px">'+esc(m.dazu)+'</p></article>').join('');
 
 // ── Vorbereitung ────────────────────────────────────────────────────────────
 const VORB=['Tageslicht, am besten am Fenster – kein buntes oder gelbes Licht','Ohne Make-up, Brille und Schmuck','Haare unter einem weißen oder hellgrauen Tuch','Weißes T-Shirt oder Umhang, damit keine Kleidung abfärbt','Gerät auf Augenhöhe, Gesicht mittig im Bild'];
