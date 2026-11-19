@@ -75,11 +75,19 @@ Bei der Umsetzung angepasst:
 
 - **Englisch ohne Praxis-Bereich:** Ein Eintrag „Beratung am Gast“ sagt
   nicht, ob auf Englisch beraten wurde. Bestätigung über Prüfgespräch.
-- **Praxis-Checks der Meisterin** (`PX_BEHANDLUNGEN`): Farbe → 7,
-  Blondierung/Strähnen → 8, Haarwäsche & Massage → 3, Empfang/Beratung → 5,
-  Föhnen & Styling → 13, Haarschnitt → 9 **und** 10 (der Check unterscheidet
-  noch nicht Damen/Herren). Erkannt über `frage_id = 'praxis-<id>'`, nicht
-  über das Thema (Blondierung ist dort als Farbe gespeichert).
+- **Praxis-Checks der Meisterin** (`PX_BEHANDLUNGEN`): Haarwäsche &
+  Massage → 3, Empfang/Beratung → 5, Farbe → 7, Blondierung/Strähnen → 8,
+  Damenschnitt → 9, Herrenschnitt → 10, Rasur & Bart → 11, Dauerwelle &
+  Umformung → 12, Föhnen & Styling → 13, Hochstecken → 14, Hand- &
+  Nagelpflege → 15. Erkannt über `frage_id = 'praxis-<id>'`, nicht über das
+  Thema (Blondierung ist dort als Farbe gespeichert).
+- **Haarschnitt geteilt, neue Checks** (Entscheidung der Inhaberin,
+  2026-11-19): Der frühere Check „Haarschnitt“ (`schnitt`) ist in Damen-
+  und Herrenschnitt geteilt; alte Einträge zählen weiter für beide. Neu:
+  Rasur & Bart, Dauerwelle & Umformung, Hochstecken, Hand- & Nagelpflege.
+  Die Checklisten-Punkte sind ein Entwurf im Stil der bestehenden Checks –
+  **von der Inhaberin prüfen lassen**; eigene Punkte kann die Meisterin
+  beim Check ohnehin ergänzen.
 
 Die Liste ist aus dem Code abgeleitet. Abgleich mit Berufsbild bzw.
 Ausbildungsordnung durch die Inhaberin.
@@ -99,7 +107,7 @@ Regeln:
 - **Warnung geht vor:** „noch nicht sicher“ der Meisterin oder „sicher,
   aber falsch“ im Quiz → Kompetenz ist nicht grün, egal wie gut die
   Quizpunkte sind.
-- **Kompetenzen ohne Praxis-Check** (1, 2, 4, 6, 11, 12, 14, 15, 16)
+- **Kompetenzen ohne Praxis-Check** (1, 2, 4, 6, 16)
   erreichen ④ über Prüfgespräche: mindestens eines zu ihren Themen, und das
   jeweils letzte ist überall „verstanden“.
 - **Es zählt das letzte Ergebnis** je Praxis-Check bzw. Thema; mehrere am
@@ -155,8 +163,7 @@ dazukommt: RLS und Grants in derselben Migration (CLAUDE.md, Regel 1).
 
 - Farbkorrektur: eigene Kompetenz oder Teil von „Farbe & Rezeptur“?
   (Vorschlag: vorerst Teil von 7.)
-- Praxis-Check „Haarschnitt“ in Damen und Herren teilen? Weitere
-  Praxis-Checks für Rasur, Umformung, Hochstecken, Nagelpflege?
+- Checklisten-Punkte der neuen Praxis-Checks prüfen (Inhaberin).
 - LAP-Vorbereitung und Zwischenprüfung zählen noch zu keiner Kompetenz
   (Fragen haben dort kein Fach-Thema).
 - Fragen für Föhnen & Styling, Hochstecken, Hand- & Nagelpflege

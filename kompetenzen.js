@@ -59,24 +59,24 @@
      themen:['Balayage & Strähnen'],
      module:[], anwenden:null, praxis:['Strähnen & Balayage'], praxisCheck:['blond']},
 
-    // Der Praxis-Check „Haarschnitt“ unterscheidet (noch) nicht Damen/Herren
-    // und zählt deshalb für beide Schnitt-Kompetenzen.
+    // 'schnitt' = früherer gemeinsamer Check „Haarschnitt“ (vor 2026-11-19):
+    // alte Einträge zählen weiter für beide Schnitt-Kompetenzen.
     {id:'damenschnitt', name:'Damenschnitt',
      themen:['Haarschnitt Techniken'],
      module:['Schnittwerkstatt','Baukasten','Schnittdesigner'], anwenden:null,
-     praxis:['Damenschnitt'], praxisCheck:['schnitt']},
+     praxis:['Damenschnitt'], praxisCheck:['damenschnitt','schnitt']},
 
     {id:'herrenschnitt', name:'Herrenschnitt & Maschine',
      themen:['Haarschnitt Techniken','Herrenservice'],
-     module:['Maschine'], anwenden:null, praxis:['Herrenschnitt'], praxisCheck:['schnitt']},
+     module:['Maschine'], anwenden:null, praxis:['Herrenschnitt'], praxisCheck:['herrenschnitt','schnitt']},
 
     {id:'rasur', name:'Rasur & Bart',
      themen:['Herrenservice'],
-     module:[], anwenden:null, praxis:['Rasur & Bart'], praxisCheck:[]},
+     module:[], anwenden:null, praxis:['Rasur & Bart'], praxisCheck:['rasur']},
 
     {id:'umformung', name:'Umformung (Dauerwelle & Glättung)',
      themen:['Dauerwelle & Umformung','Umformungen Fortgeschritten','Fachkunde Chemie'],
-     module:['Umformung'], anwenden:null, praxis:['Dauerwelle & Umformung'], praxisCheck:[]},
+     module:['Umformung'], anwenden:null, praxis:['Dauerwelle & Umformung'], praxisCheck:['umformung']},
 
     {id:'foehnen', name:'Föhnen & Styling',
      themen:[], themenGeplant:['Föhnen & Styling'],
@@ -84,11 +84,11 @@
 
     {id:'hochstecken', name:'Hochstecken',
      themen:[], themenGeplant:['Hochstecken'],
-     module:[], anwenden:null, praxis:['Hochstecken'], praxisCheck:[]},
+     module:[], anwenden:null, praxis:['Hochstecken'], praxisCheck:['hochstecken']},
 
     {id:'nagelpflege', name:'Hand- & Nagelpflege',
      themen:[], themenGeplant:['Hand- & Nagelpflege'],
-     module:[], anwenden:null, praxis:['Nagelpflege'], praxisCheck:[]},
+     module:[], anwenden:null, praxis:['Nagelpflege'], praxisCheck:['nagelpflege']},
 
     {id:'betrieb', name:'Betrieb & Organisation',
      themen:['Salon-Organisation','Betriebskunde & Recht'],
