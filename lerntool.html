@@ -15,6 +15,8 @@
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-verlauf.js?v=20261115b"></script>  <!-- Zurück-Taste des Handys: Schritt für Schritt innerhalb der App -->
 <script src="lern-themen.js?v=20261107e"></script>
+<script src="kompetenzen.js?v=20261119a"></script>  <!-- Kompetenz-Landkarte V2: 16 Kompetenzen -->
+<script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="quiz-verlauf.js?v=20261115"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
@@ -335,7 +337,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -367,7 +369,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -391,7 +393,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
@@ -731,7 +733,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -4493,14 +4495,14 @@ async function claudeAnfrage(system, userText, maxTokens) {
 // ── STARTSEITE: Begrüßung, Heute, Lernstand, Leiste unten ───────────
 // Liest nur eigene Daten des eingeloggten Lehrlings (lehrlinge, kompetenz,
 // verlauf) – was gelesen werden darf, regelt die bestehende RLS.
-// Der Thema-Status folgt denselben Regeln wie im Lernquiz (berechneStatus /
-// wiederholStatus in lernquiz.html) – bei Änderungen dort hier mitziehen.
+// Der Thema-Status kommt aus kompetenz-stand.js – dieselbe Rechnung wie im
+// Meisterin-Bereich (lernquiz.html).
 var ST = {lehrling:null, komp:{}, verlauf:[], geladen:false, ljGewaehlt:false};
 var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) fehlt
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
-var ST_SITZT_NACH_TAGEN = 3;
+var ST_SITZT_NACH_TAGEN = GHD_STAND.SITZT_NACH_TAGEN;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
@@ -4514,21 +4516,10 @@ var ST_MEHR_KEY = 'lt_mehr_offen';
 
 function stISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function stTage(a, b) { return Math.round((new Date(b+'T12:00:00') - new Date(a+'T12:00:00')) / 86400000); }
-function stBestaetigt(d) { return !d || !d.gut_am || (!!d.gut_seit && stTage(d.gut_seit, d.gut_am) >= ST_SITZT_NACH_TAGEN); }
-function stWiederholStatus(d) {
-  if (!d || !d.gut_am || !d.gut_seit || stBestaetigt(d)) return null;
-  return stTage(d.gut_seit, stISO(new Date())) >= ST_SITZT_NACH_TAGEN ? 'faellig' : 'wartet';
-}
-function stStatus(d) {
-  if (!d || !d.durchlaeufe) return null;
-  var g = d.richtig + d.falsch;
-  if (g === 0) return null;
-  var q = d.richtig / g;
-  if (q >= 0.80 && d.durchlaeufe >= 2 && g >= 4 && (d.letzte_runde === 'gut' || d.letzte_runde === 'sehrgut') && stBestaetigt(d)) return 'sitzt';
-  if (d.richtig >= 2 && q >= 0.60) return 'teilweise';
-  if (d.richtig >= 3 && q >= 0.50) return 'teilweise';
-  return 'unsicher';
-}
+// Rechnung gemeinsam mit dem Meisterin-Bereich: kompetenz-stand.js
+function stBestaetigt(d) { return GHD_STAND.bestaetigt(d); }
+function stWiederholStatus(d) { return GHD_STAND.wiederholStatus(d); }
+function stStatus(d) { return GHD_STAND.status(d); }
 
 // Themen, die noch nicht sitzen – wichtigste zuerst (wie „Als Nächstes üben“ im Lernquiz)
 function stWiederholListe() {
@@ -4733,7 +4724,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -4774,15 +4765,7 @@ var LK_INFO = {
 };
 var LK_REIHE = ['sitzt', 'wartet', 'faellig', 'wackelt', 'unsicher'];
 
-function lkStand(d) {
-  if (!d || !d.durchlaeufe || (d.richtig + d.falsch) === 0) return 'offen';
-  var q = d.richtig / (d.richtig + d.falsch);
-  var ws = q >= 0.8 ? stWiederholStatus(d) : null;
-  if (ws === 'faellig') return 'faellig';
-  if (ws === 'wartet') return 'wartet';
-  var st = stStatus(d);
-  return st === 'sitzt' ? 'sitzt' : st === 'teilweise' ? 'wackelt' : 'unsicher';
-}
+function lkStand(d) { return GHD_STAND.themaStand(d); }   // kompetenz-stand.js
 function lkProzent(d) { var g = d ? d.richtig + d.falsch : 0; return g > 0 ? Math.round(d.richtig / g * 100) : 0; }
 function lkResttage(d) { return Math.max(1, ST_SITZT_NACH_TAGEN - stTage(d.gut_seit, stISO(new Date()))); }
 function lkGrund(th) {
@@ -4881,7 +4864,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261118a';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119a';
 }
 
 function lkTipp(th) {

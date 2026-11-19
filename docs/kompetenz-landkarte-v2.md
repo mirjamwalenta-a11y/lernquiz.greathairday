@@ -1,7 +1,7 @@
 # Kompetenz-Landkarte V2 – Plan
 
 **Stand:** 2026-11-19 · Entscheidungen der Inhaberin eingetragen.
-**Status:** Plan, noch nicht gebaut.
+**Status:** Schritte 1 und 2 gebaut (`kompetenzen.js`, `kompetenz-stand.js`), für Lehrlinge noch nicht sichtbar.
 **Heute:** Landkarte im Lern-Tool (`lerntool.html`, Seite „Fortschritt“,
 `lkZeichnen`), Themen in `lern-themen.js`, Meisterin-Ansicht in
 `lernquiz.html` (`renderKompetenz`, `ampelStand`).
@@ -52,7 +52,7 @@ Diagnose.
 | 3 | Pflege & Kopfmassage | Kopfhautpflege, Pflegeprodukte & Wirkstoffe | – | Haarwäsche & Kopfmassage |
 | 4 | Werkzeug & Material | Werkzeugkunde | Werkzeugkunde | – |
 | 5 | Beratung & Kundengespräch | Beratungsgespräch & Kundenkommunikation, Kundenberatung, Kundenkommunikation Fortgeschritten | Beratung & Formwirkung, Kurz sortieren | Beratung am Gast |
-| 6 | Englisch im Salon | – | Englisch im Salon | Beratung am Gast |
+| 6 | Englisch im Salon | Englisch im Salon (Ergebnisse des Moduls) | Englisch im Salon | – (siehe unten) |
 | 7 | Farbe & Rezeptur | Farbenlehre & Coloration, Colorationsgrundlagen, Fachkunde Chemie | Farblabor, Farb-Spickzettel, Farb-Fälle | Farbe |
 | 8 | Blondierung, Strähnen & Balayage | Balayage & Strähnen | – | Strähnen & Balayage |
 | 9 | Damenschnitt | Haarschnitt Techniken | Schnittwerkstatt, Baukasten, Schnittdesigner | Damenschnitt |
@@ -70,6 +70,16 @@ Diagnose.
   zählen auf die Kompetenz, zu der sie inhaltlich gehören.
 - **Fachkunde Chemie:** Grundlage, zählt bei Farbe (7) und Umformung (12).
 - **Perücken:** nicht aufnehmen (Entscheidung der Inhaberin).
+
+Bei der Umsetzung angepasst:
+
+- **Englisch ohne Praxis-Bereich:** Ein Eintrag „Beratung am Gast“ sagt
+  nicht, ob auf Englisch beraten wurde. Bestätigung über Prüfgespräch.
+- **Praxis-Checks der Meisterin** (`PX_BEHANDLUNGEN`): Farbe → 7,
+  Blondierung/Strähnen → 8, Haarwäsche & Massage → 3, Empfang/Beratung → 5,
+  Föhnen & Styling → 13, Haarschnitt → 9 **und** 10 (der Check unterscheidet
+  noch nicht Damen/Herren). Erkannt über `frage_id = 'praxis-<id>'`, nicht
+  über das Thema (Blondierung ist dort als Farbe gespeichert).
 
 Die Liste ist aus dem Code abgeleitet. Abgleich mit Berufsbild bzw.
 Ausbildungsordnung durch die Inhaberin.
@@ -89,8 +99,20 @@ Regeln:
 - **Warnung geht vor:** „noch nicht sicher“ der Meisterin oder „sicher,
   aber falsch“ im Quiz → Kompetenz ist nicht grün, egal wie gut die
   Quizpunkte sind.
-- **Kompetenzen ohne Praxis-Bereich** (2, 4, 16) erreichen ④ über das
-  Prüfgespräch.
+- **Kompetenzen ohne Praxis-Check** (1, 2, 4, 6, 11, 12, 14, 15, 16)
+  erreichen ④ über Prüfgespräche: mindestens eines zu ihren Themen, und das
+  jeweils letzte ist überall „verstanden“.
+- **Es zählt das letzte Ergebnis** je Praxis-Check bzw. Thema; mehrere am
+  selben Tag → das schwächste (wie bisher im Meisterin-Bereich).
+- **Warnung „sicher, aber falsch“** ab 2× seit dem letzten Prüfgespräch
+  (`sicher_falsch_offen`), dieselbe Schwelle wie der Prüfhinweis der
+  Meisterin.
+- **Stufe ②** gibt es vorerst nur bei Farbe (mind. 1 Farb-Fall „passt“).
+  Die anderen Module speichern ihre Ergebnisse unter dem Quiz-Thema und
+  zählen damit zu Stufe ①. Bei den übrigen Kompetenzen ist ② „nicht
+  messbar“ und wird übersprungen.
+- **Stufe ①** = alle Quiz-Themen der Kompetenz sitzen. Ohne Quiz-Themen
+  (13–15, bis die Fragen da sind) ist ① „nicht messbar“.
 - **Der Lehrling sieht Praxis-Checks und Prüfgespräche der Meisterin**
   (Entscheidung der Inhaberin). Die Datenbank erlaubt das schon: Lehrling
   darf eigene Zeilen in `pruefgespraeche` lesen
@@ -107,11 +129,14 @@ Tabelle. Bis die Fragen da sind, zählen dort nur Stufe ③ und ④.
 
 ## 6. Umsetzung (wenn freigegeben)
 
-1. Datei `kompetenzen.js` (statisch, wie `lern-themen.js`): Kompetenz →
-   Quiz-Themen, Module, Praxis-Bereich. Keine Datenbank, keine
-   persönlichen Daten.
-2. Eine gemeinsame Funktion für den Stand (Stufen ①–④ + Warnung), genutzt
-   von Lern-Tool und Meisterin-Bereich.
+1. ✓ Datei `kompetenzen.js` (statisch, wie `lern-themen.js`): Kompetenz →
+   Quiz-Themen, Module, Praxis-Bereich, Praxis-Check. Keine Datenbank,
+   keine persönlichen Daten.
+2. ✓ `kompetenz-stand.js`: gemeinsame Rechnung. `themaStand` ersetzt die
+   doppelte Ampel (`lkStand`/`stStatus` im Lern-Tool,
+   `ampelStand`/`berechneStatus` im Lernquiz) – Ergebnis unverändert,
+   geprüft mit 200 000 Zufallsfällen. `kompetenzStand`/`alleKompetenzen`
+   rechnen die Stufen ①–④, werden aber noch nirgends angezeigt.
 3. Landkarte im Lern-Tool auf Kompetenzen umstellen; Quiz-Themen bleiben
    im Detail-Fenster sichtbar.
 4. Meisterin-Bereich: dieselbe Landkarte, dazu „Wo braucht mich mein
@@ -130,6 +155,10 @@ dazukommt: RLS und Grants in derselben Migration (CLAUDE.md, Regel 1).
 
 - Farbkorrektur: eigene Kompetenz oder Teil von „Farbe & Rezeptur“?
   (Vorschlag: vorerst Teil von 7.)
+- Praxis-Check „Haarschnitt“ in Damen und Herren teilen? Weitere
+  Praxis-Checks für Rasur, Umformung, Hochstecken, Nagelpflege?
+- LAP-Vorbereitung und Zwischenprüfung zählen noch zu keiner Kompetenz
+  (Fragen haben dort kein Fach-Thema).
 - Fragen für Föhnen & Styling, Hochstecken, Hand- & Nagelpflege
   (Inhaberin).
 - Abgleich der 16 Kompetenzen mit dem Berufsbild.
