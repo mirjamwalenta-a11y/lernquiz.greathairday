@@ -256,6 +256,17 @@ textarea{resize:vertical;margin-bottom:0}
 .mb-f small{display:block;font-size:10px;margin-top:3px;font-weight:600}
 .mb-f .mb-f-st{color:var(--f)}
 .mb-f .mb-f-warn{color:#C44030;font-weight:400}
+.mb-f .mb-f-z{color:#6B6560;font-weight:400}
+.mb-tabs{display:flex;gap:4px;margin-bottom:14px;overflow-x:auto}
+.mb-tabs button{flex:1 1 auto;padding:8px 4px;border:1.5px solid #DDD8D0;border-radius:8px;background:#fff;color:#6B6455;font:600 11px Poppins,system-ui;cursor:pointer;white-space:nowrap}
+.mb-tabs button[aria-selected="true"]{background:#896C32;border-color:#896C32;color:#F9F7F4}
+.mb-wb{padding:14px 16px;margin-bottom:18px}
+.mb-wb-p{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #E4DBC5;border-left:5px solid var(--f);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-family:Poppins,system-ui}
+div.mb-wb-p{cursor:default}
+.mb-wb-t{font-size:13px;color:#2C2C2C;font-weight:700;margin-bottom:3px}
+.mb-wb-g{font-size:11px;color:#6B6560;line-height:1.45}
+.mb-wb-a{font-size:11px;color:#896C32;font-weight:700;margin-top:5px}
+.mb-wb-mehr{font-size:11px;color:#9A9188}
 .mb-d-details{margin:4px 0 16px}
 .mb-d-details summary{cursor:pointer;font-size:12px;color:#896C32;font-weight:700;margin-bottom:10px}
 .wz-step{display:flex;align-items:center;gap:12px;margin-bottom:6px}
@@ -359,7 +370,7 @@ textarea{resize:vertical;margin-bottom:0}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Great Hair Day Academy ✂</h1>
   <p id="kopf-sub">Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk</p>
@@ -445,7 +456,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -526,7 +537,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">💆 Praxis</h2>
     <p class="mb-sub">Am Kunden üben, abhaken und nachweisen.</p>
     <div class="mb-grid">
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/umformung.html?v=20261116s"><div class="mb-ic">🧪</div><b>Umformung</b><small>Dauerwelle &amp; Glättung</small></a>
       <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
       <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
@@ -542,7 +553,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="mb-grid">
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261116s"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
       <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
       <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
     </div>
   </div>
@@ -555,9 +566,9 @@ textarea{resize:vertical;margin-bottom:0}
     <p class="mb-sub">Inhalte pflegen und Lernfortschritt ansehen.</p>
     <div class="mb-grid">
       <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
     </div>
   </div>
@@ -569,9 +580,9 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">🏠 Selbst ansehen</h2>
     <p class="mb-sub">Die App so sehen, wie deine Lehrlinge sie sehen.</p>
     <div class="mb-grid">
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#sortieren"><div class="mb-ic">🧭</div><div><b>Kurz sortieren</b><small>Wörni für Fehler, Nervosität, Unsicherheit – so sehen es Lehrlinge</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119b#sortieren"><div class="mb-ic">🧭</div><div><b>Kurz sortieren</b><small>Wörni für Fehler, Nervosität, Unsicherheit – so sehen es Lehrlinge</small></div></a>
     </div>
   </div>
 </div>
@@ -1675,7 +1686,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261119a'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261119b'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -2352,6 +2363,41 @@ var MB_STAND={sitzt:{f:'#5B8A4A',t:['sitzt','sitzen']},wartet:{f:'#8DB07D',t:['b
   wackelt:{f:'#C4A830',t:['wackelt','wackeln']},unsicher:{f:'#C44030',t:['unsicher','unsicher']},offen:{f:'#B9B0A0',t:['offen','offen']}};
 var MB_REIHE=['sitzt','wartet','faellig','wackelt','unsicher','offen'];
 function ampelStand(d){ return GHD_STAND.themaStand(d); }   // kompetenz-stand.js
+// ── Kompetenzen (kompetenzen.js / kompetenz-stand.js) im Meisterin-Bereich ──
+// Gleiche Rechnung und Gruppen wie die Landkarte des Lehrlings im Lern-Tool.
+var MBK_STAND={bestaetigt:{f:'#5B8A4A',t:'bestätigt',z:'✓ '},salon:{f:'#8DB07D',t:'im Salon gemacht',z:'● '},anwenden:{f:'#8DB07D',t:'kann anwenden',z:'● '},
+  wissen:{f:'#8DB07D',t:'Wissen sitzt',z:'● '},begonnen:{f:'#C4A830',t:'begonnen',z:'● '},warnung:{f:'#C44030',t:'genauer ansehen',z:'⚠ '},offen:{f:'#B9B0A0',t:'offen',z:'○ '}};
+var MBK_LEG=[['bestätigt','#5B8A4A',['bestaetigt']],['auf dem Weg','#8DB07D',['salon','anwenden','wissen']],['begonnen','#C4A830',['begonnen']],
+  ['genauer ansehen','#C44030',['warnung']],['offen','#B9B0A0',['offen']]];
+var MBK_GRUPPEN=[['Grundlagen',['hygiene','diagnose','werkzeug','betrieb']],['Am Gast',['pflege','beratung','englisch','nagelpflege']],
+  ['Farbe',['farbe','blond']],['Schnitt & Form',['damenschnitt','herrenschnitt','rasur','umformung','foehnen','hochstecken']]];
+function mbkKomp(id){return (window.GHD_KOMPETENZEN||[]).filter(function(k){return k.id===id;})[0];}
+function mbkBestaetigt(alle){return alle.filter(function(s){return s.stand==='bestaetigt';}).length;}
+// Bereit zum Bestätigen: genug im Salon gemacht, oder Wissen sitzt bei Kompetenzen ohne Praxis-Bereich
+function mbkBereit(s){return s.stand==='salon'||(s.stand==='wissen'&&s.stufen.salon===null);}
+function mbkBalken(alle){
+  if(!alle||!alle.length) return '';
+  var bal='',txt='';
+  MBK_LEG.forEach(function(x){
+    var n=alle.filter(function(s){return x[2].indexOf(s.stand)>=0;}).length; if(!n) return;
+    if(x[0]!=='offen') bal+='<i style="width:'+(n/alle.length*100)+'%;background:'+x[1]+'"></i>';
+    txt+='<span><i class="mb-p" style="background:'+x[1]+'"></i>'+n+' '+x[0]+'</span>';
+  });
+  return '<div class="mb-ampel">'+bal+'</div><div class="mb-ampel-txt">'+txt+'</div>';
+}
+// Praxis-Check mit einer bestimmten Behandlung direkt öffnen
+function pxDirekt(lehrling,id){
+  zeigePraxisStart(lehrling);
+  var b=PX_BEHANDLUNGEN.filter(function(x){return x.id===id;})[0]; if(!b) return;
+  PX.b=b;PX.punkte=b.punkte.map(function(t){return {punkt:t,ok:null};});
+  zeigePraxisListe();
+}
+// Passende Bestätigung für eine Kompetenz starten: Praxis-Check, sonst Prüfgespräch zu ihren Themen
+function mbkBestaetigen(lehrling,k,komp,gespr){
+  if(k.praxisCheck.length) pxDirekt(lehrling,k.praxisCheck[0]);
+  else { zeigePruefStart(lehrling,komp,gespr); pruefStarten(k.themen); }
+}
+
 function ampelZaehlen(komp,lj){
   var themen=((window.GHD_LJ_THEMEN||{})[String(lj)]||[]);
   var z={};themen.forEach(function(t){var s=ampelStand(komp[t]);z[s]=(z[s]||0)+1;});
@@ -2371,6 +2417,7 @@ function ampelHtml(a){
 // Echte, aktive Lehrlinge der letzten Übersicht (für „Mit wem?“ bei Prüfgespräch/Praxis-Check)
 var MB_AKTIVE=[];
 var MB_HINWEISE=[];
+var MB_BEREIT=[];   // aktive Lehrlinge mit Kompetenzen, die bereit zum Bestätigen sind
 
 async function ladeDashboard(){
   if(!ISTMEISTERIN) return;
@@ -2386,7 +2433,7 @@ async function ladeDashboard(){
   }
   var ids=lehrlinge.map(function(l){return l.id;});
   // Ein Abruf für alle statt einer pro Lehrling
-  var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]},ffRes={data:[]};
+  var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]},ffRes={data:[]},kxPraxis=[],kxGespr=[],kxFarb=[];
   try{
     var r=await Promise.all([
       sb.from('kompetenz').select('*').in('lehrling_id',ids),
@@ -2394,9 +2441,14 @@ async function ladeDashboard(){
       // Praxis-Tagebuch: unbestätigte Einträge (ohne Migration → einfach keine Anzeige)
       Promise.resolve(sb.from('praxis_eintraege').select('lehrling_id,bereich,dauer_min').in('lehrling_id',ids).eq('bestaetigt',false)).catch(function(){return {data:[]};}),
       // Farb-Fälle: Pläne, die auf Rückmeldung warten (ohne Migration → keine Anzeige)
-      Promise.resolve(sb.from('farb_plaene').select('lehrling_id').eq('status','offen')).catch(function(){return {data:[]};})
+      Promise.resolve(sb.from('farb_plaene').select('lehrling_id').eq('status','offen')).catch(function(){return {data:[]};}),
+      // Für die Kompetenzen: alle Praxis-Einträge, Prüfgespräche/Praxis-Checks und passende Farb-Pläne
+      Promise.resolve(berAlle(function(){return sb.from('praxis_eintraege').select('id,lehrling_id,bereich').in('lehrling_id',ids).order('id');})).catch(function(){return {data:[]};}),
+      Promise.resolve(berAlle(function(){return sb.from('pruefgespraeche').select('id,lehrling_id,art,thema,frage_id,ergebnis,datum,erstellt_am').in('lehrling_id',ids).order('id');})).catch(function(){return {data:[]};}),
+      Promise.resolve(sb.from('farb_plaene').select('lehrling_id,status').in('lehrling_id',ids).eq('status','passt')).catch(function(){return {data:[]};})
     ]);
     kompRes=r[0];verlRes=r[1];ptRes=r[2]&&!r[2].error?r[2]:{data:[]};ffRes=r[3]&&!r[3].error?r[3]:{data:[]};
+    kxPraxis=r[4]&&!r[4].error?r[4].data||[]:[];kxGespr=r[5]&&!r[5].error?r[5].data||[]:[];kxFarb=r[6]&&!r[6].error?r[6].data||[]:[];
   }catch(e){}
   var name={};lehrlinge.forEach(function(l){name[l.id]=l.name;});
   var ptOffen=ptRes.data||[], ptOffenVon={};
@@ -2404,6 +2456,12 @@ async function ladeDashboard(){
   var kompVon={},letztesVon={};
   (kompRes.data||[]).forEach(function(k){(kompVon[k.lehrling_id]=kompVon[k.lehrling_id]||{})[k.thema]=k;});
   (verlRes.data||[]).forEach(function(v){if(!letztesVon[v.lehrling_id])letztesVon[v.lehrling_id]=v;});
+  // Kompetenzen je Lehrling (gleiche Rechnung wie im Lern-Tool)
+  function jeLehrling(liste){var o={};liste.forEach(function(x){(o[x.lehrling_id]=o[x.lehrling_id]||[]).push(x);});return o;}
+  var pxVon=jeLehrling(kxPraxis),gsVon=jeLehrling(kxGespr),fpVon=jeLehrling(kxFarb),kompetenzVon={};
+  lehrlinge.forEach(function(l){
+    if(window.GHD_STAND) kompetenzVon[l.id]=GHD_STAND.alleKompetenzen({komp:kompVon[l.id]||{},praxis:pxVon[l.id]||[],gespraeche:gsVon[l.id]||[],farbPlaene:fpVon[l.id]||[]});
+  });
   // Wochenziel: abgeschlossene Quizze seit Montag
   var mo=new Date();mo.setHours(0,0,0,0);mo.setDate(mo.getDate()-((mo.getDay()+6)%7));
   var tagNr=(new Date().getDay()+6)%7; // 0 = Mo
@@ -2427,11 +2485,15 @@ async function ladeDashboard(){
     var wzFarbe=(n>=ziel||n>=Math.floor(ziel*(tagNr+1)/7))?'#5B8A4A':n>0?'#A08A20':'#C44030';
     var woche=pausiert?'':' · <b style="color:'+wzFarbe+'">Woche '+Math.min(n,ziel)+'/'+ziel+(n>=ziel?' ✓':'')+'</b>';
     var pto=ptOffenVon[l.id]||0;
+    var kx=(pausiert||istStylistin(l))?null:kompetenzVon[l.id];
+    var bereit=kx?kx.filter(mbkBereit).length:0;
+    if(kx&&kx.length) info+=' · '+mbkBestaetigt(kx)+' von '+kx.length+' Kompetenzen bestätigt';
     return '<button class="mb-l'+(pausiert?' pausiert':'')+'" id="dl-'+escHtml(String(l.id))+'">'+
       '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(ehem?' <span class="mb-l-pause">🎓 ausgeschieden</span>':pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+
-        (pto?' <span class="mb-l-pt">📝 '+pto+' zum Bestätigen</span>':'')+'</div>'+
+        (pto?' <span class="mb-l-pt">📝 '+pto+' zum Bestätigen</span>':'')+
+        (bereit?' <span class="mb-l-pt">✓ '+bereit+' bereit zum Bestätigen</span>':'')+'</div>'+
       '<div class="mb-l-info">'+escHtml(info)+woche+'</div></div><div class="mb-l-pfeil">›</div></div>'+
-      (pausiert||istStylistin(l)?'':ampelHtml(ampelZaehlen(kompVon[l.id]||{},l.lehrjahr)))+
+      (kx?mbkBalken(kx):'')+
     '</button>';
   }
   var html='<div class="lab">'+(aktive.length===1?'Lehrling':'Lehrlinge')+'</div>'+
@@ -2474,6 +2536,15 @@ async function ladeDashboard(){
   } else {
     hh+='<h3>Alles erledigt ✓</h3><p>Keine Praxis-Einträge zum Bestätigen, keine Farb-Pläne und keine Prüfhinweise.</p>';
   }
+  // Kompetenzen, die auf Praxis-Check oder Prüfgespräch warten
+  MB_BEREIT=aktive.filter(function(l){return !istStylistin(l)&&kompetenzVon[l.id]&&kompetenzVon[l.id].some(mbkBereit);});
+  var nBereit=aktive.reduce(function(n,l){return n+(istStylistin(l)||!kompetenzVon[l.id]?0:kompetenzVon[l.id].filter(mbkBereit).length);},0);
+  if(nBereit){
+    if(!nPt&&!nFF&&!nH) hh='<div class="lab">Heute zu tun</div><h3>'+nBereit+(nBereit===1?' Kompetenz ist':' Kompetenzen sind')+' bereit zum Bestätigen</h3>'+
+      '<p>Im Salon oft genug gemacht oder das Wissen sitzt – ein Praxis-Check oder Prüfgespräch macht es fest.</p>'+
+      '<button class="mb-heute-los" data-mb-los="bereit">Ansehen →</button>';
+    else hh+='<button class="mb-heute-link" data-mb-los="bereit">Bereit zum Bestätigen ('+nBereit+') – Praxis-Check oder Prüfgespräch</button>';
+  }
   heute.innerHTML=hh;
   stats.innerHTML=
     '<button class="mb-stat'+(nPt?' mb-stat-an':'')+'" data-mb-los="pt"><b>'+nPt+'</b><small>Praxis zum Bestätigen</small></button>'+
@@ -2491,6 +2562,8 @@ document.addEventListener('click',function(e){
   var was=b.dataset.mbLos;
   if(was==='pt'){ zeigePtAlle(null); return; }
   if(was==='ff'){ zeigeFarbFaelle(); return; }
+  // Nur ein Lehrling betroffen: gleich die Landkarte öffnen, sonst zur Liste
+  if(was==='bereit'&&MB_BEREIT.length===1){ DETAIL_START_TAB=null; zeigeDetailLehrling(MB_BEREIT[0]); return; }
   var ziel=document.getElementById(was==='hinweise'?'mb-hinweise':'mb-lehrlinge');
   if(was==='hinweise'&&!MB_HINWEISE.length){ alert('Gerade gibt es keine Prüfhinweise – im Quiz ist nichts auffällig.'); return; }
   if(ziel) ziel.scrollIntoView({behavior:'smooth',block:'start'});
@@ -3301,6 +3374,13 @@ async function zeigeDetailLehrling(lehrling){
   var komp=await ladeKompetenz(lehrling.id);
   var gliste=await ladeGespraeche(lehrling.id);
   var gespr=gespraechProThema(gliste), praxis=praxisProThema(gliste);
+  // Für die Kompetenzen: Praxis-Tagebuch (Bereiche) und Farb-Fälle mit „passt“ (ohne Migration → leer)
+  var kxR=await Promise.all([
+    berAlle(function(){return sb.from('praxis_eintraege').select('id,bereich').eq('lehrling_id',lehrling.id).order('id');}),
+    sb.from('farb_plaene').select('status').eq('lehrling_id',lehrling.id).eq('status','passt')
+  ].map(function(x){return Promise.resolve(x).catch(function(e){return {error:e};});}));
+  var kx=window.GHD_STAND?GHD_STAND.alleKompetenzen({komp:komp,gespraeche:gliste||[],
+    praxis:kxR[0].error?[]:kxR[0].data||[],farbPlaene:kxR[1].error?[]:kxR[1].data||[]}):[];
   var alleThemen=['Balayage & Strähnen','Beratungsgespräch & Kundenkommunikation','Betriebskunde & Recht','Colorationsgrundlagen','Dauerwelle & Umformung','Englisch im Salon','Fachkunde Chemie','Farbenlehre & Coloration','Haarkunde & Haarstruktur','Haarschnitt Techniken','Hautkunde','Herrenservice','Hygiene & Schutzmaßnahmen','Kopfhautpflege','Kundenkommunikation Fortgeschritten','Kundenberatung','LAP-Vorbereitung','Pflegeprodukte & Wirkstoffe','Salon-Organisation','Salonalltag & Checkliste','Umformungen Fortgeschritten','Unfallverhütung & Arbeitssicherheit','Werkzeugkunde'];
   Object.keys(komp).concat(Object.keys(gespr),Object.keys(praxis)).forEach(function(t){if(alleThemen.indexOf(t)<0)alleThemen.push(t);});
   var bekannt=alleThemen;
@@ -3327,29 +3407,78 @@ async function zeigeDetailLehrling(lehrling){
       '<button role="tab" data-dtab="praxis" aria-selected="false">📝 Praxis</button>'+
     '</div>';
 
-  // Reiter Landkarte: Ampel-Felder wie beim Lehrling, mit Gespräch/Praxis am Thema
-  var ljThemen=((window.GHD_LJ_THEMEN||{})[String(lehrling.lehrjahr)]||[]).slice();
-  var weitere=bekannt.filter(function(t){return ljThemen.indexOf(t)<0&&(ampelStand(komp[t])!=='offen'||gespr[t]||praxis[t]);})
-    .sort(function(x,y){return x.localeCompare(y,'de');});
-  function feld(th){
-    var d=komp[th], st=ampelStand(d), info=MB_STAND[st];
-    var zus='';
-    if(d&&d.sicher_falsch) zus+='<small class="mb-f-warn">'+d.sicher_falsch+'× sicher, aber falsch</small>';
-    if(gespr[th]) zus+='<small style="color:'+PG_FARBE[gespr[th].ergebnis]+'">🗣 '+escHtml(PG_LABEL[gespr[th].ergebnis])+'</small>';
-    if(praxis[th]) zus+='<small style="color:'+PG_FARBE[praxis[th].ergebnis]+'">✂ '+escHtml(PX_LABEL[praxis[th].ergebnis])+'</small>';
-    if(d&&d.zuletzt_am){
-      var lange=tageZwischen(d.zuletzt_am,heuteISO())>=LANGE_NICHT_TAGE;
-      zus+='<small style="color:'+(lange?'#C44030':'#9A9188')+';font-weight:400">🕘 '+escHtml(zuletztText(d.zuletzt_am))+(lange?' – lange nicht geübt':'')+'</small>';
-    }
-    return '<button class="mb-f" data-pthema="'+escHtml(th)+'" style="--f:'+info.f+'">'+escHtml(th)+
-      '<small class="mb-f-st">'+(st==='faellig'?'↻ ':st==='offen'?'○ ':'● ')+escHtml(info.t[0])+'</small>'+zus+'</button>';
-  }
-  var karte=hinweisBox(hinweise,false);
-  [['Themen im '+lehrling.lehrjahr+'. Lehrjahr',ljThemen],['Auch geübt',weitere]].forEach(function(g){
-    if(!g[1].length) return;
-    karte+='<div class="lab" style="margin-top:4px">'+escHtml(g[0])+'</div><div class="mb-f-grid">'+g[1].map(feld).join('')+'</div>';
+  // Reiter Landkarte: „Wo braucht dich …?“ und die 16 Kompetenzen (wie beim Lehrling im Lern-Tool)
+  var vorname=String(lehrling.name||'').trim().split(/\s+/)[0]||'dein Lehrling';
+  var WB=[];   // Punkte für „Wo braucht dich …?“, wichtigste zuerst
+  var warnThemen={};
+  kx.forEach(function(s){
+    if(s.stand!=='warnung') return;
+    var k=mbkKomp(s.id), w0=s.warnungen[0];
+    s.warnungen.forEach(function(w){ if(w.art!=='praxis') warnThemen[w.bezug]=true; });
+    var check=w0.art==='praxis'?(PX_BEHANDLUNGEN.some(function(b){return b.id===w0.bezug;})?w0.bezug:k.praxisCheck[0]):null;
+    WB.push({r:0,f:MBK_STAND.warnung.f,titel:s.name,
+      grund:s.warnungen.map(function(w){return (w.art==='praxis'?'Praxis-Check':w.bezug)+': '+w.text;}).join(' · '),
+      akt:check?'✂ Praxis-Check „'+((PX_BEHANDLUNGEN.filter(function(b){return b.id===check;})[0]||{}).name||'')+'“ starten →':'🗣 Prüfgespräch zu „'+w0.bezug+'“ starten →',
+      los:check?function(){pxDirekt(lehrling,check);}:function(){zeigePruefStart(lehrling,komp,gespr);pruefStarten([w0.bezug]);}});
   });
-  karte+='<div class="mb-d-hilfe" style="margin-top:-6px">Thema antippen = Prüfgespräch zu diesem Thema starten.</div>';
+  // Prüfhinweise aus dem Quiz (bisher eigener Kasten „Bitte nachprüfen“), ohne doppelte Themen
+  hinweise.forEach(function(h){
+    if(warnThemen[h.th]) return;
+    WB.push({r:1,f:'#C4A830',titel:h.th,grund:'Prüfhinweis: '+h.gruende.join(' · '),akt:'🗣 Prüfgespräch zu diesem Thema starten →',
+      los:function(){zeigePruefStart(lehrling,komp,gespr);pruefStarten([h.th]);}});
+  });
+  kx.forEach(function(s){
+    if(!mbkBereit(s)) return;
+    var k=mbkKomp(s.id);
+    WB.push({r:2,f:MBK_STAND[s.stand].f,titel:s.name,
+      grund:s.stand==='salon'?s.salon.eintraege+'× im Salon gemacht – bereit zum Bestätigen':'Wissen sitzt – im Prüfgespräch bestätigen',
+      akt:k.praxisCheck.length?'✂ Praxis-Check „'+((PX_BEHANDLUNGEN.filter(function(b){return b.id===k.praxisCheck[0];})[0]||{}).name||'')+'“ starten →':'🗣 Prüfgespräch dazu starten →',
+      los:function(){mbkBestaetigen(lehrling,k,komp,gespr);}});
+  });
+  kx.forEach(function(s){
+    if(s.stufen.wissen===true&&s.stufen.salon===false&&!s.stufen.bestaetigt&&s.stand!=='warnung')
+      WB.push({r:3,f:MBK_STAND[s.stand].f,titel:s.name,grund:'Wissen sitzt, aber erst '+s.salon.eintraege+'× im Salon – bei der nächsten Gelegenheit mitarbeiten lassen',akt:null,los:null});
+  });
+  WB.sort(function(x,y){return x.r-y.r;});
+  var karte='';
+  if(!ehemalig){
+    karte+='<div class="karte mb-wb"><div class="lab" style="margin-bottom:10px">Wo braucht dich '+escHtml(vorname)+'?</div>';
+    if(!WB.length) karte+='<div class="mb-wb-g">Gerade nichts Dringendes – alles im Plan ✓</div>';
+    WB.slice(0,4).forEach(function(x,i){
+      var tag=x.los?'button':'div';
+      karte+='<'+tag+' class="mb-wb-p"'+(x.los?' data-wb="'+i+'"':'')+' style="--f:'+x.f+'"><div class="mb-wb-t">'+escHtml(x.titel)+'</div>'+
+        '<div class="mb-wb-g">'+escHtml(x.grund)+'</div>'+(x.akt?'<div class="mb-wb-a">'+escHtml(x.akt)+'</div>':'')+'</'+tag+'>';
+    });
+    if(WB.length>4) karte+='<div class="mb-wb-mehr">… und '+(WB.length-4)+' weitere in der Landkarte unten</div>';
+    karte+='</div>';
+  }
+  if(kx.length){
+    karte+='<div class="mb-ampel-txt" style="margin:0 0 6px"><b style="color:#211D17;font-size:13px">'+mbkBestaetigt(kx)+' von '+kx.length+' Kompetenzen bestätigt</b></div>'+
+      mbkBalken(kx)+'<div style="height:14px"></div>';
+    var kxNach={}; kx.forEach(function(s){kxNach[s.id]=s;});
+    var kfeld=function(s){
+      var k=mbkKomp(s.id), i=MBK_STAND[s.stand], z='<small class="mb-f-st">'+i.z+escHtml(i.t)+'</small>';
+      if(s.wissen.gesamt) z+='<small class="mb-f-z">📚 Quiz: '+s.wissen.sitzt+' von '+s.wissen.gesamt+' sitzen</small>';
+      if(s.stufen.anwenden!==null) z+='<small class="mb-f-z">🎨 Farb-Fälle: '+s.anwenden.passt+'× passt</small>';
+      if(k.praxis.length) z+='<small class="mb-f-z">📝 Salon: '+s.salon.eintraege+'×'+(s.stufen.salon?' ✓':' (von '+s.salon.noetig+')')+'</small>';
+      s.bestaetigt.ergebnisse.slice(0,1).forEach(function(b){
+        z+='<small style="color:'+PG_FARBE[b.ergebnis]+'">'+(s.bestaetigt.quelle==='praxis'?'✂ '+escHtml(PX_LABEL[b.ergebnis]):'🗣 '+escHtml(PG_LABEL[b.ergebnis]))+'</small>';
+      });
+      s.warnungen.filter(function(w){return w.art==='sicher_falsch';}).forEach(function(w){
+        z+='<small class="mb-f-warn">'+escHtml(w.bezug)+': '+escHtml(w.text.split(' – ')[0])+'</small>';
+      });
+      // Zuletzt geübt (neuestes Quiz-Thema der Kompetenz), rot ab LANGE_NICHT_TAGE
+      var zuletzt=k.themen.map(function(th){return komp[th]&&komp[th].zuletzt_am;}).filter(Boolean).sort().pop();
+      if(zuletzt){ var lange=tageZwischen(zuletzt,heuteISO())>=LANGE_NICHT_TAGE;
+        z+='<small style="color:'+(lange?'#C44030':'#9A9188')+';font-weight:400">🕘 '+escHtml(zuletztText(zuletzt))+(lange?' – lange nicht geübt':'')+'</small>'; }
+      return '<button class="mb-f" data-komp="'+escHtml(s.id)+'" style="--f:'+i.f+'">'+escHtml(s.name)+z+'</button>';
+    };
+    MBK_GRUPPEN.forEach(function(g){
+      var felder=g[1].filter(function(id){return kxNach[id];});
+      if(felder.length) karte+='<div class="lab" style="margin-top:4px">'+escHtml(g[0])+'</div><div class="mb-f-grid">'+felder.map(function(id){return kfeld(kxNach[id]);}).join('')+'</div>';
+    });
+    karte+='<div class="mb-d-hilfe" style="margin-top:-6px">Kompetenz antippen = Praxis-Check dazu starten (ohne Praxis-Check: Prüfgespräch zu ihren Themen).</div>';
+  }
   if(bekannt.length) karte+='<details class="mb-d-details"><summary>Zahlen pro Thema anzeigen</summary>'+renderKompetenz(komp,bekannt,gespr,praxis)+'</details>';
   html+='<div class="mb-panel" data-dpanel="karte">'+karte+'</div>';
 
@@ -3382,7 +3511,12 @@ async function zeigeDetailLehrling(lehrling){
     '<button class="btn btn-r" id="btn-del-lehrling" style="flex:1;min-width:120px">✕ Löschen</button>'+
   '</div>';
   document.getElementById('detail-inhalt').innerHTML=html;
-  hinweisKlicks(hinweise);
+  document.querySelectorAll('#detail-inhalt [data-wb]').forEach(function(b){
+    b.addEventListener('click',function(){ var x=WB[+b.dataset.wb]; if(x&&x.los) x.los(); });
+  });
+  document.querySelectorAll('#detail-inhalt [data-komp]').forEach(function(b){
+    b.addEventListener('click',function(){ var k=mbkKomp(b.dataset.komp); if(k) mbkBestaetigen(lehrling,k,komp,gespr); });
+  });
   document.querySelectorAll('#detail-inhalt [data-dtab]').forEach(function(b){
     b.addEventListener('click',function(){
       document.querySelectorAll('#detail-inhalt [data-dtab]').forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
@@ -3391,9 +3525,6 @@ async function zeigeDetailLehrling(lehrling){
   });
   ptMeisterinLaden(lehrling);
   if(DETAIL_START_TAB){var st=document.querySelector('#detail-inhalt [data-dtab="'+DETAIL_START_TAB+'"]');DETAIL_START_TAB=null;if(st)st.click();}
-  document.querySelectorAll('#detail-inhalt [data-pthema]').forEach(function(b){
-    b.addEventListener('click',function(){ zeigePruefStart(lehrling,komp,gespr); pruefStarten([b.dataset.pthema]); });
-  });
   document.getElementById('btn-pruef-start').addEventListener('click',function(){
     zeigePruefStart(lehrling,komp,gespr);
   });
