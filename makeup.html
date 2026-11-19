@@ -118,7 +118,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 .labor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:760px){.labor{grid-template-columns:minmax(0,1fr)}}
 #gesicht{width:100%;max-width:320px;height:auto;display:block}
-#gesicht .p-C,#gesicht .p-R{mix-blend-mode:multiply}
+#gesicht .p-C,#gesicht .p-R,#gesicht .p-M,#gesicht .p-D{mix-blend-mode:multiply}
 #gesicht image,#gesicht .produkt,#gesicht .auswahl,#gesicht .fehlt{pointer-events:none}
 .ki-zeile{font-size:11px;color:var(--muted)}
 .tipp{fill:transparent;cursor:pointer}
@@ -168,7 +168,7 @@ a.btn{display:inline-block;text-decoration:none}
     <header>
       <span class="tag">Selbst ausprobieren</span>
       <h2>Make-up-Labor</h2>
-      <p class="muted">Wähle eine Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. Tippst du eine aufgetragene Stelle an, kannst du sie mit Reglern anpassen: Stärke, Länge, Breite, Winkel und Weichheit.</p>
+      <p class="muted">Wähle Modell, Ansicht, Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. In der Ansicht „Augen“ übst du Lidschatten – mit geschlossenen und mit offenen Augen. Tippst du eine aufgetragene Stelle an, kannst du sie mit Reglern anpassen: Stärke, Länge, Breite, Winkel und Weichheit.</p>
     </header>
     <div class="labor">
       <div class="panel" style="justify-items:center">
@@ -176,6 +176,14 @@ a.btn{display:inline-block;text-decoration:none}
         <span class="ki-zeile">KI-generiert</span>
       </div>
       <div class="panel">
+        <div>
+          <div class="lab">Modell</div>
+          <div class="chips" id="modelle"></div>
+        </div>
+        <div>
+          <div class="lab">Ansicht</div>
+          <div class="chips" id="ansichten"></div>
+        </div>
         <div>
           <div class="lab">Gesichtsform</div>
           <div class="chips" id="formen"></div>
@@ -244,6 +252,12 @@ const WERKZEUG={
   C:{name:'Contouring',ic:'🟤',rgb:'110,70,42',deck:.9,rand:'#6E4E36'},
   R:{name:'Rouge',ic:'🌸',rgb:'226,84,118',deck:.55,rand:'#B8506A'}
 };
+// Lidschatten in drei Tönen (Ansicht „Augen“)
+const AUGEN_WERKZEUG={
+  L:{name:'Hell',ic:'🤍',rgb:'236,200,168',deck:.9,rand:'#C9A44C'},
+  M:{name:'Mittel',ic:'🟫',rgb:'168,118,92',deck:.75,rand:'#8A6450'},
+  D:{name:'Dunkel',ic:'🟤',rgb:'78,52,46',deck:.85,rand:'#4E342E'}
+};
 // ── Zonen: Lage aus den Messpunkten der Zeichnung (A), „paar“ = links und rechts ──
 const ZONEN={
   haaransatz:{n:'Haaransatz',d:{w:5},pos:A=>({x:0,y:A.ansatz,rx:A.schlaefe*.8,ry:7})},
@@ -258,6 +272,26 @@ const ZONEN={
   kiefer:{n:'Kieferwinkel',paar:1,rot:-45,d:{l:2.2,b:.8,w:5},pos:A=>({x:A.kiefer*.74,y:(A.mund+A.kinn)/2,rx:10,ry:12})},
   kinn_mitte:{n:'Kinnmitte',d:{w:4},pos:A=>({x:0,y:A.kinn-14,rx:13,ry:6})},
   kinn_spitze:{n:'Kinnspitze',d:{w:4},pos:A=>({x:0,y:A.kinn-3,rx:15,ry:4})}
+};
+// ── Zonen der Augenpartie: Lage aus Braue, Auge und Augenabstand ──
+// Bei geschlossenen Augen liegt „auge“ auf dem Wimpernkranz, bei offenen in der Augenmitte.
+const AUGEN_ZONEN={
+  braue:{n:'unter der Braue',paar:1,rot:6,d:{w:2},pos:(A,w,g,zu)=>({x:A.ad+w*.2,y:A.braue+g*.28,rx:w*.8,ry:g*.1})},
+  falte:{n:'Lidfalte',paar:1,rot:4,d:{w:2},pos:(A,w,g,zu)=>({x:A.ad+w*.1,y:zu?A.auge-g*.55:A.auge-w*.62,rx:w*1.02,ry:zu?g*.12:w*.1})},
+  lid:{n:'bewegliches Lid',paar:1,d:{w:2},pos:(A,w,g,zu)=>({x:A.ad,y:zu?A.auge-g*.25:A.auge-w*.4,rx:w*.9,ry:zu?g*.17:w*.12})},
+  aussen:{n:'äußerer Augenwinkel',paar:1,rot:-35,d:{w:2},pos:(A,w,g,zu)=>({x:A.ad+w*.85,y:zu?A.auge-g*.3:A.auge-w*.35,rx:w*.38,ry:zu?g*.2:w*.2})},
+  innen:{n:'innerer Augenwinkel',paar:1,d:{w:1},pos:(A,w,g,zu)=>({x:A.ad-w*.95,y:zu?A.auge-g*.12:A.auge-w*.08,rx:w*.2,ry:zu?g*.12:w*.14})},
+  unten:{n:'unterer Wimpernkranz',paar:1,rot:-8,nurOffen:1,d:{w:1},pos:(A,w,g,zu)=>({x:A.ad+w*.4,y:A.auge+w*.42,rx:w*.55,ry:w*.08})}
+};
+const AUGEN={
+  std:{n:'Augen',ziel:'Drei Töne: innen hell, nach außen dunkler – alles weich ineinander verblendet.',
+    soll:{braue:'L',innen:'L',lid:'M',falte:'M',aussen:'D'},
+    meiden:{braue:['D','Dunkel unter der Braue macht das Auge schwer.'],innen:['D','Dunkel im inneren Augenwinkel lässt die Augen enger zusammenstehen.']},
+    warum:{braue:'Hell unter der Braue hebt den Brauenbogen.',innen:'Hell im inneren Augenwinkel öffnet den Blick.',lid:'Der mittlere Ton auf dem beweglichen Lid gibt Farbe.',falte:'Der mittlere Ton in der Lidfalte verbindet und gibt Tiefe.',aussen:'Dunkel im äußeren Winkel gibt Tiefe und zieht das Auge nach außen.'}},
+  reif:{n:'Augen (reife Haut)',ziel:'Matte Töne, wenig Schimmer. Der Übergang sitzt etwas höher, damit man ihn auch bei offenem Auge sieht.',
+    soll:{braue:'L',innen:'L',lid:'L',falte:'M',aussen:'D'},
+    meiden:{braue:['D','Dunkel unter der Braue macht das Auge schwer.'],innen:['D','Dunkel im inneren Augenwinkel lässt die Augen enger zusammenstehen.'],unten:['D','Dunkel unten am Wimpernkranz lässt reife Augen kleiner und müde wirken.'],lid:['D','Dunkel auf dem ganzen Lid verschwindet bei Schlupflidern und wirkt schwer.']},
+    warum:{braue:'Hell und matt unter der Braue hebt.',innen:'Hell im inneren Augenwinkel macht wacher.',lid:'Ein heller, matter Ton auf dem beweglichen Lid lässt es größer wirken.',falte:'Der mittlere Ton etwas über der natürlichen Lidfalte: so sieht man ihn auch bei offenem Auge.',aussen:'Dunkel nur außen und schräg nach oben verblendet – das hebt das Auge.'}}
 };
 // ── Gesichtsformen und Regeln (Inhalte zur Durchsicht durch die Inhaberin) ──
 // soll: Zone → Produkt · meiden: Zone → [Produkt, warum] · warum: Zone → Begründung
@@ -281,10 +315,38 @@ const FORMEN={
   herz:{n:'Herzförmig',bild:'herz',B:[340,403],A:{cx:170,ansatz:112,braue:145,auge:160,ad:37,nase:205,mund:230,kinn:278,schlaefe:62,wange:68,kiefer:45},ziel:'Stirn schmaler, Kinnpartie ausgleichen.',
     soll:{unter_augen:'H',kinn_mitte:'H',stirn_seiten:'C',schlaefen:'C',kinn_spitze:'C',wangenapfel:'R'},
     meiden:{stirn_seiten:['H','Licht an den Stirnseiten macht die ohnehin breite Stirn noch breiter.']},
-    warum:{unter_augen:'Licht unter den Augen holt die Mitte nach vorne.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',stirn_seiten:'Schatten an den Stirnseiten nimmt Breite oben.',schlaefen:'Schatten an den Schläfen macht oben schmaler.',kinn_spitze:'Ein Hauch Schatten an der Kinnspitze nimmt die Spitze weg.',wangenapfel:'Rouge etwas tiefer auf dem Wangenapfel gleicht unten aus.'}}
+    warum:{unter_augen:'Licht unter den Augen holt die Mitte nach vorne.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',stirn_seiten:'Schatten an den Stirnseiten nimmt Breite oben.',schlaefen:'Schatten an den Schläfen macht oben schmaler.',kinn_spitze:'Ein Hauch Schatten an der Kinnspitze nimmt die Spitze weg.',wangenapfel:'Rouge etwas tiefer auf dem Wangenapfel gleicht unten aus.'}},
+  diamant:{n:'Diamant',ziel:'Breite Wangenknochen weicher, Stirn und Kinn etwas breiter wirken lassen.',
+    soll:{stirn_mitte:'H',stirn_seiten:'H',kinn_mitte:'H',wangen_hohl:'C',wangenapfel:'R'},
+    meiden:{wangenknochen:['H','Licht auf dem Wangenknochen macht die breiteste Stelle noch breiter.']},
+    warum:{stirn_mitte:'Licht in der Stirnmitte holt die schmale Stirn nach vorne.',stirn_seiten:'Licht an den Stirnseiten macht die Stirn breiter.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',wangen_hohl:'Ein weicher Schatten unter dem Wangenknochen nimmt die Breite in der Mitte.',wangenapfel:'Rouge auf dem Wangenapfel, zur Mitte hin, lenkt von den breiten Wangenknochen weg.'}},
+  birne:{n:'Birnenförmig',ziel:'Breite Kieferpartie schmaler, Stirn breiter wirken lassen.',
+    soll:{stirn_mitte:'H',stirn_seiten:'H',kiefer:'C',wangenknochen:'R'},
+    meiden:{kiefer:['H','Licht am Kiefer macht die breite untere Partie noch breiter.'],kinn_spitze:['C','Schatten an der Kinnspitze macht das Gesicht unten noch flächiger.']},
+    warum:{stirn_mitte:'Licht in der Stirnmitte holt die schmale Stirn nach vorne.',stirn_seiten:'Licht an den Stirnseiten macht oben breiter.',kiefer:'Schatten an den Kieferseiten macht unten schmaler.',wangenknochen:'Rouge schräg auf dem Wangenknochen Richtung Schläfe zieht den Blick nach oben.'}}
 };
+// Bilder je Modell: „jung“ = bisherige Zeichnungen (Augen offen), „zu“ = Augen geschlossen, „reif“ = ältere Dame (Augen offen)
+const BILDER=Object.assign({jung:{}},{"zu":{"oval":{"bild":"zu-oval","B":[152,243],"A":{"cx":76,"ansatz":38,"braue":111,"auge":129,"ad":30,"nase":160,"mund":181,"kinn":216,"schlaefe":47,"wange":50,"kiefer":28}},"rund":{"bild":"zu-rund","B":[158,253],"A":{"cx":79,"ansatz":47,"braue":119,"auge":138,"ad":31,"nase":169,"mund":187,"kinn":224,"schlaefe":53,"wange":58,"kiefer":44}},"eckig":{"bild":"zu-eckig","B":[157,251],"A":{"cx":79,"ansatz":39,"braue":118,"auge":136,"ad":31,"nase":167,"mund":187,"kinn":223,"schlaefe":45,"wange":49,"kiefer":41}},"herz":{"bild":"zu-herz","B":[149,238],"A":{"cx":75,"ansatz":68,"braue":110,"auge":129,"ad":29,"nase":162,"mund":180,"kinn":215,"schlaefe":42,"wange":43,"kiefer":22}},"diamant":{"bild":"zu-diamant","B":[154,252],"A":{"cx":77,"ansatz":35,"braue":88,"auge":105,"ad":30,"nase":136,"mund":155,"kinn":192,"schlaefe":44,"wange":54,"kiefer":33}},"lang":{"bild":"zu-lang","B":[152,249],"A":{"cx":76,"ansatz":48,"braue":86,"auge":104,"ad":30,"nase":135,"mund":153,"kinn":191,"schlaefe":40,"wange":44,"kiefer":28}},"birne":{"bild":"zu-birne","B":[154,252],"A":{"cx":77,"ansatz":46,"braue":88,"auge":105,"ad":30,"nase":138,"mund":155,"kinn":192,"schlaefe":44,"wange":51,"kiefer":40}}},"reif":{"oval":{"bild":"reif-oval","B":[130,256],"A":{"cx":65,"ansatz":56,"braue":105,"auge":119,"ad":27,"nase":154,"mund":173,"kinn":210,"schlaefe":45,"wange":48,"kiefer":33}},"rund":{"bild":"reif-rund","B":[132,259],"A":{"cx":66,"ansatz":60,"braue":108,"auge":121,"ad":32,"nase":156,"mund":176,"kinn":213,"schlaefe":48,"wange":53,"kiefer":43}},"eckig":{"bild":"reif-eckig","B":[130,256],"A":{"cx":65,"ansatz":56,"braue":105,"auge":120,"ad":29,"nase":154,"mund":173,"kinn":210,"schlaefe":48,"wange":49,"kiefer":33}},"herz":{"bild":"reif-herz","B":[128,252],"A":{"cx":64,"ansatz":52,"braue":104,"auge":120,"ad":28,"nase":153,"mund":173,"kinn":209,"schlaefe":44,"wange":45,"kiefer":19}},"diamant":{"bild":"reif-diamant","B":[128,252],"A":{"cx":64,"ansatz":48,"braue":93,"auge":109,"ad":27,"nase":143,"mund":162,"kinn":198,"schlaefe":44,"wange":51,"kiefer":24}},"lang":{"bild":"reif-lang","B":[124,243],"A":{"cx":62,"ansatz":50,"braue":88,"auge":103,"ad":24,"nase":138,"mund":156,"kinn":193,"schlaefe":43,"wange":46,"kiefer":27}},"birne":{"bild":"reif-birne","B":[124,244],"A":{"cx":62,"ansatz":50,"braue":94,"auge":110,"ad":25,"nase":144,"mund":164,"kinn":199,"schlaefe":44,"wange":49,"kiefer":39}}}});
+['oval','rund','lang','eckig','herz'].forEach(k=>{const f=FORMEN[k];BILDER.jung[k]={bild:f.bild,B:f.B,A:f.A};});
+const MODELLE={jung:'Augen offen',zu:'Augen geschlossen',reif:'Ältere Dame'};
+const ANSICHTEN={gesicht:'Ganzes Gesicht',augen:'Augen'};
 
-let form='oval', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
+let form='oval', modell='jung', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
+const zu=()=>modell==='zu';
+const bild=()=>BILDER[modell][form];
+const zonen=()=>ansicht==='augen'?AUGEN_ZONEN:ZONEN;
+const werkz=()=>ansicht==='augen'?AUGEN_WERKZEUG:WERKZEUG;
+const ALLE_WERKZEUGE=Object.assign({},WERKZEUG,AUGEN_WERKZEUG);
+// Regeln: Augen (nach Modell) oder Gesichtsform; bei reifer Haut kein Licht unter den Augen
+function regeln(){
+  if(ansicht==='augen') return modell==='reif'?AUGEN.reif:AUGEN.std;
+  const f=FORMEN[form]; if(modell!=='reif') return f;
+  const soll=Object.assign({},f.soll), warum=Object.assign({},f.warum), meiden=Object.assign({},f.meiden);
+  if(soll.unter_augen==='H'){ delete soll.unter_augen;
+    if(!soll.wangenknochen){ soll.wangenknochen='H'; warum.wangenknochen='Licht oben auf dem Wangenknochen hebt – bei reifer Haut besser als unter den Augen.'; } }
+  meiden.unter_augen=['H','Highlighter unter den Augen betont bei reifer Haut die Fältchen. Lieber matt abdecken und das Licht auf den Wangenknochen setzen.'];
+  return Object.assign({},f,{soll,warum,meiden,ziel:f.ziel+' Reife Haut: cremige Texturen, wenig Puder und Schimmer.'});
+}
 // Regler je aufgetragener Stelle: Stärke, Länge, Breite, Winkel, Weichheit (links/rechts gespiegelt)
 const REGLER=[
   {k:'s',n:'Stärke',min:15,max:100,schritt:5,ein:'%'},
@@ -293,38 +355,43 @@ const REGLER=[
   {k:'r',n:'Winkel',min:-60,max:60,schritt:2,ein:'°'},
   {k:'w',n:'Weichheit',min:1,max:9,schritt:1,ein:''}
 ];
-function standard(id){ const d=ZONEN[id].d||{}; return {s:75, l:Math.round((d.l||1)*100), b:Math.round((d.b||1)*100), r:0, w:d.w||4}; }
+function standard(id){ const d=zonen()[id].d||{}; return {s:75, l:Math.round((d.l||1)*100), b:Math.round((d.b||1)*100), r:0, w:d.w||4}; }
 
 // ── Zeichnen ────────────────────────────────────────────────────────────────
 function zonePos(z,f,seite,e){
-  const p=z.pos(f.A), w=((z.rot||0)+(e?e.r:0))*seite, rx=p.rx*(e?e.l/100:1);
+  const A=f.A, aw=A.ad*.5, p=ansicht==='augen'?z.pos(A,aw,A.auge-A.braue,zu()):z.pos(A), w=((z.rot||0)+(e?e.r:0))*seite, rx=p.rx*(e?e.l/100:1);
   // „aussen“: am Ohr verankert – wird die Fläche länger, wächst sie Richtung Gesichtsmitte
   let x=f.A.cx+seite*p.x, y=p.y;
   if(e&&z.aussen){ const d=(rx-p.rx)*.8, a=w*Math.PI/180; x-=seite*d*Math.cos(a); y-=seite*d*Math.sin(a); }
   return {x, y, rx, ry:p.ry*(e?e.b/100:1), t:w?` transform="rotate(${w} ${x} ${y})"`:''};
 }
 function zeichnen(markierung){
-  const f=FORMEN[form], svg=$('#gesicht');
-  svg.setAttribute('viewBox','0 0 '+f.B[0]+' '+f.B[1]);
-  svg.setAttribute('aria-label','Gesicht zum Schminken: '+f.n);
+  const f=bild(), r=regeln(), Z=zonen(), svg=$('#gesicht');
+  if(ansicht==='augen'){ // Ausschnitt nur mit der Augenpartie
+    const A=f.A, aw=A.ad*.5, g=A.auge-A.braue, x0=A.cx-(A.ad+aw*2.2), y0=A.braue-g*1.1, y1=A.auge+(zu()?g*1.1:aw*1.4);
+    svg.setAttribute('viewBox',[x0,y0,2*(A.ad+aw*2.2),y1-y0].map(v=>v.toFixed(1)).join(' '));
+  } else svg.setAttribute('viewBox','0 0 '+f.B[0]+' '+f.B[1]);
+  svg.setAttribute('aria-label',(ansicht==='augen'?'Augenpartie':'Gesicht')+' zum Schminken: '+FORMEN[form].n+', '+MODELLE[modell]);
   // Weich verblendet: Verlauf von der Mitte nach außen plus Weichzeichner, keine Kontur
-  let s='<defs>'+[1,2,3,4,5,6,7,8,9].map(n=>`<filter id="weich-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*1.1}"/></filter>`).join('')+
-    Object.entries(WERKZEUG).map(([k,w])=>`<radialGradient id="vl-${k}"><stop offset="0" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${w.rgb})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
+  let s='<defs>'+[1,2,3,4,5,6,7,8,9].map(n=>`<filter id="weich-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*1.1}"/></filter><filter id="weicha-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*.45}"/></filter>`).join('')+
+    Object.entries(ALLE_WERKZEUGE).map(([k,w])=>`<radialGradient id="vl-${k}"><stop offset="0" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${w.rgb})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
   s+=`<image href="bilder/makeup/${f.bild}.jpg" x="0" y="0" width="${f.B[0]}" height="${f.B[1]}"/>`;
-  Object.entries(ZONEN).forEach(([id,z])=>{
-    const t=gesetzt[id], soll=markierung&&f.soll[id];
+  const klein=ansicht==='augen';
+  Object.entries(Z).forEach(([id,z])=>{
+    if(z.nurOffen&&zu()) return;
+    const t=gesetzt[id], soll=markierung&&r.soll[id];
     (z.paar?[-1,1]:[1]).forEach(seite=>{
       const p=zonePos(z,f,seite), e=t&&(einst[id]||(einst[id]=standard(id)));
       if(t){
         const q=zonePos(z,f,seite,e), o=e.s/100, w=e.w;
         // Hauch außen (breit, sehr weich) und Kern (kräftiger) – zusammen ein weicher Verlauf ohne Flecken
         // Drehung auf der Gruppe, Weichzeichner auf den Flächen – so rechnet der Browser die Unschärfe im gedrehten Bild
-        s+=`<g class="produkt p-${t}"${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.35}" ry="${q.ry*1.8}" fill="url(#vl-${t})" opacity="${(o*.5).toFixed(2)}" filter="url(#weich-${Math.min(9,w+2)})"/>`+
-           `<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="url(#vl-${t})" opacity="${o.toFixed(2)}" filter="url(#weich-${w})"/></g>`;
-        if(auswahl===id) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
+        s+=`<g class="produkt p-${t}"${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.35}" ry="${q.ry*1.8}" fill="url(#vl-${t})" opacity="${(o*.5).toFixed(2)}" filter="url(#weich${klein?'a':''}-${Math.min(9,w+2)})"/>`+
+           `<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="url(#vl-${t})" opacity="${o.toFixed(2)}" filter="url(#weich${klein?'a':''}-${w})"/></g>`;
+        if(auswahl===id) s+=`<ellipse class="auswahl"${klein?' style="stroke-width:.5"':''}${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
       }
-      if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${WERKZEUG[soll].rand}"/>`;
-      s+=`<ellipse class="tipp"${p.t} data-z="${id}" cx="${p.x}" cy="${p.y}" rx="${Math.max(p.rx,12)}" ry="${Math.max(p.ry,10)}"><title>${esc(z.n)}</title></ellipse>`;
+      if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"${klein?' style="stroke-width:.6"':''}/>`;
+      s+=`<ellipse class="tipp"${p.t} data-z="${id}" cx="${p.x}" cy="${p.y}" rx="${Math.max(p.rx,klein?5:12)}" ry="${Math.max(p.ry,klein?2.6:10)}"><title>${esc(z.n)}</title></ellipse>`;
     });
   });
   svg.innerHTML=s;
@@ -340,7 +407,7 @@ function reglerZeigen(){
   if(!auswahl||!gesetzt[auswahl]){ box.hidden=true; return; }
   const t=gesetzt[auswahl], e=einst[auswahl];
   box.hidden=false;
-  box.innerHTML=`<div class="lab">Ausgewählt: ${WERKZEUG[t].ic} ${esc(WERKZEUG[t].name)} · ${esc(ZONEN[auswahl].n)}</div>`+
+  box.innerHTML=`<div class="lab">Ausgewählt: ${ALLE_WERKZEUGE[t].ic} ${esc(ALLE_WERKZEUGE[t].name)} · ${esc(zonen()[auswahl].n)}</div>`+
     REGLER.map(r=>`<label class="regel"><span>${r.n}</span><input type="range" id="rg-${r.k}" min="${r.min}" max="${r.max}" step="${r.schritt}" value="${e[r.k]}"><b id="rw-${r.k}">${e[r.k]}${r.ein}</b></label>`).join('')+
     `<div class="chips"><button class="btn ghost" id="rg-zurueck">Zurücksetzen</button><button class="btn ghost" id="rg-weg">Entfernen</button><button class="btn ghost" id="rg-fertig">Fertig</button></div>`;
   REGLER.forEach(r=>{ const i=$('#rg-'+r.k); i.oninput=()=>{ e[r.k]=+i.value; $('#rw-'+r.k).textContent=i.value+r.ein; zeichnen(); }; });
@@ -348,19 +415,27 @@ function reglerZeigen(){
   $('#rg-weg').onclick=()=>{ delete gesetzt[auswahl]; delete einst[auswahl]; auswahl=null; zeichnen(); reglerZeigen(); };
   $('#rg-fertig').onclick=()=>{ auswahl=null; zeichnen(); reglerZeigen(); };
 }
+function neu(){gesetzt={};einst={};auswahl=null;$('#rueckmeldung').innerHTML='';chips();zeichnen();reglerZeigen();}
 function chips(){
-  $('#formen').innerHTML=Object.entries(FORMEN).map(([k,f])=>`<button class="chip" data-form="${k}" aria-pressed="${k===form}">${esc(f.n)}</button>`).join('');
-  $('#werkzeuge').innerHTML=Object.entries(WERKZEUG).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
-  $('#form-info').textContent='Ziel: '+FORMEN[form].ziel;
-  document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{form=b.dataset.form;gesetzt={};einst={};auswahl=null;$('#rueckmeldung').innerHTML='';chips();zeichnen();reglerZeigen();});
+  if(!BILDER[modell][form]) form='oval';
+  if(!werkz()[werkzeug]) werkzeug=Object.keys(werkz())[0];
+  const knopf=(attr,k,txt,an)=>`<button class="chip" data-${attr}="${k}" aria-pressed="${an}">${esc(txt)}</button>`;
+  $('#modelle').innerHTML=Object.entries(MODELLE).map(([k,n])=>knopf('modell',k,n,k===modell)).join('');
+  $('#ansichten').innerHTML=Object.entries(ANSICHTEN).map(([k,n])=>knopf('ansicht',k,n,k===ansicht)).join('');
+  $('#formen').innerHTML=Object.entries(FORMEN).filter(([k])=>BILDER[modell][k]).map(([k,f])=>knopf('form',k,f.n,k===form)).join('');
+  $('#werkzeuge').innerHTML=Object.entries(werkz()).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
+  $('#form-info').textContent='Ziel: '+regeln().ziel;
+  document.querySelectorAll('[data-modell]').forEach(b=>b.onclick=()=>{modell=b.dataset.modell;neu();});
+  document.querySelectorAll('[data-ansicht]').forEach(b=>b.onclick=()=>{ansicht=b.dataset.ansicht;neu();});
+  document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{form=b.dataset.form;neu();});
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{werkzeug=b.dataset.w;chips();});
 }
 
 // ── Prüfen ──────────────────────────────────────────────────────────────────
 function pruefen(){
-  const f=FORMEN[form], gut=[], fehlt=[], falsch=[], extra=[];
+  const f=regeln(), Z=zonen(), WERKZEUG=ALLE_WERKZEUGE, gut=[], fehlt=[], falsch=[], extra=[];
   Object.entries(f.soll).forEach(([z,t])=>{
-    const ist=gesetzt[z], name=ZONEN[z].n;
+    const ist=gesetzt[z], name=Z[z].n;
     if(ist===t) gut.push(`${WERKZEUG[t].ic} ${name}: ${f.warum[z]}`);
     else if(!ist) fehlt.push(`${WERKZEUG[t].ic} ${WERKZEUG[t].name} – ${name}: ${f.warum[z]}`);
     else falsch.push(`${name}: hier gehört ${WERKZEUG[t].name} hin, nicht ${WERKZEUG[ist].name}. ${f.warum[z]}`);
@@ -368,8 +443,8 @@ function pruefen(){
   Object.entries(gesetzt).forEach(([z,t])=>{
     if(f.soll[z]) return;
     const m=f.meiden[z];
-    if(m&&m[0]===t) falsch.push(`${ZONEN[z].n}: ${m[1]}`);
-    else extra.push(`${WERKZEUG[t].ic} ${ZONEN[z].n}: bei dieser Gesichtsform nicht nötig.`);
+    if(m&&m[0]===t) falsch.push(`${Z[z].n}: ${m[1]}`);
+    else extra.push(`${WERKZEUG[t].ic} ${Z[z].n}: ${ansicht==='augen'?'hier nicht nötig.':'bei dieser Gesichtsform nicht nötig.'}`);
   });
   const alles=!fehlt.length&&!falsch.length;
   $('#rueckmeldung').innerHTML=
@@ -381,7 +456,7 @@ function pruefen(){
   zeichnen(true);
 }
 $('#pruefen').onclick=pruefen;
-$('#loesung').onclick=()=>{gesetzt=Object.assign({},FORMEN[form].soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
+$('#loesung').onclick=()=>{gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
 $('#leeren').onclick=()=>{gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 chips(); zeichnen();
 
@@ -391,7 +466,12 @@ $('#formen-liste').innerHTML=Object.values(FORMEN).map(f=>{
   const m=Object.entries(f.meiden).map(([z,v])=>v[1]);
   return `<article class="panel"><h3>${esc(f.n)}</h3><p class="muted" style="font-size:13px">${esc(f.ziel)}</p>`+
     `<dl class="facts"><dt>✨ Licht</dt><dd>${esc(nach('H'))}</dd><dt>🟤 Schatten</dt><dd>${esc(nach('C'))}</dd><dt>🌸 Rouge</dt><dd>${esc(nach('R'))}</dd>`+
-    (m.length?`<dt>Vorsicht</dt><dd class="safe">${esc(m.join(' '))}</dd>`:'')+`</dl></article>`;}).join('');
+    (m.length?`<dt>Vorsicht</dt><dd class="safe">${esc(m.join(' '))}</dd>`:'')+`</dl></article>`;}).join('')+
+  Object.values(AUGEN).map(a=>{
+    const nach=t=>Object.entries(a.soll).filter(([,x])=>x===t).map(([z])=>AUGEN_ZONEN[z].n).join(', ')||'–';
+    return `<article class="panel"><h3>👁 ${esc(a.n)}</h3><p class="muted" style="font-size:13px">${esc(a.ziel)}</p>`+
+      `<dl class="facts"><dt>🤍 Hell</dt><dd>${esc(nach('L'))}</dd><dt>🟫 Mittel</dt><dd>${esc(nach('M'))}</dd><dt>🟤 Dunkel</dt><dd>${esc(nach('D'))}</dd>`+
+      `<dt>Vorsicht</dt><dd class="safe">${esc(Object.values(a.meiden).map(v=>v[1]).join(' '))}</dd></dl></article>`;}).join('');
 
 // ── Quiz ────────────────────────────────────────────────────────────────────
 const QUIZ=[
@@ -402,6 +482,8 @@ const QUIZ=[
   ['Ein herzförmiges Gesicht hat eine breite Stirn. Was solltest du vermeiden?',['Highlighter an den Stirnseiten','Licht unter den Augen','Schatten an den Schläfen','Rouge auf dem Wangenapfel'],0,'Licht an den Stirnseiten macht die breite Stirn noch breiter. Dort gehört eher Schatten hin.'],
   ['Welcher Farbton eignet sich zum Contouring?',['Kühl-bräunlich, ein bis zwei Töne dunkler als die Haut','Orange-Bronze mit Schimmer','Rosé','Weiß'],0,'Ein natürlicher Schatten ist kühl-bräunlich und matt. Schimmer oder Orange wirken nicht wie Schatten.'],
   ['Was ist beim Contouring am wichtigsten?',['Gut verblenden – keine sichtbaren Kanten','Möglichst viel Produkt','Erst ganz zum Schluss Grundierung','Mit dem Finger tupfen, nie verblenden'],0,'Schatten wirkt nur natürlich, wenn er weich ausläuft.'],
+  ['Lidschatten in drei Tönen: Wohin kommt der dunkle Ton?',['In den äußeren Augenwinkel','In den inneren Augenwinkel','Unter die Braue','Auf das ganze Lid bis zur Braue'],0,'Dunkel außen gibt Tiefe und zieht das Auge nach außen. Innen und unter der Braue kommt der helle Ton hin.'],
+  ['Eine ältere Kundin hat Schlupflider. Was ist beim Lidschatten richtig?',['Matte Töne, den Übergang etwas über der Lidfalte setzen','Viel Glitzer auf das ganze Lid','Dunkel rundum am unteren Wimpernkranz','Den Übergang genau in die Lidfalte, egal ob man ihn sieht'],0,'Bei offenem Auge verschwindet die Lidfalte. Etwas höher gesetzt sieht man den Übergang. Matte Töne betonen keine Fältchen.'],
   ['Hygiene: Was gilt für Mascara und Lippenprodukte am Gast?',['Einwegapplikatoren verwenden, nie direkt aus der Packung','Ein Bürstchen für alle Gäste reicht','Mit Wasser reinigen genügt','Nur bei Stammgästen gemeinsam verwenden'],0,'Augen und Lippen übertragen leicht Keime. Deshalb Einwegapplikatoren und Spatel.']
 ];
 let answers={}, quizGespeichert=false;
