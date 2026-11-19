@@ -169,7 +169,11 @@ Tabelle. Bis die Fragen da sind, zählen dort nur Stufe ③ und ④.
    App das Tagesthema nach Lernstand, wichtigstes zuerst:
    0 „sicher, aber falsch“ (≥ 2× offen) · 1 Meisterin: „noch nicht sicher /
    verstanden“ (Thema sitzt noch nicht) · 2 wiederholen fällig · 3 unsicher ·
-   4 wackelt · 5 neues Thema aus dem eigenen Lehrjahr. Gleichstand: eigenes
+   4 wackelt · 5 neues Thema aus dem eigenen Lehrjahr.
+   Zwischen 1 und 2 (seit 2026-11-19): heute oder gestern im
+   Praxis-Tagebuch → ein Quiz-Thema dieser Behandlung, das noch nicht sitzt
+   („Du hast gestern „Farbe“ gemacht. Jetzt festigen wir das Wissen dazu.“);
+   der Salon-Hinweis gehört dann zur gemachten Behandlung. Gleichstand: eigenes
    Lehrjahr zuerst, dann am längsten nicht geübt; heute schon gut Geübtes
    wird übersprungen. Ohne offenes Quiz-Thema: Praxis-Warnung der Meisterin
    („üb am Übungskopf, neuer Praxis-Check“), sonst „Alles im grünen Bereich“.

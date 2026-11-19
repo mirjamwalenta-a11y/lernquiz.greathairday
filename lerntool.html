@@ -345,7 +345,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -378,7 +378,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -402,7 +402,7 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
@@ -744,7 +744,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -4518,7 +4518,7 @@ var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) f
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
 var ST_SITZT_NACH_TAGEN = GHD_STAND.SITZT_NACH_TAGEN;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
@@ -4735,6 +4735,7 @@ function stHeuteLink() {
 // Wählt das Tagesthema nach Lernstand statt nach Wochentag. Regeln, wichtigste
 // zuerst, je Quiz-Thema einer Kompetenz (kompetenzen.js):
 //   0 „sicher, aber falsch“ ≥ 2× offen   1 Meisterin: „noch nicht sicher/verstanden“
+//   1.5 heute/gestern im Praxis-Tagebuch: Wissen zur Behandlung festigen (Thema sitzt noch nicht)
 //   2 wiederholen fällig   3 unsicher   4 wackelt   5 noch nicht geübt (eigenes Lehrjahr)
 // Gleichstand: eigenes Lehrjahr zuerst, dann am längsten nicht geübt. Heute schon
 // gut geübte Themen werden übersprungen. Ohne offenes Quiz-Thema: Praxis-Hinweis.
@@ -4747,6 +4748,17 @@ function htHatFragen(th) { return th === HT_ENGLISCH || (FRAGEN[th] || []).lengt
 function htVorschlag() {
   var heute = stISO(new Date()), lj = THEMEN[LEHRJAHR] || [];
   var alle = lkAlle(), kandidaten = [], gesehen = {};
+  // Quiz-Themen zu Behandlungen, die heute oder gestern im Praxis-Tagebuch stehen
+  var gesternD = new Date(); gesternD.setDate(gesternD.getDate() - 1);
+  var gestern = stISO(gesternD), ausPraxis = {};
+  (LK.praxis || []).forEach(function(e){
+    var tag = String(e.datum || '').slice(0, 10);
+    if (tag !== heute && tag !== gestern) return;
+    (window.GHD_KOMPETENZEN || []).forEach(function(k){
+      if (k.praxis.indexOf(e.bereich) < 0) return;
+      k.themen.forEach(function(th){ if (!ausPraxis[th] || tag === heute) ausPraxis[th] = {bereich:e.bereich, heute:tag === heute, kid:k.id}; });
+    });
+  });
   alle.forEach(function(s){
     var k = lkKomp(s.id);
     var meisterinNein = s.warnungen.filter(function(w){ return w.art === 'praxis' || w.art === 'gespraech'; });
@@ -4759,13 +4771,18 @@ function htVorschlag() {
       var mw = meisterinNein.filter(function(w){ return w.art === 'praxis' || w.bezug === t.thema; })[0];
       if (sf >= 2) { r = 0; grund = 'Hier warst du ' + sf + '× sicher, aber es war falsch. Heute klären wir das Missverständnis.'; }
       else if (mw && t.stand !== 'sitzt') { r = 1; grund = (mw.art === 'praxis' ? 'Beim Praxis-Check' : 'Im Prüfgespräch') + ' war es noch nicht sicher. Mit dem Wissen dahinter klappt es beim nächsten Mal.'; }
+      else if (ausPraxis[t.thema] && t.stand !== 'sitzt' && t.stand !== 'wartet') { var px = ausPraxis[t.thema];
+        r = 1.5; grund = 'Du hast ' + (px.heute ? 'heute' : 'gestern') + ' „' + px.bereich + '“ gemacht. Jetzt festigen wir das Wissen dazu.'; }
       else if (t.stand === 'faellig') { r = 2; grund = 'Vor ' + stTage(d.gut_seit, heute) + ' Tagen konntest du es gut. Heute schauen wir, ob es noch sitzt.'; }
       else if (t.stand === 'unsicher') { r = 3; grund = 'Beim letzten Mal ' + d.richtig + ' von ' + g + ' richtig. Heute wird es sicherer.'; }
       else if (t.stand === 'wackelt') { r = 4; grund = 'Fast geschafft: ' + d.richtig + ' von ' + g + ' richtig. Noch eine Runde, dann sitzt es.'; }
       else if (t.stand === 'offen' && lj.indexOf(t.thema) >= 0) { r = 5; grund = 'Neues Thema aus deinem ' + LEHRJAHR + '. Lehrjahr.'; }
       if (r === null) return;
       gesehen[t.thema] = true;
-      kandidaten.push({r:r, thema:t.thema, s:s, k:k, grund:grund, imLj:lj.indexOf(t.thema) >= 0 ? 0 : 1, zuletzt:d.zuletzt_am || ''});
+      // Aus dem Praxis-Tagebuch: Kompetenz der gemachten Behandlung (z. B. Herrenschnitt statt Damenschnitt)
+      var ks = s, kk = k;
+      if (r === 1.5) { kk = lkKomp(ausPraxis[t.thema].kid) || k; ks = alle.filter(function(x){ return x.id === kk.id; })[0] || s; }
+      kandidaten.push({r:r, thema:t.thema, s:ks, k:kk, grund:grund, imLj:lj.indexOf(t.thema) >= 0 ? 0 : 1, zuletzt:d.zuletzt_am || ''});
     });
   });
   kandidaten.sort(function(a, b){ return a.r - b.r || a.imLj - b.imLj || (a.zuletzt < b.zuletzt ? -1 : a.zuletzt > b.zuletzt ? 1 : 0); });
@@ -4847,7 +4864,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -5013,7 +5030,7 @@ async function lkDatenLaden() {
   if (!ST.lehrling) return;
   var id = ST.lehrling.id;
   var r = await Promise.all([
-    sb2.from('praxis_eintraege').select('bereich').eq('lehrling_id', id).limit(2000),
+    sb2.from('praxis_eintraege').select('bereich,datum').eq('lehrling_id', id).limit(2000),
     sb2.from('pruefgespraeche').select('*').eq('lehrling_id', id).order('erstellt_am', {ascending:false}).limit(1000)
   ].map(function(x){ return Promise.resolve(x).catch(function(e){ return {error:e}; }); }));
   LK.praxis = r[0].error ? [] : (r[0].data || []);
@@ -5030,7 +5047,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119c';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119d';
 }
 
 function lkTipp(th) {
