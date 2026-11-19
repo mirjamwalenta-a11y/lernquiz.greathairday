@@ -646,6 +646,13 @@ function mittelIn(d,E){
     if(!inEll(E,x,y)) continue; sum+=d[(y*LW.W+x)*4+3]; n++; }
   return n?sum/n/255:0;
 }
+// Anteil der Zone, der sichtbar Farbe hat (robust gegen auslaufende Formen)
+function anteilIn(d,E){
+  const R=Math.max(E.rx,E.ry), st=Math.max(1,Math.floor(R/14)); let an=0,n=0;
+  for(let y=Math.max(0,Math.floor(E.cy-R));y<Math.min(LW.H,E.cy+R);y+=st) for(let x=Math.max(0,Math.floor(E.cx-R));x<Math.min(LW.W,E.cx+R);x+=st){
+    if(!inEll(E,x,y)) continue; n++; if(d[(y*LW.W+x)*4+3]>=30) an++; }
+  return n?an/n:0;
+}
 function pinselPruefen(){
   leinwandBereit();
   const r=regeln(), Z=zonen(), ist={}, hinweise=[], daten={};
@@ -654,7 +661,7 @@ function pinselPruefen(){
   Object.keys(Z).forEach(id=>{
     if(Z[id].nurOffen&&zu()) return;
     const soll=r.soll[id];
-    if(soll&&wert(id,soll,1)>=.1){ ist[id]=soll; return; }
+    if(soll&&daten[soll]){ const E=zoneEllipsen(id,1); if(E.length&&Math.min(...E.map(e=>anteilIn(daten[soll],e)))>=.3){ ist[id]=soll; return; } }
     // Farbe, die nur von der richtigen Nachbarstelle herüberreicht, zählt nicht als falsch
     const ueberlauf=(t,w)=>Object.keys(r.soll).some(j=>j!==id&&r.soll[j]===t&&wert(j,t,.6)>=w*.8);
     let best=null,bw=0; benutzt.forEach(t=>{ const w=wert(id,t,.6); if(w>bw&&!ueberlauf(t,w)){bw=w;best=t;} });
@@ -678,19 +685,38 @@ function pinselPruefen(){
   pinselIst=ist; pinselFehltAn=true;
   pruefen(ist,hinweise);
 }
+// Weichzeichnen beim Übertragen (Canvas-Filter, sonst verkleinern und wieder vergrößern)
+const FILTER_OK=(()=>{ try{ const c=document.createElement('canvas').getContext('2d'); c.filter='blur(2px)'; return c.filter==='blur(2px)'; }catch(e){ return false; } })();
+function weichAuftragen(cc,src,b){
+  if(FILTER_OK){ cc.filter=`blur(${b}px)`; cc.drawImage(src,0,0); cc.filter='none'; return; }
+  const s=Math.max(2,Math.round(b)), k=document.createElement('canvas'); k.width=Math.ceil(src.width/s); k.height=Math.ceil(src.height/s);
+  const kc=k.getContext('2d'); kc.imageSmoothingQuality='high'; kc.drawImage(src,0,0,k.width,k.height);
+  cc.imageSmoothingQuality='high'; cc.drawImage(k,0,0,src.width,src.height);
+}
+// Lösung wie von Hand gemalt: viele weiche Tupfer entlang der Stelle, zu den Enden zarter,
+// Contouring und Licht am Wangenknochen vom Ohr zur Mitte auslaufend, danach weich verblendet.
 function pinselLoesung(){
   leinwandBereit(); schnappschuss(Object.keys(LW.lagen));
   Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear();
-  const r=regeln(), f=bild(), Z=zonen(), s=2, kl=document.createElement('canvas'); kl.width=Math.ceil(LW.W/s); kl.height=Math.ceil(LW.H/s);
-  const kc=kl.getContext('2d');
-  Object.entries(r.soll).forEach(([id,t])=>{
-    const z=Z[id]; if(!z||(z.nurOffen&&zu())) return; const e=standard(id), rgb=ALLE_WERKZEUGE[t].rgb, k=LW.K/s;
-    kc.clearRect(0,0,kl.width,kl.height); kc.filter='none';
-    (z.paar?[-1,1]:[1]).forEach(seite=>{ const q=zonePos(z,f,seite,e);
-      kc.save(); kc.translate((q.x-LW.vb.x)*k,(q.y-LW.vb.y)*k); kc.rotate((z.rot||0)*seite*Math.PI/180); kc.scale(q.rx*k*1.15,q.ry*k*1.45);
-      const g=kc.createRadialGradient(0,0,0,0,0,1); g.addColorStop(0,`rgba(${rgb},.8)`); g.addColorStop(.55,`rgba(${rgb},.45)`); g.addColorStop(1,`rgba(${rgb},0)`);
-      kc.fillStyle=g; kc.beginPath(); kc.arc(0,0,1,0,Math.PI*2); kc.fill(); kc.restore(); });
-    const cc=LW.lagen[t].getContext('2d'); cc.imageSmoothingQuality='high'; cc.drawImage(kl,0,0,LW.W,LW.H); benutzt.add(t);
+  const r=regeln(), f=bild(), Z=zonen(), K=LW.K;
+  const roh=document.createElement('canvas'); roh.width=LW.W; roh.height=LW.H; const rc=roh.getContext('2d');
+  const nachT={}; Object.entries(r.soll).forEach(([id,t])=>(nachT[t]=nachT[t]||[]).push(id));
+  Object.entries(nachT).forEach(([t,ids])=>{
+    rc.clearRect(0,0,LW.W,LW.H); const rgb=ALLE_WERKZEUGE[t].rgb, fein='LMDP'.includes(t);
+    ids.forEach(id=>{
+      const z=Z[id]; if(!z||(z.nurOffen&&zu())) return; const e=standard(id);
+      (z.paar?[-1,1]:[1]).forEach(seite=>{
+        const q=zonePos(z,f,seite,e), quer=q.ry>q.rx, w=((z.rot||0)*seite+(quer?90:0))*Math.PI/180;
+        const lang=Math.max(q.rx,q.ry)*K, breit=Math.min(q.rx,q.ry)*K, cx=(q.x-LW.vb.x)*K, cy=(q.y-LW.vb.y)*K;
+        const n=Math.max(8,Math.round(lang/(breit*.3+1)));
+        for(let i=0;i<=n;i++){
+          const u=i/n*2-1;
+          const k=z.aussen?.3+.7*((seite*u+1)/2):.3+.7*Math.sqrt(Math.max(0,1-u*u));
+          tupfer(rc,cx+Math.cos(w)*u*lang*.85,cy+Math.sin(w)*u*lang*.85,breit*1.2*k+K*.5,rgb,(t==='H'?.16:.26)*k,8);
+        }
+      });
+    });
+    weichAuftragen(LW.lagen[t].getContext('2d'),roh,K*(fein?.5:1.8)); benutzt.add(t);
   });
   anzeigen(); pinselPruefen(); pinselReglerZeigen();
 }
