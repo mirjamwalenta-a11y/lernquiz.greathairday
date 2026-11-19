@@ -1,7 +1,7 @@
 # Kompetenz-Landkarte V2 – Plan
 
 **Stand:** 2026-11-19 · Entscheidungen der Inhaberin eingetragen.
-**Status:** Schritte 1–4 gebaut (`kompetenzen.js`, `kompetenz-stand.js`, Landkarte im Lern-Tool, Meisterin-Bereich).
+**Status:** Schritte 1–5 gebaut (`kompetenzen.js`, `kompetenz-stand.js`, Landkarte im Lern-Tool, Meisterin-Bereich, „Heute für dich“).
 **Heute:** Landkarte im Lern-Tool (`lerntool.html`, Seite „Fortschritt“,
 `lkZeichnen`), Themen in `lern-themen.js`, Meisterin-Ansicht in
 `lernquiz.html` (`renderKompetenz`, `ampelStand`).
@@ -164,8 +164,18 @@ Tabelle. Bis die Fragen da sind, zählen dort nur Stufe ③ und ④.
      „Bitte nachprüfen“ ist hier in „Wo braucht dich …?“ aufgegangen.
    - Reiter (Landkarte / Gespräche / Verlauf / Praxis) haben jetzt einen
      Stil (hatten nie einen; Zustimmung der Inhaberin).
-5. Danach: „Heute üben“ nach der schwächsten Kompetenz statt nach
-   Wochentag.
+5. ✓ „Heute für dich“ auf der Startseite des Lern-Tools (Entwurf freigegeben,
+   2026-11-19; `htVorschlag` in `lerntool.html`). Statt Wochentag wählt die
+   App das Tagesthema nach Lernstand, wichtigstes zuerst:
+   0 „sicher, aber falsch“ (≥ 2× offen) · 1 Meisterin: „noch nicht sicher /
+   verstanden“ (Thema sitzt noch nicht) · 2 wiederholen fällig · 3 unsicher ·
+   4 wackelt · 5 neues Thema aus dem eigenen Lehrjahr. Gleichstand: eigenes
+   Lehrjahr zuerst, dann am längsten nicht geübt; heute schon gut Geübtes
+   wird übersprungen. Ohne offenes Quiz-Thema: Praxis-Warnung der Meisterin
+   („üb am Übungskopf, neuer Praxis-Check“), sonst „Alles im grünen Bereich“.
+   Dazu ein Satz „Warum“ und „✂ Im Salon“ (mitmachen bis 3 Einträge, danach
+   Praxis-Check holen). Dauer ca. 10 Min. Englisch im Salon führt ins
+   Englisch-Modul. Ohne Anmeldung bleibt es bei „Heute laut Lernplan“.
 
 **Design:** vorhandene Felder, Farben und Stile der Landkarte. Die Anzeige
 der vier Stufen ist eine sichtbare Änderung und wird der Inhaberin vor dem
