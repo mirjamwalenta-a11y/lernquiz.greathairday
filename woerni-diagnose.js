@@ -1,4 +1,6 @@
-// Wörni · „Woran liegt's?“ – Fehlerdiagnose (ENTWURF, Inhalte von der Inhaberin zu prüfen)
+// Wörni · „Woran liegt's?“ – Fehlerdiagnose
+// Farbe, Herrenschnitt, Blondierung: von der Inhaberin geprüft (2026-11-19).
+// Dauerwelle, Föhnen: neu, zur Durchsicht durch die Inhaberin.
 // Der Lehrling wählt einen typischen Fehler, beantwortet 2–3 Fragen und bekommt
 // die wahrscheinliche Ursache, wie es beim nächsten Mal geht, und einen
 // passenden Lernschritt. Regelbasiert, keine KI (Wörni-Grundsatz, docs/woerni-v1.md).
@@ -7,7 +9,8 @@
 //
 // Inhalte:
 //  - Herrenschnitt: Fehlertabelle aus docs/maschinenhaarschnitt-ohne-aufsteckkamm-v1.md (4.4)
-//  - Farbe, Blondierung: Entwurf, Begriffe wie im Farblabor (Tonhöhe, Asch/Irisé/Gold/Kupfer)
+//  - Farbe, Blondierung: Begriffe wie im Farblabor (Tonhöhe, Asch/Irisé/Gold/Kupfer)
+//  - Dauerwelle: Erklärungen aus dem Modul Umformung (umformung.html, „Was ist schiefgegangen?“)
 (function () {
   var DIAGNOSEN = [
     { id: 'farbe-warm', ic: '🎨', titel: 'Die Farbe ist zu warm geworden', komp: 'farbe',
@@ -103,13 +106,74 @@
           naechstes: 'Zügig, in sauberen Abteilungen und mit genug Produkt arbeiten und zwischendurch kontrollieren.' }
       ],
       lernen: { thema: 'Balayage & Strähnen' },
-      satz: 'Meine Blondierung ist ungleichmäßig geworden. Kannst du mir zeigen, woran es lag?' }
+      satz: 'Meine Blondierung ist ungleichmäßig geworden. Kannst du mir zeigen, woran es lag?' },
+
+    { id: 'welle-haelt-nicht', ic: '🌀', titel: 'Die Dauerwelle hält nicht', komp: 'umformung',
+      fragen: [
+        { id: 'wann', f: 'Wann war die Welle zu schwach?',
+          o: [['sofort', 'Schon beim Abwickeln'], ['tage', 'Nach ein paar Tagen']] },
+        { id: 'abgetupft', f: 'Hast du das Haar nach dem Zwischenspülen gründlich abgetupft?',
+          o: [['ja', 'Ja'], ['nein', 'Nein, es war noch ziemlich nass'], ['weiss', 'Weiß ich nicht mehr']] },
+        { id: 'pflege', f: 'Wie wurde das Haar vorher gewaschen?',
+          o: [['ohne', 'Ohne Pflege'], ['mit', 'Mit Pflege oder Spülung'], ['weiss', 'Weiß ich nicht']] }
+      ],
+      ergebnisse: [
+        { wenn: { abgetupft: ['nein'] },
+          ursache: 'Die Fixierung wurde verdünnt.',
+          erklaerung: 'Ist das Haar nach dem Zwischenspülen nicht gut abgetupft, wird die Fixierung verdünnt und schließt zu wenige Schwefelbrücken.',
+          naechstes: 'Nach dem Zwischenspülen gründlich abtupfen, erst dann fixieren.' },
+        { wenn: { pflege: ['mit'] },
+          ursache: 'Pflegereste im Haar haben die Welle geschwächt.',
+          erklaerung: 'Pflegereste im Haar machen die Welle schwach, weil das Wellmittel schlechter wirken kann.',
+          naechstes: 'Vor der Dauerwelle ohne Pflege waschen.' },
+        { wenn: { wann: ['sofort'] },
+          ursache: 'Das Wellmittel hat zu kurz gewirkt.',
+          erklaerung: 'Wirkt das Wellmittel zu kurz, öffnen sich zu wenige Schwefelbrücken. Dann kann sich die neue Form nicht bilden.',
+          naechstes: 'Einwirkzeit genau einhalten und mit einer Probelocke kontrollieren.' },
+        { wenn: { wann: ['tage'] },
+          ursache: 'Die Fixierung war zu kurz.',
+          erklaerung: 'Die Fixierung verbindet die offenen Schwefel-Enden wieder zu Schwefelbrücken. Wirkt sie zu kurz, schließt sie zu wenige davon.',
+          naechstes: 'Fixierung gleichmäßig auftragen und die Einwirkzeit genau einhalten.' }
+      ],
+      lernen: { thema: 'Dauerwelle & Umformung' }, modul: 'umformung',
+      satz: 'Meine Dauerwelle hält nicht. Kannst du mit mir durchgehen, woran es lag?' },
+
+    { id: 'foehn-faellt', ic: '💨', titel: 'Die Föhnfrisur fällt schnell zusammen', komp: 'foehnen',
+      fragen: [
+        { id: 'nass', f: 'Wie nass war das Haar, als du mit der Rundbürste angefangen hast?',
+          o: [['vor', 'Gut vorgetrocknet'], ['nass', 'Noch ziemlich nass']] },
+        { id: 'kuehl', f: 'Hast du jede Partie auf der Bürste abkühlen lassen, bevor du sie losgelassen hast?',
+          o: [['ja', 'Ja'], ['nein', 'Nein']] },
+        { id: 'produkt', f: 'Welches Produkt hast du verwendet?',
+          o: [['volumen', 'Ein leichtes Volumen- oder Föhnspray'], ['schwer', 'Eine reichhaltige Pflege bis zum Ansatz'], ['kein', 'Keines']] }
+      ],
+      ergebnisse: [
+        { wenn: { kuehl: ['nein'] },
+          ursache: 'Die Form hatte keine Zeit abzukühlen.',
+          erklaerung: 'Das Haar behält die Form erst, wenn es abgekühlt ist. Lässt du es warm von der Bürste, fällt das Volumen wieder zusammen.',
+          naechstes: 'Jede Partie kurz auf der Bürste abkühlen lassen, zum Beispiel mit der Kaltstufe.' },
+        { wenn: { produkt: ['schwer'] },
+          ursache: 'Das Produkt war zu schwer.',
+          erklaerung: 'Reichhaltige Pflege am Ansatz beschwert das Haar.',
+          naechstes: 'Am Ansatz ein leichtes Volumenprodukt verwenden, Pflege nur in die Längen.' },
+        { wenn: { nass: ['nass'] },
+          ursache: 'Das Haar war beim Formen noch zu nass.',
+          erklaerung: 'Mit der Rundbürste formst du am besten das fast trockene Haar. Ist es noch zu nass, dauert es lange und die Form wird ungleichmäßig.',
+          naechstes: 'Das Haar zuerst grob vortrocknen und abteilen, dann mit der Rundbürste formen.' },
+        { wenn: { produkt: ['kein'] },
+          ursache: 'Ohne Produkt fehlt oft der Halt.',
+          erklaerung: 'Vor allem feines Haar braucht etwas, das die Form stützt.',
+          naechstes: 'Je nach Haar ein leichtes Volumen- oder Föhnspray verwenden.' }
+      ],
+      satz: 'Meine Föhnfrisur fällt schnell zusammen. Kannst du mir beim nächsten Mal kurz zuschauen?' }
   ];
 
+  var BASIS = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/';
   var MODULE = {
-    farblabor:   { t: 'Im Farblabor üben', url: 'farblabor.html' },
-    spickzettel: { t: 'Farb-Spickzettel ansehen', url: 'spickzettel.html' },
-    maschine:    { t: 'Im Modul „Maschine“ üben', url: 'beratung-formwirkung.html#view=maschine' }
+    farblabor:   { t: 'Im Farblabor üben', url: BASIS + 'farblabor.html?v=20261116s' },
+    spickzettel: { t: 'Farb-Spickzettel ansehen', url: BASIS + 'spickzettel.html' },
+    maschine:    { t: 'Im Modul „Maschine“ üben', url: BASIS + 'beratung-formwirkung.html#view=maschine' },
+    umformung:   { t: 'Im Modul „Umformung“ üben', url: BASIS + 'umformung.html?v=20261116s' }
   };
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -122,12 +186,15 @@
     fuerKompetenz: function (kid) { return DIAGNOSEN.filter(function (d) { return d.komp === kid; }); },
 
     // ziele.thema(th): Themen-Quiz starten · ziele.modul(url): Modul öffnen
+    // ziele.hatThema(th) (optional): false → kein „Kurz lernen“-Knopf (Thema ohne Fragen)
     zeichnen: function (el, id, ziele, antworten) {
       if (!el) return;
       var self = this, d = finde(id);
       if (!d) {
+        var liste = (ziele && ziele.nurKomp) ? DIAGNOSEN.filter(function (x) { return x.komp === ziele.nurKomp; }) : DIAGNOSEN;
+        if (!liste.length) liste = DIAGNOSEN;
         el.innerHTML = '<div class="label">Was ist passiert?</div>' +
-          DIAGNOSEN.map(function (x) {
+          liste.map(function (x) {
             return '<button class="nav-card pm-modul" data-wd="' + x.id + '"><div class="nav-icon" style="margin:0">' + x.ic + '</div><div><div class="nav-title">' + esc(x.titel) + '</div></div></button>';
           }).join('') +
           '<p class="pt-info">Wörni sagt dir, was am wahrscheinlichsten ist. Schau dir die Stelle danach mit deiner Meisterin an.</p>';
@@ -154,6 +221,7 @@
       }
       var e = d.ergebnisse.filter(function (x) { return passt(x.wenn, antworten); })[0];
       var lernen = (e && e.lernen) || d.lernen, modul = MODULE[(e && e.modul) || d.modul];
+      if (lernen && ziele && ziele.hatThema && !ziele.hatThema(lernen.thema)) lernen = null;
       el.innerHTML = kopf +
         (e
           ? '<div class="card"><div class="label">Wahrscheinliche Ursache</div>' +

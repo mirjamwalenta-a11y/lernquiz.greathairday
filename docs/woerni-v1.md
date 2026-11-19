@@ -129,3 +129,20 @@ welche Situationen gewählt werden.
   Werkzeugkunde, Umformung …): nur das Haupt-Quiz im Lernquiz hat A, B, E.
 - Abschalten durch Meisterin oder Lehrling (bewusst weggelassen, die
   Häufigkeit ist niedrig).
+
+## „Woran liegt's?“ – Fehlerdiagnose (seit 2026-11-19)
+
+Umsetzung: `woerni-diagnose.js`, eingebunden in `lerntool.html` (Kachel auf der
+Startseite unter „Kurz sortieren“ und Knopf im Fenster der Kompetenz-Landkarte bei
+Kompetenzen mit Diagnose).
+
+- Der Lehrling wählt einen typischen Fehler, beantwortet 2–3 Fragen zum Antippen und
+  bekommt: wahrscheinliche Ursache, kurze Erklärung, „Beim nächsten Mal“ und drei
+  nächste Schritte (Themen-Quiz, Modul, „Deine Meisterin fragen“ mit fertigem Satz).
+- Passt keine Regel, sagt Wörni ehrlich „nicht sicher“ und verweist an die Meisterin.
+- Regelbasiert, ohne KI, nichts gespeichert.
+- Diagnosen: Farbe zu warm, Übergang beim Herrenschnitt (aus der Fehlertabelle in
+  `docs/maschinenhaarschnitt-ohne-aufsteckkamm-v1.md`), Blondierung ungleichmäßig
+  (von der Inhaberin geprüft); Dauerwelle hält nicht (Erklärungen aus dem Modul
+  Umformung), Föhnfrisur fällt zusammen (beide zur Durchsicht durch die Inhaberin).
+
