@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1c1917">
+<title>Farbtyp-Beratung · A Great Hair Day</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
+<!--
+  Farbtyp-Beratung (4 Jahreszeiten): Lern- und Beratungstool.
+  - Die 4 Typen: Merkmale, Farbfächer, passende Haarfarb-Richtungen (Reflexe wie im Farblabor).
+  - Tücher auflegen: Kamera des Geräts, digitales Tuch unter dem Gesicht, geführter Vergleich
+    (Unterton warm/kühl, klar/gedämpft). Das Kamerabild bleibt auf dem Gerät: nichts wird
+    gespeichert, hochgeladen oder an eine KI geschickt. Vergleichsfotos liegen nur im
+    Arbeitsspeicher und verschwinden beim Schließen.
+  - Üben: Quiz mit „sicher oder geraten?“, gespeichert wie die anderen Module (quiz-verlauf.js).
+  Die App zeigt und vergleicht – die Entscheidung trifft die Friseurin bzw. der Lehrling.
+  Aussehen wie werkzeugkunde.html (gleiche Farben, Schrift, Bausteine).
+-->
+<style>
+:root{
+  --bg:#F8F4EA; --surface:#FFFFFF; --surface-2:#F0E9D8; --ink:#211D17; --muted:#6B6455; --line:#E4DBC5;
+  --accent:#896C32; --accent-soft:#F3EBD9; --accent-ink:#FFFFFF; --warn:#B8336A; --warn-soft:#FBEFF4;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+h1,h2,h3{line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:600}
+h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:600}
+h3{font-size:1.08rem;font-weight:600}
+p{margin:0;max-width:65ch}
+.tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+header.top{padding-block:20px 18px;display:grid;gap:8px}
+.back-link{justify-self:start;color:var(--muted);font-size:13px;text-decoration:none}
+.back-link:hover{color:var(--accent)}
+header.top p{color:var(--muted)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:rgba(248,244,234,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+nav.tabs a{flex:none;color:var(--ink);text-decoration:none;font-weight:600;font-size:13px;padding:7px 11px;border-radius:6px}
+nav.tabs a:hover{background:var(--accent-soft);color:var(--accent)}
+section.block{padding-block:36px 4px;display:grid;gap:16px;scroll-margin-top:56px}
+section.block > header{display:grid;gap:6px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid #D9CDAE;background:transparent;color:var(--muted);font:600 13px Poppins,system-ui;padding:8px 13px;border-radius:6px;cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tip{background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:14px}
+.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 14px Poppins,system-ui;padding:10px 16px;border-radius:6px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+dl.facts{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;margin:0;font-size:14px}
+dl.facts dt{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
+dl.facts dd{margin:0}
+dd.safe{color:var(--warn)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.checks label{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:6px 0;border-top:1px solid var(--line)}
+.checks input{accent-color:var(--accent);width:18px;height:18px;margin-top:2px;flex:none}
+.checks label.done{color:var(--muted);text-decoration:line-through}
+/* Farbtypen */
+.merk{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.merk div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+.merk b{display:block;font-size:13px;margin-bottom:2px}
+.typen{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.typ h3{display:flex;justify-content:space-between;align-items:baseline;gap:4px 8px;flex-wrap:wrap;padding-right:44px}
+.typ h3 small{font-size:12px;color:var(--muted);font-weight:600}
+.faecher{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px}
+.faecher i{display:block;aspect-ratio:1;border-radius:4px;border:1px solid rgba(0,0,0,.08)}
+/* Tücher */
+.buehne{position:relative;border-radius:10px;overflow:hidden;background:#2B2620;aspect-ratio:3/4;max-width:420px;width:100%;justify-self:center}
+.buehne video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.buehne .tuch{position:absolute;left:-10%;right:-10%;bottom:-6%;height:34%;border-radius:50% 50% 0 0/38% 38% 0 0;box-shadow:inset 0 10px 18px rgba(255,255,255,.18),inset 0 -12px 22px rgba(0,0,0,.18);transition:background .25s}
+.buehne .leer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#E8E0CF;padding:24px;font-size:14px}
+.buehne .tuchname{position:absolute;left:10px;top:10px;background:rgba(0,0,0,.55);color:#fff;font:600 12px Poppins,system-ui;padding:4px 9px;border-radius:999px}
+.schritt{display:grid;gap:10px}
+.ab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ab button{appearance:none;border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:10px;font:600 13px Poppins,system-ui;cursor:pointer;display:flex;gap:8px;align-items:center;color:var(--ink)}
+.ab button i{width:22px;height:22px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.12)}
+.ab button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.vergleich{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.vergleich figure{margin:0;background:var(--surface-2);border-radius:8px;overflow:hidden;min-height:60px}
+.vergleich img{display:block;width:100%;height:auto}
+.vergleich figcaption{font-size:12px;font-weight:600;text-align:center;padding:4px}
+.antwort{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.antwort .chip{text-align:center;padding:8px 6px}
+.ergebnis{border:2px solid var(--accent)}
+.fortschritt{display:flex;gap:6px}
+.fortschritt i{flex:1;height:5px;border-radius:3px;background:var(--surface-2)}
+.fortschritt i.an{background:var(--accent)}
+/* Quiz (wie Werkzeugkunde) */
+.quiz{display:grid;gap:12px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:10px}
+.q h3{font-size:15px}
+.q .opts{display:grid;gap:6px}
+.q button{appearance:none;text-align:left;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:14px Poppins,system-ui;padding:10px 13px;border-radius:8px;cursor:pointer}
+.q button:hover:not(:disabled){border-color:var(--accent)}
+.q button:disabled{cursor:default}
+.q button.right{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.q button.wrong{border-color:#C44030;background:#FDECEA;color:#C44030}
+.q button.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.q .sicher-frage{font-size:12px;color:var(--muted);text-align:center;margin:8px 0 6px}
+.q .sicher-knoepfe{display:flex;gap:8px}
+.q button.pruef{flex:1;text-align:center;font-weight:600}
+.q button.pruef.s{background:var(--accent);border-color:var(--accent);color:#fff}
+.q .why.geraten{color:#B4602A}
+.q .why.sicherfalsch{color:#C44030}
+.q .why{font-size:13px;color:var(--muted)}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.score .num{font:600 1.5rem var(--mono);color:var(--accent)}
+footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
+</style>
+<link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="quiz-verlauf.js?v=20261115"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar -->
+<link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="back-link" href="lerntool.html?v=20261119f">← Lern-Tool</a>
+    <span class="tag">greathairday · Farbe</span>
+    <h1>Farbtyp-Beratung 🎨</h1>
+    <p>Frühling, Sommer, Herbst oder Winter? Früher wurden Tücher aufgelegt – hier legst du sie digital auf. Lerne die vier Typen kennen, finde den Typ deiner Kundin und leite daraus die passende Haarfarbe ab.</p>
+  </header>
+</div>
+
+<nav class="tabs" aria-label="Bereiche">
+  <div class="wrap">
+    <a href="#typen">Die 4 Typen</a>
+    <a href="#tuecher">Tücher auflegen</a>
+    <a href="#ueben">Üben</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section class="block" id="typen">
+    <header>
+      <span class="tag">Grundlagen</span>
+      <h2>Drei Fragen bestimmen den Typ</h2>
+      <p class="muted">Jeder Mensch hat einen Unterton in der Haut. Er ändert sich nicht durch Bräune oder Alter. Die Tücher machen ihn sichtbar.</p>
+    </header>
+    <div class="merk">
+      <div><b>1 · Unterton: warm oder kühl?</b>Warm: goldener, pfirsichfarbener Schimmer, Gold-Schmuck steht. Kühl: rosiger, bläulicher Schimmer, Silber steht.</div>
+      <div><b>2 · Klar oder gedämpft?</b>Klare, leuchtende Farben lassen manche Gesichter strahlen. Andere wirken mit weichen, gedämpften Farben ruhiger und frischer.</div>
+      <div><b>3 · Hell oder tief?</b>Wie stark ist der Kontrast zwischen Haut, Haar und Augen? Hell und zart oder tief und kontrastreich?</div>
+    </div>
+    <div class="tip">Merksatz: <b>Warm + klar = Frühling · Kühl + gedämpft = Sommer · Warm + gedämpft = Herbst · Kühl + klar = Winter.</b></div>
+    <div class="typen" id="typen-liste"></div>
+  </section>
+
+  <section class="block" id="tuecher">
+    <header>
+      <span class="tag">Beratung</span>
+      <h2>Tücher auflegen</h2>
+      <p class="muted">Die Kamera zeigt das Gesicht, darunter liegt ein digitales Tuch. Wechsle zwischen zwei Tüchern und schau, bei welchem die Haut frischer wirkt.</p>
+    </header>
+
+    <div class="panel">
+      <h3>Vorbereitung</h3>
+      <div class="checks" id="vorbereitung"></div>
+      <p class="muted" style="font-size:13px">🔒 Das Kamerabild bleibt auf diesem Gerät. Nichts wird gespeichert, hochgeladen oder an eine KI geschickt. Sag der Kundin vorher, dass du die Kamera nur zum Vergleichen nutzt.</p>
+    </div>
+
+    <div class="panel" style="justify-items:stretch">
+      <div class="buehne" id="buehne">
+        <video id="video" playsinline muted autoplay></video>
+        <div class="leer" id="leer">Kamera noch aus.<br>Halte das Gerät auf Augenhöhe, das Gesicht mittig.</div>
+        <div class="tuch" id="tuch" hidden></div>
+        <span class="tuchname" id="tuchname" hidden></span>
+      </div>
+      <div class="chips" style="justify-content:center">
+        <button class="btn" id="kamera-an">Kamera starten</button>
+        <button class="btn ghost" id="kamera-aus" hidden>Kamera aus</button>
+      </div>
+      <p class="muted" id="kamera-fehler" hidden style="font-size:13px"></p>
+
+      <div class="fortschritt" id="fortschritt" aria-hidden="true"></div>
+      <div class="schritt" id="schritt"></div>
+    </div>
+  </section>
+
+  <section class="block" id="ueben">
+    <header>
+      <span class="tag">Quiz</span>
+      <h2>Erkennst du den Typ?</h2>
+      <p class="muted">Bei jeder Frage sagst du, ob du dir sicher bist. Richtig geraten zählt noch nicht als gewusst.</p>
+    </header>
+    <div class="quiz" id="quizBox"></div>
+    <div class="score"><span class="num" id="scoreOut">0 / 0</span><span id="scoreText" class="muted"></span><button class="btn ghost" id="quizReset">Neu starten</button></div>
+    <div id="scoreSpeicher" style="font-size:12px"></div>
+  </section>
+</main>
+
+<footer>A Great Hair Day · Farbtyp-Beratung</footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// ── Die vier Typen (Inhalte zur Durchsicht durch die Inhaberin) ─────────────
+const TYPEN={
+  fruehling:{name:'Frühling',kurz:'warm · klar · hell',
+    faecher:['#F7B58A','#F28C6B','#FFD36E','#F5E6C8','#9CCB6B','#2FB8AC','#D9A066','#F6827A'],
+    haut:'hell, Elfenbein oder Pfirsich, goldener Schimmer, oft Sommersprossen',
+    augen:'hellblau, türkis, hellgrün, goldbraun',
+    haar:'goldblond, rotblond, hellbraun mit Goldschimmer',
+    haarfarbe:'Goldblond, Honigblond, Erdbeerblond, helles Kupfer – Reflexe Gold und Kupfer',
+    meiden:'Asch, Blauschwarz, sehr dunkle kühle Töne'},
+  sommer:{name:'Sommer',kurz:'kühl · gedämpft · hell',
+    faecher:['#E8B4C0','#C89BB0','#B7A6D6','#8FA9C9','#A9B7C0','#A8C5B5','#B5A89A','#F2EEE8'],
+    haut:'hell, rosig, leicht bläulicher Schimmer, wird schnell rot',
+    augen:'graublau, graugrün, gedämpftes Haselnussbraun',
+    haar:'aschblond, „mausbraun“, kühles Hellbraun',
+    haarfarbe:'Aschblond, Perl- und Beigeblond, kühles Hellbraun – Reflexe Asch und Irisé',
+    meiden:'Kupfer, intensives Gold, Orange'},
+  herbst:{name:'Herbst',kurz:'warm · gedämpft · tief',
+    faecher:['#B5522B','#D49A2A','#7A7A3A','#5E7B4C','#D9772E','#C46A4A','#5A3A22','#2F6B6B'],
+    haut:'Elfenbein bis Beige, goldener Unterton, oft Sommersprossen',
+    augen:'braun, Haselnuss, Olivgrün, Bernstein',
+    haar:'kastanienbraun, kupferrot, goldbraun, warmes Dunkelblond',
+    haarfarbe:'Kupfer, Kastanie, Goldbraun, warmes Schokobraun – Reflexe Kupfer und Gold',
+    meiden:'Asch, Platin, Blauschwarz'},
+  winter:{name:'Winter',kurz:'kühl · klar · kontrastreich',
+    faecher:['#FFFFFF','#1A1A1A','#1F4FC2','#0E8F6A','#D6247A','#C21E3A','#F4C6DA','#9CA3AF'],
+    haut:'sehr hell (Porzellan) oder oliv bis dunkel, immer kühler Unterton',
+    augen:'dunkelbraun, schwarzbraun, eisblau, klares Grün',
+    haar:'dunkelbraun bis schwarz, kühl',
+    haarfarbe:'Naturschwarz, Blauschwarz, kühles Dunkelbraun, Aubergine – Reflexe Asch und Irisé; bei starkem Kontrast auch Platin',
+    meiden:'Gold, Kupfer, warmes Hellbraun'}
+};
+$('#typen-liste').innerHTML=Object.entries(TYPEN).map(([id,t])=>
+  '<article class="panel typ" id="typ-'+id+'"><h3>'+esc(t.name)+' <small>'+esc(t.kurz)+'</small></h3>'+
+  '<div class="faecher" aria-label="Farbfächer '+esc(t.name)+'">'+t.faecher.map(c=>'<i style="background:'+c+'"></i>').join('')+'</div>'+
+  '<dl class="facts"><dt>Haut</dt><dd>'+esc(t.haut)+'</dd><dt>Augen</dt><dd>'+esc(t.augen)+'</dd><dt>Naturhaar</dt><dd>'+esc(t.haar)+'</dd>'+
+  '<dt>Haarfarbe</dt><dd>'+esc(t.haarfarbe)+'</dd><dt>Eher meiden</dt><dd class="safe">'+esc(t.meiden)+'</dd></dl></article>').join('');
+
+// ── Vorbereitung ────────────────────────────────────────────────────────────
+const VORB=['Tageslicht, am besten am Fenster – kein buntes oder gelbes Licht','Ohne Make-up, Brille und Schmuck','Haare unter einem weißen oder hellgrauen Tuch','Weißes T-Shirt oder Umhang, damit keine Kleidung abfärbt','Gerät auf Augenhöhe, Gesicht mittig im Bild'];
+$('#vorbereitung').innerHTML=VORB.map((t,i)=>'<label><input type="checkbox" id="vb'+i+'"> '+esc(t)+'</label>').join('');
+$('#vorbereitung').addEventListener('change',e=>{const l=e.target.closest('label');if(l)l.classList.toggle('done',e.target.checked);});
+
+// ── Tücher und Ablauf ───────────────────────────────────────────────────────
+// Jeder Schritt vergleicht zwei Tücher. „A“ zählt für die erste Eigenschaft, „B“ für die zweite.
+const SCHRITTE=[
+  {id:'gold',frage:'Unterton',a:{n:'Gold',c:'linear-gradient(160deg,#F3D27A,#B8892E 55%,#E8C266)'},b:{n:'Silber',c:'linear-gradient(160deg,#F1F2F4,#9EA3AA 55%,#D9DCE0)'},wert:['warm','kuehl']},
+  {id:'pfirsich',frage:'Unterton',a:{n:'Pfirsich',c:'#F4A582'},b:{n:'Rosé',c:'#E6A1B5'},wert:['warm','kuehl']},
+  {id:'klar',frage:'Klar oder gedämpft',a:{n:'Klares Königsblau',c:'#2348C8'},b:{n:'Gedämpftes Graublau',c:'#6E7F99'},wert:['klar','gedaempft']},
+  {id:'rot',frage:'Klar oder gedämpft',a:{n:'Klares Rot',c:'#E0322C'},b:{n:'Gedämpftes Rostrot',c:'#A0563E'},wert:['klar','gedaempft']}
+];
+let stream=null, schritt=0, aktiv='a', antworten={}, fotos={};
+const video=$('#video'), tuch=$('#tuch'), tname=$('#tuchname');
+
+function tuchZeigen(){
+  const s=SCHRITTE[schritt]; if(!s) {tuch.hidden=tname.hidden=true;return;}
+  const t=s[aktiv]; tuch.style.background=t.c; tname.textContent='Tuch '+aktiv.toUpperCase()+': '+t.n;
+  tuch.hidden=tname.hidden=!stream;
+}
+async function kameraAn(){
+  $('#kamera-fehler').hidden=true;
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:960},height:{ideal:1280}},audio:false});
+    video.srcObject=stream; $('#leer').hidden=true; $('#kamera-an').hidden=true; $('#kamera-aus').hidden=false; tuchZeigen(); if(schritt<SCHRITTE.length) schrittZeichnen();
+  }catch(e){
+    $('#kamera-fehler').hidden=false;
+    $('#kamera-fehler').textContent='Die Kamera ließ sich nicht starten. Erlaube den Kamerazugriff für diese Seite (Einstellungen des Browsers) oder vergleiche mit echten Tüchern – die Fragen unten funktionieren auch ohne Kamera.';
+  }
+}
+function kameraAus(){
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  stream=null; video.srcObject=null; $('#leer').hidden=false; $('#kamera-an').hidden=false; $('#kamera-aus').hidden=true; tuchZeigen(); if(schritt<SCHRITTE.length) schrittZeichnen();
+}
+$('#kamera-an').onclick=kameraAn; $('#kamera-aus').onclick=kameraAus;
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) kameraAus(); });
+window.addEventListener('pagehide',kameraAus);
+
+// Vergleichsfoto: aktuelles Kamerabild mit Tuch – nur im Arbeitsspeicher
+function foto(){
+  if(!stream||!video.videoWidth) return null;
+  const w=360, h=Math.round(w*4/3), c=document.createElement('canvas'); c.width=w; c.height=h;
+  const x=c.getContext('2d'), vw=video.videoWidth, vh=video.videoHeight, r=Math.max(w/vw,h/vh);
+  x.save(); x.translate(w,0); x.scale(-1,1); x.drawImage(video,(w-vw*r)/2,(h-vh*r)/2,vw*r,vh*r); x.restore();
+  const s=SCHRITTE[schritt][aktiv], g=document.createElement('div'); g.style.background=s.c; document.body.appendChild(g);
+  const farbe=getComputedStyle(g).backgroundColor; g.remove();
+  x.fillStyle=farbe&&farbe!=='rgba(0, 0, 0, 0)'?farbe:'#B8892E';
+  if(/gradient/.test(s.c)){ const gr=x.createLinearGradient(0,h*.66,w,h); const m=s.c.match(/#[0-9A-Fa-f]{6}/g)||['#999']; m.forEach((f,i)=>gr.addColorStop(i/Math.max(1,m.length-1),f)); x.fillStyle=gr; }
+  x.beginPath(); x.moveTo(-w*.1,h); x.lineTo(-w*.1,h*.78); x.quadraticCurveTo(w/2,h*.6,w*1.1,h*.78); x.lineTo(w*1.1,h); x.closePath(); x.fill();
+  return c.toDataURL('image/jpeg',.85);
+}
+
+function schrittZeichnen(){
+  $('#fortschritt').innerHTML=SCHRITTE.map((_,i)=>'<i class="'+(i<=schritt?'an':'')+'"></i>').join('');
+  const box=$('#schritt');
+  if(schritt>=SCHRITTE.length){ ergebnisZeichnen(); return; }
+  const s=SCHRITTE[schritt], f=fotos[s.id]||{};
+  box.innerHTML='<h3>Schritt '+(schritt+1)+' von '+SCHRITTE.length+' · '+esc(s.frage)+'</h3>'+
+    '<p class="muted" style="font-size:14px">Wechsle zwischen den Tüchern. Achte auf: Wirkt die Haut <b>frischer und ebenmäßiger</b>, die Augen klarer, Schatten weicher? Oder <b>fahl, grau</b>, Rötungen und Augenringe stärker?</p>'+
+    '<div class="ab"><button data-t="a" aria-pressed="'+(aktiv==='a')+'"><i style="background:'+s.a.c+'"></i>Tuch A: '+esc(s.a.n)+'</button><button data-t="b" aria-pressed="'+(aktiv==='b')+'"><i style="background:'+s.b.c+'"></i>Tuch B: '+esc(s.b.n)+'</button></div>'+
+    (stream?'<div class="chips"><button class="btn ghost" id="foto-k">📸 Vergleichsfoto mit Tuch '+aktiv.toUpperCase()+'</button></div>':'')+
+    ((f.a||f.b)?'<div class="vergleich"><figure>'+(f.a?'<img src="'+f.a+'" alt="Vergleichsfoto Tuch A">':'')+'<figcaption>A: '+esc(s.a.n)+'</figcaption></figure><figure>'+(f.b?'<img src="'+f.b+'" alt="Vergleichsfoto Tuch B">':'')+'<figcaption>B: '+esc(s.b.n)+'</figcaption></figure></div>':'')+
+    '<p style="font-weight:600;font-size:14px">Bei welchem Tuch wirkt die Haut frischer?</p>'+
+    '<div class="antwort"><button class="chip" data-w="a">Tuch A</button><button class="chip" data-w="0">Kaum Unterschied</button><button class="chip" data-w="b">Tuch B</button></div>'+
+    (schritt>0?'<button class="btn ghost" id="zurueck-k" style="justify-self:start">← Schritt zurück</button>':'');
+  box.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{aktiv=b.dataset.t;tuchZeigen();schrittZeichnen();});
+  const fk=$('#foto-k'); if(fk) fk.onclick=()=>{const d=foto(); if(d){(fotos[s.id]=fotos[s.id]||{})[aktiv]=d; aktiv=aktiv==='a'?'b':'a'; tuchZeigen(); schrittZeichnen();}};
+  box.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{antworten[s.id]=b.dataset.w; schritt++; aktiv='a'; tuchZeigen(); schrittZeichnen();});
+  const z=$('#zurueck-k'); if(z) z.onclick=()=>{schritt--; aktiv='a'; tuchZeigen(); schrittZeichnen();};
+}
+
+// Auswertung: je Eigenschaft Mehrheit der beiden Schritte; „kaum Unterschied“ zählt nicht
+function richtung(ids,wert){
+  let a=0,b=0; ids.forEach(id=>{ if(antworten[id]==='a')a++; else if(antworten[id]==='b')b++; });
+  return a>b?wert[0]:b>a?wert[1]:null;
+}
+function ergebnisZeichnen(){
+  const ton=richtung(['gold','pfirsich'],['warm','kuehl']), kl=richtung(['klar','rot'],['klar','gedaempft']);
+  const typ= ton==='warm'&&kl==='klar'?'fruehling': ton==='warm'&&kl==='gedaempft'?'herbst': ton==='kuehl'&&kl==='gedaempft'?'sommer': ton==='kuehl'&&kl==='klar'?'winter':null;
+  const box=$('#schritt');
+  let h='';
+  if(typ){
+    const t=TYPEN[typ];
+    h='<div class="panel ergebnis"><span class="tag">Wahrscheinlicher Typ</span><h3 style="font-size:1.4rem">'+esc(t.name)+' <small class="muted" style="font-size:13px">'+esc(t.kurz)+'</small></h3>'+
+      '<div class="faecher">'+t.faecher.map(c=>'<i style="background:'+c+'"></i>').join('')+'</div>'+
+      '<dl class="facts"><dt>Haarfarbe</dt><dd>'+esc(t.haarfarbe)+'</dd><dt>Eher meiden</dt><dd class="safe">'+esc(t.meiden)+'</dd></dl>'+
+      '<p class="muted" style="font-size:13px">Passen Augen, Naturhaar und Haut auch dazu? Schau in die Beschreibung von „'+esc(t.name)+'“ oben. Die Entscheidung triffst du – die Tücher helfen beim Sehen.</p></div>';
+  } else {
+    const teil=ton?(ton==='warm'?'Der Unterton wirkt eher warm (Frühling oder Herbst).':'Der Unterton wirkt eher kühl (Sommer oder Winter).'):kl?(kl==='klar'?'Klare Farben wirken besser (Frühling oder Winter).':'Gedämpfte Farben wirken besser (Sommer oder Herbst).'):'Bei den Tüchern war kaum ein Unterschied zu sehen.';
+    h='<div class="panel ergebnis"><span class="tag">Noch nicht eindeutig</span><h3>Zwischen zwei Typen</h3><p style="font-size:14px">'+esc(teil)+' Prüf noch einmal bei Tageslicht oder vergleiche mit echten Tüchern. Manche Menschen liegen zwischen zwei Typen – dann entscheiden Augen und Naturhaar.</p></div>';
+  }
+  box.innerHTML=h+'<button class="btn ghost" id="neu-k" style="justify-self:start">Neu beginnen (Fotos löschen)</button>';
+  $('#neu-k').onclick=()=>{schritt=0;antworten={};fotos={};aktiv='a';tuchZeigen();schrittZeichnen();};
+}
+schrittZeichnen();
+
+// ── Quiz ────────────────────────────────────────────────────────────────────
+// [Frage, Antworten, Index richtig, Erklärung]
+const QUIZ=[
+  ['Kundin: helle Haut mit goldenem Schimmer, hellblau-türkise Augen, goldblondes Naturhaar, Gold-Schmuck steht ihr. Welcher Typ?',['Frühling','Sommer','Herbst','Winter'],0,'Warm, klar und hell: das ist der Frühling.'],
+  ['Kunde: rosige, helle Haut, graublaue Augen, aschblondes Naturhaar. Mit Kupfer wirkt er fahl. Welcher Typ?',['Frühling','Sommer','Herbst','Winter'],1,'Kühl, gedämpft und hell: Sommer. Kupfer ist warm und passt deshalb nicht.'],
+  ['Kundin: Beige Haut mit Sommersprossen, olivgrüne Augen, kastanienbraunes Haar mit Kupferschimmer. Welcher Typ?',['Frühling','Sommer','Herbst','Winter'],2,'Warm, gedämpft und tief: Herbst.'],
+  ['Kundin: sehr helle, kühle Haut, fast schwarzes Haar, dunkle Augen – ein starker Kontrast. Welcher Typ?',['Frühling','Sommer','Herbst','Winter'],3,'Kühl, klar und kontrastreich: Winter.'],
+  ['Welcher Tuch-Vergleich zeigt den Unterton am deutlichsten?',['Gold gegen Silber','Schwarz gegen Weiß','Hellgrün gegen Dunkelgrün','Gelb gegen Orange'],0,'Gold steht warmen, Silber kühlen Typen. Der Unterschied zeigt den Unterton.'],
+  ['Woran erkennst du ein unpassendes Tuch?',['Die Haut wirkt fahl, Schatten und Rötungen werden stärker','Die Kundin lächelt','Das Tuch ist dunkel','Die Augen wirken klarer'],0,'Ein unpassendes Tuch macht die Haut grau oder fahl und betont Schatten, Rötungen und Augenringe.'],
+  ['Warum sollen die Haare beim Tuchauflegen unter einem weißen Tuch sein?',['Damit nur die Wirkung auf die Haut beurteilt wird','Damit die Haare trocken bleiben','Weil es hygienischer ist','Damit die Kamera besser scharfstellt'],0,'Gefärbte Haare und Make-up lenken ab. Beurteilt wird nur, wie die Farbe auf die Haut wirkt.'],
+  ['Welche Reflexe passen eher zu Sommer und Winter?',['Asch und Irisé','Gold und Kupfer','Kupfer und Rot','Gold und Asch'],0,'Sommer und Winter sind kühle Typen: Asch (Blau) und Irisé (Violett) sind kühle Reflexe.'],
+  ['Eine Herbst-Kundin wünscht sich Platinblond. Was sagst du?',['Ehrlich: Platin ist sehr kühl und kann sie fahl wirken lassen – als Alternative ein warmes Honig- oder Goldblond vorschlagen','Sofort umsetzen, die Kundin hat immer recht','Ablehnen und nichts weiter sagen','Platin mit Kupfer mischen'],0,'Gut beraten heißt: Wirkung erklären und eine passende Alternative anbieten. Die Kundin entscheidet dann informiert.'],
+  ['Warum am besten bei Tageslicht vergleichen?',['Kunstlicht und Kamera verfälschen Hauttöne','Weil es schneller geht','Weil das Tuch sonst nicht sichtbar ist','Bei Tageslicht ist jeder Typ warm'],0,'Gelbes oder buntes Licht verändert, wie warm oder kühl die Haut wirkt. Tageslicht zeigt die echten Farben.']
+];
+let answers={}, quizGespeichert=false;
+function mischen(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function renderQuiz(){
+  const box=$('#quizBox');box.innerHTML='';
+  QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
+    d.innerHTML='<h3>'+(i+1)+'. '+esc(q[0])+'</h3><div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef">Geraten – prüfen</button></div></div><p class="why" hidden></p>';
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why'),sz=d.querySelector('.sicher');let wahl=null;
+    mischen(q[1].map((_,j)=>j)).forEach(j=>{const b=document.createElement('button');b.textContent=q[1][j];b.dataset.j=j;
+      b.onclick=()=>{wahl=j;opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sz.hidden=false;};
+      opts.appendChild(b);});
+    sz.querySelectorAll('.pruef').forEach(p=>p.onclick=()=>{
+      if(wahl===null)return;
+      const sicher=p.classList.contains('s'),ok=wahl===q[2];
+      answers[i]={j:wahl,sicher};sz.hidden=true;
+      opts.querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.remove('sel');if(+x.dataset.j===q[2])x.classList.add('right');else if(+x.dataset.j===wahl)x.classList.add('wrong');});
+      why.hidden=false;
+      why.textContent=(ok&&!sicher?'Richtig – aber geraten. Richtig geraten zählt noch nicht als gewusst. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+q[3];
+      if(ok&&!sicher)why.classList.add('geraten');if(!ok&&sicher)why.classList.add('sicherfalsch');
+      score();});
+    box.appendChild(d);});
+  score();
+}
+function score(){const e=Object.entries(answers),n=e.length;
+  const r=e.filter(([i,a])=>QUIZ[i][2]===a.j&&a.sicher).length;
+  const ger=e.filter(([i,a])=>QUIZ[i][2]===a.j&&!a.sicher).length,sf=e.filter(([i,a])=>QUIZ[i][2]!==a.j&&a.sicher).length;
+  $('#scoreOut').textContent=r+' / '+QUIZ.length;
+  $('#scoreText').textContent=n===0?'Noch keine Antwort.':n<QUIZ.length?n+' von '+QUIZ.length+' beantwortet.':(r>=QUIZ.length*.8?'Stark! Du erkennst die Farbtypen.':r>=QUIZ.length*.5?'Gute Basis. Schau dir die vier Typen oben noch einmal an.':'Lies die vier Typen oben noch einmal und probier es dann wieder.')+
+    (ger?' '+ger+'× richtig geraten.':'')+(sf?' '+sf+'× sicher, aber falsch – schau dir diese Fragen nochmal an.':'');
+  if(n===0){quizGespeichert=false;$('#scoreSpeicher').textContent='';}
+  else if(n===QUIZ.length&&!quizGespeichert&&window.ghdQuizSpeichernAntworten){quizGespeichert=true;
+    ghdQuizSpeichernAntworten(e.map(([i,a])=>{const ok=QUIZ[i][2]===a.j;return {thema:'Kundenberatung',korrekt:ok&&a.sicher,geraten:ok&&!a.sicher,sicherFalsch:!ok&&a.sicher};}),'scoreSpeicher');}
+}
+$('#quizReset').onclick=()=>{answers={};renderQuiz();};
+renderQuiz();
+})();
+</script>
+<script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
+<script src="fachbegriffe.js?v=20261118a" data-ziele="p ; li ; dd ; .tip" data-gruppe="section, article, .panel" defer></script>  <!-- Fachbegriffe mit Übersetzung -->
+<script src="vorlesen.js?v=20261116c" data-ziele="section.block > header h2 | ~ p ; article.panel ; .tip" defer></script>  <!-- 🔊 Vorlesen pro Abschnitt -->
+<script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
+</body>
+</html>
