@@ -183,7 +183,11 @@ a.btn{display:inline-block;text-decoration:none}
           <canvas id="cv-licht" aria-label="Zum Malen mit dem Pinsel"></canvas>
         </div>
         <span class="ki-zeile">KI-generiert</span>
-      </div>
+        <figure id="vorbild" hidden style="margin:0;width:100%;max-width:320px">
+          <div class="lab">Vorbild: so kann es fertig aussehen</div>
+          <img id="vorbild-bild" alt="" style="width:100%;height:auto;display:block;border-radius:8px">
+          <figcaption class="ki-zeile" style="text-align:center;margin-top:4px">KI-generiert</figcaption>
+        </figure>
       <div class="panel">
         <div>
           <div class="lab">Modus</div>
@@ -482,7 +486,14 @@ function reglerZeigen(){
   $('#rg-weg').onclick=()=>{ delete gesetzt[auswahl]; delete einst[auswahl]; auswahl=null; zeichnen(); reglerZeigen(); };
   $('#rg-fertig').onclick=()=>{ auswahl=null; zeichnen(); reglerZeigen(); };
 }
-function neu(){gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
+// Vorbilder (fertig geschminkt) der Inhaberin – für Diamant und Birnenförmig gibt es keines
+const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1};
+function vorbild(zeigen){
+  const ok=zeigen&&ansicht==='gesicht'&&NACHHER[form];
+  $('#vorbild').hidden=!ok;
+  if(ok){ $('#vorbild-bild').src='bilder/makeup/nachher-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
+}
+function neu(){vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
   let W=werkz();
   if(partieAn()) W=Object.fromEntries(Object.entries(W).filter(([k])=>PARTIEN[partie].wz.includes(k)));
@@ -534,8 +545,8 @@ function pruefen(gesetzt=window.__gesetzt(), hinweise=[]){
 }
 window.__gesetzt=()=>gesetzt;
 $('#pruefen').onclick=()=>modus==='pinsel'?pinselPruefen():pruefen();
-$('#loesung').onclick=()=>{if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
-$('#leeren').onclick=()=>{if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+$('#loesung').onclick=()=>{vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
+$('#leeren').onclick=()=>{vorbild(false);if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 // ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
 // Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
 // über der Zeichnung. Geprüft wird, wie viel Farbe in welcher Zone liegt.
@@ -723,10 +734,12 @@ function pinselLoesung(){
 chips(); zeichnen();
 
 // Regeln je Gesichtsform (Übersicht)
-$('#formen-liste').innerHTML=Object.values(FORMEN).map(f=>{
+$('#formen-liste').innerHTML=Object.entries(FORMEN).map(([fk,f])=>{
   const nach=t=>Object.entries(f.soll).filter(([,x])=>x===t).map(([z])=>ZONEN[z].n).join(', ')||'–';
   const m=Object.entries(f.meiden).map(([z,v])=>v[1]);
-  return `<article class="panel"><h3>${esc(f.n)}</h3><p class="muted" style="font-size:13px">${esc(f.ziel)}</p>`+
+  return `<article class="panel"><h3>${esc(f.n)}</h3>`+
+    (NACHHER[fk]?`<img src="bilder/makeup/nachher-${fk}.jpg" alt="Vorbild fertig geschminkt: ${esc(f.n)}" loading="lazy" style="width:100%;max-width:220px;height:auto;border-radius:8px"><span class="ki-zeile">KI-generiert</span>`:'')+
+    `<p class="muted" style="font-size:13px">${esc(f.ziel)}</p>`+
     `<dl class="facts"><dt>✨ Licht</dt><dd>${esc(nach('H'))}</dd><dt>🟤 Schatten</dt><dd>${esc(nach('C'))}</dd><dt>🌸 Rouge</dt><dd>${esc(nach('R'))}</dd>`+
     (m.length?`<dt>Vorsicht</dt><dd class="safe">${esc(m.join(' '))}</dd>`:'')+`</dl></article>`;}).join('')+
   Object.values(AUGEN).map(a=>{
