@@ -123,6 +123,10 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 .ki-zeile{font-size:11px;color:var(--muted)}
 .tipp{fill:transparent;cursor:pointer}
 .tipp.an{cursor:grab;touch-action:none}
+.leinwand{position:relative;width:100%;max-width:320px}
+.leinwand canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.leinwand.malen #cv-licht{pointer-events:auto;touch-action:none;cursor:crosshair}
+#cv-schatten{mix-blend-mode:multiply}
 .tipp:hover{fill:rgba(137,108,50,.14)}
 .produkt{stroke-width:1}
 .fehlt{fill:none;stroke-width:1.6;stroke-dasharray:4 3}
@@ -169,14 +173,23 @@ a.btn{display:inline-block;text-decoration:none}
     <header>
       <span class="tag">Selbst ausprobieren</span>
       <h2>Make-up-Labor</h2>
-      <p class="muted">Wähle Ansicht, Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. Im ganzen Gesicht schminkst du alles: Licht, Schatten, Rouge, Augen und Lippen. In den Ansichten „Augen offen“ und „Augen geschlossen“ übst du den Lidschatten vergrößert. Eine aufgetragene Stelle kannst du mit Finger oder Maus verschieben – nach außen, innen, oben oder unten – und mit den Reglern anpassen.</p>
+      <p class="muted">Im Modus „Stellen“ tippst du an, wohin ein Produkt kommt. Im Modus „Pinsel“ schminkst du frei mit Finger oder Maus, verblendest und radierst. Wähle Ansicht, Gesichtsform und ein Produkt. Tippe dann auf die Stellen im Gesicht, an die es kommt. Im ganzen Gesicht schminkst du alles: Licht, Schatten, Rouge, Augen und Lippen. In den Ansichten „Augen offen“ und „Augen geschlossen“ übst du den Lidschatten vergrößert. Eine aufgetragene Stelle kannst du mit Finger oder Maus verschieben – nach außen, innen, oben oder unten – und mit den Reglern anpassen.</p>
     </header>
     <div class="labor">
       <div class="panel" style="justify-items:center">
-        <svg id="gesicht" viewBox="0 0 250 275" role="img" aria-label="Gesicht zum Schminken"></svg>
+        <div class="leinwand" id="leinwand">
+          <svg id="gesicht" viewBox="0 0 250 275" role="img" aria-label="Gesicht zum Schminken"></svg>
+          <canvas id="cv-schatten" aria-hidden="true"></canvas>
+          <canvas id="cv-licht" aria-label="Zum Malen mit dem Pinsel"></canvas>
+        </div>
         <span class="ki-zeile">KI-generiert</span>
       </div>
       <div class="panel">
+        <div>
+          <div class="lab">Modus</div>
+          <div class="chips" id="modi"></div>
+          <p class="muted" id="modus-info" style="font-size:13px;margin-top:6px"></p>
+        </div>
         <div>
           <div class="lab">Ansicht</div>
           <div class="chips" id="ansichten"></div>
@@ -191,6 +204,7 @@ a.btn{display:inline-block;text-decoration:none}
           <div class="chips" id="werkzeuge"></div>
         </div>
         <div id="regler" class="regler" hidden></div>
+        <div id="pinsel" class="regler" hidden></div>
         <div class="chips">
           <button class="btn" id="pruefen">Prüfen</button>
           <button class="btn ghost" id="loesung">Lösung zeigen</button>
@@ -327,6 +341,11 @@ const BILDER={zu:{"oval":{"bild":"zu-oval","B":[152,243],"A":{"cx":76,"ansatz":3
   offen:{bild:"offen-augen",B:[96.5,51.7],A:{cx:48.2,braue:17.8,auge:31.8,ad:22.6}}};
 const ANSICHTEN={gesicht:'Ganzes Gesicht',offen:'Augen offen',zu:'Augen geschlossen'};
 
+const MODI={stellen:'Stellen',pinsel:'Pinsel'};
+const PINSEL={B:{name:'Verblenden',ic:'〰️'},E:{name:'Radierer',ic:'🧽'}};
+const PGROESSE={H:9,C:7,R:9,L:3.5,M:3,D:2.5,P:2,B:6,E:5}, LICHT=['H','L'];
+let modus='stellen', pg={deck:60,weich:6}, LW=null, pinselIst={}, pinselFehltAn=false;
+const pgr={}, verlauf=[], benutzt=new Set();
 let form='oval', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
 const zu=()=>ansicht!=='offen', augen=()=>ansicht!=='gesicht';
 const bild=()=>ansicht==='offen'?BILDER.offen:BILDER.zu[form];
@@ -377,7 +396,7 @@ function zeichnen(markierung){
   Object.entries(Z).forEach(([id,z])=>{
     if(z.nurOffen&&zu()) return;
     const klein=augen()||z.auge;
-    const t=gesetzt[id], soll=markierung&&r.soll[id];
+    const pin=modus==='pinsel', t=pin?null:gesetzt[id], soll=markierung&&!(pin&&pinselIst[id]===r.soll[id])&&r.soll[id];
     (z.paar?[-1,1]:[1]).forEach(seite=>{
       const p=zonePos(z,f,seite), e=t&&(einst[id]||(einst[id]=standard(id)));
       if(t){
@@ -389,11 +408,13 @@ function zeichnen(markierung){
         if(auswahl===id) s+=`<ellipse class="auswahl"${klein?' style="stroke-width:.5"':''}${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
       }
       if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"${klein?' style="stroke-width:.6"':''}/>`;
+      if(pin) return;
       const g=t?zonePos(z,f,seite,e):p; // aufgetragene Stelle: dort anfassen, wo sie jetzt liegt
       s+=`<ellipse class="tipp${t?' an':''}"${g.t} data-z="${id}" data-s="${seite}" cx="${g.x}" cy="${g.y}" rx="${Math.max(g.rx,klein?5:12)}" ry="${Math.max(g.ry,klein?2.6:10)}"><title>${esc(z.n)}</title></ellipse>`;
     });
   });
   svg.innerHTML=s;
+  if(modus==='pinsel') leinwandBereit();
 }
 // Antippen: leere Stelle → Produkt auftragen. Aufgetragene Stelle → auswählen; ziehen → verschieben.
 let ziehen=null;
@@ -402,6 +423,7 @@ function reglerWert(k){ const i=$('#rg-'+k), r=REGLER.find(x=>x.k===k); if(i&&au
 (function(){
   const svg=$('#gesicht');
   svg.addEventListener('pointerdown',ev=>{
+    if(modus==='pinsel') return;
     const t=ev.target.closest&&ev.target.closest('.tipp'); if(!t) return;
     const id=t.dataset.z;
     if(!gesetzt[id]){ gesetzt[id]=werkzeug; einst[id]=standard(id); }
@@ -432,14 +454,20 @@ function reglerZeigen(){
   $('#rg-weg').onclick=()=>{ delete gesetzt[auswahl]; delete einst[auswahl]; auswahl=null; zeichnen(); reglerZeigen(); };
   $('#rg-fertig').onclick=()=>{ auswahl=null; zeichnen(); reglerZeigen(); };
 }
-function neu(){gesetzt={};einst={};auswahl=null;$('#rueckmeldung').innerHTML='';chips();zeichnen();reglerZeigen();}
+function neu(){gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
-  if(!werkz()[werkzeug]) werkzeug=Object.keys(werkz())[0];
+  const W=modus==='pinsel'?Object.assign({},werkz(),PINSEL):werkz();
+  if(!W[werkzeug]) werkzeug=Object.keys(W)[0];
   const knopf=(attr,k,txt,an)=>`<button class="chip" data-${attr}="${k}" aria-pressed="${an}">${esc(txt)}</button>`;
+  $('#modi').innerHTML=Object.entries(MODI).map(([k,n])=>knopf('modus',k,n,k===modus)).join('');
+  $('#modus-info').textContent=modus==='pinsel'?'Mit Finger oder Maus über das Gesicht streichen. Dünn beginnen, Schicht für Schicht aufbauen und mit „Verblenden“ weich ausstreichen.':'Antippen, wohin ein Produkt kommt – dann verschieben und mit Reglern anpassen.';
+  $('#leinwand').classList.toggle('malen',modus==='pinsel');
+  document.querySelectorAll('[data-modus]').forEach(b=>b.onclick=()=>{modus=b.dataset.modus;neu();});
+  pinselReglerZeigen();
   $('#ansichten').innerHTML=Object.entries(ANSICHTEN).map(([k,n])=>knopf('ansicht',k,n,k===ansicht)).join('');
   $('#formen').innerHTML=ansicht==='offen'?'':Object.keys(FORMEN).map(k=>knopf('form',k,FORMEN[k].n,k===form)).join('');
   $('#formen-lab').hidden=ansicht==='offen';
-  $('#werkzeuge').innerHTML=Object.entries(werkz()).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
+  $('#werkzeuge').innerHTML=Object.entries(W).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
   $('#form-info').textContent='Ziel: '+regeln().ziel;
   document.querySelectorAll('[data-ansicht]').forEach(b=>b.onclick=()=>{ansicht=b.dataset.ansicht;neu();});
   document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{form=b.dataset.form;neu();});
@@ -447,7 +475,7 @@ function chips(){
 }
 
 // ── Prüfen ──────────────────────────────────────────────────────────────────
-function pruefen(){
+function pruefen(gesetzt=window.__gesetzt(), hinweise=[]){
   const f=regeln(), Z=zonen(), WERKZEUG=ALLE_WERKZEUGE, gut=[], fehlt=[], falsch=[], extra=[];
   Object.entries(f.soll).forEach(([z,t])=>{
     const ist=gesetzt[z], name=Z[z].n;
@@ -461,18 +489,175 @@ function pruefen(){
     if(m&&m[0]===t) falsch.push(`${Z[z].n}: ${m[1]}`);
     else extra.push(`${WERKZEUG[t].ic} ${Z[z].n}: ${augen()?'hier nicht nötig.':'bei dieser Gesichtsform nicht nötig.'}`);
   });
-  const alles=!fehlt.length&&!falsch.length;
+  const alles=!fehlt.length&&!falsch.length&&!hinweise.length;
   $('#rueckmeldung').innerHTML=
     `<div class="tip"><b>${alles?'✓ Stimmig! ':''}${gut.length} von ${Object.keys(f.soll).length} Stellen richtig.</b> ${esc('Ziel: '+f.ziel)}</div>`+
     (falsch.length?`<div class="lab" style="color:#C44030">Ändern</div><ul class="rm">${falsch.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'')+
     (fehlt.length?`<div class="lab">Fehlt noch</div><ul class="rm">${fehlt.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'')+
+    (hinweise.length?`<div class="lab">Pinsel-Tipps</div><ul class="rm">${hinweise.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'')+
     (gut.length?`<div class="lab">Richtig</div><ul class="rm">${gut.map(x=>`<li>✓ ${esc(x)}</li>`).join('')}</ul>`:'')+
     (extra.length?`<ul class="rm muted">${extra.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'');
   zeichnen(true);
 }
-$('#pruefen').onclick=pruefen;
-$('#loesung').onclick=()=>{gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
-$('#leeren').onclick=()=>{gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+window.__gesetzt=()=>gesetzt;
+$('#pruefen').onclick=()=>modus==='pinsel'?pinselPruefen():pruefen();
+$('#loesung').onclick=()=>{if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
+$('#leeren').onclick=()=>{if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+// ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
+// Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
+// über der Zeichnung. Geprüft wird, wie viel Farbe in welcher Zone liegt.
+function pinselReglerZeigen(){
+  const box=$('#pinsel');
+  if(modus!=='pinsel'){ box.hidden=true; return; }
+  box.hidden=false;
+  const g=pgr[werkzeug]||PGROESSE[werkzeug]||5;
+  box.innerHTML=`<div class="lab">Pinsel: ${esc((ALLE_WERKZEUGE[werkzeug]||PINSEL[werkzeug]).name)}</div>`+
+    `<label class="regel"><span>Größe</span><input type="range" id="pg-g" min="1" max="25" step=".5" value="${g}"><b id="pw-g">${g}</b></label>`+
+    `<label class="regel"><span>Deckkraft</span><input type="range" id="pg-d" min="10" max="100" step="5" value="${pg.deck}"><b id="pw-d">${pg.deck}%</b></label>`+
+    `<label class="regel"><span>Weichheit</span><input type="range" id="pg-w" min="1" max="9" step="1" value="${pg.weich}"><b id="pw-w">${pg.weich}</b></label>`+
+    `<div class="chips"><button class="btn ghost" id="pg-zurueck"${verlauf.length?'':' disabled'}>Rückgängig</button></div>`;
+  $('#pg-g').oninput=e=>{pgr[werkzeug]=+e.target.value;$('#pw-g').textContent=e.target.value;};
+  $('#pg-d').oninput=e=>{pg.deck=+e.target.value;$('#pw-d').textContent=e.target.value+'%';};
+  $('#pg-w').oninput=e=>{pg.weich=+e.target.value;$('#pw-w').textContent=e.target.value;};
+  $('#pg-zurueck').onclick=rueckgaengig;
+}
+function vbJetzt(){ const b=$('#gesicht').viewBox.baseVal; return {x:b.x,y:b.y,w:b.width,h:b.height}; }
+function leinwandBereit(){
+  const vb=vbJetzt(), K=480/vb.w, W=Math.round(vb.w*K), H=Math.round(vb.h*K);
+  if(LW&&LW.W===W&&LW.H===H&&LW.vb.x===vb.x&&LW.vb.y===vb.y) return;
+  LW={vb,K,W,H,lagen:{}};
+  Object.keys(ALLE_WERKZEUGE).forEach(t=>{ const c=document.createElement('canvas'); c.width=W; c.height=H; LW.lagen[t]=c; });
+  ['cv-licht','cv-schatten'].forEach(id=>{ const c=$('#'+id); c.width=W; c.height=H; });
+  verlauf.length=0; benutzt.clear(); anzeigen();
+}
+function anzeigen(){
+  const li=$('#cv-licht').getContext('2d'), sc=$('#cv-schatten').getContext('2d');
+  li.clearRect(0,0,li.canvas.width,li.canvas.height); sc.clearRect(0,0,sc.canvas.width,sc.canvas.height);
+  if(!LW||modus!=='pinsel') return;
+  Object.entries(LW.lagen).forEach(([t,c])=>{ const ctx=LICHT.includes(t)?li:sc; ctx.globalAlpha=ALLE_WERKZEUGE[t].deck; ctx.drawImage(c,0,0); });
+  li.globalAlpha=1; sc.globalAlpha=1;
+}
+function tupfer(ctx,x,y,r,rgb,a,weich){
+  const g=ctx.createRadialGradient(x,y,0,x,y,r), hart=Math.max(0,1-weich/9)*.85;
+  g.addColorStop(0,`rgba(${rgb},${a})`); g.addColorStop(hart,`rgba(${rgb},${a})`); g.addColorStop(1,`rgba(${rgb},0)`);
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+}
+// Verblenden: Bereich weichzeichnen (verkleinern und wieder vergrößern) und weich einmischen
+const kleinC=document.createElement('canvas'), tmpC=document.createElement('canvas');
+function verblenden(x,y,r,staerke){
+  const s=Math.max(4,Math.ceil(r*2)), x0=Math.round(x-r), y0=Math.round(y-r), k=Math.max(2,Math.round(s/6));
+  tmpC.width=tmpC.height=s; kleinC.width=kleinC.height=k;
+  const kc=kleinC.getContext('2d'), tc=tmpC.getContext('2d');
+  benutzt.forEach(t=>{
+    const c=LW.lagen[t], cc=c.getContext('2d');
+    kc.clearRect(0,0,k,k); kc.drawImage(c,x0,y0,s,s,0,0,k,k);
+    tc.globalCompositeOperation='copy'; tc.imageSmoothingQuality='high'; tc.drawImage(kleinC,0,0,k,k,0,0,s,s);
+    const m=tc.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2); m.addColorStop(0,`rgba(0,0,0,${staerke})`); m.addColorStop(1,'rgba(0,0,0,0)');
+    tc.globalCompositeOperation='destination-in'; tc.fillStyle=m; tc.fillRect(0,0,s,s);
+    const m2=cc.createRadialGradient(x0+s/2,y0+s/2,0,x0+s/2,y0+s/2,s/2); m2.addColorStop(0,`rgba(0,0,0,${staerke})`); m2.addColorStop(1,'rgba(0,0,0,0)');
+    cc.globalCompositeOperation='destination-out'; cc.fillStyle=m2; cc.fillRect(x0,y0,s,s);
+    cc.globalCompositeOperation='source-over'; cc.drawImage(tmpC,x0,y0);
+  });
+}
+function auftragen(p){
+  const t=werkzeug, r=(pgr[t]||PGROESSE[t])*LW.K, dichte=pg.deck/100;
+  if(t==='B') verblenden(p.x,p.y,r,.35+.4*dichte);
+  else if(t==='E') benutzt.forEach(u=>{ const cc=LW.lagen[u].getContext('2d'); cc.globalCompositeOperation='destination-out'; tupfer(cc,p.x,p.y,r,'0,0,0',.1+.35*dichte,pg.weich); cc.globalCompositeOperation='source-over'; });
+  else { tupfer(LW.lagen[t].getContext('2d'),p.x,p.y,r,ALLE_WERKZEUGE[t].rgb,.02+.12*dichte,pg.weich); benutzt.add(t); }
+}
+function strecke(a,b){
+  const r=(pgr[werkzeug]||PGROESSE[werkzeug])*LW.K, d=Math.hypot(b.x-a.x,b.y-a.y), n=Math.max(1,Math.floor(d/Math.max(1,r*.25)));
+  for(let i=1;i<=n;i++) auftragen({x:a.x+(b.x-a.x)*i/n, y:a.y+(b.y-a.y)*i/n});
+}
+function schnappschuss(ts){
+  const snap={}; ts.forEach(t=>{ const c=LW.lagen[t]; snap[t]=c.getContext('2d').getImageData(0,0,c.width,c.height); });
+  verlauf.push({snap,benutzt:new Set(benutzt)}); if(verlauf.length>10) verlauf.shift();
+  const b=$('#pg-zurueck'); if(b) b.disabled=false;
+}
+function rueckgaengig(){
+  const v=verlauf.pop(); if(!v||!LW) return;
+  Object.entries(v.snap).forEach(([t,d])=>LW.lagen[t].getContext('2d').putImageData(d,0,0));
+  benutzt.clear(); v.benutzt.forEach(t=>benutzt.add(t)); anzeigen(); pinselIst={}; $('#rueckmeldung').innerHTML=''; zeichnen(); pinselReglerZeigen();
+}
+(function(){
+  const cv=$('#cv-licht'); let strich=null, rahmen=0;
+  const punkt=ev=>{ const q=svgPunkt(ev); return {x:(q.x-LW.vb.x)*LW.K, y:(q.y-LW.vb.y)*LW.K}; };
+  cv.addEventListener('pointerdown',ev=>{
+    if(modus!=='pinsel') return; ev.preventDefault(); leinwandBereit();
+    const t=werkzeug; schnappschuss(t==='B'||t==='E'?[...benutzt]:[t]);
+    try{cv.setPointerCapture(ev.pointerId);}catch(e){}
+    strich=punkt(ev); auftragen(strich); anzeigen();
+    if(pinselFehltAn){ pinselIst={}; pinselFehltAn=false; $('#rueckmeldung').innerHTML=''; zeichnen(); }
+  });
+  cv.addEventListener('pointermove',ev=>{
+    if(!strich) return; const p=punkt(ev); strecke(strich,p); strich=p;
+    if(!rahmen) rahmen=requestAnimationFrame(()=>{ rahmen=0; anzeigen(); });
+  });
+  const ende=()=>{ if(strich){ strich=null; anzeigen(); pinselReglerZeigen(); } };
+  cv.addEventListener('pointerup',ende); cv.addEventListener('pointercancel',ende);
+})();
+// Zone als Ellipse in Leinwand-Pixeln (Standardlage, etwas großzügiger)
+function zoneEllipsen(id,faktor){
+  const Z=zonen(), z=Z[id], f=bild(), e=standard(id);
+  if(!z||(z.nurOffen&&zu())) return [];
+  return (z.paar?[-1,1]:[1]).map(seite=>{ const q=zonePos(z,f,seite,e), K=LW.K, a=-((z.rot||0)*seite)*Math.PI/180;
+    return {cx:(q.x-LW.vb.x)*K, cy:(q.y-LW.vb.y)*K, rx:Math.max(q.rx,2)*K*faktor, ry:Math.max(q.ry,1.5)*K*faktor, co:Math.cos(a), si:Math.sin(a)}; });
+}
+const inEll=(E,x,y)=>{ const dx=x-E.cx, dy=y-E.cy, u=dx*E.co-dy*E.si, v=dx*E.si+dy*E.co; return u*u/(E.rx*E.rx)+v*v/(E.ry*E.ry)<=1; };
+function mittelIn(d,E){
+  const R=Math.max(E.rx,E.ry), st=Math.max(1,Math.floor(R/14)); let sum=0,n=0;
+  for(let y=Math.max(0,Math.floor(E.cy-R));y<Math.min(LW.H,E.cy+R);y+=st) for(let x=Math.max(0,Math.floor(E.cx-R));x<Math.min(LW.W,E.cx+R);x+=st){
+    if(!inEll(E,x,y)) continue; sum+=d[(y*LW.W+x)*4+3]; n++; }
+  return n?sum/n/255:0;
+}
+function pinselPruefen(){
+  leinwandBereit();
+  const r=regeln(), Z=zonen(), ist={}, hinweise=[], daten={};
+  benutzt.forEach(t=>{ daten[t]=LW.lagen[t].getContext('2d').getImageData(0,0,LW.W,LW.H).data; });
+  const wert=(id,t,faktor)=>{ const E=zoneEllipsen(id,faktor); return E.length&&daten[t]?Math.min(...E.map(e=>mittelIn(daten[t],e))):0; };
+  Object.keys(Z).forEach(id=>{
+    if(Z[id].nurOffen&&zu()) return;
+    const soll=r.soll[id];
+    if(soll&&wert(id,soll,1)>=.1){ ist[id]=soll; return; }
+    // Farbe, die nur von der richtigen Nachbarstelle herüberreicht, zählt nicht als falsch
+    const ueberlauf=(t,w)=>Object.keys(r.soll).some(j=>j!==id&&r.soll[j]===t&&wert(j,t,.6)>=w*.8);
+    let best=null,bw=0; benutzt.forEach(t=>{ const w=wert(id,t,.6); if(w>bw&&!ueberlauf(t,w)){bw=w;best=t;} });
+    if(best&&bw>=(soll?.2:.3)) ist[id]=best;
+  });
+  // Farbe außerhalb der passenden Stellen und harte Kanten
+  benutzt.forEach(t=>{
+    const d=daten[t], zonenT=Object.keys(r.soll).filter(id=>r.soll[id]===t).flatMap(id=>zoneEllipsen(id,1.6));
+    let ges=0,drin=0,bemalt=0,hart=0; const st=3;
+    for(let y=0;y<LW.H-st;y+=st) for(let x=0;x<LW.W-st;x+=st){
+      const a=d[(y*LW.W+x)*4+3]; if(a<10) continue;
+      ges+=a; bemalt++; if(zonenT.some(E=>inEll(E,x,y))) drin+=a;
+      const ax=d[(y*LW.W+x+st)*4+3], ay=d[((y+st)*LW.W+x)*4+3];
+      if(Math.abs(a-ax)>40||Math.abs(a-ay)>40) hart++;
+    }
+    const n=ALLE_WERKZEUGE[t].name;
+    if(ges>255*20&&zonenT.length&&drin/ges<.55) hinweise.push(`${n}: Viel Farbe liegt außerhalb der passenden Stellen – genauer arbeiten.`);
+    else if(ges>255*20&&!zonenT.length&&!t.match(/[LMD]/)) hinweise.push(`${n}: wird hier nicht gebraucht.`);
+    if('HCR'.includes(t)&&bemalt>30&&hart/bemalt>.08) hinweise.push(`${n}: Man sieht noch Kanten – mit „Verblenden“ weich ausstreichen.`);
+  });
+  pinselIst=ist; pinselFehltAn=true;
+  pruefen(ist,hinweise);
+}
+function pinselLoesung(){
+  leinwandBereit(); schnappschuss(Object.keys(LW.lagen));
+  Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear();
+  const r=regeln(), f=bild(), Z=zonen(), s=2, kl=document.createElement('canvas'); kl.width=Math.ceil(LW.W/s); kl.height=Math.ceil(LW.H/s);
+  const kc=kl.getContext('2d');
+  Object.entries(r.soll).forEach(([id,t])=>{
+    const z=Z[id]; if(!z||(z.nurOffen&&zu())) return; const e=standard(id), rgb=ALLE_WERKZEUGE[t].rgb, k=LW.K/s;
+    kc.clearRect(0,0,kl.width,kl.height); kc.filter='none';
+    (z.paar?[-1,1]:[1]).forEach(seite=>{ const q=zonePos(z,f,seite,e);
+      kc.save(); kc.translate((q.x-LW.vb.x)*k,(q.y-LW.vb.y)*k); kc.rotate((z.rot||0)*seite*Math.PI/180); kc.scale(q.rx*k*1.15,q.ry*k*1.45);
+      const g=kc.createRadialGradient(0,0,0,0,0,1); g.addColorStop(0,`rgba(${rgb},.8)`); g.addColorStop(.55,`rgba(${rgb},.45)`); g.addColorStop(1,`rgba(${rgb},0)`);
+      kc.fillStyle=g; kc.beginPath(); kc.arc(0,0,1,0,Math.PI*2); kc.fill(); kc.restore(); });
+    const cc=LW.lagen[t].getContext('2d'); cc.imageSmoothingQuality='high'; cc.drawImage(kl,0,0,LW.W,LW.H); benutzt.add(t);
+  });
+  anzeigen(); pinselPruefen(); pinselReglerZeigen();
+}
 chips(); zeichnen();
 
 // Regeln je Gesichtsform (Übersicht)
