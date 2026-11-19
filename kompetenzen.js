@@ -1,4 +1,4 @@
-// Kompetenz-Landkarte V2: die 16 Kompetenzen und woraus sie sich speisen.
+// Kompetenz-Landkarte V2: die 17 Kompetenzen und woraus sie sich speisen.
 // Plan und Entscheidungen der Inhaberin: docs/kompetenz-landkarte-v2.md
 //
 // Die Quiz-Themen (lern-themen.js) bleiben unverändert – diese Liste legt
@@ -89,6 +89,10 @@
     {id:'nagelpflege', name:'Hand- & Nagelpflege',
      themen:[], themenGeplant:['Hand- & Nagelpflege'],
      module:[], anwenden:null, praxis:['Nagelpflege'], praxisCheck:['nagelpflege']},
+
+    {id:'makeup', name:'Make-up & Visagistik',
+     themen:['Make-up & Visagistik'],
+     module:['Make-up-Labor','Farbtyp-Beratung'], anwenden:null, praxis:['Make-up'], praxisCheck:['makeup']},
 
     {id:'betrieb', name:'Betrieb & Organisation',
      themen:['Salon-Organisation','Betriebskunde & Recht'],

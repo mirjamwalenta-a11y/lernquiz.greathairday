@@ -14,7 +14,7 @@
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-verlauf.js?v=20261115b"></script>  <!-- Zurück-Taste des Handys: Schritt für Schritt innerhalb der App -->
 <script src="lern-themen.js?v=20261107e"></script>
-<script src="kompetenzen.js?v=20261119a"></script>  <!-- Kompetenz-Landkarte V2: 16 Kompetenzen -->
+<script src="kompetenzen.js?v=20261119b"></script>  <!-- Kompetenz-Landkarte V2: 17 Kompetenzen -->
 <script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
@@ -2395,7 +2395,7 @@ var MBK_STAND={bestaetigt:{f:'#5B8A4A',t:'bestätigt',z:'✓ '},salon:{f:'#8DB07
   wissen:{f:'#8DB07D',t:'Wissen sitzt',z:'● '},begonnen:{f:'#C4A830',t:'begonnen',z:'● '},warnung:{f:'#C44030',t:'genauer ansehen',z:'⚠ '},offen:{f:'#B9B0A0',t:'offen',z:'○ '}};
 var MBK_LEG=[['bestätigt','#5B8A4A',['bestaetigt']],['auf dem Weg','#8DB07D',['salon','anwenden','wissen']],['begonnen','#C4A830',['begonnen']],
   ['genauer ansehen','#C44030',['warnung']],['offen','#B9B0A0',['offen']]];
-var MBK_GRUPPEN=[['Grundlagen',['hygiene','diagnose','werkzeug','betrieb']],['Am Gast',['pflege','beratung','englisch','nagelpflege']],
+var MBK_GRUPPEN=[['Grundlagen',['hygiene','diagnose','werkzeug','betrieb']],['Am Gast',['pflege','beratung','englisch','nagelpflege','makeup']],
   ['Farbe',['farbe','blond']],['Schnitt & Form',['damenschnitt','herrenschnitt','rasur','umformung','foehnen','hochstecken']]];
 function mbkKomp(id){return (window.GHD_KOMPETENZEN||[]).filter(function(k){return k.id===id;})[0];}
 function mbkBestaetigt(alle){return alle.filter(function(s){return s.stand==='bestaetigt';}).length;}
@@ -2616,7 +2616,7 @@ function mbMitWem(knopf){
 // Die Meisterin darf jeden Eintrag ändern (RLS praxis_eintraege_meisterin) und
 // eine eigene Notiz schreiben (meisterin_notiz, Trigger aus
 // 20261107_praxis_meisterin_notiz.sql – nur die Meisterin darf sie setzen).
-var PT_BEREICHE_M=['Haarwäsche & Kopfmassage','Föhnen','Farbe','Strähnen & Balayage','Hochstecken','Damenschnitt','Herrenschnitt','Dauerwelle & Umformung','Rasur & Bart','Nagelpflege','Beratung am Gast'];
+var PT_BEREICHE_M=['Haarwäsche & Kopfmassage','Föhnen','Farbe','Strähnen & Balayage','Hochstecken','Damenschnitt','Herrenschnitt','Dauerwelle & Umformung','Rasur & Bart','Nagelpflege','Make-up','Beratung am Gast'];
 var PTE={e:null,nachher:null};
 function ptBearbeiten(e,wer,nachher){
   PTE.e=e;PTE.nachher=nachher;
@@ -3549,7 +3549,7 @@ async function zeigeDetailLehrling(lehrling){
       '<button role="tab" data-dtab="praxis" aria-selected="false">📝 Praxis</button>'+
     '</div>';
 
-  // Reiter Landkarte: „Wo braucht dich …?“ und die 16 Kompetenzen (wie beim Lehrling im Lern-Tool)
+  // Reiter Landkarte: „Wo braucht dich …?“ und die 17 Kompetenzen (wie beim Lehrling im Lern-Tool)
   var vorname=String(lehrling.name||'').trim().split(/\s+/)[0]||'dein Lehrling';
   var WB=[];   // Punkte für „Wo braucht dich …?“, wichtigste zuerst
   var warnThemen={};
@@ -3904,6 +3904,16 @@ var PX_BEHANDLUNGEN=[
     'Pflege und Handmassage',
     'Lack sauber aufgetragen (falls gewünscht)',
     'Arbeitsplatz gereinigt']},
+  {id:'makeup',name:'Make-up',th:'Make-up & Visagistik',punkte:[
+    'Hände desinfiziert, Pinsel und Schwämmchen sauber',
+    'Wunsch und Anlass erfragt (Tag, Abend, Braut, Foto)',
+    'Haut angesehen und vorbereitet (Reinigung, Pflege)',
+    'Grundierung im Tageslicht am Kiefer abgestimmt, Ränder verblendet',
+    'Highlighter, Contouring und Rouge passend zur Gesichtsform gesetzt',
+    'Augenbrauen natürlich und zur Haarfarbe passend',
+    'Lidschatten weich verblendet, keine Kanten',
+    'Farben passend zum Farbtyp gewählt',
+    'Ergebnis mit dem Gast im Spiegel besprochen']},
   {id:'empfang',name:'Empfang, Beratung & Verabschiedung',th:'Beratungsgespräch & Kundenkommunikation',punkte:[
     'Gast mit Blickkontakt und Lächeln begrüßt',
     'Jacke abgenommen, Getränk angeboten',

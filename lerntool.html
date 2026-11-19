@@ -15,7 +15,7 @@
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-verlauf.js?v=20261115b"></script>  <!-- Zurück-Taste des Handys: Schritt für Schritt innerhalb der App -->
 <script src="lern-themen.js?v=20261107e"></script>
-<script src="kompetenzen.js?v=20261119a"></script>  <!-- Kompetenz-Landkarte V2: 16 Kompetenzen -->
+<script src="kompetenzen.js?v=20261119b"></script>  <!-- Kompetenz-Landkarte V2: 17 Kompetenzen -->
 <script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="quiz-verlauf.js?v=20261115"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -4937,7 +4937,7 @@ function stLeiste(seite) {
 }
 
 // ── KOMPETENZ-LANDKARTE (Seite „Fortschritt“) ─────────────────────
-// 16 Kompetenzen (kompetenzen.js) mit vier Stufen, Rechnung in
+// 17 Kompetenzen (kompetenzen.js) mit vier Stufen, Rechnung in
 // kompetenz-stand.js – dieselbe wie im Meisterin-Bereich.
 // Plan: docs/kompetenz-landkarte-v2.md
 // Liest nur eigene Daten des Lehrlings (kompetenz, praxis_eintraege,
@@ -4955,7 +4955,7 @@ var LK_STAND = {
 var LK_LEGENDE = [['bestätigt','lk-sitzt'], ['auf dem Weg','lk-wartet'], ['begonnen','lk-wackelt'], ['genauer ansehen','lk-unsicher'], ['noch offen','lk-offen']];
 var LK_GRUPPEN = [
   ['Grundlagen',     ['hygiene','diagnose','werkzeug','betrieb']],
-  ['Am Gast',        ['pflege','beratung','englisch','nagelpflege']],
+  ['Am Gast',        ['pflege','beratung','englisch','nagelpflege','makeup']],
   ['Farbe',          ['farbe','blond']],
   ['Schnitt & Form', ['damenschnitt','herrenschnitt','rasur','umformung','foehnen','hochstecken']]
 ];
@@ -5529,7 +5529,7 @@ async function rmSpeichern() {
 // Meisterin-Bereich. Selbst bestätigen geht nicht (RLS). Ohne Migration
 // 20261107_praxis_eintraege.sql erscheint ein Hinweis statt des Tagebuchs.
 var PT_BEREICHE = ['Haarwäsche & Kopfmassage', 'Föhnen', 'Farbe', 'Strähnen & Balayage', 'Hochstecken',
-  'Damenschnitt', 'Herrenschnitt', 'Dauerwelle & Umformung', 'Rasur & Bart', 'Nagelpflege', 'Beratung am Gast'];
+  'Damenschnitt', 'Herrenschnitt', 'Dauerwelle & Umformung', 'Rasur & Bart', 'Nagelpflege', 'Make-up', 'Beratung am Gast'];
 var PT = {eintraege: [], an: false, dauer: 45, bearbeiten: null, neueFotos: [], fotosDa: 0, motiv: null};
 function ptDauerText(min) { var h = Math.floor(min / 60), m = min % 60; return (h ? h + ' Std' + (m ? ' ' : '') : '') + (m || !h ? m + ' Min' : ''); }
 function ptDatumText(tag) { var d = new Date(tag + 'T12:00:00'); return ['So','Mo','Di','Mi','Do','Fr','Sa'][d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.'; }
@@ -5897,7 +5897,7 @@ zeige = function(seite) {
 <script src="woernis-tipps.js?v=20261115"></script>
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: „Kurz sortieren“ (docs/woerni-v1.md) -->
-<script src="woerni-diagnose.js?v=20261119a"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
+<script src="woerni-diagnose.js?v=20261119b"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
 <script>
 // „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
 // Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten

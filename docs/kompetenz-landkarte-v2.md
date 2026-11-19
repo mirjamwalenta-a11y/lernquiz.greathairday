@@ -40,10 +40,10 @@ Diagnose.
 - **Quiz-Themen bleiben unverändert.** Fragen, Wiederholung und alle
   gespeicherten Ergebnisse (`kompetenz`, `verlauf`, `wiederholung`) hängen
   daran.
-- **Darüber: 16 Kompetenzen.** Jede sammelt Quiz, Module, Praxis-Tagebuch
+- **Darüber: 17 Kompetenzen.** Jede sammelt Quiz, Module, Praxis-Tagebuch
   und Bestätigung der Meisterin ein.
 
-## 3. Die 16 Kompetenzen
+## 3. Die 17 Kompetenzen
 
 | # | Kompetenz | Wissen (Quiz-Themen) | Anwenden (Module) | Praxis-Tagebuch |
 |---|---|---|---|---|
@@ -63,6 +63,7 @@ Diagnose.
 | 14 | Hochstecken | **neu:** Hochstecken | – | Hochstecken |
 | 15 | Hand- & Nagelpflege | **neu:** Hand- & Nagelpflege | – | Nagelpflege |
 | 16 | Betrieb & Organisation | Salon-Organisation, Betriebskunde & Recht | – | – |
+| 17 | Make-up & Visagistik | **neu (2026-11-19):** Make-up & Visagistik (Quiz im Make-up-Labor) | Make-up-Labor, Farbtyp-Beratung | Make-up |
 
 **Keine eigene Kompetenz:**
 
@@ -147,19 +148,19 @@ Tabelle. Bis die Fragen da sind, zählen dort nur Stufe ③ und ④.
    rechnen die Stufen ①–④, werden aber noch nirgends angezeigt.
 3. ✓ Landkarte im Lern-Tool auf Kompetenzen umgestellt (Entwurf von der
    Inhaberin freigegeben, 2026-11-19): vier Gruppen (Grundlagen, Am Gast,
-   Farbe, Schnitt & Form), Überblick „x von 16 Kompetenzen bestätigt“,
+   Farbe, Schnitt & Form), Überblick „x von 17 Kompetenzen bestätigt“,
    „Als Nächstes“ (Warnungen → bereit für die Meisterin → begonnen), je Feld
    ein Balken mit einem Teil pro Stufe, Fenster mit vier Stufen-Kacheln und
    den Quiz-Themen. Keine Lehrjahr-Auswahl mehr auf dieser Seite.
    „Auf dem Weg“ (hellgrün) fasst Wissen / Anwenden / Salon zusammen –
    bestehende Farben, keine neuen.
 4. ✓ Meisterin-Bereich (Entwurf freigegeben, 2026-11-19):
-   - Übersicht: Lehrlingskarte zeigt „x von 16 Kompetenzen bestätigt“ mit
+   - Übersicht: Lehrlingskarte zeigt „x von 17 Kompetenzen bestätigt“ mit
      Balken und „✓ n bereit zum Bestätigen“; „Heute zu tun“ hat den Punkt
      „Bereit zum Bestätigen“. „Bitte nachprüfen“ bleibt hier.
    - Lehrling, Reiter „Landkarte“: „Wo braucht dich <Vorname>?“ (höchstens
      4: Warnungen → Prüfhinweise → bereit zum Bestätigen → mitarbeiten
-     lassen), darunter die 16 Kompetenzen in denselben Gruppen. Antippen
+     lassen), darunter die 17 Kompetenzen in denselben Gruppen. Antippen
      startet den passenden Praxis-Check bzw. ein Prüfgespräch. Der rote Kasten
      „Bitte nachprüfen“ ist hier in „Wo braucht dich …?“ aufgegangen.
    - Reiter (Landkarte / Gespräche / Verlauf / Praxis) haben jetzt einen
@@ -197,4 +198,4 @@ dazukommt: RLS und Grants in derselben Migration (CLAUDE.md, Regel 1).
   (Fragen haben dort kein Fach-Thema).
 - Fragen für Föhnen & Styling, Hochstecken, Hand- & Nagelpflege
   (Inhaberin).
-- Abgleich der 16 Kompetenzen mit dem Berufsbild.
+- Abgleich der 17 Kompetenzen mit dem Berufsbild.
