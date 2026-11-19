@@ -1,7 +1,7 @@
 # Kompetenz-Landkarte V2 – Plan
 
 **Stand:** 2026-11-19 · Entscheidungen der Inhaberin eingetragen.
-**Status:** Schritte 1 und 2 gebaut (`kompetenzen.js`, `kompetenz-stand.js`), für Lehrlinge noch nicht sichtbar.
+**Status:** Schritte 1–3 gebaut (`kompetenzen.js`, `kompetenz-stand.js`, Landkarte im Lern-Tool). Meisterin-Ansicht folgt.
 **Heute:** Landkarte im Lern-Tool (`lerntool.html`, Seite „Fortschritt“,
 `lkZeichnen`), Themen in `lern-themen.js`, Meisterin-Ansicht in
 `lernquiz.html` (`renderKompetenz`, `ampelStand`).
@@ -145,8 +145,14 @@ Tabelle. Bis die Fragen da sind, zählen dort nur Stufe ③ und ④.
    `ampelStand`/`berechneStatus` im Lernquiz) – Ergebnis unverändert,
    geprüft mit 200 000 Zufallsfällen. `kompetenzStand`/`alleKompetenzen`
    rechnen die Stufen ①–④, werden aber noch nirgends angezeigt.
-3. Landkarte im Lern-Tool auf Kompetenzen umstellen; Quiz-Themen bleiben
-   im Detail-Fenster sichtbar.
+3. ✓ Landkarte im Lern-Tool auf Kompetenzen umgestellt (Entwurf von der
+   Inhaberin freigegeben, 2026-11-19): vier Gruppen (Grundlagen, Am Gast,
+   Farbe, Schnitt & Form), Überblick „x von 16 Kompetenzen bestätigt“,
+   „Als Nächstes“ (Warnungen → bereit für die Meisterin → begonnen), je Feld
+   ein Balken mit einem Teil pro Stufe, Fenster mit vier Stufen-Kacheln und
+   den Quiz-Themen. Keine Lehrjahr-Auswahl mehr auf dieser Seite.
+   „Auf dem Weg“ (hellgrün) fasst Wissen / Anwenden / Salon zusammen –
+   bestehende Farben, keine neuen.
 4. Meisterin-Bereich: dieselbe Landkarte, dazu „Wo braucht mich mein
    Lehrling?“.
 5. Danach: „Heute üben“ nach der schwächsten Kompetenz statt nach

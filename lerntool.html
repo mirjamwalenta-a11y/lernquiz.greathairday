@@ -289,6 +289,14 @@ body.lk-offen-sheet .ghdv-fab{display:none !important}
 .lk-zahlen div{background:#F8F4EA;border-radius:8px;padding:8px 4px;text-align:center}
 .lk-zahlen b{display:block;font-size:16px;color:#211D17}
 .lk-zahlen small{font-size:10px;color:#6B6455}
+.lk-stufen{display:flex;gap:3px;background:none}
+.lk-stufen i{flex:1;border-radius:2px;background:#EEE8DC}
+.lk-stufen i.ja{background:var(--f)}
+.lk-stufen i.nm{background:repeating-linear-gradient(90deg,#EEE8DC 0 3px,transparent 3px 5px)}
+.lk-stufen-kacheln{grid-template-columns:1fr 1fr}
+.lk-zahlen div.ja{background:#F3EBD9}
+.lk-zahlen .lk-hilfe{display:block;margin-top:2px;line-height:1.3}
+.lk-thema{margin:0 0 6px;font-size:12px}
 .lk-warn{font-size:12px;color:#C44030;background:#FDECEA;border-radius:8px;padding:8px 10px;margin-bottom:8px;line-height:1.4}
 .lk-btn{width:100%;padding:12px;border-radius:8px;font-size:14px;font-weight:600;font-family:Poppins,system-ui;margin-top:4px;margin-bottom:4px;cursor:pointer}
 .lk-btn-p{background:#896C32;color:#fff;border:none}
@@ -660,13 +668,6 @@ body.mit-leiste .leiste{display:flex}
       <div class="tag">greathairday · Fortschritt</div>
       <h1>Meine Kompetenz-Landkarte</h1>
     </div>
-    <label class="st-lj" title="Lehrjahr wählen">
-      <select id="lk-lj" onchange="stLjWahl(this.value); lkZeichnen()" aria-label="Lehrjahr">
-        <option value="1">1. Lehrjahr</option>
-        <option value="2">2. Lehrjahr</option>
-        <option value="3">3. Lehrjahr</option>
-      </select>
-    </label>
   </div>
   <div id="lk-inhalt"><div style="color:#6B6455;font-size:13px">Wird geladen…</div></div>
 </div>
@@ -678,8 +679,9 @@ body.mit-leiste .leiste{display:flex}
     <button class="lk-zu" onclick="lkSchliessen()" aria-label="Schließen">×</button>
     <h2 id="lk-s-titel"></h2>
     <div class="lk-s-status" id="lk-s-status"></div>
-    <div class="lk-zahlen" id="lk-s-zahlen"></div>
+    <div class="lk-zahlen lk-stufen-kacheln" id="lk-s-stufen"></div>
     <div id="lk-s-warn"></div>
+    <div id="lk-s-themen"></div>
     <button class="lk-btn lk-btn-p" id="lk-s-quiz">Themen-Quiz starten →</button>
     <button class="lk-btn lk-btn-g" id="lk-s-tipp">💡 Lerntipp zum Thema</button>
   </div>
@@ -4754,110 +4756,154 @@ function stLeiste(seite) {
 }
 
 // ── KOMPETENZ-LANDKARTE (Seite „Fortschritt“) ─────────────────────
-// Nutzt dieselben Daten (ST.komp) und Regeln wie die Startseite.
-var LK_INFO = {
-  sitzt:    {label:'sitzt',               zeichen:'●'},
-  wartet:   {label:'gut – bald prüfen',   zeichen:'●'},
-  faellig:  {label:'wiederholen',         zeichen:'↻'},
-  wackelt:  {label:'wackelt',             zeichen:'●'},
-  unsicher: {label:'unsicher',            zeichen:'●'},
-  offen:    {label:'noch nicht geübt',    zeichen:'○'}
+// 16 Kompetenzen (kompetenzen.js) mit vier Stufen, Rechnung in
+// kompetenz-stand.js – dieselbe wie im Meisterin-Bereich.
+// Plan: docs/kompetenz-landkarte-v2.md
+// Liest nur eigene Daten des Lehrlings (kompetenz, praxis_eintraege,
+// pruefgespraeche, farb_plaene) – was gelesen werden darf, regelt die RLS.
+var LK = {praxis: [], gespraeche: [], geladenFuer: null};
+var LK_STAND = {
+  bestaetigt: {cls:'lk-sitzt',    text:'✓ bestätigt',         leg:'bestätigt'},
+  salon:      {cls:'lk-wartet',   text:'● im Salon gemacht',  leg:'auf dem Weg'},
+  anwenden:   {cls:'lk-wartet',   text:'● kann ich anwenden', leg:'auf dem Weg'},
+  wissen:     {cls:'lk-wartet',   text:'● Wissen sitzt',      leg:'auf dem Weg'},
+  begonnen:   {cls:'lk-wackelt',  text:'● begonnen',          leg:'begonnen'},
+  warnung:    {cls:'lk-unsicher', text:'⚠ genauer ansehen',   leg:'genauer ansehen'},
+  offen:      {cls:'lk-offen',    text:'○ noch offen',        leg:'noch offen'}
 };
-var LK_REIHE = ['sitzt', 'wartet', 'faellig', 'wackelt', 'unsicher'];
+var LK_LEGENDE = [['bestätigt','lk-sitzt'], ['auf dem Weg','lk-wartet'], ['begonnen','lk-wackelt'], ['genauer ansehen','lk-unsicher'], ['noch offen','lk-offen']];
+var LK_GRUPPEN = [
+  ['Grundlagen',     ['hygiene','diagnose','werkzeug','betrieb']],
+  ['Am Gast',        ['pflege','beratung','englisch','nagelpflege']],
+  ['Farbe',          ['farbe','blond']],
+  ['Schnitt & Form', ['damenschnitt','herrenschnitt','rasur','umformung','foehnen','hochstecken']]
+];
+var LK_THEMA_TEXT = {sitzt:'sitzt', wartet:'gut – bald prüfen', faellig:'wiederholen', wackelt:'wackelt', unsicher:'unsicher', offen:'noch nicht geübt'};
+var LK_THEMA_RANG = {unsicher:0, wackelt:1, faellig:2, offen:3, wartet:4, sitzt:5};
 
-function lkStand(d) { return GHD_STAND.themaStand(d); }   // kompetenz-stand.js
-function lkProzent(d) { var g = d ? d.richtig + d.falsch : 0; return g > 0 ? Math.round(d.richtig / g * 100) : 0; }
-function lkResttage(d) { return Math.max(1, ST_SITZT_NACH_TAGEN - stTage(d.gut_seit, stISO(new Date()))); }
-function lkGrund(th) {
-  var d = ST.komp[th], s = lkStand(d);
-  if (s === 'offen') return 'noch nicht geübt';
-  if (s === 'faellig') return 'vor ' + stTage(d.gut_seit, stISO(new Date())) + ' Tagen gut – sitzt es noch?';
-  if (s === 'wartet') { var r = lkResttage(d); return 'gut – in ' + r + (r === 1 ? ' Tag' : ' Tagen') + ' nochmal prüfen'; }
-  return LK_INFO[s].label + ' · ' + d.richtig + ' von ' + (d.richtig + d.falsch) + ' richtig';
-}
-
-function lkZuletzt(tag) {
-  var t = stTage(tag, stISO(new Date()));
-  if (t <= 0) return 'heute'; if (t === 1) return 'gestern'; if (t < 14) return 'vor ' + t + ' Tagen';
-  return 'vor ' + Math.floor(t / 7) + ' Wochen';
-}
+function lkStand(d) { return GHD_STAND.themaStand(d); }   // Ampel eines Quiz-Themas
 function lkEl(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function lkKomp(id) { return (window.GHD_KOMPETENZEN || []).filter(function(k){ return k.id === id; })[0]; }
 
-function lkFeld(th) {
-  var d = ST.komp[th], s = lkStand(d);
-  var b = lkEl('button', 'lk-feld lk-' + s);
-  b.appendChild(lkEl('div', 'lk-t', th));
-  b.appendChild(lkEl('div', 'lk-st', LK_INFO[s].zeichen + ' ' + (s === 'wartet' ? 'gut · prüfen in ' + lkResttage(d) + ' T.' : LK_INFO[s].label)));
-  if (s !== 'offen') { var m = lkEl('div', 'lk-mini'), i = lkEl('i'); i.style.width = lkProzent(d) + '%'; m.appendChild(i); b.appendChild(m); }
-  b.onclick = function(){ lkOeffnen(th); };
+function lkAlle() {
+  return GHD_STAND.alleKompetenzen({komp: ST.komp, praxis: LK.praxis, gespraeche: LK.gespraeche, farbPlaene: FFL.an ? FFL.plaene : []});
+}
+
+// Schwächstes Quiz-Thema einer Kompetenz – damit startet „Üben“
+function lkUebThema(s) {
+  var t = s.wissen.themen.slice().sort(function(a, b){ return LK_THEMA_RANG[a.stand] - LK_THEMA_RANG[b.stand]; })[0];
+  return t ? t.thema : null;
+}
+
+function lkStufen(s) {
+  var k = lkKomp(s.id), st = s.stufen, out = [];
+  if (st.wissen !== null) out.push({n:'① Weiß ich', ok:st.wissen, wert:st.wissen ? '✓' : s.wissen.sitzt + ' / ' + s.wissen.gesamt,
+    hilfe:st.wissen ? 'Alle Quiz-Themen sitzen' : s.wissen.sitzt + ' von ' + s.wissen.gesamt + ' Quiz-Themen sitzen'});
+  else out.push({n:'① Weiß ich', ok:null, wert:'–', hilfe:'Quizfragen kommen noch'});
+  if (st.anwenden !== null) out.push({n:'② Kann ich anwenden', ok:st.anwenden, wert:st.anwenden ? '✓' : '–',
+    hilfe:st.anwenden ? s.anwenden.passt + '× Farb-Fall „passt“' : 'Löse einen Farb-Fall deiner Meisterin'});
+  if (st.salon !== null) out.push({n:'③ Im Salon gemacht', ok:st.salon, wert:st.salon ? '✓' : s.salon.eintraege + ' / ' + s.salon.noetig,
+    hilfe:st.salon ? s.salon.eintraege + ' Einträge im Praxis-Tagebuch' : 'Noch ' + (s.salon.noetig - s.salon.eintraege) + ' im Praxis-Tagebuch'});
+  var b = s.bestaetigt.ergebnisse.filter(function(x){ return x.ergebnis !== 'verstanden'; })[0];
+  out.push({n:'④ Bestätigt', ok:st.bestaetigt, wert:st.bestaetigt ? '✓' : (b ? (b.ergebnis === 'teilweise' ? 'teilweise' : 'noch nicht') : '–'),
+    hilfe:st.bestaetigt ? 'Von deiner Meisterin' : (k && k.praxisCheck.length ? 'Beim Praxis-Check deiner Meisterin' : 'Im Prüfgespräch mit deiner Meisterin')});
+  return out;
+}
+
+function lkFeld(s) {
+  var info = LK_STAND[s.stand], b = lkEl('button', 'lk-feld ' + info.cls);
+  b.appendChild(lkEl('div', 'lk-t', s.name));
+  b.appendChild(lkEl('div', 'lk-st', info.text));
+  if (s.stand !== 'offen') {
+    var m = lkEl('div', 'lk-mini lk-stufen');
+    lkStufen(s).forEach(function(x){ m.appendChild(lkEl('i', x.ok ? 'ja' : x.ok === null ? 'nm' : '')); });
+    b.appendChild(m);
+  }
+  b.onclick = function(){ lkOeffnen(s); };
   return b;
+}
+
+function lkNaechste(alle) {
+  var liste = [];
+  alle.forEach(function(s){ if (s.stand === 'warnung') liste.push({r:0, s:s, grund:s.warnungen[0].text, ueben:true}); });
+  alle.forEach(function(s){
+    var k = lkKomp(s.id);
+    if (s.stand === 'salon') liste.push({r:1, s:s, grund:'Bereit für den ' + (k && k.praxisCheck.length ? 'Praxis-Check' : 'Prüfgespräch') + ' – sprich deine Meisterin an', ueben:false});
+  });
+  alle.forEach(function(s){ if (s.stand === 'begonnen' && s.wissen.geuebt) liste.push({r:2, s:s, grund:s.wissen.sitzt + ' von ' + s.wissen.gesamt + ' Quiz-Themen sitzen', ueben:true}); });
+  return liste.sort(function(a, b){ return a.r - b.r; }).slice(0, 3);
 }
 
 function lkZeichnen() {
   var box = document.getElementById('lk-inhalt');
-  document.getElementById('lk-lj').value = LEHRJAHR;
   box.innerHTML = '';
   if (!ST.lehrling) {
     var h = lkEl('div', 'st-hinweis');
-    h.innerHTML = ST.geladen
-      ? stOhneLehrling('deine Kompetenz-Landkarte')
-      : 'Wird geladen…';
+    h.innerHTML = ST.geladen ? stOhneLehrling('deine Kompetenz-Landkarte') : 'Wird geladen…';
     box.appendChild(h);
     return;
   }
-  var ljThemen = (THEMEN[LEHRJAHR] || []).slice();
-  var weitere = Object.keys(ST.komp).filter(function(t){ return ljThemen.indexOf(t) < 0 && lkStand(ST.komp[t]) !== 'offen'; })
-    .sort(function(a,b){ return a.localeCompare(b, 'de'); });
+  var alle = lkAlle(), nachId = {}, zaehl = {};
+  alle.forEach(function(s){ nachId[s.id] = s; var l = LK_STAND[s.stand].leg; zaehl[l] = (zaehl[l] || 0) + 1; });
 
   // Überblick
-  var zaehl = {}; ljThemen.forEach(function(t){ var s = lkStand(ST.komp[t]); zaehl[s] = (zaehl[s] || 0) + 1; });
-  var g = lkEl('div', 'lk-gesamt');
-  var z = lkEl('div', 'lk-gesamt-zeile');
-  z.appendChild(lkEl('b', null, (zaehl.sitzt || 0) + ' von ' + ljThemen.length + ' Themen sitzen'));
-  z.appendChild(lkEl('span', null, LEHRJAHR + '. Lehrjahr'));
+  var g = lkEl('div', 'lk-gesamt'), z = lkEl('div', 'lk-gesamt-zeile');
+  z.appendChild(lkEl('b', null, (zaehl['bestätigt'] || 0) + ' von ' + alle.length + ' Kompetenzen bestätigt'));
+  if (ST.lehrling.lehrjahr) z.appendChild(lkEl('span', null, ST.lehrling.lehrjahr + '. Lehrjahr'));
   g.appendChild(z);
   var bal = lkEl('div', 'lk-balken');
-  LK_REIHE.forEach(function(s){ if (zaehl[s]) { var i = lkEl('i', 'lk-' + s); i.style.width = (zaehl[s] / ljThemen.length * 100) + '%'; bal.appendChild(i); } });
+  LK_LEGENDE.forEach(function(x){ if (x[0] !== 'noch offen' && zaehl[x[0]]) { var i = lkEl('i', x[1]); i.style.width = (zaehl[x[0]] / alle.length * 100) + '%'; bal.appendChild(i); } });
   g.appendChild(bal);
   var leg = lkEl('div', 'lk-legende');
-  ['sitzt', 'wartet', 'faellig', 'wackelt', 'unsicher', 'offen'].filter(function(s){ return s !== 'wartet' || zaehl.wartet; }).forEach(function(s){
-    var sp = lkEl('span', 'lk-' + s); sp.appendChild(lkEl('i', 'lk-punkt')); sp.appendChild(document.createTextNode(s === 'faellig' ? 'wiederholen fällig' : LK_INFO[s].label)); leg.appendChild(sp);
-  });
+  LK_LEGENDE.forEach(function(x){ var sp = lkEl('span', x[1]); sp.appendChild(lkEl('i', 'lk-punkt')); sp.appendChild(document.createTextNode(x[0])); leg.appendChild(sp); });
   g.appendChild(leg);
   box.appendChild(g);
 
-  // Als Nächstes üben: was wackelt, dann noch nicht geübte Lehrjahr-Themen
-  var naechste = stWiederholListe().map(function(x){ return x.th; });
-  ljThemen.forEach(function(t){ if (lkStand(ST.komp[t]) === 'offen') naechste.push(t); });
-  naechste = naechste.slice(0, 3);
+  // Als Nächstes: Warnungen, dann bereit für die Meisterin, dann begonnene Themen
+  var naechste = lkNaechste(alle);
   if (naechste.length) {
     var n = lkEl('div', 'lk-naechstes');
-    n.appendChild(lkEl('div', 'label', 'Als Nächstes üben'));
-    naechste.forEach(function(th){
-      var zl = lkEl('div', 'lk-n-zeile'), t = lkEl('div', 'lk-t', th);
-      t.appendChild(lkEl('small', null, lkGrund(th)));
-      var bt = lkEl('button', null, 'Üben →');
-      bt.onclick = function(){ lkUeben(th); };
+    n.appendChild(lkEl('div', 'label', 'Als Nächstes'));
+    naechste.forEach(function(x){
+      var zl = lkEl('div', 'lk-n-zeile'), t = lkEl('div', 'lk-t', x.s.name);
+      t.appendChild(lkEl('small', null, x.grund));
+      var th = x.ueben ? lkUebThema(x.s) : null;
+      var bt = lkEl('button', null, th ? 'Üben →' : 'Ansehen →');
+      bt.onclick = function(){ if (th) lkUeben(th); else lkOeffnen(x.s); };
       zl.appendChild(t); zl.appendChild(bt); n.appendChild(zl);
     });
     box.appendChild(n);
   }
 
-  // Ampel-Felder
-  [[ 'Themen im ' + LEHRJAHR + '. Lehrjahr', ljThemen ], [ 'Auch geübt', weitere ]].forEach(function(gr){
-    if (!gr[1].length) return;
+  // Felder nach Gruppen
+  LK_GRUPPEN.forEach(function(gr){
     var w = lkEl('div', 'st-gruppe');
     w.appendChild(lkEl('div', 'label', gr[0]));
     var grid = lkEl('div', 'lk-grid');
-    gr[1].forEach(function(th){ grid.appendChild(lkFeld(th)); });
+    gr[1].forEach(function(id){ if (nachId[id]) grid.appendChild(lkFeld(nachId[id])); });
     w.appendChild(grid);
     box.appendChild(w);
   });
 }
 
+// Praxis-Tagebuch und Ergebnisse der Meisterin (nur für die Landkarte).
+// Ohne Migration bzw. offline: leer, die Landkarte zeigt dann nur das Quiz.
+async function lkDatenLaden() {
+  if (!ST.lehrling) return;
+  var id = ST.lehrling.id;
+  var r = await Promise.all([
+    sb2.from('praxis_eintraege').select('bereich').eq('lehrling_id', id).limit(2000),
+    sb2.from('pruefgespraeche').select('*').eq('lehrling_id', id).order('erstellt_am', {ascending:false}).limit(1000)
+  ].map(function(x){ return Promise.resolve(x).catch(function(e){ return {error:e}; }); }));
+  LK.praxis = r[0].error ? [] : (r[0].data || []);
+  LK.gespraeche = r[1].error ? [] : (r[1].data || []);
+  LK.geladenFuer = id;
+}
+
 async function lkLaden() {
   lkZeichnen();          // sofort mit dem, was schon da ist
   await stLaden();
+  try { await lkDatenLaden(); } catch (e) {}
   lkZeichnen();
 }
 
@@ -4876,33 +4922,50 @@ function lkTipp(th) {
   fortschrittAnalyse();
 }
 
-function lkOeffnen(th) {
-  var d = ST.komp[th], s = lkStand(d);
-  document.getElementById('lk-s-titel').textContent = th;
+function lkOeffnen(s) {
+  var info = LK_STAND[s.stand];
+  document.getElementById('lk-s-titel').textContent = s.name;
   var st = document.getElementById('lk-s-status');
-  st.className = 'lk-s-status lk-' + s;
-  st.textContent = LK_INFO[s].zeichen + ' ' + (s === 'offen' ? LK_INFO[s].label : lkGrund(th));
-  var zahlen = document.getElementById('lk-s-zahlen');
-  zahlen.innerHTML = '';
-  zahlen.style.display = s === 'offen' ? 'none' : '';
-  if (s !== 'offen') {
-    // „zuletzt geübt“ aus kompetenz.zuletzt_am (Migration 20261107_kompetenz_zuletzt_verlauf_modus.sql), sonst Anzahl Runden
-    var dritte = d.zuletzt_am ? [lkZuletzt(d.zuletzt_am), 'zuletzt geübt'] : [d.durchlaeufe + '×', d.durchlaeufe === 1 ? 'Runde geübt' : 'Runden geübt'];
-    [[d.richtig + ' / ' + (d.richtig + d.falsch), 'richtig'], [(d.geraten || 0) + '×', 'geraten'], dritte].forEach(function(x){
-      var c = lkEl('div'); c.appendChild(lkEl('b', null, x[0])); c.appendChild(lkEl('small', null, x[1])); zahlen.appendChild(c);
-    });
-  }
+  st.className = 'lk-s-status ' + info.cls;
+  st.textContent = info.text;
+
+  var stufen = document.getElementById('lk-s-stufen');
+  stufen.innerHTML = '';
+  lkStufen(s).forEach(function(x){
+    var c = lkEl('div', x.ok ? 'ja' : '');
+    c.appendChild(lkEl('b', null, x.wert));
+    c.appendChild(lkEl('small', null, x.n));
+    c.appendChild(lkEl('small', 'lk-hilfe', x.hilfe));
+    stufen.appendChild(c);
+  });
+
   var warn = document.getElementById('lk-s-warn');
   warn.innerHTML = '';
-  if (d && d.sicher_falsch) warn.appendChild(lkEl('div', 'lk-warn', '⚠ ' + d.sicher_falsch + '× sicher, aber falsch – hier steckt vermutlich ein Missverständnis.'));
-  if (d && d.zusatz_falsch) warn.appendChild(lkEl('div', 'lk-warn', '⚠ ' + d.zusatz_falsch + '× Warum-Frage falsch – noch einmal genau die Erklärung lesen.'));
-  var q = document.getElementById('lk-s-quiz');
-  q.textContent = (FRAGEN[th] || []).length ? 'Themen-Quiz starten →' : 'Im Lernquiz üben →';
-  q.onclick = function(){ lkUeben(th); };
-  document.getElementById('lk-s-tipp').onclick = function(){ lkTipp(th); };
+  s.warnungen.forEach(function(x){ warn.appendChild(lkEl('div', 'lk-warn', '⚠ ' + (x.art === 'praxis' ? 'Praxis-Check' : x.bezug) + ': ' + x.text)); });
+
+  var themen = document.getElementById('lk-s-themen');
+  themen.innerHTML = '';
+  if (s.wissen.themen.length) {
+    themen.appendChild(lkEl('div', 'label', 'Quiz-Themen'));
+    s.wissen.themen.forEach(function(t){
+      var z = lkEl('div', 'lk-legende lk-thema lk-' + t.stand), sp = lkEl('span');
+      sp.appendChild(lkEl('i', 'lk-punkt'));
+      sp.appendChild(document.createTextNode(t.thema + ' · ' + LK_THEMA_TEXT[t.stand]));
+      z.appendChild(sp); themen.appendChild(z);
+    });
+  }
+
+  var th = lkUebThema(s);
+  var q = document.getElementById('lk-s-quiz'), tipp = document.getElementById('lk-s-tipp');
+  q.hidden = tipp.hidden = !th;
+  if (th) {
+    q.textContent = (FRAGEN[th] || []).length ? 'Themen-Quiz starten →' : 'Im Lernquiz üben →';
+    q.onclick = function(){ lkUeben(th); };
+    tipp.onclick = function(){ lkTipp(th); };
+  }
   document.getElementById('lk-sheet').hidden = false;
   document.body.classList.add('lk-offen-sheet');
-  q.focus();
+  (th ? q : document.querySelector('#lk-sheet .lk-zu')).focus();
 }
 
 function lkSchliessen() {
