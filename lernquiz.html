@@ -14,6 +14,8 @@
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="lern-verlauf.js?v=20261115b"></script>  <!-- Zurück-Taste des Handys: Schritt für Schritt innerhalb der App -->
 <script src="lern-themen.js?v=20261107e"></script>
+<script src="kompetenzen.js?v=20261119a"></script>  <!-- Kompetenz-Landkarte V2: 16 Kompetenzen -->
+<script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -357,7 +359,7 @@ textarea{resize:vertical;margin-bottom:0}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Great Hair Day Academy ✂</h1>
   <p id="kopf-sub">Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk</p>
@@ -443,7 +445,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -524,7 +526,7 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">💆 Praxis</h2>
     <p class="mb-sub">Am Kunden üben, abhaken und nachweisen.</p>
     <div class="mb-grid">
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/umformung.html?v=20261116s"><div class="mb-ic">🧪</div><b>Umformung</b><small>Dauerwelle &amp; Glättung</small></a>
       <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
       <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
@@ -540,7 +542,7 @@ textarea{resize:vertical;margin-bottom:0}
     <div class="mb-grid">
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261116s"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
       <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
       <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
     </div>
   </div>
@@ -553,9 +555,9 @@ textarea{resize:vertical;margin-bottom:0}
     <p class="mb-sub">Inhalte pflegen und Lernfortschritt ansehen.</p>
     <div class="mb-grid">
       <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
     </div>
   </div>
@@ -567,9 +569,9 @@ textarea{resize:vertical;margin-bottom:0}
     <h2 class="mb-h">🏠 Selbst ansehen</h2>
     <p class="mb-sub">Die App so sehen, wie deine Lehrlinge sie sehen.</p>
     <div class="mb-grid">
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261118a#sortieren"><div class="mb-ic">🧭</div><div><b>Kurz sortieren</b><small>Wörni für Fehler, Nervosität, Unsicherheit – so sehen es Lehrlinge</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261119a#sortieren"><div class="mb-ic">🧭</div><div><b>Kurz sortieren</b><small>Wörni für Fehler, Nervosität, Unsicherheit – so sehen es Lehrlinge</small></div></a>
     </div>
   </div>
 </div>
@@ -1553,29 +1555,14 @@ var CBG={sitzt:'#B07A5022',teilweise:'#C4B86A22',unsicher:'#D4584820'};
 // gut_seit = erster Tag der aktuellen Serie guter Runden, gut_am = letzte gute
 // Runde (eine schwache Runde setzt beide zurück). Zeilen ohne gut_am (vor der
 // Umstellung oder Spalte noch nicht angelegt) behalten die alte Regel.
-var SITZT_NACH_TAGEN=3;
+var SITZT_NACH_TAGEN=GHD_STAND.SITZT_NACH_TAGEN;
 function heuteISO(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function tageZwischen(a,b){return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/86400000);}
-function ueberTageBestaetigt(d){
-  if(!d||!d.gut_am) return true;
-  return !!d.gut_seit&&tageZwischen(d.gut_seit,d.gut_am)>=SITZT_NACH_TAGEN;
-}
+// Rechnung gemeinsam mit dem Lern-Tool: kompetenz-stand.js
+function ueberTageBestaetigt(d){ return GHD_STAND.bestaetigt(d); }
 // Gut, aber noch nicht über mehrere Tage bestätigt: 'wartet' oder 'faellig'
-function wiederholStatus(d){
-  if(!d||!d.gut_am||!d.gut_seit||ueberTageBestaetigt(d)) return null;
-  return tageZwischen(d.gut_seit,heuteISO())>=SITZT_NACH_TAGEN?'faellig':'wartet';
-}
-
-function berechneStatus(d){
-  if(!d||!d.durchlaeufe||d.durchlaeufe===0) return null;
-  var g=d.richtig+d.falsch;
-  if(g===0) return null;
-  var q=d.richtig/g;
-  if(q>=0.80&&d.durchlaeufe>=2&&g>=4&&(d.letzte_runde==='gut'||d.letzte_runde==='sehrgut')&&ueberTageBestaetigt(d)) return 'sitzt';
-  if(d.richtig>=2&&q>=0.60) return 'teilweise';
-  if(d.richtig>=3&&q>=0.50) return 'teilweise';
-  return 'unsicher';
-}
+function wiederholStatus(d){ return GHD_STAND.wiederholStatus(d); }
+function berechneStatus(d){ return GHD_STAND.status(d); }
 
 function trend(alt,neu){
   var rang={sehrgut:3,gut:2,gemischt:1,falsch:0};
@@ -1688,7 +1675,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261118a'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261119a'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -2364,15 +2351,7 @@ async function zeigeVerlauf(){
 var MB_STAND={sitzt:{f:'#5B8A4A',t:['sitzt','sitzen']},wartet:{f:'#8DB07D',t:['bald prüfen','bald prüfen']},faellig:{f:'#D08A2E',t:['wiederholen','wiederholen']},
   wackelt:{f:'#C4A830',t:['wackelt','wackeln']},unsicher:{f:'#C44030',t:['unsicher','unsicher']},offen:{f:'#B9B0A0',t:['offen','offen']}};
 var MB_REIHE=['sitzt','wartet','faellig','wackelt','unsicher','offen'];
-function ampelStand(d){
-  if(!d||!d.durchlaeufe||(d.richtig+d.falsch)===0) return 'offen';
-  var q=d.richtig/(d.richtig+d.falsch);
-  var ws=q>=0.8?wiederholStatus(d):null;
-  if(ws==='faellig') return 'faellig';
-  if(ws==='wartet') return 'wartet';
-  var st=berechneStatus(d);
-  return st==='sitzt'?'sitzt':st==='teilweise'?'wackelt':'unsicher';
-}
+function ampelStand(d){ return GHD_STAND.themaStand(d); }   // kompetenz-stand.js
 function ampelZaehlen(komp,lj){
   var themen=((window.GHD_LJ_THEMEN||{})[String(lj)]||[]);
   var z={};themen.forEach(function(t){var s=ampelStand(komp[t]);z[s]=(z[s]||0)+1;});
@@ -3589,14 +3568,35 @@ var PX_BEHANDLUNGEN=[
     'Massage mit Fingerkuppen, ruhig und gleichmäßig',
     'Kein Wasser in Gesicht oder Kragen',
     'Turban angelegt']},
-  {id:'schnitt',name:'Haarschnitt',th:'Haarschnitt Techniken',punkte:[
-    'Wunsch zusammengefasst und Länge abgestimmt',
+  // Früher ein gemeinsamer Check 'schnitt' (Haarschnitt) – alte Einträge zählen
+  // in kompetenzen.js weiter für Damen- und Herrenschnitt.
+  {id:'damenschnitt',name:'Damenschnitt',th:'Haarschnitt Techniken',punkte:[
+    'Wunsch zusammengefasst, Länge und Zielform abgestimmt',
     'Sauberes, desinfiziertes Werkzeug',
-    'Saubere Abteilungen',
+    'Saubere Abteilungen, passend zur Zielform',
+    'Leitsträhne und Elevation eingehalten',
     'Länge und Form regelmäßig kontrolliert (beide Seiten gleich)',
     'Gast zwischendurch einbezogen',
     'Spiegel von allen Seiten gezeigt und nachgefragt',
     'Arbeitsplatz aufgeräumt, Haare entfernt']},
+  {id:'herrenschnitt',name:'Herrenschnitt',th:'Haarschnitt Techniken',punkte:[
+    'Wunsch zusammengefasst, kürzeste Stelle und Länge oben abgestimmt',
+    'Sauberes, desinfiziertes Werkzeug, Maschine geölt',
+    'Band 1 mit passender Einstellung, sauber ausgekippt',
+    'Übergang ohne Stufe, Kante oder Loch',
+    'Maschine über Kamm im Kammbereich sauber geführt',
+    'Konturen (Ohren, Nacken) sauber und gleich',
+    'Spiegel von allen Seiten gezeigt und nachgefragt',
+    'Arbeitsplatz aufgeräumt, Haare entfernt']},
+  {id:'rasur',name:'Rasur & Bart',th:'Herrenservice',punkte:[
+    'Wunsch geklärt (Form, Länge, Kontur) und Haut angesehen',
+    'Neue Klinge, desinfiziertes Werkzeug, Handschuhe',
+    'Gast bequem gelagert, Kragen geschützt',
+    'Haut vorbereitet (warmes Tuch, Rasierschaum oder Öl)',
+    'Haut straff gehalten, zuerst mit dem Strich rasiert',
+    'Keine Schnitte oder Rötungen',
+    'Konturen symmetrisch',
+    'Haut beruhigt und gepflegt (kaltes Tuch, Pflege)']},
   {id:'foehnen',name:'Föhnen & Styling',th:'Styling & Finish',punkte:[
     'Hitzeschutz verwendet',
     'Haar vorgetrocknet und abgeteilt',
@@ -3604,6 +3604,33 @@ var PX_BEHANDLUNGEN=[
     'Passende Bürste und Technik',
     'Styling-Produkt passend und sparsam',
     'Spiegel von allen Seiten gezeigt']},
+  {id:'hochstecken',name:'Hochstecken',th:'Hochstecken',punkte:[
+    'Wunsch und Anlass geklärt (Foto, Kleid, Haarschmuck)',
+    'Haar vorbereitet (Volumen, Griffigkeit)',
+    'Saubere Abteilungen, stabile Basis',
+    'Nadeln fest und nicht sichtbar',
+    'Form ausgewogen, von allen Seiten kontrolliert',
+    'Halt geprüft (Gast bewegt den Kopf)',
+    'Haarspray sparsam, Gesicht geschützt',
+    'Spiegel von allen Seiten gezeigt und nachgefragt']},
+  {id:'umformung',name:'Dauerwelle & Umformung',th:'Dauerwelle & Umformung',punkte:[
+    'Haar und Kopfhaut vorher geprüft (Zustand, Vorbehandlung)',
+    'Wunsch und Lockengröße abgestimmt',
+    'Halskrause, Umhang, Handschuhe, Hautschutz am Haaransatz',
+    'Passendes Mittel gewählt',
+    'Wickler passend gewählt, gleichmäßige Spannung, keine Knicke',
+    'Einwirkzeit eingehalten und Probelocke kontrolliert',
+    'Gründlich zwischengespült, Fixierung richtig und lange genug',
+    'Karteikarte ausgefüllt (Mittel, Wickler, Zeit, Ergebnis)']},
+  {id:'nagelpflege',name:'Hand- & Nagelpflege',th:'Hand- & Nagelpflege',punkte:[
+    'Eigene Hände und Hände des Gastes desinfiziert',
+    'Nägel und Haut angesehen (bei Auffälligkeiten nicht behandelt)',
+    'Sauberes, desinfiziertes Werkzeug',
+    'Form abgestimmt, gleichmäßig in eine Richtung gefeilt',
+    'Nagelhaut schonend zurückgeschoben, keine Verletzungen',
+    'Pflege und Handmassage',
+    'Lack sauber aufgetragen (falls gewünscht)',
+    'Arbeitsplatz gereinigt']},
   {id:'empfang',name:'Empfang, Beratung & Verabschiedung',th:'Beratungsgespräch & Kundenkommunikation',punkte:[
     'Gast mit Blickkontakt und Lächeln begrüßt',
     'Jacke abgenommen, Getränk angeboten',
