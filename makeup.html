@@ -242,17 +242,17 @@ a.btn{display:inline-block;text-decoration:none}
 const $=s=>document.querySelector(s);
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
-// ── Produkte ────────────────────────────────────────────────────────────────
+// ── Produkte (natürliche, gedämpfte Töne passend zur Bleistift-Zeichnung) ────────────────────────────────────────────────────────────────
 const WERKZEUG={
-  H:{name:'Highlighter',ic:'✨',rgb:'255,226,140',deck:.85,rand:'#C9A44C'},
-  C:{name:'Contouring',ic:'🟤',rgb:'110,70,42',deck:.9,rand:'#6E4E36'},
-  R:{name:'Rouge',ic:'🌸',rgb:'226,84,118',deck:.55,rand:'#B8506A'}
+  H:{name:'Highlighter',ic:'✨',rgb:'252,240,222',deck:.85,rand:'#C9A44C'},
+  C:{name:'Contouring',ic:'🟤',rgb:'118,100,88',deck:.85,rand:'#6E4E36'},
+  R:{name:'Rouge',ic:'🌸',rgb:'214,148,136',deck:.5,rand:'#B8506A'}
 };
 // Lidschatten in drei Tönen (Ansicht „Augen“)
 const AUGEN_WERKZEUG={
-  L:{name:'Hell',ic:'🤍',rgb:'236,200,168',deck:.9,rand:'#C9A44C'},
-  M:{name:'Mittel',ic:'🟫',rgb:'168,118,92',deck:.75,rand:'#8A6450'},
-  D:{name:'Dunkel',ic:'🟤',rgb:'78,52,46',deck:.85,rand:'#4E342E'}
+  L:{name:'Hell',ic:'🤍',rgb:'255,248,236',deck:.85,rand:'#C9A44C'},
+  M:{name:'Mittel',ic:'🟫',rgb:'160,140,128',deck:.55,rand:'#8A6450'},
+  D:{name:'Dunkel',ic:'🟤',rgb:'95,82,78',deck:.7,rand:'#4E342E'}
 };
 // ── Zonen: Lage aus den Messpunkten der Zeichnung (A), „paar“ = links und rechts ──
 const ZONEN={
