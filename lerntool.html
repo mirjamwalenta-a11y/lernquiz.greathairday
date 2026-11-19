@@ -345,7 +345,7 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e#wiederholen">
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f#wiederholen">
     <span class="st-wh-ic">🔁</span>
     <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
     <span class="st-wh-los">Los →</span>
@@ -355,6 +355,12 @@ body.mit-leiste .leiste{display:flex}
     <span class="st-wh-ic">📬</span>
     <span class="st-wh-text"><b id="st-ff-titel"></b><small id="st-ff-text"></small></span>
     <span class="st-wh-los">Los →</span>
+  </a>
+
+  <a class="st-wh" id="st-lf" hidden href="#lernfaelle" onclick="lfOeffnen();return false;">
+    <span class="st-wh-ic">📚</span>
+    <span class="st-wh-text"><b>Darf deine Situation anderen helfen?</b><small>Deine Meisterin möchte daraus einen Lernfall ohne Namen machen</small></span>
+    <span class="st-wh-los">Ansehen →</span>
   </a>
 
   <a class="st-wh" id="st-rm" hidden href="#rueckmeldung" onclick="zeige('rueckmeldung');return false;">
@@ -378,7 +384,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-stat" onclick="zeige('progress')"><b id="st-n-offen">–</b><small id="st-l-offen">Themen noch offen</small></button>
   </div>
   <div class="st-hinweis" id="st-login-hinweis" style="display:none">
-    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
+    Im <a href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f">Lernquiz einloggen</a>, dann siehst du hier deinen Lernstand.
   </div>
 
   <div class="st-gruppe">
@@ -403,9 +409,10 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
+    <button class="st-kachel st-breit" onclick="lfOeffnen()"><div class="st-ic">📚</div><div><div class="st-t">Aus Fehlern lernen</div><div class="st-d">Echte Situationen aus dem Salon – was würdest du tun?</div></div></button>
   </div>
 </div>
 <div id="p-b-farbe" class="page">
@@ -564,6 +571,15 @@ body.mit-leiste .leiste{display:flex}
   <div id="wd-inhalt"></div>
 </div>
 
+<!-- ── AUS FEHLERN LERNEN (Lernfälle, supabase/20261119_lernfaelle.sql) ── -->
+<div id="p-lernfaelle" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Üben</div>
+  <h1>📚 Aus Fehlern lernen</h1>
+  <p class="sub">Echte Situationen aus dem Salon, ohne Namen. Was würdest du tun?</p>
+  <div id="lf-inhalt"></div>
+</div>
+
 <!-- ── FARB-FÄLLE ── -->
 <div id="p-farbfaelle" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
@@ -704,6 +720,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="lk-btn lk-btn-p" id="lk-s-quiz">Themen-Quiz starten →</button>
     <button class="lk-btn lk-btn-g" id="lk-s-tipp">💡 Lerntipp zum Thema</button>
     <button class="lk-btn lk-btn-g" id="lk-s-diagnose" hidden>🔎 Woran liegt's? – typische Fehler</button>
+    <button class="lk-btn lk-btn-g" id="lk-s-lernfaelle" hidden></button>
   </div>
 </div>
 
@@ -755,7 +772,7 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <div id="p-admin" class="page">
-  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
+  <a class="back-btn" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f" style="display:inline-block;text-decoration:none">&#8592; Meisterin-Bereich im Lernquiz</a>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
     <div><div class="tag">Admin</div><h1 style="margin-bottom:0">Admin-Bereich</h1></div>
     <button onclick="adminLogout()" style="background:none;border:1.5px solid #E4DBC5;border-radius:6px;padding:6px 12px;font-size:12px;color:#6B6455;cursor:pointer;font-family:Poppins,system-ui">Abmelden</button>
@@ -4529,7 +4546,7 @@ var ST_WOCHENZIEL = 3;          // Standard, falls lehrlinge.wochenziel (noch) f
 function stWochenziel() { var z = ST.lehrling && parseInt(ST.lehrling.wochenziel, 10); return z >= 1 && z <= 7 ? z : ST_WOCHENZIEL; }
 var ST_SITZT_NACH_TAGEN = GHD_STAND.SITZT_NACH_TAGEN;
 var ST_LJ_KEY = 'lt_lehrjahr';
-var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e';
+var LQ_LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f';
 // Hinweis, wenn kein Lehrling angemeldet ist: Meisterin → Meisterin-Bereich, sonst → Login
 function stOhneLehrling(text) {
   if (ST.meisterin) return 'Du bist als Meisterin angemeldet. Den Lernstand deiner Lehrlinge siehst du im <a href="' + LQ_LOGIN + '#meisterin">Meisterin-Bereich →</a>';
@@ -4669,6 +4686,7 @@ function stZeichnen() {
   wh.hidden = !whN;
   if (whN) document.getElementById('st-wh-titel').textContent = whN + (whN === 1 ? ' Frage heute fällig' : ' Fragen heute fällig');
   fflBanner();
+  lfBanner();
   document.getElementById('st-rm').hidden = !rmFaellig();
 
   var wdh = stWiederholListe().length;
@@ -4714,6 +4732,7 @@ async function stLaden() {
     ST.verlauf = res[1].data || [];
     await rmLaden();
     await fflLaden();
+    try { await lfLaden(); } catch (e) {}
     try { await lkDatenLaden(); } catch (e) {}   // Praxis-Tagebuch + Ergebnisse der Meisterin (Landkarte, „Heute für dich“)
   } catch (e) {
     // offline oder Fehler: Startseite trotzdem zeigen
@@ -4875,7 +4894,7 @@ function stWiederholenOeffnen() {
         b.onclick = function(){ stThemaUeben(x.th); };
       } else {
         b.textContent = 'Im Lernquiz →';
-        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e'; };
+        b.onclick = function(){ window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f'; };
       }
       el.appendChild(txt); el.appendChild(b);
       box.appendChild(el);
@@ -5058,7 +5077,7 @@ async function lkLaden() {
 function lkUeben(th) {
   lkSchliessen();
   if ((FRAGEN[th] || []).length) stThemaUeben(th);
-  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119e';
+  else window.location.href = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119f';
 }
 
 function lkTipp(th) {
@@ -5111,6 +5130,11 @@ function lkOeffnen(s) {
     q.onclick = function(){ lkUeben(th); };
     tipp.onclick = function(){ lkTipp(th); };
   }
+  var lfn = lfSichtbar().filter(function(f){ return f.kompetenz === s.id; }).length;
+  var lfk = document.getElementById('lk-s-lernfaelle');
+  lfk.hidden = !lfn;
+  lfk.textContent = '📚 Lernfälle aus dem Salon (' + lfn + ')';
+  lfk.onclick = function(){ lkSchliessen(); lfOeffnen(s.id); };
   var diag = window.WOERNI_DIAGNOSE ? WOERNI_DIAGNOSE.fuerKompetenz(s.id) : [];
   var dk = document.getElementById('lk-s-diagnose');
   dk.hidden = !diag.length;
@@ -5125,6 +5149,132 @@ function lkSchliessen() {
   document.body.classList.remove('lk-offen-sheet');
 }
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !document.getElementById('lk-sheet').hidden) lkSchliessen(); });
+
+// ── AUS FEHLERN LERNEN (Lehrling) ─────────────────────────────────
+// Lernfälle aus echten Situationen im Salon, ohne Namen, von der Meisterin
+// geschrieben und freigegeben (supabase/20261119_lernfaelle.sql). Der Lehrling
+// sieht freigegebene Fälle mit Zustimmung und – getrennt – Fälle aus seiner
+// eigenen Praxis, um zuzustimmen oder abzulehnen. Wer den Fall ausgelöst hat,
+// sehen andere nie (eigene Tabelle lernfaelle_quelle, nur eigene Zeilen lesbar).
+var LF = {an: false, faelle: [], quellen: [], filter: null};
+async function lfLaden() {
+  LF.an = false;
+  if (!ST.lehrling) return;
+  var r = await Promise.all([
+    sb2.from('lernfaelle').select('*').order('erstellt_am', {ascending: false}).limit(300),
+    sb2.from('lernfaelle_quelle').select('fall_id,einwilligung,beantwortet_am').eq('lehrling_id', ST.lehrling.id)
+  ].map(function(x){ return Promise.resolve(x).catch(function(e){ return {error: e}; }); }));
+  if (r[0].error || r[1].error) return;   // ohne Migration: Bereich zeigt einen Hinweis
+  LF.faelle = r[0].data || []; LF.quellen = r[1].data || []; LF.an = true;
+}
+function lfSichtbar() { return LF.an ? LF.faelle.filter(function(f){ return f.freigegeben && f.einwilligung_ok; }) : []; }
+function lfKompName(id) { var k = lkKomp(id); return k ? k.name : ''; }
+function lfBanner() {
+  var b = document.getElementById('st-lf'); if (!b) return;
+  b.hidden = !(LF.an && LF.quellen.some(function(q){ return q.einwilligung === 'offen'; }));
+}
+async function lfOeffnen(komp) {
+  LF.filter = komp || null;
+  zeige('lernfaelle');
+  var box = document.getElementById('lf-inhalt');
+  box.innerHTML = '<div class="st-hinweis">Wird geladen…</div>';
+  if (!ST.geladen) await stLaden();
+  if (ST.lehrling) { try { await lfLaden(); } catch (e) {} }
+  lfZeichnen();
+}
+
+function lfZeichnen() {
+  var box = document.getElementById('lf-inhalt');
+  box.innerHTML = '';
+  if (!ST.lehrling) { box.innerHTML = '<div class="st-hinweis">' + stOhneLehrling('die Lernfälle') + '</div>'; return; }
+  if (!LF.an) { box.innerHTML = '<div class="st-hinweis">Die Lernfälle sind noch nicht eingerichtet – die Meisterin muss sie einmal freischalten.</div>'; return; }
+
+  // Aus deiner Praxis: zustimmen, ablehnen, zurücknehmen
+  var eigene = LF.quellen.map(function(q){ var f = LF.faelle.filter(function(x){ return x.id === q.fall_id; })[0]; return f ? {q: q, f: f} : null; }).filter(Boolean);
+  if (eigene.length) {
+    box.appendChild(lkEl('div', 'label', 'Aus deiner Praxis'));
+    eigene.forEach(function(x){
+      var c = lkEl('div', 'card');
+      c.appendChild(lkEl('div', 'label', lfKompName(x.f.kompetenz)));
+      c.appendChild(lkEl('div', 'nav-title', x.f.titel));
+      var t = lkEl('div', null, x.f.situation); t.style.cssText = 'font-size:13px;color:#211D17;line-height:1.5;margin:6px 0 10px'; c.appendChild(t);
+      var info = lkEl('div', 'nav-desc', x.q.einwilligung === 'ja' ? (x.f.freigegeben ? '✓ Du hast zugestimmt. Der Fall ist ohne deinen Namen für andere Lehrlinge sichtbar.' : '✓ Du hast zugestimmt. Der Fall ist ohne deinen Namen für andere Lehrlinge sichtbar, sobald deine Meisterin ihn freigibt.')
+        : x.q.einwilligung === 'nein' ? 'Du hast abgelehnt. Der Fall ist für niemanden sichtbar.'
+        : 'Deine Meisterin möchte diese Situation ohne deinen Namen als Lernfall für andere Lehrlinge verwenden. Ist das für dich in Ordnung?');
+      info.style.marginBottom = '10px'; c.appendChild(info);
+      var knopf = function(text, ja, haupt) {
+        var b = lkEl('button', haupt ? 'btn-primary' : 'btn-ghost', text);
+        b.style.cssText = 'width:100%;margin-top:6px';
+        b.onclick = async function(){
+          b.disabled = true;
+          var r = await sb2.rpc('lernfall_einwilligung', {p_fall: x.f.id, p_ja: ja});
+          if (r && r.error) { b.disabled = false; alert('Konnte nicht gespeichert werden.'); return; }
+          await lfLaden(); lfBanner(); lfZeichnen();
+        };
+        c.appendChild(b);
+      };
+      if (x.q.einwilligung === 'offen') { knopf('Ja, ohne meinen Namen verwenden', true, true); knopf('Nein, lieber nicht', false, false); }
+      else if (x.q.einwilligung === 'ja') knopf('Zustimmung zurücknehmen', false, false);
+      else knopf('Doch zustimmen', true, false);
+      box.appendChild(c);
+    });
+  }
+
+  // Alle freigegebenen Fälle (auf Wunsch nur einer Kompetenz)
+  var alle = lfSichtbar(), liste = LF.filter ? alle.filter(function(f){ return f.kompetenz === LF.filter; }) : alle;
+  var kopf = lkEl('div', 'label', LF.filter ? 'Lernfälle · ' + lfKompName(LF.filter) : 'Lernfälle');
+  kopf.style.marginTop = eigene.length ? '18px' : '0';
+  box.appendChild(kopf);
+  if (LF.filter && liste.length < alle.length) {
+    var a = lkEl('button', 'btn-ghost', 'Alle ' + alle.length + ' Lernfälle anzeigen');
+    a.style.cssText = 'width:100%;margin-bottom:10px';
+    a.onclick = function(){ LF.filter = null; lfZeichnen(); };
+    box.appendChild(a);
+  }
+  if (!liste.length) { box.appendChild(lkEl('div', 'st-hinweis', 'Noch keine Lernfälle. Deine Meisterin macht aus echten Situationen im Salon kleine Fälle zum Durchdenken.')); return; }
+  liste.forEach(function(f){
+    var b = lkEl('button', 'nav-card pm-modul');
+    var ic = lkEl('div', 'nav-icon', '📚'); ic.style.margin = '0'; b.appendChild(ic);
+    var t = lkEl('div'); t.appendChild(lkEl('div', 'nav-title', f.titel)); t.appendChild(lkEl('div', 'nav-desc', lfKompName(f.kompetenz)));
+    b.appendChild(t);
+    b.onclick = function(){ lfFall(f, liste); window.scrollTo(0, 0); };
+    box.appendChild(b);
+  });
+}
+
+function lfFall(f, liste) {
+  var box = document.getElementById('lf-inhalt');
+  box.innerHTML = '';
+  var c = lkEl('div', 'card');
+  c.appendChild(lkEl('div', 'label', lfKompName(f.kompetenz)));
+  var h = lkEl('div', null, f.titel); h.style.cssText = 'font-size:16px;font-weight:600;color:#211D17;margin-bottom:8px;line-height:1.4'; c.appendChild(h);
+  var sit = lkEl('div', null, f.situation); sit.style.cssText = 'font-size:14px;color:#211D17;line-height:1.6;margin-bottom:14px;white-space:pre-line'; c.appendChild(sit);
+  var fr = lkEl('div', null, f.frage); fr.style.cssText = 'font-size:15px;font-weight:600;color:#211D17;margin-bottom:12px;line-height:1.4'; c.appendChild(fr);
+  var opts = (Array.isArray(f.optionen) ? f.optionen : []).filter(function(o){ return o && o.t; });
+  var knoepfe = [], ergebnis = lkEl('div');
+  opts.forEach(function(o, i){
+    var b = lkEl('button', 'opt-btn', o.t);
+    b.onclick = function(){
+      knoepfe.forEach(function(k, j){ k.disabled = true; if (opts[j].richtig) k.classList.add('ric'); });
+      if (!o.richtig) b.classList.add('fal');
+      var fb = lkEl('div', o.richtig ? 'fb-g' : 'fb-r');
+      fb.appendChild(lkEl('div', null, (o.richtig ? '✓ Richtig. ' : '✗ Nicht ganz. ') + (o.feedback || '')));
+      ergebnis.appendChild(fb);
+      var w = lkEl('div', 'fb-o');
+      w.appendChild(lkEl('div', 'label', 'Warum'));
+      var e = lkEl('div', null, f.erklaerung); e.style.cssText = 'font-size:14px;color:#211D17;line-height:1.5'; w.appendChild(e);
+      ergebnis.appendChild(w);
+      var i2 = liste.indexOf(f), naechster = liste[i2 + 1];
+      if (naechster) { var n = lkEl('button', 'btn-primary', 'Nächster Fall →'); n.style.marginTop = '14px'; n.onclick = function(){ lfFall(naechster, liste); window.scrollTo(0, 0); }; ergebnis.appendChild(n); }
+    };
+    knoepfe.push(b); c.appendChild(b);
+  });
+  c.appendChild(ergebnis);
+  box.appendChild(c);
+  var z = lkEl('button', 'btn-ghost', '← Alle Lernfälle'); z.style.width = '100%';
+  z.onclick = function(){ lfZeichnen(); window.scrollTo(0, 0); };
+  box.appendChild(z);
+}
 
 // ── FARB-FÄLLE (Lehrling) ───────────────────────────────────────────────────
 // Die Meisterin schickt einen Fall (farb_faelle), der Lehrling plant die Rezeptur
@@ -5661,6 +5811,7 @@ zeige = function(seite) {
   if (seite === 'praxis') ptLaden();
   if (seite === 'rueckmeldung') rmOeffnen();
   if (seite === 'sortieren') { var so = document.getElementById('so-inhalt'); if (so && !so.innerHTML) sortierenZeichnen(''); }
+  if (seite === 'lernfaelle') { var lfi = document.getElementById('lf-inhalt'); if (lfi && !lfi.innerHTML) lfZeichnen(); }
   if (seite === 'diagnose') { var wd = document.getElementById('wd-inhalt'); if (wd && !wd.innerHTML && window.WOERNI_DIAGNOSE) WOERNI_DIAGNOSE.zeichnen(wd, '', diagnoseZiele()); }
   // Wörni V1: einmal am Tag beim Öffnen der Praxis-Module (docs/woerni-v1.md)
   if (seite === 'praxis') { try { var wp = document.getElementById('woerni-praxis'); if (wp && window.WOERNI && !wp.innerHTML) wp.innerHTML = WOERNI.einmalAmTag('lerntool-praxis', 'praxis', true); } catch (e) {} }
