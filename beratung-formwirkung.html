@@ -401,7 +401,6 @@ dl.steck dd{margin:0}
         <button class="level" data-sprache="de" aria-pressed="true"><b>Deutsch</b><small>Beratung wie im Salon-Alltag</small></button>
         <button class="level" data-sprache="en" aria-pressed="false"><b>Englisch</b><small>Kundin spricht nur Englisch – Rückmeldung auf Deutsch</small></button>
       </div>
-      <p class="hint">Tipp: Am Handy kannst du mit 🎤 auch sprechen statt tippen.</p>
     </div>
 
     <div id="fw-levelBox" hidden>
@@ -440,7 +439,6 @@ dl.steck dd{margin:0}
     <div class="quick" id="fw-quick"></div>
     <div style="display:flex;gap:8px;align-items:flex-end">
       <textarea id="fw-input" rows="1" placeholder="Deine Antwort …" aria-label="Deine Antwort"></textarea>
-      <button class="send" id="fw-micBtn" hidden aria-label="Sprechen" title="Sprechen statt tippen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
       <button class="send" id="fw-sendBtn" aria-label="Senden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
   </div>
@@ -5257,7 +5255,6 @@ Regeln für Bilder (sehr wichtig):
     $("#fw-restart").hidden = false;
     $("#fw-modePill").hidden = false;
     $("#fw-modePill").textContent = MODES[mode].label + (mode === "rolle" ? (sprache === "en" ? " · English" : "") : mode === "analyse" ? "" : " · Stufe " + level);
-    $("#fw-micBtn").hidden = !(mode === "rolle" && SPRACH_ERKENNUNG);
     $("#fw-input").placeholder = mode === "rolle" ? "Was sagst du zur Kundin?" : "Deine Antwort …";
     renderQuick();
     // Kundengespräch: die Beschreibung der Kundin bekommt nur die KI, der Lehrling soll erst fragen
@@ -5282,21 +5279,6 @@ Regeln für Bilder (sehr wichtig):
       q.append(b);
     });
   }
-
-  // ---- Spracheingabe (nur Kundengespräch, nur wo der Browser sie kann; Text landet im Eingabefeld zum Prüfen)
-  const SPRACH_ERKENNUNG = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-  let hoert = null;
-  $("#fw-micBtn").onclick = () => {
-    if (hoert) { hoert.stop(); return; }
-    const r = new SPRACH_ERKENNUNG();
-    r.lang = sprache === "en" ? "en-GB" : "de-AT"; r.interimResults = false; r.maxAlternatives = 1;
-    const vorher = $("#fw-input").value;
-    r.onresult = e => { const t = Array.from(e.results).map(x => x[0].transcript).join(" "); $("#fw-input").value = (vorher ? vorher + " " : "") + t; $("#fw-input").dispatchEvent(new Event("input")); };
-    r.onend = () => { hoert = null; $("#fw-micBtn").classList.remove("stop"); $("#fw-micBtn").setAttribute("aria-label", "Sprechen"); };
-    r.onerror = r.onend;
-    hoert = r; $("#fw-micBtn").classList.add("stop"); $("#fw-micBtn").setAttribute("aria-label", "Zuhören beenden");
-    try { r.start(); } catch (e) { r.onend(); }
-  };
 
   // ---- Chat
   const input = $("#fw-input"), sendBtn = $("#fw-sendBtn");
