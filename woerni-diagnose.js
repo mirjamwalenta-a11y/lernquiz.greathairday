@@ -1,0 +1,177 @@
+// Wörni · „Woran liegt's?“ – Fehlerdiagnose (ENTWURF, Inhalte von der Inhaberin zu prüfen)
+// Der Lehrling wählt einen typischen Fehler, beantwortet 2–3 Fragen und bekommt
+// die wahrscheinliche Ursache, wie es beim nächsten Mal geht, und einen
+// passenden Lernschritt. Regelbasiert, keine KI (Wörni-Grundsatz, docs/woerni-v1.md).
+// Wörni ersetzt keine Meisterin: Jede Diagnose endet mit „frag deine Meisterin“.
+// Nichts wird gespeichert, keine Daten an den Server.
+//
+// Inhalte:
+//  - Herrenschnitt: Fehlertabelle aus docs/maschinenhaarschnitt-ohne-aufsteckkamm-v1.md (4.4)
+//  - Farbe, Blondierung: Entwurf, Begriffe wie im Farblabor (Tonhöhe, Asch/Irisé/Gold/Kupfer)
+(function () {
+  var DIAGNOSEN = [
+    { id: 'farbe-warm', ic: '🎨', titel: 'Die Farbe ist zu warm geworden', komp: 'farbe',
+      fragen: [
+        { id: 'hell', f: 'Wie viele Tonhöhen heller als das Ausgangshaar sollte die Farbe werden?',
+          o: [['0', 'Gleich hell oder dunkler'], ['12', '1–2 Tonhöhen heller'], ['3', '3 oder mehr Tonhöhen heller']] },
+        { id: 'reflex', f: 'Welchen Reflex hatte die Farbe?',
+          o: [['natur', 'Naturton, ohne Reflex'], ['kuehl', 'Kühl: Asch oder Irisé'], ['warm', 'Warm: Gold oder Kupfer'], ['weiss', 'Weiß ich nicht genau']] },
+        { id: 'vor', f: 'War das Haar vorher schon gefärbt oder aufgehellt?',
+          o: [['ja', 'Ja'], ['nein', 'Nein, unbehandelt'], ['weiss', 'Weiß ich nicht']] }
+      ],
+      ergebnisse: [
+        { wenn: { reflex: ['warm'] },
+          ursache: 'Der warme Reflex war schon in der Farbe.',
+          erklaerung: 'Gold und Kupfer machen das Ergebnis wärmer. Für ein neutrales oder kühles Ergebnis brauchst du einen Naturton oder einen kühlen Reflex.',
+          naechstes: 'Vor dem Anmischen kurz prüfen: Passt der Reflex zum Wunsch der Kundin?',
+          lernen: { thema: 'Farbenlehre & Coloration' }, modul: 'farblabor' },
+        { wenn: { hell: ['12', '3'], reflex: ['natur'] },
+          ursache: 'Beim Aufhellen kommt das warme Eigenpigment zum Vorschein.',
+          erklaerung: 'Je heller du gehst, desto mehr Orange und Gelb zeigt das Haar. Ein Naturton gleicht das nicht aus. Dagegen hilft die Gegenfarbe aus dem Farbkreis: Blau (Asch) gegen Orange, Violett (Irisé) gegen Gelb.',
+          naechstes: 'Bei Aufhellung den passenden kühlen Reflex mitplanen.',
+          lernen: { thema: 'Colorationsgrundlagen' }, modul: 'farblabor' },
+        { wenn: { vor: ['ja'] },
+          ursache: 'Alte Farbe oder Aufhellung in den Längen.',
+          erklaerung: 'Vorbehandeltes Haar nimmt Farbe anders an. Reste alter Farbe oder einer Aufhellung können durchscheinen und das Ergebnis wärmer machen.',
+          naechstes: 'Vor der Farbe Ansatz und Längen getrennt anschauen und getrennt planen.',
+          lernen: { thema: 'Colorationsgrundlagen' }, modul: 'farblabor' },
+        { wenn: { reflex: ['weiss'] },
+          ursache: 'Der Reflex der Farbe war nicht klar.',
+          erklaerung: 'Die Zahl nach dem Punkt sagt dir den Reflex. Wer ihn nicht kennt, kann das Ergebnis nicht planen.',
+          naechstes: 'Die Farbnummer vor dem Anmischen einmal laut lesen: Tonhöhe, dann Reflex.',
+          lernen: { thema: 'Farbenlehre & Coloration' }, modul: 'spickzettel' }
+      ],
+      satz: 'Meine Farbe ist wärmer geworden als geplant. Ausgangshaar …, Farbe …, Oxidant …. Woran kann das liegen?' },
+
+    { id: 'uebergang', ic: '✂️', titel: 'Beim Herrenschnitt ist der Übergang zu sehen', komp: 'herrenschnitt',
+      fragen: [
+        { id: 'bild', f: 'Wie sieht der Fehler aus?',
+          o: [['stufe', 'Stufe: ein Absatz zwischen zwei Längen'], ['kante', 'Kante: eine harte, dunkle Linie'], ['loch', 'Loch: eine helle, zu kurze Stelle'], ['streifen', 'Streifen oder Bahnen']] },
+        { id: 'wo', f: 'Wo liegt er?',
+          o: [['band1', 'Unten in Band 1 (Maschine ohne Aufsatz)'], ['uebergang', 'An der Übergangslinie'], ['oben', 'Weiter oben im Kammbereich']] }
+      ],
+      ergebnisse: [
+        { wenn: { bild: ['stufe'], wo: ['band1'] },
+          ursache: 'An der Grenze zwischen zwei Einstellungen nicht ausgekippt.',
+          erklaerung: 'Wer an der Grenze gerade hochfährt, schneidet eine Stufe. In Band 1 steuert der Hebel die Länge – Schritt für Schritt.',
+          naechstes: 'Die Grenze mit der nächstlängeren Einstellung verblenden und dabei auskippen.' },
+        { wenn: { bild: ['stufe', 'kante'], wo: ['uebergang'] },
+          ursache: 'Am Übergang fehlt der Anschluss zwischen längster Einstellung und Kamm.',
+          erklaerung: 'Beginnt der Kamm zu weit vom Kopf oder zu steil, entsteht an der Übergangslinie eine Kante. Ab Band 2 steuert der Kamm Winkel und Länge.',
+          naechstes: 'Maschine über Kamm direkt an Band 1 ansetzen, den Kamm flach beginnen und den Winkel erst darüber öffnen.' },
+        { wenn: { bild: ['loch'], wo: ['band1'] },
+          ursache: 'Die kürzeste Einstellung wurde zu hoch geführt.',
+          erklaerung: 'Dann ist der Verlauf zu hoch ausrasiert. Diese Höhe lässt sich nicht zurückholen.',
+          naechstes: 'Den Übergang darüber mit mittlerer und längster Einstellung und dem Kamm neu aufbauen – und beim nächsten Mal die Höhe vorher festlegen.' },
+        { wenn: { bild: ['loch', 'kante'], wo: ['oben'] },
+          ursache: 'Der Kamm war zu nah am Kopf oder ist stehen geblieben.',
+          erklaerung: 'Bleibt der Kamm stehen, schneidet die Maschine überall auf derselben Länge. Oben muss sich der Kamm bewegen und seinen Winkel ändern.',
+          naechstes: 'Die Partie rundherum mit Maschine über Kamm angleichen und den Kamm gleichmäßig führen.' },
+        { wenn: { bild: ['streifen'] },
+          ursache: 'Die Kammbahnen haben sich nicht überlappt.',
+          erklaerung: 'Zwischen zwei Bahnen bleibt dann ein Streifen stehen.',
+          naechstes: 'Mit überlappenden Bahnen nacharbeiten.' }
+      ],
+      lernen: { thema: 'Haarschnitt Techniken' }, modul: 'maschine',
+      satz: 'Bei meinem Herrenschnitt ist der Übergang zu sehen. Kannst du dir die Stelle kurz mit mir anschauen?' },
+
+    { id: 'blond-fleckig', ic: '✨', titel: 'Die Blondierung ist ungleichmäßig geworden', komp: 'blond',
+      fragen: [
+        { id: 'wo', f: 'Wo ist es ungleichmäßig?',
+          o: [['ansatz', 'Der Ansatz ist heller als die Längen'], ['laengen', 'Längen und Spitzen sind unterschiedlich'], ['flecken', 'Einzelne Flecken oder Streifen']] },
+        { id: 'auftrag', f: 'Wie hast du aufgetragen?',
+          o: [['ansatz_zuerst', 'Ansatz zuerst, dann die Längen'], ['laengen_zuerst', 'Längen zuerst, Ansatz zum Schluss'], ['alles', 'Alles in einem Zug']] },
+        { id: 'abteilung', f: 'Wie dick waren deine Abteilungen?',
+          o: [['duenn', 'Dünn'], ['dick', 'Eher dick'], ['weiss', 'Weiß ich nicht']] }
+      ],
+      ergebnisse: [
+        { wenn: { wo: ['ansatz'], auftrag: ['ansatz_zuerst', 'alles'] },
+          ursache: 'Am Ansatz hat die Wärme der Kopfhaut mitgearbeitet.',
+          erklaerung: 'Nah an der Kopfhaut hellt das Produkt schneller auf. Wird der Ansatz zuerst oder gleichzeitig aufgetragen, wird er heller als die Längen.',
+          naechstes: 'Längen zuerst auftragen, den Ansatz zum Schluss.' },
+        { wenn: { abteilung: ['dick'] },
+          ursache: 'Die Abteilungen waren zu dick.',
+          erklaerung: 'In dicken Abteilungen wird das Haar innen nicht gleichmäßig bedeckt.',
+          naechstes: 'Dünne Abteilungen nehmen und jede Partie vollständig mit Produkt bedecken.' },
+        { wenn: { wo: ['laengen'] },
+          ursache: 'Längen und Spitzen waren unterschiedlich vorbelastet.',
+          erklaerung: 'Spitzen sind oft poröser oder schon aufgehellt und nehmen das Produkt anders an als das Haar am Ansatz.',
+          naechstes: 'Vorher den Haarzustand prüfen und die Längen getrennt planen.' },
+        { wenn: { wo: ['flecken'] },
+          ursache: 'Stellen wurden ausgelassen oder bekamen zu wenig Produkt.',
+          erklaerung: 'Wo weniger Produkt ist, hellt es weniger auf.',
+          naechstes: 'Zügig, in sauberen Abteilungen und mit genug Produkt arbeiten und zwischendurch kontrollieren.' }
+      ],
+      lernen: { thema: 'Balayage & Strähnen' },
+      satz: 'Meine Blondierung ist ungleichmäßig geworden. Kannst du mir zeigen, woran es lag?' }
+  ];
+
+  var MODULE = {
+    farblabor:   { t: 'Im Farblabor üben', url: 'farblabor.html' },
+    spickzettel: { t: 'Farb-Spickzettel ansehen', url: 'spickzettel.html' },
+    maschine:    { t: 'Im Modul „Maschine“ üben', url: 'beratung-formwirkung.html#view=maschine' }
+  };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function finde(id) { return DIAGNOSEN.filter(function (d) { return d.id === id; })[0] || null; }
+  function passt(wenn, a) { return Object.keys(wenn).every(function (k) { return wenn[k].indexOf(a[k]) >= 0; }); }
+
+  window.WOERNI_DIAGNOSE = {
+    diagnosen: DIAGNOSEN,
+    // Für eine Kompetenz (kompetenzen.js) die passenden Diagnosen
+    fuerKompetenz: function (kid) { return DIAGNOSEN.filter(function (d) { return d.komp === kid; }); },
+
+    // ziele.thema(th): Themen-Quiz starten · ziele.modul(url): Modul öffnen
+    zeichnen: function (el, id, ziele, antworten) {
+      if (!el) return;
+      var self = this, d = finde(id);
+      if (!d) {
+        el.innerHTML = '<div class="label">Was ist passiert?</div>' +
+          DIAGNOSEN.map(function (x) {
+            return '<button class="nav-card pm-modul" data-wd="' + x.id + '"><div class="nav-icon" style="margin:0">' + x.ic + '</div><div><div class="nav-title">' + esc(x.titel) + '</div></div></button>';
+          }).join('') +
+          '<p class="pt-info">Wörni sagt dir, was am wahrscheinlichsten ist. Schau dir die Stelle danach mit deiner Meisterin an.</p>';
+        [].forEach.call(el.querySelectorAll('[data-wd]'), function (b) {
+          b.onclick = function () { self.zeichnen(el, b.getAttribute('data-wd'), ziele, {}); window.scrollTo(0, 0); };
+        });
+        return;
+      }
+      antworten = antworten || {};
+      var offen = d.fragen.filter(function (f) { return !(f.id in antworten); })[0];
+      var kopf = '<div class="label">' + d.ic + ' ' + esc(d.titel) + '</div>';
+      if (offen) {
+        var nr = d.fragen.indexOf(offen) + 1;
+        el.innerHTML = kopf +
+          '<div class="card"><div class="label">Frage ' + nr + ' von ' + d.fragen.length + '</div>' +
+          '<div style="font-size:15px;font-weight:600;color:#211D17;margin-bottom:12px;line-height:1.4">' + esc(offen.f) + '</div>' +
+          offen.o.map(function (o) { return '<button class="opt-btn" data-wa="' + esc(o[0]) + '">' + esc(o[1]) + '</button>'; }).join('') +
+          '</div><button class="btn-ghost" data-wd-zurueck style="width:100%">← Anderer Fehler</button>';
+        [].forEach.call(el.querySelectorAll('[data-wa]'), function (b) {
+          b.onclick = function () { var a = Object.assign({}, antworten); a[offen.id] = b.getAttribute('data-wa'); self.zeichnen(el, d.id, ziele, a); };
+        });
+        el.querySelector('[data-wd-zurueck]').onclick = function () { self.zeichnen(el, '', ziele); window.scrollTo(0, 0); };
+        return;
+      }
+      var e = d.ergebnisse.filter(function (x) { return passt(x.wenn, antworten); })[0];
+      var lernen = (e && e.lernen) || d.lernen, modul = MODULE[(e && e.modul) || d.modul];
+      el.innerHTML = kopf +
+        (e
+          ? '<div class="card"><div class="label">Wahrscheinliche Ursache</div>' +
+            '<div style="font-size:16px;font-weight:600;color:#211D17;margin-bottom:8px;line-height:1.4">' + esc(e.ursache) + '</div>' +
+            '<div style="font-size:14px;color:#211D17;line-height:1.6;margin-bottom:14px">' + esc(e.erklaerung) + '</div>' +
+            '<div class="fb-o" style="margin-top:0"><div class="label" style="margin-bottom:4px">Beim nächsten Mal</div><div style="font-size:14px;color:#211D17;line-height:1.5">' + esc(e.naechstes) + '</div></div></div>'
+          : '<div class="card"><div class="label">Wörni ist sich nicht sicher</div><div style="font-size:14px;color:#211D17;line-height:1.6">Das lässt sich aus deinen Antworten nicht eindeutig sagen. Schau dir die Stelle am besten gleich mit deiner Meisterin an.</div></div>') +
+        '<div class="label" style="margin-top:16px">Dein nächster Schritt</div>' +
+        (lernen ? '<button class="nav-card pm-modul" data-wz="thema"><div class="nav-icon" style="margin:0">📚</div><div><div class="nav-title">Kurz lernen: ' + esc(lernen.thema) + '</div><div class="nav-desc">Themen-Quiz, ca. 3 Minuten</div></div></button>' : '') +
+        (modul ? '<button class="nav-card pm-modul" data-wz="modul"><div class="nav-icon" style="margin:0">🧪</div><div><div class="nav-title">' + esc(modul.t) + '</div><div class="nav-desc">Den gleichen Fall noch einmal durchdenken</div></div></button>' : '') +
+        '<button class="nav-card pm-modul" data-wz="satz"><div class="nav-icon" style="margin:0">🗣</div><div><div class="nav-title">Deine Meisterin fragen</div><div class="nav-desc">Ein Satz genügt</div></div></button>' +
+        '<div class="fb-o" data-wz-satz hidden style="margin:-2px 0 10px"><div class="label" style="margin-bottom:4px">So kannst du fragen</div><div style="font-size:14px;color:#211D17;line-height:1.5">„' + esc(d.satz) + '“</div></div>' +
+        '<button class="btn-ghost" data-wd-zurueck style="width:100%;margin-top:8px">← Anderer Fehler</button>';
+      var b;
+      if ((b = el.querySelector('[data-wz="thema"]'))) b.onclick = function () { if (ziele && ziele.thema) ziele.thema(lernen.thema); };
+      if ((b = el.querySelector('[data-wz="modul"]'))) b.onclick = function () { if (ziele && ziele.modul) ziele.modul(modul.url); };
+      el.querySelector('[data-wz="satz"]').onclick = function () { var s = el.querySelector('[data-wz-satz]'); s.hidden = !s.hidden; };
+      el.querySelector('[data-wd-zurueck]').onclick = function () { self.zeichnen(el, '', ziele); window.scrollTo(0, 0); };
+    }
+  };
+})();
