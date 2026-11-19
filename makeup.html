@@ -118,12 +118,12 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 .labor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:760px){.labor{grid-template-columns:minmax(0,1fr)}}
 #gesicht{width:100%;max-width:320px;height:auto;display:block}
-.haut ellipse,.haut rect,.haut path{fill:#F2D9C4;stroke:#C9A98C;stroke-width:2}
-.zuege path,.zuege ellipse{fill:none;stroke:#8A6E5A;stroke-width:2;stroke-linecap:round}
+#gesicht .p-C,#gesicht .p-R{mix-blend-mode:multiply}
+.ki-zeile{font-size:11px;color:var(--muted)}
 .tipp{fill:transparent;cursor:pointer}
 .tipp:hover{fill:rgba(137,108,50,.14)}
 .produkt{stroke-width:1}
-.fehlt{fill:none;stroke-width:2;stroke-dasharray:4 3}
+.fehlt{fill:none;stroke-width:1.6;stroke-dasharray:4 3}
 .lab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 ul.rm{margin:4px 0 8px;padding-left:18px;font-size:14px;display:grid;gap:4px}
 .formen-liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
@@ -166,7 +166,8 @@ a.btn{display:inline-block;text-decoration:none}
     </header>
     <div class="labor">
       <div class="panel" style="justify-items:center">
-        <svg id="gesicht" viewBox="0 0 300 380" role="img" aria-label="Gesicht zum Schminken"></svg>
+        <svg id="gesicht" viewBox="0 0 250 275" role="img" aria-label="Gesicht zum Schminken"></svg>
+        <span class="ki-zeile">KI-generiert</span>
       </div>
       <div class="panel">
         <div>
@@ -232,45 +233,45 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 
 // ── Produkte ────────────────────────────────────────────────────────────────
 const WERKZEUG={
-  H:{name:'Highlighter',ic:'✨',farbe:'rgba(255,248,225,.9)',rand:'#C9A44C'},
-  C:{name:'Contouring',ic:'🟤',farbe:'rgba(120,86,60,.55)',rand:'#6E4E36'},
-  R:{name:'Rouge',ic:'🌸',farbe:'rgba(226,120,140,.55)',rand:'#B8506A'}
+  H:{name:'Highlighter',ic:'✨',rgb:'255,226,140',deck:.85,rand:'#C9A44C'},
+  C:{name:'Contouring',ic:'🟤',rgb:'120,78,48',deck:.6,rand:'#6E4E36'},
+  R:{name:'Rouge',ic:'🌸',rgb:'226,84,118',deck:.55,rand:'#B8506A'}
 };
-// ── Zonen (Koordinaten relativ zum Gesicht: x -1…1, y -1…1; mit „paar“ links und rechts) ──
+// ── Zonen: Lage aus den Messpunkten der Zeichnung (A), „paar“ = links und rechts ──
 const ZONEN={
-  haaransatz:{n:'Haaransatz',x:0,y:-.9,rx:.48,ry:.06},
-  stirn_mitte:{n:'Stirnmitte',x:0,y:-.6,rx:.22,ry:.1},
-  stirn_seiten:{n:'Stirnseiten',x:.55,y:-.56,rx:.17,ry:.12,paar:1},
-  schlaefen:{n:'Schläfen',x:.76,y:-.3,rx:.1,ry:.13,paar:1},
-  unter_augen:{n:'unter den Augen',x:.36,y:.03,rx:.16,ry:.06,paar:1},
-  wangenknochen:{n:'Wangenknochen (oben)',x:.64,y:.13,rx:.2,ry:.07,paar:1,rot:-14},
-  wangen_hohl:{n:'unter dem Wangenknochen',x:.62,y:.31,rx:.2,ry:.065,paar:1,rot:-14},
-  wangenapfel:{n:'Wangenapfel',x:.42,y:.3,rx:.13,ry:.09,paar:1},
-  nasenruecken:{n:'Nasenrücken',x:0,y:.1,rx:.045,ry:.17},
-  kiefer:{n:'Kieferwinkel',x:.72,y:.62,rx:.14,ry:.12,paar:1},
-  kinn_mitte:{n:'Kinnmitte',x:0,y:.8,rx:.13,ry:.065},
-  kinn_spitze:{n:'Kinnspitze',x:0,y:.95,rx:.16,ry:.045}
+  haaransatz:{n:'Haaransatz',pos:A=>({x:0,y:A.ansatz,rx:A.schlaefe*.8,ry:7})},
+  stirn_mitte:{n:'Stirnmitte',pos:A=>({x:0,y:(A.ansatz+A.braue)/2,rx:A.schlaefe*.35,ry:9})},
+  stirn_seiten:{n:'Stirnseiten',paar:1,pos:A=>({x:A.schlaefe*.68,y:A.ansatz+(A.braue-A.ansatz)*.4,rx:A.schlaefe*.24,ry:10})},
+  schlaefen:{n:'Schläfen',paar:1,pos:A=>({x:A.schlaefe*.92,y:A.braue+2,rx:7,ry:13})},
+  unter_augen:{n:'unter den Augen',paar:1,pos:A=>({x:A.ad,y:A.auge+12,rx:14,ry:5})},
+  wangenknochen:{n:'Wangenknochen (oben)',paar:1,rot:-14,pos:A=>({x:A.wange*.76,y:A.auge+(A.nase-A.auge)*.48,rx:A.wange*.26,ry:6})},
+  wangen_hohl:{n:'unter dem Wangenknochen',paar:1,rot:-14,pos:A=>({x:A.wange*.7,y:A.nase+4,rx:A.wange*.27,ry:5})},
+  wangenapfel:{n:'Wangenapfel',paar:1,pos:A=>({x:A.wange*.52,y:A.nase-3,rx:11,ry:8})},
+  nasenruecken:{n:'Nasenrücken',pos:A=>({x:0,y:(A.auge+A.nase)/2,rx:4,ry:(A.nase-A.auge)/2.4})},
+  kiefer:{n:'Kieferwinkel',paar:1,pos:A=>({x:A.kiefer*.86,y:(A.mund+A.kinn)/2+3,rx:10,ry:12})},
+  kinn_mitte:{n:'Kinnmitte',pos:A=>({x:0,y:A.kinn-14,rx:13,ry:6})},
+  kinn_spitze:{n:'Kinnspitze',pos:A=>({x:0,y:A.kinn-3,rx:15,ry:4})}
 };
 // ── Gesichtsformen und Regeln (Inhalte zur Durchsicht durch die Inhaberin) ──
 // soll: Zone → Produkt · meiden: Zone → [Produkt, warum] · warum: Zone → Begründung
 const FORMEN={
-  oval:{n:'Oval',w:104,h:142,form:'oval',ziel:'Ausgewogen – nur natürlich betonen.',
+  oval:{n:'Oval',bild:'oval',B:[250,275],A:{cx:125,ansatz:58,braue:105,auge:120,ad:30,nase:155,mund:178,kinn:210,schlaefe:40,wange:50,kiefer:38},ziel:'Ausgewogen – nur natürlich betonen.',
     soll:{stirn_mitte:'H',nasenruecken:'H',wangenknochen:'H',kinn_mitte:'H',wangen_hohl:'C',wangenapfel:'R'},
     meiden:{},
     warum:{stirn_mitte:'Licht in der Mitte gibt Frische.',nasenruecken:'Ein feiner Lichtstreifen betont die Nase.',wangenknochen:'Licht oben auf dem Wangenknochen lässt ihn leuchten.',kinn_mitte:'Licht am Kinn rundet ab.',wangen_hohl:'Ein leichter Schatten darunter gibt Kontur.',wangenapfel:'Rouge auf dem Wangenapfel, leicht schräg verblendet, wirkt frisch.'}},
-  rund:{n:'Rund',w:120,h:126,form:'rund',ziel:'Schmaler und länger wirken lassen.',
+  rund:{n:'Rund',bild:'rund',B:[250,285],A:{cx:125,ansatz:65,braue:112,auge:125,ad:32,nase:160,mund:182,kinn:215,schlaefe:40,wange:52,kiefer:42},ziel:'Schmaler und länger wirken lassen.',
     soll:{stirn_mitte:'H',nasenruecken:'H',kinn_mitte:'H',schlaefen:'C',wangen_hohl:'C',kiefer:'C',wangenknochen:'R'},
     meiden:{wangenapfel:['R','Rouge rund auf dem Wangenapfel macht das Gesicht noch runder.']},
     warum:{stirn_mitte:'Licht in der Mitte zieht den Blick in die Länge.',nasenruecken:'Eine senkrechte Lichtlinie streckt.',kinn_mitte:'Licht am Kinn verlängert nach unten.',schlaefen:'Schatten an den Schläfen nimmt Breite.',wangen_hohl:'Schräger Schatten unter dem Wangenknochen formt und streckt.',kiefer:'Schatten an den Kieferseiten macht unten schmaler.',wangenknochen:'Rouge schräg vom Wangenknochen zur Schläfe streckt.'}},
-  lang:{n:'Lang',w:94,h:160,form:'lang',ziel:'Kürzer und etwas breiter wirken lassen.',
+  lang:{n:'Lang',bild:'lang',B:[296,420],A:{cx:150,ansatz:118,braue:152,auge:170,ad:42,nase:225,mund:255,kinn:305,schlaefe:62,wange:76,kiefer:55},ziel:'Kürzer und etwas breiter wirken lassen.',
     soll:{wangenknochen:'H',unter_augen:'H',haaransatz:'C',kinn_spitze:'C',wangenapfel:'R'},
     meiden:{nasenruecken:['H','Ein langer Lichtstreifen auf der Nase verlängert das Gesicht noch mehr.'],wangen_hohl:['C','Schatten unter dem Wangenknochen macht das Gesicht schmaler – das verstärkt die Länge.']},
     warum:{wangenknochen:'Licht außen am Wangenknochen macht breiter.',unter_augen:'Licht unter den Augen betont die Mitte in der Breite.',haaransatz:'Schatten am Haaransatz kürzt die Stirn.',kinn_spitze:'Schatten an der Kinnspitze kürzt nach unten.',wangenapfel:'Rouge waagrecht Richtung Ohr verblendet macht breiter.'}},
-  eckig:{n:'Eckig',w:112,h:136,form:'eckig',ziel:'Weicher wirken lassen, Ecken abrunden.',
+  eckig:{n:'Eckig',bild:'eckig',B:[290,315],A:{cx:142,ansatz:72,braue:125,auge:142,ad:36,nase:185,mund:210,kinn:250,schlaefe:48,wange:63,kiefer:55},ziel:'Weicher wirken lassen, Ecken abrunden.',
     soll:{stirn_mitte:'H',kinn_mitte:'H',wangenknochen:'H',kiefer:'C',stirn_seiten:'C',wangenapfel:'R'},
     meiden:{},
     warum:{stirn_mitte:'Licht in der Mitte lenkt von den Ecken weg.',kinn_mitte:'Licht am Kinn rundet die Kinnpartie.',wangenknochen:'Licht auf dem Wangenknochen hebt die Mitte.',kiefer:'Schatten am Kieferwinkel nimmt die Ecke weg.',stirn_seiten:'Schatten an den Stirnecken rundet oben ab.',wangenapfel:'Rouge rund auf dem Wangenapfel macht weicher.'}},
-  herz:{n:'Herzförmig',w:114,h:140,form:'herz',ziel:'Stirn schmaler, Kinnpartie ausgleichen.',
+  herz:{n:'Herzförmig',bild:'herz',B:[340,403],A:{cx:170,ansatz:112,braue:145,auge:160,ad:37,nase:205,mund:230,kinn:278,schlaefe:62,wange:68,kiefer:45},ziel:'Stirn schmaler, Kinnpartie ausgleichen.',
     soll:{unter_augen:'H',kinn_mitte:'H',stirn_seiten:'C',schlaefen:'C',kinn_spitze:'C',wangenapfel:'R'},
     meiden:{stirn_seiten:['H','Licht an den Stirnseiten macht die ohnehin breite Stirn noch breiter.']},
     warum:{unter_augen:'Licht unter den Augen holt die Mitte nach vorne.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',stirn_seiten:'Schatten an den Stirnseiten nimmt Breite oben.',schlaefen:'Schatten an den Schläfen macht oben schmaler.',kinn_spitze:'Ein Hauch Schatten an der Kinnspitze nimmt die Spitze weg.',wangenapfel:'Rouge etwas tiefer auf dem Wangenapfel gleicht unten aus.'}}
@@ -279,37 +280,29 @@ const FORMEN={
 let form='oval', werkzeug='H', gesetzt={};
 
 // ── Zeichnen ────────────────────────────────────────────────────────────────
-function umriss(f){
-  const cx=150,cy=190,w=f.w,h=f.h;
-  if(f.form==='oval') return `<ellipse cx="${cx}" cy="${cy}" rx="${w}" ry="${h}"/>`;
-  if(f.form==='rund') return `<ellipse cx="${cx}" cy="${cy}" rx="${w}" ry="${h}"/>`;
-  if(f.form==='lang') return `<rect x="${cx-w}" y="${cy-h}" width="${2*w}" height="${2*h}" rx="${w*.95}" ry="${w*.95}"/>`;
-  if(f.form==='eckig') return `<rect x="${cx-w}" y="${cy-h}" width="${2*w}" height="${2*h}" rx="${w*.42}" ry="${w*.42}"/>`;
-  // herz: breite Stirn, schmales spitzes Kinn
-  return `<path d="M${cx},${cy+h} C${cx-w*.45},${cy+h*.85} ${cx-w*1.02},${cy+h*.25} ${cx-w},${cy-h*.35} C${cx-w*.98},${cy-h*.85} ${cx-w*.5},${cy-h} ${cx},${cy-h} C${cx+w*.5},${cy-h} ${cx+w*.98},${cy-h*.85} ${cx+w},${cy-h*.35} C${cx+w*1.02},${cy+h*.25} ${cx+w*.45},${cy+h*.85} ${cx},${cy+h} Z"/>`;
+function zonePos(z,f,seite){
+  const p=z.pos(f.A), x=f.A.cx+seite*p.x, y=p.y;
+  return {x, y, rx:p.rx, ry:p.ry, t:z.rot?` transform="rotate(${z.rot*seite} ${x} ${y})"`:''};
 }
-function zonePos(z,f,seite){ const x=150+seite*z.x*f.w, y=190+z.y*f.h; return {x, y, rx:z.rx*f.w, ry:z.ry*f.h, t:z.rot?` transform="rotate(${z.rot*seite} ${x} ${y})"`:''}; }
 function zeichnen(markierung){
-  const f=FORMEN[form];
-  let s=`<g class="haut">${umriss(f)}</g>`;
-  // Gesichtszüge (schematisch)
-  const ey=190+f.h*-.08, ex=f.w*.36;
-  s+=`<g class="zuege"><path d="M${150-ex-24},${ey-20} q24,-10 46,-2"/><path d="M${150+ex+24},${ey-20} q-24,-10 -46,-2"/>`+
-     `<ellipse cx="${150-ex}" cy="${ey}" rx="17" ry="7"/><ellipse cx="${150+ex}" cy="${ey}" rx="17" ry="7"/>`+
-     `<path d="M150,${ey+8} l-9,${f.h*.32} q9,7 18,0"/>`+
-     `<path d="M${150-26},${190+f.h*.55} q26,13 52,0"/></g>`;
-  // gesetzte Produkte und Tippflächen
+  const f=FORMEN[form], svg=$('#gesicht');
+  svg.setAttribute('viewBox','0 0 '+f.B[0]+' '+f.B[1]);
+  svg.setAttribute('aria-label','Gesicht zum Schminken: '+f.n);
+  // Weich verblendet: Verlauf von der Mitte nach außen plus Weichzeichner, keine Kontur
+  let s='<defs><filter id="verblenden" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2"/></filter>'+
+    Object.entries(WERKZEUG).map(([k,w])=>`<radialGradient id="vl-${k}"><stop offset="0" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${w.rgb})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
+  s+=`<image href="bilder/makeup/${f.bild}.jpg" x="0" y="0" width="${f.B[0]}" height="${f.B[1]}"/>`;
   Object.entries(ZONEN).forEach(([id,z])=>{
-    const t=gesetzt[id], soll=markierung&&FORMEN[form].soll[id];
+    const t=gesetzt[id], soll=markierung&&f.soll[id];
     (z.paar?[-1,1]:[1]).forEach(seite=>{
       const p=zonePos(z,f,seite);
-      if(t) s+=`<ellipse class="produkt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" fill="${WERKZEUG[t].farbe}" stroke="${WERKZEUG[t].rand}"/>`;
+      if(t) s+=`<ellipse class="produkt p-${t}"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx*1.35}" ry="${p.ry*1.5}" fill="url(#vl-${t})" filter="url(#verblenden)"/>`;
       if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${WERKZEUG[soll].rand}"/>`;
       s+=`<ellipse class="tipp"${p.t} data-z="${id}" cx="${p.x}" cy="${p.y}" rx="${Math.max(p.rx,12)}" ry="${Math.max(p.ry,10)}"><title>${esc(z.n)}</title></ellipse>`;
     });
   });
-  $('#gesicht').innerHTML=s;
-  $('#gesicht').querySelectorAll('.tipp').forEach(e=>e.addEventListener('click',()=>{
+  svg.innerHTML=s;
+  svg.querySelectorAll('.tipp').forEach(e=>e.addEventListener('click',()=>{
     const id=e.dataset.z; gesetzt[id]=gesetzt[id]===werkzeug?undefined:werkzeug; if(!gesetzt[id]) delete gesetzt[id];
     $('#rueckmeldung').innerHTML=''; zeichnen();
   }));
