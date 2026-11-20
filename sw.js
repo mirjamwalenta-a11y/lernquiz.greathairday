@@ -6,7 +6,7 @@
 // Neue Seiten/Dateien dieser App hier bei `vorab` ergänzen.
 self.GHD_OFFLINE = {
   app: 'lernquiz',
-  version: '2026-11-20k',
+  version: '2026-11-20l',
   start: './lerntool.html',
   vorab: [
     './',
@@ -25,6 +25,7 @@ self.GHD_OFFLINE = {
     './farbtyp.html',
     './makeup.html',
     './bilder/makeup/offen-augen.jpg',
+    './bilder/makeup/brauen-gesicht.jpg',
     './bilder/makeup/nachher-oval.jpg',
     './bilder/makeup/nachher-rund.jpg',
     './bilder/makeup/nachher-eckig.jpg',
