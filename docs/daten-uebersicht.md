@@ -103,8 +103,10 @@ Browserdaten mitgelöscht.
 - Übungsstände einzelner Module: Farblabor, Schnittwerkstatt, Zwischenprüfung,
   Visagistik, Baukasten
 - Einstellungen und Merker, z. B. ob ein Hinweis schon gesehen wurde
-  (Wörni-Begleiter: nur, welcher Impuls zuletzt als „Gelesen“ markiert wurde,
-  Schlüssel `woerni-begleiter`; Fragen an „Frag Wörni“ werden nirgends gespeichert)
+  (Wörni-Begleiter, Schlüssel `woerni-begleiter`: welcher Impuls zuletzt als
+  „Gelesen“ markiert wurde, ob Wörni sich schon vorgestellt hat, und ob/wann die
+  Verhaltensregeln auf diesem Gerät bestätigt wurden; Fragen an „Frag Wörni“
+  werden nirgends gespeichert)
 - Gemerkte Rolle „Meisterin“ (nur die Konto-ID, damit die App offline weiß,
   welche Ansicht sie zeigt; die Daten schützt weiterhin der Server)
 - Anmelde-Sitzung von Supabase

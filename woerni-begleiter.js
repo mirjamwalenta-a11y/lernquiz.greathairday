@@ -6,6 +6,9 @@
 //     „Wörni sagt“, bis der Lehrling „Gelesen“ antippt (nur auf dem Gerät gemerkt).
 //  2. Modul „Probezeit“ (ab Tag 1): Sinn der Probezeit, Realitätscheck Friseurlehre,
 //     Haltung und das Warum. Reiner Inhalt, mit Fragen zum Nachdenken.
+//  0. Vorstellung: Beim ersten Mal stellt sich Wörni als persönlicher Coach vor
+//     (Startseite und Wörni-Seite) und führt zu den Verhaltensregeln (salon-regeln.js,
+//     Seite „Unsere Verhaltensregeln“ mit Bestätigung, nur auf dem Gerät gemerkt).
 //  3. „Frag Wörni“ + App-Lotse: Der Lehrling tippt eine Frage. Wörni antwortet aus
 //     festen Antworten (hier unten, von der Inhaberin zu prüfen) oder verweist in die
 //     passenden Module. Passt nichts: ehrlich „weiß ich nicht“ + Nachschlagen +
@@ -35,6 +38,7 @@
   // ziel: Schlüssel, den die aufrufende Seite auflöst (Funktion im Lern-Tool),
   // url:  eigene Seite dieser App. wann: wann das Modul besonders sinnvoll ist.
   var MODULE = {
+    regeln:       { ic: '📋', n: 'Unsere Verhaltensregeln', ziel: 'regeln', w: 'Krankmeldung, Urlaub, Mittagspause, Ausbildung, Hygiene und Kleidung: was bei uns im Team gilt und warum.', wann: 'Gleich am ersten Tag lesen, und immer, wenn du bei einer Regel unsicher bist.', k: 'regeln verhaltensregeln regel krankmeldung urlaubsansuchen mittagspause kleidung bekleidung' },
     probezeit:    { ic: '🌱', n: 'Probezeit', ziel: 'probezeit', w: 'Wozu die ersten drei Monate da sind, wie die Lehre wirklich aussieht und warum unsere Standards wichtig sind.', wann: 'Ab deinem ersten Tag, und immer, wenn du dich fragst, ob du richtig bist.', k: 'probezeit anfang start erste tage ankommen' },
     quizkurz:     { ic: '❓', n: 'Quiz', ziel: 'quizkurz', w: 'Schnell-Check oder Lerneinheit mit Fragen zu deinem Lehrjahr. Deine Antworten zählen für deinen Lernstand.', wann: 'Ein paar Fragen am Tag, am besten in einer ruhigen Minute.', k: 'quiz fragen ueben schnellcheck lerneinheit' },
     themenquiz:   { ic: '🎯', n: 'Themen-Quiz', ziel: 'quiz', w: 'Ein Thema gezielt üben, zum Beispiel Hygiene oder Farbenlehre.', wann: 'Wenn du weißt, welches Thema dran ist oder wackelt.', k: 'themen quiz thema gezielt' },
@@ -66,8 +70,8 @@
 
   // ── Phasen ──────────────────────────────────────────────────────────────
   var PHASEN = {
-    ankommen:  { n: 'Probezeit · Ankommen', module: ['probezeit', 'werkzeug', 'praxis', 'wissensbank'] },
-    probezeit: { n: 'Probezeit', module: ['probezeit', 'quizkurz', 'praxis', 'wissensbank'] },
+    ankommen:  { n: 'Probezeit · Ankommen', module: ['regeln', 'probezeit', 'werkzeug', 'praxis'] },
+    probezeit: { n: 'Probezeit', module: ['probezeit', 'regeln', 'quizkurz', 'praxis'] },
     lj1:       { n: '1. Lehrjahr', module: ['quizkurz', 'wiederholen', 'farblabor', 'praxis'] },
     lj2:       { n: '2. Lehrjahr', module: ['zwischenpruefung', 'schnittwerkstatt', 'farbfaelle', 'umformung'] },
     lj3:       { n: '3. Lehrjahr', module: ['lap', 'beratung', 'umformung', 'landkarte'] },
@@ -101,7 +105,7 @@
   // ── Impulse ─────────────────────────────────────────────────────────────
   // t: Titel · x: Text · f: Frage zum Nachdenken (wird nicht gespeichert) · m: Modul
   var TAGE = [  // Tag 1–14, jeden Tag einer
-    { t: 'Willkommen im Team', x: 'Heute ist dein erster Tag. Niemand erwartet, dass du schon etwas kannst. Erwartet wird, dass du offen bist, zuschaust und fragst.', f: 'Was möchtest du heute unbedingt herausfinden?', m: 'probezeit' },
+    { t: 'Willkommen im Team', x: 'Heute ist dein erster Tag. Niemand erwartet, dass du schon etwas kannst. Erwartet wird, dass du offen bist, zuschaust und fragst.', f: 'Was möchtest du heute unbedingt herausfinden?', m: 'regeln' },
     { t: 'Namen und Wege', x: 'Lern heute die Namen deiner Kolleginnen und Kollegen und wo was im Salon liegt. Das macht dich ab morgen schneller und sicherer.', f: 'Wen hast du heute schon mit Namen angesprochen?', m: 'werkzeug' },
     { t: 'Jeder Gast ist ein Gast', x: 'Bei uns ist jede Kundin und jeder Kunde ein willkommener Gast. Ein Blick, ein Lächeln und ein „Grüß Gott“ zählen ab der ersten Sekunde.', f: 'Wie hast du dich zuletzt irgendwo richtig willkommen gefühlt?', m: 'probezeit' },
     { t: 'Fragen ist Profi', x: 'Wer fragt, macht weniger Fehler. Frag lieber einmal zu oft als einmal zu wenig, vor allem bei Chemie, Hitze und scharfen Werkzeugen.', f: 'Welche Frage hast du dich heute noch nicht getraut?', m: 'sortieren' },
@@ -109,7 +113,7 @@
     { t: 'Deine Füße arbeiten mit', x: 'Die ersten Wochen sind körperlich anstrengend. Gute Schuhe, gerade Haltung und Trinken zwischendurch helfen mehr, als du denkst.', f: 'Was tut dir nach einem Arbeitstag am meisten weh, und was hilft dagegen?', m: 'probezeit' },
     { t: 'Eine Woche geschafft', x: 'Du hast die erste Woche hinter dir. Schau kurz zurück: Was hast du gelernt, was war schwer, was hat Spaß gemacht?', f: 'Was war dein bester Moment diese Woche?', m: 'praxis' },
     { t: 'Zuschauen ist Lernen', x: 'Wenn du assistierst, schau genau hin: Wie spricht die Kollegin mit dem Gast? Wie hält sie die Schere? Das ist Unterricht ohne Tafel.', f: 'Welchen Handgriff möchtest du als Nächstes selbst probieren?', m: 'praxis' },
-    { t: 'Pünktlich heißt verlässlich', x: 'Wenn du pünktlich bist, kann das Team mit dir planen. Wenn etwas dazwischenkommt, gib vorher Bescheid, nicht nachher.', f: 'Was hilft dir, morgens gut rechtzeitig da zu sein?', m: 'probezeit' },
+    { t: 'Pünktlich heißt verlässlich', x: 'Wenn du pünktlich bist, kann das Team mit dir planen. Wenn etwas dazwischenkommt, gib vorher Bescheid, nicht nachher.', f: 'Was hilft dir, morgens gut rechtzeitig da zu sein?', m: 'regeln' },
     { t: 'Ein Wort pro Tag', x: 'Jeder Beruf hat seine Sprache. Nimm dir heute ein Fachwort vor, das du gehört, aber nicht ganz verstanden hast.', f: 'Welches Wort war das heute?', m: 'fachbegriffe' },
     { t: 'Fehler gehören dazu', x: 'Fehler beim Lernen sind normal. Wichtig ist, sie gleich zu sagen und zu verstehen, warum sie passiert sind.', f: 'Was würdest du beim nächsten Mal anders machen?', m: 'sortieren' },
     { t: 'Fünf Minuten Wissen', x: 'Ein paar Quizfragen am Tag bringen mehr als eine lange Runde vor der Prüfung. Probier heute fünf Fragen.', f: 'Wann am Tag hast du fünf ruhige Minuten?', m: 'quizkurz' },
@@ -217,7 +221,7 @@
       fragen: ['Wann hast du dich zuletzt irgendwo richtig als Gast gefühlt, und woran lag das?', 'Welcher Standard ist dir noch nicht ganz klar? Frag deine Meisterin nach dem Warum.'] },
     { ic: '🧭', t: 'Was dir in der App hilft',
       absaetze: ['Für die ersten Wochen sind diese Bereiche besonders nützlich. Du kannst Wörni auch jederzeit fragen, wofür ein Bereich da ist.'],
-      module: ['werkzeug', 'praxis', 'wissensbank', 'fachbegriffe', 'quizkurz', 'sortieren'] }
+      module: ['regeln', 'werkzeug', 'praxis', 'wissensbank', 'fachbegriffe', 'quizkurz', 'sortieren'] }
   ];
 
   // ── Frag Wörni: feste Antworten ─────────────────────────────────────────
@@ -231,12 +235,16 @@
     { w: ['unzufrieden', 'reklamation', 'beschwer', 'gefaellt nicht', 'schimpft', 'sauer'], a: 'Wenn ein Gast unzufrieden ist: ruhig bleiben, zuhören, nicht rechtfertigen und gleich deine Meisterin oder eine erfahrene Kollegin holen. Du musst das nicht allein lösen.', m: ['lernfaelle', 'sortieren'] },
     { w: ['gast', 'gaeste', 'kundin', 'kunde', 'begruess', 'empfang', 'willkommen'], a: 'Bei uns ist jede Kundin und jeder Kunde ein willkommener Gast. Begrüß jeden, sobald er hereinkommt, mit Blick und Lächeln. Biete etwas an, hör zu und schenk deine volle Aufmerksamkeit. Gäste schenken uns ihre Zeit und ihr Vertrauen.', m: ['probezeit', 'lernfaelle'] },
     { w: ['puenktlich', 'zu spaet', 'verspaet', 'verschlafen', 'bus verpasst'], a: 'Pünktlich sein heißt, dass das Team mit dir planen kann. Wenn du zu spät kommst, gib so früh wie möglich Bescheid, bevor dein Dienst beginnt, nicht nachher. ' + MEISTERIN, m: ['probezeit'] },
-    { w: ['krank', 'krankenstand', 'arzt', 'fieber', 'krankmeld'], a: 'Wenn du krank bist, melde dich so früh wie möglich, am besten vor Dienstbeginn, so wie es in eurem Salon vereinbart ist. Ob und wann du eine Bestätigung vom Arzt brauchst, sagt dir deine Meisterin. Wörni speichert dazu nichts.', m: [] },
-    { w: ['urlaub', 'frei nehmen', 'freier tag', 'lohn', 'gehalt', 'geld', 'vertrag', 'lehrvertrag', 'ueberstunden', 'arbeitszeit'], a: 'Zu Vertrag, Lohn, Urlaub oder Arbeitszeit kann und soll Wörni nichts sagen, dafür kennt er deine Daten bewusst nicht. Frag deine Meisterin. Unabhängige Auskunft für Lehrlinge geben auch die Lehrlingsstelle der Wirtschaftskammer und die Arbeiterkammer.', m: [] },
+    // Krankenstand, Urlaub, Pause, Ausbildung, Kleidung: nach den Verhaltensregeln des Salons (salon-regeln.js)
+    { w: ['krank', 'krankenstand', 'arzt', 'fieber', 'krankmeld', 'whatsapp', 'verlaenger'], a: 'So machst du es bei uns: Vor dem Arztbesuch darfst du dich per WhatsApp krankmelden. Nach dem Arztbesuch rufst du gleich in der Firma an und sagst, wie lange du voraussichtlich ausfällst. Die Krankmeldung muss am selben Tag eingereicht werden. Wird der Krankenstand länger, sagst du das ebenfalls telefonisch. Wichtig: Nach der ersten Ankündigung gilt keine WhatsApp mehr, alles Weitere nur per Telefon.', m: ['regeln'] },
+    { w: ['urlaub', 'urlaubsansuchen', 'urlaubsantrag', 'frei nehmen', 'freier tag', 'ferien'], a: 'So geht Urlaub bei uns: Zuerst sprichst du dich mit den Kolleginnen und Kollegen ab, damit Lehrlinge und Gesellen nicht gleichzeitig weg sind. Denk auch an deinen Blockunterricht. Dann erstellst du ein Urlaubsansuchen und gibst es der Chefin. Gültig ist der Urlaub erst, wenn die Chefin ihn genehmigt hat, also erst danach etwas buchen.', m: ['regeln'] },
+    { w: ['mittagspause', 'pause', 'mittag', 'essen gehen', 'rausgehen'], a: 'Die Mittagspause ist in der festgelegten Mittagszeit. In der ersten halben Stunde darfst du den Salon verlassen, die zweite Hälfte verbringst du im Salon.', m: ['regeln'] },
+    { w: ['freie zeit', 'nichts zu tun', 'nichts los', 'leerlauf', 'kein gast', 'keinen gast', 'langweilig', 'ausbildungsbuch', 'dokumentier'], a: 'Bei uns gilt: Jede freie Minute nutzt du für deine Ausbildung, mit den Übungen, die dir die Chefin oder deine Ausbildnerin vorgibt. Alles, was du lernst, dokumentierst du im Ausbildungsbuch. Ein paar Quizfragen oder ein Eintrag im Praxis-Tagebuch passen auch gut in kurze Lücken.', m: ['regeln', 'praxis', 'quizkurz'] },
+    { w: ['lohn', 'gehalt', 'geld', 'verdien', 'vertrag', 'lehrvertrag', 'ueberstunden', 'arbeitszeit'], a: 'Zu Vertrag, Lohn oder Arbeitszeit kann und soll Wörni nichts sagen, dafür kennt er deine Daten bewusst nicht. Frag die Chefin. Unabhängige Auskunft für Lehrlinge geben auch die Lehrlingsstelle der Wirtschaftskammer und die Arbeiterkammer.', m: [] },
     { w: ['handy', 'telefon', 'smartphone', 'instagram', 'tiktok'], a: 'Bei der Arbeit gehört deine Aufmerksamkeit dem Gast, deshalb bleibt das Handy weg. In der Pause darfst du natürlich. Wie das in eurem Salon genau geregelt ist: ' + MEISTERIN, m: ['probezeit'] },
-    { w: ['anziehen', 'kleidung', 'outfit', 'aussehen', 'schminken arbeit', 'schmuck', 'nagel', 'naegel', 'gepflegt'], a: 'Gäste vertrauen jemandem, der gepflegt und sorgfältig wirkt. Saubere Kleidung, gepflegte Hände und Haare gehören dazu. Was bei euch genau getragen wird, sagt dir deine Meisterin.', m: ['wissensbank'] },
+    { w: ['anziehen', 'ziehe ich an', 'was trage', 'kleidung', 'bekleidung', 'outfit', 'aussehen', 'farbe kleidung', 'jogging', 'sportkleidung', 'kappe', 'muetze', 'kopfbedeckung', 'gepflegt', 'frisur'], a: 'Bei uns gilt: Die Kleidung ist sauber und in Schwarz, Grau oder Weiß. Deine Haare sind gewaschen und friseurwürdig gestylt, denn Gäste schauen dir auf die Haare. Nicht erlaubt sind Sportkleidung wie Jogginganzüge und jede Art von Kopfbedeckung, zum Beispiel Kappen.', m: ['regeln'] },
     { w: ['allergietest', 'hauttest', 'allergie test', 'vertraeglich'], a: 'Ob und wie ein Hauttest gemacht wird, steht in der Gebrauchsanweisung des Produkts und in unseren Salon-Regeln. Frag vor einer Farbe bei neuen Gästen immer deine Meisterin. Reagiert die Haut während einer Behandlung, sofort aufhören und Bescheid sagen.', m: ['fachwissenfarbe', 'wissensbank'] },
-    { w: ['hygiene', 'desinfiz', 'sauber', 'putzen', 'handschuh', 'reinig'], a: 'Hygiene schützt Gäste und dich. Werkzeuge nach jedem Gast reinigen und desinfizieren, Hände waschen, bei Farbe und Chemie Handschuhe tragen, frische Handtücher und Umhänge. Wie es bei uns genau geht, steht in der Wissensbank.', m: ['wissensbank', 'themenquiz'] },
+    { w: ['hygiene', 'desinfiz', 'sauber', 'putzen', 'handschuh', 'reinig'], a: 'Hygiene hat bei uns oberste Priorität, bei dir persönlich und im ganzen Geschäft. Werkzeuge nach jedem Gast reinigen und desinfizieren, Hände waschen, bei Farbe und Chemie Handschuhe tragen, frische Handtücher und Umhänge. Wie es bei uns genau geht, steht in der Wissensbank.', m: ['regeln', 'wissensbank'] },
     { w: ['stehen', 'rueck', 'fuesse', 'fuss', 'muede', 'erschoepft', 'schmerz', 'anstrengend'], a: 'Die ersten Wochen sind körperlich anstrengend, das ist normal. Gute, bequeme Schuhe, gerade Haltung, Trinken und die Pausen nutzen helfen. Wenn etwas länger wehtut, sag es deiner Meisterin.', m: ['probezeit'] },
     { w: ['fehler', 'falsch gemacht', 'verbockt', 'kaputt', 'misslungen', 'passiert'], a: 'Fehler beim Lernen sind normal. Wichtig ist: gleich Bescheid sagen, verstehen, was passiert ist, und es beim nächsten Mal anders machen. Ehrlichkeit schützt den Gast und das Vertrauen im Team.', m: ['sortieren', 'diagnose'] },
     { w: ['nervoes', 'angst', 'aufgeregt', 'unsicher', 'traue mich', 'trau mich'], a: 'Anspannung vor etwas Neuem ist normal. Geh den Ablauf vorher einmal durch und bitte deine Meisterin, beim ersten Mal zuzuschauen. Ein Satz reicht: „Schaust du beim ersten Schritt kurz zu?“', m: ['sortieren', 'praxis'] },
@@ -247,14 +255,15 @@
     { w: ['lehrjahr', 'was lerne ich wann', 'themen', 'ausbildung ablauf', 'drei jahre'], a: 'Im 1. Lehrjahr geht es um die Grundlagen: Hygiene, Werkzeug, Haar- und Hautkunde, Farbenlehre, Beratung. Im 2. Lehrjahr kommen Schnitt-Techniken, Coloration, Umformung und die Zwischenprüfung. Im 3. Lehrjahr fügst du alles zusammen und bereitest dich auf die LAP vor.', m: ['landkarte', 'lernplan'] },
     { w: ['zwischenpruefung', 'zwischen pruefung'], a: 'Die Zwischenprüfung ist ein Probelauf in der Mitte der Lehre. Übe mit Prüfungszeit und Fachgespräch, dann weißt du, wo du stehst.', m: ['zwischenpruefung'] },
     { w: ['lap', 'lehrabschluss', 'abschlusspruefung', 'gesellenpruefung', 'pruefung'], a: 'Die Lehrabschlussprüfung (LAP) am Ende der Lehre prüft Theorie und Praxis. Im 3. Lehrjahr übst du am besten jede Woche Prüfungsfragen und arbeitest offene Themen auf deiner Kompetenz-Landkarte ab.', m: ['lap', 'landkarte', 'wiederholen'] },
-    { w: ['woerni', 'wer bist du', 'was kannst du', 'hilfe', 'was machst du'], a: 'Ich bin Wörni, dein Begleiter in der App. Ich gebe dir Impulse passend zu deiner Lehrzeit, erkläre die Bereiche der App und zeige dir, wo du nachschauen kannst. Ich ersetze keine Meisterin und speichere nichts von dem, was du mich fragst.', m: ['verzeichnis'] },
+    { w: ['woerni', 'wer bist du', 'was kannst du', 'hilfe', 'was machst du'], a: 'Ich bin Wörni, dein persönlicher Coach für die ganze Lehrzeit, vom ersten Tag bis zur LAP. Ich melde mich mit Impulsen, erkläre dir unsere Verhaltensregeln und die Bereiche der App und zeige dir, wo du nachschauen kannst. Ich ersetze keine Meisterin und speichere nichts von dem, was du mich fragst.', m: ['regeln', 'verzeichnis'] },
     { w: ['speicher', 'datenschutz', 'daten', 'wer sieht', 'liest mit'], a: 'Deine Fragen an Wörni werden nirgends gespeichert, auch nicht auf deinem Handy, und niemand liest sie mit. Wörni kennt keine Vertrags- oder Personaldaten. Dein Lernstand aus den Quiz ist davon getrennt und für dich und deine Meisterin sichtbar.', m: [] },
     { w: ['farbe', 'oxidant', 'blondier', 'aufhell', 'coloration', 'toenung', 'rezeptur', 'mischen', 'einwirk'], a: 'Für Farbfragen gibt es drei gute Orte: Im Farblabor verstehst du die Farbenlehre, in Fachwissen Farbe stehen unsere Rezepturen und Einwirkzeiten, und in den Farb-Fällen übst du das Planen. Bei echten Gästen gilt: vor dem Mischen immer kurz mit der Meisterin abstimmen.', m: ['farblabor', 'fachwissenfarbe', 'farbfaelle'] },
     { w: ['schneiden', 'schnitt', 'haarschnitt', 'schere'], a: 'Schneiden lernst du Schritt für Schritt: erst Werkzeug und Abteilungen, dann Winkel und Linien. In der Schnittwerkstatt verstehst du, wie ein Schnitt aufgebaut ist.', m: ['schnittwerkstatt', 'werkzeug', 'schnittdesigner'] },
     { w: ['dauerwelle', 'glaett', 'umformung', 'wickler'], a: 'Dauerwelle und Glättung verzeihen wenig: Haarzustand prüfen, Probewickler machen, Einwirkzeit genau einhalten. Das Modul Umformung zeigt dir die Abläufe mit Fehlerkunde.', m: ['umformung', 'diagnose'] },
     { w: ['waschen', 'haarwaesche', 'massage', 'kopfmassage'], a: 'Die Haarwäsche ist oft dein erster Auftritt beim Gast: Wassertemperatur fragen, Nacken stützen, ruhige Hände, nicht hetzen. Den Ablauf findest du in den Praxis-Modulen.', m: ['praxis'] },
     { w: ['wort', 'bedeutet', 'heisst', 'begriff', 'uebersetz'], a: 'Unbekannte Fachwörter findest du in den Fachbegriffen, einfach erklärt und in 7 Sprachen.', m: ['fachbegriffe'] },
-    { w: ['nachschlagen', 'nachschauen', 'anleitung', 'handbuch', 'wo steht'], a: 'In der Wissensbank liegt das gesammelte Wissen aus unserem Mitarbeiterhandbuch: Fachwissen, Schritt-für-Schritt-Anleitungen und Grundlagen zum Nachschlagen und Vertiefen.', m: ['wissensbank', 'fachwissenfarbe'] }
+    { w: ['nachschlagen', 'nachschauen', 'anleitung', 'handbuch', 'wo steht'], a: 'In der Wissensbank liegt das gesammelte Wissen aus unserem Mitarbeiterhandbuch: Fachwissen, Schritt-für-Schritt-Anleitungen und Grundlagen zum Nachschlagen und Vertiefen.', m: ['wissensbank', 'fachwissenfarbe'] },
+    { w: ['regeln', 'verhaltensregeln', 'regel', 'hausordnung', 'was gilt', 'erlaubt', 'verboten'], a: 'Unsere Verhaltensregeln sagen dir, wie es bei uns läuft: Krankmeldung, Urlaubsansuchen, Mittagspause, Ausbildung, Hygiene sowie Kleidung und Frisur. Ich erkläre dir zu jedem Punkt, warum er wichtig ist. Lies sie am besten gleich ganz durch.', m: ['regeln'] }
   ];
 
   // Sofort ernst nehmen: Verletzung, Hautreaktion, Belästigung, Krise.
@@ -345,9 +354,42 @@
     });
   }
 
+  // ── Vorstellung: Wörni stellt sich am Anfang als persönlicher Coach vor ──
+  var VORSTELLUNG = {
+    t: 'Hallo, ich bin Wörni, dein persönlicher Coach',
+    x: [
+      'Ab heute begleite ich dich durch deine ganze Lehrzeit: durch die Probezeit, alle drei Lehrjahre und bis zur Lehrabschlussprüfung.',
+      'Ich melde mich regelmäßig mit kurzen Impulsen, erkläre dir unsere Verhaltensregeln und zeige dir, wofür jeder Bereich der App da ist. Du kannst mich jederzeit fragen, zu Abläufen im Salon, zum Lernen oder wenn du unsicher bist.',
+      'Ich ersetze keine Meisterin, und was du mich fragst, speichere ich nicht. Am besten liest du als Erstes unsere Verhaltensregeln.'
+    ]
+  };
+  function vorgestellt() { return !!lesen().vorgestellt; }
+  function vorgestelltMerken() { var d = lesen(); d.vorgestellt = new Date().toISOString().slice(0, 10); schreiben(d); }
+  // Bestätigung der Verhaltensregeln: nur auf diesem Gerät, mit Stand der Regeln
+  function regelnBestaetigt() {
+    var R = window.GHD_SALON_REGELN, b = lesen().regeln;
+    return R && b && b.stand === R.stand ? b.am : '';
+  }
+  function datumDE(iso) { var t = String(iso || '').split('-'); return t.length === 3 ? +t[2] + '.' + +t[1] + '.' + t[0] : ''; }
+  var LINK = 'color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap';
+
   window.WOERNI_BEGLEITER = {
     module: MODULE, phasen: PHASEN, antworten: ANTWORTEN, probezeitKapitel: PROBEZEIT,
     phase: phase, impuls: impuls, antwort: antwort,
+
+    vorgestellt: vorgestellt,
+    regelnBestaetigt: regelnBestaetigt,
+
+    // Vorstellung auf der Startseite, solange Wörni sich noch nicht vorgestellt hat.
+    vorstellungHTML: function () {
+      if (vorgestellt() || typeof window.woerniKarteHTML !== 'function') return '';
+      var extra = VORSTELLUNG.x.slice(1).map(function (a) { return '<p class="woerni-text" style="margin-top:6px">' + esc(a) + '</p>'; }).join('') +
+        '<p class="woerni-text" style="margin-top:8px">' +
+        '<a href="#regeln" data-wb-start-modul="regeln" data-wb-kennen style="' + LINK + '">Verhaltensregeln lesen →</a> ' +
+        '<a href="#woerni" data-wb-start-reden data-wb-kennen style="' + LINK + '">Wörni fragen →</a> ' +
+        '<a href="#woerni" data-wb-kennen data-wb-nur-kennen style="color:#6B6455;text-decoration:none;white-space:nowrap">Los geht’s ✓</a></p>';
+      return window.woerniKarteHTML({ titel: VORSTELLUNG.t, text: VORSTELLUNG.x[0] }, 'Wörni stellt sich vor', extra);
+    },
 
     // Karte für die Startseite (im Platz von „Wörni sagt“) oder '' wenn schon gelesen.
     // Braucht woerniKarteHTML aus woernis-tipps.js (gleiches Aussehen wie „Wörni sagt“).
@@ -357,13 +399,17 @@
       var mo = MODULE[i.m];
       var extra = '<p class="woerni-text" style="margin-top:6px"><b>Zum Nachdenken:</b> ' + esc(i.f) + '</p>' +
         '<p class="woerni-text" style="margin-top:8px">' +
-        (mo ? '<a href="#woerni" data-wb-start-modul="' + i.m + '" style="color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap">' + esc(mo.n) + ' →</a>' : '') +
-        '<a href="#woerni" data-wb-start-reden style="color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap">Wörni fragen →</a>' +
+        (mo ? '<a href="#woerni" data-wb-start-modul="' + i.m + '" style="color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap">' + esc(mo.n) + ' →</a> ' : '') +
+        '<a href="#woerni" data-wb-start-reden style="color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap">Wörni fragen →</a> ' +
         '<a href="#woerni" data-wb-gelesen="' + esc(i.id) + '" style="color:#6B6455;text-decoration:none;white-space:nowrap">Gelesen ✓</a></p>';
       return window.woerniKarteHTML({ titel: i.t, text: i.x }, 'Wörni · ' + p.n + (p.tag && p.tag <= PROBEZEIT_TAGE ? ' · Tag ' + p.tag : ''), extra);
     },
     startKarteBinden: function (el, ziele, neuZeichnen) {
       if (!el) return;
+      // Vorstellung: jeder Link zählt als „kennengelernt“
+      [].forEach.call(el.querySelectorAll('[data-wb-kennen]'), function (a) {
+        a.addEventListener('click', function (e) { e.preventDefault(); vorgestelltMerken(); if (a.hasAttribute('data-wb-nur-kennen') && neuZeichnen) neuZeichnen(); });
+      });
       [].forEach.call(el.querySelectorAll('[data-wb-start-modul]'), function (a) { a.onclick = function (e) { e.preventDefault(); oeffnen(a.getAttribute('data-wb-start-modul'), ziele); }; });
       [].forEach.call(el.querySelectorAll('[data-wb-start-reden]'), function (a) { a.onclick = function (e) { e.preventDefault(); if (ziele && ziele.woerni) ziele.woerni(); }; });
       [].forEach.call(el.querySelectorAll('[data-wb-gelesen]'), function (a) {
@@ -375,13 +421,21 @@
     seiteZeichnen: function (el, p, ziele) {
       if (!el) return;
       var i = impuls(p), self = this;
-      var html = '<div class="label">' + esc(p.n) + (p.tag && p.tag <= PROBEZEIT_TAGE ? ' · Tag ' + p.tag : '') + '</div>';
+      var html = '';
+      if (!vorgestellt()) {
+        html += '<div class="card" style="padding:14px"><div class="nav-title" style="margin-bottom:6px">' + esc(VORSTELLUNG.t) + '</div>' +
+          VORSTELLUNG.x.map(function (a) { return wZeile(esc(a)); }).join('') + modulKnopf('regeln') + '</div>';
+        vorgestelltMerken();
+      } else {
+        html += wZeile('Ich bin dein persönlicher Coach für die ganze Lehrzeit. Frag mich, was du wissen willst.');
+      }
+      html += '<div class="label">' + esc(p.n) + (p.tag && p.tag <= PROBEZEIT_TAGE ? ' · Tag ' + p.tag : '') + '</div>';
       if (i) html += '<div class="card" style="padding:14px"><div class="nav-title" style="margin-bottom:4px">' + esc(i.t) + '</div>' + wZeile(esc(i.x)) +
         '<div class="nav-desc" style="font-size:13px"><b>Zum Nachdenken:</b> ' + esc(i.f) + '</div></div>';
       html += '<div class="label" style="margin-top:18px">Frag Wörni</div>' +
         '<form id="wb-form" style="display:flex;gap:8px;margin-bottom:8px" autocomplete="off"><input id="wb-frage" type="text" maxlength="200" placeholder="z. B. Was mache ich, wenn ich krank bin?" aria-label="Deine Frage an Wörni" style="flex:1;background:#fff"><button class="btn-primary" type="submit" style="width:auto;padding:10px 16px">Fragen</button></form>' +
         '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">' +
-        ['Wozu ist die Probezeit?', 'Wofür ist die Wissensbank?', 'Ich habe einen Fehler gemacht', 'Wie lerne ich am besten?', 'Was kommt bei der LAP?'].map(function (v) {
+        ['Wie melde ich mich krank?', 'Wie beantrage ich Urlaub?', 'Was ziehe ich an?', 'Wozu ist die Probezeit?', 'Wofür ist die Wissensbank?', 'Ich habe einen Fehler gemacht'].map(function (v) {
           return '<button type="button" class="btn-toggle" data-wb-vorschlag="' + esc(v) + '">' + esc(v) + '</button>';
         }).join('') + '</div>' +
         '<div id="wb-antworten" aria-live="polite"></div>' +
@@ -418,6 +472,35 @@
       html += '</div>';
       box.insertAdjacentHTML('afterbegin', html);
       knoepfeBinden(box.firstElementChild, ziele, q);
+    },
+
+    // Seite „Unsere Verhaltensregeln“ (Inhalt aus salon-regeln.js) mit Bestätigung auf dem Gerät
+    regelnZeichnen: function (el, ziele) {
+      if (!el) return;
+      var R = window.GHD_SALON_REGELN, self = this;
+      if (!R) { el.innerHTML = '<p class="pt-info">Die Verhaltensregeln konnten nicht geladen werden.</p>'; return; }
+      var am = regelnBestaetigt();
+      el.innerHTML = wZeile('Das sind die Regeln in unserem Team. Ich erkläre dir zu jedem Punkt kurz, warum er wichtig ist.') +
+        R.abschnitte.map(function (a) {
+          return '<div class="card"><div class="label">' + a.ic + ' ' + esc(a.nr + '. ' + a.t) + '</div>' +
+            a.teile.map(function (t, j) {
+              return '<div class="nav-title" style="margin:' + (j ? '10px' : '0') + ' 0 4px">' + esc(a.nr + '.' + (j + 1) + ' ' + t.t) + '</div>' +
+                '<ul style="margin:0 0 6px 18px;font-size:14px;color:#211D17;line-height:1.6">' + t.r.map(function (x) { return '<li style="margin-bottom:4px">' + esc(x) + '</li>'; }).join('') + '</ul>';
+            }).join('') +
+            (a.w ? '<div style="margin-top:10px">' + wZeile(esc(a.w)) + '</div>' : '') + '</div>';
+        }).join('') +
+        '<div class="card" id="wb-regeln-ok">' + (am
+          ? '<div class="fb-g" style="margin:0;font-size:14px;color:#211D17"><b>✓ ' + esc(R.bestaetigung) + '</b><div class="nav-desc" style="margin-top:4px">Auf diesem Gerät bestätigt am ' + esc(datumDE(am)) + '.</div></div>'
+          : '<label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#211D17;line-height:1.5;cursor:pointer"><input type="checkbox" id="wb-regeln-cb" style="width:auto;margin-top:3px"> <span>' + esc(R.bestaetigung) + '</span></label>' +
+            '<button class="btn-primary" id="wb-regeln-btn" style="margin-top:12px" disabled>Bestätigen</button>') +
+        '<p class="pt-info">Die Bestätigung wird nur auf diesem Gerät gemerkt, nicht am Server. Fragen zu den Regeln? Sprich mit der Chefin.</p></div>' +
+        '<button class="nav-card pm-modul" data-wb-reden><div class="nav-icon" style="margin:0">💬</div><div><div class="nav-title">Wörni etwas zu den Regeln fragen</div><div class="nav-desc">z. B. „Wie melde ich mich krank?“</div></div></button>';
+      var cb = el.querySelector('#wb-regeln-cb'), btn = el.querySelector('#wb-regeln-btn');
+      if (cb && btn) {
+        cb.onchange = function () { btn.disabled = !cb.checked; };
+        btn.onclick = function () { var d = lesen(); d.regeln = { stand: R.stand, am: new Date().toISOString().slice(0, 10) }; schreiben(d); self.regelnZeichnen(el, ziele); };
+      }
+      var r = el.querySelector('[data-wb-reden]'); if (r) r.onclick = function () { if (ziele && ziele.woerni) ziele.woerni(); };
     },
 
     // Modul „Probezeit“

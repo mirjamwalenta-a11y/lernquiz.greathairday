@@ -586,6 +586,13 @@ body.mit-leiste .leiste{display:flex}
   <p class="sub">Von deinem ersten Tag bis zur LAP. Frag mich, was du wissen willst, oder lass dir die App erklären.</p>
   <div id="wb-inhalt"></div>
 </div>
+<div id="p-regeln" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Wörni</div>
+  <h1>📋 Unsere Verhaltensregeln</h1>
+  <p class="sub">A Great Hair Day Team · Krankmeldungen, Urlaubsanträge, Pausen sowie Hygiene- und Bekleidungsrichtlinien.</p>
+  <div id="rg-inhalt"></div>
+</div>
 <div id="p-probezeit" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
   <div class="tag">greathairday · Wörni</div>
@@ -5827,6 +5834,7 @@ function woerniPhase() {
 }
 var WB_ZIELE = {
   probezeit: function(){ probezeitOeffnen(); },
+  regeln: function(){ regelnOeffnen(); },
   woerni: function(){ woerniOeffnen(); },
   quiz: function(){ zeige('quiz'); },
   quizkurz: function(){ window.location.href = LQ_LOGIN; },
@@ -5844,6 +5852,11 @@ var WB_ZIELE = {
 function woerniOeffnen() {
   zeige('woerni');
   var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.seiteZeichnen(document.getElementById('wb-inhalt'), woerniPhase(), WB_ZIELE); };
+  if (window.WOERNI_BEGLEITER) los(); else document.addEventListener('DOMContentLoaded', los);
+}
+function regelnOeffnen() {
+  zeige('regeln');
+  var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.regelnZeichnen(document.getElementById('rg-inhalt'), WB_ZIELE); };
   if (window.WOERNI_BEGLEITER) los(); else document.addEventListener('DOMContentLoaded', los);
 }
 function probezeitOeffnen() {
@@ -5940,6 +5953,7 @@ zeige = function(seite) {
   if (!sprung && hz.has('sortieren')) sprung = function(){ sortierenOeffnen(hz.get('sortieren')); };
   if (!sprung && hz.has('woerni')) sprung = function(){ woerniOeffnen(); };
   if (!sprung && hz.has('probezeit')) sprung = function(){ probezeitOeffnen(); };
+  if (!sprung && hz.has('regeln')) sprung = function(){ regelnOeffnen(); };
   if (sprung) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
     sprung();
@@ -5956,7 +5970,8 @@ zeige = function(seite) {
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: „Kurz sortieren“ (docs/woerni-v1.md) -->
 <script src="woerni-diagnose.js?v=20261119b"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
-<script src="woerni-begleiter.js?v=20261120a"></script>  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
+<script src="salon-regeln.js?v=20261120a"></script>  <!-- Verhaltensregeln des Salons (Wörni erklärt sie) -->
+<script src="woerni-begleiter.js?v=20261120d"></script>  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
 <script>
 // „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
 // Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten
@@ -5989,6 +6004,11 @@ function woerniStartFuellen(){
   try{
     var w=document.getElementById('woerni-sagt'); if(!w) return;
     var html='';
+    // Ganz am Anfang: Wörni stellt sich als persönlicher Coach vor (bis „Los geht’s“ o. ä.)
+    if(window.WOERNI_BEGLEITER&&ST.lehrling){
+      html=WOERNI_BEGLEITER.vorstellungHTML();
+      if(html){ w.innerHTML=html; WOERNI_BEGLEITER.startKarteBinden(w, WB_ZIELE, woerniStartFuellen); return; }
+    }
     if(window.WOERNI&&ST.lehrling&&ST.verlauf&&ST.verlauf.length&&ST.verlauf[0].erstellt_am){
       var letzte=ST.verlauf[0].erstellt_am, tage=Math.floor((Date.now()-new Date(letzte).getTime())/86400000);
       if(tage>=7) html=WOERNI.einstieg(String(letzte).slice(0,10));
