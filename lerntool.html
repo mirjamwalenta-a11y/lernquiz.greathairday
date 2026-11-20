@@ -398,6 +398,7 @@ body.mit-leiste .leiste{display:flex}
       <button class="st-kachel" onclick="zeige('b-lernplan')"><div class="st-ic">📅</div><div class="st-t">Lernplan &amp; Tipps</div><div class="st-d">Lernplan, Lerntipps, Englisch</div></button>
       <button class="st-kachel st-breit" onclick="zeige('b-visagistik')"><div class="st-ic">💄</div><div><div class="st-t">Visagistik</div><div class="st-d">Make-up-Labor, Farbtyp, Formwirkung im Gesicht</div></div></button>
       <button class="st-kachel st-breit" onclick="window.location.href='wissensbank.html?v=20261120a'"><div class="st-ic">🗂</div><div><div class="st-t">Wissensbank</div><div class="st-d">Nachschauen: Handwerk und Betrieb, aus dem Mitarbeiterhandbuch</div></div></button>
+      <button class="st-kachel st-breit" onclick="woerniOeffnen()"><div class="st-ic">💬</div><div><div class="st-t">Wörni – dein Begleiter</div><div class="st-d">Frag Wörni, Probezeit, App erklärt: von Tag 1 bis zur LAP</div></div></button>
       <button class="st-kachel st-breit" onclick="sortierenOeffnen()"><div class="st-ic">🧭</div><div><div class="st-t">Kurz sortieren</div><div class="st-d">Nervös, Fehler gemacht, unsicher? In einer Minute zum nächsten Schritt</div></div></button>
       <button class="st-kachel st-breit" onclick="diagnoseOeffnen()"><div class="st-ic">🔎</div><div><div class="st-t">Woran liegt's?</div><div class="st-d">Farbe zu warm, Übergang sichtbar, Blondierung fleckig? Wörni findet mit dir die Ursache</div></div></button>
     </div>
@@ -575,6 +576,22 @@ body.mit-leiste .leiste{display:flex}
   <h1>🧭 Kurz sortieren</h1>
   <p class="sub">Wähl, was gerade passt. Danach weißt du deinen nächsten Schritt.</p>
   <div id="so-inhalt"></div>
+</div>
+
+<!-- ── WÖRNI – DEIN BEGLEITER (woerni-begleiter.js, docs/woerni-begleiter-v1.md) ── -->
+<div id="p-woerni" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Wörni</div>
+  <h1>💬 Wörni – dein Begleiter</h1>
+  <p class="sub">Von deinem ersten Tag bis zur LAP. Frag mich, was du wissen willst, oder lass dir die App erklären.</p>
+  <div id="wb-inhalt"></div>
+</div>
+<div id="p-probezeit" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Wörni</div>
+  <h1>🌱 Deine Probezeit</h1>
+  <p class="sub">Wozu die ersten drei Monate da sind, wie die Lehre wirklich aussieht und warum unsere Standards wichtig sind.</p>
+  <div id="pz-inhalt"></div>
 </div>
 
 <!-- ── WORAN LIEGT'S? (Wörni, woerni-diagnose.js) ── -->
@@ -4723,7 +4740,10 @@ async function stLaden() {
     var uid = s.data && s.data.session ? s.data.session.user.id : null;
     if (!uid) { ST.lehrling = null; return; }
     document.getElementById('st-abmelden').hidden = false;
-    var l = await sb2.from('lehrlinge').select('id,name,lehrjahr,wochenziel').eq('user_id', uid).maybeSingle();
+    // lehrbeginn nur für Wörnis Phase (Probezeit, Lehrjahr, LAP), wird nirgends gespeichert
+    var l = await sb2.from('lehrlinge').select('id,name,lehrjahr,wochenziel,lehrbeginn').eq('user_id', uid).maybeSingle();
+    // Ohne Migration 20261107_lehrlinge_lehrbeginn.sql gibt es die Spalte noch nicht
+    if (l.error && /lehrbeginn/.test(l.error.message || '')) l = await sb2.from('lehrlinge').select('id,name,lehrjahr,wochenziel').eq('user_id', uid).maybeSingle();
     // Ohne Migration 20261107_lehrlinge_wochenziel.sql gibt es die Spalte noch nicht
     if (l.error && /wochenziel/.test(l.error.message || '')) l = await sb2.from('lehrlinge').select('id,name,lehrjahr').eq('user_id', uid).maybeSingle();
     ST.lehrling = l.data || null;
@@ -5798,6 +5818,40 @@ function sortierenOeffnen(situation) {
   sortierenZeichnen(situation);
 }
 
+// Wörni · Begleiter von Tag 1 bis zur LAP (woerni-begleiter.js): Impuls der Phase,
+// „Frag Wörni“ (feste Antworten, nichts gespeichert), App-Lotse, Modul Probezeit.
+// Phase aus Lehrbeginn bzw. Lehrjahr, nur hier im Browser gerechnet.
+function woerniPhase() {
+  var l = ST.lehrling || {};
+  return WOERNI_BEGLEITER.phase(l.lehrbeginn ? String(l.lehrbeginn).slice(0, 10) : '', l.lehrjahr || LEHRJAHR);
+}
+var WB_ZIELE = {
+  probezeit: function(){ probezeitOeffnen(); },
+  woerni: function(){ woerniOeffnen(); },
+  quiz: function(){ zeige('quiz'); },
+  quizkurz: function(){ window.location.href = LQ_LOGIN; },
+  wiederholen: function(){ stWiederholenOeffnen(); },
+  lernfaelle: function(){ lfOeffnen(); },
+  farbfaelle: function(){ fflOeffnen(); },
+  praxis: function(){ zeige('praxis'); },
+  lernplan: function(){ zeige('lernplan'); },
+  tipps: function(){ zeige('fortschritt'); },
+  progress: function(){ zeige('progress'); },
+  lap: function(){ zeige('lap'); },
+  sortieren: function(){ sortierenOeffnen(); },
+  diagnose: function(){ diagnoseOeffnen(); }
+};
+function woerniOeffnen() {
+  zeige('woerni');
+  var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.seiteZeichnen(document.getElementById('wb-inhalt'), woerniPhase(), WB_ZIELE); };
+  if (window.WOERNI_BEGLEITER) los(); else document.addEventListener('DOMContentLoaded', los);
+}
+function probezeitOeffnen() {
+  zeige('probezeit');
+  var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.probezeitZeichnen(document.getElementById('pz-inhalt'), WB_ZIELE); };
+  if (window.WOERNI_BEGLEITER) los(); else document.addEventListener('DOMContentLoaded', los);
+}
+
 // Wörni · „Woran liegt's?“ (woerni-diagnose.js): typischer Fehler → 2–3 Fragen →
 // wahrscheinliche Ursache, „beim nächsten Mal“ und Lernschritt. Ohne KI, nichts gespeichert.
 function diagnoseZiele(komp) {
@@ -5884,6 +5938,8 @@ zeige = function(seite) {
   if (!sprung && SEITEN.indexOf(hz.get('seite')) >= 0) sprung = function(){ zeige(hz.get('seite')); };
   if (!sprung && MODULE[hz.get('modul')]) sprung = function(){ MODULE[hz.get('modul')](); };
   if (!sprung && hz.has('sortieren')) sprung = function(){ sortierenOeffnen(hz.get('sortieren')); };
+  if (!sprung && hz.has('woerni')) sprung = function(){ woerniOeffnen(); };
+  if (!sprung && hz.has('probezeit')) sprung = function(){ probezeitOeffnen(); };
   if (sprung) {
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
     sprung();
@@ -5896,10 +5952,11 @@ zeige = function(seite) {
 <script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 <script src="leichte-sprache-lt.js?v=20261116a"></script>  <!-- „Einfacher erklärt“ im Themen-Quiz und bei LAP-Fragen -->
 <script src="praxis-fotos.js?v=20261116d"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
-<script src="woernis-tipps.js?v=20261115"></script>
+<script src="woernis-tipps.js?v=20261120a"></script>
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1 (docs/woerni-v1.md) -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: „Kurz sortieren“ (docs/woerni-v1.md) -->
 <script src="woerni-diagnose.js?v=20261119b"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
+<script src="woerni-begleiter.js?v=20261120a"></script>  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
 <script>
 // „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
 // Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten
@@ -5937,8 +5994,12 @@ function woerniStartFuellen(){
       if(tage>=7) html=WOERNI.einstieg(String(letzte).slice(0,10));
       if(html) html='<aside aria-label="Wörni" style="background:#F3EBD9;border:1px solid #E4DBC5;border-left:4px solid #896C32;border-radius:12px;padding:12px 14px;margin:0 0 16px">'+html.replace('woerni-zeile frei"','woerni-zeile frei" style="margin:0"')+'</aside>';
     }
+    // Begleiter-Impuls der Phase (Probezeit: täglich, danach wöchentlich), bis „Gelesen“
+    var begleiter=false;
+    if(!html&&window.WOERNI_BEGLEITER&&ST.lehrling){ html=WOERNI_BEGLEITER.startKarteHTML(woerniPhase()); begleiter=!!html; }
     if(!html&&window.woerniSagtHTML) html=woerniSagtHTML();
     w.innerHTML=html;
+    if(begleiter) WOERNI_BEGLEITER.startKarteBinden(w, WB_ZIELE, woerniStartFuellen);
   }catch(e){}
 }
 woerniStartFuellen();

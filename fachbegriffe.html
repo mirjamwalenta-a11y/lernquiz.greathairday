@@ -125,6 +125,8 @@ mark{background:var(--soft);color:inherit;border-radius:3px;padding:0 1px}
     }).join('') : '<p class="leer">Nichts gefunden. Probier ein anderes Wort, z. B. „Farbe“ oder „Haar“.</p>';
   }
   document.getElementById('q').addEventListener('input', function () { q = norm(this.value.trim()); zeichnen(); });
+  // ?q=… (z. B. von „Frag Wörni“): Suche gleich vorbelegen
+  try { var startQ = (new URLSearchParams(location.search).get('q') || '').slice(0, 100).trim(); if (startQ) { document.getElementById('q').value = startQ; q = norm(startQ); } } catch (e) {}
   zeichnen();
 })();
 </script>
