@@ -548,8 +548,10 @@ const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1};
 function vorbild(zeigen){
   const ok=zeigen&&NACHHER[form];
   $('#vorbild').hidden=!ok;
-  if(ok&&ansicht==='gesicht'){ $('#vorbild-bild').src='bilder/makeup/nachher-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
-  else if(ok){ $('#vorbild-bild').src='bilder/makeup/augen-nachher-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild Augen-Make-up: '+FORMEN[form].n; }
+  // Vorbilder (KI-generiert, alle gleich groß): ganzes Gesicht und Augenpartie, jeweils mit geschlossenen oder offenen Augen
+  const zuB=ansicht!=='offen'?'zu-':'';
+  if(ok&&ansicht==='gesicht'){ $('#vorbild-bild').src='bilder/makeup/nachher-zu-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
+  else if(ok){ $('#vorbild-bild').src='bilder/makeup/augen-nachher-'+zuB+form+'.jpg'; $('#vorbild-bild').alt='Vorbild Augen-Make-up: '+FORMEN[form].n; }
 }
 function neu(){vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
