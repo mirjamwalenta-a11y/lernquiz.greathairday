@@ -7,6 +7,9 @@ Wörni ist in V1 ein ruhiger Lernbegleiter, kein Motivations- oder Pop-up-Tool.
 (Die „Wörnis Tipps“ / „Wörni sagt“-Sprüche in `woernis-tipps.js` bleiben davon
 getrennt; der KI-Trainer „Agent Wörni“ ist ebenfalls etwas anderes.)
 
+**Seit 2026-11-20:** Wörni als Begleiter von Tag 1 bis zur LAP (Impulse je
+Phase, Modul Probezeit, „Frag Wörni“, App-Lotse): `docs/woerni-begleiter-v1.md`.
+
 ## Leitlinien
 
 1. **Wörni begleitet, er unterbricht nicht.** Kurz, sparsam, passend zum Moment.

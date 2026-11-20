@@ -186,6 +186,8 @@ mark{background:var(--soft);color:inherit;border-radius:3px;padding:0 1px}
       return a;
     });
     document.getElementById('suche').hidden = false;
+    // ?q=… (z. B. von „Frag Wörni“): Suche gleich vorbelegen
+    try { var startQ = (new URLSearchParams(location.search).get('q') || '').slice(0, 100).trim(); if (startQ) { document.getElementById('q').value = startQ; q = norm(startQ); } } catch (e) {}
     kategorienZeichnen();
     zeichnen();
   }

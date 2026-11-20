@@ -131,12 +131,15 @@ window.WOERNIS_TIPPS = [
     var st = document.createElement('style'); st.id = 'woerni-css'; st.textContent = CSS; document.head.appendChild(st);
   }
 
-  function karte(t, wer) {
+  // extraHTML: fertiges HTML, das die aufrufende Stelle selbst escaped hat (z. B. Links des Begleiters)
+  function karte(t, wer, extraHTML) {
     cssEinmal();
     var bild = t.bild && WOERNI_BILDER[t.bild] ? WOERNI_BILDER[t.bild]() : '';
     return '<aside class="woerni" aria-label="' + esc(wer) + '"><div class="woerni-ich" aria-hidden="true">W</div><div class="woerni-txt">' +
-      '<p class="woerni-wer">' + esc(wer) + '</p><p class="woerni-titel">' + esc(t.titel) + '</p><p class="woerni-text">' + esc(t.text) + '</p>' + bild + '</div></aside>';
+      '<p class="woerni-wer">' + esc(wer) + '</p><p class="woerni-titel">' + esc(t.titel) + '</p><p class="woerni-text">' + esc(t.text) + '</p>' + bild + (extraHTML || '') + '</div></aside>';
   }
+  // Gleiche Karte für den Begleiter (woerni-begleiter.js)
+  window.woerniKarteHTML = karte;
 
   // Spruch des Tages: wechselt jeden Tag, für alle gleich
   window.woerniSagtHTML = function () {
