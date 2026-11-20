@@ -376,6 +376,7 @@ let partie='gesamt';
 const partieAn=()=>ansicht==='gesicht'&&partie!=='gesamt';
 const PINSEL={B:{name:'Verblenden',ic:'〰️'},E:{name:'Radierer',ic:'🧽'}};
 const PGROESSE={H:9,C:7,R:9,L:3.5,M:3,D:2.5,P:2,B:6,E:5}, LICHT=['H','L'];
+const PSTAERKE=[['Fein',.35],['Mittel',1],['Breit',1.7]];
 let modus='stellen', pg={deck:60,weich:6}, LW=null, pinselIst={}, pinselFehltAn=false;
 const pgr={}, verlauf=[], benutzt=new Set();
 let form='oval', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
@@ -559,13 +560,18 @@ function pinselReglerZeigen(){
   const box=$('#pinsel');
   if(modus!=='pinsel'){ box.hidden=true; return; }
   box.hidden=false;
-  const g=pgr[werkzeug]||PGROESSE[werkzeug]||5;
+  const g=pgr[werkzeug]||PGROESSE[werkzeug]||5, std=PGROESSE[werkzeug]||5;
+  // Pinselstärke: Fein, Mittel, Breit – bezogen auf die übliche Größe des Produkts
+  const staerken=PSTAERKE.map(([n,f])=>[n,Math.max(.5,Math.round(std*f*2)/2)]);
   box.innerHTML=`<div class="lab">Pinsel: ${esc((ALLE_WERKZEUGE[werkzeug]||PINSEL[werkzeug]).name)}</div>`+
-    `<label class="regel"><span>Größe</span><input type="range" id="pg-g" min="1" max="25" step=".5" value="${g}"><b id="pw-g">${g}</b></label>`+
+    `<div class="chips" role="group" aria-label="Pinselstärke">${staerken.map(([n,v])=>`<button class="chip" data-pst="${v}" aria-pressed="${g===v}">${esc(n)}</button>`).join('')}</div>`+
+    `<label class="regel"><span>Größe</span><input type="range" id="pg-g" min=".5" max="25" step=".5" value="${g}"><b id="pw-g">${g}</b></label>`+
     `<label class="regel"><span>Deckkraft</span><input type="range" id="pg-d" min="10" max="100" step="5" value="${pg.deck}"><b id="pw-d">${pg.deck}%</b></label>`+
     `<label class="regel"><span>Weichheit</span><input type="range" id="pg-w" min="1" max="9" step="1" value="${pg.weich}"><b id="pw-w">${pg.weich}</b></label>`+
     `<div class="chips"><button class="btn ghost" id="pg-zurueck"${verlauf.length?'':' disabled'}>Rückgängig</button></div>`;
-  $('#pg-g').oninput=e=>{pgr[werkzeug]=+e.target.value;$('#pw-g').textContent=e.target.value;};
+  const setzeG=v=>{pgr[werkzeug]=v;$('#pg-g').value=v;$('#pw-g').textContent=v;box.querySelectorAll('[data-pst]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.pst===v));};
+  box.querySelectorAll('[data-pst]').forEach(b=>b.onclick=()=>setzeG(+b.dataset.pst));
+  $('#pg-g').oninput=e=>setzeG(+e.target.value);
   $('#pg-d').oninput=e=>{pg.deck=+e.target.value;$('#pw-d').textContent=e.target.value+'%';};
   $('#pg-w').oninput=e=>{pg.weich=+e.target.value;$('#pw-w').textContent=e.target.value;};
   $('#pg-zurueck').onclick=rueckgaengig;
