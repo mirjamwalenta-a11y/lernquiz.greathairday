@@ -133,6 +133,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 #cv-schatten{mix-blend-mode:multiply}
 .tipp:hover{fill:rgba(137,108,50,.14)}
 .produkt{stroke-width:1}
+.leinwand.ohne canvas,.leinwand.ohne .produkt{visibility:hidden}
 .fehlt{fill:none;stroke-width:2;stroke-dasharray:5 4;vector-effect:non-scaling-stroke}
 .auswahl{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:3 4;vector-effect:non-scaling-stroke}
 .regler{display:grid;gap:6px;background:var(--surface-2);border-radius:8px;padding:12px}
@@ -193,6 +194,7 @@ a.btn{display:inline-block;text-decoration:none}
           <span class="ki-zeile" style="display:block;text-align:center;margin-top:4px">Vorbild</span>
         </figure>
         </div>
+        <button class="btn ghost" id="ohne" aria-pressed="false" style="touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none" title="Gedrückt halten: das Gesicht kurz ohne Make-up sehen">Gedrückt halten: ohne Make-up</button>
         <span class="ki-zeile">KI-generiert</span>
       <div class="panel">
         <div>
@@ -592,8 +594,8 @@ function chips(){
 }
 
 // ── Prüfen ──────────────────────────────────────────────────────────────────
-function pruefen(gesetzt=window.__gesetzt(), hinweise=[]){
-  const f=regeln(), Z=zonen(), WERKZEUG=ALLE_WERKZEUGE, gut=[], fehlt=[], falsch=[], extra=[];
+function pruefen(gesetzt=window.__gesetzt(), hinweise=[], kontur=[]){
+  const f=regeln(), Z=zonen(), WERKZEUG=ALLE_WERKZEUGE, gut=[], fehlt=[], falsch=[...kontur], extra=[];
   Object.entries(f.soll).forEach(([z,t])=>{
     const ist=gesetzt[z], name=Z[z].n;
     if(ist===t) gut.push(`${WERKZEUG[t].ic} ${name}: ${f.warum[z]}`);
@@ -617,6 +619,15 @@ function pruefen(gesetzt=window.__gesetzt(), hinweise=[]){
   zeichnen(true);
 }
 window.__gesetzt=()=>gesetzt;
+// „Ohne Make-up“: solange gedrückt, die ungeschminkte Zeichnung zeigen (Vorher/Nachher)
+(function(){
+  const k=$('#ohne'), an=v=>{ $('#leinwand').classList.toggle('ohne',v); k.setAttribute('aria-pressed',v); };
+  k.addEventListener('pointerdown',e=>{ e.preventDefault(); an(true); try{k.setPointerCapture(e.pointerId);}catch(_){} });
+  ['pointerup','pointercancel','lostpointercapture','blur'].forEach(n=>k.addEventListener(n,()=>an(false)));
+  k.addEventListener('keydown',e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); an(true); } });
+  k.addEventListener('keyup',()=>an(false));
+  k.addEventListener('contextmenu',e=>e.preventDefault());
+})();
 $('#pruefen').onclick=()=>modus==='pinsel'?pinselPruefen():pruefen();
 $('#loesung').onclick=()=>{vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
 $('#leeren').onclick=()=>{vorbild(false);if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
@@ -742,6 +753,8 @@ function zoneEllipsen(id,faktor){
   return (z.paar?[-1,1]:[1]).map(seite=>{ const q=zonePos(z,f,seite,e), K=LW.K, a=-((z.rot||0)*seite)*Math.PI/180;
     return {cx:(q.x-LW.vb.x)*K, cy:(q.y-LW.vb.y)*K, rx:Math.max(q.rx,2)*K*faktor, ry:Math.max(q.ry,1.5)*K*faktor, co:Math.cos(a), si:Math.sin(a)}; });
 }
+// Erlaubter Bereich um die Lippen bzw. die Lidschatten-Stellen: [Faktor Breite, Faktor Höhe, erlaubter Anteil außerhalb]
+const KONTUR={lippen:[1.25,2.2,.08],augen:[1.5,2.2,.08]};
 const inEll=(E,x,y)=>{ const dx=x-E.cx, dy=y-E.cy, u=dx*E.co-dy*E.si, v=dx*E.si+dy*E.co; return u*u/(E.rx*E.rx)+v*v/(E.ry*E.ry)<=1; };
 function mittelIn(d,E){
   const R=Math.max(E.rx,E.ry), st=Math.max(1,Math.floor(R/14)); let sum=0,n=0;
@@ -785,8 +798,19 @@ function pinselPruefen(){
     else if(ges>255*20&&!zonenT.length&&!t.match(/[LMD]/)) hinweise.push(`${n}: wird hier nicht gebraucht.`);
     if('HCR'.includes(t)&&bemalt>30&&hart/bemalt>.08) hinweise.push(`${n}: Man sieht noch Kanten – mit „Verblenden“ weich ausstreichen.`);
   });
+  // Saubere Kontur (Zwischenprüfung: „Lippen ungenau oder über die Kontur gemalt“, „Augen-Make-up ungenau“)
+  const kontur=[], lid=Object.keys(r.soll).filter(id=>'LMD'.includes(r.soll[id]));
+  [['P',Object.keys(r.soll).filter(id=>r.soll[id]==='P'),KONTUR.lippen,'Lippenstift: Über die Lippenkontur gemalt – bei der Prüfung ein Fehler. Kontur mit feinem Pinsel genau nachziehen, Überstand mit dem Radierer wegnehmen.'],
+   ['LMD',lid,KONTUR.augen,'Lidschatten: Die Farbe läuft über die Augenpartie hinaus (z. B. auf die Braue oder unter das Auge). Sauber in der Form arbeiten und nach außen weich auslaufen lassen.']
+  ].forEach(([ts,ids,[fx,fy,grenze],text])=>{
+    const E=ids.flatMap(id=>zoneEllipsen(id,1).map(e=>Object.assign({},e,{rx:e.rx*fx,ry:e.ry*fy})));
+    let ges=0,aus=0;
+    [...ts].forEach(t=>{ const d=daten[t]; if(!d||!E.length) return;
+      for(let y=0;y<LW.H;y+=2) for(let x=0;x<LW.W;x+=2){ const a=d[(y*LW.W+x)*4+3]; if(a<12) continue; ges+=a; if(!E.some(e=>inEll(e,x,y))) aus+=a; } });
+    if(ges>255*8&&aus/ges>grenze){ kontur.push(text); for(let i=hinweise.length-1;i>=0;i--) if([...ts].some(t=>hinweise[i].startsWith(ALLE_WERKZEUGE[t].name+': Viel Farbe'))) hinweise.splice(i,1); }
+  });
   pinselIst=ist; pinselFehltAn=true;
-  pruefen(ist,hinweise);
+  pruefen(ist,hinweise,kontur);
 }
 // Weichzeichnen beim Übertragen (Canvas-Filter, sonst verkleinern und wieder vergrößern)
 const FILTER_OK=(()=>{ try{ const c=document.createElement('canvas').getContext('2d'); c.filter='blur(2px)'; return c.filter==='blur(2px)'; }catch(e){ return false; } })();
