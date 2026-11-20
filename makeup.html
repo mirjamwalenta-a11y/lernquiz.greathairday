@@ -147,6 +147,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 .lab{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 ul.rm{margin:4px 0 8px;padding-left:18px;font-size:14px;display:grid;gap:4px}
 .formen-liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.formen-liste>.panel{align-content:start}
 a.btn{display:inline-block;text-decoration:none}
 </style>
 <link rel="stylesheet" href="lern-stil.css?v=20261107g">  <!-- gemeinsames Aussehen der Lern-Seiten -->
@@ -653,6 +654,7 @@ function pinselReglerZeigen(){
     `<label class="regel"><span>Größe</span><input type="range" id="pg-g" min=".5" max="25" step=".5" value="${g}"><b id="pw-g">${g}</b></label>`+
     `<label class="regel"><span>Deckkraft</span><input type="range" id="pg-d" min="10" max="100" step="5" value="${pg.deck}"><b id="pw-d">${pg.deck}%</b></label>`+
     `<label class="regel"><span>Weichheit</span><input type="range" id="pg-w" min="1" max="9" step="1" value="${pg.weich}"><b id="pw-w">${pg.weich}</b></label>`+
+    (stiftErkannt?`<p class="muted" style="font-size:13px">✏️ Stift erkannt: Leicht aufsetzen gibt wenig Farbe, fester drücken mehr – wie mit einem echten Pinsel.</p>`:'')+
     `<div class="chips"><button class="btn ghost" id="pg-zurueck"${verlauf.length?'':' disabled'}>Rückgängig</button></div>`;
   const setzeG=v=>{pgr[werkzeug]=v;$('#pg-g').value=v;$('#pw-g').textContent=v;box.querySelectorAll('[data-pst]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.pst===v));};
   box.querySelectorAll('[data-pst]').forEach(b=>b.onclick=()=>setzeG(+b.dataset.pst));
@@ -718,15 +720,19 @@ function verblenden(x,y,r,staerke){
     cc.putImageData(img,ax,ay);
   });
 }
+// Stift-Druck (Tablet mit Stift): fester drücken = mehr Farbe und etwas breiter. Maus und Finger: wie bisher.
+let stiftErkannt=false;
+function druckVon(ev){ if(ev.pointerType!=='pen'||!(ev.pressure>0)) return 1; if(!stiftErkannt){ stiftErkannt=true; pinselReglerZeigen(); } return ev.pressure*2; }
 function auftragen(p){
-  const t=werkzeug, r=(pgr[t]||PGROESSE[t])*LW.K, dichte=pg.deck/100;
+  const t=werkzeug, d=p.d==null?1:Math.min(2,Math.max(.1,p.d)), r=(pgr[t]||PGROESSE[t])*LW.K*(.75+.25*d), dichte=Math.min(1,pg.deck/100*(.25+.75*d));
   if(t==='B') verblenden(p.x,p.y,r,.15+.25*dichte);
   else if(t==='E') benutzt.forEach(u=>{ const cc=LW.lagen[u].getContext('2d'); cc.globalCompositeOperation='destination-out'; tupfer(cc,p.x,p.y,r,'0,0,0',.1+.35*dichte,pg.weich); cc.globalCompositeOperation='source-over'; });
   else { tupfer(LW.lagen[t].getContext('2d'),p.x,p.y,r,ALLE_WERKZEUGE[t].rgb,.02+.12*dichte,pg.weich); benutzt.add(t); }
 }
 function strecke(a,b){
   const r=(pgr[werkzeug]||PGROESSE[werkzeug])*LW.K, d=Math.hypot(b.x-a.x,b.y-a.y), n=Math.max(1,Math.floor(d/Math.max(1,r*.25)));
-  for(let i=1;i<=n;i++) auftragen({x:a.x+(b.x-a.x)*i/n, y:a.y+(b.y-a.y)*i/n});
+  const da=a.d==null?1:a.d, db=b.d==null?1:b.d;
+  for(let i=1;i<=n;i++) auftragen({x:a.x+(b.x-a.x)*i/n, y:a.y+(b.y-a.y)*i/n, d:da+(db-da)*i/n});
 }
 function schnappschuss(ts){
   const snap={}; ts.forEach(t=>{ const c=LW.lagen[t]; snap[t]=c.getContext('2d').getImageData(0,0,c.width,c.height); });
@@ -745,11 +751,14 @@ function rueckgaengig(){
     if(modus!=='pinsel') return; ev.preventDefault(); leinwandBereit();
     const t=werkzeug; schnappschuss(t==='B'||t==='E'?[...benutzt]:[t]);
     try{cv.setPointerCapture(ev.pointerId);}catch(e){}
-    strich=punkt(ev); auftragen(strich); anzeigen();
+    strich=Object.assign(punkt(ev),{d:druckVon(ev)}); auftragen(strich); anzeigen();
     if(pinselFehltAn){ pinselIst={}; pinselFehltAn=false; $('#rueckmeldung').innerHTML=''; zeichnen(); }
   });
   cv.addEventListener('pointermove',ev=>{
-    if(!strich) return; const p=punkt(ev); strecke(strich,p); strich=p;
+    if(!strich) return;
+    // Beim Stift liefert der Browser Zwischenpunkte – so wird der Strich glatter und der Druck genauer
+    const evs=(ev.pointerType==='pen'&&ev.getCoalescedEvents&&ev.getCoalescedEvents().length)?ev.getCoalescedEvents():[ev];
+    evs.forEach(e=>{ const p=Object.assign(punkt(e),{d:druckVon(e)}); strecke(strich,p); strich=p; });
     if(!rahmen) rahmen=requestAnimationFrame(()=>{ rahmen=0; anzeigen(); });
   });
   const ende=()=>{ if(strich){ strich=null; anzeigen(); pinselReglerZeigen(); } };
