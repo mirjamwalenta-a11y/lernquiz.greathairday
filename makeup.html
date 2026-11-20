@@ -200,8 +200,17 @@ a.btn{display:inline-block;text-decoration:none}
         </figure>
         </div>
         <button class="btn ghost" id="ohne" aria-pressed="false" style="touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none" title="Gedrückt halten: das Gesicht kurz ohne Make-up sehen">Gedrückt halten: ohne Make-up</button>
+        <div id="uhr-anzeige" hidden></div>
         <span class="ki-zeile">KI-generiert</span>
       <div class="panel">
+        <div>
+          <div class="lab">Übungsauftrag</div>
+          <div class="chips">
+            <button class="btn" id="auftrag-neu">Neuer Kundinnen-Auftrag</button>
+            <button class="btn ghost" id="uhr-knopf">⏱ Auf Zeit üben (13 Min.)</button>
+          </div>
+          <div id="auftrag-karte" style="margin-top:8px"></div>
+        </div>
         <div>
           <div class="lab">Modus</div>
           <div class="chips" id="modi"></div>
@@ -485,7 +494,7 @@ function zeichnen(markierung){
   }
   const zf=svg.viewBox.baseVal.width/f.B[0]; // Vergrößerung: Tippflächen mitskalieren
   const nurZonen=partieAn()?PARTIEN[partie].zonen:null;
-  svg.setAttribute('aria-label',(augen()?'Augenpartie':'Gesicht')+' zum Schminken'+(ansicht==='offen'?'':': '+FORMEN[form].n));
+  svg.setAttribute('aria-label',(augen()?'Augenpartie':'Gesicht')+' zum Schminken'+(ansicht==='offen'||(auftrag&&!auftrag.geloest)?'':': '+FORMEN[form].n));
   // Weich verblendet: Verlauf von der Mitte nach außen plus Weichzeichner, keine Kontur
   let s='<defs>'+[1,2,3,4,5,6,7,8,9].map(n=>`<filter id="weich-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*1.1}"/></filter><filter id="weicha-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*.45}"/></filter>`).join('')+
     Object.entries(ALLE_WERKZEUGE).map(([k,w])=>`<radialGradient id="vl-${k}"><stop offset="0" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${w.rgb})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${w.rgb})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
@@ -579,7 +588,7 @@ function chips(){
   $('#partie-box').hidden=ansicht!=='gesicht';
   $('#partien').innerHTML=Object.entries(PARTIEN).map(([k,v])=>knopf('partie',k,v.n,k===partie)).join('');
   document.querySelectorAll('[data-partie]').forEach(b=>b.onclick=()=>{partie=b.dataset.partie;auswahl=null;chips();zeichnen(pinselFehltAn);reglerZeigen();anzeigen();});
-  $('#formen').innerHTML=ansicht==='offen'?'':Object.keys(FORMEN).map(k=>knopf('form',k,FORMEN[k].n,k===form)).join('');
+  $('#formen').innerHTML=ansicht==='offen'?'':Object.keys(FORMEN).map(k=>knopf('form',k,FORMEN[k].n,auftrag?k===auftrag.wahl:k===form)).join('');
   $('#formen-lab').hidden=ansicht==='offen';
   $('#werkzeuge').innerHTML=Object.entries(W).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
   $('#paletten').innerHTML=knopf('palette','natur','Natürlich',palette==='natur')+Object.entries(PALETTEN).map(([k,v])=>knopf('palette',k,v.n,k===palette)).join('');
@@ -595,9 +604,9 @@ function chips(){
   $('#paletten-vorschau').innerHTML=P?[['Lippen',P.lippen],['Augen',P.augen],['Rouge',P.rouge]].map(([n,l])=>`<span class="chip" style="cursor:default">${l.map(x=>punkt(x[1])).join('')}${n}</span>`).join(''):'';
   document.querySelectorAll('[data-palette]').forEach(b=>b.onclick=()=>{paletteSetzen(b.dataset.palette);chips();zeichnen();anzeigen();});
   document.querySelectorAll('[data-farbe]').forEach(b=>b.onclick=()=>{farbwahl[werkzeug]=+b.dataset.farbe;farbeAnwenden(werkzeug);chips();zeichnen();anzeigen();});
-  $('#form-info').textContent='Ziel: '+regeln().ziel;
+  $('#form-info').textContent=auftrag&&!auftrag.geloest?'Auftrag: Welche Gesichtsform hat die Kundin? Schau dir die Zeichnung an und tippe die passende Form an.':'Ziel: '+regeln().ziel;
   document.querySelectorAll('[data-ansicht]').forEach(b=>b.onclick=()=>{ansicht=b.dataset.ansicht;neu();});
-  document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{form=b.dataset.form;neu();});
+  document.querySelectorAll('[data-form]').forEach(b=>b.onclick=()=>{ if(auftrag){ auftrag.wahl=b.dataset.form; chips(); return; } form=b.dataset.form;neu();});
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{werkzeug=b.dataset.w;chips();});
 }
 
@@ -627,6 +636,68 @@ function pruefen(gesetzt=window.__gesetzt(), hinweise=[], kontur=[]){
   zeichnen(true);
 }
 window.__gesetzt=()=>gesetzt;
+// ── Übungsauftrag: Kundin beschreiben, Gesichtsform und Farbtyp selbst erkennen ──
+// Beschreibung der Farbtypen wie auf der Farbtyp-Seite (farbtyp.html › TYPEN)
+const KUNDIN={
+  fruehling:{kurz:'warm · klar · hell',haut:['hell, Elfenbein oder Pfirsich, goldener Schimmer','hell mit Sommersprossen und goldenem Schimmer'],augen:['hellblau','türkis','hellgrün','goldbraun'],haar:['goldblond','rotblond','hellbraun mit Goldschimmer']},
+  sommer:{kurz:'kühl · gedämpft · hell',haut:['hell und rosig, wird schnell rot','hell mit leicht bläulichem Schimmer'],augen:['graublau','graugrün','gedämpftes Haselnussbraun'],haar:['aschblond','„mausbraun“','kühles Hellbraun']},
+  herbst:{kurz:'warm · gedämpft · tief',haut:['Elfenbein mit goldenem Unterton','beige mit goldenem Unterton und Sommersprossen'],augen:['braun','haselnussbraun','olivgrün','bernsteinfarben'],haar:['kastanienbraun','kupferrot','goldbraun','warmes Dunkelblond']},
+  winter:{kurz:'kühl · klar · kontrastreich',haut:['sehr hell wie Porzellan, kühler Unterton','oliv mit kühlem Unterton'],augen:['dunkelbraun','schwarzbraun','eisblau','klares Grün'],haar:['dunkelbraun, kühl','schwarz']}
+};
+const zufall=l=>l[Math.floor(Math.random()*l.length)];
+let auftrag=null;
+function auftragKarte(){
+  const k=$('#auftrag-karte');
+  if(!auftrag){ k.innerHTML=''; $('#auftrag-neu').textContent='Neuer Kundinnen-Auftrag'; return; }
+  const a=auftrag;
+  k.innerHTML=`<div class="tip"><b>Deine Kundin wünscht ein Tages-Make-up.</b><br>Haut: ${esc(a.haut)} · Augen: ${esc(a.augen)} · Haare: ${esc(a.haar)}</div>`+
+    `<ol style="font-size:13px;margin:8px 0 0;padding-left:20px"><li>Gesichtsform an der Zeichnung erkennen und unten antippen.</li><li>Farbpalette passend zum Farbtyp der Kundin wählen.</li><li>Licht, Schatten, Rouge, Augen und Lippen schminken – dann „Prüfen“.</li></ol>`+
+    `<div class="chips" style="margin-top:8px"><button class="btn ghost" id="auftrag-ende">Auftrag beenden</button></div>`;
+  $('#auftrag-ende').onclick=()=>{ auftrag=null; auftragKarte(); chips(); };
+  $('#auftrag-neu').textContent='Anderer Auftrag';
+}
+$('#auftrag-neu').onclick=()=>{
+  const alt=auftrag;
+  let f,t; do{ f=zufall(Object.keys(FORMEN)); t=zufall(Object.keys(KUNDIN)); }while(alt&&alt.form===f&&alt.typ===t);
+  const K=KUNDIN[t];
+  auftrag={form:f,typ:t,wahl:null,geloest:false,haut:zufall(K.haut),augen:zufall(K.augen),haar:zufall(K.haar)};
+  form=f; ansicht='gesicht'; partie='gesamt'; paletteSetzen('natur'); neu(); auftragKarte();
+  $('#auftrag-karte').scrollIntoView({block:'nearest',behavior:'smooth'});
+};
+function auftragAuswertung(){
+  if(!auftrag) return '';
+  const a=auftrag, F=FORMEN[a.form].n, T=PALETTEN[a.typ].n, z=[];
+  const ok=(b,t)=>z.push(`<li>${b?'✓':'✗'} ${esc(t)}</li>`);
+  if(!a.wahl) ok(false,'Gesichtsform noch nicht gewählt – tippe unter „Gesichtsform“ die passende Form an.');
+  else if(a.wahl===a.form) ok(true,`Gesichtsform richtig erkannt: ${F}.`);
+  else ok(false,`Gesichtsform: Das ist ein ${F.toLowerCase()}es Gesicht, nicht ${FORMEN[a.wahl].n.toLowerCase()}. ${FORMEN[a.form].ziel}`);
+  if(palette===a.typ) ok(true,`Farbpalette passt: ${T} (${KUNDIN[a.typ].kurz}).`);
+  else ok(false,`Farbtyp: Die Kundin ist ein ${a.typ==='fruehling'?'Frühlingstyp':T+'typ'} (${KUNDIN[a.typ].kurz}). ${palette==='natur'?'Du hast keine Jahreszeit gewählt.':'Gewählt hast du '+PALETTEN[palette].n+'.'} ${PALETTEN[a.typ].dazu}`);
+  return `<div class="lab">Auftrag</div><ul class="rm">${z.join('')}</ul>`;
+}
+// ── Übung auf Zeit: Tages-Make-up in 13 Minuten (Zeitplan der Zwischenprüfung) ──
+const UHR_SEK=13*60; let uhr=null;
+const mmss=s=>{ const a=Math.abs(Math.round(s)); return (s<0?'+':'')+Math.floor(a/60)+':'+String(a%60).padStart(2,'0'); };
+function uhrZeigen(){
+  const box=$('#uhr-anzeige'), k=$('#uhr-knopf');
+  if(!uhr){ box.hidden=true; box.innerHTML=''; k.textContent='⏱ Auf Zeit üben (13 Min.)'; return; }
+  const vergangen=((uhr.stopp||Date.now())-uhr.start)/1000, rest=UHR_SEK-vergangen;
+  box.hidden=false;
+  box.innerHTML=`<div class="tip" role="timer" aria-live="off" style="text-align:center">⏱ <b>${rest>=0?mmss(rest)+' übrig':'Zeit um! '+mmss(-rest)+' drüber'}</b>${uhr.stopp?' · gestoppt':''}</div>`;
+  k.textContent=uhr.stopp?'⏱ Neu starten (13 Min.)':'⏱ Uhr stoppen';
+}
+$('#uhr-knopf').onclick=()=>{
+  if(uhr&&!uhr.stopp){ uhr.stopp=Date.now(); clearInterval(uhr.id); uhrZeigen(); return; }
+  if(uhr) clearInterval(uhr.id);
+  uhr={start:Date.now(),stopp:null}; uhr.id=setInterval(uhrZeigen,1000); uhrZeigen();
+};
+function uhrAuswertung(){
+  if(!uhr) return '';
+  if(!uhr.stopp){ uhr.stopp=Date.now(); clearInterval(uhr.id); uhrZeigen(); }
+  const sek=(uhr.stopp-uhr.start)/1000, ok=sek<=UHR_SEK;
+  return `<div class="lab">Zeit</div><ul class="rm"><li>${ok?'✓':'✗'} ${esc(ok?`In der Zeit: ${mmss(sek)} von 13:00 Minuten.`:`Zeit überschritten: ${mmss(sek)} statt 13:00 Minuten – in der Prüfung wäre die Zeit schon um.`)}</li></ul>`;
+}
+function zusatzAuswertung(){ const h=auftragAuswertung()+uhrAuswertung(); if(h) $('#rueckmeldung').insertAdjacentHTML('afterbegin',h); }
 // „Ohne Make-up“: solange gedrückt, die ungeschminkte Zeichnung zeigen (Vorher/Nachher)
 (function(){
   const k=$('#ohne'), an=v=>{ $('#leinwand').classList.toggle('ohne',v); k.setAttribute('aria-pressed',v); };
@@ -636,8 +707,8 @@ window.__gesetzt=()=>gesetzt;
   k.addEventListener('keyup',()=>an(false));
   k.addEventListener('contextmenu',e=>e.preventDefault());
 })();
-$('#pruefen').onclick=()=>modus==='pinsel'?pinselPruefen():pruefen();
-$('#loesung').onclick=()=>{vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
+$('#pruefen').onclick=()=>{ modus==='pinsel'?pinselPruefen():pruefen(); zusatzAuswertung(); };
+$('#loesung').onclick=()=>{ if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; paletteSetzen(auftrag.typ); chips(); } vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
 $('#leeren').onclick=()=>{vorbild(false);if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 // ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
 // Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
