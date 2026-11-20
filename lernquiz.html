@@ -16,6 +16,7 @@
 <script src="lern-themen.js?v=20261107e"></script>
 <script src="kompetenzen.js?v=20261119b"></script>  <!-- Kompetenz-Landkarte V2: 17 Kompetenzen -->
 <script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
+<script src="salon-regeln.js?v=20261120a"></script>  <!-- Stand der Verhaltensregeln (Bestätigung im Meisterin-Bereich) -->
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -370,7 +371,7 @@ div.mb-wb-p{cursor:default}
 <body class="ll-aus">
 
 <div class="kopf">
-  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d" hidden>← Lern-Tool</a>
+  <a class="kopf-zurueck" id="kopf-zurueck" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e" hidden>← Lern-Tool</a>
   <div class="kopf-klein" id="kopf-klein">greathairday · Lernen</div>
   <h1 id="kopf-titel">Great Hair Day Academy ✂</h1>
   <p id="kopf-sub">Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk</p>
@@ -456,7 +457,7 @@ div.mb-wb-p{cursor:default}
     <div class="score-box" id="score-box"></div>
     <div id="erg-details"></div>
     <button class="btn btn-d" id="btn-neu-quiz">Neues Quiz starten</button>
-    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
+    <a class="btn btn-h" id="btn-lernstand" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#fortschritt" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box">📊 Lernstand ansehen →</a>
   </div>
 </div>
 
@@ -484,7 +485,7 @@ div.mb-wb-p{cursor:default}
     </div>
 
     <div class="mb-gruppe">
-      <div class="lab" style="display:flex;justify-content:space-between;align-items:center">Bereiche <a href="verzeichnis.html?v=20261120d" style="font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:#896C32;text-decoration:none">🔎 A–Z-Verzeichnis</a></div>
+      <div class="lab" style="display:flex;justify-content:space-between;align-items:center">Bereiche <a href="verzeichnis.html?v=20261120e" style="font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:#896C32;text-decoration:none">🔎 A–Z-Verzeichnis</a></div>
       <div class="mb-grid">
         <button class="mb-k" data-mb-bereich="s-b-farbe"><div class="mb-ic">🎨</div><b>Farbe</b><small>Farblabor, Farbkompass, Farbtyp, Farb-Fälle, Farb-Zeiten, Farb-Nummern, Spickzettel</small></button>
         <button class="mb-k" data-mb-bereich="s-b-schnitt"><div class="mb-ic">✂</div><b>Schnitt &amp; Form</b><small>Schnittwerkstatt, Schnitt-Designer, Gesichtskompass, Werkzeug</small></button>
@@ -552,7 +553,7 @@ div.mb-wb-p{cursor:default}
     <h2 class="mb-h">💆 Praxis</h2>
     <p class="mb-sub">Am Kunden üben, abhaken und nachweisen.</p>
     <div class="mb-grid">
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#praxis"><div class="mb-ic">💆</div><div><b>Praxis-Module</b><small>Waschen, Farbe, Strähnen, Colorist, Umformung, Hochstecken</small></div></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/umformung.html?v=20261116s"><div class="mb-ic">🧪</div><b>Umformung</b><small>Dauerwelle &amp; Glättung</small></a>
       <button class="mb-k" id="btn-mb-px"><div class="mb-ic">✂</div><b>Praxis-Check</b><small>Bei der Behandlung abhaken</small></button>
       <button class="mb-k" id="btn-mb-pt"><div class="mb-ic">📝</div><b>Praxis-Tagebuch</b><small id="mb-pt-sub">Alle Einträge aller Lehrlinge</small></button>
@@ -569,7 +570,7 @@ div.mb-wb-p{cursor:default}
     <div class="mb-grid">
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261120a"><div class="mb-ic">📝</div><b>Zwischenprüfung</b><small>Mit Prüfungszeit</small></a>
       <button class="mb-k" id="btn-mb-pg"><div class="mb-ic">🗣</div><b>Prüfgespräch</b><small>Lehrling erklärt, du bewertest</small></button>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#admin-lap"><div class="mb-ic">🎓</div><div><b>LAP-Fragen</b><small>Theorie &amp; Praxis</small></div></a>
       <button class="mb-k mb-breit mb-gold" id="btn-betrieb-test"><div class="mb-ic">✂</div><div><b>Betriebssystem testen</b><small>Das Betriebs-Quiz wie ein Lehrling durchspielen</small></div></button>
     </div>
   </div>
@@ -582,9 +583,9 @@ div.mb-wb-p{cursor:default}
     <p class="mb-sub">Inhalte pflegen und Lernfortschritt ansehen.</p>
     <div class="mb-grid">
       <button class="mb-k" id="btn-fragen-verw"><div class="mb-ic">❓</div><b>Lernquiz-Fragen</b><small>Schnell-Check, Lerneinheit, LAP</small></button>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#admin-quiz"><div class="mb-ic">🎯</div><b>Themen-Quiz-Fragen</b><small>Lern-Tool, pro Thema</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
     </div>
   </div>
@@ -596,9 +597,9 @@ div.mb-wb-p{cursor:default}
     <h2 class="mb-h">🏠 Selbst ansehen</h2>
     <p class="mb-sub">Die App so sehen, wie deine Lehrlinge sie sehen.</p>
     <div class="mb-grid">
-      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
+      <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e"><div class="mb-ic">🏠</div><b>Wie Lehrlinge es sehen</b><small>Lern-Startseite</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b"><div class="mb-ic">📚</div><b>Mein Lernbereich</b><small>Eigene Fragen, Englisch, Abzeichen</small></a>
-      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120d#sortieren"><div class="mb-ic">🧭</div><div><b>Kurz sortieren</b><small>Wörni für Fehler, Nervosität, Unsicherheit – so sehen es Lehrlinge</small></div></a>
+      <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e#sortieren"><div class="mb-ic">🧭</div><div><b>Kurz sortieren</b><small>Wörni für Fehler, Nervosität, Unsicherheit – so sehen es Lehrlinge</small></div></a>
     </div>
   </div>
 </div>
@@ -1712,7 +1713,7 @@ var LQ_ZURUECK=(function(){
   }catch(e){return '';}
 })();
 function nachLoginWeiter(){
-  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261120d'));
+  location.replace('https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/'+(LQ_ZURUECK||'lerntool.html?v=20261120e'));
 }
 function zeigeFehler(elId,msg){var el=document.getElementById(elId);if(el){el.textContent=msg;el.style.display='block';}}
 function versteckeFehler(elId){var el=document.getElementById(elId);if(el)el.style.display='none';}
@@ -2459,7 +2460,7 @@ async function ladeDashboard(){
   }
   var ids=lehrlinge.map(function(l){return l.id;});
   // Ein Abruf für alle statt einer pro Lehrling
-  var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]},ffRes={data:[]},kxPraxis=[],kxGespr=[],kxFarb=[];
+  var kompRes={data:[]},verlRes={data:[]},ptRes={data:[]},ffRes={data:[]},kxPraxis=[],kxGespr=[],kxFarb=[],rgVon=null;
   try{
     var r=await Promise.all([
       sb.from('kompetenz').select('*').in('lehrling_id',ids),
@@ -2471,8 +2472,11 @@ async function ladeDashboard(){
       // Für die Kompetenzen: alle Praxis-Einträge, Prüfgespräche/Praxis-Checks und passende Farb-Pläne
       Promise.resolve(berAlle(function(){return sb.from('praxis_eintraege').select('id,lehrling_id,bereich').in('lehrling_id',ids).order('id');})).catch(function(){return {data:[]};}),
       Promise.resolve(berAlle(function(){return sb.from('pruefgespraeche').select('id,lehrling_id,art,thema,frage_id,ergebnis,datum,erstellt_am').in('lehrling_id',ids).order('id');})).catch(function(){return {data:[]};}),
-      Promise.resolve(sb.from('farb_plaene').select('lehrling_id,status').in('lehrling_id',ids).eq('status','passt')).catch(function(){return {data:[]};})
+      Promise.resolve(sb.from('farb_plaene').select('lehrling_id,status').in('lehrling_id',ids).eq('status','passt')).catch(function(){return {data:[]};}),
+      // Verhaltensregeln bestätigt? (supabase/20261120_regeln_bestaetigung.sql; ohne Migration → keine Anzeige)
+      Promise.resolve(rgAktuell()?sb.from('regeln_bestaetigung').select('lehrling_id,bestaetigt_am').in('lehrling_id',ids).eq('stand',rgAktuell()):{error:true}).catch(function(){return {error:true};})
     ]);
+    if(r[7]&&!r[7].error){ rgVon={}; (r[7].data||[]).forEach(function(x){rgVon[x.lehrling_id]=x.bestaetigt_am;}); }
     kompRes=r[0];verlRes=r[1];ptRes=r[2]&&!r[2].error?r[2]:{data:[]};ffRes=r[3]&&!r[3].error?r[3]:{data:[]};
     kxPraxis=r[4]&&!r[4].error?r[4].data||[]:[];kxGespr=r[5]&&!r[5].error?r[5].data||[]:[];kxFarb=r[6]&&!r[6].error?r[6].data||[]:[];
   }catch(e){}
@@ -2514,10 +2518,14 @@ async function ladeDashboard(){
     var kx=(pausiert||istStylistin(l))?null:kompetenzVon[l.id];
     var bereit=kx?kx.filter(mbkBereit).length:0;
     if(kx&&kx.length) info+=' · '+mbkBestaetigt(kx)+' von '+kx.length+' Kompetenzen bestätigt';
+    // Verhaltensregeln: bestätigt (Datum) oder offen – nur aktive, keine Testzugänge
+    var rgOffen=false;
+    if(rgVon&&!pausiert&&!ehem&&l.nur_test!==true){ if(rgVon[l.id]) info+=' · Regeln bestätigt '+pazDatum(pazISO(new Date(rgVon[l.id]))); else rgOffen=true; }
     return '<button class="mb-l'+(pausiert?' pausiert':'')+'" id="dl-'+escHtml(String(l.id))+'">'+
       '<div class="mb-l-oben"><div><div class="mb-l-name">'+escHtml(l.name)+(ehem?' <span class="mb-l-pause">🎓 ausgeschieden</span>':pausiert?' <span class="mb-l-pause">● pausiert</span>':'')+
         (pto?' <span class="mb-l-pt">📝 '+pto+' zum Bestätigen</span>':'')+
-        (bereit?' <span class="mb-l-pt">✓ '+bereit+' bereit zum Bestätigen</span>':'')+'</div>'+
+        (bereit?' <span class="mb-l-pt">✓ '+bereit+' bereit zum Bestätigen</span>':'')+
+        (rgOffen?' <span class="mb-l-pt">📋 Regeln noch nicht bestätigt</span>':'')+'</div>'+
       '<div class="mb-l-info">'+escHtml(info)+woche+'</div></div><div class="mb-l-pfeil">›</div></div>'+
       (kx?mbkBalken(kx):'')+
     '</button>';
@@ -3508,6 +3516,8 @@ async function ptMeisterinLaden(lehrling){
   });
 }
 
+// Aktueller Stand der Verhaltensregeln (salon-regeln.js) oder '' ohne Datei
+function rgAktuell(){ return window.GHD_SALON_REGELN&&GHD_SALON_REGELN.stand?GHD_SALON_REGELN.stand:''; }
 async function zeigeDetailLehrling(lehrling){
   if(!ISTMEISTERIN) return;
   document.getElementById('detail-name').textContent=lehrling.name;
@@ -3533,6 +3543,13 @@ async function zeigeDetailLehrling(lehrling){
   try{ var cRes=await sb.from('verlauf').select('id',{count:'exact',head:true}).eq('lehrling_id',lehrling.id); anzahl=cRes.count; }catch(e){}
   var kopf=ljText(lehrling)+(anzahl!=null?' · '+anzahl+(anzahl===1?' Quiz':' Quizze'):'')+
     (verlauf&&verlauf.length?' · zuletzt aktiv '+letztesWann(verlauf[0].erstellt_am):' · noch kein Quiz');
+  // Verhaltensregeln (supabase/20261120_regeln_bestaetigung.sql; ohne Migration → keine Anzeige)
+  if(rgAktuell()&&!lehrling.ausgeschieden_am){
+    try{
+      var rg=await sb.from('regeln_bestaetigung').select('bestaetigt_am').eq('lehrling_id',lehrling.id).eq('stand',rgAktuell()).maybeSingle();
+      if(!rg.error) kopf+=rg.data?' · 📋 Verhaltensregeln bestätigt am '+pazDatum(pazISO(new Date(rg.data.bestaetigt_am))):' · 📋 Verhaltensregeln noch nicht bestätigt';
+    }catch(e){}
+  }
 
   var ehemalig=!!lehrling.ausgeschieden_am;
   var html='<div class="mb-d-info">'+escHtml(kopf)+'</div>'+
