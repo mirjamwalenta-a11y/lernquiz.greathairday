@@ -1167,13 +1167,14 @@ function partHTML(p){const hist=D.praxis.filter(s=>s.part===p.id).slice().revers
  <section class="stack"><div class="row"><span class="pill time">${p.min} Min.</span><span class="muted small">${esc(p.model)}</span></div><h1>${p.name}</h1><p class="lead">${esc(p.intro)}</p>
   <div class="row"><button class="btn primary" data-a="session" data-id="${p.id}">Übung mit Timer starten</button><button class="btn" data-a="rateonly" data-id="${p.id}">Nur bewerten (ohne Timer)</button></div></section>
  ${weak.length?`<section class="card stack"><div class="eyebrow">Deine Schwachstellen hier</div><ul class="clean weak">${weak.map(w=>`<li><span>${esc(w.t)}</span><span class="pill ${w.bad?'bad':'warn'}">${w.bad?'noch nicht':'fast'}</span></li>`).join('')}</ul></section>`:''}
- <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),...(p.id==='technik'?[['bilder','Bilder']]:[]),...(p.id==='schoen'?[['massage','Massagegriffe']]:[]),...(p.id==='nagel'?[['aufbau','Nagelaufbau & Maniküre']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
+ <div class="subtabs" role="group" aria-label="Ansicht">${[['krit','So wird bewertet'],['ablauf','Ablauf'],...(p.id==='rasur'?[['zuege','Rasierzüge 1–15']]:[]),...(p.id==='technik'?[['bilder','Bilder']]:[]),...(p.id==='schoen'?[['massage','Massagegriffe'],['labor','Make-up-Labor']]:[]),...(p.id==='nagel'?[['aufbau','Nagelaufbau & Maniküre']]:[]),['zeit','Zeitplan'],['hist','Meine Übungen']].map(([k,l])=>`<button data-a="sub" data-s="${k}" aria-pressed="${sub===k}">${l}</button>`).join('')}</div>
  ${sub==='krit'?`<section class="grid-2">${p.sections.map(s=>`<div class="panel stack"><h3>${esc(s.name)}</h3><ul class="crit">${s.crit.map(c=>`<li>${esc(c.t)}</li>`).join('')}</ul></div>`).join('')}</section>
    <section class="warnbox"><h3>Achtung, hier gibt es Punkteabzug</h3><ul>${p.achtung.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></section>
    ${p.fehler?`<section class="panel stack"><h3>Fehlerquellen und ihre Folgen</h3><ul class="clean weak">${p.fehler.map(([f,g])=>`<li><span>${esc(f)}</span>${g?`<span class="muted small" style="text-align:right">→ ${esc(g)}</span>`:''}</li>`).join('')}</ul></section>`:''}`:''}
  ${sub==='zuege'?zuegeHTML():''}
  ${sub==='bilder'?bilderHTML():''}
  ${sub==='massage'?massageHTML():''}
+ ${sub==='labor'?laborHTML():''}
  ${sub==='aufbau'?nagelHTML():''}
  ${sub==='ablauf'?`<section class="grid-2">${p.ablauf.map(a=>`<div class="panel stack"><h3>${esc(a.t)}</h3><ol class="steps">${a.s.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ol></div>`).join('')}</section>`:''}
  ${sub==='zeit'?`<section class="panel stack"><h3>So könntest du deine ${p.min} Minuten einteilen</h3><p class="muted small">Ein Vorschlag, den ihr im Salon an dein Tempo anpassen könnt.</p><ul class="clean weak">${p.plan.map(([a,b])=>`<li><span>${esc(a)}</span><span class="pill time">${esc(b)}</span></li>`).join('')}</ul></section>`:''}
@@ -1195,6 +1196,9 @@ function massageHTML(){return `<p class="lead">Die fünf Standard-Massagegriffe 
  <div class="row"><button class="btn primary" data-a="quiz" data-cat="" data-type="massage">Massagegriffe abfragen</button></div>
  <ol class="steps">${MGRIFFE.map(([n,w,t],i)=>`<li><div class="panel zug">${massageSVG(i)}<div class="stack"><h3>${n}</h3><p><strong>${esc(w)}</strong></p><p class="muted">${esc(t)}</p></div></div></li>`).join('')}</ol>
  <p class="small muted">Selbst gezeichnete Schemas. Die Zeichen zeigen die Art des Griffs: Pfeile = Streichen, Schlaufen = Kneten, Kreise = Friktion, Zickzack = Vibration, Punkte = Klopfen.</p>`;}
+/* Make-up-Labor (eigene Seite makeup.html) */
+function laborHTML(){return `<p class="lead">Im Make-up-Labor setzt du Highlighter, Contouring, Rouge und Lidschatten selbst – für jede Gesichtsform. So übst du das Tages-Make-up für die Schönheitspflege.</p>
+ <div class="row"><button class="btn primary" onclick="location.href='makeup.html?v=20261119a#labor'">Make-up-Labor öffnen</button></div>`;}
 /* Nagel-Schemas: Seitenansicht und Vorderansicht, beschriftet.
    Einträge: [Index in NAGELTEILE, Punkt x, y, Beschriftung x, y, Ausrichtung]. hi = Index: nur dieser Teil markiert (Abfrage) */
 const NAGEL_KURZ=['Nagelplatte','Nagelbett','Nagelwurzel (Matrix)','Nagelmond','Nagelhaut','Freier Nagelrand','Nagelsaum','Nagelfalz','Nagelwall','Fingerknochen'];
