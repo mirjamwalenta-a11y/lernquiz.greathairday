@@ -131,6 +131,9 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 .leinwand canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .leinwand.malen #cv-licht{pointer-events:auto;touch-action:none;cursor:crosshair}
 #cv-schatten{mix-blend-mode:multiply}
+/* Lippenstift im Farbe-Modus: färbt die Lippen ein, die Schattierung der Zeichnung bleibt sichtbar */
+#cv-lippen,#gesicht .produkt.p-P{mix-blend-mode:color}
+#gesicht .produkt.p-P-tiefe{mix-blend-mode:multiply}
 .tipp:hover{fill:rgba(137,108,50,.14)}
 .produkt{stroke-width:1}
 .leinwand.ohne canvas,.leinwand.ohne .produkt{visibility:hidden}
@@ -187,6 +190,7 @@ a.btn{display:inline-block;text-decoration:none}
         <div class="leinwand" id="leinwand">
           <svg id="gesicht" viewBox="0 0 250 275" role="img" aria-label="Gesicht zum Schminken"></svg>
           <canvas id="cv-schatten" aria-hidden="true"></canvas>
+          <canvas id="cv-lippen" aria-hidden="true"></canvas>
           <canvas id="cv-licht" aria-label="Zum Malen mit dem Pinsel"></canvas>
         </div>
         <figure id="vorbild" hidden>
@@ -379,6 +383,7 @@ let partie='gesamt';
 const partieAn=()=>ansicht==='gesicht'&&partie!=='gesamt';
 const PINSEL={B:{name:'Verblenden',ic:'〰️'},E:{name:'Radierer',ic:'🧽'}};
 const PGROESSE={H:9,C:7,R:9,L:3.5,M:3,D:2.5,P:2,B:6,E:5}, LICHT=['H','L'];
+let LIPPE_TIEFE=.5;
 const PSTAERKE=[['Fein',.35],['Mittel',1],['Breit',1.7]];
 let modus='stellen', pg={deck:60,weich:6}, LW=null, pinselIst={}, pinselFehltAn=false;
 const pgr={}, verlauf=[], benutzt=new Set();
@@ -494,8 +499,10 @@ function zeichnen(markierung){
         const q=zonePos(z,f,seite,e), o=e.s/100, w=e.w;
         // Hauch außen (breit, sehr weich) und Kern (kräftiger) – zusammen ein weicher Verlauf ohne Flecken
         // Drehung auf der Gruppe, Weichzeichner auf den Flächen – so rechnet der Browser die Unschärfe im gedrehten Bild
-        s+=`<g class="produkt p-${t}"${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.35}" ry="${q.ry*1.8}" fill="url(#vl-${t})" opacity="${(o*.5).toFixed(2)}" filter="url(#weich${klein?'a':''}-${Math.min(9,w+2)})"/>`+
+        const g=`${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.35}" ry="${q.ry*1.8}" fill="url(#vl-${t})" opacity="${(o*.5).toFixed(2)}" filter="url(#weich${klein?'a':''}-${Math.min(9,w+2)})"/>`+
            `<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="url(#vl-${t})" opacity="${o.toFixed(2)}" filter="url(#weich${klein?'a':''}-${w})"/></g>`;
+        s+=`<g class="produkt p-${t}"`+g;
+        if(t==='P') s+=`<g class="produkt p-P-tiefe" opacity="${LIPPE_TIEFE}"`+g; // Lippenstift: Farbe-Modus plus Tiefe
         if(auswahl===id) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
       }
       if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"/>`;
@@ -665,14 +672,16 @@ function leinwandBereit(){
   verlauf.length=0; benutzt.clear(); anzeigen();
 }
 function anzeigen(){
-  const li=$('#cv-licht').getContext('2d'), sc=$('#cv-schatten').getContext('2d');
-  li.clearRect(0,0,li.canvas.width,li.canvas.height); sc.clearRect(0,0,sc.canvas.width,sc.canvas.height);
+  const li=$('#cv-licht').getContext('2d'), sc=$('#cv-schatten').getContext('2d'), lp=$('#cv-lippen').getContext('2d');
+  [li,sc,lp].forEach(c=>c.clearRect(0,0,c.canvas.width,c.canvas.height));
   if(!LW||modus!=='pinsel') return;
   const v=vbJetzt(), K=LW.K, DW=480, DH=Math.round(480*v.h/v.w);
-  [li,sc].forEach(c=>{ if(c.canvas.width!==DW||c.canvas.height!==DH){ c.canvas.width=DW; c.canvas.height=DH; } });
-  Object.entries(LW.lagen).forEach(([t,c])=>{ const ctx=LICHT.includes(t)?li:sc; ctx.globalAlpha=ALLE_WERKZEUGE[t].deck; const sx=Math.max(0,v.x*K), sy=Math.max(0,v.y*K), ex=Math.min(c.width,(v.x+v.w)*K), ey=Math.min(c.height,(v.y+v.h)*K), q=DW/(v.w*K);
+  [li,sc,lp].forEach(c=>{ if(c.canvas.width!==DW||c.canvas.height!==DH){ c.canvas.width=DW; c.canvas.height=DH; } });
+  // Lippenstift: Farbe-Modus (eigene Ebene) plus ein Hauch Multiplizieren für die Tiefe
+  const ebenen=[]; Object.entries(LW.lagen).forEach(([t,c])=>{ if(t==='P'){ ebenen.push([t,c,lp,1]); ebenen.push([t,c,sc,LIPPE_TIEFE]); } else ebenen.push([t,c,LICHT.includes(t)?li:sc,ALLE_WERKZEUGE[t].deck]); });
+  ebenen.forEach(([t,c,ctx,deck])=>{ ctx.globalAlpha=deck; const sx=Math.max(0,v.x*K), sy=Math.max(0,v.y*K), ex=Math.min(c.width,(v.x+v.w)*K), ey=Math.min(c.height,(v.y+v.h)*K), q=DW/(v.w*K);
     if(ex>sx&&ey>sy) ctx.drawImage(c,sx,sy,ex-sx,ey-sy,(sx-v.x*K)*q,(sy-v.y*K)*q,(ex-sx)*q,(ey-sy)*q); });
-  li.globalAlpha=1; sc.globalAlpha=1;
+  [li,sc,lp].forEach(c=>c.globalAlpha=1);
 }
 function tupfer(ctx,x,y,r,rgb,a,weich){
   const g=ctx.createRadialGradient(x,y,0,x,y,r), hart=Math.max(0,1-weich/9)*.85;
