@@ -134,6 +134,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 /* Lippenstift im Farbe-Modus: färbt die Lippen ein, die Schattierung der Zeichnung bleibt sichtbar */
 #cv-lippen,#gesicht .produkt.p-P{mix-blend-mode:color}
 #gesicht .produkt.p-P-tiefe{mix-blend-mode:multiply}
+#fehler-svg .produkt.p-P{mix-blend-mode:color}
+#fehler-svg .produkt.p-P-tiefe{mix-blend-mode:multiply}
 .tipp:hover{fill:rgba(137,108,50,.14)}
 .produkt{stroke-width:1}
 .leinwand.ohne canvas,.leinwand.ohne .produkt{visibility:hidden}
@@ -172,6 +174,7 @@ a.btn{display:inline-block;text-decoration:none}
   <div class="wrap">
     <a href="#labor">Make-up-Labor</a>
     <a href="#brauen">Augenbrauen</a>
+    <a href="#fehler">Fehler finden</a>
     <a href="#regeln">Die Regeln</a>
     <a href="#farben">Farben zum Farbtyp</a>
     <a href="#ueben">Üben</a>
@@ -281,6 +284,31 @@ a.btn{display:inline-block;text-decoration:none}
           <button class="btn ghost" id="brauen-neu">Neu</button>
         </div>
         <div id="brauen-rueck"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="fehler">
+    <header>
+      <span class="tag">Prüferinnen-Blick</span>
+      <h2>Finde den Fehler</h2>
+      <p class="muted">Dieses Tages-Make-up hat drei Fehler, wie sie bei der Prüfung Punkte kosten. Tippe die Stellen an, die falsch sind.</p>
+    </header>
+    <div class="labor">
+      <div class="panel" style="justify-items:center">
+        <svg id="fehler-svg" role="img" aria-label="Geschminktes Gesicht mit drei Fehlern" style="width:100%;max-width:340px;height:auto;touch-action:manipulation;cursor:pointer;display:block"></svg>
+        <span class="ki-zeile">KI-generiert</span>
+      </div>
+      <div class="panel">
+        <div>
+          <div class="lab" id="fehler-form"></div>
+          <p id="fehler-stand" style="margin:0;font-weight:600"></p>
+        </div>
+        <ul class="rm" id="fehler-liste"></ul>
+        <div class="chips">
+          <button class="btn ghost" id="fehler-aufloesen">Auflösen</button>
+          <button class="btn" id="fehler-neu">Neues Gesicht</button>
+        </div>
       </div>
     </div>
   </section>
@@ -968,6 +996,78 @@ function pinselLoesung(){
   anzeigen(); pinselPruefen(); pinselReglerZeigen();
 }
 chips(); zeichnen();
+
+// ── Finde den Fehler: geschminktes Gesicht mit drei typischen Prüfungsfehlern ──
+// Fehler aus den „Vorsicht“-Regeln der Gesichtsform, den Augen-Regeln und der Fehlerliste der Zwischenprüfung.
+const FX={};
+function fehlerKatalog(fk){
+  const f=FORMEN[fk], soll=Object.assign({},f.soll,AUGEN.std.soll,{lippen:'P'}), k=[];
+  // Nur sichtbare Fehler: Highlighter und heller Lidschatten sind auf der weißen Zeichnung kaum zu sehen
+  const sichtbar=t=>!'HL'.includes(t);
+  Object.entries(f.meiden).forEach(([z,[t,txt]])=>{ if(sichtbar(t)) k.push({z,t,txt}); });
+  Object.entries(AUGEN.std.meiden).forEach(([z,[t,txt]])=>{ if(sichtbar(t)) k.push({z,t,txt}); });
+  k.push({z:'nasenruecken',t:'R',txt:'Rouge auf dem Nasenrücken wirkt wie ein Sonnenbrand – Rouge gehört auf die Wangen.'});
+  k.push({z:'stirn_mitte',t:'C',txt:'Schatten in der Stirnmitte macht das Gesicht fahl – in die Mitte gehört Licht, Schatten an die Ränder.'});
+  k.push({z:'lippen',t:'P',e:{l:150,b:240},txt:'Lippen über die Kontur gemalt – bei der Prüfung ein Fehler. Kontur genau nachziehen.'});
+  const hart=Object.keys(soll).filter(z=>'CR'.includes(soll[z])&&!['nasenruecken','stirn_mitte'].includes(z));
+  if(hart.length){ const z=zufall(hart); k.push({z,t:soll[z],e:{hart:1},txt:'Nicht verblendet: Man sieht eine harte Kante – das Gesicht wirkt wie eine Maske. Immer weich ausblenden.'}); }
+  const sch=Object.keys(soll).filter(z=>soll[z]==='C');
+  if(sch.length){ const z=zufall(sch); k.push({z,t:'C',e:{s:100,l:150,b:170},txt:'Schatten zu kräftig und zu breit – das wirkt schmutzig. Contouring nur hauchzart auftragen.'}); }
+  return {soll,k};
+}
+function fehlerRunde(){
+  const fk=zufall(Object.keys(FORMEN)), {soll,k}=fehlerKatalog(fk), gemischt=mischen(k.slice()), wahl=[], belegt=new Set();
+  for(const x of gemischt){ if(belegt.has(x.z)) continue; wahl.push(x); belegt.add(x.z); if(wahl.length===3) break; }
+  const gesetzt=Object.assign({},soll), einst={};
+  wahl.forEach(x=>{ gesetzt[x.z]=x.t; if(x.e) einst[x.z]=x.e; });
+  Object.assign(FX,{form:fk,gesetzt,einst,fehler:wahl.map(x=>Object.assign({gefunden:false},x)),daneben:0,aufgeloest:false});
+  $('#fehler-liste').innerHTML=''; fehlerZeichnen();
+}
+function mitGesicht(fn){ const a=ansicht; ansicht='gesicht'; try{ return fn(); } finally{ ansicht=a; } }
+function fehlerZeichnen(){
+  const svg=$('#fehler-svg'); if(!svg||!FX.form) return;
+  mitGesicht(()=>{
+    const f=BILDER.zu[FX.form], oy=Math.max(0,Math.round(129-f.A.auge));
+    svg.setAttribute('viewBox','0 '+(-oy)+' '+f.B[0]+' '+f.B[1]);
+    let s='<defs>'+[1,2,3,4,5,6,7,8,9].map(n=>`<filter id="fx-weich-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*1.1}"/></filter><filter id="fx-weicha-${n}" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="${n*.45}"/></filter>`).join('')+
+      Object.entries(ALLE_WERKZEUGE).map(([k,w])=>`<radialGradient id="fx-vl-${k}"><stop offset="0" stop-color="rgb(${NATUR[k]})" stop-opacity="${w.deck}"/><stop offset=".55" stop-color="rgb(${NATUR[k]})" stop-opacity="${w.deck*.55}"/><stop offset="1" stop-color="rgb(${NATUR[k]})" stop-opacity="0"/></radialGradient>`).join('')+'</defs>';
+    s+=`<image href="bilder/makeup/${f.bild}.jpg" x="0" y="0" width="${f.B[0]}" height="${f.B[1]}"/>`;
+    Object.entries(FX.gesetzt).forEach(([id,t])=>{
+      const z=GESICHT_ZONEN[id]; if(!z) return; const e=Object.assign(standard(id),FX.einst[id]||{}), klein=!!z.auge;
+      (z.paar?[-1,1]:[1]).forEach(seite=>{
+        const q=zonePos(z,f,seite,e), o=e.s/100, w=e.w;
+        const g=e.hart?`${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="rgb(${NATUR[t]})" opacity="${(ALLE_WERKZEUGE[t].deck*.75).toFixed(2)}"/></g>`
+          :`${q.t}><ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.35}" ry="${q.ry*1.8}" fill="url(#fx-vl-${t})" opacity="${(o*.5).toFixed(2)}" filter="url(#fx-weich${klein?'a':''}-${Math.min(9,w+2)})"/>`+
+           `<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="url(#fx-vl-${t})" opacity="${o.toFixed(2)}" filter="url(#fx-weich${klein?'a':''}-${w})"/></g>`;
+        s+=`<g class="produkt p-${t}"`+g;
+        if(t==='P') s+=`<g class="produkt p-P-tiefe" opacity="${LIPPE_TIEFE}"`+g;
+      });
+    });
+    FX.fehler.forEach(x=>{ if(!x.gefunden&&!FX.aufgeloest) return; const z=GESICHT_ZONEN[x.z], e=Object.assign(standard(x.z),FX.einst[x.z]||{});
+      (z.paar?[-1,1]:[1]).forEach(seite=>{ const q=zonePos(z,f,seite,e); s+=`<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.3+4}" ry="${q.ry*1.4+4}"${q.t} fill="none" stroke="${x.gefunden?'var(--accent)':'var(--warn)'}" stroke-width="1.6" stroke-dasharray="${x.gefunden?'':'4 3'}"/>`; }); });
+    svg.innerHTML=s;
+  });
+  const n=FX.fehler.filter(x=>x.gefunden).length;
+  $('#fehler-form').textContent='Gesichtsform: '+FORMEN[FX.form].n;
+  $('#fehler-stand').textContent=n===3?`✓ Alle drei Fehler gefunden${FX.daneben?' – mit '+FX.daneben+'× daneben getippt':' – ohne Fehlversuch'}!`:FX.aufgeloest?`${n} von 3 gefunden – die gestrichelten Kreise zeigen die übrigen.`:`${n} von 3 Fehlern gefunden${FX.daneben?' · '+FX.daneben+'× daneben':''}`;
+}
+function fehlerListe(){
+  $('#fehler-liste').innerHTML=FX.fehler.filter(x=>x.gefunden||FX.aufgeloest).map(x=>`<li>${x.gefunden?'✓':'✗'} <b>${esc(GESICHT_ZONEN[x.z].n)}:</b> ${esc(x.txt)}</li>`).join('');
+}
+$('#fehler-svg').addEventListener('click',ev=>{
+  if(!FX.form||FX.aufgeloest) return;
+  const svg=$('#fehler-svg'), pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+  const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+  const treffer=mitGesicht(()=>{ const f=BILDER.zu[FX.form];
+    return FX.fehler.find(x=>{ const z=GESICHT_ZONEN[x.z], e=Object.assign(standard(x.z),FX.einst[x.z]||{});
+      return (z.paar?[-1,1]:[1]).some(seite=>{ const p=zonePos(z,f,seite,e), rx=p.rx*1.4+5, ry=p.ry*1.6+5; return ((q.x-p.x)/rx)**2+((q.y-p.y)/ry)**2<=1; }); }); });
+  if(treffer&&!treffer.gefunden){ treffer.gefunden=true; fehlerListe(); }
+  else if(!treffer){ FX.daneben++; }
+  fehlerZeichnen();
+});
+$('#fehler-aufloesen').onclick=()=>{ if(!FX.form) return; FX.aufgeloest=true; fehlerListe(); fehlerZeichnen(); };
+$('#fehler-neu').onclick=fehlerRunde;
+fehlerRunde();
 
 // Regeln je Gesichtsform (Übersicht)
 $('#formen-liste').innerHTML=Object.entries(FORMEN).map(([fk,f])=>{
