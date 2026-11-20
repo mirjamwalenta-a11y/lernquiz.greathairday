@@ -474,12 +474,36 @@
       knoepfeBinden(box.firstElementChild, ziele, q);
     },
 
-    // Seite „Unsere Verhaltensregeln“ (Inhalt aus salon-regeln.js) mit Bestätigung auf dem Gerät
-    regelnZeichnen: function (el, ziele) {
+    // Seite „Unsere Verhaltensregeln“ (Inhalt aus salon-regeln.js) mit Bestätigung.
+    // server (optional, nur für eingeloggte Lehrlinge; Tabelle regeln_bestaetigung,
+    // supabase/20261120_regeln_bestaetigung.sql):
+    //   laden(stand)     → Promise<'JJJJ-MM-TT' | '' | null>  ('' = noch nicht, null = nicht erreichbar)
+    //   speichern(stand) → Promise<true | false>
+    // Die Meisterin sieht die Bestätigung im Meisterin-Bereich. Ohne server: nur auf dem Gerät.
+    regelnZeichnen: function (el, ziele, server, _status) {
       if (!el) return;
       var R = window.GHD_SALON_REGELN, self = this;
       if (!R) { el.innerHTML = '<p class="pt-info">Die Verhaltensregeln konnten nicht geladen werden.</p>'; return; }
-      var am = regelnBestaetigt();
+      if (server && _status === undefined) {
+        // erst zeichnen, dann den Stand vom Server holen und neu zeichnen
+        self.regelnZeichnen(el, ziele, server, 'laden');
+        Promise.resolve().then(function () { return server.laden(R.stand); }).catch(function () { return null; }).then(function (amServer) {
+          if (amServer) { var d = lesen(); d.regeln = { stand: R.stand, am: amServer, server: true }; schreiben(d); }
+          else if (amServer === '') { var d2 = lesen(); if (d2.regeln && d2.regeln.server) { delete d2.regeln; schreiben(d2); } }
+          // Auf dem Gerät bestätigt, aber noch nicht am Server (z. B. vor dieser Änderung): nachschicken
+          var b = lesen().regeln;
+          if (amServer === '' && b && b.stand === R.stand && !b.server) {
+            Promise.resolve(server.speichern(R.stand)).then(function (ok) { if (ok) { var d3 = lesen(); d3.regeln.server = true; schreiben(d3); } self.regelnZeichnen(el, ziele, server, ok ? 'ok' : 'fehler'); });
+            return;
+          }
+          self.regelnZeichnen(el, ziele, server, amServer === null ? 'offline' : 'ok');
+        });
+        return;
+      }
+      var am = regelnBestaetigt(), anServer = !!(lesen().regeln && lesen().regeln.server);
+      var hinweis = !server ? 'Die Bestätigung wird nur auf diesem Gerät gemerkt. Melde dich als Lehrling an, damit deine Chefin sie sieht.'
+        : _status === 'fehler' || _status === 'offline' ? 'Gerade keine Verbindung zum Server. Deine Chefin sieht die Bestätigung, sobald sie gesendet ist, versuch es später noch einmal.'
+        : 'Deine Chefin sieht, dass und wann du die Regeln bestätigt hast. Sonst wird dazu nichts gespeichert.';
       el.innerHTML = wZeile('Das sind die Regeln in unserem Team. Ich erkläre dir zu jedem Punkt kurz, warum er wichtig ist.') +
         R.abschnitte.map(function (a) {
           return '<div class="card"><div class="label">' + a.ic + ' ' + esc(a.nr + '. ' + a.t) + '</div>' +
@@ -490,16 +514,31 @@
             (a.w ? '<div style="margin-top:10px">' + wZeile(esc(a.w)) + '</div>' : '') + '</div>';
         }).join('') +
         '<div class="card" id="wb-regeln-ok">' + (am
-          ? '<div class="fb-g" style="margin:0;font-size:14px;color:#211D17"><b>✓ ' + esc(R.bestaetigung) + '</b><div class="nav-desc" style="margin-top:4px">Auf diesem Gerät bestätigt am ' + esc(datumDE(am)) + '.</div></div>'
+          ? '<div class="fb-g" style="margin:0;font-size:14px;color:#211D17"><b>✓ ' + esc(R.bestaetigung) + '</b><div class="nav-desc" style="margin-top:4px">Bestätigt am ' + esc(datumDE(am)) + (server && !anServer ? ' (noch nicht an die Chefin gesendet)' : '') + '.</div></div>' +
+            (server && !anServer && _status !== 'laden' ? '<button class="btn-ghost" id="wb-regeln-senden" style="width:100%;margin-top:10px">Nochmal senden</button>' : '')
+          : _status === 'laden' ? '<div class="nav-desc">Einen Moment …</div>'
           : '<label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#211D17;line-height:1.5;cursor:pointer"><input type="checkbox" id="wb-regeln-cb" style="width:auto;margin-top:3px"> <span>' + esc(R.bestaetigung) + '</span></label>' +
             '<button class="btn-primary" id="wb-regeln-btn" style="margin-top:12px" disabled>Bestätigen</button>') +
-        '<p class="pt-info">Die Bestätigung wird nur auf diesem Gerät gemerkt, nicht am Server. Fragen zu den Regeln? Sprich mit der Chefin.</p></div>' +
+        '<p class="pt-info">' + esc(hinweis) + ' Fragen zu den Regeln? Sprich mit der Chefin.</p></div>' +
         '<button class="nav-card pm-modul" data-wb-reden><div class="nav-icon" style="margin:0">💬</div><div><div class="nav-title">Wörni etwas zu den Regeln fragen</div><div class="nav-desc">z. B. „Wie melde ich mich krank?“</div></div></button>';
       var cb = el.querySelector('#wb-regeln-cb'), btn = el.querySelector('#wb-regeln-btn');
       if (cb && btn) {
         cb.onchange = function () { btn.disabled = !cb.checked; };
-        btn.onclick = function () { var d = lesen(); d.regeln = { stand: R.stand, am: new Date().toISOString().slice(0, 10) }; schreiben(d); self.regelnZeichnen(el, ziele); };
+        btn.onclick = function () {
+          var d = lesen(); d.regeln = { stand: R.stand, am: new Date().toISOString().slice(0, 10) }; schreiben(d);
+          if (!server) { self.regelnZeichnen(el, ziele); return; }
+          btn.disabled = true; btn.textContent = 'Wird gesendet …';
+          senden();
+        };
       }
+      function senden() {
+        Promise.resolve().then(function () { return server.speichern(R.stand); }).catch(function () { return false; }).then(function (ok) {
+          if (ok) { var d = lesen(); if (d.regeln) { d.regeln.server = true; schreiben(d); } }
+          self.regelnZeichnen(el, ziele, server, ok ? 'ok' : 'fehler');
+        });
+      }
+      var nochmal = el.querySelector('#wb-regeln-senden');
+      if (nochmal) nochmal.onclick = function () { nochmal.disabled = true; nochmal.textContent = 'Wird gesendet …'; senden(); };
       var r = el.querySelector('[data-wb-reden]'); if (r) r.onclick = function () { if (ziele && ziele.woerni) ziele.woerni(); };
     },
 

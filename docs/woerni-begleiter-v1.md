@@ -27,7 +27,12 @@ Lehrling die Meisterin fragen kann.
 
 - **Vorstellung:** Beim ersten Öffnen stellt sich Wörni als persönlicher Coach vor. Das passiert auf der Startseite vor allen anderen Wörni-Karten und oben auf der Wörni-Seite. Nach „Los geht’s ✓“, „Verhaltensregeln lesen“ oder „Wörni fragen“ erscheint die Vorstellung nicht mehr. Gemerkt wird das nur auf dem Gerät.
 - **Verhaltensregeln:** Der Wortlaut der Inhaberin steht in `salon-regeln.js`. Wörni zeigt die Regeln auf der Seite `p-regeln` (Sprungziel `lerntool.html#regeln`) und erklärt zu jedem Abschnitt kurz das Warum. Die Antworten von „Frag Wörni“ zu Krankmeldung, Urlaub, Mittagspause, freier Zeit und Ausbildungsbuch, Hygiene sowie Kleidung folgen diesen Regeln.
-- **Bestätigung** „Ich habe die Verhaltensregeln gelesen und zur Kenntnis genommen!“: Sie wird **nur auf dem Gerät** gemerkt (`localStorage` `woerni-begleiter`: Stand der Regeln und Datum), nicht am Server. Die Meisterin sieht sie nicht, und als Nachweis taugt sie nicht. Wenn sich `stand` in `salon-regeln.js` ändert, wird erneut gefragt.
+- **Bestätigung** „Ich habe die Verhaltensregeln gelesen und zur Kenntnis genommen!“: Bei eingeloggten Lehrlingen wird sie in der Tabelle `regeln_bestaetigung` gespeichert (`supabase/20261120_regeln_bestaetigung.sql`, seit 2026-11-20 auf Wunsch der Inhaberin). Gespeichert werden nur Lehrling, Stand der Regeln und Datum. Das Datum setzt der Server.
+  - Der Lehrling darf nur die eigene Bestätigung anlegen und lesen.
+  - Die Meisterin darf alle Bestätigungen lesen und löschen. Sie sieht sie in der Lehrlings-Liste („📋 Regeln noch nicht bestätigt“ bzw. „Regeln bestätigt am …“) und im Kopf der Detail-Ansicht.
+  - Ohne Verbindung oder vor der Migration merkt sich das Gerät die Bestätigung. Beim nächsten Öffnen der Seite wird sie nachgeschickt, oder der Lehrling tippt auf „Nochmal senden“.
+  - Ändert sich `stand` in `salon-regeln.js`, wird erneut gefragt.
+  - Das ist die einzige Ausnahme von „keine Daten in der Begleitung“. Fragen an Wörni und Probezeit-Inhalte bleiben ungespeichert.
 - **Für andere Salons (Abo):** `salon-regeln.js` enthält die Regeln des eigenen Salons. Vor dem Verkauf muss das pro Salon austauschbar werden.
 
 ## Drei Teile
@@ -73,7 +78,8 @@ Wenn der Lehrbeginn fehlt, sollte die Meisterin ihn beim Lehrling eintragen
   getrennt.
 - Gelesen wird nur `lehrlinge.lehrbeginn` (eigene Zeile, bestehende RLS
   `lehrlinge_eigener`). Daraus wird im Browser die Phase gerechnet.
-- Keine neue Tabelle, keine neue Regel, nichts geht an den Server.
+- Keine neue Tabelle und nichts am Server, mit einer Ausnahme: die Bestätigung der
+  Verhaltensregeln (`regeln_bestaetigung`, siehe oben).
 - Auf dem Gerät (`localStorage`, Schlüssel `woerni-begleiter`) steht nur, welcher
   Impuls zuletzt als gelesen markiert wurde.
 - Fragen an „Frag Wörni“ werden **nirgends** gespeichert, auch nicht auf dem
