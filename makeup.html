@@ -594,26 +594,39 @@ function tupfer(ctx,x,y,r,rgb,a,weich){
   g.addColorStop(0,`rgba(${rgb},${a})`); g.addColorStop(hart,`rgba(${rgb},${a})`); g.addColorStop(1,`rgba(${rgb},0)`);
   ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
 }
-// Verblenden: Bereich weichzeichnen (verkleinern und wieder vergrößern) und weich einmischen
-const kleinC=document.createElement('canvas'), tmpC=document.createElement('canvas');
+// Verblenden: Farbe im Bereich weich verteilen. Nur der Deckungsgrad (Alpha) wird weichgezeichnet –
+// jede Ebene hat genau eine Farbe. Die Menge an Farbe bleibt dabei erhalten, sie wird nur verschoben.
+function boxBlur(a,w,h,rad){
+  const t=new Float32Array(a.length), n=2*rad+1;
+  for(let y=0;y<h;y++){ let sum=0; const o=y*w;
+    for(let x=-rad;x<=rad;x++) sum+=a[o+Math.min(w-1,Math.max(0,x))];
+    for(let x=0;x<w;x++){ t[o+x]=sum/n; sum+=a[o+Math.min(w-1,x+rad+1)]-a[o+Math.max(0,x-rad)]; } }
+  for(let x=0;x<w;x++){ let sum=0;
+    for(let y=-rad;y<=rad;y++) sum+=t[Math.min(h-1,Math.max(0,y))*w+x];
+    for(let y=0;y<h;y++){ a[y*w+x]=sum/n; sum+=t[Math.min(h-1,y+rad+1)*w+x]-t[Math.max(0,y-rad)*w+x]; } }
+}
 function verblenden(x,y,r,staerke){
-  const s=Math.max(4,Math.ceil(r*2)), x0=Math.round(x-r), y0=Math.round(y-r), k=Math.max(2,Math.round(s/6));
-  tmpC.width=tmpC.height=s; kleinC.width=kleinC.height=k;
-  const kc=kleinC.getContext('2d'), tc=tmpC.getContext('2d');
+  const s=Math.max(4,Math.ceil(r*2)), x0=Math.round(x-r), y0=Math.round(y-r), rad=Math.max(1,Math.round(r/6));
   benutzt.forEach(t=>{
     const c=LW.lagen[t], cc=c.getContext('2d');
-    kc.clearRect(0,0,k,k); kc.drawImage(c,x0,y0,s,s,0,0,k,k);
-    tc.globalCompositeOperation='copy'; tc.imageSmoothingQuality='high'; tc.drawImage(kleinC,0,0,k,k,0,0,s,s);
-    const m=tc.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2); m.addColorStop(0,`rgba(0,0,0,${staerke})`); m.addColorStop(1,'rgba(0,0,0,0)');
-    tc.globalCompositeOperation='destination-in'; tc.fillStyle=m; tc.fillRect(0,0,s,s);
-    const m2=cc.createRadialGradient(x0+s/2,y0+s/2,0,x0+s/2,y0+s/2,s/2); m2.addColorStop(0,`rgba(0,0,0,${staerke})`); m2.addColorStop(1,'rgba(0,0,0,0)');
-    cc.globalCompositeOperation='destination-out'; cc.fillStyle=m2; cc.fillRect(x0,y0,s,s);
-    cc.globalCompositeOperation='source-over'; cc.drawImage(tmpC,x0,y0);
+    const ax=Math.max(0,x0), ay=Math.max(0,y0), bx=Math.min(c.width,x0+s), by=Math.min(c.height,y0+s), w=bx-ax, h=by-ay;
+    if(w<2||h<2) return;
+    const img=cc.getImageData(ax,ay,w,h), d=img.data, a=new Float32Array(w*h);
+    let leer=true; for(let i=0;i<w*h;i++){ a[i]=d[i*4+3]; if(a[i]) leer=false; }
+    if(leer) return;
+    const b=a.slice(); boxBlur(b,w,h,rad); boxBlur(b,w,h,rad);
+    const rgb=ALLE_WERKZEUGE[t].rgb.split(',').map(Number), mx=x-ax, my=y-ay, R=s/2;
+    for(let yy=0;yy<h;yy++) for(let xx=0;xx<w;xx++){
+      const i=yy*w+xx, q=Math.hypot(xx-mx,yy-my)/R; if(q>=1) continue;
+      const m=staerke*(1-q*q), v=a[i]*(1-m)+b[i]*m;
+      d[i*4]=rgb[0]; d[i*4+1]=rgb[1]; d[i*4+2]=rgb[2]; d[i*4+3]=Math.round(v);
+    }
+    cc.putImageData(img,ax,ay);
   });
 }
 function auftragen(p){
   const t=werkzeug, r=(pgr[t]||PGROESSE[t])*LW.K, dichte=pg.deck/100;
-  if(t==='B') verblenden(p.x,p.y,r,.35+.4*dichte);
+  if(t==='B') verblenden(p.x,p.y,r,.15+.25*dichte);
   else if(t==='E') benutzt.forEach(u=>{ const cc=LW.lagen[u].getContext('2d'); cc.globalCompositeOperation='destination-out'; tupfer(cc,p.x,p.y,r,'0,0,0',.1+.35*dichte,pg.weich); cc.globalCompositeOperation='source-over'; });
   else { tupfer(LW.lagen[t].getContext('2d'),p.x,p.y,r,ALLE_WERKZEUGE[t].rgb,.02+.12*dichte,pg.weich); benutzt.add(t); }
 }
