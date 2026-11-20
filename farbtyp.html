@@ -144,6 +144,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <a href="#typen">Die 4 Typen</a>
     <a href="#tuecher">Tücher auflegen</a>
     <a href="#makeup">Make-up</a>
+    <a href="#erkennen">Kundin erkennen</a>
     <a href="#ueben">Üben</a>
   </div>
 </nav>
@@ -200,9 +201,20 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <header>
       <span class="tag">Make-up</span>
       <h2>Make-up-Farben zum Farbtyp</h2>
-      <p class="muted">Auch beim Make-up gilt: warme Typen tragen warme, kühle Typen kühle Farben. Wohin Licht und Schatten gehören, übst du im <a href="makeup.html?v=20261120r#labor" style="color:var(--accent);font-weight:600">Make-up-Labor</a>.</p>
+      <p class="muted">Auch beim Make-up gilt: warme Typen tragen warme, kühle Typen kühle Farben. Wohin Licht und Schatten gehören, übst du im <a href="makeup.html?v=20261120s#labor" style="color:var(--accent);font-weight:600">Make-up-Labor</a>.</p>
     </header>
     <div class="typen" id="makeup-liste"></div>
+  </section>
+
+  <section class="block" id="erkennen">
+    <header>
+      <span class="tag">Übung</span>
+      <h2>Kundin erkennen</h2>
+      <p class="muted">Zehn Kundinnen, nur beschrieben über Haut, Augen und Haare – wie im Beratungsgespräch. Welcher Farbtyp ist es? Sag dazu, ob du dir sicher bist.</p>
+    </header>
+    <div class="quiz" id="erkennenBox"></div>
+    <div class="score"><span class="num" id="erkennenOut">0 / 10</span><span id="erkennenText" class="muted"></span><button class="btn ghost" id="erkennenNeu">Neue Runde</button></div>
+    <div id="erkennenSpeicher" style="font-size:12px"></div>
   </section>
 
   <section class="block" id="ueben">
@@ -432,6 +444,64 @@ function score(){const e=Object.entries(answers),n=e.length;
 }
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
+
+// ── Kundin erkennen: zufällige Beschreibungen aus Haut, Augen und Haaren ──
+// Bausteine je Typ (aus TYPEN oben, in kurze Einzelmerkmale zerlegt)
+const KUNDIN={
+  fruehling:{haut:['hell, Elfenbein mit goldenem Schimmer','hell mit Pfirsich-Ton und Sommersprossen','zart und hell mit goldenem Unterton'],augen:['hellblau','türkis','hellgrün','goldbraun'],haar:['goldblond','rotblond','hellbraun mit Goldschimmer','honigblond']},
+  sommer:{haut:['hell und rosig, wird schnell rot','hell mit leicht bläulichem Schimmer','hell, rosiger Unterton'],augen:['graublau','graugrün','gedämpftes Haselnussbraun'],haar:['aschblond','„mausbraun“','kühles Hellbraun','perlblond']},
+  herbst:{haut:['Elfenbein mit goldenem Unterton','beige mit goldenem Unterton und Sommersprossen','warmes Beige'],augen:['braun','haselnussbraun','olivgrün','bernsteinfarben'],haar:['kastanienbraun','kupferrot','goldbraun','warmes Dunkelblond']},
+  winter:{haut:['sehr hell wie Porzellan, kühler Unterton','oliv mit kühlem Unterton','dunkel mit kühlem Unterton'],augen:['dunkelbraun','schwarzbraun','eisblau','klares Grün'],haar:['dunkelbraun, kühl','schwarz','blauschwarz']}
+};
+// Foto-Kundinnen (KI-generiert). Farbtyp-Zuordnung zur Durchsicht durch die Inhaberin.
+const FOTOS=[
+  {foto:'bilder/farbtyp/kundin-foto-1.jpg',t:'herbst',grund:'Goldener, olivfarbener Hautton, warme dunkelbraune Haare und braune Augen – warm, gedämpft und tief.'},
+  {foto:'bilder/farbtyp/kundin-foto-2.jpg',t:'sommer',grund:'Helle, rosige Haut, graublaue Augen und kühles, aschiges Hellblond – kühl, hell und gedämpft.'}
+];
+let fotoNr=Math.floor(Math.random()*2);
+const TYP_IDS=Object.keys(KUNDIN), RUNDE=10, zuf=l=>l[Math.floor(Math.random()*l.length)];
+let fall=[], fallNr=0, fallAntw=[], erkGespeichert=false;
+function erkennenRunde(){
+  fall=[]; for(let i=0;i<RUNDE;i++){ const t=zuf(TYP_IDS), k=KUNDIN[t]; fall.push({t,haut:zuf(k.haut),augen:zuf(k.augen),haar:zuf(k.haar)}); }
+  // In jeder Runde eine Foto-Kundin an zufälliger Stelle (abwechselnd)
+  fall[Math.floor(Math.random()*RUNDE)]=FOTOS[fotoNr++%FOTOS.length];
+  fallNr=0; fallAntw=[]; erkGespeichert=false; $('#erkennenSpeicher').textContent=''; erkennenZeigen();
+}
+function erkennenZeigen(){
+  const box=$('#erkennenBox'); box.innerHTML='';
+  if(fallNr>=RUNDE){ erkennenStand(); return; }
+  const f=fall[fallNr], d=document.createElement('div'); d.className='q';
+  const info=f.foto?'<img src="'+f.foto+'" alt="Foto einer Kundin ohne Make-up" style="width:100%;max-width:300px;height:auto;border-radius:8px;display:block"><span style="font-size:11px;color:var(--muted)">KI-generiert</span><p style="margin:0">Schau dir Haut, Augen und Haare genau an. Welcher Farbtyp ist sie?</p>'
+    :'<p style="margin:0">Haut: <b>'+esc(f.haut)+'</b><br>Augen: <b>'+esc(f.augen)+'</b><br>Haare: <b>'+esc(f.haar)+'</b></p>';
+  d.innerHTML='<h3>Kundin '+(fallNr+1)+' von '+RUNDE+'</h3>'+info+'<div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef">Geraten – prüfen</button></div></div><p class="why" hidden></p><div class="weiter" hidden style="display:flex"><button class="pruef s">'+(fallNr+1<RUNDE?'Nächste Kundin':'Ergebnis ansehen')+'</button></div>';
+  const opts=d.querySelector('.opts'), why=d.querySelector('.why'), sz=d.querySelector('.sicher'), weiter=d.querySelector('.weiter'); let wahl=null;
+  TYP_IDS.forEach(t=>{ const b=document.createElement('button'); b.textContent=TYPEN[t].name; b.dataset.t=t;
+    b.onclick=()=>{ wahl=t; opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); sz.hidden=false; };
+    opts.appendChild(b); });
+  sz.querySelectorAll('.pruef').forEach(p=>p.onclick=()=>{
+    if(wahl===null) return;
+    const sicher=p.classList.contains('s'), ok=wahl===f.t, T=TYPEN[f.t];
+    fallAntw.push({ok,sicher}); sz.hidden=true;
+    opts.querySelectorAll('button').forEach(x=>{ x.disabled=true; x.classList.remove('sel'); if(x.dataset.t===f.t) x.classList.add('right'); else if(x.dataset.t===wahl) x.classList.add('wrong'); });
+    why.hidden=false;
+    why.textContent=(ok&&!sicher?'Richtig – aber geraten. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+
+      'Das ist ein '+(f.t==='fruehling'?'Frühlingstyp':T.name+'typ')+' ('+T.kurz+'). '+(f.grund?f.grund:'Typisch: Haut '+T.haut+'; Augen '+T.augen+'; Haare '+T.haar+'.');
+    if(ok&&!sicher) why.classList.add('geraten'); if(!ok&&sicher) why.classList.add('sicherfalsch');
+    weiter.hidden=false; weiter.querySelector('button').onclick=()=>{ fallNr++; erkennenZeigen(); };
+    erkennenStand(); });
+  box.appendChild(d);
+  erkennenStand();
+}
+function erkennenStand(){
+  const n=fallAntw.length, r=fallAntw.filter(a=>a.ok&&a.sicher).length, ger=fallAntw.filter(a=>a.ok&&!a.sicher).length, sf=fallAntw.filter(a=>!a.ok&&a.sicher).length;
+  $('#erkennenOut').textContent=r+' / '+RUNDE;
+  $('#erkennenText').textContent=n===0?'Noch keine Kundin beraten.':n<RUNDE?n+' von '+RUNDE+' beraten.':(r>=RUNDE*.8?'Stark! Du erkennst die Farbtypen sicher.':r>=RUNDE*.5?'Gute Basis. Achte auf den Unterton: golden = warm, rosig/bläulich = kühl.':'Lies die vier Typen oben noch einmal und probier es dann wieder.')+
+    (ger?' '+ger+'× richtig geraten.':'')+(sf?' '+sf+'× sicher, aber falsch.':'');
+  if(n===RUNDE&&!erkGespeichert&&window.ghdQuizSpeichernAntworten){ erkGespeichert=true;
+    ghdQuizSpeichernAntworten(fallAntw.map(a=>({thema:'Kundenberatung',korrekt:a.ok&&a.sicher,geraten:a.ok&&!a.sicher,sicherFalsch:!a.ok&&a.sicher})),'erkennenSpeicher'); }
+}
+$('#erkennenNeu').onclick=erkennenRunde;
+erkennenRunde();
 })();
 </script>
 <script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
