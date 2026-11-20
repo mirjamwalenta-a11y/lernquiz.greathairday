@@ -171,6 +171,7 @@ a.btn{display:inline-block;text-decoration:none}
 <nav class="tabs" aria-label="Bereiche">
   <div class="wrap">
     <a href="#labor">Make-up-Labor</a>
+    <a href="#brauen">Augenbrauen</a>
     <a href="#regeln">Die Regeln</a>
     <a href="#farben">Farben zum Farbtyp</a>
     <a href="#ueben">Üben</a>
@@ -250,6 +251,36 @@ a.btn{display:inline-block;text-decoration:none}
           <button class="btn ghost" id="leeren">Alles abwischen</button>
         </div>
         <div id="rueckmeldung"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="brauen">
+    <header>
+      <span class="tag">Schönheitspflege</span>
+      <h2>Augenbrauen formen</h2>
+      <p class="muted">Die ideale Braue wird mit drei Linien vom Nasenflügel aus gemessen – so wie mit dem Brauenstift am Gesicht der Kundin. Tippe im Schema über dem Auge im Bild links (das ist die rechte Braue der Kundin) die drei Punkte nacheinander an, dann „Prüfen“.</p>
+    </header>
+    <div class="merk">
+      <div><b>① Brauenanfang</b>Senkrecht über dem Nasenflügel – in einer Linie mit dem inneren Augenwinkel.</div>
+      <div><b>② Höchster Punkt</b>Auf der Linie vom Nasenflügel durch die Pupille (Blick geradeaus).</div>
+      <div><b>③ Brauenende</b>Auf der Linie vom Nasenflügel über den äußeren Augenwinkel. Das Ende liegt nicht tiefer als der Anfang.</div>
+    </div>
+    <div class="labor">
+      <div class="panel" style="justify-items:center">
+        <svg id="brauen-svg" viewBox="0 0 300 230" role="img" aria-label="Schema: Augen und Nase ohne Augenbrauen. Tippe die drei Brauenpunkte an." style="width:100%;max-width:440px;height:auto;touch-action:manipulation;cursor:crosshair;display:block"></svg>
+      </div>
+      <div class="panel">
+        <div>
+          <div class="lab">Jetzt antippen</div>
+          <p id="brauen-schritt" style="margin:0;font-weight:600"></p>
+        </div>
+        <div class="chips">
+          <button class="btn" id="brauen-pruefen">Prüfen</button>
+          <button class="btn ghost" id="brauen-loesung">Lösung zeigen</button>
+          <button class="btn ghost" id="brauen-neu">Neu</button>
+        </div>
+        <div id="brauen-rueck"></div>
       </div>
     </div>
   </section>
@@ -1000,6 +1031,82 @@ function score(){const e=Object.entries(answers),n=e.length;
 }
 $('#quizReset').onclick=()=>{answers={};renderQuiz();};
 renderQuiz();
+})();
+</script>
+<script>
+// ── Augenbrauen formen: Schema ohne Brauen, drei Messpunkte vom Nasenflügel aus ──
+// Geometrie (Einheiten der viewBox 300×230), Proportionen wie im echten Gesicht:
+// Augenbreite = Abstand der Augen, Nasenflügel senkrecht unter dem inneren Augenwinkel.
+(function(){
+  const $=s=>document.querySelector(s), svg=$('#brauen-svg'); if(!svg) return;
+  const G={mitte:150, augeY:118, innen:123, aussen:67, pupille:95, iris:11, fluegel:{x:124,y:203}};
+  const SCHRITTE=['① Brauenanfang','② Höchster Punkt','③ Brauenende'];
+  let punkte=[], gezeigt=false;
+  const spiegel=x=>2*G.mitte-x;
+  // x der Messlinie vom Nasenflügel durch (zx,zy) auf Höhe y
+  const linieX=(zx,zy,y)=>G.fluegel.x+(zx-G.fluegel.x)*(G.fluegel.y-y)/(G.fluegel.y-zy);
+  const ZIELE=[[G.innen,G.augeY],[G.pupille,G.augeY],[G.aussen+1,G.augeY-1]];
+  // Ideale Braue: Anfang y 86, höchster Punkt y 70, Ende y 80
+  const IDEAL_Y=[86,70,80], ideal=ZIELE.map(([zx,zy],i)=>({x:linieX(zx,zy,IDEAL_Y[i]),y:IDEAL_Y[i]}));
+  function auge(cx,innenX,aussenX){
+    const y=G.augeY;
+    return `<path d="M${aussenX} ${y} Q${cx} ${y-24} ${innenX} ${y} Q${cx} ${y+17} ${aussenX} ${y} Z" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.6"/>`+
+      `<circle cx="${cx}" cy="${y-1}" r="${G.iris}" fill="none" stroke="var(--muted)" stroke-width="1.4"/><circle cx="${cx}" cy="${y-1}" r="4.5" fill="var(--ink)"/>`+
+      `<path d="M${aussenX+4} ${y-8} Q${cx} ${y-31} ${innenX-6} ${y-10}" fill="none" stroke="var(--line)" stroke-width="1.2"/>`;
+  }
+  function braue(p,farbe,breite,deck){
+    if(p.length<3) return '';
+    const [a,b,c]=p, d=`M${a.x} ${a.y} C${a.x-8} ${a.y-7}, ${b.x+12} ${b.y}, ${b.x} ${b.y} S${c.x+6} ${c.y-2}, ${c.x} ${c.y}`;
+    // linke Braue (im Bild) und dieselbe Form gespiegelt auf der anderen Seite
+    return ['',` transform="translate(${2*G.mitte} 0) scale(-1 1)"`].map(t=>`<path d="${d}"${t} fill="none" stroke="${farbe}" stroke-width="${breite}" stroke-linecap="round" opacity="${deck}"/>`).join('');
+  }
+  function zeichnen(){
+    let h=`<rect x="0" y="0" width="300" height="230" fill="var(--surface)"/>`+
+      `<path d="M28 20 Q22 120 52 196" fill="none" stroke="var(--line)" stroke-width="1.4"/><path d="M272 20 Q278 120 248 196" fill="none" stroke="var(--line)" stroke-width="1.4"/>`+
+      auge(G.pupille,G.innen,G.aussen)+auge(spiegel(G.pupille),spiegel(G.innen),spiegel(G.aussen))+
+      // Nase: Rücken, Spitze, Nasenflügel
+      `<path d="M141 128 Q138 165 132 186" fill="none" stroke="var(--line)" stroke-width="1.3"/><path d="M159 128 Q162 165 168 186" fill="none" stroke="var(--line)" stroke-width="1.3"/>`+
+      `<path d="M${G.fluegel.x} ${G.fluegel.y} Q${G.fluegel.x-4} ${G.fluegel.y-14} ${G.fluegel.x+9} ${G.fluegel.y-16} M${spiegel(G.fluegel.x)} ${G.fluegel.y} Q${spiegel(G.fluegel.x)+4} ${G.fluegel.y-14} ${spiegel(G.fluegel.x)-9} ${G.fluegel.y-16}" fill="none" stroke="var(--ink)" stroke-width="1.6"/>`+
+      `<path d="M${G.fluegel.x} ${G.fluegel.y} Q140 214 150 207 Q160 214 ${spiegel(G.fluegel.x)} ${G.fluegel.y}" fill="none" stroke="var(--ink)" stroke-width="1.6"/>`+
+      `<path d="M141 206 q3 3 6 1 M159 206 q-3 3 -6 1" fill="none" stroke="var(--ink)" stroke-width="1.3"/>`;
+    if(gezeigt){
+      // Messlinien vom Nasenflügel durch innen, Pupille, außen – bis über die Braue
+      ZIELE.forEach(([zx,zy],i)=>{ const y=56, x=linieX(zx,zy,y);
+        h+=`<line x1="${G.fluegel.x}" y1="${G.fluegel.y}" x2="${x}" y2="${y}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+        h+=`<circle cx="${ideal[i].x}" cy="${ideal[i].y}" r="3.2" fill="var(--accent)"/>`; });
+      h+=braue(ideal,'var(--muted)',5,.55);
+    }
+    h+=braue(punkte,'var(--ink)',3,.8);
+    punkte.forEach((p,i)=>{ h+=`<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="1.2"/><text x="${p.x}" y="${p.y+3.5}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)">${i+1}</text>`; });
+    svg.innerHTML=h;
+    $('#brauen-schritt').textContent=punkte.length<3?SCHRITTE[punkte.length]+' – über dem Auge im Bild links':'Alle drei Punkte gesetzt – jetzt „Prüfen“. Zum Verschieben „Neu“.';
+  }
+  svg.addEventListener('click',ev=>{
+    if(punkte.length>=3) return;
+    const pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY;
+    const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+    if(q.x>G.mitte) { $('#brauen-schritt').textContent='Bitte über dem Auge im Bild links arbeiten (rechte Braue der Kundin). Die andere Seite wird gespiegelt.'; return; }
+    punkte.push({x:Math.round(q.x*10)/10,y:Math.round(q.y*10)/10}); $('#brauen-rueck').innerHTML=''; zeichnen();
+  });
+  function pruefen(){
+    if(punkte.length<3){ $('#brauen-rueck').innerHTML=`<div class="tip">Setze zuerst alle drei Punkte.</div>`; return; }
+    const z=[], li=(ok,t)=>z.push(`<li>${ok?'✓':'✗'} ${t}</li>`), TOL=[7,8,9];
+    const lage=(i)=>{ const p=punkte[i], soll=linieX(ZIELE[i][0],ZIELE[i][1],p.y), d=p.x-soll; return Math.abs(d)<=TOL[i]?0:(d<0?-1:1); };
+    // im Bild links: kleineres x = weiter außen (Richtung Schläfe)
+    const [a,b,c]=punkte, hoeheOk=p=>p.y>=52&&p.y<=G.augeY-20;
+    let l=lage(0); li(l===0&&hoeheOk(a),l===0?(hoeheOk(a)?'Brauenanfang sitzt senkrecht über dem Nasenflügel.':'Brauenanfang: richtige Linie, aber '+(a.y>G.augeY-20?'zu nah am Auge.':'zu hoch.')):(l>0?'Brauenanfang zu weit innen – die Brauen wirken zusammengewachsen und der Blick streng.':'Brauenanfang zu weit außen – die Augen wirken weiter auseinander.'));
+    l=lage(1); const hoechster=b.y<a.y-3&&b.y<c.y-2;
+    li(l===0&&hoechster,l!==0?(l>0?'Höchster Punkt zu weit innen – die Braue wirkt erstaunt.':'Höchster Punkt zu weit außen – der Bogen wirkt hängend.'):(hoechster?'Höchster Punkt liegt richtig auf der Linie durch die Pupille.':'Höchster Punkt: richtige Linie, aber er ist nicht der höchste Punkt der Braue.'));
+    l=lage(2); const nichtTiefer=c.y<=a.y+2;
+    li(l===0&&nichtTiefer,l!==0?(l<0?'Brauenende zu lang – es zieht das Auge nach unten außen.':'Brauenende zu kurz – das Auge wirkt kleiner.'):(nichtTiefer?'Brauenende liegt richtig auf der Linie über den äußeren Augenwinkel.':'Brauenende liegt tiefer als der Anfang – die Braue wirkt traurig.'));
+    const alles=z.every(x=>x.includes('✓'));
+    gezeigt=true; zeichnen();
+    $('#brauen-rueck').innerHTML=`<div class="tip"><b>${alles?'✓ Sauber gemessen!':'Fast – schau dir die Hilfslinien an.'}</b> Die gestrichelten Linien gehen vom Nasenflügel aus, die Punkte zeigen die ideale Braue.</div><ul class="rm">${z.join('')}</ul>`;
+  }
+  $('#brauen-pruefen').onclick=pruefen;
+  $('#brauen-loesung').onclick=()=>{ gezeigt=true; zeichnen(); $('#brauen-rueck').innerHTML=`<div class="tip">Die drei Linien gehen vom Nasenflügel durch den inneren Augenwinkel, die Pupille und den äußeren Augenwinkel. Wo sie die Braue treffen, liegen Anfang, höchster Punkt und Ende.</div>`; };
+  $('#brauen-neu').onclick=()=>{ punkte=[]; gezeigt=false; $('#brauen-rueck').innerHTML=''; zeichnen(); };
+  zeichnen();
 })();
 </script>
 <script src="lern-leiste.js?v=20261107w" data-aktiv="praxis" defer></script>  <!-- Leiste unten: Heute, Üben, Praxis, Fortschritt -->
