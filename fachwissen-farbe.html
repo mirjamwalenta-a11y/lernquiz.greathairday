@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-sitzung.js"></script>  <!-- automatisch abmelden nach 15 min ohne Bedienung; Antippen hier zählt für alle Lern-Seiten -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F8F4EA">
+<title>Fachwissen Farbe</title>
+<link rel="stylesheet" href="fonts/poppins.css?v=20261112">  <!-- Schrift selbst gehostet, kein Google -->
+<!--
+  Fachwissen Farbe zum Nachschlagen für Lehrlinge: dieselben Rezepturen wie
+  im Mitarbeiterhandbuch (Tabelle wissensbank_rezepturen, Fotos im privaten
+  Bucket rezeptur-bilder), hier NUR LESEN und NUR freigegebene Einträge.
+  Schreiben, Einreichen und Freigeben bleiben im Handbuch. Gelesen wird mit
+  der Anmeldung aus dem Lernquiz; RLS (Handbuch-Repo, Migrationen
+  20260920130000/…140000): freigegebene Einträge und ihre Fotos für alle
+  angemeldeten Personen. Keine neue Tabelle, keine neuen Rechte.
+  Aufbau wie wissensbank.html (gleiche Farben und Bausteine).
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8F4EA;--ink:#211D17;--muted:#6B6455;--line:#E4DBC5;--accent:#896C32;--soft:#F3EBD9;--card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}}
+:root[data-theme="dark"]{--bg:#1B1813;--ink:#F1ECE2;--muted:#B5AC9A;--line:#3A342A;--accent:#D2B270;--soft:#28231B;--card:#221E18}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Poppins,system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px 16px 48px}
+.wrap{max-width:720px;margin:0 auto}
+.zurueck{display:inline-block;color:var(--muted);font-size:13px;text-decoration:none;margin-bottom:12px}
+.zurueck:hover{color:var(--accent)}
+.tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent)}
+h1{font-size:24px;font-weight:600;line-height:1.2;margin:2px 0 6px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.suche{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0 10px}
+.suche input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.suche input:focus{outline:none;border-color:var(--accent)}
+.buchstaben{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.buchstaben button{font:inherit;cursor:pointer;padding:4px 10px;border-radius:7px;background:var(--card);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600}
+.buchstaben button:hover,.buchstaben button.aktiv{border-color:var(--accent);color:var(--accent)}
+ul{list-style:none}
+li.e{display:block;padding:10px 12px;border-radius:10px;color:var(--ink);background:var(--card);border:1px solid var(--line);margin-bottom:6px}
+.n{font-weight:600;font-size:15px}
+.w{display:block;font-size:13.5px;color:var(--muted);margin-top:2px}
+details{margin-top:6px;font-size:13px}
+summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:12px}
+.inhalt{margin-top:6px;background:var(--soft);border-radius:8px;padding:8px 10px;font-size:14.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.hinweis{font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.hinweis a{color:var(--accent);font-weight:600}
+.leer{color:var(--muted);font-size:14px;padding:20px 0}
+mark{background:var(--soft);color:inherit;border-radius:3px;padding:0 1px}
+.inhalt mark{background:var(--card)}
+.feld{margin-top:8px}
+.feld:first-child{margin-top:0}
+.feld small{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);white-space:normal}
+.inhalt img{display:block;max-width:100%;border-radius:8px;margin-bottom:8px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="wrap">
+  <a class="zurueck" href="lerntool.html">← Lern-Tool</a>
+  <div class="tag">Lernen · Farbe</div>
+  <h1>Fachwissen Farbe</h1>
+  <p class="sub">Rezepturen, Mischverhältnisse und Einwirkzeiten aus dem Mitarbeiterhandbuch. Hier kannst du jederzeit nachschauen.</p>
+  <p class="hinweis" id="hinweis" hidden></p>
+
+  <div class="suche" id="suche" hidden>
+    <input type="search" id="q" placeholder="Suchen, z. B. Blondierung, 6 %, Toner …" autocomplete="off" aria-label="Im Fachwissen Farbe suchen">
+    <nav class="buchstaben" id="kat" aria-label="Anwendungsbereiche"></nav>
+  </div>
+
+  <div id="liste"><p class="leer">Lade …</p></div>
+</div>
+
+<script>
+(function () {
+  var SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
+  var LOGIN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261119i&zurueck=fachwissen-farbe.html';
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function norm(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+
+  var listeEl = document.getElementById('liste');
+  var hinweisEl = document.getElementById('hinweis');
+  function hinweis(html) { hinweisEl.innerHTML = html; hinweisEl.hidden = false; }
+
+  var ARTIKEL = [], q = '', kategorie = '', SB = null;
+  var FELDER = [['produkt_marke', 'Produkt / Marke'], ['mischverhaeltnis', 'Mischverhältnis'], ['einwirkzeit', 'Einwirkzeit'], ['anleitung', 'Anleitung'], ['warnhinweise', 'Warnhinweise']];
+
+  function markiere(t) {
+    var e = esc(t);
+    if (!q) return e;
+    q.split(/\s+/).filter(Boolean).forEach(function (w) {
+      var i = norm(e).indexOf(w);
+      if (i >= 0 && norm(e).length === e.length) e = e.slice(0, i) + '<mark>' + e.slice(i, i + w.length) + '</mark>' + e.slice(i + w.length);
+    });
+    return e;
+  }
+
+  function kategorienZeichnen() {
+    var set = {};
+    ARTIKEL.forEach(function (a) { if (a.kategorie) set[a.kategorie] = 1; });  // kategorie = Anwendungsbereich
+    var kats = Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'de'); });
+    var el = document.getElementById('kat');
+    if (!kats.length) { el.innerHTML = ''; return; }
+    el.innerHTML = [''].concat(kats).map(function (k) {
+      return '<button type="button" data-k="' + esc(k) + '" class="' + (k === kategorie ? 'aktiv' : '') + '">' + esc(k || 'Alle') + '</button>';
+    }).join('');
+    el.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () { kategorie = b.getAttribute('data-k'); kategorienZeichnen(); zeichnen(); });
+    });
+  }
+
+  function zeichnen() {
+    var worte = q.split(/\s+/).filter(Boolean);
+    var treffer = ARTIKEL.filter(function (a) {
+      return (!kategorie || a.kategorie === kategorie) && worte.every(function (w) { return a.s.indexOf(w) >= 0; });
+    });
+    // Titel-Treffer zuerst, sonst alphabetisch
+    if (worte.length) treffer.sort(function (a, b) {
+      var ta = worte.every(function (w) { return norm(a.titel).indexOf(w) >= 0; }) ? 0 : 1;
+      var tb = worte.every(function (w) { return norm(b.titel).indexOf(w) >= 0; }) ? 0 : 1;
+      return ta - tb || a.titel.localeCompare(b.titel, 'de');
+    });
+    listeEl.innerHTML = treffer.length ? '<ul>' + treffer.map(function (a) {
+      return '<li class="e"><div class="kopf"><span class="n">' + markiere(a.titel) + '</span>' +
+        (a.kategorie ? '<span class="w">' + markiere(a.kategorie) + '</span>' : '') + '</div>' +
+        '<details data-id="' + esc(a.id) + '"' + (worte.length || treffer.length === 1 ? ' open' : '') + '><summary>Rezeptur ansehen</summary>' +
+        '<div class="inhalt">' + (a.bild_pfad ? '<div class="bild"></div>' : '') + FELDER.filter(function (f) { return a[f[0]]; }).map(function (f) {
+          return '<div class="feld"><small>' + f[1] + '</small>' + markiere(a[f[0]]) + '</div>';
+        }).join('') + '</div></details></li>';
+    }).join('') + '</ul>'
+      : (ARTIKEL.length
+        ? '<p class="leer">Nichts gefunden. Probier ein anderes Wort.</p>'
+        : '<p class="leer">Noch keine Rezepturen im Fachwissen Farbe.</p>');
+    listeEl.querySelectorAll('details[data-id]').forEach(function (d) {
+      if (d.open) fotoLaden(d);
+      d.addEventListener('toggle', function () { if (d.open) fotoLaden(d); });
+    });
+  }
+
+  // Foto erst beim Aufklappen holen (privater Bucket, kurz gültiger Link)
+  var FOTO = {};
+  async function fotoLaden(d) {
+    var box = d.querySelector('.bild');
+    if (!box || box.firstChild) return;
+    var a = ARTIKEL.filter(function (x) { return String(x.id) === d.getAttribute('data-id'); })[0];
+    if (!a || !a.bild_pfad) return;
+    try {
+      if (!FOTO[a.id]) FOTO[a.id] = SB.storage.from('rezeptur-bilder').createSignedUrl(a.bild_pfad, 3600)
+        .then(function (r) { return r.data && r.data.signedUrl; });
+      var url = await FOTO[a.id];
+      if (!url) { delete FOTO[a.id]; return; }
+      if (box.firstChild || !box.isConnected) return;
+      var img = document.createElement('img');
+      img.src = url; img.alt = 'Foto zu ' + a.titel; img.loading = 'lazy';
+      box.appendChild(img);
+    } catch (e) {}
+  }
+
+  async function laden() {
+    if (!window.supabase) { listeEl.innerHTML = ''; hinweis('Fachwissen Farbe konnte nicht geladen werden. Bitte prüfe deine Internetverbindung.'); return; }
+    var sb = SB = window.__ghdSb || (window.__ghdSb = window.supabase.createClient(SB_URL, SB_KEY));
+    var s = null;
+    try { s = (await sb.auth.getSession()).data.session; } catch (e) {}
+    if (!s) {
+      listeEl.innerHTML = '';
+      hinweis('Fachwissen Farbe ist nur für unser Team. Bitte <a href="' + LOGIN + '">melde dich im Lernquiz an</a>, dann kannst du hier nachschauen.');
+      return;
+    }
+    // Nur lesen, nur freigegebene Einträge. Keine Namen oder E-Mails der Verfasser:innen.
+    var r;
+    try {
+      r = await sb.from('wissensbank_rezepturen')
+        .select('id,titel,anwendungsbereich,produkt_marke,mischverhaeltnis,einwirkzeit,anleitung,warnhinweise,bild_pfad')
+        .eq('status', 'freigegeben')
+        .order('titel');
+    } catch (e) { r = { error: e }; }
+    if (r.error) {
+      listeEl.innerHTML = '';
+      hinweis('Fachwissen Farbe konnte gerade nicht geladen werden. Versuch es später noch einmal oder frag deine Meisterin.');
+      return;
+    }
+    ARTIKEL = (r.data || []).map(function (a) {
+      a.titel = a.titel || ''; a.kategorie = a.anwendungsbereich || '';
+      a.s = norm([a.titel, a.kategorie].concat(FELDER.map(function (f) { return a[f[0]] || ''; })).join(' '));
+      return a;
+    });
+    document.getElementById('suche').hidden = false;
+    kategorienZeichnen();
+    zeichnen();
+  }
+
+  document.getElementById('q').addEventListener('input', function () { q = norm(this.value.trim()); zeichnen(); });
+  laden();
+})();
+</script>
+<script src="vorlesen.js?v=20261116c" data-ziele="li.e > .kopf ; .feld" defer></script>  <!-- 🔊 Titel und Felder auf Deutsch vorlesen -->
+<script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Feedback, Impressum, Datenschutz, Nutzungsbedingungen -->
+</body>
+</html>
