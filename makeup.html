@@ -253,6 +253,7 @@ a.btn{display:inline-block;text-decoration:none}
           <button class="btn ghost" id="loesung">Lösung zeigen</button>
           <button class="btn ghost" id="leeren">Alles abwischen</button>
         </div>
+        <div id="labor-speicher" style="font-size:12px"></div>
         <div id="rueckmeldung"></div>
       </div>
     </div>
@@ -284,6 +285,7 @@ a.btn{display:inline-block;text-decoration:none}
           <button class="btn ghost" id="brauen-neu">Neu</button>
         </div>
         <div id="brauen-rueck"></div>
+        <div id="brauen-speicher" style="font-size:12px"></div>
       </div>
     </div>
   </section>
@@ -309,6 +311,7 @@ a.btn{display:inline-block;text-decoration:none}
           <button class="btn ghost" id="fehler-aufloesen">Auflösen</button>
           <button class="btn" id="fehler-neu">Neues Gesicht</button>
         </div>
+        <div id="fehler-speicher" style="font-size:12px"></div>
       </div>
     </div>
   </section>
@@ -453,6 +456,7 @@ const partieAn=()=>ansicht==='gesicht'&&partie!=='gesamt';
 const PINSEL={B:{name:'Verblenden',ic:'〰️'},E:{name:'Radierer',ic:'🧽'}};
 const PGROESSE={H:9,C:7,R:9,L:3.5,M:3,D:2.5,P:2,B:6,E:5}, LICHT=['H','L'];
 let LIPPE_TIEFE=.5;
+const laborVersuch={gespeichert:false,loesung:false,neu(){ this.gespeichert=false; this.loesung=false; const e=document.getElementById('labor-speicher'); if(e) e.textContent=''; }};
 const PSTAERKE=[['Fein',.35],['Mittel',1],['Breit',1.7]];
 let modus='stellen', pg={deck:60,weich:6}, LW=null, pinselIst={}, pinselFehltAn=false;
 const pgr={}, verlauf=[], benutzt=new Set();
@@ -631,7 +635,7 @@ function vorbild(zeigen){
   if(ok&&ansicht==='gesicht'){ $('#vorbild-bild').src='bilder/makeup/nachher-zu-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
   else if(ok){ $('#vorbild-bild').src='bilder/makeup/augen-nachher-'+zuB+form+'.jpg'; $('#vorbild-bild').alt='Vorbild Augen-Make-up: '+FORMEN[form].n; }
 }
-function neu(){vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
+function neu(){laborVersuch.neu();vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
   let W=werkz();
   if(partieAn()) W=Object.fromEntries(Object.entries(W).filter(([k])=>PARTIEN[partie].wz.includes(k)));
@@ -693,6 +697,7 @@ function pruefen(gesetzt=window.__gesetzt(), hinweise=[], kontur=[]){
     (gut.length?`<div class="lab">Richtig</div><ul class="rm">${gut.map(x=>`<li>✓ ${esc(x)}</li>`).join('')}</ul>`:'')+
     (extra.length?`<ul class="rm muted">${extra.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'');
   zeichnen(true);
+  return {gut:gut.length, gesamt:Object.keys(f.soll).length, kontur:kontur.length};
 }
 window.__gesetzt=()=>gesetzt;
 // ── Übungsauftrag: Kundin beschreiben, Gesichtsform und Farbtyp selbst erkennen ──
@@ -766,9 +771,21 @@ function zusatzAuswertung(){ const h=auftragAuswertung()+uhrAuswertung(); if(h) 
   k.addEventListener('keyup',()=>an(false));
   k.addEventListener('contextmenu',e=>e.preventDefault());
 })();
-$('#pruefen').onclick=()=>{ modus==='pinsel'?pinselPruefen():pruefen(); zusatzAuswertung(); };
-$('#loesung').onclick=()=>{ if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; paletteSetzen(auftrag.typ); chips(); } vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
-$('#leeren').onclick=()=>{vorbild(false);if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+$('#pruefen').onclick=()=>{ const r=modus==='pinsel'?pinselPruefen():pruefen(); const zeit=!!(uhr&&!uhr.stopp); zusatzAuswertung(); laborSpeichern(r,zeit); };
+// Im Lernverlauf speichern (wie das Make-up-Quiz): nur der erste „Prüfen“ je Versuch zählt,
+// nicht nach „Lösung zeigen“. Ohne Lehrlings-Login speichert quiz-verlauf.js nichts.
+function laborSpeichern(r,zeitLief){
+  if(!r||laborVersuch.gespeichert||laborVersuch.loesung||!window.ghdQuizSpeichernAntworten) return;
+  laborVersuch.gespeichert=true;
+  const T='Make-up & Visagistik', a=[];
+  for(let i=0;i<r.gesamt;i++) a.push({thema:T,korrekt:i<r.gut});
+  for(let i=0;i<r.kontur;i++) a.push({thema:T,korrekt:false});
+  if(auftrag&&!auftrag.geloest){ a.push({thema:T,korrekt:auftrag.wahl===auftrag.form}); a.push({thema:T,korrekt:palette===auftrag.typ}); }
+  if(uhr&&zeitLief) a.push({thema:T,korrekt:(uhr.stopp-uhr.start)/1000<=UHR_SEK});
+  ghdQuizSpeichernAntworten(a,'labor-speicher');
+}
+$('#loesung').onclick=()=>{ laborVersuch.loesung=true; if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; paletteSetzen(auftrag.typ); chips(); } vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
+$('#leeren').onclick=()=>{laborVersuch.neu();vorbild(false);if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 // ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
 // Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
 // über der Zeichnung. Geprüft wird, wie viel Farbe in welcher Zone liegt.
@@ -958,7 +975,7 @@ function pinselPruefen(){
     if(ges>255*8&&aus/ges>grenze){ kontur.push(text); for(let i=hinweise.length-1;i>=0;i--) if([...ts].some(t=>hinweise[i].startsWith(ALLE_WERKZEUGE[t].name+': Viel Farbe'))) hinweise.splice(i,1); }
   });
   pinselIst=ist; pinselFehltAn=true;
-  pruefen(ist,hinweise,kontur);
+  return pruefen(ist,hinweise,kontur);
 }
 // Weichzeichnen beim Übertragen (Canvas-Filter, sonst verkleinern und wieder vergrößern)
 const FILTER_OK=(()=>{ try{ const c=document.createElement('canvas').getContext('2d'); c.filter='blur(2px)'; return c.filter==='blur(2px)'; }catch(e){ return false; } })();
@@ -1020,7 +1037,8 @@ function fehlerRunde(){
   for(const x of gemischt){ if(belegt.has(x.z)) continue; wahl.push(x); belegt.add(x.z); if(wahl.length===3) break; }
   const gesetzt=Object.assign({},soll), einst={};
   wahl.forEach(x=>{ gesetzt[x.z]=x.t; if(x.e) einst[x.z]=x.e; });
-  Object.assign(FX,{form:fk,gesetzt,einst,fehler:wahl.map(x=>Object.assign({gefunden:false},x)),daneben:0,aufgeloest:false});
+  Object.assign(FX,{form:fk,gesetzt,einst,fehler:wahl.map(x=>Object.assign({gefunden:false},x)),daneben:0,aufgeloest:false,gespeichert:false});
+  $('#fehler-speicher').textContent='';
   $('#fehler-liste').innerHTML=''; fehlerZeichnen();
 }
 function mitGesicht(fn){ const a=ansicht; ansicht='gesicht'; try{ return fn(); } finally{ ansicht=a; } }
@@ -1061,11 +1079,15 @@ $('#fehler-svg').addEventListener('click',ev=>{
   const treffer=mitGesicht(()=>{ const f=BILDER.zu[FX.form];
     return FX.fehler.find(x=>{ const z=GESICHT_ZONEN[x.z], e=Object.assign(standard(x.z),FX.einst[x.z]||{});
       return (z.paar?[-1,1]:[1]).some(seite=>{ const p=zonePos(z,f,seite,e), rx=p.rx*1.4+5, ry=p.ry*1.6+5; return ((q.x-p.x)/rx)**2+((q.y-p.y)/ry)**2<=1; }); }); });
-  if(treffer&&!treffer.gefunden){ treffer.gefunden=true; fehlerListe(); }
+  if(treffer&&!treffer.gefunden){ treffer.gefunden=true; fehlerListe(); if(FX.fehler.every(x=>x.gefunden)) fehlerSpeichern(); }
   else if(!treffer){ FX.daneben++; }
   fehlerZeichnen();
 });
-$('#fehler-aufloesen').onclick=()=>{ if(!FX.form) return; FX.aufgeloest=true; fehlerListe(); fehlerZeichnen(); };
+$('#fehler-aufloesen').onclick=()=>{ if(!FX.form) return; FX.aufgeloest=true; fehlerListe(); fehlerZeichnen(); fehlerSpeichern(); };
+function fehlerSpeichern(){
+  if(FX.gespeichert||!window.ghdQuizSpeichernAntworten) return; FX.gespeichert=true;
+  ghdQuizSpeichernAntworten(FX.fehler.map(x=>({thema:'Make-up & Visagistik',korrekt:x.gefunden})),'fehler-speicher');
+}
 $('#fehler-neu').onclick=fehlerRunde;
 fehlerRunde();
 
@@ -1141,7 +1163,7 @@ renderQuiz();
   const $=s=>document.querySelector(s), svg=$('#brauen-svg'); if(!svg) return;
   const G={mitte:251.75, fluegel:{x:198,y:342}, innen:[197,229], pupille:[144,212], aussen:[93,210], unten:120, oben:208, tol:[13,14,16]};
   const SCHRITTE=['① Brauenanfang','② Höchster Punkt','③ Brauenende'];
-  let punkte=[], gezeigt=false;
+  let punkte=[], gezeigt=false, gespeichert=false, loesungGesehen=false;
   const spiegel=x=>2*G.mitte-x;
   // x der Messlinie vom Nasenflügel durch (zx,zy) auf Höhe y
   const linieX=(zx,zy,y)=>G.fluegel.x+(zx-G.fluegel.x)*(G.fluegel.y-y)/(G.fluegel.y-zy);
@@ -1216,11 +1238,12 @@ renderQuiz();
     li(l===0&&nichtTiefer,l!==0?(l<0?'Brauenende zu lang – es zieht das Auge nach unten außen.':'Brauenende zu kurz – das Auge wirkt kleiner.'):(nichtTiefer?'Brauenende liegt richtig auf der Linie über den äußeren Augenwinkel.':'Brauenende liegt tiefer als der Anfang – die Braue wirkt traurig.'));
     const alles=z.every(x=>x.includes('✓'));
     gezeigt=true; zeichnen();
+    if(!gespeichert&&!loesungGesehen&&window.ghdQuizSpeichernAntworten){ gespeichert=true; ghdQuizSpeichernAntworten(z.map(x=>({thema:'Make-up & Visagistik',korrekt:x.includes('✓')})),'brauen-speicher'); }
     $('#brauen-rueck').innerHTML=`<div class="tip"><b>${alles?'✓ Sauber gemessen!':'Fast – schau dir die Hilfslinien an.'}</b> Die gestrichelten Linien gehen vom Nasenflügel aus, die Punkte zeigen die ideale Braue.</div><ul class="rm">${z.join('')}</ul>`;
   }
   $('#brauen-pruefen').onclick=pruefen;
-  $('#brauen-loesung').onclick=()=>{ gezeigt=true; zeichnen(); $('#brauen-rueck').innerHTML=`<div class="tip">Die drei Linien gehen vom Nasenflügel durch den inneren Augenwinkel, die Pupille und den äußeren Augenwinkel. Wo sie die Braue treffen, liegen Anfang, höchster Punkt und Ende.</div>`; };
-  $('#brauen-neu').onclick=()=>{ punkte=[]; gezeigt=false; $('#brauen-rueck').innerHTML=''; zeichnen(); };
+  $('#brauen-loesung').onclick=()=>{ loesungGesehen=true; gezeigt=true; zeichnen(); $('#brauen-rueck').innerHTML=`<div class="tip">Die drei Linien gehen vom Nasenflügel durch den inneren Augenwinkel, die Pupille und den äußeren Augenwinkel. Wo sie die Braue treffen, liegen Anfang, höchster Punkt und Ende.</div>`; };
+  $('#brauen-neu').onclick=()=>{ punkte=[]; gezeigt=false; gespeichert=false; loesungGesehen=false; $('#brauen-speicher').textContent=''; $('#brauen-rueck').innerHTML=''; zeichnen(); };
   zeichnen();
 })();
 </script>
