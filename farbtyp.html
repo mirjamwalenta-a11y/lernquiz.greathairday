@@ -201,7 +201,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
     <header>
       <span class="tag">Make-up</span>
       <h2>Make-up-Farben zum Farbtyp</h2>
-      <p class="muted">Auch beim Make-up gilt: warme Typen tragen warme, kühle Typen kühle Farben. Wohin Licht und Schatten gehören, übst du im <a href="makeup.html?v=20261120r#labor" style="color:var(--accent);font-weight:600">Make-up-Labor</a>.</p>
+      <p class="muted">Auch beim Make-up gilt: warme Typen tragen warme, kühle Typen kühle Farben. Wohin Licht und Schatten gehören, übst du im <a href="makeup.html?v=20261120s#labor" style="color:var(--accent);font-weight:600">Make-up-Labor</a>.</p>
     </header>
     <div class="typen" id="makeup-liste"></div>
   </section>
@@ -453,17 +453,27 @@ const KUNDIN={
   herbst:{haut:['Elfenbein mit goldenem Unterton','beige mit goldenem Unterton und Sommersprossen','warmes Beige'],augen:['braun','haselnussbraun','olivgrün','bernsteinfarben'],haar:['kastanienbraun','kupferrot','goldbraun','warmes Dunkelblond']},
   winter:{haut:['sehr hell wie Porzellan, kühler Unterton','oliv mit kühlem Unterton','dunkel mit kühlem Unterton'],augen:['dunkelbraun','schwarzbraun','eisblau','klares Grün'],haar:['dunkelbraun, kühl','schwarz','blauschwarz']}
 };
+// Foto-Kundinnen (KI-generiert). Farbtyp-Zuordnung zur Durchsicht durch die Inhaberin.
+const FOTOS=[
+  {foto:'bilder/farbtyp/kundin-foto-1.jpg',t:'herbst',grund:'Goldener, olivfarbener Hautton, warme dunkelbraune Haare und braune Augen – warm, gedämpft und tief.'},
+  {foto:'bilder/farbtyp/kundin-foto-2.jpg',t:'sommer',grund:'Helle, rosige Haut, graublaue Augen und kühles, aschiges Hellblond – kühl, hell und gedämpft.'}
+];
+let fotoNr=Math.floor(Math.random()*2);
 const TYP_IDS=Object.keys(KUNDIN), RUNDE=10, zuf=l=>l[Math.floor(Math.random()*l.length)];
 let fall=[], fallNr=0, fallAntw=[], erkGespeichert=false;
 function erkennenRunde(){
   fall=[]; for(let i=0;i<RUNDE;i++){ const t=zuf(TYP_IDS), k=KUNDIN[t]; fall.push({t,haut:zuf(k.haut),augen:zuf(k.augen),haar:zuf(k.haar)}); }
+  // In jeder Runde eine Foto-Kundin an zufälliger Stelle (abwechselnd)
+  fall[Math.floor(Math.random()*RUNDE)]=FOTOS[fotoNr++%FOTOS.length];
   fallNr=0; fallAntw=[]; erkGespeichert=false; $('#erkennenSpeicher').textContent=''; erkennenZeigen();
 }
 function erkennenZeigen(){
   const box=$('#erkennenBox'); box.innerHTML='';
   if(fallNr>=RUNDE){ erkennenStand(); return; }
   const f=fall[fallNr], d=document.createElement('div'); d.className='q';
-  d.innerHTML='<h3>Kundin '+(fallNr+1)+' von '+RUNDE+'</h3><p style="margin:0">Haut: <b>'+esc(f.haut)+'</b><br>Augen: <b>'+esc(f.augen)+'</b><br>Haare: <b>'+esc(f.haar)+'</b></p><div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef">Geraten – prüfen</button></div></div><p class="why" hidden></p><div class="weiter" hidden style="display:flex"><button class="pruef s">'+(fallNr+1<RUNDE?'Nächste Kundin':'Ergebnis ansehen')+'</button></div>';
+  const info=f.foto?'<img src="'+f.foto+'" alt="Foto einer Kundin ohne Make-up" style="width:100%;max-width:300px;height:auto;border-radius:8px;display:block"><span style="font-size:11px;color:var(--muted)">KI-generiert</span><p style="margin:0">Schau dir Haut, Augen und Haare genau an. Welcher Farbtyp ist sie?</p>'
+    :'<p style="margin:0">Haut: <b>'+esc(f.haut)+'</b><br>Augen: <b>'+esc(f.augen)+'</b><br>Haare: <b>'+esc(f.haar)+'</b></p>';
+  d.innerHTML='<h3>Kundin '+(fallNr+1)+' von '+RUNDE+'</h3>'+info+'<div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef">Geraten – prüfen</button></div></div><p class="why" hidden></p><div class="weiter" hidden style="display:flex"><button class="pruef s">'+(fallNr+1<RUNDE?'Nächste Kundin':'Ergebnis ansehen')+'</button></div>';
   const opts=d.querySelector('.opts'), why=d.querySelector('.why'), sz=d.querySelector('.sicher'), weiter=d.querySelector('.weiter'); let wahl=null;
   TYP_IDS.forEach(t=>{ const b=document.createElement('button'); b.textContent=TYPEN[t].name; b.dataset.t=t;
     b.onclick=()=>{ wahl=t; opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); sz.hidden=false; };
@@ -475,7 +485,7 @@ function erkennenZeigen(){
     opts.querySelectorAll('button').forEach(x=>{ x.disabled=true; x.classList.remove('sel'); if(x.dataset.t===f.t) x.classList.add('right'); else if(x.dataset.t===wahl) x.classList.add('wrong'); });
     why.hidden=false;
     why.textContent=(ok&&!sicher?'Richtig – aber geraten. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+
-      'Das ist ein '+(f.t==='fruehling'?'Frühlingstyp':T.name+'typ')+' ('+T.kurz+'). Typisch: Haut '+T.haut+'; Augen '+T.augen+'; Haare '+T.haar+'.';
+      'Das ist ein '+(f.t==='fruehling'?'Frühlingstyp':T.name+'typ')+' ('+T.kurz+'). '+(f.grund?f.grund:'Typisch: Haut '+T.haut+'; Augen '+T.augen+'; Haare '+T.haar+'.');
     if(ok&&!sicher) why.classList.add('geraten'); if(!ok&&sicher) why.classList.add('sicherfalsch');
     weiter.hidden=false; weiter.querySelector('button').onclick=()=>{ fallNr++; erkennenZeigen(); };
     erkennenStand(); });
