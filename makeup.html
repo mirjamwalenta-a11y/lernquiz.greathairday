@@ -337,7 +337,7 @@ const FORMEN={
     soll:{stirn_mitte:'H',nasenruecken:'H',kinn_mitte:'H',schlaefen:'C',wangen_hohl:'C',kiefer:'C',wangenknochen:'R'},
     meiden:{wangenapfel:['R','Rouge rund auf dem Wangenapfel macht das Gesicht noch runder.']},
     warum:{stirn_mitte:'Licht in der Mitte zieht den Blick in die Länge.',nasenruecken:'Eine senkrechte Lichtlinie streckt.',kinn_mitte:'Licht am Kinn verlängert nach unten.',schlaefen:'Schatten an den Schläfen nimmt Breite.',wangen_hohl:'Schräger Schatten unter dem Wangenknochen formt und streckt.',kiefer:'Schatten an den Kieferseiten macht unten schmaler.',wangenknochen:'Rouge schräg vom Wangenknochen zur Schläfe streckt.'}},
-  lang:{n:'Lang',ziel:'Kürzer und etwas breiter wirken lassen.',
+  lang:{n:'Länglich',ziel:'Kürzer und etwas breiter wirken lassen.',
     soll:{wangenknochen:'H',unter_augen:'H',haaransatz:'C',kinn_spitze:'C',wangenapfel:'R'},
     meiden:{nasenruecken:['H','Ein langer Lichtstreifen auf der Nase verlängert das Gesicht noch mehr.'],wangen_hohl:['C','Schatten unter dem Wangenknochen macht das Gesicht schmaler – das verstärkt die Länge.']},
     warum:{wangenknochen:'Licht außen am Wangenknochen macht breiter.',unter_augen:'Licht unter den Augen betont die Mitte in der Breite.',haaransatz:'Schatten am Haaransatz kürzt die Stirn.',kinn_spitze:'Schatten an der Kinnspitze kürzt nach unten.',wangenapfel:'Rouge waagrecht Richtung Ohr verblendet macht breiter.'}},
@@ -348,18 +348,10 @@ const FORMEN={
   herz:{n:'Herzförmig',ziel:'Stirn schmaler, Kinnpartie ausgleichen.',
     soll:{unter_augen:'H',kinn_mitte:'H',stirn_seiten:'C',schlaefen:'C',kinn_spitze:'C',wangenapfel:'R'},
     meiden:{stirn_seiten:['H','Licht an den Stirnseiten macht die ohnehin breite Stirn noch breiter.']},
-    warum:{unter_augen:'Licht unter den Augen holt die Mitte nach vorne.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',stirn_seiten:'Schatten an den Stirnseiten nimmt Breite oben.',schlaefen:'Schatten an den Schläfen macht oben schmaler.',kinn_spitze:'Ein Hauch Schatten an der Kinnspitze nimmt die Spitze weg.',wangenapfel:'Rouge etwas tiefer auf dem Wangenapfel gleicht unten aus.'}},
-  diamant:{n:'Diamant',ziel:'Breite Wangenknochen weicher, Stirn und Kinn etwas breiter wirken lassen.',
-    soll:{stirn_mitte:'H',stirn_seiten:'H',kinn_mitte:'H',wangen_hohl:'C',wangenapfel:'R'},
-    meiden:{wangenknochen:['H','Licht auf dem Wangenknochen macht die breiteste Stelle noch breiter.']},
-    warum:{stirn_mitte:'Licht in der Stirnmitte holt die schmale Stirn nach vorne.',stirn_seiten:'Licht an den Stirnseiten macht die Stirn breiter.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',wangen_hohl:'Ein weicher Schatten unter dem Wangenknochen nimmt die Breite in der Mitte.',wangenapfel:'Rouge auf dem Wangenapfel, zur Mitte hin, lenkt von den breiten Wangenknochen weg.'}},
-  birne:{n:'Birnenförmig',ziel:'Breite Kieferpartie schmaler, Stirn breiter wirken lassen.',
-    soll:{stirn_mitte:'H',stirn_seiten:'H',kiefer:'C',wangenknochen:'R'},
-    meiden:{kiefer:['H','Licht am Kiefer macht die breite untere Partie noch breiter.'],kinn_spitze:['C','Schatten an der Kinnspitze macht das Gesicht unten noch flächiger.']},
-    warum:{stirn_mitte:'Licht in der Stirnmitte holt die schmale Stirn nach vorne.',stirn_seiten:'Licht an den Stirnseiten macht oben breiter.',kiefer:'Schatten an den Kieferseiten macht unten schmaler.',wangenknochen:'Rouge schräg auf dem Wangenknochen Richtung Schläfe zieht den Blick nach oben.'}}
+    warum:{unter_augen:'Licht unter den Augen holt die Mitte nach vorne.',kinn_mitte:'Licht am Kinn gibt dem schmalen Kinn mehr Fläche.',stirn_seiten:'Schatten an den Stirnseiten nimmt Breite oben.',schlaefen:'Schatten an den Schläfen macht oben schmaler.',kinn_spitze:'Ein Hauch Schatten an der Kinnspitze nimmt die Spitze weg.',wangenapfel:'Rouge etwas tiefer auf dem Wangenapfel gleicht unten aus.'}}
 };
 // Bilder (Vorlagen der Inhaberin): Gesichter mit geschlossenen Augen, Augenpartie mit offenen Augen
-const BILDER={zu:{"oval":{"bild":"zu-oval","B":[152,243],"A":{"cx":76,"ansatz":38,"braue":111,"auge":129,"ad":30,"nase":160,"mund":181,"kinn":216,"schlaefe":47,"wange":50,"kiefer":28}},"rund":{"bild":"zu-rund","B":[158,253],"A":{"cx":79,"ansatz":47,"braue":119,"auge":138,"ad":31,"nase":169,"mund":187,"kinn":224,"schlaefe":53,"wange":58,"kiefer":44}},"eckig":{"bild":"zu-eckig","B":[157,251],"A":{"cx":79,"ansatz":39,"braue":118,"auge":136,"ad":31,"nase":167,"mund":187,"kinn":223,"schlaefe":45,"wange":49,"kiefer":41}},"herz":{"bild":"zu-herz","B":[149,238],"A":{"cx":75,"ansatz":68,"braue":110,"auge":129,"ad":29,"nase":162,"mund":180,"kinn":215,"schlaefe":42,"wange":43,"kiefer":22}},"diamant":{"bild":"zu-diamant","B":[154,252],"A":{"cx":77,"ansatz":35,"braue":88,"auge":105,"ad":30,"nase":136,"mund":155,"kinn":192,"schlaefe":44,"wange":54,"kiefer":33}},"lang":{"bild":"zu-lang","B":[152,249],"A":{"cx":76,"ansatz":48,"braue":86,"auge":104,"ad":30,"nase":135,"mund":153,"kinn":191,"schlaefe":40,"wange":44,"kiefer":28}},"birne":{"bild":"zu-birne","B":[154,252],"A":{"cx":77,"ansatz":46,"braue":88,"auge":105,"ad":30,"nase":138,"mund":155,"kinn":192,"schlaefe":44,"wange":51,"kiefer":40}}},
+const BILDER={zu:{"oval":{"bild":"zu-oval","B":[152,243],"A":{"cx":76,"ansatz":38,"braue":111,"auge":129,"ad":30,"nase":160,"mund":181,"kinn":216,"schlaefe":47,"wange":50,"kiefer":28}},"rund":{"bild":"zu-rund","B":[158,253],"A":{"cx":79,"ansatz":47,"braue":119,"auge":138,"ad":31,"nase":169,"mund":187,"kinn":224,"schlaefe":53,"wange":58,"kiefer":44}},"eckig":{"bild":"zu-eckig","B":[157,251],"A":{"cx":79,"ansatz":39,"braue":118,"auge":136,"ad":31,"nase":167,"mund":187,"kinn":223,"schlaefe":45,"wange":49,"kiefer":41}},"herz":{"bild":"zu-herz","B":[154,252],"A":{"cx":77,"ansatz":35,"braue":88,"auge":105,"ad":30,"nase":136,"mund":155,"kinn":192,"schlaefe":44,"wange":54,"kiefer":33}},"lang":{"bild":"zu-lang","B":[154,252],"A":{"cx":77,"ansatz":46,"braue":88,"auge":105,"ad":30,"nase":138,"mund":155,"kinn":192,"schlaefe":44,"wange":51,"kiefer":40}}},
   // Augenpartie, Augen offen (eine Vorlage für alle Gesichtsformen)
   offen:{bild:"offen-augen",B:[96.5,51.7],A:{cx:48.2,braue:17.8,auge:31.8,ad:22.6}}};
 const ANSICHTEN={gesicht:'Ganzes Gesicht',offen:'Augen offen',zu:'Augen geschlossen'};
@@ -552,7 +544,7 @@ function reglerZeigen(){
   $('#rg-fertig').onclick=()=>{ auswahl=null; zeichnen(); reglerZeigen(); };
 }
 // Vorbilder (fertig geschminkt) der Inhaberin für alle Gesichtsformen
-const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1,diamant:1,birne:1};
+const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1};
 function vorbild(zeigen){
   const ok=zeigen&&NACHHER[form];
   $('#vorbild').hidden=!ok;
