@@ -23,6 +23,13 @@ Passt keine Antwort, sagt Wörni ehrlich „nicht sicher“. Dann bietet er die
 Suche in Wissensbank und Fachbegriffen an und einen fertigen Satz, mit dem der
 Lehrling die Meisterin fragen kann.
 
+## Vorstellung und Verhaltensregeln (seit 2026-11-20)
+
+- **Vorstellung:** Beim ersten Öffnen stellt sich Wörni als persönlicher Coach vor. Das passiert auf der Startseite vor allen anderen Wörni-Karten und oben auf der Wörni-Seite. Nach „Los geht’s ✓“, „Verhaltensregeln lesen“ oder „Wörni fragen“ erscheint die Vorstellung nicht mehr. Gemerkt wird das nur auf dem Gerät.
+- **Verhaltensregeln:** Der Wortlaut der Inhaberin steht in `salon-regeln.js`. Wörni zeigt die Regeln auf der Seite `p-regeln` (Sprungziel `lerntool.html#regeln`) und erklärt zu jedem Abschnitt kurz das Warum. Die Antworten von „Frag Wörni“ zu Krankmeldung, Urlaub, Mittagspause, freier Zeit und Ausbildungsbuch, Hygiene sowie Kleidung folgen diesen Regeln.
+- **Bestätigung** „Ich habe die Verhaltensregeln gelesen und zur Kenntnis genommen!“: Sie wird **nur auf dem Gerät** gemerkt (`localStorage` `woerni-begleiter`: Stand der Regeln und Datum), nicht am Server. Die Meisterin sieht sie nicht, und als Nachweis taugt sie nicht. Wenn sich `stand` in `salon-regeln.js` ändert, wird erneut gefragt.
+- **Für andere Salons (Abo):** `salon-regeln.js` enthält die Regeln des eigenen Salons. Vor dem Verkauf muss das pro Salon austauschbar werden.
+
 ## Drei Teile
 
 | Teil | Was | Wo |
