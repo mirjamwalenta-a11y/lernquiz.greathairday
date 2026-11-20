@@ -217,12 +217,14 @@ a.btn{display:inline-block;text-decoration:none}
         <div>
           <div class="lab">Farbpalette</div>
           <div class="chips" id="paletten"></div>
+          <div class="chips" id="paletten-vorschau" style="margin-top:6px"></div>
           <p class="muted" id="paletten-info" style="font-size:13px;margin-top:6px"></p>
         </div>
         <div>
           <div class="lab">Produkt</div>
           <div class="chips" id="werkzeuge"></div>
-          <div class="chips" id="farben" style="margin-top:6px"></div>
+          <div class="lab" style="margin-top:10px">Farbton</div>
+          <div class="chips" id="farben"></div>
         </div>
         <div id="regler" class="regler" hidden></div>
         <div id="pinsel" class="regler" hidden></div>
@@ -477,7 +479,10 @@ function zeichnen(markierung){
   } else if(partieAn()){ // Baukasten: nur die gewählte Partie, vergrößert
     const [x0,y0,y1]=PARTIEN[partie].rahmen(f.A,f.B), w=2*(f.A.cx-x0);
     svg.setAttribute('viewBox',[x0,y0,w,y1-y0].map(v=>v.toFixed(1)).join(' '));
-  } else svg.setAttribute('viewBox','0 0 '+f.B[0]+' '+f.B[1]);
+  } else { // Kopf bei allen Gesichtsformen an derselben Stelle (Augenhöhe wie beim ovalen Gesicht)
+    const oy=ansicht==='gesicht'?Math.max(0,Math.round(129-f.A.auge)):0;
+    svg.setAttribute('viewBox','0 '+(-oy)+' '+f.B[0]+' '+f.B[1]);
+  }
   const zf=svg.viewBox.baseVal.width/f.B[0]; // Vergrößerung: Tippflächen mitskalieren
   const nurZonen=partieAn()?PARTIEN[partie].zonen:null;
   svg.setAttribute('aria-label',(augen()?'Augenpartie':'Gesicht')+' zum Schminken'+(ansicht==='offen'?'':': '+FORMEN[form].n));
@@ -549,9 +554,10 @@ function reglerZeigen(){
 // Vorbilder (fertig geschminkt) der Inhaberin für alle Gesichtsformen
 const NACHHER={oval:1,rund:1,eckig:1,herz:1,lang:1,diamant:1,birne:1};
 function vorbild(zeigen){
-  const ok=zeigen&&ansicht==='gesicht'&&NACHHER[form];
+  const ok=zeigen&&NACHHER[form];
   $('#vorbild').hidden=!ok;
-  if(ok){ $('#vorbild-bild').src='bilder/makeup/nachher-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
+  if(ok&&ansicht==='gesicht'){ $('#vorbild-bild').src='bilder/makeup/nachher-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
+  else if(ok){ $('#vorbild-bild').src='bilder/makeup/augen-nachher-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild Augen-Make-up: '+FORMEN[form].n; }
 }
 function neu(){vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
@@ -574,9 +580,15 @@ function chips(){
   $('#werkzeuge').innerHTML=Object.entries(W).map(([k,w])=>`<button class="chip" data-w="${k}" aria-pressed="${k===werkzeug}">${w.ic} ${esc(w.name)}</button>`).join('');
   $('#paletten').innerHTML=knopf('palette','natur','Natürlich',palette==='natur')+Object.entries(PALETTEN).map(([k,v])=>knopf('palette',k,v.n,k===palette)).join('');
   $('#paletten-info').textContent=palette==='natur'?'Natürliche, gedämpfte Töne. Wähle eine Jahreszeit, um ein Make-up passend zum Farbtyp zu schminken.':PALETTEN[palette].dazu;
-  const fl=farbenVon(werkzeug), fi=farbwahl[werkzeug]!=null?farbwahl[werkzeug]:standardFarbe(werkzeug);
-  $('#farben').hidden=!fl;
-  $('#farben').innerHTML=fl?fl.map(([n,h],i)=>`<button class="chip" data-farbe="${i}" aria-pressed="${i===fi}"><i class="farbe" style="background:${h}"></i>${esc(n)}</button>`).join(''):'';
+  const fl=farbenVon(werkzeug), fi=farbwahl[werkzeug]!=null?farbwahl[werkzeug]:standardFarbe(werkzeug), wz=ALLE_WERKZEUGE[werkzeug];
+  const punkt=h=>`<i class="farbe" style="background:${h}"></i>`;
+  // Ohne Jahreszeit (oder bei Highlighter/Contouring): den aktuellen Ton zeigen
+  $('#farben').innerHTML=fl?fl.map(([n,h],i)=>`<button class="chip" data-farbe="${i}" aria-pressed="${i===fi}">${punkt(h)}${esc(n)}</button>`).join('')
+    :wz?`<button class="chip" aria-pressed="true" disabled>${punkt('rgb('+wz.rgb+')')}${'HC'.includes(werkzeug)?'Neutral – gleich bei jedem Farbtyp':'Natürlich'}</button>`
+    :`<span class="muted" style="font-size:13px">Beim ${esc(PINSEL[werkzeug].name)} gibt es keinen Farbton.</span>`;
+  const P=PALETTEN[palette];
+  $('#paletten-vorschau').hidden=!P;
+  $('#paletten-vorschau').innerHTML=P?[['Lippen',P.lippen],['Augen',P.augen],['Rouge',P.rouge]].map(([n,l])=>`<span class="chip" style="cursor:default">${l.map(x=>punkt(x[1])).join('')}${n}</span>`).join(''):'';
   document.querySelectorAll('[data-palette]').forEach(b=>b.onclick=()=>{paletteSetzen(b.dataset.palette);chips();zeichnen();anzeigen();});
   document.querySelectorAll('[data-farbe]').forEach(b=>b.onclick=()=>{farbwahl[werkzeug]=+b.dataset.farbe;farbeAnwenden(werkzeug);chips();zeichnen();anzeigen();});
   $('#form-info').textContent='Ziel: '+regeln().ziel;
@@ -653,7 +665,8 @@ function anzeigen(){
   if(!LW||modus!=='pinsel') return;
   const v=vbJetzt(), K=LW.K, DW=480, DH=Math.round(480*v.h/v.w);
   [li,sc].forEach(c=>{ if(c.canvas.width!==DW||c.canvas.height!==DH){ c.canvas.width=DW; c.canvas.height=DH; } });
-  Object.entries(LW.lagen).forEach(([t,c])=>{ const ctx=LICHT.includes(t)?li:sc; ctx.globalAlpha=ALLE_WERKZEUGE[t].deck; ctx.drawImage(c,v.x*K,v.y*K,v.w*K,v.h*K,0,0,DW,DH); });
+  Object.entries(LW.lagen).forEach(([t,c])=>{ const ctx=LICHT.includes(t)?li:sc; ctx.globalAlpha=ALLE_WERKZEUGE[t].deck; const sx=Math.max(0,v.x*K), sy=Math.max(0,v.y*K), ex=Math.min(c.width,(v.x+v.w)*K), ey=Math.min(c.height,(v.y+v.h)*K), q=DW/(v.w*K);
+    if(ex>sx&&ey>sy) ctx.drawImage(c,sx,sy,ex-sx,ey-sy,(sx-v.x*K)*q,(sy-v.y*K)*q,(ex-sx)*q,(ey-sy)*q); });
   li.globalAlpha=1; sc.globalAlpha=1;
 }
 function tupfer(ctx,x,y,r,rgb,a,weich){
