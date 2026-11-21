@@ -349,7 +349,7 @@ a.btn{display:inline-block;text-decoration:none}
       <h2>Make-up-Farben zum Farbtyp</h2>
       <p class="muted">Welche Lippen-, Lid- und Rougefarben passen, hängt vom Farbtyp ab. Den Typ findest du in der Farbtyp-Beratung mit den Tüchern.</p>
     </header>
-    <p><a class="btn ghost" href="farbtyp.html?v=20261120b#makeup">Zu den Make-up-Farben in der Farbtyp-Beratung →</a></p>
+    <p><a class="btn ghost" href="farbtyp.html?v=20261121a#makeup">Zu den Make-up-Farben in der Farbtyp-Beratung →</a></p>
   </section>
 
   <section class="block" id="ueben">
@@ -716,18 +716,18 @@ window.__gesetzt=()=>gesetzt;
 // ── Übungsauftrag: Kundin beschreiben, Gesichtsform und Farbtyp selbst erkennen ──
 // Beschreibung der Farbtypen wie auf der Farbtyp-Seite (farbtyp.html › TYPEN)
 const KUNDIN={
-  fruehling:{kurz:'warm · klar · hell',haut:['hell, Elfenbein oder Pfirsich, goldener Schimmer','hell mit Sommersprossen und goldenem Schimmer'],augen:['hellblau','türkis','hellgrün','goldbraun'],haar:['goldblond','rotblond','hellbraun mit Goldschimmer']},
-  sommer:{kurz:'kühl · gedämpft · hell',haut:['hell und rosig, wird schnell rot','hell mit leicht bläulichem Schimmer'],augen:['graublau','graugrün','gedämpftes Haselnussbraun'],haar:['aschblond','„mausbraun“','kühles Hellbraun']},
-  herbst:{kurz:'warm · gedämpft · tief',haut:['Elfenbein mit goldenem Unterton','beige mit goldenem Unterton und Sommersprossen'],augen:['braun','haselnussbraun','olivgrün','bernsteinfarben'],haar:['kastanienbraun','kupferrot','goldbraun','warmes Dunkelblond']},
-  winter:{kurz:'kühl · klar · kontrastreich',haut:['sehr hell wie Porzellan, kühler Unterton','oliv mit kühlem Unterton'],augen:['dunkelbraun','schwarzbraun','eisblau','klares Grün'],haar:['dunkelbraun, kühl','schwarz']}
+  fruehling:{kurz:'warm · klar · hell',haut:['hell, Elfenbein oder Pfirsich, goldener Schimmer','hell mit Sommersprossen und goldenem Schimmer'],augen:['hellblau','türkis','hellgrün','goldbraun'],haar:['hellblond mit Goldschimmer','mittelblond, golden','rotblond','hellbraun mit Goldschimmer']},
+  sommer:{kurz:'kühl · gedämpft · hell',haut:['hell und rosig, wird schnell rot','hell mit leicht bläulichem Schimmer'],augen:['graublau','graugrün','gedämpftes Haselnussbraun'],haar:['hellblond, aschig','mittelblond, aschig','dunkelblond, aschig','hellbraun, kühl']},
+  herbst:{kurz:'warm · gedämpft · tief',haut:['Elfenbein mit goldenem Unterton','beige mit goldenem Unterton und Sommersprossen'],augen:['braun','haselnussbraun','olivgrün','bernsteinfarben'],haar:['mittelbraun mit Kupferschimmer','kupferrot','dunkelblond, golden','dunkelbraun, warm']},
+  winter:{kurz:'kühl · klar · kontrastreich',haut:['sehr hell wie Porzellan, kühler Unterton','oliv mit kühlem Unterton'],augen:['dunkelbraun','schwarzbraun','eisblau','klares Grün'],haar:['dunkelbraun, kühl','schwarzbraun','schwarz']}
 };
 const zufall=l=>l[Math.floor(Math.random()*l.length)];
-let auftrag=null;
+let auftrag=null, formReihe=[];
 function auftragKarte(){
   const k=$('#auftrag-karte');
   if(!auftrag){ k.innerHTML=''; $('#auftrag-neu').textContent='Neuer Kundinnen-Auftrag'; return; }
   const a=auftrag;
-  k.innerHTML=`<div class="tip"><b>Deine Kundin wünscht ein Tages-Make-up.</b><br>Haut: ${esc(a.haut)} · Augen: ${esc(a.augen)} · Haare: ${esc(a.haar)}</div>`+
+  k.innerHTML=`<div class="tip"><b>Deine Kundin wünscht ein Tages-Make-up.</b><br>Haut: ${esc(a.haut)} · Augen: ${esc(a.augen)} · Naturhaarfarbe: ${esc(a.haar)}</div>`+
     `<ol style="font-size:13px;margin:8px 0 0;padding-left:20px"><li>Gesichtsform an der Zeichnung erkennen und unten antippen.</li><li>Farbpalette passend zum Farbtyp der Kundin wählen.</li><li>Licht, Schatten, Rouge, Augen und Lippen schminken – dann „Prüfen“.</li></ol>`+
     `<div class="chips" style="margin-top:8px"><button class="btn ghost" id="auftrag-ende">Auftrag beenden</button></div>`;
   $('#auftrag-ende').onclick=()=>{ auftrag=null; auftragKarte(); chips(); };
@@ -735,7 +735,9 @@ function auftragKarte(){
 }
 $('#auftrag-neu').onclick=()=>{
   const alt=auftrag;
-  let f,t; do{ f=zufall(Object.keys(FORMEN)); t=zufall(Object.keys(KUNDIN)); }while(alt&&alt.form===f&&alt.typ===t);
+  // Jeder Auftrag eine andere Gesichtsform: alle Formen der Reihe nach (gemischt), erst dann wieder von vorne
+  if(!formReihe.length){ formReihe=mischen(Object.keys(FORMEN)); if(alt&&formReihe[0]===alt.form) formReihe.push(formReihe.shift()); }
+  const f=formReihe.shift(); let t; do{ t=zufall(Object.keys(KUNDIN)); }while(alt&&alt.typ===t);
   const K=KUNDIN[t];
   auftrag={form:f,typ:t,wahl:null,geloest:false,haut:zufall(K.haut),augen:zufall(K.augen),haar:zufall(K.haar)};
   form=f; ansicht='gesicht'; partie='gesamt'; paletteSetzen('natur'); neu(); auftragKarte();
