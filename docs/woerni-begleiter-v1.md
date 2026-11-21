@@ -1,8 +1,9 @@
 # Wörni als Begleiter von Tag 1 bis zur LAP (V1)
 
 **Stand:** 2026-11-20 · Umsetzung: `woerni-begleiter.js`, eingebunden in
-`lerntool.html` (Seiten `p-woerni` und `p-probezeit`, Kachel „Wörni – dein
-Begleiter“ auf der Startseite, Sprungziele `lerntool.html#woerni` und
+`lerntool.html` (Seiten `p-woerni` und `p-probezeit`, Kachel „Wörni fragen“
+direkt unter Wörnis Karte auf der Startseite – dort sind seit 2026-11-21 auch
+„Kurz sortieren“ und „Woran liegt's?“ verlinkt, Sprungziele `lerntool.html#woerni` und
 `lerntool.html#probezeit`).
 
 Baut auf Wörni V1 auf (`docs/woerni-v1.md`): Impulse im Quiz, „Kurz sortieren“
@@ -119,3 +120,18 @@ deshalb Impulse innerhalb einer Phase nicht umsortieren.
 - Abschalten der Startseiten-Karte durch Lehrling oder Meisterin
 - Eigene Antworten durch die Meisterin pflegen (wäre eine Tabelle mit RLS)
 - Begleiter in den eigenständigen Lern-Seiten (Farblabor, Umformung …)
+
+## Wörni führt durch die Bereiche (seit 2026-11-21)
+
+Umsetzung: `woerni-weg.js`, regelbasiert, ohne KI, nichts gespeichert.
+
+- **Satz je Bereich:** Oben auf Üben, Praxis, Prüfung, Mein Weg und Nachschlagen
+  sagt Wörni, womit man anfängt, mit „Los →“ zum Modul. Abhängig von Lehrjahr,
+  Probezeit (Phase aus dem Lehrbeginn) und fälligen Wiederholungsfragen.
+- **Weg je Lehrjahr** (Reihenfolge der Praxis-Vorschläge, `WEG`):
+  1. LJ Haarwäsche → Farbtechniken → Werkzeugkunde → Schnittwerkstatt ·
+  2. LJ Strähnen → Umformung → Colorist → Make-up-Labor → Gesichtsmassage ·
+  3. LJ Hochstecken → Umformung → Colorist → Schnittwerkstatt.
+- **Nächster Schritt:** nach einem neuen Eintrag im Praxis-Tagebuch das nächste
+  Modul im Weg des Lehrjahrs; am Ende eines Quiz (`lernquiz.html`) entweder das
+  schwächste Thema im Themen-Quiz oder, wenn alles richtig war, die Praxis.
