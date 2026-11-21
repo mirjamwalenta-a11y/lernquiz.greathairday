@@ -411,6 +411,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Lernen</div>
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
+  <div class="ww-platz" id="ww-b-ueben"></div>  <!-- Wörni: womit fängst du an? (woerni-weg.js) -->
   <div class="st-grid">
     <button class="st-kachel st-breit" onclick="lfOeffnen()"><div class="st-ic">📚</div><div><div class="st-t">Aus Fehlern lernen</div><div class="st-d">Echte Situationen aus dem Salon – was würdest du tun?</div></div></button>
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261120e'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
@@ -423,6 +424,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Lernen</div>
   <h1>🎓 Prüfung</h1>
   <div class="st-sub" style="margin-bottom:16px">Zwischenprüfung und LAP vorbereiten.</div>
+  <div class="ww-platz" id="ww-b-pruefung"></div>  <!-- Wörni: womit fängst du an? (woerni-weg.js) -->
   <div class="st-grid">
     <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261121b'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
@@ -433,6 +435,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Lernen</div>
   <h1>🗂 Nachschlagen</h1>
   <div class="st-sub" style="margin-bottom:16px">Schnell etwas nachschauen: Begriffe, Rezepturen, Handbuch.</div>
+  <div class="ww-platz" id="ww-b-nachschlagen"></div>  <!-- Wörni: womit fängst du an? (woerni-weg.js) -->
   <div class="st-grid">
     <button class="st-kachel st-breit" onclick="window.location.href='verzeichnis.html'"><div class="st-ic">🔎</div><div><div class="st-t">A–Z-Verzeichnis</div><div class="st-d">Alle Bereiche alphabetisch, mit dem Weg dorthin</div></div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261116s'"><div class="st-ic">🇬🇧</div><div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></div></button>
@@ -446,6 +449,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Lernen</div>
   <h1>📅 Mein Weg</h1>
   <div class="st-sub" style="margin-bottom:16px">Dein Plan, dein Fortschritt und was im Salon gilt.</div>
+  <div class="ww-platz" id="ww-b-meinweg"></div>  <!-- Wörni: womit fängst du an? (woerni-weg.js) -->
   <div class="st-grid">
     <button class="st-kachel st-breit" onclick="zeige('progress')"><div class="st-ic">📊</div><div><div class="st-t">Fortschritt</div><div class="st-d">Kompetenz-Landkarte: was sitzt, was noch offen ist</div></div></button>
     <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
@@ -909,6 +913,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Praxis</div>
   <h1>Praxis-Module</h1>
   <p class="sub">Schritt für Schritt üben, was du am Gast brauchst.</p>
+  <div class="ww-platz" id="ww-praxis"></div>  <!-- Wörni: womit fängst du an / nächster Schritt nach dem Tagebuch (woerni-weg.js) -->
   <div id="woerni-praxis"></div>  <!-- Wörni V1: einmal am Tag vor der Praxis (woerni-impulse.js) -->
   <div class="pt-karte" id="pt-karte" hidden>
     <div class="pt-kopf"><b>📝 Mein Praxis-Tagebuch</b><span id="pt-summe"></span></div>
@@ -5840,6 +5845,7 @@ async function ptSpeichern() {
     }
     if (r.error) throw r.error;
     var eintragId = PT.bearbeiten || (r.data && r.data[0] && r.data[0].id);
+    var PT_WAR_BEARBEITEN = !!PT.bearbeiten;
     PT.bearbeiten = null;
     // Fotos erst jetzt hochladen: dafür braucht es die Eintrags-ID
     var fehlgeschlagen = 0;
@@ -5854,6 +5860,7 @@ async function ptSpeichern() {
       PT.neueFotos.forEach(function(x){ URL.revokeObjectURL(x.url); });
       PT.neueFotos = [];
     }
+    if (!PT_WAR_BEARBEITEN) WW_NACH_TAGEBUCH = eintrag.bereich;
     zeige('praxis');
     if (fehlgeschlagen) alert('Der Eintrag ist gespeichert, aber ' + (fehlgeschlagen === 1 ? '1 Foto konnte' : fehlgeschlagen + ' Fotos konnten') +
       ' nicht hochgeladen werden' + (navigator.onLine === false ? ' (keine Internetverbindung)' : '') + '. Über „bearbeiten“ kannst du es nochmal versuchen.');
@@ -5917,6 +5924,43 @@ var WB_ZIELE = {
   sortieren: function(){ sortierenOeffnen(); },
   diagnose: function(){ diagnoseOeffnen(); }
 };
+// Wörni führt (woerni-weg.js): ein Satz oben auf jeder Bereichsseite, womit du anfängst,
+// und nach einem Tagebuch-Eintrag der nächste Schritt. Ohne KI, nichts gespeichert.
+var WW_NACH_TAGEBUCH = null;
+var WW_ZIELE = {
+  wiederholen: function(){ stWiederholenOeffnen(); },
+  quiz: function(){ window.location.href = LQ_LOGIN; },
+  lap: function(){ zeige('lap'); },
+  zwischenpruefung: function(){ window.location.href = PMT_BASIS + 'zwischenpruefung.html?v=20261121b#tab=praxis'; },
+  regeln: function(){ regelnOeffnen(); },
+  progress: function(){ zeige('progress'); },
+  fachbegriffe: function(){ window.location.href = 'fachbegriffe.html?v=20261120c'; },
+  wasch: function(){ pmWaschOeffnen(); },
+  farbe: function(){ pmFarbeOeffnen(); },
+  straehnen: function(){ pmStraehnenOeffnen(); },
+  colorist: function(){ pmColoristOeffnen(); },
+  hoch: function(){ pmHochOeffnen(); },
+  werkzeug: function(){ window.location.href = PMT_BASIS + 'werkzeugkunde.html?v=20261116s'; },
+  schnittwerkstatt: function(){ window.location.href = PMT_BASIS + 'schnittwerkstatt.html?v=20261116s'; },
+  umformung: function(){ window.location.href = PMT_BASIS + 'umformung.html?v=20261116s'; },
+  makeup: function(){ window.location.href = PMT_BASIS + 'makeup.html?v=20261121k#labor'; },
+  pflege: function(){ window.location.href = PMT_BASIS + 'zwischenpruefung.html?v=20261121b#tab=praxis&part=schoen&sub=massage'; }
+};
+function wwZeichnen(seite) {
+  try {
+    var el = document.getElementById('ww-' + seite);
+    if (!el || !window.WOERNI_WEG) return;
+    var html;
+    if (seite === 'praxis' && WW_NACH_TAGEBUCH) { html = WOERNI_WEG.nachTagebuchHTML(WW_NACH_TAGEBUCH, LEHRJAHR); WW_NACH_TAGEBUCH = null; }
+    else {
+      var ph = '';
+      try { ph = (woerniPhase() || {}).id || ''; } catch (e) {}
+      html = WOERNI_WEG.bereichHTML(seite, { lj: LEHRJAHR, probezeit: ph === 'ankommen' || ph === 'probezeit', wiederholen: (ST && ST.whFaellig) || 0 });
+    }
+    el.innerHTML = html;
+    WOERNI_WEG.binden(el, WW_ZIELE);
+  } catch (e) {}
+}
 function woerniOeffnen() {
   zeige('woerni');
   var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.seiteZeichnen(document.getElementById('wb-inhalt'), woerniPhase(), WB_ZIELE); };
@@ -5986,9 +6030,10 @@ zeige = function(seite) {
   // Wörnis Tipp zum Modul (woernis-tipps.js): einmal unter dem Untertitel einsetzen
   var WT_MODUL = {'pm-wasch': 'waschen', 'pm-farbe': 'farbe', 'pm-hoch': 'hoch', 'b-pruefung': 'pruefung'}[seite];
   if (WT_MODUL && window.woerniTippHTML) { try {
-    var pg = document.getElementById('p-' + seite), unter = pg && pg.querySelector('.sub, .st-sub');
+    var pg = document.getElementById('p-' + seite), unter = pg && (pg.querySelector('.ww-platz') || pg.querySelector('.sub, .st-sub'));
     if (unter && !pg.querySelector('.woerni')) { var wt = woerniTippHTML(WT_MODUL); if (wt) unter.insertAdjacentHTML('afterend', wt); }
   } catch (e) {} }
+  wwZeichnen(seite);
 };
 
 (function(){
@@ -6062,7 +6107,8 @@ zeige = function(seite) {
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: „Kurz sortieren“ (docs/woerni-v1.md) -->
 <script src="woerni-diagnose.js?v=20261119b"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
 <script src="salon-regeln.js?v=20261120a"></script>  <!-- Verhaltensregeln des Salons (Wörni erklärt sie) -->
-<script src="woerni-begleiter.js?v=20261121b"></script>  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
+<script src="woerni-begleiter.js?v=20261121b"></script>
+<script src="woerni-weg.js?v=20261121a"></script>  <!-- Wörni führt: Satz je Bereich, nächster Schritt (woerni-weg.js) -->  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
 <script>
 // „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
 // Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten

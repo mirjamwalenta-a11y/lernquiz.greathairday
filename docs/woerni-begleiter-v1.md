@@ -120,3 +120,18 @@ deshalb Impulse innerhalb einer Phase nicht umsortieren.
 - Abschalten der Startseiten-Karte durch Lehrling oder Meisterin
 - Eigene Antworten durch die Meisterin pflegen (wäre eine Tabelle mit RLS)
 - Begleiter in den eigenständigen Lern-Seiten (Farblabor, Umformung …)
+
+## Wörni führt durch die Bereiche (seit 2026-11-21)
+
+Umsetzung: `woerni-weg.js`, regelbasiert, ohne KI, nichts gespeichert.
+
+- **Satz je Bereich:** Oben auf Üben, Praxis, Prüfung, Mein Weg und Nachschlagen
+  sagt Wörni, womit man anfängt, mit „Los →“ zum Modul. Abhängig von Lehrjahr,
+  Probezeit (Phase aus dem Lehrbeginn) und fälligen Wiederholungsfragen.
+- **Weg je Lehrjahr** (Reihenfolge der Praxis-Vorschläge, `WEG`):
+  1. LJ Haarwäsche → Farbtechniken → Werkzeugkunde → Schnittwerkstatt ·
+  2. LJ Strähnen → Umformung → Colorist → Make-up-Labor → Gesichtsmassage ·
+  3. LJ Hochstecken → Umformung → Colorist → Schnittwerkstatt.
+- **Nächster Schritt:** nach einem neuen Eintrag im Praxis-Tagebuch das nächste
+  Modul im Weg des Lehrjahrs; am Ende eines Quiz (`lernquiz.html`) entweder das
+  schwächste Thema im Themen-Quiz oder, wenn alles richtig war, die Praxis.

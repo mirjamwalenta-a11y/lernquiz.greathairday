@@ -18,6 +18,7 @@
 <script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="salon-regeln.js?v=20261120a"></script>  <!-- Stand der Verhaltensregeln (Bestätigung im Meisterin-Bereich) -->
 <script src="woerni-impulse.js?v=20261115d"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
+<script src="woerni-weg.js?v=20261121a"></script>  <!-- Wörni: nächster Schritt nach dem Quiz -->
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
@@ -2348,7 +2349,10 @@ async function zeigeErgebnis(){
   var whHtml='';
   try{ whHtml=await whSpeichern(); }catch(e){}
   try{ knPruefen(); }catch(e){}
-  document.getElementById('erg-details').innerHTML=whHtml+html;
+  // Wörni: nächster Schritt nach dem Quiz (woerni-weg.js)
+  var wegHtml='';
+  try{ if(window.WOERNI_WEG) wegHtml=WOERNI_WEG.nachQuizHTML({richtig:ok,gesamt:g,schwach:schwach,basis:'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261120e'}); }catch(e){}
+  document.getElementById('erg-details').innerHTML=wegHtml+whHtml+html;
 }
 
 async function zeigeVerlauf(){
