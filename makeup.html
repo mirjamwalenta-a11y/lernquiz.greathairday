@@ -1217,29 +1217,22 @@ renderQuiz();
     return s=>s<.4?bez(...s1,s/.4):bez(...s2,(s-.4)/.6);
   }
   const breiteBei=s=>s<.12?14:s<.45?14-(s-.12)*8:11.4-(s-.45)*16;
-  // Natürliche Braue: Kopf innen am breitesten, Unterkante steigt sanft bis unter den Bogen,
-  // Oberkante steigt bis zum höchsten Punkt und fällt zum dünnen Ende ab. Darin feine Härchen.
+  // Echte Bleistift-Braue (aus der Augen-Zeichnung des Labors, bilder/makeup/braue-vorlage.png 338×148, Bogen geglättet),
+  // per Affin-Abbildung auf die drei Punkte gelegt: Kopf (1), höchster Punkt (2), Ende (3).
+  const BV={w:338,h:148,p:[[305,65],[110,50],[12,60]]};
+  // Lage der Vorlage: Kopf und Ende bestimmen Länge und Neigung (gleichmäßig skaliert, damit die Braue
+  // ihre Dicke behält); der höchste Punkt bestimmt nur, wie stark der Bogen ist.
+  function lage(Q){
+    const [Hs,Bs,Ts]=BV.p.map(([x,y])=>({x,y})), [Ht,Bt,Tt]=Q;
+    const winkel=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x), lang=(a,b)=>Math.hypot(b.x-a.x,b.y-a.y);
+    const hoehe=(t,h,b)=>{ const l=lang(t,h); return ((h.x-t.x)*(b.y-t.y)-(h.y-t.y)*(b.x-t.x))/l; }; // Abstand Bogen zur Linie Ende–Kopf
+    const s=lang(Tt,Ht)/lang(Ts,Hs), hs=hoehe(Ts,Hs,Bs), ht=hoehe(Tt,Ht,Bt)/s;
+    const k=Math.max(.6,Math.min(1.6,hs?ht*s/Math.min(s,.46)/hs:1)), g=v=>(v*180/Math.PI).toFixed(2);
+    return `translate(${Tt.x.toFixed(1)} ${Tt.y.toFixed(1)}) rotate(${g(winkel(Tt,Ht))}) scale(${s.toFixed(3)} ${(Math.min(s,.46)*k).toFixed(3)}) rotate(${g(-winkel(Ts,Hs))}) translate(${-Ts.x} ${-Ts.y})`;
+  }
   function braue(p){
     if(p.length<3) return '';
-    const [a,b,c]=p, L=(t,u,v)=>({x:t.x+(u.x-t.x)*v,y:t.y+(u.y-t.y)*v});
-    const kopf=17, bogen=13;
-    const o1={x:a.x-2,y:a.y-kopf*.55}, u1={x:a.x+1,y:a.y+kopf*.45};
-    const oB={x:b.x,y:b.y-bogen*.5}, uB={x:b.x+4,y:b.y+bogen*.5+1};
-    const ende={x:c.x,y:c.y};
-    const mO=L(o1,oB,.5), mU=L(u1,uB,.5);
-    const d=`M${u1.x} ${u1.y} Q${a.x+4} ${a.y} ${o1.x} ${o1.y} Q${mO.x+3} ${mO.y-2} ${oB.x} ${oB.y} Q${(oB.x+ende.x)/2} ${oB.y+1} ${ende.x} ${ende.y} Q${(uB.x+ende.x)/2} ${uB.y+1} ${uB.x} ${uB.y} Q${mU.x} ${mU.y+1} ${u1.x} ${u1.y} Z`;
-    const id='bra-form-'+Math.round(a.x)+'-'+Math.round(c.x);
-    let h=`<clipPath id="${id}"><path d="${d}"/></clipPath><path d="${d}" fill="var(--ink)" opacity=".42" filter="url(#bra-weich)"/>`;
-    // Härchen: entlang der Braue, innen steil nach oben, im Bogen schräg nach außen
-    let seed=11; const zz=()=>(seed=(seed*16807)%2147483647)/2147483647; let hh='';
-    for(let k=0;k<420;k++){
-      // Dichte nach Breite: am Kopf mehr Härchen, zum Ende hin weniger
-      let s=zz(); if(zz()>Math.min(1,1.25-s)) s=zz()*.5;
-      const t=s<.45?s/.45:(s-.45)/.55, oben=s<.45?L(o1,oB,t):L(oB,ende,t), unten=s<.45?L(u1,uB,t):L(uB,ende,t), q=L(unten,oben,zz());
-      const steil=s<.12?.85:s<.45?.5:.22, dx=-(1-steil)*1, dy=-steil, len=6+zz()*5;
-      hh+=`<line x1="${q.x.toFixed(1)}" y1="${(q.y+2).toFixed(1)}" x2="${(q.x+dx*len).toFixed(1)}" y2="${(q.y+2+dy*len).toFixed(1)}" stroke="var(--ink)" stroke-width="${(.5+zz()*.5).toFixed(2)}" stroke-linecap="round" opacity="${(.28+zz()*.4).toFixed(2)}"/>`;
-    }
-    h+=`<g clip-path="url(#${id})">${hh}</g>`;
+    const h=`<image href="bilder/makeup/braue-vorlage.png" width="${BV.w}" height="${BV.h}" transform="${lage(p)}" opacity=".92"/>`;
     return `<g>${h}</g><g transform="translate(${2*G.mitte} 0) scale(-1 1)">${h}</g>`;
   }
   // Eigener Versuch nach dem Prüfen: nur als dünne Linie durch die drei Punkte
