@@ -1187,13 +1187,15 @@ renderQuiz();
   // Augenabstand: Bilder mit verschobener Augenpartie (±19 px). anf = Korrektur des Brauenanfangs (− außen, + innen)
   const VAR={
     normal:{n:'Normal',bild:'brauen-gesicht.jpg',d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
-    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',d:19,anf:-12,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
-    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',d:-19,anf:12,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
+    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',d:19,anf:-10,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
+    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',d:-19,anf:10,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
   let variante='normal';
   const G={mitte:251.75, fluegel:{x:198,y:342}, unten:120, oben:208};
   function varianteSetzen(v){ variante=v; const V=VAR[v];
-    G.innen=[197+V.d,229]; G.pupille=[144+V.d,212]; G.aussen=[93+V.d,210]; G.tol=v==='normal'?[13,14,16]:[9,14,16];
-    ZIELE=[[198+V.anf,229],G.pupille,G.aussen]; ideal=ZIELE.map(([zx,zy],i)=>({x:linieX(zx,zy,IDEAL_Y[i]),y:IDEAL_Y[i]}));
+    G.innen=[197+V.d,229]; G.pupille=[144+V.d,212]; G.aussen=[93+V.d,210]; G.tol=v==='normal'?[13,14,16]:[6,14,16];
+    ZIELE=[[198+V.anf,229],G.pupille,G.aussen]; ideal=ZIELE.map((_,i)=>({x:zielX(i,IDEAL_Y[i]),y:IDEAL_Y[i]}));
+    // Kurze Braue (eng stehende Augen): Bogen flacher, damit der Kopf nicht steil abfällt
+    { const h=Math.min(IDEAL_Y[0]-IDEAL_Y[1], .45*(ideal[0].x-ideal[1].x)); ideal[1].y=IDEAL_Y[0]-h; ideal[1].x=zielX(1,ideal[1].y); ideal[2].y=Math.min(IDEAL_Y[2],ideal[1].y+10); ideal[2].x=zielX(2,ideal[2].y); }
     $('#brauen-variante').innerHTML=Object.entries(VAR).map(([k,x])=>`<button class="chip" data-bv="${k}" aria-pressed="${k===v}">${x.n}</button>`).join('');
     $('#brauen-variante-info').textContent=V.info;
     document.querySelectorAll('[data-bv]').forEach(b=>b.onclick=()=>{ varianteSetzen(b.dataset.bv); neuStart(); });
@@ -1203,9 +1205,10 @@ renderQuiz();
   const spiegel=x=>2*G.mitte-x;
   // x der Messlinie vom Nasenflügel durch (zx,zy) auf Höhe y
   const linieX=(zx,zy,y)=>G.fluegel.x+(zx-G.fluegel.x)*(G.fluegel.y-y)/(G.fluegel.y-zy);
+  const zielX=(i,y)=>i===0?ZIELE[0][0]:linieX(ZIELE[i][0],ZIELE[i][1],y);
   let ZIELE, ideal;
   // Ideale Braue auf dem Brauenbogen: Anfang y 188, höchster Punkt y 168, Ende y 178
-  const IDEAL_Y=[188,168,178];
+  const IDEAL_Y=[183,168,178];
   // Braue wie mit dem Bleistift gezeichnet: weicher Grundschatten in Brauenform und viele feine Härchen –
   // innen aufgestellt, im Bogen schräg nach außen, zum Ende hin feiner. Fester Startwert: kein Flackern.
   function brauenLinie(p){
@@ -1214,25 +1217,29 @@ renderQuiz();
     return s=>s<.4?bez(...s1,s/.4):bez(...s2,(s-.4)/.6);
   }
   const breiteBei=s=>s<.12?14:s<.45?14-(s-.12)*8:11.4-(s-.45)*16;
+  // Natürliche Braue: Kopf innen am breitesten, Unterkante steigt sanft bis unter den Bogen,
+  // Oberkante steigt bis zum höchsten Punkt und fällt zum dünnen Ende ab. Darin feine Härchen.
   function braue(p){
     if(p.length<3) return '';
-    const pt=brauenLinie(p); let seed=11; const zz=()=>(seed=(seed*16807)%2147483647)/2147483647;
-    // Grundschatten: Fläche zwischen Ober- und Unterkante, weichgezeichnet
-    const oben=[],unten=[];
-    for(let k=0;k<=24;k++){ const s=k/24, q=pt(s), q2=pt(Math.min(1,s+.01)), tx=q2.x-q.x, ty=q2.y-q.y, tl=Math.hypot(tx,ty)||1, w=breiteBei(s)/2*.85;
-      oben.push(`${(q.x-ty/tl*w).toFixed(1)} ${(q.y+tx/tl*w).toFixed(1)}`); unten.unshift(`${(q.x+ty/tl*w).toFixed(1)} ${(q.y-tx/tl*w).toFixed(1)}`); }
-    let h=`<path d="M${oben.join(' L')} L${unten.join(' L')} Z" fill="var(--ink)" opacity=".24" filter="url(#bra-weich)"/>`;
-    const N=230;
-    for(let k=0;k<N;k++){
-      const s=Math.pow(zz(),.85), q=pt(s), q2=pt(Math.min(1,s+.01)), tx=q2.x-q.x, ty=q2.y-q.y, tl=Math.hypot(tx,ty)||1;
-      const nx=-ty/tl, ny=tx/tl, breit=breiteBei(s);
-      const off=(zz()-.5)*breit*.9, x0=q.x+nx*off+(zz()-.5)*1.5, y0=q.y+ny*off;
-      const steil=s<.15?.8-s*2:Math.max(.1,.5-s*.45)+(zz()-.5)*.15;
-      let dx=tx/tl*(1-steil)+nx*steil, dy=ty/tl*(1-steil)+ny*steil; const dl=Math.hypot(dx,dy); dx/=dl; dy/=dl;
-      const len=(s<.15?5:s<.7?7:5)+zz()*3, kr=(zz()-.5)*1.4;
-      h+=`<path d="M${x0.toFixed(1)} ${y0.toFixed(1)} q${(dx*len*.5-dy*kr).toFixed(1)} ${(dy*len*.5+dx*kr).toFixed(1)} ${(dx*len).toFixed(1)} ${(dy*len).toFixed(1)}" fill="none" stroke="var(--ink)" stroke-width="${(.45+zz()*.45).toFixed(2)}" stroke-linecap="round" opacity="${(.25+zz()*.45).toFixed(2)}"/>`;
+    const [a,b,c]=p, L=(t,u,v)=>({x:t.x+(u.x-t.x)*v,y:t.y+(u.y-t.y)*v});
+    const kopf=17, bogen=13;
+    const o1={x:a.x-2,y:a.y-kopf*.55}, u1={x:a.x+1,y:a.y+kopf*.45};
+    const oB={x:b.x,y:b.y-bogen*.5}, uB={x:b.x+4,y:b.y+bogen*.5+1};
+    const ende={x:c.x,y:c.y};
+    const mO=L(o1,oB,.5), mU=L(u1,uB,.5);
+    const d=`M${u1.x} ${u1.y} Q${a.x+4} ${a.y} ${o1.x} ${o1.y} Q${mO.x+3} ${mO.y-2} ${oB.x} ${oB.y} Q${(oB.x+ende.x)/2} ${oB.y+1} ${ende.x} ${ende.y} Q${(uB.x+ende.x)/2} ${uB.y+1} ${uB.x} ${uB.y} Q${mU.x} ${mU.y+1} ${u1.x} ${u1.y} Z`;
+    const id='bra-form-'+Math.round(a.x)+'-'+Math.round(c.x);
+    let h=`<clipPath id="${id}"><path d="${d}"/></clipPath><path d="${d}" fill="var(--ink)" opacity=".42" filter="url(#bra-weich)"/>`;
+    // Härchen: entlang der Braue, innen steil nach oben, im Bogen schräg nach außen
+    let seed=11; const zz=()=>(seed=(seed*16807)%2147483647)/2147483647; let hh='';
+    for(let k=0;k<420;k++){
+      // Dichte nach Breite: am Kopf mehr Härchen, zum Ende hin weniger
+      let s=zz(); if(zz()>Math.min(1,1.25-s)) s=zz()*.5;
+      const t=s<.45?s/.45:(s-.45)/.55, oben=s<.45?L(o1,oB,t):L(oB,ende,t), unten=s<.45?L(u1,uB,t):L(uB,ende,t), q=L(unten,oben,zz());
+      const steil=s<.12?.85:s<.45?.5:.22, dx=-(1-steil)*1, dy=-steil, len=6+zz()*5;
+      hh+=`<line x1="${q.x.toFixed(1)}" y1="${(q.y+2).toFixed(1)}" x2="${(q.x+dx*len).toFixed(1)}" y2="${(q.y+2+dy*len).toFixed(1)}" stroke="var(--ink)" stroke-width="${(.5+zz()*.5).toFixed(2)}" stroke-linecap="round" opacity="${(.28+zz()*.4).toFixed(2)}"/>`;
     }
-    // linke Braue (im Bild) und dieselbe Form gespiegelt auf der anderen Seite
+    h+=`<g clip-path="url(#${id})">${hh}</g>`;
     return `<g>${h}</g><g transform="translate(${2*G.mitte} 0) scale(-1 1)">${h}</g>`;
   }
   // Eigener Versuch nach dem Prüfen: nur als dünne Linie durch die drei Punkte
@@ -1245,8 +1252,8 @@ renderQuiz();
     let h=`<defs><filter id="bra-weich" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter></defs><image href="bilder/makeup/${VAR[variante].bild}" x="0" y="0" width="504" height="480"/>`;
     if(gezeigt){
       // Messlinien vom Nasenflügel durch innen, Pupille, außen – bis über die Braue
-      ZIELE.forEach(([zx,zy],i)=>{ const y=95, x=linieX(zx,zy,y);
-        h+=`<line x1="${G.fluegel.x}" y1="${G.fluegel.y}" x2="${x}" y2="${y}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="7 5"/>`;
+      ZIELE.forEach((_,i)=>{ const y=95, x=zielX(i,y);
+        h+=`<line x1="${i===0?ZIELE[0][0]:G.fluegel.x}" y1="${G.fluegel.y}" x2="${x}" y2="${y}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="7 5"/>`;
         h+=`<circle cx="${ideal[i].x}" cy="${ideal[i].y}" r="5" fill="var(--accent)"/>`; });
       h+=braue(ideal)+versuchLinie(punkte);
     } else h+=braue(punkte);
@@ -1264,7 +1271,7 @@ renderQuiz();
   function pruefen(){
     if(punkte.length<3){ $('#brauen-rueck').innerHTML=`<div class="tip">Setze zuerst alle drei Punkte.</div>`; return; }
     const z=[], li=(ok,t)=>z.push(`<li>${ok?'✓':'✗'} ${t}</li>`), TOL=G.tol;
-    const lage=(i)=>{ const p=punkte[i], soll=linieX(ZIELE[i][0],ZIELE[i][1],p.y), d=p.x-soll; return Math.abs(d)<=TOL[i]?0:(d<0?-1:1); };
+    const lage=(i)=>{ const p=punkte[i], soll=zielX(i,p.y), d=p.x-soll; return Math.abs(d)<=TOL[i]?0:(d<0?-1:1); };
     // im Bild links: kleineres x = weiter außen (Richtung Schläfe)
     const [a,b,c]=punkte, hoeheOk=p=>p.y>=G.unten&&p.y<=G.oben;
     let l=lage(0);
