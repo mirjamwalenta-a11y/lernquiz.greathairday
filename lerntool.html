@@ -393,7 +393,7 @@ body.mit-leiste .leiste{display:flex}
       <button class="st-kachel" onclick="zeige('b-ueben')"><div class="st-ic">❓</div><div class="st-t">Üben</div><div class="st-d">Quiz, Themen-Quiz, Wiederholen</div></button>
       <button class="st-kachel" onclick="zeige('b-farbe')"><div class="st-ic">🎨</div><div class="st-t">Farbe</div><div class="st-d">Farblabor, Farb-Fälle, Fachwissen</div></button>
       <button class="st-kachel" onclick="zeige('b-schnitt')"><div class="st-ic">✂</div><div class="st-t">Schnitt &amp; Form</div><div class="st-d">Schnittwerkstatt, Schnitt-Designer, Werkzeug</div></button>
-      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Haar, Visagistik, Pflege – nach Lehrjahr sortiert</div></button>
+      <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Haar, Visagistik, Pflege</div></button>
       <button class="st-kachel" onclick="zeige('b-pruefung')"><div class="st-ic">🎓</div><div class="st-t">Prüfung</div><div class="st-d">Zwischenprüfung, LAP-Vorbereitung</div></button>
       <button class="st-kachel" onclick="zeige('b-lernplan')"><div class="st-ic">📅</div><div class="st-t">Lernplan &amp; Tipps</div><div class="st-d">Lernplan, Lerntipps, Englisch</div></button>
       <button class="st-kachel st-breit" onclick="window.location.href='wissensbank.html?v=20261120c'"><div class="st-ic">🗂</div><div><div class="st-t">Wissensbank</div><div class="st-d">Nachschauen: Handwerk und Betrieb, aus dem Mitarbeiterhandbuch</div></div></button>
@@ -411,10 +411,10 @@ body.mit-leiste .leiste{display:flex}
   <h1>❓ Üben</h1>
   <div class="st-sub" style="margin-bottom:16px">Quiz und gezielt wiederholen, was noch wackelt.</div>
   <div class="st-grid">
+    <button class="st-kachel st-breit" onclick="lfOeffnen()"><div class="st-ic">📚</div><div><div class="st-t">Aus Fehlern lernen</div><div class="st-d">Echte Situationen aus dem Salon – was würdest du tun?</div></div></button>
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261120e'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
-    <button class="st-kachel st-breit" onclick="lfOeffnen()"><div class="st-ic">📚</div><div><div class="st-t">Aus Fehlern lernen</div><div class="st-d">Echte Situationen aus dem Salon – was würdest du tun?</div></div></button>
   </div>
 </div>
 <div id="p-b-farbe" class="page">
@@ -423,9 +423,9 @@ body.mit-leiste .leiste{display:flex}
   <h1>🎨 Farbe</h1>
   <div class="st-sub" style="margin-bottom:16px">Farben mischen, neutralisieren und echte Fälle planen.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261116s'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
-    <button class="st-kachel" onclick="fflOeffnen()"><div class="st-ic">🎨</div><div class="st-t">Farb-Fälle</div><div class="st-d">Rezeptur für echte Fälle planen</div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='fachwissen-farbe.html?v=20261120c'"><div class="st-ic">📒</div><div><div class="st-t">Fachwissen Farbe</div><div class="st-d">Nachschauen: Rezepturen, Mischverhältnisse, Einwirkzeiten aus dem Handbuch</div></div></button>
+    <button class="st-kachel" onclick="fflOeffnen()"><div class="st-ic">🎨</div><div class="st-t">Farb-Fälle</div><div class="st-d">Rezeptur für echte Fälle planen</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261116s'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
   </div>
 </div>
 <div id="p-b-schnitt" class="page">
@@ -434,8 +434,8 @@ body.mit-leiste .leiste{display:flex}
   <h1>✂ Schnitt &amp; Form</h1>
   <div class="st-sub" style="margin-bottom:16px">Schneiden, Formwirkung und Werkzeug.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261116s'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261114s'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261116s'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261116s'"><div class="st-ic">🧰</div><div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></div></button>
   </div>
 </div>
@@ -445,8 +445,8 @@ body.mit-leiste .leiste{display:flex}
   <h1>🎓 Prüfung</h1>
   <div class="st-sub" style="margin-bottom:16px">Zwischenprüfung und LAP vorbereiten.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261121b'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
     <button class="st-kachel" onclick="zeige('lap')"><div class="st-ic">🎓</div><div class="st-t">LAP-Vorbereitung</div><div class="st-d">Prüfungsfragen üben</div></button>
+    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261121b'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
   </div>
 </div>
 <div id="p-b-lernplan" class="page">
@@ -455,10 +455,10 @@ body.mit-leiste .leiste{display:flex}
   <h1>📅 Lernplan &amp; Tipps</h1>
   <div class="st-sub" style="margin-bottom:16px">Plan für die Woche, Tipps, Englisch im Salon und Fachbegriffe.</div>
   <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261116s'"><div class="st-ic">🇬🇧</div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></button>
-    <button class="st-kachel" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></button>
-    <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
+    <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261116s'"><div class="st-ic">🇬🇧</div><div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='fachbegriffe.html?v=20261120c'"><div class="st-ic">📖</div><div><div class="st-t">Fachbegriffe</div><div class="st-d">Einfach erklärt, in 7 Sprachen</div></div></button>
+    <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
+    <button class="st-kachel st-breit" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></div></button>
     <button class="st-kachel st-breit" onclick="zeige('rueckmeldung')"><div class="st-ic">💬</div><div><div class="st-t">Deine Meinung zur App</div><div class="st-d">Was hilft dir, was fehlt dir?</div></div></button>
   </div>
 </div>
@@ -923,7 +923,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="btn-primary" id="pt-neu" onclick="ptFormOeffnen()" style="margin-top:10px">+ Geübt – eintragen</button>
     <button class="btn-ghost" id="pt-vergleich" onclick="PraxisFotos.vergleich(sb2, ST.lehrling.id)" style="width:100%;margin-top:8px" hidden>📷 Vorher – Nachher</button>
   </div>
-  <!-- Sortiert nach Haar · Visagistik · Pflege, innerhalb nach Lehrjahr. Jedes Modul steht nur einmal hier. -->
+  <!-- Sortiert nach Haar · Visagistik · Pflege, innerhalb jeder Gruppe alphabetisch (Wunsch der Inhaberin 2026-11-21). Jedes Modul steht nur einmal hier. -->
   <div class="st-gruppe" id="pm-g-pflege-haar">
   <div class="label">Haar · Waschen &amp; Umformung</div>
   <button class="nav-card pm-modul" onclick="pmWaschOeffnen()">
@@ -945,6 +945,22 @@ body.mit-leiste .leiste{display:flex}
   </div>
   <div class="st-gruppe" id="pm-g-farbe">
   <div class="label">Haar · Farbe &amp; Strähnen</div>
+  <button class="nav-card pm-modul" onclick="pmColoristOeffnen()">
+    <div class="nav-icon" style="margin:0">🎨</div>
+    <div>
+      <div class="pm-lj">2. + 3. Lehrjahr</div>
+      <div class="nav-title">Colorist: Farbe verstehen</div>
+      <div class="nav-desc">Naturpigmente, Farbkreis, Kontraste, Diagnose, Produktwahl</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261116s'">
+    <div class="nav-icon" style="margin:0">🧪</div>
+    <div>
+      <div class="pm-lj">1. – 3. Lehrjahr · Spiel</div>
+      <div class="nav-title">Farblabor</div>
+      <div class="nav-desc">Selbst mischen mit Gelb, Rot, Blau, Gegenfarben, Aufhellung, Neutralisier-Spiel, Quiz</div>
+    </div>
+  </button>
   <button class="nav-card pm-modul" onclick="pmFarbeOeffnen()">
     <div class="nav-icon" style="margin:0">🎨</div>
     <div>
@@ -961,14 +977,6 @@ body.mit-leiste .leiste{display:flex}
       <div class="nav-desc">Haarzyklus, Pigmente, Warm-Kalt-Gesetz, Dominanz, Farbcodes, Pigmentierung, Farbabzug</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261116s'">
-    <div class="nav-icon" style="margin:0">🧪</div>
-    <div>
-      <div class="pm-lj">1. – 3. Lehrjahr · Spiel</div>
-      <div class="nav-title">Farblabor</div>
-      <div class="nav-desc">Selbst mischen mit Gelb, Rot, Blau, Gegenfarben, Aufhellung, Neutralisier-Spiel, Quiz</div>
-    </div>
-  </button>
   <button class="nav-card pm-modul" onclick="pmStraehnenOeffnen()">
     <div class="nav-icon" style="margin:0">✨</div>
     <div>
@@ -977,31 +985,15 @@ body.mit-leiste .leiste{display:flex}
       <div class="nav-desc">Balayage-Alphabet, Abteilungen, Formen, Passée-Planer</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" onclick="pmColoristOeffnen()">
-    <div class="nav-icon" style="margin:0">🎨</div>
-    <div>
-      <div class="pm-lj">2. + 3. Lehrjahr</div>
-      <div class="nav-title">Colorist: Farbe verstehen</div>
-      <div class="nav-desc">Naturpigmente, Farbkreis, Kontraste, Diagnose, Produktwahl</div>
-    </div>
-  </button>
   </div>
   <div class="st-gruppe" id="pm-g-schnitt">
   <div class="label">Haar · Schnitt &amp; Form</div>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261116s'">
-    <div class="nav-icon" style="margin:0">🧰</div>
+  <button class="nav-card pm-modul" onclick="pmHochOeffnen()">
+    <div class="nav-icon" style="margin:0">👑</div>
     <div>
-      <div class="pm-lj">1. Lehrjahr</div>
-      <div class="nav-title">Werkzeugkunde</div>
-      <div class="nav-desc">Werkzeuge, Aufbau der Schere, Pflege &amp; Hygiene, Spiel</div>
-    </div>
-  </button>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261116s'">
-    <div class="nav-icon" style="margin:0">✂</div>
-    <div>
-      <div class="pm-lj">1. – 3. Lehrjahr</div>
-      <div class="nav-title">Schnittwerkstatt</div>
-      <div class="nav-desc">Grundformen, Winkel-Labor, Pony, Schnittzeichnung, Beratung &amp; Formwirkung</div>
+      <div class="pm-lj">3. Lehrjahr</div>
+      <div class="nav-title">Hochstecken nach Gesichtsform</div>
+      <div class="nav-desc">Rund, eckig, oval, herzförmig: Varianten, Do's &amp; Don'ts, Styling-Guides</div>
     </div>
   </button>
   <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261114s'">
@@ -1012,31 +1004,39 @@ body.mit-leiste .leiste{display:flex}
       <div class="nav-desc">Eigene Schnittzeichnungen erstellen</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" onclick="pmHochOeffnen()">
-    <div class="nav-icon" style="margin:0">👑</div>
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261116s'">
+    <div class="nav-icon" style="margin:0">✂</div>
     <div>
-      <div class="pm-lj">3. Lehrjahr</div>
-      <div class="nav-title">Hochstecken nach Gesichtsform</div>
-      <div class="nav-desc">Rund, eckig, oval, herzförmig: Varianten, Do's &amp; Don'ts, Styling-Guides</div>
+      <div class="pm-lj">1. – 3. Lehrjahr</div>
+      <div class="nav-title">Schnittwerkstatt</div>
+      <div class="nav-desc">Grundformen, Winkel-Labor, Pony, Schnittzeichnung, Beratung &amp; Formwirkung</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261116s'">
+    <div class="nav-icon" style="margin:0">🧰</div>
+    <div>
+      <div class="pm-lj">1. Lehrjahr</div>
+      <div class="nav-title">Werkzeugkunde</div>
+      <div class="nav-desc">Werkzeuge, Aufbau der Schere, Pflege &amp; Hygiene, Spiel</div>
     </div>
   </button>
   </div>
   <div class="st-gruppe" id="pm-g-visagistik">
   <div class="label">💄 Visagistik</div>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/makeup.html?v=20261121k#labor'">
-    <div class="nav-icon" style="margin:0">💄</div>
-    <div>
-      <div class="pm-lj">1. + 2. Lehrjahr · Zwischenprüfung</div>
-      <div class="nav-title">Make-up-Labor</div>
-      <div class="nav-desc">Highlighter, Contouring, Rouge und Lidschatten selbst setzen – für jede Gesichtsform</div>
-    </div>
-  </button>
   <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/makeup.html?v=20261121k#brauen'">
     <div class="nav-icon" style="margin:0">👁</div>
     <div>
       <div class="pm-lj">1. + 2. Lehrjahr · Zwischenprüfung</div>
       <div class="nav-title">Augenbrauen formen</div>
       <div class="nav-desc">Messlinien vom Nasenflügel, eng und weit stehende Augen</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farbtyp.html?v=20261121a'">
+    <div class="nav-icon" style="margin:0">🌸</div>
+    <div>
+      <div class="pm-lj">1. – 3. Lehrjahr</div>
+      <div class="nav-title">Farbtyp-Beratung</div>
+      <div class="nav-desc">Frühling bis Winter: Tücher digital auflegen, Kundin erkennen, Make-up-Farben</div>
     </div>
   </button>
   <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/makeup.html?v=20261121k#fehler'">
@@ -1047,12 +1047,12 @@ body.mit-leiste .leiste{display:flex}
       <div class="nav-desc">Echte Make-up-Fehler auf Fotos erkennen, Tages- oder Abend-Make-up</div>
     </div>
   </button>
-  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farbtyp.html?v=20261121a'">
-    <div class="nav-icon" style="margin:0">🌸</div>
+  <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/makeup.html?v=20261121k#labor'">
+    <div class="nav-icon" style="margin:0">💄</div>
     <div>
-      <div class="pm-lj">1. – 3. Lehrjahr</div>
-      <div class="nav-title">Farbtyp-Beratung</div>
-      <div class="nav-desc">Frühling bis Winter: Tücher digital auflegen, Kundin erkennen, Make-up-Farben</div>
+      <div class="pm-lj">1. + 2. Lehrjahr · Zwischenprüfung</div>
+      <div class="nav-title">Make-up-Labor</div>
+      <div class="nav-desc">Highlighter, Contouring, Rouge und Lidschatten selbst setzen – für jede Gesichtsform</div>
     </div>
   </button>
   <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/beratung-formwirkung.html#view=visagistik'">
