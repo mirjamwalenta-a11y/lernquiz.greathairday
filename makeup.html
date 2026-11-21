@@ -480,6 +480,7 @@ const laborVersuch={gespeichert:false,loesung:false,neu(){ this.gespeichert=fals
 const PSTAERKE=[['Fein',.35],['Mittel',1],['Breit',1.7]];
 let modus='stellen', pg={deck:60,weich:6}, LW=null, pinselIst={}, pinselFehltAn=false;
 const pgr={}, verlauf=[], benutzt=new Set();
+let loesungAn=false;
 let form='oval', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
 const zu=()=>ansicht!=='offen', augen=()=>ansicht!=='gesicht';
 const bild=()=>ansicht==='offen'?BILDER.offen:BILDER.zu[form];
@@ -598,7 +599,8 @@ function zeichnen(markierung){
         if(t==='P') s+=`<g class="produkt p-P-tiefe" opacity="${LIPPE_TIEFE}"`+g; // Lippenstift: Farbe-Modus plus Tiefe
         if(auswahl===id&&!pin) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
       }
-      if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"/>`;
+      if(loesungAn&&r.soll[id]) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[r.soll[id]].rand}"/>`;
+      else if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"/>`;
       if(pin||(nurZonen&&!nurZonen.includes(id))) return;
       const g=t?zonePos(z,f,seite,e):p; // aufgetragene Stelle: dort anfassen, wo sie jetzt liegt
       s+=`<ellipse class="tipp${t?' an':''}"${g.t} data-z="${id}" data-s="${seite}" cx="${g.x}" cy="${g.y}" rx="${Math.max(g.rx,(klein?5:12)*(nurZonen&&!klein?Math.max(zf,.45):1))}" ry="${Math.max(g.ry,(klein?2.6:10)*(nurZonen&&!klein?Math.max(zf,.45):1))}"><title>${esc(z.n)}</title></ellipse>`;
@@ -655,7 +657,7 @@ function vorbild(zeigen){
   if(ok&&ansicht==='gesicht'){ $('#vorbild-bild').src='bilder/makeup/nachher-zu-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
   else if(ok){ $('#vorbild-bild').src='bilder/makeup/augen-nachher-'+zuB+form+'.jpg'; $('#vorbild-bild').alt='Vorbild Augen-Make-up: '+FORMEN[form].n; }
 }
-function neu(){laborVersuch.neu();vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
+function neu(){loesungAn=false;laborVersuch.neu();vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
   let W=werkz();
   if(partieAn()) W=Object.fromEntries(Object.entries(W).filter(([k])=>PARTIEN[partie].wz.includes(k)));
@@ -807,8 +809,21 @@ function laborSpeichern(r,zeitLief){
   if(uhr&&zeitLief) a.push({thema:T,korrekt:(uhr.stopp-uhr.start)/1000<=UHR_SEK});
   ghdQuizSpeichernAntworten(a,'labor-speicher');
 }
-$('#loesung').onclick=()=>{ laborVersuch.loesung=true; if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; paletteSetzen(auftrag.typ); chips(); } vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
-$('#leeren').onclick=()=>{laborVersuch.neu();vorbild(false); if(LW&&benutzt.size){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); anzeigen();} pinselIst={}; gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+// Lösung zeigen: das eigene Make-up bleibt, wie es ist. Gestrichelte Umrisse zeigen, wohin welches Produkt gehört,
+// daneben das Vorbild und die Stellen als Liste. Beim Auftrag werden Form und Farbtyp genannt (nicht umgefärbt).
+$('#loesung').onclick=()=>{
+  laborVersuch.loesung=true; loesungAn=true; auswahl=null; reglerZeigen();
+  let auftragTxt='';
+  if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; chips();
+    const T=PALETTEN[auftrag.typ];
+    auftragTxt=`<div class="tip"><b>Auftrag:</b> ${esc(FORMEN[auftrag.form].n)}es Gesicht, Farbtyp ${esc(T.n)} (${esc(KUNDIN[auftrag.typ].kurz)}). Passend wäre die Farbpalette „${esc(T.n)}“. ${esc(T.dazu)}</div>`; }
+  vorbild(true); zeichnen();
+  const r=regeln(), Z=zonen(), nachT={};
+  Object.entries(r.soll).forEach(([z,t])=>{ if(Z[z]&&!(Z[z].nurOffen&&zu())) (nachT[t]=nachT[t]||[]).push(Z[z].n); });
+  $('#rueckmeldung').innerHTML=auftragTxt+`<div class="tip"><b>So wäre es richtig.</b> ${esc('Ziel: '+r.ziel)} Die gestrichelten Umrisse im Bild zeigen, wohin welches Produkt gehört – dein Make-up bleibt dabei, wie es ist.</div>`+
+    `<ul class="rm">${Object.entries(nachT).map(([t,l])=>`<li>${ALLE_WERKZEUGE[t].ic} <b>${esc(ALLE_WERKZEUGE[t].name)}:</b> ${esc(l.join(', '))}</li>`).join('')}</ul>`;
+};
+$('#leeren').onclick=()=>{loesungAn=false;laborVersuch.neu();vorbild(false); if(LW&&benutzt.size){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); anzeigen();} pinselIst={}; gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 // ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
 // Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
 // über der Zeichnung. Geprüft wird, wie viel Farbe in welcher Zone liegt.
