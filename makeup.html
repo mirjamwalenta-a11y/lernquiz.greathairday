@@ -272,7 +272,13 @@ a.btn{display:inline-block;text-decoration:none}
     </div>
     <div class="labor">
       <div class="panel" style="justify-items:center">
+        <div class="vergleich">
         <svg id="brauen-svg" viewBox="0 0 504 480" role="img" aria-label="Gezeichnetes Gesicht ohne Augenbrauen. Tippe die drei Brauenpunkte an." style="width:100%;max-width:440px;height:auto;touch-action:manipulation;cursor:crosshair;display:block"></svg>
+        <figure id="brauen-vorbild" hidden style="margin:0">
+          <img id="brauen-vorbild-bild" alt="" style="width:100%;height:auto;display:block;border-radius:8px">
+          <span class="ki-zeile" style="display:block;text-align:center;margin-top:4px">Vorbild</span>
+        </figure>
+        </div>
       </div>
       <div class="panel">
         <div>
@@ -480,6 +486,7 @@ const laborVersuch={gespeichert:false,loesung:false,neu(){ this.gespeichert=fals
 const PSTAERKE=[['Fein',.35],['Mittel',1],['Breit',1.7]];
 let modus='stellen', pg={deck:60,weich:6}, LW=null, pinselIst={}, pinselFehltAn=false;
 const pgr={}, verlauf=[], benutzt=new Set();
+let loesungAn=false;
 let form='oval', ansicht='gesicht', werkzeug='H', gesetzt={}, einst={}, auswahl=null;
 const zu=()=>ansicht!=='offen', augen=()=>ansicht!=='gesicht';
 const bild=()=>ansicht==='offen'?BILDER.offen:BILDER.zu[form];
@@ -598,7 +605,8 @@ function zeichnen(markierung){
         if(t==='P') s+=`<g class="produkt p-P-tiefe" opacity="${LIPPE_TIEFE}"`+g; // Lippenstift: Farbe-Modus plus Tiefe
         if(auswahl===id&&!pin) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
       }
-      if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"/>`;
+      if(loesungAn&&r.soll[id]) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[r.soll[id]].rand}"/>`;
+      else if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"/>`;
       if(pin||(nurZonen&&!nurZonen.includes(id))) return;
       const g=t?zonePos(z,f,seite,e):p; // aufgetragene Stelle: dort anfassen, wo sie jetzt liegt
       s+=`<ellipse class="tipp${t?' an':''}"${g.t} data-z="${id}" data-s="${seite}" cx="${g.x}" cy="${g.y}" rx="${Math.max(g.rx,(klein?5:12)*(nurZonen&&!klein?Math.max(zf,.45):1))}" ry="${Math.max(g.ry,(klein?2.6:10)*(nurZonen&&!klein?Math.max(zf,.45):1))}"><title>${esc(z.n)}</title></ellipse>`;
@@ -655,7 +663,7 @@ function vorbild(zeigen){
   if(ok&&ansicht==='gesicht'){ $('#vorbild-bild').src='bilder/makeup/nachher-zu-'+form+'.jpg'; $('#vorbild-bild').alt='Vorbild fertig geschminkt: '+FORMEN[form].n; }
   else if(ok){ $('#vorbild-bild').src='bilder/makeup/augen-nachher-'+zuB+form+'.jpg'; $('#vorbild-bild').alt='Vorbild Augen-Make-up: '+FORMEN[form].n; }
 }
-function neu(){laborVersuch.neu();vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
+function neu(){loesungAn=false;laborVersuch.neu();vorbild(false);gesetzt={};einst={};auswahl=null;pinselIst={};$('#rueckmeldung').innerHTML='';LW=null;benutzt.clear();chips();zeichnen();reglerZeigen();anzeigen();}
 function chips(){
   let W=werkz();
   if(partieAn()) W=Object.fromEntries(Object.entries(W).filter(([k])=>PARTIEN[partie].wz.includes(k)));
@@ -807,8 +815,21 @@ function laborSpeichern(r,zeitLief){
   if(uhr&&zeitLief) a.push({thema:T,korrekt:(uhr.stopp-uhr.start)/1000<=UHR_SEK});
   ghdQuizSpeichernAntworten(a,'labor-speicher');
 }
-$('#loesung').onclick=()=>{ laborVersuch.loesung=true; if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; paletteSetzen(auftrag.typ); chips(); } vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
-$('#leeren').onclick=()=>{laborVersuch.neu();vorbild(false); if(LW&&benutzt.size){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); anzeigen();} pinselIst={}; gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+// Lösung zeigen: das eigene Make-up bleibt, wie es ist. Gestrichelte Umrisse zeigen, wohin welches Produkt gehört,
+// daneben das Vorbild und die Stellen als Liste. Beim Auftrag werden Form und Farbtyp genannt (nicht umgefärbt).
+$('#loesung').onclick=()=>{
+  laborVersuch.loesung=true; loesungAn=true; auswahl=null; reglerZeigen();
+  let auftragTxt='';
+  if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; chips();
+    const T=PALETTEN[auftrag.typ];
+    auftragTxt=`<div class="tip"><b>Auftrag:</b> ${esc(FORMEN[auftrag.form].n)}es Gesicht, Farbtyp ${esc(T.n)} (${esc(KUNDIN[auftrag.typ].kurz)}). Passend wäre die Farbpalette „${esc(T.n)}“. ${esc(T.dazu)}</div>`; }
+  vorbild(true); zeichnen();
+  const r=regeln(), Z=zonen(), nachT={};
+  Object.entries(r.soll).forEach(([z,t])=>{ if(Z[z]&&!(Z[z].nurOffen&&zu())) (nachT[t]=nachT[t]||[]).push(Z[z].n); });
+  $('#rueckmeldung').innerHTML=auftragTxt+`<div class="tip"><b>So wäre es richtig.</b> ${esc('Ziel: '+r.ziel)} Die gestrichelten Umrisse im Bild zeigen, wohin welches Produkt gehört – dein Make-up bleibt dabei, wie es ist.</div>`+
+    `<ul class="rm">${Object.entries(nachT).map(([t,l])=>`<li>${ALLE_WERKZEUGE[t].ic} <b>${esc(ALLE_WERKZEUGE[t].name)}:</b> ${esc(l.join(', '))}</li>`).join('')}</ul>`;
+};
+$('#leeren').onclick=()=>{loesungAn=false;laborVersuch.neu();vorbild(false); if(LW&&benutzt.size){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); anzeigen();} pinselIst={}; gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 // ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
 // Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
 // über der Zeichnung. Geprüft wird, wie viel Farbe in welcher Zone liegt.
@@ -1171,14 +1192,16 @@ renderQuiz();
   const $=s=>document.querySelector(s), svg=$('#brauen-svg'); if(!svg) return;
   // Augenabstand: Bilder mit verschobener Augenpartie (±19 px). anf = Korrektur des Brauenanfangs (− außen, + innen)
   const VAR={
-    normal:{n:'Normal',bild:'brauen-gesicht.jpg',d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
-    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',d:19,anf:-12,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
-    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',d:-19,anf:12,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
+    normal:{n:'Normal',bild:'brauen-gesicht.jpg',vorbild:null,d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
+    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',vorbild:null,d:19,anf:-10,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
+    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',vorbild:null,d:-19,anf:10,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
   let variante='normal';
   const G={mitte:251.75, fluegel:{x:198,y:342}, unten:120, oben:208};
   function varianteSetzen(v){ variante=v; const V=VAR[v];
-    G.innen=[197+V.d,229]; G.pupille=[144+V.d,212]; G.aussen=[93+V.d,210]; G.tol=v==='normal'?[13,14,16]:[9,14,16];
-    ZIELE=[[198+V.anf,229],G.pupille,G.aussen]; ideal=ZIELE.map(([zx,zy],i)=>({x:linieX(zx,zy,IDEAL_Y[i]),y:IDEAL_Y[i]}));
+    G.innen=[197+V.d,229]; G.pupille=[144+V.d,212]; G.aussen=[93+V.d,210]; G.tol=v==='normal'?[13,14,16]:[6,14,16];
+    ZIELE=[[198+V.anf,229],G.pupille,G.aussen]; ideal=ZIELE.map((_,i)=>({x:zielX(i,IDEAL_Y[i]),y:IDEAL_Y[i]}));
+    // Kurze Braue (eng stehende Augen): Bogen flacher, damit der Kopf nicht steil abfällt
+    { const h=Math.min(IDEAL_Y[0]-IDEAL_Y[1], .45*(ideal[0].x-ideal[1].x)); ideal[1].y=IDEAL_Y[0]-h; ideal[1].x=zielX(1,ideal[1].y); ideal[2].y=Math.min(IDEAL_Y[2],ideal[1].y+10); ideal[2].x=zielX(2,ideal[2].y); }
     $('#brauen-variante').innerHTML=Object.entries(VAR).map(([k,x])=>`<button class="chip" data-bv="${k}" aria-pressed="${k===v}">${x.n}</button>`).join('');
     $('#brauen-variante-info').textContent=V.info;
     document.querySelectorAll('[data-bv]').forEach(b=>b.onclick=()=>{ varianteSetzen(b.dataset.bv); neuStart(); });
@@ -1188,9 +1211,10 @@ renderQuiz();
   const spiegel=x=>2*G.mitte-x;
   // x der Messlinie vom Nasenflügel durch (zx,zy) auf Höhe y
   const linieX=(zx,zy,y)=>G.fluegel.x+(zx-G.fluegel.x)*(G.fluegel.y-y)/(G.fluegel.y-zy);
+  const zielX=(i,y)=>i===0?ZIELE[0][0]:linieX(ZIELE[i][0],ZIELE[i][1],y);
   let ZIELE, ideal;
   // Ideale Braue auf dem Brauenbogen: Anfang y 188, höchster Punkt y 168, Ende y 178
-  const IDEAL_Y=[188,168,178];
+  const IDEAL_Y=[183,168,178];
   // Braue wie mit dem Bleistift gezeichnet: weicher Grundschatten in Brauenform und viele feine Härchen –
   // innen aufgestellt, im Bogen schräg nach außen, zum Ende hin feiner. Fester Startwert: kein Flackern.
   function brauenLinie(p){
@@ -1199,42 +1223,25 @@ renderQuiz();
     return s=>s<.4?bez(...s1,s/.4):bez(...s2,(s-.4)/.6);
   }
   const breiteBei=s=>s<.12?14:s<.45?14-(s-.12)*8:11.4-(s-.45)*16;
-  function braue(p){
-    if(p.length<3) return '';
-    const pt=brauenLinie(p); let seed=11; const zz=()=>(seed=(seed*16807)%2147483647)/2147483647;
-    // Grundschatten: Fläche zwischen Ober- und Unterkante, weichgezeichnet
-    const oben=[],unten=[];
-    for(let k=0;k<=24;k++){ const s=k/24, q=pt(s), q2=pt(Math.min(1,s+.01)), tx=q2.x-q.x, ty=q2.y-q.y, tl=Math.hypot(tx,ty)||1, w=breiteBei(s)/2*.85;
-      oben.push(`${(q.x-ty/tl*w).toFixed(1)} ${(q.y+tx/tl*w).toFixed(1)}`); unten.unshift(`${(q.x+ty/tl*w).toFixed(1)} ${(q.y-tx/tl*w).toFixed(1)}`); }
-    let h=`<path d="M${oben.join(' L')} L${unten.join(' L')} Z" fill="var(--ink)" opacity=".24" filter="url(#bra-weich)"/>`;
-    const N=230;
-    for(let k=0;k<N;k++){
-      const s=Math.pow(zz(),.85), q=pt(s), q2=pt(Math.min(1,s+.01)), tx=q2.x-q.x, ty=q2.y-q.y, tl=Math.hypot(tx,ty)||1;
-      const nx=-ty/tl, ny=tx/tl, breit=breiteBei(s);
-      const off=(zz()-.5)*breit*.9, x0=q.x+nx*off+(zz()-.5)*1.5, y0=q.y+ny*off;
-      const steil=s<.15?.8-s*2:Math.max(.1,.5-s*.45)+(zz()-.5)*.15;
-      let dx=tx/tl*(1-steil)+nx*steil, dy=ty/tl*(1-steil)+ny*steil; const dl=Math.hypot(dx,dy); dx/=dl; dy/=dl;
-      const len=(s<.15?5:s<.7?7:5)+zz()*3, kr=(zz()-.5)*1.4;
-      h+=`<path d="M${x0.toFixed(1)} ${y0.toFixed(1)} q${(dx*len*.5-dy*kr).toFixed(1)} ${(dy*len*.5+dx*kr).toFixed(1)} ${(dx*len).toFixed(1)} ${(dy*len).toFixed(1)}" fill="none" stroke="var(--ink)" stroke-width="${(.45+zz()*.45).toFixed(2)}" stroke-linecap="round" opacity="${(.25+zz()*.45).toFixed(2)}"/>`;
-    }
-    // linke Braue (im Bild) und dieselbe Form gespiegelt auf der anderen Seite
-    return `<g>${h}</g><g transform="translate(${2*G.mitte} 0) scale(-1 1)">${h}</g>`;
-  }
   // Eigener Versuch nach dem Prüfen: nur als dünne Linie durch die drei Punkte
-  function versuchLinie(p){
+  // Keine gemalten Brauen: nur der Verlauf als Linie (eigener Versuch dunkel, richtige Lage golden)
+  function versuchLinie(p,farbe='var(--ink)',breite=2.2,deck=.75){
     if(p.length<3) return ''; const pt=brauenLinie(p); let d='';
     for(let k=0;k<=30;k++){ const q=pt(k/30); d+=(k?' L':'M')+q.x.toFixed(1)+' '+q.y.toFixed(1); }
-    return `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>`;
+    return `<path d="${d}" fill="none" stroke="${farbe}" stroke-width="${breite}" stroke-linecap="round" opacity="${deck}"/>`;
   }
+  // Vorbild-Foto (KI, von der Inhaberin) nach „Prüfen“ oder „Lösung zeigen“, sobald eines hinterlegt ist
+  function vorbildZeigen(){ const v=VAR[variante].vorbild, f=$('#brauen-vorbild'); f.hidden=!(gezeigt&&v); if(gezeigt&&v){ $('#brauen-vorbild-bild').src='bilder/makeup/'+v; $('#brauen-vorbild-bild').alt='Vorbild: richtig geformte Augenbrauen ('+VAR[variante].n+')'; } }
   function zeichnen(){
     let h=`<defs><filter id="bra-weich" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter></defs><image href="bilder/makeup/${VAR[variante].bild}" x="0" y="0" width="504" height="480"/>`;
     if(gezeigt){
       // Messlinien vom Nasenflügel durch innen, Pupille, außen – bis über die Braue
-      ZIELE.forEach(([zx,zy],i)=>{ const y=95, x=linieX(zx,zy,y);
-        h+=`<line x1="${G.fluegel.x}" y1="${G.fluegel.y}" x2="${x}" y2="${y}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="7 5"/>`;
+      ZIELE.forEach((_,i)=>{ const y=95, x=zielX(i,y);
+        h+=`<line x1="${i===0?ZIELE[0][0]:G.fluegel.x}" y1="${G.fluegel.y}" x2="${x}" y2="${y}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="7 5"/>`;
         h+=`<circle cx="${ideal[i].x}" cy="${ideal[i].y}" r="5" fill="var(--accent)"/>`; });
-      h+=braue(ideal)+versuchLinie(punkte);
-    } else h+=braue(punkte);
+      h+=versuchLinie(ideal,'var(--accent)',3.2,.95)+versuchLinie(punkte);
+    } else h+=versuchLinie(punkte);
+    vorbildZeigen();
     punkte.forEach((p,i)=>{ h+=`<circle cx="${p.x}" cy="${p.y}" r="11" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="1.6"/><text x="${p.x}" y="${p.y+5.5}" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${i+1}</text>`; });
     svg.innerHTML=h;
     $('#brauen-schritt').textContent=punkte.length<3?SCHRITTE[punkte.length]+' – über dem Auge im Bild links':'Alle drei Punkte gesetzt – jetzt „Prüfen“. Zum Verschieben „Neu“.';
@@ -1249,7 +1256,7 @@ renderQuiz();
   function pruefen(){
     if(punkte.length<3){ $('#brauen-rueck').innerHTML=`<div class="tip">Setze zuerst alle drei Punkte.</div>`; return; }
     const z=[], li=(ok,t)=>z.push(`<li>${ok?'✓':'✗'} ${t}</li>`), TOL=G.tol;
-    const lage=(i)=>{ const p=punkte[i], soll=linieX(ZIELE[i][0],ZIELE[i][1],p.y), d=p.x-soll; return Math.abs(d)<=TOL[i]?0:(d<0?-1:1); };
+    const lage=(i)=>{ const p=punkte[i], soll=zielX(i,p.y), d=p.x-soll; return Math.abs(d)<=TOL[i]?0:(d<0?-1:1); };
     // im Bild links: kleineres x = weiter außen (Richtung Schläfe)
     const [a,b,c]=punkte, hoeheOk=p=>p.y>=G.unten&&p.y<=G.oben;
     let l=lage(0);
