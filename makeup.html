@@ -585,7 +585,7 @@ function zeichnen(markierung){
   Object.entries(Z).forEach(([id,z])=>{
     if(z.nurOffen&&zu()) return;
     const klein=augen()||z.auge;
-    const pin=modus==='pinsel', t=pin?null:gesetzt[id], soll=markierung&&!(pin&&pinselIst[id]===r.soll[id])&&r.soll[id];
+    const pin=modus==='pinsel', t=gesetzt[id], soll=markierung&&!(pinselIst[id]===r.soll[id])&&r.soll[id];
     (z.paar?[-1,1]:[1]).forEach(seite=>{
       const p=zonePos(z,f,seite), e=t&&(einst[id]||(einst[id]=standard(id)));
       if(t){
@@ -596,7 +596,7 @@ function zeichnen(markierung){
            `<ellipse cx="${q.x}" cy="${q.y}" rx="${q.rx*1.05}" ry="${q.ry*1.25}" fill="url(#vl-${t})" opacity="${o.toFixed(2)}" filter="url(#weich${klein?'a':''}-${w})"/></g>`;
         s+=`<g class="produkt p-${t}"`+g;
         if(t==='P') s+=`<g class="produkt p-P-tiefe" opacity="${LIPPE_TIEFE}"`+g; // Lippenstift: Farbe-Modus plus Tiefe
-        if(auswahl===id) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
+        if(auswahl===id&&!pin) s+=`<ellipse class="auswahl"${q.t} cx="${q.x}" cy="${q.y}" rx="${q.rx*1.25}" ry="${q.ry*1.35}"/>`;
       }
       if(markierung&&soll&&!t) s+=`<ellipse class="fehlt"${p.t} cx="${p.x}" cy="${p.y}" rx="${p.rx}" ry="${p.ry}" stroke="${ALLE_WERKZEUGE[soll].rand}"/>`;
       if(pin||(nurZonen&&!nurZonen.includes(id))) return;
@@ -665,7 +665,8 @@ function chips(){
   $('#modi').innerHTML=Object.entries(MODI).map(([k,n])=>knopf('modus',k,n,k===modus)).join('');
   $('#modus-info').textContent=modus==='pinsel'?'Mit Finger oder Maus über das Gesicht streichen. Dünn beginnen, Schicht für Schicht aufbauen und mit „Verblenden“ weich ausstreichen.':'Antippen, wohin ein Produkt kommt – dann verschieben und mit Reglern anpassen.';
   $('#leinwand').classList.toggle('malen',modus==='pinsel');
-  document.querySelectorAll('[data-modus]').forEach(b=>b.onclick=()=>{modus=b.dataset.modus;neu();});
+  // Moduswechsel: Geschminktes bleibt erhalten (Stellen und Gemaltes liegen übereinander)
+  document.querySelectorAll('[data-modus]').forEach(b=>b.onclick=()=>{ if(modus===b.dataset.modus) return; modus=b.dataset.modus; auswahl=null; chips(); zeichnen(); reglerZeigen(); anzeigen(); });
   pinselReglerZeigen();
   $('#ansichten').innerHTML=Object.entries(ANSICHTEN).map(([k,n])=>knopf('ansicht',k,n,k===ansicht)).join('');
   $('#partie-box').hidden=ansicht!=='gesicht';
@@ -793,7 +794,7 @@ function zusatzAuswertung(){ const h=auftragAuswertung()+uhrAuswertung(); if(h) 
   k.addEventListener('keyup',()=>an(false));
   k.addEventListener('contextmenu',e=>e.preventDefault());
 })();
-$('#pruefen').onclick=()=>{ const r=modus==='pinsel'?pinselPruefen():pruefen(); const zeit=!!(uhr&&!uhr.stopp); zusatzAuswertung(); laborSpeichern(r,zeit); };
+$('#pruefen').onclick=()=>{ const r=(modus==='pinsel'||benutzt.size)?pinselPruefen():pruefen(); const zeit=!!(uhr&&!uhr.stopp); zusatzAuswertung(); laborSpeichern(r,zeit); };
 // Im Lernverlauf speichern (wie das Make-up-Quiz): nur der erste „Prüfen“ je Versuch zählt,
 // nicht nach „Lösung zeigen“. Ohne Lehrlings-Login speichert quiz-verlauf.js nichts.
 function laborSpeichern(r,zeitLief){
@@ -807,7 +808,7 @@ function laborSpeichern(r,zeitLief){
   ghdQuizSpeichernAntworten(a,'labor-speicher');
 }
 $('#loesung').onclick=()=>{ laborVersuch.loesung=true; if(auftrag){ auftrag.geloest=true; auftrag.wahl=auftrag.form; paletteSetzen(auftrag.typ); chips(); } vorbild(true); if(modus==='pinsel') return pinselLoesung(); gesetzt=Object.assign({},regeln().soll);einst={};auswahl=null;reglerZeigen();zeichnen();pruefen();};
-$('#leeren').onclick=()=>{laborVersuch.neu();vorbild(false);if(modus==='pinsel'){ if(LW){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); pinselIst={}; anzeigen();} $('#rueckmeldung').innerHTML=''; zeichnen(); return;} gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
+$('#leeren').onclick=()=>{laborVersuch.neu();vorbild(false); if(LW&&benutzt.size){schnappschuss(Object.keys(LW.lagen)); Object.values(LW.lagen).forEach(c=>c.getContext('2d').clearRect(0,0,c.width,c.height)); benutzt.clear(); anzeigen();} pinselIst={}; gesetzt={};einst={};auswahl=null;reglerZeigen();$('#rueckmeldung').innerHTML='';zeichnen();};
 // ── Pinsel-Modus (Canvas): frei schminken, verblenden, radieren ─────────────
 // Jedes Produkt malt in eine eigene Ebene. Angezeigt werden Licht (normal) und Schatten/Farbe (multipliziert)
 // über der Zeichnung. Geprüft wird, wie viel Farbe in welcher Zone liegt.
@@ -845,7 +846,7 @@ function leinwandBereit(){
 function anzeigen(){
   const li=$('#cv-licht').getContext('2d'), sc=$('#cv-schatten').getContext('2d'), lp=$('#cv-lippen').getContext('2d');
   [li,sc,lp].forEach(c=>c.clearRect(0,0,c.canvas.width,c.canvas.height));
-  if(!LW||modus!=='pinsel') return;
+  if(!LW) return;
   const v=vbJetzt(), K=LW.K, DW=480, DH=Math.round(480*v.h/v.w);
   [li,sc,lp].forEach(c=>{ if(c.canvas.width!==DW||c.canvas.height!==DH){ c.canvas.width=DW; c.canvas.height=DH; } });
   // Lippenstift: Farbe-Modus (eigene Ebene) plus ein Hauch Multiplizieren für die Tiefe
@@ -996,6 +997,8 @@ function pinselPruefen(){
       for(let y=0;y<LW.H;y+=2) for(let x=0;x<LW.W;x+=2){ const a=d[(y*LW.W+x)*4+3]; if(a<12) continue; ges+=a; if(!E.some(e=>inEll(e,x,y))) aus+=a; } });
     if(ges>255*8&&aus/ges>grenze){ kontur.push(text); for(let i=hinweise.length-1;i>=0;i--) if([...ts].some(t=>hinweise[i].startsWith(ALLE_WERKZEUGE[t].name+': Viel Farbe'))) hinweise.splice(i,1); }
   });
+  // Im Stellen-Modus gesetzte Stellen zählen mit
+  Object.entries(gesetzt).forEach(([id,t])=>{ if(!ist[id]||ist[id]!==r.soll[id]) ist[id]=t; });
   pinselIst=ist; pinselFehltAn=true;
   return pruefen(ist,hinweise,kontur);
 }
