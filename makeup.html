@@ -722,7 +722,7 @@ const KUNDIN={
   winter:{kurz:'kühl · klar · kontrastreich',haut:['sehr hell wie Porzellan, kühler Unterton','oliv mit kühlem Unterton'],augen:['dunkelbraun','schwarzbraun','eisblau','klares Grün'],haar:['dunkelbraun, kühl','schwarzbraun','schwarz']}
 };
 const zufall=l=>l[Math.floor(Math.random()*l.length)];
-let auftrag=null;
+let auftrag=null, formReihe=[];
 function auftragKarte(){
   const k=$('#auftrag-karte');
   if(!auftrag){ k.innerHTML=''; $('#auftrag-neu').textContent='Neuer Kundinnen-Auftrag'; return; }
@@ -735,7 +735,9 @@ function auftragKarte(){
 }
 $('#auftrag-neu').onclick=()=>{
   const alt=auftrag;
-  let f,t; do{ f=zufall(Object.keys(FORMEN)); t=zufall(Object.keys(KUNDIN)); }while(alt&&alt.form===f&&alt.typ===t);
+  // Jeder Auftrag eine andere Gesichtsform: alle Formen der Reihe nach (gemischt), erst dann wieder von vorne
+  if(!formReihe.length){ formReihe=mischen(Object.keys(FORMEN)); if(alt&&formReihe[0]===alt.form) formReihe.push(formReihe.shift()); }
+  const f=formReihe.shift(); let t; do{ t=zufall(Object.keys(KUNDIN)); }while(alt&&alt.typ===t);
   const K=KUNDIN[t];
   auftrag={form:f,typ:t,wahl:null,geloest:false,haut:zufall(K.haut),augen:zufall(K.augen),haar:zufall(K.haar)};
   form=f; ansicht='gesicht'; partie='gesamt'; paletteSetzen('natur'); neu(); auftragKarte();
