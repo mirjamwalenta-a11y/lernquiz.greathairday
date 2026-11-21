@@ -126,7 +126,7 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 .leinwand{position:relative;width:100%;max-width:320px}
 /* Lösung: Übungsgesicht und Vorbild nebeneinander, damit beide ohne Scrollen zu sehen sind */
 .vergleich{display:flex;gap:10px;width:100%;justify-content:center;align-items:flex-start}
-.vergleich>.leinwand,.vergleich>figure{flex:1 1 0;min-width:0;margin:0}
+.vergleich>.leinwand,.vergleich>figure,.vergleich>#brauen-svg{flex:1 1 0;min-width:0;margin:0}
 .vergleich>figure{max-width:320px}
 .leinwand canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .leinwand.malen #cv-licht{pointer-events:auto;touch-action:none;cursor:crosshair}
@@ -1192,9 +1192,9 @@ renderQuiz();
   const $=s=>document.querySelector(s), svg=$('#brauen-svg'); if(!svg) return;
   // Augenabstand: Bilder mit verschobener Augenpartie (±19 px). anf = Korrektur des Brauenanfangs (− außen, + innen)
   const VAR={
-    normal:{n:'Normal',bild:'brauen-gesicht.jpg',vorbild:null,d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
-    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',vorbild:null,d:19,anf:-10,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
-    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',vorbild:null,d:-19,anf:10,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
+    normal:{n:'Normal',bild:'brauen-gesicht.jpg',vorbild:'brauen-vorbild.jpg',d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
+    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',vorbild:'brauen-vorbild-eng.jpg',d:19,anf:-10,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
+    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',vorbild:'brauen-vorbild-weit.jpg',d:-19,anf:10,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
   let variante='normal';
   const G={mitte:251.75, fluegel:{x:198,y:342}, unten:120, oben:208};
   function varianteSetzen(v){ variante=v; const V=VAR[v];
