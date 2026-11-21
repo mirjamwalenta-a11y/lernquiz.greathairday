@@ -582,6 +582,7 @@ body.mit-leiste .leiste{display:flex}
   <div class="tag">greathairday · Wörni</div>
   <h1>🌱 Deine Probezeit</h1>
   <p class="sub">Wozu die ersten drei Monate da sind, wie die Lehre wirklich aussieht und warum unsere Standards wichtig sind.</p>
+  <div id="pz-plan"></div>  <!-- Dein Probezeit-Plan (nur eingeloggt + von der Meisterin verknüpft; RPC meine_probezeit) -->
   <div id="pz-inhalt"></div>
 </div>
 
@@ -5989,8 +5990,47 @@ async function regelnOeffnen() {
   var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.regelnZeichnen(el, WB_ZIELE, ST.lehrling ? RG_SERVER : null); };
   if (window.WOERNI_BEGLEITER) los(); else document.addEventListener('DOMContentLoaded', los);
 }
+// Dein Probezeit-Plan: Wochen, erledigte Monatsziele, Wochenquiz. Über die Server-Funktion
+// meine_probezeit() (supabase/20261121_probezeit_lehrling_sicht.sql) – sie gibt nur die eigene,
+// von der Meisterin verknüpfte Probezeit zurück und nie Bewertungen, Notizen oder Feedback.
+// Ohne Migration, ohne Verknüpfung oder ohne Anmeldung bleibt der Platz leer.
+function pzDatum(iso) { var d = new Date(String(iso).slice(0, 10) + 'T12:00:00'); return d.toLocaleDateString('de-AT', {day: '2-digit', month: '2-digit', year: 'numeric'}); }
+function pzEsc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
+async function pzPlanLaden() {
+  var el = document.getElementById('pz-plan'); if (!el) return;
+  el.innerHTML = '';
+  if (!ST.geladen) { try { await stLaden(); } catch (e) {} }
+  if (!ST.lehrling || !window.GHD_PROBEZEIT_ZIELE) return;
+  var r; try { r = await sb2.rpc('meine_probezeit'); } catch (e) { return; }
+  if (!r || r.error || !r.data) return;
+  var pz = r.data, ZIELE = window.GHD_PROBEZEIT_ZIELE;
+  var beginn = new Date(String(pz.beginn).slice(0, 10) + 'T00:00:00'), heute = new Date(); heute.setHours(0, 0, 0, 0);
+  var tage = Math.floor((heute - beginn) / 86400000);
+  var html = '<div class="label">Dein Probezeit-Plan</div><div class="card" style="padding:14px">';
+  if (tage < 0) {
+    html += '<div class="nav-title">Deine Probezeit beginnt am ' + pzEsc(pzDatum(pz.beginn)) + '</div>' +
+      '<div class="nav-desc">Feedback-Tag: ' + pzEsc(pz.wochentag || '—') + '</div></div>';
+    el.innerHTML = html; return;
+  }
+  var woche = Math.min(12, Math.floor(tage / 7) + 1), monat = Math.min(3, Math.ceil(woche / 4));
+  var m = ZIELE[monat] || {ziele: []}, erledigt = (pz.ziele && pz.ziele[String(monat)]) || [];
+  var quizFertig = (pz.quiz_wochen || []).indexOf(woche) >= 0;
+  html += '<div class="pm-lj">Woche ' + woche + ' von 12</div>' +
+    '<div class="nav-title">' + pzEsc(m.titel || ('Monat ' + monat)) + '</div>' +
+    '<div class="nav-desc">Feedback-Tag: ' + pzEsc(pz.wochentag || '—') + (pz.ende ? ' · Probezeit bis ' + pzEsc(pzDatum(pz.ende)) : '') + '</div>' +
+    '<div class="label" style="margin-top:14px">Deine Ziele diesen Monat · ' + m.ziele.filter(function(z){ return erledigt.indexOf(z.id) >= 0; }).length + ' von ' + m.ziele.length + '</div>' +
+    m.ziele.map(function(z){ var ok = erledigt.indexOf(z.id) >= 0;
+      return '<div class="nav-desc" style="font-size:13px;margin-top:4px"><b style="color:#896C32">' + (ok ? '✓' : '○') + '</b> ' + pzEsc(z.text) + '</div>'; }).join('') +
+    '<div class="label" style="margin-top:14px">Wochenquiz · Woche ' + woche + '</div>' +
+    (quizFertig ? '<div class="nav-desc" style="font-size:13px">Erledigt ✓</div>'
+      : '<button class="btn-primary" onclick="window.location.href=\'' + PMT_BASIS + 'schnuppertag.html?modus=lehrling-quiz&pz=' + encodeURIComponent(pz.id) + '&w=' + woche + '\'">Wochenquiz starten →</button>');
+  if (window.WOERNI_WEG) html += '<div style="margin-top:12px">' + WOERNI_WEG.zeile('Am <b>' + pzEsc(pz.wochentag || 'Feedback-Tag') + '</b> ist Feedback-Tag. Überleg dir vorher: Was lief diese Woche gut, wobei brauchst du noch Hilfe?') + '</div>';
+  html += '<p class="pt-info">Das Feedback deiner Meisterin bekommst du im Gespräch, nicht hier in der App.</p></div>';
+  el.innerHTML = html;
+}
 function probezeitOeffnen() {
   zeige('probezeit');
+  pzPlanLaden();
   var los = function(){ if (window.WOERNI_BEGLEITER) WOERNI_BEGLEITER.probezeitZeichnen(document.getElementById('pz-inhalt'), WB_ZIELE); };
   if (window.WOERNI_BEGLEITER) los(); else document.addEventListener('DOMContentLoaded', los);
 }
@@ -6108,7 +6148,8 @@ zeige = function(seite) {
 <script src="woerni-diagnose.js?v=20261119b"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
 <script src="salon-regeln.js?v=20261120a"></script>  <!-- Verhaltensregeln des Salons (Wörni erklärt sie) -->
 <script src="woerni-begleiter.js?v=20261121b"></script>
-<script src="woerni-weg.js?v=20261121a"></script>  <!-- Wörni führt: Satz je Bereich, nächster Schritt (woerni-weg.js) -->  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
+<script src="woerni-weg.js?v=20261121b"></script>
+<script src="probezeit-ziele.js?v=20261121a"></script>  <!-- Monatsziele der Probezeit (für „Dein Probezeit-Plan“) -->  <!-- Wörni führt: Satz je Bereich, nächster Schritt (woerni-weg.js) -->  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
 <script>
 // „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
 // Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten

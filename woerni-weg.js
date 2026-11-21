@@ -100,6 +100,9 @@
       return zeile('Alles richtig, super! Nächster Schritt: das Gelernte am Gast üben, in der <b>Praxis</b>.' + los('praxis', 'Zur Praxis →', basis + '#praxis'));
     },
 
+    // Freie Wörni-Zeile (z. B. im Probezeit-Plan); innen ist bereits sicheres HTML
+    zeile: zeile,
+
     // Knöpfe mit data-ww an Funktionen der Seite binden. Ohne passende Funktion bleibt der Link (href).
     binden: function (el, ziele) {
       if (!el || !ziele) return;
