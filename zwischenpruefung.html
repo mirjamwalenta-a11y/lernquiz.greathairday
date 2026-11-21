@@ -562,6 +562,9 @@ const CATS = [
   ['Woran erkennst du einen warmen Hautunterton?','Goldener bzw. gelblicher Schimmer','Rosiger, bläulicher Schimmer','Sehr helle Haut','Viele Sommersprossen','Warm sind Frühling und Herbst, kühl sind Sommer und Winter.'],
   ['Welche Kajal- und Mascarafarbe passt eher zum Frühlingstyp?','Braun','Schwarz','Grau','Blau','Schwarz steht eher dem kontrastreichen Wintertyp.'],
   ['Welche Lippenfarben passen eher zum Sommertyp?','Rosé, Altrosa, helle Beerentöne','Koralle und Orange','Terracotta und Ziegelrot','Kräftiges Kirschrot','Der Sommertyp ist kühl und gedämpft.'],
+  ['Wo setzt du den Brauenanfang bei eng stehenden Augen?','Etwas weiter außen als über dem Nasenflügel','Weiter innen, Richtung Nase','Genau über der Pupille','Die Braue wird ganz weggelassen','So wirken die Augen weiter auseinander.'],
+  ['Wie betonst du weit stehende Augen mit Lidschatten?','Inneren Augenwinkel etwas dunkler betonen, außen nicht weit hinausziehen','Innen ganz hell, dunkel weit nach außen ziehen','Nur das bewegliche Lid schminken','Dunkel unter die Braue setzen','Die Augen rücken so optisch zusammen.'],
+  ['Wie erkennst du eng stehende Augen?','Der Abstand zwischen den Augen ist kleiner als eine Augenbreite','Die Augen sind klein','Die Augen stehen schräg','Die Lider hängen','Normal ist ein Abstand von etwa einer Augenbreite.'],
   ['Was unterscheidet das Abend- vom Tages-Make-up?','Es ist intensiver, weil es bei Kunstlicht wirken muss','Es ist heller und zarter','Es braucht keine Grundierung','Es gibt keinen Unterschied','Bei der Zwischenprüfung wird ein Tages-Make-up verlangt.']
  ], open:[
   ['Wie gehst du beim Tages-Make-up vor?',['Pflege','Grundierung passend zum Hautton, Konturen exakt ausstreichen','Korrigieren, Puder fixieren','Augen: Lidschatten, Kajal/Eyeliner, Mascara','Rouge auf den Wangenknochen','Lippen: Lipliner, Lippenstift mit Pinsel, ev. Gloss','Typgerecht und gut sichtbar']],
@@ -575,6 +578,7 @@ const CATS = [
   ['Wie setzt du den Lidschatten mit drei Tönen?',['Hell: unter der Braue und im inneren Augenwinkel','Mittel: bewegliches Lid und Lidfalte','Dunkel: äußerer Augenwinkel','Alles weich ineinander verblenden','Nie dunkel unter die Braue oder in den inneren Winkel']],
   ['Wie bestimmst du den Farbtyp einer Kundin?',['Bei Tageslicht, ohne Make-up, Haare unter einem weißen Tuch','Unterton der Haut: warm (golden) oder kühl (rosig, bläulich)','Augen- und Haarfarbe dazunehmen','Farbtücher auflegen: Passt die Farbe, wirkt die Haut frisch; passt sie nicht, wirkt sie fahl']],
   ['Wie stimmst du die Make-up-Farben auf den Farbtyp ab?',['Grundierung im passenden Unterton','Frühling: Koralle, Pfirsich, Champagner, Goldbraun; Kajal braun','Sommer: Rosé, Altrosa, Taupe, Graublau; Kajal grau','Herbst: Terracotta, Bronze, Olive, Kupfer; Kajal braun oder olivgrün','Winter: Kirschrot, Fuchsia, Silbergrau, Anthrazit; Kajal schwarz']],
+  ['Wie gleichst du eng und weit stehende Augen aus?',['Normal: Abstand zwischen den Augen etwa eine Augenbreite','Eng: Brauenanfang etwas weiter außen; innen hell, dunkel nur außen und nach außen ziehen','Weit: Brauenanfang etwas weiter innen; inneren Augenwinkel etwas dunkler betonen, außen nicht weit hinausziehen']],
   ['Was unterscheidet Tages- und Abend-Make-up?',['Tag: natürlich, typgerecht, wirkt bei Tageslicht frisch','Tag: zarte, matte Töne, Lippen natürlich','Abend: intensiver, weil es bei Kunstlicht wirken muss','Abend: Smokey Eyes, Schimmer, Eyeliner, kräftige Lippen möglich','Faustregel: einen Schwerpunkt setzen – Augen oder Lippen']],
   ['Welche Fehler kosten beim Make-up Punkte?',['Foundation im falschen Farbton, Ränder nicht verblendet (Maskeneffekt)','Übergänge bei Schatten und Rouge nicht verblendet','Augen-Make-up zu dunkel oder ungenau','Lippen ungenau oder über die Kontur gemalt','Farben passen nicht zu Typ, Kleidung und Anlass','Produkte unhygienisch verwendet']]
  ]},
@@ -1218,7 +1222,7 @@ function massageHTML(){return `<p class="lead">Die fünf Standard-Massagegriffe 
  <p class="small muted">Selbst gezeichnete Schemas. Die Zeichen zeigen die Art des Griffs: Pfeile = Streichen, Schlaufen = Kneten, Kreise = Friktion, Zickzack = Vibration, Punkte = Klopfen.</p>`;}
 /* Make-up-Labor (eigene Seite makeup.html) */
 function laborHTML(){return `<p class="lead">Im Make-up-Labor setzt du Highlighter, Contouring, Rouge und Lidschatten selbst – für jede Gesichtsform. So übst du das Tages-Make-up für die Schönheitspflege.</p>
- <div class="row"><button class="btn primary" onclick="location.href='makeup.html?v=20261121b#labor'">Make-up-Labor öffnen</button></div>`;}
+ <div class="row"><button class="btn primary" onclick="location.href='makeup.html?v=20261121c#labor'">Make-up-Labor öffnen</button></div>`;}
 /* Nagel-Schemas: Seitenansicht und Vorderansicht, beschriftet.
    Einträge: [Index in NAGELTEILE, Punkt x, y, Beschriftung x, y, Ausrichtung]. hi = Index: nur dieser Teil markiert (Abfrage) */
 const NAGEL_KURZ=['Nagelplatte','Nagelbett','Nagelwurzel (Matrix)','Nagelmond','Nagelhaut','Freier Nagelrand','Nagelsaum','Nagelfalz','Nagelwall','Fingerknochen'];
