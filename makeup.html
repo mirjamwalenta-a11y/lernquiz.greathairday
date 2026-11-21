@@ -272,7 +272,13 @@ a.btn{display:inline-block;text-decoration:none}
     </div>
     <div class="labor">
       <div class="panel" style="justify-items:center">
+        <div class="vergleich">
         <svg id="brauen-svg" viewBox="0 0 504 480" role="img" aria-label="Gezeichnetes Gesicht ohne Augenbrauen. Tippe die drei Brauenpunkte an." style="width:100%;max-width:440px;height:auto;touch-action:manipulation;cursor:crosshair;display:block"></svg>
+        <figure id="brauen-vorbild" hidden style="margin:0">
+          <img id="brauen-vorbild-bild" alt="" style="width:100%;height:auto;display:block;border-radius:8px">
+          <span class="ki-zeile" style="display:block;text-align:center;margin-top:4px">Vorbild</span>
+        </figure>
+        </div>
       </div>
       <div class="panel">
         <div>
@@ -1186,9 +1192,9 @@ renderQuiz();
   const $=s=>document.querySelector(s), svg=$('#brauen-svg'); if(!svg) return;
   // Augenabstand: Bilder mit verschobener Augenpartie (±19 px). anf = Korrektur des Brauenanfangs (− außen, + innen)
   const VAR={
-    normal:{n:'Normal',bild:'brauen-gesicht.jpg',d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
-    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',d:19,anf:-10,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
-    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',d:-19,anf:10,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
+    normal:{n:'Normal',bild:'brauen-gesicht.jpg',vorbild:null,d:0,anf:0,info:'Abstand zwischen den Augen etwa eine Augenbreite – die Grundregel gilt genau.'},
+    eng:{n:'Eng stehend',bild:'brauen-gesicht-eng.jpg',vorbild:null,d:19,anf:-10,info:'Die Augen stehen eng (weniger als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter außen als über dem Nasenflügel – so wirken die Augen weiter auseinander.'},
+    weit:{n:'Weit stehend',bild:'brauen-gesicht-weit.jpg',vorbild:null,d:-19,anf:10,info:'Die Augen stehen weit (mehr als eine Augenbreite Abstand). Setze den Brauenanfang etwas weiter innen, Richtung Nase – so rücken die Augen optisch zusammen.'}};
   let variante='normal';
   const G={mitte:251.75, fluegel:{x:198,y:342}, unten:120, oben:208};
   function varianteSetzen(v){ variante=v; const V=VAR[v];
@@ -1217,30 +1223,15 @@ renderQuiz();
     return s=>s<.4?bez(...s1,s/.4):bez(...s2,(s-.4)/.6);
   }
   const breiteBei=s=>s<.12?14:s<.45?14-(s-.12)*8:11.4-(s-.45)*16;
-  // Echte Bleistift-Braue (aus der Augen-Zeichnung des Labors, bilder/makeup/braue-vorlage.png 338×148, Bogen geglättet),
-  // per Affin-Abbildung auf die drei Punkte gelegt: Kopf (1), höchster Punkt (2), Ende (3).
-  const BV={w:338,h:148,p:[[305,65],[110,50],[12,60]]};
-  // Lage der Vorlage: Kopf und Ende bestimmen Länge und Neigung (gleichmäßig skaliert, damit die Braue
-  // ihre Dicke behält); der höchste Punkt bestimmt nur, wie stark der Bogen ist.
-  function lage(Q){
-    const [Hs,Bs,Ts]=BV.p.map(([x,y])=>({x,y})), [Ht,Bt,Tt]=Q;
-    const winkel=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x), lang=(a,b)=>Math.hypot(b.x-a.x,b.y-a.y);
-    const hoehe=(t,h,b)=>{ const l=lang(t,h); return ((h.x-t.x)*(b.y-t.y)-(h.y-t.y)*(b.x-t.x))/l; }; // Abstand Bogen zur Linie Ende–Kopf
-    const s=lang(Tt,Ht)/lang(Ts,Hs), hs=hoehe(Ts,Hs,Bs), ht=hoehe(Tt,Ht,Bt)/s;
-    const k=Math.max(.6,Math.min(1.6,hs?ht*s/Math.min(s,.46)/hs:1)), g=v=>(v*180/Math.PI).toFixed(2);
-    return `translate(${Tt.x.toFixed(1)} ${Tt.y.toFixed(1)}) rotate(${g(winkel(Tt,Ht))}) scale(${s.toFixed(3)} ${(Math.min(s,.46)*k).toFixed(3)}) rotate(${g(-winkel(Ts,Hs))}) translate(${-Ts.x} ${-Ts.y})`;
-  }
-  function braue(p){
-    if(p.length<3) return '';
-    const h=`<image href="bilder/makeup/braue-vorlage.png" width="${BV.w}" height="${BV.h}" transform="${lage(p)}" opacity=".92"/>`;
-    return `<g>${h}</g><g transform="translate(${2*G.mitte} 0) scale(-1 1)">${h}</g>`;
-  }
   // Eigener Versuch nach dem Prüfen: nur als dünne Linie durch die drei Punkte
-  function versuchLinie(p){
+  // Keine gemalten Brauen: nur der Verlauf als Linie (eigener Versuch dunkel, richtige Lage golden)
+  function versuchLinie(p,farbe='var(--ink)',breite=2.2,deck=.75){
     if(p.length<3) return ''; const pt=brauenLinie(p); let d='';
     for(let k=0;k<=30;k++){ const q=pt(k/30); d+=(k?' L':'M')+q.x.toFixed(1)+' '+q.y.toFixed(1); }
-    return `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>`;
+    return `<path d="${d}" fill="none" stroke="${farbe}" stroke-width="${breite}" stroke-linecap="round" opacity="${deck}"/>`;
   }
+  // Vorbild-Foto (KI, von der Inhaberin) nach „Prüfen“ oder „Lösung zeigen“, sobald eines hinterlegt ist
+  function vorbildZeigen(){ const v=VAR[variante].vorbild, f=$('#brauen-vorbild'); f.hidden=!(gezeigt&&v); if(gezeigt&&v){ $('#brauen-vorbild-bild').src='bilder/makeup/'+v; $('#brauen-vorbild-bild').alt='Vorbild: richtig geformte Augenbrauen ('+VAR[variante].n+')'; } }
   function zeichnen(){
     let h=`<defs><filter id="bra-weich" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter></defs><image href="bilder/makeup/${VAR[variante].bild}" x="0" y="0" width="504" height="480"/>`;
     if(gezeigt){
@@ -1248,8 +1239,9 @@ renderQuiz();
       ZIELE.forEach((_,i)=>{ const y=95, x=zielX(i,y);
         h+=`<line x1="${i===0?ZIELE[0][0]:G.fluegel.x}" y1="${G.fluegel.y}" x2="${x}" y2="${y}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="7 5"/>`;
         h+=`<circle cx="${ideal[i].x}" cy="${ideal[i].y}" r="5" fill="var(--accent)"/>`; });
-      h+=braue(ideal)+versuchLinie(punkte);
-    } else h+=braue(punkte);
+      h+=versuchLinie(ideal,'var(--accent)',3.2,.95)+versuchLinie(punkte);
+    } else h+=versuchLinie(punkte);
+    vorbildZeigen();
     punkte.forEach((p,i)=>{ h+=`<circle cx="${p.x}" cy="${p.y}" r="11" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="1.6"/><text x="${p.x}" y="${p.y+5.5}" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${i+1}</text>`; });
     svg.innerHTML=h;
     $('#brauen-schritt').textContent=punkte.length<3?SCHRITTE[punkte.length]+' – über dem Auge im Bild links':'Alle drei Punkte gesetzt – jetzt „Prüfen“. Zum Verschieben „Neu“.';
