@@ -79,6 +79,11 @@ Wenn der Lehrbeginn fehlt, sollte die Meisterin ihn beim Lehrling eintragen
   getrennt.
 - Gelesen wird nur `lehrlinge.lehrbeginn` (eigene Zeile, bestehende RLS
   `lehrlinge_eigener`). Daraus wird im Browser die Phase gerechnet.
+- **Ausnahme seit 2026-11-21 (Wunsch der Inhaberin):** Auf der Seite „Deine Probezeit“
+  zeigt das Lern-Tool den eigenen Probezeit-Plan (Woche, Feedback-Tag, erledigte Monatsziele,
+  Wochenquiz). Gelesen wird nur über `meine_probezeit()` und nur, wenn die Meisterin die
+  Probezeit in der Schnuppertag-App mit dem Konto verknüpft hat. **Feedback bleibt bei der
+  Meisterin:** Bewertungen, Notizen, Monats-Feedback und Entscheidung liest das Lern-Tool nie.
 - Keine neue Tabelle und nichts am Server, mit einer Ausnahme: die Bestätigung der
   Verhaltensregeln (`regeln_bestaetigung`, siehe oben).
 - Auf dem Gerät (`localStorage`, Schlüssel `woerni-begleiter`) steht nur, welcher

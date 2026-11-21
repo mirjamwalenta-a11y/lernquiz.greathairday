@@ -70,10 +70,16 @@ mehrere Apps**, auch die Team-App mit Mitarbeiterdaten.
 | Tabelle | Inhalt | Personenbezug |
 |---|---|---|
 | `schnuppertage` | Name der Bewerberin, Datum, Punkte je Testteil, Entscheidung ja/nein/offen, Antworten | Ja, Bewerbungsdaten |
-| `probezeiten` | Name, Beginn/Ende, Status, Entscheidung, Abschluss-Notizen | Ja, Beschäftigungsdaten |
+| `probezeiten` | Name, Beginn/Ende, Status, Entscheidung, Abschluss-Notizen, Verknüpfung zum Lehrlings-Konto (`lehrling_id`, seit 2026-11-21) | Ja, Beschäftigungsdaten |
 | `probezeit_wochen` | Wöchentliche Einschätzung (Fachliches, Team, Kundenkontakt, Pünktlichkeit, Lernbereitschaft) + Notiz | Ja, Leistungsbeurteilung |
 | `probezeit_monats_feedback` | Monats-Rückmeldung + Status | Ja, Leistungsbeurteilung |
 | `probezeit_ziele`, `probezeit_quiz`, `probezeit_quiz_fragen` | Ziele und Wochenquiz der Probezeit | Ja |
+
+**Lehrling sieht seinen Plan** (seit 2026-11-21, `supabase/20261121_probezeit_lehrling_sicht.sql`):
+Ist die Probezeit mit dem Lehrlings-Konto verknüpft, liefert die Server-Funktion
+`meine_probezeit()` dem Lehrling nur Beginn, Ende, Feedback-Tag, die IDs der erledigten
+Monatsziele und die Wochen mit erledigtem Wochenquiz. Bewertungen (`probezeit_wochen`),
+Monats-Feedback, Entscheidung, Abschluss-Notizen und Quiz-Antworten bleiben nur bei der Meisterin.
 
 **Ausgeschieden** (seit 2026-11-16, `supabase/20261116_lehrling_ausscheiden.sql`):
 Verlässt ein Lehrling den Salon, ersetzt die Meisterin den Namen durch

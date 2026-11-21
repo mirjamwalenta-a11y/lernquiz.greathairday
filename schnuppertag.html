@@ -10,6 +10,7 @@
   <meta name="theme-color" content="#1c1917">
   <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="probezeit-ziele.js?v=20261121a"></script>  <!-- Monatsziele der Probezeit (auch im Lern-Tool) -->
 <script src="meisterin-rolle.js?v=20261108a"></script>  <!-- Meisterin-Rolle: Server-Prüfung, ohne Netz zuletzt bestätigter Stand -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
   <style>
@@ -618,6 +619,15 @@ body.meisterin-ok .nur-meisterin{display:block!important}
   <h1 id="pzd-name">Probezeit</h1>
   <p class="sub" id="pzd-info"></p>
 
+  <!-- Verknüpfung mit dem Lehrlings-Konto: dann sieht der Lehrling im Lern-Tool seinen Plan
+       (Wochen, Ziele, Wochenquiz) – nie Bewertungen, Notizen oder Feedback.
+       supabase/20261121_probezeit_lehrling_sicht.sql -->
+  <div class="card" id="pzd-verkn">
+    <div class="label">Lehrling in der Lern-App</div>
+    <select id="pzd-lehrling" onchange="speichereLehrlingVerknuepfung(this.value)" aria-label="Lehrling in der Lern-App"></select>
+    <div id="pzd-verkn-info" style="font-size:12px;color:#6B6455;margin-top:6px"></div>
+  </div>
+
   <div class="tab-nav" id="pzd-tabs">
     <button class="tab-btn ak" onclick="pzdTab(1,this)">Monat 1</button>
     <button class="tab-btn" onclick="pzdTab(2,this)">Monat 2</button>
@@ -704,7 +714,13 @@ body.meisterin-ok .nur-meisterin{display:block!important}
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
 const SB_URL = 'https://wrxlaltgtgkdomklgrlj.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndyeGxhbHRndGdrZG9ta2xncmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNDYwMzYsImV4cCI6MjA5OTgyMjAzNn0.Bw8ch-EJb_cLYTwxHdpjUJWgoCjje3Jc32pB0yiBS8g';
-const sb = window.__ghdSb || (window.__ghdSb = supabase.createClient(SB_URL, SB_KEY));  // eine gemeinsame Verbindung pro Seite
+// Wochenquiz-Link (?modus=lehrling-quiz) läuft immer ohne Anmeldung, wie vorgesehen über die
+// Anon-Regeln. Sonst würde eine Lernquiz-Anmeldung desselben Geräts (gleiche Adresse) mitgenommen,
+// und ein Lehrlings-Konto dürfte die Wochenquiz-Fragen weder lesen noch abschicken.
+const WOCHENQUIZ_OHNE_LOGIN = new URLSearchParams(location.search).get('modus') === 'lehrling-quiz';
+const sb = WOCHENQUIZ_OHNE_LOGIN
+  ? supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'ghd-wochenquiz-ohne-login' } })
+  : (window.__ghdSb || (window.__ghdSb = supabase.createClient(SB_URL, SB_KEY)));  // eine gemeinsame Verbindung pro Seite
 // Wörni-Meldungen über Serverfunktion (Team-Repo, Migration 20260927100000):
 // mit dem Login-Token der Meisterin; die App liest ghd_ereignisse nicht mehr selbst.
 async function ghd_rpcEreignis(app, typ, titel, prioritaet, zusammenfassen) {
@@ -1365,54 +1381,46 @@ function oeffneProbezeit(pz) {
   document.getElementById('pzd-info').textContent = 'Beginn: ' + formatDatum(pz.beginn) + ' · Feedbacktag: ' + (pz.wochentag||'—');
   zeige('probezeit-detail');
   pzdTab(1, document.querySelectorAll('#pzd-tabs .tab-btn')[0]);
+  ladeLehrlingVerknuepfung(pz);
+}
+
+// ── VERKNÜPFUNG MIT DEM LEHRLINGS-KONTO ──────────────────────────────────────
+// Der Lehrling sieht dann im Lern-Tool (Mein Weg › Probezeit) nur Wochen, erledigte
+// Ziele und erledigte Wochenquiz – über die Server-Funktion meine_probezeit().
+// Bewertungen, Notizen und Monats-Feedback bleiben bei der Meisterin.
+var PZ_VERKN_TEXT = 'Verknüpft: Der Lehrling sieht im Lern-Tool unter „Mein Weg › Probezeit“ seine Wochen, die erledigten Ziele und das Wochenquiz. Bewertungen, Notizen und Feedback sieht er nicht.';
+async function ladeLehrlingVerknuepfung(pz) {
+  var sel = document.getElementById('pzd-lehrling'), info = document.getElementById('pzd-verkn-info');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">– nicht verknüpft –</option>';
+  info.textContent = '';
+  try {
+    var r = await sb.from('lehrlinge').select('id,name').order('name');
+    (r.data || []).forEach(function(l) {
+      var o = document.createElement('option'); o.value = String(l.id); o.textContent = l.name || '—'; sel.appendChild(o);
+    });
+  } catch(e) {}
+  if (!('lehrling_id' in pz)) {
+    sel.disabled = true;
+    info.textContent = 'Noch nicht eingerichtet: zuerst die Migration 20261121_probezeit_lehrling_sicht.sql ausführen.';
+    return;
+  }
+  sel.disabled = false;
+  sel.value = pz.lehrling_id == null ? '' : String(pz.lehrling_id);
+  info.textContent = pz.lehrling_id == null ? 'Nicht verknüpft: Der Lehrling sieht seinen Plan noch nicht.' : PZ_VERKN_TEXT;
+}
+async function speichereLehrlingVerknuepfung(wert) {
+  if (!MEISTERIN_OK || !AKT_PROBEZEIT) return;
+  var info = document.getElementById('pzd-verkn-info');
+  var id = wert === '' ? null : wert;
+  var { error } = await sb.from('probezeiten').update({ lehrling_id: id }).eq('id', AKT_PROBEZEIT.id);
+  if (error) { info.textContent = 'Speichern hat nicht geklappt: ' + error.message; return; }
+  AKT_PROBEZEIT.lehrling_id = id;
+  info.textContent = id ? PZ_VERKN_TEXT : 'Nicht verknüpft: Der Lehrling sieht seinen Plan noch nicht.';
 }
 
 // ── LERNZIELE PRO MONAT ───────────────────────────────────────────────────────
-var MONAT_ZIELE_DEFAULT = {
-  1: {
-    titel: 'Monat 1 — Ankommen & Kundenkontakt',
-    farbe: '#896C32',
-    ziele: [
-      { id:'m1z1', text:'Kunden herzlich begrüßen' },
-      { id:'m1z2', text:'Kaffee / Getränke anbieten' },
-      { id:'m1z3', text:'Haarwäsche selbstständig durchführen' },
-      { id:'m1z4', text:'Kopfmassage üben' },
-      { id:'m1z5', text:'Farbe auftragen üben (unter Aufsicht)' }
-    ],
-    abzeichen: [
-      { id:'m1a1', icon:'🎯', label:'Lernquiz\n1 Abzeichen' },
-      { id:'m1a2', icon:'🇬🇧', label:'Englisch Tool\n3 Abzeichen' }
-    ]
-  },
-  2: {
-    titel: 'Monat 2 — Einarbeitung & Technik',
-    farbe: '#C4A830',
-    ziele: [
-      { id:'m2z1', text:'Farbe auftragen in unter 20 Minuten' },
-      { id:'m2z2', text:'Technikkopf üben' },
-      { id:'m2z3', text:'Arbeitsabläufe selbstständiger gestalten' }
-    ],
-    abzeichen: [
-      { id:'m2a1', icon:'🎯', label:'Lernquiz\n2 Abzeichen' },
-      { id:'m2a2', icon:'🇬🇧', label:'Englisch Tool\n5 Abzeichen' }
-    ]
-  },
-  3: {
-    titel: 'Monat 3 — Selbstständigkeit & Strähnen',
-    farbe: '#6E5527',
-    ziele: [
-      { id:'m3z1', text:'Farbe auftragen selbstständig' },
-      { id:'m3z2', text:'Kopfwäsche selbstständig' },
-      { id:'m3z3', text:'Kopfmassage selbstständig' },
-      { id:'m3z4', text:'Technikkopf selbstständig' },
-      { id:'m3z5', text:'Strähnen üben' }
-    ],
-    abzeichen: [
-      { id:'m3a1', icon:'🎯', label:'Lernquiz\n3 & 4 Abzeichen' },
-      { id:'m3a2', icon:'🇬🇧', label:'Englisch Tool\nAlle Abzeichen' }
-    ]
-  }
-};
+var MONAT_ZIELE_DEFAULT = window.GHD_PROBEZEIT_ZIELE;  // aus probezeit-ziele.js (auch im Lern-Tool)
 
 function ladeMonatZiele() {
   try {
