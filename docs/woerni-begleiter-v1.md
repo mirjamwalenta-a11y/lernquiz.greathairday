@@ -1,8 +1,9 @@
 # Wörni als Begleiter von Tag 1 bis zur LAP (V1)
 
 **Stand:** 2026-11-20 · Umsetzung: `woerni-begleiter.js`, eingebunden in
-`lerntool.html` (Seiten `p-woerni` und `p-probezeit`, Kachel „Wörni – dein
-Begleiter“ auf der Startseite, Sprungziele `lerntool.html#woerni` und
+`lerntool.html` (Seiten `p-woerni` und `p-probezeit`, Kachel „Wörni fragen“
+direkt unter Wörnis Karte auf der Startseite – dort sind seit 2026-11-21 auch
+„Kurz sortieren“ und „Woran liegt's?“ verlinkt, Sprungziele `lerntool.html#woerni` und
 `lerntool.html#probezeit`).
 
 Baut auf Wörni V1 auf (`docs/woerni-v1.md`): Impulse im Quiz, „Kurz sortieren“

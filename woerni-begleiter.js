@@ -440,6 +440,8 @@
         }).join('') + '</div>' +
         '<div id="wb-antworten" aria-live="polite"></div>' +
         '<p class="pt-info">Wörni antwortet aus festen, im Salon abgestimmten Antworten und speichert deine Fragen nicht. Er ersetzt keine Meisterin. Bei Verletzung, Hautreaktion oder wenn es dir nicht gut geht: sag es sofort jemandem im Salon.</p>';
+      // Seit 2026-11-21 ohne eigene Kacheln auf der Startseite: hier gesammelt unter „Wörni fragen“
+      html += '<div class="label" style="margin-top:18px">Wenn’s gerade hakt</div>' + modulKnopf('sortieren') + modulKnopf('diagnose');
       if (p.id === 'ankommen' || p.id === 'probezeit') html += '<div class="label" style="margin-top:18px">Für deine Probezeit</div>' + modulKnopf('probezeit');
       html += '<div class="label" style="margin-top:18px">Jetzt besonders sinnvoll</div>' + PHASEN[p.id].module.filter(function (k) { return !(k === 'probezeit' && (p.id === 'ankommen' || p.id === 'probezeit')); }).map(modulKnopf).join('') +
         '<details style="margin-top:12px"><summary class="label" style="cursor:pointer;margin:0">Alle Bereiche der App erklärt</summary><div style="margin-top:10px">' +

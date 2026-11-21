@@ -173,6 +173,7 @@ body.mit-leiste{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .st-wz-fertig .st-wz-unten{color:#5B8A4A;font-weight:600}
 .st-wh{display:flex;align-items:center;gap:12px;background:#FDF6E3;border:1.5px solid #C4B86A;border-radius:12px;padding:12px 14px;margin-bottom:12px;text-decoration:none;color:#211D17}
 .st-wh[hidden]{display:none}
+.st-wh:not([hidden]) ~ .st-wh{display:none}  /* Startseite: immer nur der erste sichtbare Hinweis */
 .st-wh-ic{font-size:24px}
 .st-wh-text{flex:1;min-width:0}
 .st-wh-text b{display:block;font-size:14px;font-weight:600}
@@ -338,6 +339,9 @@ body.mit-leiste .leiste{display:flex}
   </div>
 
   <div id="woerni-sagt"></div>  <!-- „Wörni sagt“: Spruch des Tages (woernis-tipps.js) -->
+  <div class="st-gruppe"><div class="st-grid">
+    <button class="st-kachel st-breit" onclick="woerniOeffnen()"><div class="st-ic">💬</div><div><div class="st-t">Wörni fragen</div><div class="st-d">Frag Wörni, Kurz sortieren, Woran liegt's? – Wörni hilft dir weiter</div></div></button>
+  </div></div>
 
   <div class="st-wz" id="st-wz" hidden>
     <div class="st-wz-oben"><b id="st-wz-titel"></b><span id="st-wz-zahl"></span></div>
@@ -345,12 +349,8 @@ body.mit-leiste .leiste{display:flex}
     <div class="st-wz-unten" id="st-wz-unten"></div>
   </div>
 
-  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261120e#wiederholen">
-    <span class="st-wh-ic">🔁</span>
-    <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
-    <span class="st-wh-los">Los →</span>
-  </a>
-
+  <!-- Hinweise: es erscheint immer nur der erste sichtbare (CSS .st-wh ~ .st-wh).
+       Vorrang: Farb-Fall der Meisterin → Lernfall-Einwilligung → Wiederholen → Meinung zur App -->
   <a class="st-wh" id="st-ff" hidden href="#farbfaelle" onclick="fflOeffnen();return false;">
     <span class="st-wh-ic">📬</span>
     <span class="st-wh-text"><b id="st-ff-titel"></b><small id="st-ff-text"></small></span>
@@ -361,6 +361,12 @@ body.mit-leiste .leiste{display:flex}
     <span class="st-wh-ic">📚</span>
     <span class="st-wh-text"><b>Darf deine Situation anderen helfen?</b><small>Deine Meisterin möchte daraus einen Lernfall ohne Namen machen</small></span>
     <span class="st-wh-los">Ansehen →</span>
+  </a>
+
+  <a class="st-wh" id="st-wh" hidden href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261120e#wiederholen">
+    <span class="st-wh-ic">🔁</span>
+    <span class="st-wh-text"><b id="st-wh-titel"></b><small>Was du noch nicht sicher wusstest – kurz wiederholen</small></span>
+    <span class="st-wh-los">Los →</span>
   </a>
 
   <a class="st-wh" id="st-rm" hidden href="#rueckmeldung" onclick="zeige('rueckmeldung');return false;">
@@ -391,15 +397,10 @@ body.mit-leiste .leiste{display:flex}
     <div class="label" style="display:flex;justify-content:space-between;align-items:center">Bereiche <a href="verzeichnis.html" style="font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:#896C32;text-decoration:none">🔎 A–Z-Verzeichnis</a></div>
     <div class="st-grid">
       <button class="st-kachel" onclick="zeige('b-ueben')"><div class="st-ic">❓</div><div class="st-t">Üben</div><div class="st-d">Quiz, Themen-Quiz, Wiederholen</div></button>
-      <button class="st-kachel" onclick="zeige('b-farbe')"><div class="st-ic">🎨</div><div class="st-t">Farbe</div><div class="st-d">Farblabor, Farb-Fälle, Fachwissen</div></button>
-      <button class="st-kachel" onclick="zeige('b-schnitt')"><div class="st-ic">✂</div><div class="st-t">Schnitt &amp; Form</div><div class="st-d">Schnittwerkstatt, Schnitt-Designer, Werkzeug</div></button>
       <button class="st-kachel" onclick="zeige('praxis')"><div class="st-ic">💆</div><div class="st-t">Praxis</div><div class="st-d">Haar, Visagistik, Pflege</div></button>
       <button class="st-kachel" onclick="zeige('b-pruefung')"><div class="st-ic">🎓</div><div class="st-t">Prüfung</div><div class="st-d">Zwischenprüfung, LAP-Vorbereitung</div></button>
-      <button class="st-kachel" onclick="zeige('b-lernplan')"><div class="st-ic">📅</div><div class="st-t">Lernplan &amp; Tipps</div><div class="st-d">Lernplan, Lerntipps, Englisch</div></button>
-      <button class="st-kachel st-breit" onclick="window.location.href='wissensbank.html?v=20261120c'"><div class="st-ic">🗂</div><div><div class="st-t">Wissensbank</div><div class="st-d">Nachschauen: Handwerk und Betrieb, aus dem Mitarbeiterhandbuch</div></div></button>
-      <button class="st-kachel st-breit" onclick="woerniOeffnen()"><div class="st-ic">💬</div><div><div class="st-t">Wörni – dein Begleiter</div><div class="st-d">Frag Wörni, Probezeit, App erklärt: von Tag 1 bis zur LAP</div></div></button>
-      <button class="st-kachel st-breit" onclick="sortierenOeffnen()"><div class="st-ic">🧭</div><div><div class="st-t">Kurz sortieren</div><div class="st-d">Nervös, Fehler gemacht, unsicher? In einer Minute zum nächsten Schritt</div></div></button>
-      <button class="st-kachel st-breit" onclick="diagnoseOeffnen()"><div class="st-ic">🔎</div><div><div class="st-t">Woran liegt's?</div><div class="st-d">Farbe zu warm, Übergang sichtbar, Blondierung fleckig? Wörni findet mit dir die Ursache</div></div></button>
+      <button class="st-kachel" onclick="zeige('b-meinweg')"><div class="st-ic">📅</div><div class="st-t">Mein Weg</div><div class="st-d">Lernplan, Fortschritt, Probezeit, Regeln</div></button>
+      <button class="st-kachel st-breit" onclick="zeige('b-nachschlagen')"><div class="st-ic">🗂</div><div><div class="st-t">Nachschlagen</div><div class="st-d">Wissensbank, Fachbegriffe, Fachwissen Farbe, Englisch, A–Z</div></div></button>
     </div>
   </div>
 </div>
@@ -417,28 +418,6 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
   </div>
 </div>
-<div id="p-b-farbe" class="page">
-  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
-  <div class="tag">greathairday · Lernen</div>
-  <h1>🎨 Farbe</h1>
-  <div class="st-sub" style="margin-bottom:16px">Farben mischen, neutralisieren und echte Fälle planen.</div>
-  <div class="st-grid">
-    <button class="st-kachel st-breit" onclick="window.location.href='fachwissen-farbe.html?v=20261120c'"><div class="st-ic">📒</div><div><div class="st-t">Fachwissen Farbe</div><div class="st-d">Nachschauen: Rezepturen, Mischverhältnisse, Einwirkzeiten aus dem Handbuch</div></div></button>
-    <button class="st-kachel" onclick="fflOeffnen()"><div class="st-ic">🎨</div><div class="st-t">Farb-Fälle</div><div class="st-d">Rezeptur für echte Fälle planen</div></button>
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261116s'"><div class="st-ic">🧪</div><div class="st-t">Farblabor</div><div class="st-d">Farben mischen &amp; neutralisieren</div></button>
-  </div>
-</div>
-<div id="p-b-schnitt" class="page">
-  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
-  <div class="tag">greathairday · Lernen</div>
-  <h1>✂ Schnitt &amp; Form</h1>
-  <div class="st-sub" style="margin-bottom:16px">Schneiden, Formwirkung und Werkzeug.</div>
-  <div class="st-grid">
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittdesigner.html?v=20261114s'"><div class="st-ic">✎</div><div class="st-t">Schnitt-Designer</div><div class="st-d">Eigene Schnittzeichnungen</div></button>
-    <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnittwerkstatt.html?v=20261116s'"><div class="st-ic">✂</div><div class="st-t">Schnittwerkstatt</div><div class="st-d">Grundschnitte &amp; Formwirkung</div></button>
-    <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/werkzeugkunde.html?v=20261116s'"><div class="st-ic">🧰</div><div><div class="st-t">Werkzeugkunde</div><div class="st-d">Scheren, Geräte, Hygiene</div></div></button>
-  </div>
-</div>
 <div id="p-b-pruefung" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
   <div class="tag">greathairday · Lernen</div>
@@ -449,16 +428,30 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/zwischenpruefung.html?v=20261121b'"><div class="st-ic">📝</div><div class="st-t">Zwischenprüfung</div><div class="st-d">Mit Prüfungszeit &amp; Fachgespräch</div></button>
   </div>
 </div>
-<div id="p-b-lernplan" class="page">
+<div id="p-b-nachschlagen" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
   <div class="tag">greathairday · Lernen</div>
-  <h1>📅 Lernplan &amp; Tipps</h1>
-  <div class="st-sub" style="margin-bottom:16px">Plan für die Woche, Tipps, Englisch im Salon und Fachbegriffe.</div>
+  <h1>🗂 Nachschlagen</h1>
+  <div class="st-sub" style="margin-bottom:16px">Schnell etwas nachschauen: Begriffe, Rezepturen, Handbuch.</div>
   <div class="st-grid">
+    <button class="st-kachel st-breit" onclick="window.location.href='verzeichnis.html'"><div class="st-ic">🔎</div><div><div class="st-t">A–Z-Verzeichnis</div><div class="st-d">Alle Bereiche alphabetisch, mit dem Weg dorthin</div></div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/englisch-salon.html?v=20261116s'"><div class="st-ic">🇬🇧</div><div><div class="st-t">Englisch im Salon</div><div class="st-d">Fachvokabular Deutsch ↔ Englisch</div></div></button>
     <button class="st-kachel st-breit" onclick="window.location.href='fachbegriffe.html?v=20261120c'"><div class="st-ic">📖</div><div><div class="st-t">Fachbegriffe</div><div class="st-d">Einfach erklärt, in 7 Sprachen</div></div></button>
+    <button class="st-kachel st-breit" onclick="window.location.href='fachwissen-farbe.html?v=20261120c'"><div class="st-ic">📒</div><div><div class="st-t">Fachwissen Farbe</div><div class="st-d">Rezepturen, Mischverhältnisse, Einwirkzeiten aus dem Handbuch</div></div></button>
+    <button class="st-kachel st-breit" onclick="window.location.href='wissensbank.html?v=20261120c'"><div class="st-ic">🗂</div><div><div class="st-t">Wissensbank</div><div class="st-d">Handwerk und Betrieb, aus dem Mitarbeiterhandbuch</div></div></button>
+  </div>
+</div>
+<div id="p-b-meinweg" class="page">
+  <button class="back-btn" onclick="zeige('home')">← Zurück</button>
+  <div class="tag">greathairday · Lernen</div>
+  <h1>📅 Mein Weg</h1>
+  <div class="st-sub" style="margin-bottom:16px">Dein Plan, dein Fortschritt und was im Salon gilt.</div>
+  <div class="st-grid">
+    <button class="st-kachel st-breit" onclick="zeige('progress')"><div class="st-ic">📊</div><div><div class="st-t">Fortschritt</div><div class="st-d">Kompetenz-Landkarte: was sitzt, was noch offen ist</div></div></button>
     <button class="st-kachel st-breit" onclick="zeige('lernplan')"><div class="st-ic">📅</div><div><div class="st-t">Lernplan</div><div class="st-d">Wochenplan erstellen</div></div></button>
     <button class="st-kachel st-breit" onclick="zeige('fortschritt')"><div class="st-ic">💡</div><div><div class="st-t">Lerntipps</div><div class="st-d">Tipps pro Thema</div></div></button>
+    <button class="st-kachel st-breit" onclick="probezeitOeffnen()"><div class="st-ic">🌱</div><div><div class="st-t">Probezeit</div><div class="st-d">Wozu die ersten drei Monate da sind und was dir hilft</div></div></button>
+    <button class="st-kachel st-breit" onclick="regelnOeffnen()"><div class="st-ic">📋</div><div><div class="st-t">Verhaltensregeln</div><div class="st-d">Krankmeldung, Urlaub, Pausen, Hygiene, Kleidung</div></div></button>
     <button class="st-kachel st-breit" onclick="zeige('rueckmeldung')"><div class="st-ic">💬</div><div><div class="st-t">Deine Meinung zur App</div><div class="st-d">Was hilft dir, was fehlt dir?</div></div></button>
   </div>
 </div>
@@ -951,6 +944,14 @@ body.mit-leiste .leiste{display:flex}
       <div class="pm-lj">2. + 3. Lehrjahr</div>
       <div class="nav-title">Colorist: Farbe verstehen</div>
       <div class="nav-desc">Naturpigmente, Farbkreis, Kontraste, Diagnose, Produktwahl</div>
+    </div>
+  </button>
+  <button class="nav-card pm-modul" onclick="fflOeffnen()">
+    <div class="nav-icon" style="margin:0">📬</div>
+    <div>
+      <div class="pm-lj">1. – 3. Lehrjahr · von deiner Meisterin</div>
+      <div class="nav-title">Farb-Fälle</div>
+      <div class="nav-desc">Rezeptur für echte Fälle planen, Rückmeldung von deiner Meisterin</div>
     </div>
   </button>
   <button class="nav-card pm-modul" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/farblabor.html?v=20261116s'">
@@ -6031,10 +6032,13 @@ zeige = function(seite) {
   var sprung = {'#ueben': function(){ pmtOeffnen(); }, '#praxis': function(){ zeige('praxis'); }, '#fortschritt': function(){ zeige('progress'); }, '#farbfaelle': function(){ fflOeffnen(); }, '#rueckmeldung': function(){ zeige('rueckmeldung'); }}[location.hash];
   // Direktlinks aus dem A–Z-Verzeichnis: #seite=b-farbe, #modul=wasch (nur feste Ziele)
   var hz = new URLSearchParams(location.hash.slice(1));
-  var SEITEN = ['b-ueben', 'b-farbe', 'b-schnitt', 'b-pruefung', 'b-lernplan', 'praxis', 'quiz', 'lernplan', 'fortschritt', 'progress', 'lap'];
+  var SEITEN = ['b-ueben', 'b-pruefung', 'b-nachschlagen', 'b-meinweg', 'praxis', 'quiz', 'lernplan', 'fortschritt', 'progress', 'lap'];
   var MODULE = {wasch: pmWaschOeffnen, farbe: pmFarbeOeffnen, straehnen: pmStraehnenOeffnen, colorist: pmColoristOeffnen, wissen: pmWissenOeffnen, hoch: pmHochOeffnen};
-  // Visagistik ist seit 2026-11-21 ein Abschnitt der Praxis (alte Links: #seite=b-visagistik)
-  if (!sprung && hz.get('seite') === 'b-visagistik') sprung = function(){ zeige('praxis'); var g = document.getElementById('pm-g-visagistik'); if (g) setTimeout(function(){ g.scrollIntoView(); }, 50); };
+  // Seit 2026-11-21 fünf Bereiche: Visagistik, Farbe und Schnitt & Form sind Abschnitte der Praxis,
+  // „Lernplan & Tipps“ heißt „Mein Weg“. Alte Links (#seite=b-visagistik usw.) führen dorthin.
+  var UMZUG = {'b-visagistik': 'pm-g-visagistik', 'b-farbe': 'pm-g-farbe', 'b-schnitt': 'pm-g-schnitt'};
+  if (!sprung && UMZUG[hz.get('seite')]) sprung = function(){ zeige('praxis'); var g = document.getElementById(UMZUG[hz.get('seite')]); if (g) setTimeout(function(){ g.scrollIntoView(); }, 50); };
+  if (!sprung && hz.get('seite') === 'b-lernplan') sprung = function(){ zeige('b-meinweg'); };
   if (!sprung && SEITEN.indexOf(hz.get('seite')) >= 0) sprung = function(){ zeige(hz.get('seite')); };
   if (!sprung && MODULE[hz.get('modul')]) sprung = function(){ MODULE[hz.get('modul')](); };
   if (!sprung && hz.has('sortieren')) sprung = function(){ sortierenOeffnen(hz.get('sortieren')); };
@@ -6058,7 +6062,7 @@ zeige = function(seite) {
 <script src="woerni-sortieren.js?v=20261118b"></script>  <!-- Wörni V1: „Kurz sortieren“ (docs/woerni-v1.md) -->
 <script src="woerni-diagnose.js?v=20261119b"></script>  <!-- Wörni: „Woran liegt's?“ – Fehlerdiagnose -->
 <script src="salon-regeln.js?v=20261120a"></script>  <!-- Verhaltensregeln des Salons (Wörni erklärt sie) -->
-<script src="woerni-begleiter.js?v=20261121a"></script>  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
+<script src="woerni-begleiter.js?v=20261121b"></script>  <!-- Wörni: Begleiter Tag 1 bis LAP, Frag Wörni, Probezeit (docs/woerni-begleiter-v1.md) -->
 <script>
 // „Kurz sortieren“: dezenter Hinweis bei wiederholtem Nachschlagen. Wird derselbe
 // Teil eines Praxis-Moduls (z. B. Haarwäsche · Ablauf) innerhalb von 10 Minuten
