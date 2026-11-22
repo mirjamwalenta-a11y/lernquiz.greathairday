@@ -657,7 +657,7 @@ div.mb-wb-p{cursor:default}
     <button class="mb-zurueck" data-mb-zurueck>← Meisterin-Bereich</button>
     <div class="mb-tag">greathairday · Meisterin</div>
     <h2 class="mb-h">📊 Ausbildungsbericht</h2>
-    <p class="mb-sub">So entwickeln sich deine Lehrlinge – aus Quiz, Praxis-Tagebuch, Prüfgesprächen und Farb-Fällen. Testzugänge und Stylistinnen zählen nicht mit.</p>
+    <p class="mb-sub">Praxisbericht für Einreichungen: erste reale Nutzung und Lernspuren aus Quiz, Praxis-Tagebuch, Prüfgesprächen und Farb-Fällen. Testzugänge und Stylistinnen zählen nicht mit.</p>
     <div id="ber-inhalt"></div>
   </div>
 </div>
@@ -3137,7 +3137,7 @@ function berRechnen(){
     return {l:v.lehrling_id,ts:v.erstellt_am,tag:pazISO(new Date(v.erstellt_am)),q:Math.min(1,v.richtig/v.gesamt)};
   }).sort(function(a,b){return a.ts<b.ts?-1:a.ts>b.ts?1:0;});
   var prx=B.praxis.filter(function(x){return x.datum;}).map(function(x){return {l:x.lehrling_id,tag:String(x.datum).slice(0,10),min:x.dauer_min||0};});
-  var pg=B.pg.filter(function(x){return x.erstellt_am;}).map(function(x){return {l:x.lehrling_id,tag:pazISO(new Date(x.erstellt_am)),praxis:(x.art||'gespraech')==='praxis',ok:x.ergebnis==='verstanden'};});
+  var pg=B.pg.filter(function(x){return x.erstellt_am;}).map(function(x){return {l:x.lehrling_id,tag:pazISO(new Date(x.erstellt_am)),praxis:(x.art||'gespraech')==='praxis',ok:x.ergebnis==='verstanden',teil:x.ergebnis==='teilweise',nicht:x.ergebnis==='nicht'};});
   var ff=B.ff.filter(function(x){return x.erstellt_am&&x.status&&x.status!=='offen';}).map(function(x){return {l:x.lehrling_id,tag:pazISO(new Date(x.erstellt_am)),passt:x.status==='passt'};});
   var kompVon={}; B.komp.forEach(function(k){(kompVon[k.lehrling_id]=kompVon[k.lehrling_id]||{})[k.thema]=k;});
 
@@ -3168,7 +3168,8 @@ function berRechnen(){
     }
     var amp=ampelZaehlen(kompVon[l.id]||{},l.lehrjahr);
     return {l:l, quiz:v.length, tage:Object.keys(tage).length, anfang:anfang, ende:ende,
-      praxisMin:p.reduce(function(s,x){return s+x.min;},0),
+      praxisMin:p.reduce(function(s,x){return s+x.min;},0), praxisN:p.length,
+      gTeil:g.filter(function(x){return x.teil;}).length, gNicht:g.filter(function(x){return x.nicht;}).length,
       pgN:g.filter(function(x){return !x.praxis;}).length, pgOk:g.filter(function(x){return !x.praxis&&x.ok;}).length,
       pxN:g.filter(function(x){return x.praxis;}).length, pxOk:g.filter(function(x){return x.praxis&&x.ok;}).length,
       ffN:f.length, ffPasst:f.filter(function(x){return x.passt;}).length,
@@ -3203,10 +3204,17 @@ function berRechnen(){
   // Rückmeldungen der Lehrlinge im Zeitraum; Zitate nur mit Erlaubnis (zitat_ok) und ohne Namen
   var rm=(B.rm||[]).filter(function(x){return ids[x.lehrling_id]&&x.erstellt_am&&drin(pazISO(new Date(x.erstellt_am)));});
   var rmL=rm.filter(function(x){return x.leichter;});
+  // Frühester Tag mit Nutzung im Zeitraum (für die Einordnung) und erster bestätigter Praxis-Eintrag
+  var tageAlle=[]; verl.concat(prx,pg).forEach(function(x){ if(ids[x.l]&&drin(x.tag)) tageAlle.push(x.tag); }); tageAlle.sort();
+  var prxTage=prx.filter(function(x){return ids[x.l]&&drin(x.tag);}).map(function(x){return x.tag;}).sort();
   var rmZitate=rm.filter(function(x){return x.zitat_ok&&x.veraendert;}).map(function(x){return x.veraendert;}).slice(0,6);
   return {zr:zr, zeilen:zeilen, monate:monatsZeilen,
     rmN:rm.length, rmHilfreich:berSchnitt(rm.map(function(x){return x.hilfreich;})),
     rmLeichter:rmL.length?rmL.filter(function(x){return x.leichter==='ja';}).length/rmL.length:null, rmZitate:rmZitate,
+    rmLeichterN:rmL.length, rmLeichterJa:rmL.filter(function(x){return x.leichter==='ja';}).length,
+    erstes:tageAlle[0]||'', praxisErst:prxTage[0]||'', praxisN:summe('praxisN'),
+    pgTeil:summe('gTeil'), pgNicht:summe('gNicht'), sitzt:summe('sitzt'), themen:summe('themen'),
+    mitUebung:monatsZeilen.filter(function(m){return m.quiz||m.min||m.pg;}).length,
     aktivN:zeilen.filter(function(z){return z.aktivImZeitraum;}).length,
     quiz:summe('quiz'), tage:summe('tage'), praxisMin:summe('praxisMin'),
     pgN:pgN, pgOk:pgOk, ffN:summe('ffN'), ffPasst:summe('ffPasst'),
@@ -3215,52 +3223,113 @@ function berRechnen(){
 }
 var BER_MON=['Jän','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 function berMonText(k){ return BER_MON[+k.slice(5,7)-1]+' '+k.slice(0,4); }
+// Anfang → Ende ohne Wertung durch Farbe (Praxisbericht, keine Leistungsanzeige)
 function berEntw(a,e){
   if(a==null) return '–';
   var d=Math.round(e*100)-Math.round(a*100);
-  return berProz(a)+' → '+berProz(e)+' <span class="'+(d>0?'ber-plus':d<0?'ber-minus':'')+'">('+(d>0?'+':'')+d+')</span>';
+  return berProz(a)+' → '+berProz(e)+' ('+(d>0?'+':'')+d+' Prozentpunkte)';
 }
+function berN(n,eins,mehr){ return n+' '+(n===1?eins:mehr); }
+
+// ── Texte für Bildschirm und Ausdruck (gleicher Wortlaut) ──
+// Leitlinie für Einreichungen: erste reale Nutzung und Lernspuren zeigen, ruhig und
+// ehrlich mit der frühen Phase umgehen – kein Wirksamkeitsnachweis. Nur Zahlen aus
+// berRechnen(), keine zusätzlichen Datenquellen.
+function berEinordnung(c){
+  var von=c.erstes?pazDatum(c.erstes):'Beginn';
+  return 'Dieser Bericht zeigt '+(BER.anon?'anonymisiert ':'')+'erste reale Nutzung und Lernspuren aus der laufenden Anwendung der Great Hair Day Academy im eigenen Ausbildungsbetrieb. '+
+    'Die Datenbasis ist noch im Aufbau: '+berN(c.aktivN,'Lehrling','Lehrlinge')+', Daten von '+von+' bis '+pazDatum(c.zr.bis)+'. '+
+    'Die Angaben sind Praxishinweise aus einer frühen Anwendungsphase – kein Langzeit- oder Wirksamkeitsnachweis.';
+}
+function berAussagen(c){
+  var a=[];
+  a.push({t:'Das Tool wird im Alltag genutzt',
+    x:berN(c.aktivN,'Lehrling hat','Lehrlinge haben')+' im Zeitraum damit gelernt: '+berN(c.quiz,'Quiz','Quizze')+' an '+berN(c.tage,'Lerntag','Lerntagen')+
+      (c.praxisN?', dazu '+berN(c.praxisN,'von der Meisterin bestätigter Praxis-Eintrag','von der Meisterin bestätigte Praxis-Einträge'):'')+'.'});
+  var w=c.monate.length?'In '+c.mitUebung+' von '+berN(c.monate.length,'Monat','Monaten')+' wurde geübt. ':'';
+  if(c.wochen) w+='Das persönliche Wochenziel an Quizzen wurde in '+c.erreicht+' von '+berN(c.wochen,'Woche','Wochen')+' erreicht.';
+  a.push({t:'Lernen wiederholt sich im Alltag', x:w||'Für eine Aussage zur Regelmäßigkeit ist der Zeitraum noch zu kurz.'});
+  var e;
+  if(c.entwN) e='Bei '+berN(c.entwN,'Lehrling','Lehrlingen')+' mit mindestens 10 Quizzen lag der Anteil richtiger Antworten in den ersten 5 Quizzen bei '+berProz(c.anfang)+', in den letzten 5 bei '+berProz(c.ende)+'. ';
+  else e='Für den Vergleich erste → letzte Quizze gibt es im Zeitraum noch zu wenige Quizze (mindestens 10 pro Lehrling). ';
+  if(c.themen&&c.sitzt) e+='Heute gelten '+c.sitzt+' von '+berN(c.themen,'Lernthema','Lernthemen')+' als gefestigt. ';
+  else if(c.themen) e+='Als gefestigt gilt ein Lernthema erst nach mehrfachem Üben und erneuter Bestätigung nach ein paar Tagen – so weit ist im Zeitraum noch keines. ';
+  e+='Das sind erste Lernsignale, kein Nachweis.';
+  a.push({t:'Entwicklung wird sichtbar', x:e});
+  var u='Die App bietet Fragen und Erklärungen zum Vorlesen, „Einfacher erklärt“ in leichter Sprache, Fachbegriffe in 7 Sprachen und Wörni als Begleiter. Wie oft diese Hilfen genutzt werden, wird nicht gezählt. ';
+  if(c.pgN) u+='Dazu kamen '+berN(c.pgN,'persönliches Prüfgespräch oder Praxis-Check','persönliche Prüfgespräche und Praxis-Checks')+' mit der Meisterin. ';
+  if(c.rmN) u+=(c.rmN===1?'1 Rückmeldung der Lehrlinge liegt vor':c.rmN+' Rückmeldungen der Lehrlinge liegen vor')+', siehe unten.';
+  a.push({t:'Unterstützung für unterschiedliche Lernende', x:u.trim()});
+  return a;
+}
+// Persönliche Begleitung: weniger prominent, mit Einordnung statt Quote
+function berBegleitung(c){
+  var b=[];
+  if(c.pgN) b.push('Prüfgespräche und Praxis-Checks: '+c.pgN+' geführt. Einschätzung der Meisterin: '+c.pgOk+' verstanden, '+c.pgTeil+' teilweise, '+c.pgNicht+' noch nicht. '+
+    'Die Gespräche sind dazu da, Lücken zu finden: Was noch nicht sitzt, wird gezielt wiederholt und später erneut besprochen. Ein „teilweise“ oder „noch nicht“ gehört zu diesem Lernweg.');
+  if(c.praxisN) b.push('Praxis-Tagebuch: '+berN(c.praxisN,'von der Meisterin bestätigter Eintrag','von der Meisterin bestätigte Einträge')+' ('+ptDauer(c.praxisMin)+')'+(c.praxisErst?', erster Eintrag am '+pazDatum(c.praxisErst):'')+'. '+
+    'Das Tagebuch ist erst im Aufbau und zeigt nur, was eingetragen und bestätigt wurde – nicht die gesamte Praxiszeit im Salon.');
+  if(c.ffN) b.push('Farb-Fälle: '+berN(c.ffN,'Farb-Plan','Farb-Pläne')+' mit Rückmeldung der Meisterin, davon '+c.ffPasst+' „passt“.');
+  return b;
+}
+var BER_GRENZEN=[
+  'Ein Betrieb, wenige Lehrlinge, kurzer Zeitraum: Einzelne Wochen oder Personen verändern die Zahlen stark.',
+  'Es gibt keine Vergleichsgruppe. Veränderungen lassen sich nicht allein der App zuschreiben – Ausbildung im Salon und Berufsschule laufen parallel.',
+  'Die Quiz-Arten (Schnell-Check, Lerneinheit, LAP) sind gemischt. Der Anteil richtiger Antworten ist ein Hinweis auf die Richtung, keine Note.',
+  'Rückmeldungen sind Selbsteinschätzungen der Lehrlinge.',
+  'Praxis, Gespräche und Farb-Fälle zählen nur, soweit sie in der App erfasst sind.'
+];
 var BER_METHODE=[
   'Gezählt werden nur echte Lehrlinge: keine Testzugänge, keine Stylistinnen. Pausierte und ausgeschiedene Lehrlinge zählen, wenn sie im Zeitraum geübt haben – Ausgeschiedene ohne Namen.',
   'Lerntage: Tage mit mindestens einem Quiz oder einem bestätigten Praxis-Eintrag.',
-  'Trefferquote am Anfang und am Ende: Durchschnitt der ersten 5 und der letzten 5 Quizze im Zeitraum, nur bei Lehrlingen mit mindestens 10 Quizzen. Die Quiz-Arten (Schnell-Check, Lerneinheit, LAP) sind gemischt, die Zahl zeigt die Richtung, keine Note.',
+  'Anteil richtiger Antworten, erste 5 → letzte 5 Quizze: Durchschnitt der ersten 5 und der letzten 5 Quizze im Zeitraum, nur bei Lehrlingen mit mindestens 10 Quizzen.',
   'Praxis: nur Einträge im Praxis-Tagebuch, die die Meisterin bestätigt hat.',
-  'Prüfgespräche und Praxis-Checks führt die Meisterin persönlich. „Verstanden“ heißt: im Gespräch erklärt bzw. in der Praxis sicher gezeigt.',
-  'Wochenziel: Anteil der abgeschlossenen Wochen (Mo–So), in denen der Lehrling sein Wochenziel an Quizzen erreicht hat – ab Lehrbeginn bzw. erstem Quiz. Es gilt das heute eingestellte Wochenziel.',
-  'Themen sitzen: Stand heute, unabhängig vom Zeitraum. „Sitzt“ heißt mindestens 80 % richtig, mehrfach geübt und nach ein paar Tagen bestätigt.',
+  'Prüfgespräche und Praxis-Checks führt die Meisterin persönlich. Sie hält fest: verstanden (im Gespräch erklärt bzw. in der Praxis sicher gezeigt), teilweise oder noch nicht.',
+  'Wochenziel: abgeschlossene Wochen (Mo–So), in denen der Lehrling sein Wochenziel an Quizzen erreicht hat – ab Lehrbeginn bzw. erstem Quiz. Es gilt das heute eingestellte Wochenziel.',
+  'Gefestigte Lernthemen: Stand heute, unabhängig vom Zeitraum. Gefestigt heißt mindestens 80 % richtig, mehrfach geübt und nach ein paar Tagen bestätigt.',
   'Rückmeldungen: Die Lehrlinge beantworten im Lern-Tool selbst ein paar kurze Fragen. Zitate erscheinen nur, wenn der Lehrling die Verwendung ohne Namen erlaubt hat.'
 ];
 
 function berZeigen(){
-  var box=document.getElementById('ber-inhalt'), c=berRechnen(), zr=c.zr;
+  var box=document.getElementById('ber-inhalt'), c=berRechnen();
   var chips=[['3m','Letzte 3 Monate'],['12m','Letzte 12 Monate'],['alles','Seit Beginn'],['frei','Von – bis …']];
   var h='<div class="tb-filter">'+chips.map(function(x){return '<button data-berz="'+x[0]+'" aria-pressed="'+(BER.z===x[0])+'">'+x[1]+'</button>';}).join('')+'</div>';
   if(BER.z==='frei') h+='<div class="paz-frei"><label>von<input type="date" id="ber-von" value="'+escHtml(BER.von)+'"></label><label>bis<input type="date" id="ber-bis" value="'+escHtml(BER.bis||pazISO(new Date()))+'"></label></div>';
   h+='<label class="ber-anon"><input type="checkbox" id="ber-anon"'+(BER.anon?' checked':'')+'><span><b>Namen ausblenden</b><small>Für Einreichungen und zum Weitergeben: Lehrlinge erscheinen als „Lehrling A, B …“.</small></span></label>';
   if(!c.zeilen.length){ h+='<p class="mb-sub">Im gewählten Zeitraum hat noch kein Lehrling geübt.</p>'; box.innerHTML=h; berKlicks(box); return; }
-  h+='<div class="tb-summe"><div><b>'+c.aktivN+'</b><small>Lehrlinge haben geübt</small></div><div><b>'+c.quiz+'</b><small>Quizze gelöst</small></div><div><b>'+c.tage+'</b><small>Lerntage</small></div></div>'+
-    '<div class="tb-summe"><div><b>'+escHtml(ptDauer(c.praxisMin))+'</b><small>Praxis bestätigt</small></div><div><b>'+c.pgN+'</b><small>Prüfgespräche &amp; Praxis-Checks'+(c.pgN?' · '+berProz(c.pgOk/c.pgN)+' verstanden':'')+'</small></div><div><b>'+(c.wochen?berProz(c.erreicht/c.wochen):'–')+'</b><small>der Wochen Wochenziel erreicht</small></div></div>';
-  if(c.entwN) h+='<div class="paz-karte"><div class="lab">Entwicklung der Trefferquote</div><p style="font-size:20px;font-weight:600;color:#211D17;margin:2px 0 4px">'+berEntw(c.anfang,c.ende)+'</p><p class="mb-sub" style="font-size:11px;margin:0">Erste 5 → letzte 5 Quizze im Zeitraum, Durchschnitt über '+c.entwN+(c.entwN===1?' Lehrling':' Lehrlinge')+' mit mindestens 10 Quizzen.</p></div>';
-  else h+='<p class="mb-sub" style="font-size:11px">Die Entwicklung der Trefferquote erscheint, sobald ein Lehrling im Zeitraum mindestens 10 Quizze gemacht hat.</p>';
+  var tx='font-size:13px;color:#211D17;line-height:1.55;margin:0';
+  // 1. Einordnung
+  h+='<div class="paz-karte" style="background:#F3EBD9"><div class="lab">Einordnung</div><p style="'+tx+'">'+escHtml(berEinordnung(c))+'</p></div>';
+  // 2. Was dieser Bericht sichtbar macht
+  h+='<div class="paz-karte"><div class="lab">Was dieser Bericht sichtbar macht</div>'+berAussagen(c).map(function(a,i){
+    return '<div style="margin-top:'+(i?'12px':'4px')+'"><b style="font-size:13px;color:#211D17">'+(i+1)+' · '+escHtml(a.t)+'</b><p style="'+tx+';color:#6B6455;font-size:12.5px;margin-top:2px">'+escHtml(a.x)+'</p></div>';
+  }).join('')+'</div>';
+  // 3. Stimmen der Lehrlinge
   if(c.rmN) h+='<div class="paz-karte"><div class="lab">Das sagen die Lehrlinge</div>'+berRmText(c,false)+'</div>';
-  if(c.ffN) h+='<p class="mb-sub" style="font-size:12px">🎨 '+c.ffN+(c.ffN===1?' Farb-Plan':' Farb-Pläne')+' mit deiner Rückmeldung, davon '+c.ffPasst+' „passt“.</p>';
-
+  // 4. Persönliche Begleitung (mit Einordnung, ohne Quote)
+  var beg=berBegleitung(c);
+  if(beg.length) h+='<div class="paz-karte"><div class="lab">Persönliche Begleitung und Praxis</div>'+beg.map(function(t){return '<p class="mb-sub" style="font-size:12px;margin:0 0 8px">'+escHtml(t)+'</p>';}).join('')+'</div>';
+  // 5. Verlauf pro Monat
   if(c.monate.length){
-    h+='<div class="paz-karte"><div class="lab">Verlauf pro Monat</div><div class="ber-scroll"><table class="ber-tab"><tr><th>Monat</th><th class="r">Quizze</th><th>Ø richtig</th><th class="r">Praxis</th><th class="r">Gespräche</th></tr>'+
+    h+='<div class="paz-karte"><div class="lab">Verlauf pro Monat</div><div class="ber-scroll"><table class="ber-tab"><tr><th>Monat</th><th class="r">Quizze</th><th>Anteil richtig (Ø)</th><th class="r">Praxis bestätigt</th><th class="r">Gespräche</th></tr>'+
       c.monate.map(function(m){
         return '<tr><td>'+escHtml(berMonText(m.k))+'</td><td class="r">'+m.quiz+'</td><td>'+(m.q==null?'–':'<div class="paz-bal" style="display:inline-block;width:52px;vertical-align:middle;margin-right:6px"><i style="width:'+Math.round(m.q*100)+'%"></i></div>'+berProz(m.q))+'</td>'+
           '<td class="r">'+(m.min?escHtml(ptDauer(m.min)):'–')+'</td><td class="r">'+(m.pg||'–')+'</td></tr>';
       }).join('')+'</table></div></div>';
   }
-  h+='<div class="lab" style="margin-top:4px">Pro Lehrling</div>'+c.zeilen.map(function(z){
+  // 6. Einzelverläufe
+  h+='<div class="lab" style="margin-top:4px">Einzelverläufe'+(BER.anon?' (anonymisiert)':'')+'</div>'+c.zeilen.map(function(z){
     function k(wert,text){ return '<div><b>'+wert+'</b><small>'+text+'</small></div>'; }
+    var g=z.pgN+z.pxN;
     return '<div class="paz-karte ber-l"><div class="ber-l-k"><b>'+escHtml(z.titel)+'</b><span>'+escHtml(ljText(z.l))+(z.l.ausgeschieden_am?' · ausgeschieden':z.l.aktiv===false?' · pausiert':'')+'</span></div>'+
-      '<div class="ber-l-t">'+(z.anfang==null?'Trefferquote: noch unter 10 Quizzen im Zeitraum':'Trefferquote '+berEntw(z.anfang,z.ende))+'</div>'+
-      '<div class="ber-l-g">'+k(z.quiz,'Quizze')+k(z.tage,'Lerntage')+k(z.praxisMin?escHtml(ptDauer(z.praxisMin)):'–','Praxis')+
-        k((z.pgN+z.pxN)?(z.pgOk+z.pxOk)+' / '+(z.pgN+z.pxN):'–','Gespräche verstanden')+
-        k(z.wochen?berProz(z.erreicht/z.wochen):'–',z.wochen?'Wochenziel ('+z.erreicht+' von '+z.wochen+' Wo.)':'Wochenziel')+
-        k(z.themen?z.sitzt+' / '+z.themen:'–','Themen sitzen (heute)')+'</div></div>';
+      '<div class="ber-l-t">'+(z.anfang==null?'Anteil richtig: noch unter 10 Quizzen im Zeitraum':'Anteil richtig, erste 5 → letzte 5 Quizze: '+berEntw(z.anfang,z.ende))+'</div>'+
+      '<div class="ber-l-g">'+k(z.quiz,'Quizze')+k(z.tage,'Lerntage')+k(z.praxisN?z.praxisN:'–','Praxis-Einträge bestätigt')+
+        k(g?z.pgOk+z.pxOk+' von '+g:'–','Gespräche: verstanden')+
+        k(z.wochen?z.erreicht+' von '+z.wochen:'–','Wochen mit Wochenziel')+
+        k(z.themen?z.sitzt+' von '+z.themen:'–','Themen gefestigt (heute)')+'</div></div>';
   }).join('');
+  // 7. Grenzen und Methode
+  h+='<div class="paz-karte"><div class="lab">Grenzen dieser Daten</div><ul class="ber-meth">'+BER_GRENZEN.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul></div>';
   h+='<button class="btn btn-g" id="ber-druck" style="margin:4px 0 4px">🖨 Drucken / als PDF speichern</button>'+
     '<p class="mb-sub" style="font-size:11px;text-align:center">'+(BER.anon?'Ausdruck ohne Namen.':'⚠ Ausdruck mit Namen – nur für den Betrieb, nicht zum Weitergeben.')+'</p>'+
     '<div class="paz-karte"><div class="lab">So wird gezählt</div><ul class="ber-meth">'+BER_METHODE.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
@@ -3276,40 +3345,44 @@ function berKlicks(box){
   if(b) b.addEventListener('change',function(){ BER.bis=b.value; berZeigen(); });
 }
 function berDrucken(c){
-  var zr=c.zr, von=zr.von||(c.monate.length?c.monate[0].k+'-01':'');
-  var h='<div class="dr-k"><div><h1>Ausbildungsbericht</h1><div class="dr-s">A Great Hair Day · Lehrlingsausbildung Friseur:in</div></div><div class="dr-r">greathairday<br>Academy</div></div>'+
+  var zr=c.zr, von=c.erstes||zr.von||(c.monate.length?c.monate[0].k+'-01':'');
+  var h='<div class="dr-k"><div><h1>Ausbildungsbericht · Praxisbericht aus der frühen Anwendung</h1><div class="dr-s">A Great Hair Day · Lehrlingsausbildung Friseur:in · Great Hair Day Academy</div></div><div class="dr-r">greathairday<br>Academy</div></div>'+
+    '<div class="dr-info" style="grid-template-columns:1fr"><div><small>Einordnung</small><span style="font-size:10px;line-height:1.5">'+escHtml(berEinordnung(c))+'</span></div></div>'+
     '<div class="dr-info dr-info6">'+
       '<div><small>Zeitraum</small><b>'+escHtml((von?pazDatum(von):'Beginn')+' – '+pazDatum(zr.bis))+'</b></div>'+
-      '<div><small>Lehrlinge haben geübt</small><b>'+c.aktivN+'</b></div>'+
+      '<div><small>Lehrlinge mit Nutzung</small><b>'+c.aktivN+'</b></div>'+
       '<div><small>Quizze · Lerntage</small><b>'+c.quiz+' · '+c.tage+'</b></div>'+
-      '<div><small>Praxis bestätigt</small><b>'+escHtml(ptDauer(c.praxisMin))+'</b></div>'+
-      '<div><small>Prüfgespräche &amp; Praxis-Checks</small><b>'+c.pgN+(c.pgN?' · '+berProz(c.pgOk/c.pgN)+' verstanden':'')+'</b></div>'+
-      '<div><small>Wochenziel erreicht</small><b>'+(c.wochen?berProz(c.erreicht/c.wochen)+' der Wochen':'–')+'</b></div>'+
-    '</div>';
-  if(c.entwN) h+='<h2>Entwicklung der Trefferquote</h2><p><b style="font-size:13px">'+berProz(c.anfang)+' → '+berProz(c.ende)+'</b> &nbsp;erste 5 → letzte 5 Quizze, Durchschnitt über '+c.entwN+(c.entwN===1?' Lehrling':' Lehrlinge')+' mit mindestens 10 Quizzen'+(c.ffN?' · '+c.ffN+(c.ffN===1?' Farb-Plan':' Farb-Pläne')+' bewertet, davon '+c.ffPasst+' „passt“':'')+'</p>';
-  if(c.monate.length) h+='<h2>Verlauf pro Monat</h2><table><tr><th>Monat</th><th class="r">Quizze</th><th>Ø richtig</th><th class="r">Praxis</th><th class="r">Prüfgespräche &amp; Checks</th></tr>'+
+    '</div>'+
+    '<h2>Was dieser Bericht sichtbar macht</h2>'+berAussagen(c).map(function(a,i){ return '<p style="margin:0 0 6px"><b>'+(i+1)+' · '+escHtml(a.t)+'</b><br>'+escHtml(a.x)+'</p>'; }).join('');
+  if(c.rmN) h+='<h2>Das sagen die Lehrlinge</h2>'+berRmText(c,true);
+  var beg=berBegleitung(c);
+  if(beg.length) h+='<h2>Persönliche Begleitung und Praxis</h2>'+beg.map(function(t){return '<p style="margin:0 0 6px">'+escHtml(t)+'</p>';}).join('');
+  if(c.monate.length) h+='<h2>Verlauf pro Monat</h2><table><tr><th>Monat</th><th class="r">Quizze</th><th>Anteil richtig (Ø)</th><th class="r">Praxis bestätigt</th><th class="r">Prüfgespräche &amp; Checks</th></tr>'+
     c.monate.map(function(m){
       return '<tr><td>'+escHtml(berMonText(m.k))+'</td><td class="r">'+m.quiz+'</td><td>'+(m.q==null?'–':'<span class="dr-bal" style="display:inline-block;width:70px;vertical-align:middle;margin-right:6px"><i style="width:'+Math.round(m.q*100)+'%"></i></span>'+berProz(m.q))+'</td>'+
-        '<td class="r">'+(m.min?escHtml(ptDauer(m.min)):'–')+'</td><td class="r">'+(m.pg?m.pgOk+' / '+m.pg+' verstanden':'–')+'</td></tr>';
+        '<td class="r">'+(m.min?escHtml(ptDauer(m.min)):'–')+'</td><td class="r">'+(m.pg||'–')+'</td></tr>';
     }).join('')+'</table>';
-  h+='<h2>Pro Lehrling</h2><table><tr><th>Lehrling</th><th class="r">Quizze</th><th class="r">Lerntage</th><th>Trefferquote Anfang → Ende</th><th class="r">Praxis</th><th class="r">Gespräche verstanden</th><th class="r">Wochenziel</th><th class="r">Themen sitzen</th></tr>'+
+  h+='<h2>Einzelverläufe'+(BER.anon?' (anonymisiert)':'')+'</h2><table><tr><th>Lehrling</th><th class="r">Quizze</th><th class="r">Lerntage</th><th>Anteil richtig erste 5 → letzte 5</th><th class="r">Praxis-Einträge</th><th class="r">Gespräche verstanden</th><th class="r">Wochen mit Wochenziel</th><th class="r">Themen gefestigt</th></tr>'+
     c.zeilen.map(function(z){
+      var g=z.pgN+z.pxN;
       return '<tr><td><b>'+escHtml(z.titel)+'</b><br>'+escHtml(ljText(z.l))+(z.l.ausgeschieden_am?' · ausgeschieden':z.l.aktiv===false?' · pausiert':'')+'</td><td class="r">'+z.quiz+'</td><td class="r">'+z.tage+'</td>'+
-        '<td>'+(z.anfang==null?'–':berProz(z.anfang)+' → '+berProz(z.ende))+'</td><td class="r">'+(z.praxisMin?escHtml(ptDauer(z.praxisMin)):'–')+'</td>'+
-        '<td class="r">'+((z.pgN+z.pxN)?(z.pgOk+z.pxOk)+' / '+(z.pgN+z.pxN):'–')+'</td><td class="r">'+(z.wochen?berProz(z.erreicht/z.wochen):'–')+'</td><td class="r">'+(z.themen?z.sitzt+' / '+z.themen:'–')+'</td></tr>';
+        '<td>'+(z.anfang==null?'–':berProz(z.anfang)+' → '+berProz(z.ende))+'</td><td class="r">'+(z.praxisN||'–')+'</td>'+
+        '<td class="r">'+(g?(z.pgOk+z.pxOk)+' von '+g:'–')+'</td><td class="r">'+(z.wochen?z.erreicht+' von '+z.wochen:'–')+'</td><td class="r">'+(z.themen?z.sitzt+' von '+z.themen:'–')+'</td></tr>';
     }).join('')+'</table>'+
-    (c.rmN?'<h2>Das sagen die Lehrlinge</h2>'+berRmText(c,true):'')+'<h2>So wird gezählt</h2><ul class="dr-meth">'+BER_METHODE.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
-    '<div class="dr-fuss">Erstellt am '+escHtml(pazDatum(pazISO(new Date())))+' aus den Daten der Great Hair Day Academy (Quiz, Praxis-Tagebuch, Prüfgespräche, Farb-Fälle).'+(BER.anon?' Ohne Namen.':' Enthält Namen – nur für den Betrieb.')+'</div>';
+    '<h2>Grenzen dieser Daten</h2><ul class="dr-meth">'+BER_GRENZEN.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
+    '<h2>So wird gezählt</h2><ul class="dr-meth">'+BER_METHODE.map(function(t){return '<li>'+escHtml(t)+'</li>';}).join('')+'</ul>'+
+    '<div class="dr-fuss">Erstellt am '+escHtml(pazDatum(pazISO(new Date())))+' aus den Daten der Great Hair Day Academy (Quiz, Praxis-Tagebuch, Prüfgespräche, Farb-Fälle, Rückmeldungen der Lehrlinge).'+(BER.anon?' Ohne Namen.':' Enthält Namen – nur für den Betrieb.')+'</div>';
   var d=document.getElementById('druck'); d.innerHTML=h;
   var alt=document.title; document.title='Ausbildungsbericht '+pazDatum(pazISO(new Date()));
   setTimeout(function(){ window.print(); document.title=alt; },50);
 }
 
-// Rückmeldungen im Ausbildungsbericht (Bildschirm und Ausdruck)
+// Rückmeldungen im Ausbildungsbericht (Bildschirm und Ausdruck): Selbsteinschätzung,
+// bei kleiner Zahl als „x von y“ statt Prozent
 function berRmText(c,druck){
-  var t=c.rmN+(c.rmN===1?' Rückmeldung':' Rückmeldungen')+
-    (c.rmHilfreich!=null?' · Die App hilft beim Lernen: Ø '+c.rmHilfreich.toFixed(1).replace('.',',')+' von 5':'')+
-    (c.rmLeichter!=null?' · '+berProz(c.rmLeichter)+' lernen damit leichter als nur mit Unterlagen':'');
+  var t=berN(c.rmN,'Rückmeldung','Rückmeldungen')+' (Selbsteinschätzung der Lehrlinge)'+
+    (c.rmHilfreich!=null?' · „Die App hilft mir beim Lernen“: Ø '+c.rmHilfreich.toFixed(1).replace('.',',')+' von 5':'')+
+    (c.rmLeichterN?' · „Ich lerne damit leichter als nur mit Unterlagen“: '+c.rmLeichterJa+' von '+c.rmLeichterN+' sagen ja':'');
   var st=druck?'':'font-size:12px;margin-bottom:6px;', kl=druck?'':' class="mb-sub"';
   var h='<p'+kl+(st?' style="'+st+'"':'')+'>'+escHtml(t)+'</p>';
   c.rmZitate.forEach(function(z){ h+='<p'+kl+' style="'+st+'font-style:italic">„'+escHtml(z)+'“</p>'; });
