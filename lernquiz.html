@@ -496,6 +496,7 @@ div.mb-wb-p{cursor:default}
         <button class="mb-k" data-mb-bereich="s-b-selbst"><div class="mb-ic">🏠</div><b>Selbst ansehen</b><small>Wie Lehrlinge es sehen, Mein Lernbereich</small></button>
         <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnuppertag.html?v=20261121a"><div class="mb-ic">🌱</div><div><b>Schnuppertag &amp; Probezeit</b><small>Bewerber, Eignungstest, Probezeiten mit Wochen, Zielen und Wochenquiz</small></div></a>
         <button class="mb-k mb-breit" id="btn-mb-rm"><div class="mb-ic">💬</div><div><b>Rückmeldungen der Lehrlinge</b><small>Was die App deinen Lehrlingen bringt – mit freigegebenen Zitaten</small></div></button>
+        <button class="mb-k mb-breit" id="btn-mb-er"><div class="mb-ic">🏆</div><div><b>Einreichungen &amp; Projekte</b><small>Staatspreis, Mercur: fünf Abschnitte, Belege und ein kritischer Wettbewerbs-Check</small></div></button>
       </div>
     </div>
   </div>
@@ -658,6 +659,16 @@ div.mb-wb-p{cursor:default}
     <h2 class="mb-h">📊 Ausbildungsbericht</h2>
     <p class="mb-sub">So entwickeln sich deine Lehrlinge – aus Quiz, Praxis-Tagebuch, Prüfgesprächen und Farb-Fällen. Testzugänge und Stylistinnen zählen nicht mit.</p>
     <div id="ber-inhalt"></div>
+  </div>
+</div>
+
+<div id="s-einreichungen" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-er-back">← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🏆 Einreichungen &amp; Projekte</h2>
+    <p class="mb-sub">Wettbewerbs-Einreichungen führen und kritisch prüfen: Kopfdaten, fünf Abschnitte, Belege direkt hier und ein Wettbewerbs-Check ohne Punkte. Nur du siehst das.</p>
+    <div id="er-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
 
@@ -1670,7 +1681,7 @@ function kopfSetzen(id){
   document.getElementById('kopf-sub').textContent=quiz?'Schnell-Check, Lerneinheit oder LAP':'Das digitale Kompetenz- und Prüfungssystem für Lehrlinge im Friseurhandwerk';
   document.body.classList.toggle('ll-aus',!quiz);   // Leiste unten (lern-leiste.js) nur im Quiz-Bereich
   // Meisterin-Startseite und Tagebuch haben einen eigenen Kopf („Hallo Meisterin“)
-  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-bericht'||id==='s-rueckmeldungen'||id==='s-farb-faelle'||id==='s-lernfaelle'||id==='s-farb-zeiten'||id==='s-farb-nummern');
+  document.querySelector('.kopf').hidden=(id==='s-dashboard'||id.indexOf('s-b-')===0||id==='s-pt-alle'||id==='s-pt-auszug'||id==='s-bericht'||id==='s-rueckmeldungen'||id==='s-einreichungen'||id==='s-farb-faelle'||id==='s-lernfaelle'||id==='s-farb-zeiten'||id==='s-farb-nummern');
 }
 var MB_BEREICH='';   // offener Meisterin-Bereich, damit „Zurück“ dorthin führt
 function zeige(id){
@@ -4804,6 +4815,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-lf-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-mb-bericht').addEventListener('click',function(){zeigeBericht();});
   document.getElementById('btn-mb-rm').addEventListener('click',function(){zeigeRueckmeldungen();});
+  document.getElementById('btn-mb-er').addEventListener('click',function(){zeigeEinreichungen();});
+  document.getElementById('btn-er-back').addEventListener('click',async function(){if(await einreichungenVerlassenOk()){ladeDashboard();zeige('s-dashboard');}});
   document.getElementById('btn-mb-fz').addEventListener('click',zeigeFarbZeiten);
   document.getElementById('btn-mb-fn').addEventListener('click',zeigeFarbNummern);
   document.getElementById('btn-fn-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
@@ -5235,6 +5248,7 @@ async function claudeAnfrage(system, userText, maxTokens) {
 <script src="vorlesen.js?v=20261116c" data-ziele="#q-txt | #q-antwort .opt ; #q-feedback" defer></script>  <!-- 🔊 Vorlesen: Frage, Antworten, Erklärung -->
 <script src="leichte-sprache.js?v=20261116b"></script>  <!-- „Einfacher erklärt“: einfache Fassungen der Erklärungen -->
 <script src="praxis-fotos.js?v=20261116d"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
+<script src="einreichungen.js?v=20261122a"></script>  <!-- Meisterin: Einreichungen & Projekte (supabase/20261122_einreichungen.sql) -->
 <script src="fachbegriffe.js?v=20261118a" data-ziele="#q-txt ; #q-feedback" data-unter="#q-txt" defer></script>  <!-- 📖 Fachbegriffe antippen: Erklärung + Übersetzung -->
 <script src="rechtliches-fuss.js?v=20261115" defer></script>  <!-- Links: Impressum, Datenschutz, Nutzungsbedingungen -->
 </body>
