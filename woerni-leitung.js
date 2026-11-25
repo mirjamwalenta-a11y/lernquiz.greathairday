@@ -19,7 +19,8 @@
 // Felder: bild (Bild/Eselsbrücke), frage (Gegenfrage), o (2–3 Antworten),
 //         r (Index der richtigen), ja (nach richtig), nein (nach falsch).
 // Stand 2026-11-25: Lernquiz: Farbe & Blondierung (15), Haarkunde (9),
-// Dauerwelle (5), Hygiene (9), Werkzeug/Schere (2); Schnittwerkstatt (15).
+// Dauerwelle (5), Hygiene (9), Werkzeug/Schere (2), Hautkunde (11),
+// Haarwäsche (9); Schnittwerkstatt (15).
 // Fachlich durch die Meisterin prüfen.
 (function () {
   var T = {
@@ -325,6 +326,149 @@
       ja: 'Genau. Darum gehören nach dem Reinigen Abtrocknen und Ölen dazu.',
       nein: 'Nicht ganz. Öl und ein weiches Tuch pflegen die Schere. Schaden macht Feuchtigkeit, die im Gelenk bleibt und rosten lässt.'
     },
+    // ── Hautkunde ────────────────────────────────────────────────────────
+    '1-17': {
+      bild: 'Die Haut ist gebaut wie eine Torte: oben eine dünne Glasur, die schützt. In der Mitte der feste Biskuit, in dem alle „Zutaten“ wie Haarwurzeln und Drüsen stecken. Unten eine weiche Polsterschicht aus Fett.',
+      frage: 'Cuticula, Cortex, Medulla: Wozu gehören diese drei Begriffe?',
+      o: ['Zum Haar, nicht zur Haut', 'Zur Haut', 'Zu den Nägeln'], r: 0,
+      ja: 'Genau, das ist die Falle. Die Haut hat eigene Schichten: oben, Mitte, unten. Die Mitte ist fest wie Leder.',
+      nein: 'Nicht ganz. Cuticula, Cortex und Medulla sind die Schichten des Haares. Die Haut hat eigene: oben, Mitte, unten, und die Mitte ist fest wie Leder.'
+    },
+    '1-mc13': {
+      bild: 'Bleib bei der Torte: Die Zutaten stecken im Biskuit in der Mitte, nicht in der dünnen Glasur. In der Haut ist es genauso: Haarwurzeln, Talg- und Schweißdrüsen sitzen in der festen Mittelschicht.',
+      frage: 'Die Oberhaut ist sehr dünn und erneuert sich ständig. Hat eine Haarwurzel dort Platz?',
+      o: ['Nein, dafür ist sie zu dünn', 'Ja, locker', 'Haarwurzeln sitzen im Haar selbst'], r: 0,
+      ja: 'Richtig. Haarwurzeln brauchen Platz und Blutversorgung. Das gibt es erst in der festen Schicht darunter.',
+      nein: 'Nicht ganz. Die Oberhaut ist hauchdünn. Haarwurzeln und Drüsen brauchen mehr Platz und Blutversorgung, die gibt es erst darunter.'
+    },
+    '1-mc9': {
+      bild: 'Denk an den Staub in der Wohnung: Ein großer Teil davon sind abgestorbene Hautzellen. Die Haut schiebt ständig neue Zellen von unten nach und stößt oben die alten ab, ungefähr einmal im Monat komplett.',
+      frage: 'Wo fallen die alten Hautzellen ab?',
+      o: ['Ganz außen an der Oberfläche', 'Tief unten im Fettgewebe', 'In der Talgdrüse'], r: 0,
+      ja: 'Genau. Welche Schicht liegt ganz außen?',
+      nein: 'Nicht ganz. Alte Zellen werden außen abgestoßen, wie Staub, der von der Oberfläche fällt. Die äußerste Schicht erneuert sich also ständig.'
+    },
+    '1-mc10': {
+      bild: 'Denk an Zitrone und Seife: Zitrone ist sauer, Seife ist alkalisch, reines Wasser liegt mit pH 7 genau in der Mitte. Die Haut hat einen Schutzfilm gegen Keime, und sein Name verrät, auf welcher Seite er liegt.',
+      frage: 'Unter pH 7 ist es sauer, über pH 7 alkalisch. Wo liegt ein „Säure“-Schutzmantel?',
+      o: ['Unter 7', 'Genau bei 7', 'Über 7'], r: 0,
+      ja: 'Richtig. Und zwar nur leicht sauer, nicht wie Zitronensaft. Welche Antwort passt dazu?',
+      nein: 'Nicht ganz. „Säure“ heißt sauer, und sauer ist alles unter pH 7. Der Schutzmantel ist aber nur leicht sauer.'
+    },
+    '1-18': {
+      bild: 'Kennst du Haar, das schon am Tag nach der Wäsche fettig aussieht? Dahinter steckt die Drüse, nach der gefragt ist. Was sie bildet, wirkt wie eine körpereigene Handcreme.',
+      frage: 'Was macht Haar am zweiten Tag fettig?',
+      o: ['Ein körpereigenes Fett aus der Kopfhaut', 'Schweiß', 'Neue Hautzellen'], r: 0,
+      ja: 'Genau. Dieses körpereigene Fett heißt Talg. Es hält Haut und Haar geschmeidig.',
+      nein: 'Nicht ganz. Schweiß ist wässrig und kühlt. Fettig wird das Haar durch ein körpereigenes Fett, den Talg.'
+    },
+    '1-n4': {
+      bild: 'Denk an Sport im Sommer: Du schwitzt, der Schweiß verdunstet auf der Haut, und das kühlt dich ab. Die Haut ist die Klimaanlage des Körpers.',
+      frage: 'Warum schwitzt du, wenn dir heiß ist?',
+      o: ['Damit der Körper abkühlt', 'Damit die Haut weich wird', 'Damit die Haare wachsen'], r: 0,
+      ja: 'Richtig. Schweiß regelt die Temperatur und nimmt nebenbei ein paar Stoffe aus dem Körper mit nach draußen.',
+      nein: 'Nicht ganz. Schweiß ist die Kühlung des Körpers: Er verdunstet und nimmt dabei Wärme mit.'
+    },
+    '1-16': {
+      bild: 'Stell dir die Haut als Ganzkörper-Jacke vor, die viel mehr kann als wärmen: Sie hält Schmutz und Keime ab, kühlt mit Schweiß, polstert und speichert mit Fett und spürt jede Berührung, wie eine Jacke mit eingebauten Sensoren.',
+      frage: 'Merkst du es, wenn dich jemand am Arm berührt?',
+      o: ['Ja, die Haut spürt Berührung', 'Nein, nur mit den Augen', 'Nur an den Fingern'], r: 0,
+      ja: 'Genau. Die Haut ist also auch ein Sinnesorgan. Welche Antwort zählt mehrere Aufgaben auf?',
+      nein: 'Nicht ganz. Du spürst Berührungen überall auf der Haut. Sie ist also auch ein Sinnesorgan, neben Schutz, Kühlung und Fettspeicher.'
+    },
+    '1-mc12': {
+      bild: 'Schuppen sind wie Kopfschmerzen: Man merkt sie, aber dahinter kann ganz Verschiedenes stecken. Darum gibt es auch nicht das eine Shampoo, das immer hilft.',
+      frage: 'Ein Anti-Schuppen-Shampoo hilft bei einer Kundin gar nicht. Was könnte das heißen?',
+      o: ['Die Schuppen haben eine andere Ursache', 'Sie wäscht zu selten', 'Schuppen kann man nie behandeln'], r: 0,
+      ja: 'Genau. Schuppen haben viele mögliche Ursachen. Achte bei der Frage auf Wörter wie „ausschließlich“, „immer“ oder „nur“.',
+      nein: 'Nicht ganz. Wenn ein Mittel nicht hilft, steckt oft eine andere Ursache dahinter. Schuppen können viele Gründe haben.'
+    },
+    '3-5': {
+      bild: 'Zerleg das Wort: „Sebum“ ist Latein für Talg. „-rhoe“ heißt fließen, wie bei Durchfall (Diarrhoe). Seborrhoe heißt also wörtlich: Der Talg fließt.',
+      frage: 'Wenn Talg „fließt“: Ist dann zu viel oder zu wenig davon da?',
+      o: ['Zu viel', 'Zu wenig', 'Gar keiner'], r: 0,
+      ja: 'Richtig. Zu viel Talg macht die Kopfhaut fettig, oft mit fettigen, gelblichen Schuppen.',
+      nein: 'Nicht ganz. Was fließt, ist reichlich da. Bei Seborrhoe wird zu viel Talg gebildet.'
+    },
+    '2-mc15': {
+      bild: 'Der deutsche Name hilft: Schuppenflechte. Man sieht sie oft nicht nur auf der Kopfhaut, sondern auch an Ellbogen und Knien. Wichtig für den Salon: Anstecken kannst du dich nicht.',
+      frage: 'Eine Krankheit kommt immer wieder und geht nie ganz weg. Wie nennt man das?',
+      o: ['Chronisch', 'Ansteckend', 'Normal'], r: 0,
+      ja: 'Genau. Psoriasis ist chronisch, und ihre Schuppen schimmern silbrig.',
+      nein: 'Nicht ganz. „Chronisch“ heißt: Es kommt immer wieder und bleibt. Ansteckend ist Psoriasis nicht.'
+    },
+    '2-mc16': {
+      bild: 'Du bist wie ein Rauchmelder: Du merkst, dass etwas nicht stimmt, und schlägst Alarm. Löschen tut aber die Feuerwehr. Merksatz: Die Friseurin erkennt, der Arzt bestimmt, was es ist.',
+      frage: 'Wer darf sagen, welche Hautkrankheit eine Kundin hat?',
+      o: ['Nur ein Arzt oder eine Ärztin', 'Die Friseurin', 'Die Kundin selbst'], r: 0,
+      ja: 'Richtig. Du sprichst es ruhig an und empfiehlst einen Hautarzt. Schweigen ist falsch, Panik auch.',
+      nein: 'Nicht ganz. Eine Diagnose stellt nur ein Arzt. Du siehst es, sprichst es ruhig an und empfiehlst einen Hautarzt.'
+    },
+
+    // ── Haarwäsche & Kopfmassage ─────────────────────────────────────────
+    '1-hw1': {
+      bild: 'Denk an Eltern, die ein Babyfläschchen testen: Sie tropfen die Milch nicht auf die Fingerspitzen. Unsere Hände sind durch Arbeit und Wasser abgehärtet und spüren Hitze schlechter als die Kopfhaut.',
+      frage: 'Wo spürst du Hitze ehrlicher: an den abgehärteten Händen oder an der dünnen Haut innen am Unterarm?',
+      o: ['An der dünnen Haut innen am Unterarm', 'An den Händen', 'Überall gleich'], r: 0,
+      ja: 'Genau. Und danach fragst du trotzdem die Kundin, ob es angenehm ist.',
+      nein: 'Nicht ganz. Die Hände sind abgehärtet. Die dünne Haut innen am Unterarm oder am Handgelenk reagiert ähnlich empfindlich wie die Kopfhaut.'
+    },
+    '1-hw2': {
+      bild: 'Denk an ein Bad, in dem du dich richtig wohlfühlst: Das Wasser ist ungefähr so warm wie dein Körper. Zu heißes Wasser reizt die Kopfhaut, die Talgdrüsen arbeiten mehr, und Farbe blutet aus.',
+      frage: 'Wie warm ist dein Körper ungefähr?',
+      o: ['Etwa 37 °C', 'Etwa 25 °C', 'Etwa 45 °C'], r: 0,
+      ja: 'Richtig. Das Wasser für die Haarwäsche ist ungefähr gleich warm, also lauwarm.',
+      nein: 'Nicht ganz. Der Körper hat etwa 37 °C. Ungefähr so warm soll auch das Wasser sein.'
+    },
+    '1-hw3': {
+      bild: 'Erinnerst du dich an den Tannenzapfen? Wärme öffnet seine Schuppen, Kälte schließt sie. Bei der Haarwäsche nutzt du das ganz am Ende.',
+      frage: 'Was glänzt mehr: ein glatter Spiegel oder ein zerknülltes Papier?',
+      o: ['Der glatte Spiegel', 'Das zerknüllte Papier', 'Beide gleich'], r: 0,
+      ja: 'Genau. Glatt anliegende Schuppen glänzen wie ein Spiegel. Und was lässt die Schuppen anliegen: warm oder kühl?',
+      nein: 'Nicht ganz. Eine glatte Fläche spiegelt das Licht, eine raue streut es. Glatt anliegende Schuppen glänzen also.'
+    },
+    '1-hw4': {
+      bild: 'Wie kratzt du einen Mückenstich? Mit den Nägeln, und danach ist die Haut rot. Bei der Kopfmassage soll genau das nicht passieren.',
+      frage: 'Was passiert, wenn du die Kopfhaut mit den Nägeln bearbeitest?',
+      o: ['Sie kann gereizt und verletzt werden', 'Das Haar glänzt mehr', 'Das Shampoo schäumt mehr'], r: 0,
+      ja: 'Richtig. Darum nimmst du den weichen, runden Teil vorne an den Fingern.',
+      nein: 'Nicht ganz. Nägel kratzen und können die Kopfhaut verletzen. Du brauchst den weichen Teil der Finger.'
+    },
+    '1-hw7': {
+      bild: 'Denk an eine alte Jeans: Am Bund ist sie fast wie neu, unten am Saum ausgefranst. Beim Haar ist es genauso: Am Ansatz ist es jung, die Spitzen sind schon Monate oder Jahre alt.',
+      frage: 'Was passiert, wenn du eine Kur auf die Kopfhaut gibst?',
+      o: ['Der Ansatz wird schwer und fettet schneller', 'Die Haare wachsen schneller', 'Gar nichts'], r: 0,
+      ja: 'Genau. Pflege gehört dorthin, wo das Haar schon alt und strapaziert ist.',
+      nein: 'Nicht ganz. Auf der Kopfhaut beschwert Pflege und fettet nach. Sie gehört dorthin, wo das Haar alt und strapaziert ist.'
+    },
+    '1-hw8': {
+      bild: 'Eine Massage tut nur gut, wenn die Kopfhaut gesund ist. Bevor du anfängst, schaust du kurz hin: Ist alles in Ordnung?',
+      frage: 'Was kann passieren, wenn du über eine offene oder entzündete Stelle massierst?',
+      o: ['Es tut weh, und Keime können hineinkommen', 'Die Stelle heilt schneller', 'Nichts'], r: 0,
+      ja: 'Richtig. An solchen Stellen wird nicht massiert.',
+      nein: 'Nicht ganz. Druck auf eine offene oder entzündete Stelle tut weh und kann Keime hineinbringen. Dort wird nicht massiert.'
+    },
+    '1-hw9': {
+      bild: 'Denk an einen Wollpullover: Rubbelst du ihn nass, verfilzt er. Nasses Haar ist gequollen, und seine Schuppen stehen leicht ab.',
+      frage: 'Was passiert mit abstehenden Schuppen, wenn du reibst?',
+      o: ['Sie werden aufgeraut', 'Sie legen sich glatt an', 'Sie fallen ab und wachsen nach'], r: 0,
+      ja: 'Genau. Darum drückst du das Haar sanft aus und wickelst einen Turban.',
+      nein: 'Nicht ganz. Reibung raut die abstehenden Schuppen auf. Das Haar wird stumpf und kann brechen.'
+    },
+    '1-hw15': {
+      bild: 'Denk an einen Feierabend: Schuhe aus und locker werden, aufs Sofa und entspannen, tief durchatmen und zur Mitte finden, und dann Ruhe. Genau so ist die Entspannungshaarwäsche aufgebaut.',
+      frage: 'Womit endet eine Entspannungshaarwäsche für die Kundin?',
+      o: ['Mit Ruhe', 'Mit kräftigem Klopfen', 'Mit kaltem Wasser'], r: 0,
+      ja: 'Genau. Davor kommen Lockern, Entspannen und Ausgleichen. Welche Antwort klingt wie dieser Feierabend?',
+      nein: 'Nicht ganz. Eine Entspannungswäsche endet ruhig, nicht anregend. Davor kommen Lockern, Entspannen und Ausgleichen.'
+    },
+    'b-10': {
+      bild: 'Denk an fettiges Geschirr: Im ersten Spülgang löst sich das gröbste Fett, und das Wasser wird trüb. Erst beim zweiten Mal wird es richtig sauber. Beim Haar schäumt das erste Shampoo oft kaum, weil es mit Fett und Styling beschäftigt ist.',
+      frage: 'Warum schäumt das Shampoo bei der ersten Wäsche oft wenig?',
+      o: ['Weil es erst Fett und Styling lösen muss', 'Weil das Wasser zu kalt ist', 'Weil zu viel Shampoo drin ist'], r: 0,
+      ja: 'Richtig. Die erste Wäsche löst, die zweite reinigt richtig. Wie oft wird also grundsätzlich gewaschen?',
+      nein: 'Nicht ganz. Das erste Shampoo kämpft mit Fett und Styling. Erst beim zweiten Mal wird es richtig sauber.'
+    },
 
     // ── Schnittwerkstatt (schnittwerkstatt.html, Wissens-Check) ───────────
     // Die Fragen dort haben keine id: Schlüssel sw1–sw15 = Reihenfolge im QUIZ,
@@ -455,6 +599,9 @@
   T['2-mc12'] = T['1-n12'];
   T['2-mc7'] = T['1-12'];
   T['1-mc34'] = T['1-5'];
+  T['1-mc11'] = T['1-18'];
+  T['3-mc9'] = T['3-5'];
+  T['2-mc14'] = T['2-1'];
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function wZeile(text) {

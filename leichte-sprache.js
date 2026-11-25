@@ -338,9 +338,9 @@ window.LEICHT = {
   '1-mc34': 'Der Effilierer ist eine Schere mit Zähnen. Er nimmt Volumen weg. Man sieht keine Schnittlinie.',
   '1-mc35': 'Schere regelmäßig reinigen, abtrocknen und ölen. Nie fallen lassen. Nur beim Fachmann schleifen lassen.',
   '1-mc35-z1': 'Feuchtigkeit und Haare machen die Schere rostig. Dann geht sie schwer. Ein Tropfen Öl am Gelenk schützt.',
-  '2-5': 'Je kleiner die Zahl, desto kürzer. Größe 0 ist ungefähr 1,5 mm. Größe 1 ist 3 mm.',
-  '2-mc24': 'Je kleiner die Nummer, desto kürzer. Größe 1 ist 3 mm. Ohne Aufsatz wird es noch kürzer. Aber ein ganz kleines Stück Haar bleibt trotzdem stehen.',
-  '2-mc24-z1': 'Je kleiner die Nummer, desto kürzer. Für kürzere Seiten nimmst du eine kleinere Nummer als 4.',
+  '2-5': 'Je kleiner die Zahl, desto kürzer. Auf unseren Aufsätzen steht die Länge in Zentimetern. 0.3 heißt 3 mm. 1.5 heißt 15 mm.',
+  '2-mc24': 'Auf unseren Aufsätzen steht die Länge in Zentimetern. 0.9 heißt 0,9 cm. Das sind 9 mm. Ohne Aufsatz wird es noch kürzer. Aber ein ganz kleines Stück Haar bleibt trotzdem stehen.',
+  '2-mc24-z1': 'Je kleiner die Zahl, desto kürzer. Für kürzere Seiten nimmst du einen kleineren Aufsatz als 1.2.',
   '2-mc25': 'Die Rundbürste gibt beim Föhnen Form, Volumen und Schwung. Große Bürste gibt lockere Wellen.',
   '2-mc25-z1': 'Nimm eine große Rundbürste. Groß gibt lockeren Schwung und Volumen. Klein gibt engere Wellen.',
 
