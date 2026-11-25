@@ -17,7 +17,7 @@
 <script src="kompetenzen.js?v=20261119b"></script>  <!-- Kompetenz-Landkarte V2: 17 Kompetenzen -->
 <script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="salon-regeln.js?v=20261120a"></script>  <!-- Stand der Verhaltensregeln (Bestätigung im Meisterin-Bereich) -->
-<script src="woerni-impulse.js?v=20261125a"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
+<script src="woerni-impulse.js?v=20261125b"></script>  <!-- Wörni V1: ruhige Lernimpulse (docs/woerni-v1.md) -->
 <script src="woerni-weg.js?v=20261125a"></script>  <!-- Wörni: nächster Schritt nach dem Quiz -->
 <script src="woerni-sortieren.js?v=20261125a"></script>  <!-- Wörni V1: Hinweis auf „Kurz sortieren“ im Lern-Tool -->  <!-- Themen pro Lehrjahr (gemeinsam mit dem Lern-Tool) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
@@ -2058,7 +2058,7 @@ function zeigeFrage(){
       b.dataset.orig=i;
       b.innerHTML='<b style="color:#9A9188;margin-right:8px">'+String.fromCharCode(65+pos)+')</b>'+opt;
       b.addEventListener('click',function(){
-        document.querySelectorAll('.opt').forEach(function(x){x.className='opt';});
+        document.querySelectorAll('#q-antwort .opt').forEach(function(x){x.className='opt';});
         b.className='opt gew';
         ['btn-sicher','btn-geraten'].forEach(function(id){
           var pb=document.getElementById(id);
@@ -2082,6 +2082,12 @@ function zeigeFrage(){
       reihe.appendChild(pb);
     });
     btnDiv.appendChild(reihe);
+    // Wörni, ich steh auf der Leitung (woerni-leitung.js): Bild + Gegenfrage
+    // statt Lösung. Nicht im LAP-Modus, nicht bei Zusatzfragen.
+    if(MODUS!=='lap'&&!q.haupt&&window.WOERNI_LEITUNG&&WOERNI_LEITUNG.hat(q.id)){
+      var wl=WOERNI_LEITUNG.knopf(q.id,function(){LEITUNG_Q=q;});
+      if(wl) btnDiv.appendChild(wl);
+    }
   } else {
     var ta=document.createElement('textarea');
     ta.rows=5;ta.placeholder='Schreib was du weißt…';ta.id='ta-antwort';
@@ -2104,11 +2110,14 @@ function zeigeFrage(){
   }
 }
 
+var LEITUNG_Q=null;  // Frage, bei der „Ich steh auf der Leitung“ geöffnet wurde
 function pruefeMC(gew,sicher){
   var q=QFRAGEN[QIDX];
   var kor=gew===q.r;
+  // Mit Wörnis Hilfe zählt eine richtige Antwort wie geraten (Wiederholung, halbe Punkte)
+  var hilfe=LEITUNG_Q===q; if(hilfe) sicher=false;
   var geraten=kor&&!sicher, sicherFalsch=!kor&&sicher;
-  document.querySelectorAll('.opt').forEach(function(b){
+  document.querySelectorAll('#q-antwort .opt').forEach(function(b){
     var i=Number(b.dataset.orig);
     b.disabled=true;
     if(i===q.r) b.className='opt ric';
@@ -2116,8 +2125,8 @@ function pruefeMC(gew,sicher){
   });
   var fb=document.getElementById('q-feedback');
   fb.className='fb '+(kor?'fb-g':'fb-r');
-  var titel=geraten?'✓ Richtig – aber geraten.':sicherFalsch?'✗ Nicht ganz – obwohl du dir sicher warst.':kor?'✓ Richtig!':'✗ Nicht ganz.';
-  var zusatzText=geraten?'<div style="font-size:12px;color:#8A7A30;margin-top:8px">Lies dir die Erklärung gut durch – die Frage kommt in der Wiederholung nochmal.</div>':
+  var titel=(hilfe&&kor)?'✓ Richtig – mit Wörnis Hilfe.':geraten?'✓ Richtig – aber geraten.':sicherFalsch?'✗ Nicht ganz – obwohl du dir sicher warst.':kor?'✓ Richtig!':'✗ Nicht ganz.';
+  var zusatzText=(hilfe&&kor)?'<div style="font-size:12px;color:#8A7A30;margin-top:8px">Gut, dass du nachgefragt hast. Die Frage kommt in der Wiederholung nochmal, dann schaffst du sie allein.</div>':geraten?'<div style="font-size:12px;color:#8A7A30;margin-top:8px">Lies dir die Erklärung gut durch – die Frage kommt in der Wiederholung nochmal.</div>':
     sicherFalsch?'<div style="font-size:12px;color:#C44030;margin-top:8px">Genau hier lohnt sich ein zweiter Blick: Was du sicher wusstest, stimmt so nicht.</div>':'';
   fb.className='fb '+(geraten?'fb-o':kor?'fb-g':'fb-r');
   fb.innerHTML='<div style="font-weight:700;font-size:14px;color:'+(geraten?'#8A7A30':kor?'#6E5527':'#C44030')+';margin-bottom:6px">'+titel+'</div><div style="font-size:13px;color:#2C2C2C;line-height:1.5">'+q.e+'</div>'+zusatzText;
@@ -5322,6 +5331,7 @@ async function claudeAnfrage(system, userText, maxTokens) {
 <div id="druck" aria-hidden="true"></div>
 <script src="vorlesen.js?v=20261116c" data-ziele="#q-txt | #q-antwort .opt ; #q-feedback" defer></script>  <!-- 🔊 Vorlesen: Frage, Antworten, Erklärung -->
 <script src="leichte-sprache.js?v=20261116b"></script>  <!-- „Einfacher erklärt“: einfache Fassungen der Erklärungen -->
+<script src="woerni-leitung.js?v=20261125a"></script>  <!-- „Wörni, ich steh auf der Leitung“: Bild + Gegenfrage statt Lösung -->
 <script src="praxis-fotos.js?v=20261116d"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="einreichungen.js?v=20261122a"></script>  <!-- Meisterin: Einreichungen & Projekte (supabase/20261122_einreichungen.sql) -->
 <script src="fachbegriffe.js?v=20261118a" data-ziele="#q-txt ; #q-feedback" data-unter="#q-txt" defer></script>  <!-- 📖 Fachbegriffe antippen: Erklärung + Übersetzung -->
