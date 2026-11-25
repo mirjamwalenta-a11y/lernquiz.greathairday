@@ -158,7 +158,8 @@ Salonalltag oder eine Eselsbrücke und stellt eine leichte Gegenfrage zum
 Antippen; danach beantwortet der Lehrling die eigentliche Frage selbst.
 
 - Nur für Fragen mit Eintrag in `woerni-leitung.js`, nie im LAP-Modus, nicht
-  bei Zusatzfragen. Start: 15 Fragen aus Farbe & Blondierung.
+  bei Zusatzfragen. Stand: Farbe & Blondierung (15), Haarkunde (9),
+  Dauerwelle (5); gleiche Fragen in mehreren Lehrjahren teilen sich einen Eintrag.
 - Mit Hilfe zählt eine richtige Antwort wie „geraten“ (halbe Punkte, kommt in
   die Wiederholung). Das steht auch im Hilfe-Kasten.
 - Regelbasiert, keine KI zur Laufzeit, nichts gespeichert, kein Server.
