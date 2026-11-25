@@ -159,7 +159,12 @@ Antippen; danach beantwortet der Lehrling die eigentliche Frage selbst.
 
 - Nur für Fragen mit Eintrag in `woerni-leitung.js`, nie im LAP-Modus, nicht
   bei Zusatzfragen. Stand: Farbe & Blondierung (15), Haarkunde (9),
-  Dauerwelle (5); gleiche Fragen in mehreren Lehrjahren teilen sich einen Eintrag.
+  Dauerwelle (5), Hygiene (9), Werkzeug/Schere (2); gleiche Fragen in mehreren
+  Lehrjahren teilen sich einen Eintrag.
+- Auch im Wissens-Check der Schnittwerkstatt (15 Fragen, Schlüssel `sw1`–`sw15`
+  nach Reihenfolge, abgesichert über den Anfang des Fragetexts). Dort zählt eine
+  richtige Antwort mit Hilfe ebenfalls wie geraten; Aussehen aus der Seite selbst
+  (Knopf wie „Geraten – prüfen“).
 - Mit Hilfe zählt eine richtige Antwort wie „geraten“ (halbe Punkte, kommt in
   die Wiederholung). Das steht auch im Hilfe-Kasten.
 - Regelbasiert, keine KI zur Laufzeit, nichts gespeichert, kein Server.
