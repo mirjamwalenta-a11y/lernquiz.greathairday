@@ -117,6 +117,8 @@ window.WOERNIS_TIPPS = [
   var CSS =
     '.woerni{display:flex;gap:12px;align-items:flex-start;background:#F3EBD9;border:1px solid #E4DBC5;border-left:4px solid #896C32;border-radius:12px;padding:12px 14px;margin:0 0 16px;color:#211D17;font-family:Poppins,system-ui,sans-serif}' +
     '.woerni-ich{flex:none;width:38px;height:38px;border-radius:50%;background:#896C32;color:#fff;display:grid;place-items:center;font:700 17px/1 Poppins,system-ui,sans-serif}' +
+    // Wörni mit Gesicht (bilder/woerni/, docs/woerni-gesicht.md): Brustbild im goldenen Rahmen statt „W“
+    '.woerni-ich.wz-bild{width:80px;height:80px;border-radius:12px;border:2px solid #896C32;background:#F3EBD9 center/cover no-repeat}' +
     '.woerni-txt{min-width:0}' +
     '.woerni-wer{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#896C32;margin:0 0 2px}' +
     '.woerni-titel{font-size:15px;font-weight:600;margin:0 0 4px;line-height:1.3}' +
@@ -132,10 +134,13 @@ window.WOERNIS_TIPPS = [
   }
 
   // extraHTML: fertiges HTML, das die aufrufende Stelle selbst escaped hat (z. B. Links des Begleiters)
-  function karte(t, wer, extraHTML) {
+  // Wörnis Bilder liegen neben diesem Skript (auch wenn es von einer anderen Seite geladen wird)
+  var WB = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '') + 'bilder/woerni/';
+  // stimmung: Bild aus bilder/woerni/ (Standard: motivierend)
+  function karte(t, wer, extraHTML, stimmung) {
     cssEinmal();
     var bild = t.bild && WOERNI_BILDER[t.bild] ? WOERNI_BILDER[t.bild]() : '';
-    return '<aside class="woerni" aria-label="' + esc(wer) + '"><div class="woerni-ich" aria-hidden="true">W</div><div class="woerni-txt">' +
+    return '<aside class="woerni" aria-label="' + esc(wer) + '"><div class="woerni-ich wz-bild" aria-hidden="true" style="background-image:url(\'' + WB + (stimmung || 'motivierend') + '.jpg\')"></div><div class="woerni-txt">' +
       '<p class="woerni-wer">' + esc(wer) + '</p><p class="woerni-titel">' + esc(t.titel) + '</p><p class="woerni-text">' + esc(t.text) + '</p>' + bild + (extraHTML || '') + '</div></aside>';
   }
   // Gleiche Karte für den Begleiter (woerni-begleiter.js)
