@@ -66,7 +66,7 @@
   var STIMMUNG = { fehler: 'nachdenklich', nervoes: 'motivierend', zuviel: 'enttaeuscht', unsicher: 'nachdenklich', rueckmeldung: 'enttaeuscht' };
   var KEY = 'woerni-sortieren';
   var NACHSCHLAGEN_MAL = 3, NACHSCHLAGEN_FENSTER = 10 * 60000, PAUSE_NACH_OEFFNEN = 30 * 60000;
-  var LINK_AUSSEN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261121w#sortieren=';
+  var LINK_AUSSEN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261125a#sortieren=';
 
   function lesen() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
   function schreiben(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
