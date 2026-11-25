@@ -53,6 +53,12 @@
     { id: 'c5', moment: 'wiedereinstieg', ton: 'coach', text: 'Vergiss den Insta-Druck, niemand wird über Nacht zur Meisterin oder zum Meister. Schau, was du schon gerockt hast, und bleib einfach jeden Tag dran!' },
     { id: 'c6', moment: 'richtig_nach_fehler', ton: 'coach', text: 'Hör auf, dich kleinzumachen! Was dir leichtfällt, ist für andere sauschwer. Erkenne, was du draufhast, und bring es auf die Straße!' }
   ];
+  // Wörnis Bilder liegen neben diesem Skript (auch wenn es von einer anderen Seite geladen wird)
+  var WB = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '') + 'bilder/woerni/';
+  function wBild(st) { return '<span class="wz-ich wz-bild" aria-hidden="true" style="background-image:url(\'' + WB + st + '.jpg\')"></span>'; }
+  // Gesicht je Moment: falsch → nachdenklich, nie enttäuscht
+  var STIMMUNG = { falsch: 'nachdenklich', wiederholt: 'nachdenklich', wiedereinstieg: 'motivierend', praxis: 'motivierend', richtig_nach_fehler: 'lobend' };
+
   var KEY = 'woerni-v1', SPERRE_TAGE = 14, TAG = 86400000;
 
   function lesen() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
@@ -76,6 +82,10 @@
   var CSS =
     '.woerni-zeile{display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding-top:9px;border-top:1px solid rgba(0,0,0,.08);font:13px/1.5 Poppins,system-ui,sans-serif;color:#4A443A;text-align:left}' +
     '.woerni-zeile .wz-ich{flex:none;width:22px;height:22px;border-radius:50%;background:#896C32;color:#fff;display:grid;place-items:center;font:700 11px/1 Poppins,system-ui,sans-serif;margin-top:1px}' +
+    // Wörni mit Gesicht (bilder/woerni/, docs/woerni-gesicht.md): Brustbild im goldenen Rahmen.
+    // Folgt direkt eine zweite Wörni-Zeile, bleibt dort nur der Einzug, das Bild nicht.
+    '.woerni-zeile .wz-ich.wz-bild{width:80px;height:80px;border-radius:12px;border:2px solid #896C32;background:#F3EBD9 center/cover no-repeat;margin-top:0}' +
+    '.woerni-zeile+.woerni-zeile .wz-ich.wz-bild{visibility:hidden;height:0;border:0}' +
     '.woerni-zeile .wz-wer{font-weight:600;color:#896C32;margin-right:4px}' +
     '.woerni-zeile.frei{border-top:0;padding-top:0;margin:0 0 12px}';
   function cssEinmal() {
@@ -84,7 +94,7 @@
   }
   function zeile(imp, frei) {
     cssEinmal();
-    return '<div class="woerni-zeile' + (frei ? ' frei' : '') + '" data-woerni="' + imp.id + '"><span class="wz-ich" aria-hidden="true">W</span><span><span class="wz-wer">Wörni:</span>' + esc(imp.text) + '</span></div>';
+    return '<div class="woerni-zeile' + (frei ? ' frei' : '') + '" data-woerni="' + imp.id + '">' + wBild(STIMMUNG[imp.moment] || 'nachdenklich') + '<span><span class="wz-wer">Wörni:</span>' + esc(imp.text) + '</span></div>';
   }
 
   window.WOERNI = {

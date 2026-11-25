@@ -12,8 +12,15 @@
   var CSS =
     '.woerni-zeile{display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding-top:9px;border-top:1px solid rgba(0,0,0,.08);font:13px/1.5 Poppins,system-ui,sans-serif;color:#4A443A;text-align:left}' +
     '.woerni-zeile .wz-ich{flex:none;width:22px;height:22px;border-radius:50%;background:#896C32;color:#fff;display:grid;place-items:center;font:700 11px/1 Poppins,system-ui,sans-serif;margin-top:1px}' +
+    // Wörni mit Gesicht (bilder/woerni/, docs/woerni-gesicht.md): Brustbild im goldenen Rahmen.
+    // Folgt direkt eine zweite Wörni-Zeile, bleibt dort nur der Einzug, das Bild nicht.
+    '.woerni-zeile .wz-ich.wz-bild{width:80px;height:80px;border-radius:12px;border:2px solid #896C32;background:#F3EBD9 center/cover no-repeat;margin-top:0}' +
+    '.woerni-zeile+.woerni-zeile .wz-ich.wz-bild{visibility:hidden;height:0;border:0}' +
     '.woerni-zeile .wz-wer{font-weight:600;color:#896C32;margin-right:4px}' +
     '.woerni-zeile.frei{border-top:0;padding-top:0;margin:0 0 12px}';
+  // Wörnis Bilder liegen neben diesem Skript (auch wenn es von einer anderen Seite geladen wird)
+  var WB = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '') + 'bilder/woerni/';
+  function wBild(st) { return '<span class="wz-ich wz-bild" aria-hidden="true" style="background-image:url(\'' + WB + st + '.jpg\')"></span>'; }
   function cssEinmal() {
     if (document.getElementById('woerni-begleiter-css') || document.getElementById('woerni-v1-css') || document.getElementById('woerni-sortieren-css')) return;
     var st = document.createElement('style'); st.id = 'woerni-begleiter-css'; st.textContent = CSS; document.head.appendChild(st);
@@ -23,9 +30,9 @@
   function los(ziel, text, href) {
     return ' <a href="' + esc(href || '#') + '" data-ww="' + esc(ziel) + '" style="color:#896C32;font-weight:600;text-decoration:none;white-space:nowrap">' + esc(text || 'Los →') + '</a>';
   }
-  function zeile(innen) {
+  function zeile(innen, st) {
     cssEinmal();
-    return '<div class="woerni-zeile frei"><span class="wz-ich" aria-hidden="true">W</span><span><span class="wz-wer">Wörni:</span>' + innen + '</span></div>';
+    return '<div class="woerni-zeile frei">' + wBild(st || 'motivierend') + '<span><span class="wz-wer">Wörni:</span>' + innen + '</span></div>';
   }
 
   // Praxis-Module, die Wörni vorschlagen kann
@@ -87,7 +94,7 @@
     nachTagebuchHTML: function (bereich, lj) {
       var w = weg(lj), k = TAGEBUCH[bereich], i = w.indexOf(k);
       var naechstes = w[i < 0 ? 0 : (i + 1) % w.length];
-      return zeile('Eingetragen ✓ Stark, dass du dranbleibst. Als Nächstes passt <b>' + esc(MODUL[naechstes]) + '</b>.' + los(naechstes));
+      return zeile('Eingetragen ✓ Stark, dass du dranbleibst. Als Nächstes passt <b>' + esc(MODUL[naechstes]) + '</b>.' + los(naechstes), 'lobend');
     },
 
     // Am Ende eines Quiz. erg: { richtig, gesamt, schwach: [Themen], basis: URL des Lern-Tools }
@@ -97,7 +104,7 @@
       if (erg.schwach && erg.schwach.length) {
         return zeile('Nächster Schritt: <b>' + esc(erg.schwach[0]) + '</b> noch einmal üben. Im Themen-Quiz geht das gezielt.' + los('quiz', 'Zum Themen-Quiz →', basis + '#seite=quiz'));
       }
-      return zeile('Alles richtig, super! Nächster Schritt: das Gelernte am Gast üben, in der <b>Praxis</b>.' + los('praxis', 'Zur Praxis →', basis + '#praxis'));
+      return zeile('Alles richtig, super! Nächster Schritt: das Gelernte am Gast üben, in der <b>Praxis</b>.' + los('praxis', 'Zur Praxis →', basis + '#praxis'), 'lobend');
     },
 
     // Freie Wörni-Zeile (z. B. im Probezeit-Plan); innen ist bereits sicheres HTML

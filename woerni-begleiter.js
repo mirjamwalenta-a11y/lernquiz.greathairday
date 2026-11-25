@@ -329,15 +329,23 @@
   var CSS =
     '.woerni-zeile{display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding-top:9px;border-top:1px solid rgba(0,0,0,.08);font:13px/1.5 Poppins,system-ui,sans-serif;color:#4A443A;text-align:left}' +
     '.woerni-zeile .wz-ich{flex:none;width:22px;height:22px;border-radius:50%;background:#896C32;color:#fff;display:grid;place-items:center;font:700 11px/1 Poppins,system-ui,sans-serif;margin-top:1px}' +
+    // Wörni mit Gesicht (bilder/woerni/, docs/woerni-gesicht.md): Brustbild im goldenen Rahmen.
+    // Folgt direkt eine zweite Wörni-Zeile, bleibt dort nur der Einzug, das Bild nicht.
+    '.woerni-zeile .wz-ich.wz-bild{width:80px;height:80px;border-radius:12px;border:2px solid #896C32;background:#F3EBD9 center/cover no-repeat;margin-top:0}' +
+    '.woerni-zeile+.woerni-zeile .wz-ich.wz-bild{visibility:hidden;height:0;border:0}' +
     '.woerni-zeile .wz-wer{font-weight:600;color:#896C32;margin-right:4px}' +
     '.woerni-zeile.frei{border-top:0;padding-top:0;margin:0 0 12px}';
   function cssEinmal() {
     if (document.getElementById('woerni-begleiter-css') || document.getElementById('woerni-v1-css') || document.getElementById('woerni-sortieren-css')) return;
     var st = document.createElement('style'); st.id = 'woerni-begleiter-css'; st.textContent = CSS; document.head.appendChild(st);
   }
-  function wZeile(innen) {
+  // Wörnis Bilder liegen neben diesem Skript (auch wenn es von einer anderen Seite geladen wird)
+  var WB = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '') + 'bilder/woerni/';
+  function wBild(st) { return '<span class="wz-ich wz-bild" aria-hidden="true" style="background-image:url(\'' + WB + st + '.jpg\')"></span>'; }
+  // st: Bild aus bilder/woerni/ (Standard: erfreut); false = ohne Bild (direkt unter der ganzen Figur)
+  function wZeile(innen, st) {
     cssEinmal();
-    return '<div class="woerni-zeile frei"><span class="wz-ich" aria-hidden="true">W</span><span><span class="wz-wer">Wörni:</span>' + innen + '</span></div>';
+    return '<div class="woerni-zeile frei">' + (st === false ? '' : wBild(st || 'erfreut')) + '<span><span class="wz-wer">Wörni:</span>' + innen + '</span></div>';
   }
   function modulKnopf(k) {
     var mo = MODULE[k]; if (!mo) return '';
@@ -388,7 +396,7 @@
         '<a href="#regeln" data-wb-start-modul="regeln" data-wb-kennen style="' + LINK + '">Verhaltensregeln lesen →</a> ' +
         '<a href="#woerni" data-wb-start-reden data-wb-kennen style="' + LINK + '">Wörni fragen →</a> ' +
         '<a href="#woerni" data-wb-kennen data-wb-nur-kennen style="color:#6B6455;text-decoration:none;white-space:nowrap">Los geht’s ✓</a></p>';
-      return window.woerniKarteHTML({ titel: VORSTELLUNG.t, text: VORSTELLUNG.x[0] }, 'Wörni stellt sich vor', extra);
+      return window.woerniKarteHTML({ titel: VORSTELLUNG.t, text: VORSTELLUNG.x[0] }, 'Wörni stellt sich vor', extra, 'erfreut');
     },
 
     // Karte für die Startseite (im Platz von „Wörni sagt“) oder '' wenn schon gelesen.
@@ -402,7 +410,7 @@
         (mo ? '<a href="#woerni" data-wb-start-modul="' + i.m + '" style="color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap">' + esc(mo.n) + ' →</a> ' : '') +
         '<a href="#woerni" data-wb-start-reden style="color:#896C32;font-weight:600;text-decoration:none;margin-right:14px;white-space:nowrap">Wörni fragen →</a> ' +
         '<a href="#woerni" data-wb-gelesen="' + esc(i.id) + '" style="color:#6B6455;text-decoration:none;white-space:nowrap">Gelesen ✓</a></p>';
-      return window.woerniKarteHTML({ titel: i.t, text: i.x }, 'Wörni · ' + p.n + (p.tag && p.tag <= PROBEZEIT_TAGE ? ' · Tag ' + p.tag : ''), extra);
+      return window.woerniKarteHTML({ titel: i.t, text: i.x }, 'Wörni · ' + p.n + (p.tag && p.tag <= PROBEZEIT_TAGE ? ' · Tag ' + p.tag : ''), extra, 'erfreut');
     },
     startKarteBinden: function (el, ziele, neuZeichnen) {
       if (!el) return;
@@ -421,13 +429,14 @@
     seiteZeichnen: function (el, p, ziele) {
       if (!el) return;
       var i = impuls(p), self = this;
-      var html = '';
+      // Oben die ganze Figur: Wörni begrüßt mit offenen Armen
+      var html = '<img src="' + WB + 'erfreut-ganz.webp" alt="Wörni breitet zur Begrüßung die Arme aus" width="433" height="560" style="display:block;width:150px;height:auto;margin:0 auto 12px">';
       if (!vorgestellt()) {
         html += '<div class="card" style="padding:14px"><div class="nav-title" style="margin-bottom:6px">' + esc(VORSTELLUNG.t) + '</div>' +
-          VORSTELLUNG.x.map(function (a) { return wZeile(esc(a)); }).join('') + modulKnopf('regeln') + '</div>';
+          VORSTELLUNG.x.map(function (a) { return wZeile(esc(a), false); }).join('') + modulKnopf('regeln') + '</div>';
         vorgestelltMerken();
       } else {
-        html += wZeile('Ich bin dein persönlicher Coach für die ganze Lehrzeit. Frag mich, was du wissen willst.');
+        html += wZeile('Ich bin dein persönlicher Coach für die ganze Lehrzeit. Frag mich, was du wissen willst.', false);
       }
       html += '<div class="label">' + esc(p.n) + (p.tag && p.tag <= PROBEZEIT_TAGE ? ' · Tag ' + p.tag : '') + '</div>';
       if (i) html += '<div class="card" style="padding:14px"><div class="nav-title" style="margin-bottom:4px">' + esc(i.t) + '</div>' + wZeile(esc(i.x)) +
@@ -461,7 +470,7 @@
       var box = el.querySelector('#wb-antworten'); if (!box || !String(frage).trim()) return;
       var r = antwort(frage), q = String(frage).trim();
       var html = '<div class="card" style="padding:14px"><div class="label" style="margin-bottom:4px">Deine Frage</div><div style="font-size:14px;color:#211D17;margin-bottom:10px">' + esc(q) + '</div>' +
-        (r.art === 'not' ? '<div class="fb-r" style="margin:0 0 4px;font-size:14px;color:#211D17;line-height:1.5"><b>Wörni:</b> ' + esc(r.a) + '</div>' : wZeile(esc(r.a))) +
+        (r.art === 'not' ? '<div class="fb-r" style="margin:0 0 4px;font-size:14px;color:#211D17;line-height:1.5"><b>Wörni:</b> ' + esc(r.a) + '</div>' : wZeile(esc(r.a), r.art === 'weissnicht' ? 'nachdenklich' : 'erfreut')) +
         r.m.map(modulKnopf).join('');
       if (r.art === 'weissnicht') {
         // Suchwort: das längste Wort der Frage, im Original geschrieben (Wissensbank sucht nach allen Wörtern)

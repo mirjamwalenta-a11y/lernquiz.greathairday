@@ -229,7 +229,7 @@
     farblabor:   { t: 'Im Farblabor üben', url: BASIS + 'farblabor.html?v=20261116s' },
     spickzettel: { t: 'Farb-Spickzettel ansehen', url: BASIS + 'spickzettel.html' },
     maschine:    { t: 'Im Modul „Maschine“ üben', url: BASIS + 'beratung-formwirkung.html#view=maschine' },
-    umformung:   { t: 'Im Modul „Umformung“ üben', url: BASIS + 'umformung.html?v=20261116s' },
+    umformung:   { t: 'Im Modul „Umformung“ üben', url: BASIS + 'umformung.html?v=20261125a' },
     makeup:      { t: 'Im Make-up-Labor üben', url: BASIS + 'makeup.html?v=20261121k' }
   };
 

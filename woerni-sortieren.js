@@ -59,9 +59,14 @@
       ] }
   ];
 
+  // Wörnis Bilder liegen neben diesem Skript (auch wenn es von einer anderen Seite geladen wird)
+  var WB = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '') + 'bilder/woerni/';
+  function wBild(st) { return '<span class="wz-ich wz-bild" aria-hidden="true" style="background-image:url(\'' + WB + st + '.jpg\')"></span>'; }
+  // Gesicht je Situation (Enttäuscht nur als Mitgefühl, nie als Reaktion auf eine Antwort)
+  var STIMMUNG = { fehler: 'nachdenklich', nervoes: 'motivierend', zuviel: 'enttaeuscht', unsicher: 'nachdenklich', rueckmeldung: 'enttaeuscht' };
   var KEY = 'woerni-sortieren';
   var NACHSCHLAGEN_MAL = 3, NACHSCHLAGEN_FENSTER = 10 * 60000, PAUSE_NACH_OEFFNEN = 30 * 60000;
-  var LINK_AUSSEN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261121w#sortieren=';
+  var LINK_AUSSEN = 'https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261125a#sortieren=';
 
   function lesen() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
   function schreiben(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
@@ -74,6 +79,10 @@
   var CSS =
     '.woerni-zeile{display:flex;gap:10px;align-items:flex-start;margin-top:10px;padding-top:9px;border-top:1px solid rgba(0,0,0,.08);font:13px/1.5 Poppins,system-ui,sans-serif;color:#4A443A;text-align:left}' +
     '.woerni-zeile .wz-ich{flex:none;width:22px;height:22px;border-radius:50%;background:#896C32;color:#fff;display:grid;place-items:center;font:700 11px/1 Poppins,system-ui,sans-serif;margin-top:1px}' +
+    // Wörni mit Gesicht (bilder/woerni/, docs/woerni-gesicht.md): Brustbild im goldenen Rahmen.
+    // Folgt direkt eine zweite Wörni-Zeile, bleibt dort nur der Einzug, das Bild nicht.
+    '.woerni-zeile .wz-ich.wz-bild{width:80px;height:80px;border-radius:12px;border:2px solid #896C32;background:#F3EBD9 center/cover no-repeat;margin-top:0}' +
+    '.woerni-zeile+.woerni-zeile .wz-ich.wz-bild{visibility:hidden;height:0;border:0}' +
     '.woerni-zeile .wz-wer{font-weight:600;color:#896C32;margin-right:4px}' +
     '.woerni-zeile.frei{border-top:0;padding-top:0;margin:0 0 12px}' +
     '.woerni-zeile a.ws-link{color:#896C32;font-weight:600;text-decoration:none;white-space:nowrap}';
@@ -81,9 +90,9 @@
     if (document.getElementById('woerni-sortieren-css')) return;
     var st = document.createElement('style'); st.id = 'woerni-sortieren-css'; st.textContent = CSS; document.head.appendChild(st);
   }
-  function wZeile(innen, frei) {
+  function wZeile(innen, frei, st) {
     cssEinmal();
-    return '<div class="woerni-zeile' + (frei ? ' frei' : '') + '"><span class="wz-ich" aria-hidden="true">W</span><span><span class="wz-wer">Wörni:</span>' + innen + '</span></div>';
+    return '<div class="woerni-zeile' + (frei ? ' frei' : '') + '">' + wBild(st || 'nachdenklich') + '<span><span class="wz-wer">Wörni:</span>' + innen + '</span></div>';
   }
 
   // Darf der automatische Hinweis jetzt kommen? Höchstens einmal am Tag,
@@ -126,7 +135,7 @@
       }
       el.innerHTML =
         '<div class="label">' + s.ic + ' ' + esc(s.titel) + '</div>' +
-        wZeile(esc(s.impuls), true) +
+        wZeile(esc(s.impuls), true, STIMMUNG[s.id]) +
         '<div class="label" style="margin-top:16px">Dein nächster Schritt</div>' +
         s.optionen.map(function (o, i) {
           return '<button class="nav-card pm-modul" data-wo="' + i + '"><div class="nav-icon" style="margin:0">' + o.ic + '</div><div><div class="nav-title">' + esc(o.t) + '</div><div class="nav-desc">' + esc(o.d) + '</div></div></button>' +
