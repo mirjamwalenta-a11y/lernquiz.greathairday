@@ -120,6 +120,11 @@
       d = lesen(); d.einstieg = { seit: letzteRunde, id: imp.id }; schreiben(d);
       return zeile(imp, true);
     },
+    // Zeile mit festem Text, ohne Vorrat/Sperre (z. B. woerni-leitung.js)
+    text: function (t, stimmung, frei) {
+      cssEinmal();
+      return '<div class="woerni-zeile' + (frei ? ' frei' : '') + '">' + wBild(stimmung || 'nachdenklich') + '<span><span class="wz-wer">Wörni:</span>' + esc(t) + '</span></div>';
+    },
     // Einmal pro Tag und Ort (z. B. Praxis-Module), sonst ''
     einmalAmTag: function (ort, moment, frei) {
       var d = lesen(); d.tag = d.tag || {};

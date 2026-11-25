@@ -149,3 +149,18 @@ Kompetenzen mit Diagnose).
   (von der Inhaberin geprüft); Dauerwelle hält nicht (Erklärungen aus dem Modul
   Umformung), Föhnfrisur fällt zusammen (beide zur Durchsicht durch die Inhaberin).
 
+
+## „Wörni, ich steh auf der Leitung“ (2026-11-25)
+
+Knopf unter den Antworten einer Multiple-Choice-Frage im Lernquiz
+(`woerni-leitung.js`). Statt der Lösung zeigt Wörni ein Bild aus dem
+Salonalltag oder eine Eselsbrücke und stellt eine leichte Gegenfrage zum
+Antippen; danach beantwortet der Lehrling die eigentliche Frage selbst.
+
+- Nur für Fragen mit Eintrag in `woerni-leitung.js`, nie im LAP-Modus, nicht
+  bei Zusatzfragen. Stand: Farbe & Blondierung (15), Haarkunde (9),
+  Dauerwelle (5); gleiche Fragen in mehreren Lehrjahren teilen sich einen Eintrag.
+- Mit Hilfe zählt eine richtige Antwort wie „geraten“ (halbe Punkte, kommt in
+  die Wiederholung). Das steht auch im Hilfe-Kasten.
+- Regelbasiert, keine KI zur Laufzeit, nichts gespeichert, kein Server.
+  Texte fachlich durch die Meisterin prüfen.
