@@ -193,7 +193,7 @@ window.LEICHT = {
   '2-mc1-z1': 'Dunkles Haar wird Schritt für Schritt heller: erst rot-orange, dann orange, dann gelb. Orange heißt nur: noch nicht fertig.',
   '2-mc2': 'Die erste Zahl ist die Tonhöhe. Sie sagt, wie hell die Farbe ist. 1 ist schwarz. 10 ist sehr hell. 7 ist Mittelblond.',
   '2-mc2-z1': 'Am Ansatz ist Naturhaar. Dort wird aus 5 (Hellbraun) eine 7 (Mittelblond) mit Gold. Die gefärbten Längen werden nicht heller. Farbe macht Farbe nicht heller.',
-  '2-mc3': 'Die Zahl nach dem Punkt ist der Farbton (Reflex). 3 ist Gold. 1 ist Asch. 4 ist Kupfer. 6 ist Violett.',
+  '2-mc3': 'Die Zahl nach dem Punkt ist der Farbton (Reflex). 3 ist Gold. 1 ist Asch. 2 ist Violett. 4 ist Kupfer. 6 ist Rot.',
   '2-mc3-z1': '7 heißt Mittelblond (Tonhöhe). .1 heißt Asch (Farbton).',
   '2-mc4': 'Eumelanin ist braun bis schwarz. Phäomelanin ist rot, gelb oder blond. Die Mischung ergibt die natürliche Haarfarbe.',
   '2-mc5': '12 % (40 Vol) ist am stärksten. Es macht am meisten heller. Es belastet das Haar aber auch am meisten.',
