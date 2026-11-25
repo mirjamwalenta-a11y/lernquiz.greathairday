@@ -161,6 +161,8 @@ footer{padding-block:40px 36px;color:#9A9180;font-size:12px;text-align:center}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="quiz-verlauf.js?v=20261115"></script>  <!-- Quiz-Ergebnis im Verlauf/Kompetenz des Lehrlings speichern -->
+<script src="woerni-impulse.js?v=20261125b"></script>  <!-- Wörni-Zeile für „Ich steh auf der Leitung“ -->
+<script src="woerni-leitung.js?v=20261125c"></script>  <!-- „Wörni, ich steh auf der Leitung“: Bild + Gegenfrage statt Lösung -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <link rel="apple-touch-icon" href="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/icon-512.png">
 </head>
@@ -1163,22 +1165,29 @@ const QUIZ=[
 // Richtig geraten zählt nicht als gewusst, sicher und trotzdem falsch wird
 // markiert. Die Antworten werden bei jedem Durchgang neu gemischt.
 let answers={};
+// „Wörni, ich steh auf der Leitung“ (woerni-leitung.js, Schlüssel sw1–sw15 nach Reihenfolge):
+// Bild + Gegenfrage statt Lösung. Mit Hilfe zählt eine richtige Antwort wie geraten.
+// Aussehen nur aus dieser Seite: Knopf wie „Geraten – prüfen“, Antworten wie die Quiz-Antworten.
+const WL_STIL={knopf:'pruef',opt:'',ric:'right',fal:'wrong',text:'var(--ink)',leise:'var(--muted)',klein:'var(--muted)',linie:'var(--line)',mitte:false,
+  hinweis:'Mit Hilfe zählt die Frage wie geraten. Dann schaffst du sie das nächste Mal allein.'};
 function mischen(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function renderQuiz(){
   const box=$('#quizBox');box.innerHTML='';
   QUIZ.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
     d.innerHTML='<h3>'+(i+1)+'. '+q[0]+'</h3><div class="opts"></div><div class="sicher" hidden><p class="sicher-frage">Wie sicher bist du dir?</p><div class="sicher-knoepfe"><button class="pruef s">Sicher – prüfen</button><button class="pruef g">Geraten – prüfen</button></div></div><p class="why" hidden></p>';
-    const opts=d.querySelector('.opts'),why=d.querySelector('.why'),sz=d.querySelector('.sicher');let wahl=null;
+    const opts=d.querySelector('.opts'),why=d.querySelector('.why'),sz=d.querySelector('.sicher');let wahl=null,hilfe=false,wl=null;
     mischen(q[1].map((_,j)=>j)).forEach(j=>{const b=document.createElement('button');b.textContent=q[1][j];b.dataset.j=j;
       b.onclick=()=>{wahl=j;opts.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sz.hidden=false;};
       opts.appendChild(b);});
+    if(window.WOERNI_LEITUNG&&WOERNI_LEITUNG.hat('sw'+(i+1),q[0])){wl=WOERNI_LEITUNG.knopf('sw'+(i+1),()=>{hilfe=true;},WL_STIL);if(wl)d.insertBefore(wl,why);}
     sz.querySelectorAll('.pruef').forEach(p=>p.onclick=()=>{
       if(wahl===null)return;
-      const sicher=p.classList.contains('s'),ok=wahl===q[2];
+      const sicher=p.classList.contains('s')&&!hilfe,ok=wahl===q[2];
+      if(wl&&!hilfe)wl.remove();
       answers[i]={j:wahl,sicher};sz.hidden=true;
       opts.querySelectorAll('button').forEach(x=>{x.disabled=true;x.classList.remove('sel');if(+x.dataset.j===q[2])x.classList.add('right');else if(+x.dataset.j===wahl)x.classList.add('wrong');});
       why.hidden=false;
-      why.textContent=(ok&&!sicher?'Richtig – aber geraten. Richtig geraten zählt noch nicht als gewusst. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+q[3];
+      why.textContent=(ok&&hilfe?'Richtig – mit Wörnis Hilfe. Das zählt noch nicht als gewusst. ':ok&&!sicher?'Richtig – aber geraten. Richtig geraten zählt noch nicht als gewusst. ':!ok&&sicher?'Nicht ganz – obwohl du dir sicher warst. ':ok?'Richtig. ':'Nicht ganz. ')+q[3];
       if(ok&&!sicher)why.classList.add('geraten');if(!ok&&sicher)why.classList.add('sicherfalsch');
       score();});
     box.appendChild(d);});

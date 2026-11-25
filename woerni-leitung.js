@@ -15,11 +15,12 @@
 //  - Nichts wird gespeichert, nichts geht an den Server, keine Namen
 //    (CLAUDE.md, Regel 2).
 //
-// Schlüssel = id der Frage in lernquiz.html (FB).
+// Schlüssel = id der Frage in lernquiz.html (FB); Schnittwerkstatt: sw1–sw15.
 // Felder: bild (Bild/Eselsbrücke), frage (Gegenfrage), o (2–3 Antworten),
 //         r (Index der richtigen), ja (nach richtig), nein (nach falsch).
-// Stand 2026-11-25: Farbe & Blondierung (15), Haarkunde (9), Dauerwelle (5),
-// zusammen 29 Einträge für 32 Fragen. Fachlich durch die Meisterin prüfen.
+// Stand 2026-11-25: Lernquiz: Farbe & Blondierung (15), Haarkunde (9),
+// Dauerwelle (5), Hygiene (9), Werkzeug/Schere (2); Schnittwerkstatt (15).
+// Fachlich durch die Meisterin prüfen.
 (function () {
   var T = {
     // ── Farbkreis & Gegenfarben ──────────────────────────────────────────
@@ -243,12 +244,217 @@
       o: ['Dass es möglichst schonend ist', 'Dass es möglichst schnell geht', 'Dass die Welle möglichst stark wird'], r: 0,
       ja: 'Genau. Für empfindliches Haar wählst du die sanfte Variante. Welche war „S wie sanft“?',
       nein: 'Nicht ganz. Gefärbtes Haar ist schon belastet. Wichtig ist, es zu schonen, auch wenn es dann etwas länger dauert.'
+    },
+    // ── Hygiene & Schutzmaßnahmen ────────────────────────────────────────
+    '1-1': {
+      bild: 'Denk an deine Küche: Zuerst wischst du die Krümel weg, dann sprühst du gegen Keime. Ganz keimfrei wie im Operationssaal wird es nur mit Spezialgeräten. Drei Stufen, jede stärker als die vorige.',
+      frage: 'Was kommt immer zuerst, bevor du gegen Keime vorgehst?',
+      o: ['Sichtbaren Schmutz und Haare entfernen', 'Gleich das Desinfektionsmittel aufsprühen', 'Das Werkzeug sterilisieren'], r: 0,
+      ja: 'Genau, zuerst reinigen. Auf Schmutz wirkt Desinfektionsmittel schlecht. Wie heißen die zwei stärkeren Stufen danach?',
+      nein: 'Nicht ganz. Auf Haaren und Schmutz kann Desinfektionsmittel nicht richtig wirken. Darum kommt immer zuerst das Reinigen.'
+    },
+    '1-15': {
+      bild: 'Desinfektionsmittel ist wie Sonnencreme: Es schützt nur, wenn es lange genug drauf ist. Sprühen und sofort abwischen ist, als würdest du die Creme gleich wieder abwischen.',
+      frage: 'Was passiert, wenn du Desinfektionsmittel sofort wieder abwischst?',
+      o: ['Es hat keine Zeit zu wirken', 'Es wirkt dann besonders stark', 'Das Werkzeug wird steril'], r: 0,
+      ja: 'Richtig. Es braucht eine Einwirkzeit, also eine Mindestzeit. Die genaue Zeit steht auf dem Produkt.',
+      nein: 'Nicht ganz. Desinfektionsmittel braucht Zeit, um die Keime abzutöten. Wer gleich abwischt, hat umsonst gesprüht.'
+    },
+    '1-mc23': {
+      bild: 'Stell dir einen Fußballplatz voller Keime vor. Desinfizieren heißt: fast alle vom Platz schicken, so viele, dass keine Gefahr mehr besteht. Sterilisieren heißt: wirklich jeder ist weg, auch der Letzte.',
+      frage: 'Welche Stufe macht ein Werkzeug wirklich ganz keimfrei?',
+      o: ['Sterilisieren', 'Desinfizieren', 'Reinigen'], r: 0,
+      ja: 'Genau. Desinfizieren ist eine Stufe darunter: nicht alle Keime, aber so viele, dass es unbedenklich ist.',
+      nein: 'Nicht ganz. Ganz keimfrei wird es nur beim Sterilisieren. Desinfizieren schafft das nicht ganz, es macht die Keime aber stark weniger.'
+    },
+    '2-13': {
+      bild: 'Deine Hände sind wie eine Brücke zwischen den Kundinnen: Alles, was an ihnen klebt, wandert mit zur nächsten. Die Brücke muss also immer dann sauber sein, wenn jemand Neues sie betritt.',
+      frage: 'Du hast gerade fertig geschnitten, die nächste Kundin wartet schon. Was gehört dazwischen?',
+      o: ['Hände desinfizieren', 'Nichts, die Hände waren ja nur im Haar', 'Nur das Handy weglegen'], r: 0,
+      ja: 'Richtig. Vor und nach jeder Kundin, und immer dann, wenn etwas schmutzig geworden ist.',
+      nein: 'Nicht ganz. Auch im Haar und auf der Kopfhaut sind Keime. Damit sie nicht zur nächsten Kundin wandern, desinfizierst du dazwischen die Hände.'
+    },
+    '2-mc17': {
+      bild: 'Würdest du dich mit einem Handtuch abtrocknen, das gerade jemand Fremdes benutzt hat? Deine Kundin auch nicht. Ein Handtuch berührt Haut und Haar direkt und nimmt Hautschüppchen, Feuchtigkeit und Keime auf.',
+      frage: 'Ein Handtuch sieht nach einer Kundin noch sauber aus. Ist es auch keimfrei?',
+      o: ['Nein, Keime sieht man nicht', 'Ja, sauber aussehen reicht', 'Nur, wenn es weiß ist'], r: 0,
+      ja: 'Genau. Darum zählt nicht, wie es aussieht, sondern ob schon jemand anderer es benutzt hat.',
+      nein: 'Nicht ganz. Keime sind unsichtbar. Ein Handtuch, das eine Kundin berührt hat, ist für die nächste nicht mehr sauber.'
+    },
+    '1-mc22': {
+      bild: 'Denk an die Kollegin, die abends den Müll ausleert: Eine Klinge in Papier oder im offenen Becher sticht durch den Sack direkt in ihre Hand. Alles Spitze und Scharfe gehört deshalb in einen Behälter, durch den nichts durchkommt.',
+      frage: 'Was muss ein Behälter für gebrauchte Klingen vor allem können?',
+      o: ['Er darf sich nicht durchstechen lassen', 'Er muss schön aussehen', 'Er muss offen sein, damit es schnell geht'], r: 0,
+      ja: 'Richtig. So einen Behälter nennt man stichfest.',
+      nein: 'Nicht ganz. Es geht um Sicherheit: Die Klinge darf niemanden verletzen, auch nicht beim Ausleeren. Der Behälter muss also fest und geschlossen sein.'
+    },
+    '2-1': {
+      bild: 'Zerleg das Wort: „Kontakt“ heißt Berührung, „Derma“ heißt Haut. Fehlt noch die Endung. Friseurhände sind fast den ganzen Tag nass und berühren Farbe, Shampoo und Handschuhe.',
+      frage: 'Was bedeutet die Endung „-itis“, wie bei Bronchitis oder Mandelentzündung (Tonsillitis)?',
+      o: ['Entzündung', 'Allergie gegen Haare', 'Haarausfall'], r: 0,
+      ja: 'Genau. Setz die drei Teile zusammen: Berührung, Haut, Entzündung.',
+      nein: 'Nicht ganz. „-itis“ heißt immer Entzündung, wie bei Bronchitis. Setz die drei Teile zusammen: Berührung, Haut, Entzündung.'
+    },
+    '3-mc10': {
+      bild: 'Lies das Wort wie ein Etikett: „viruzid“ heißt: wirkt gegen Viren. „Begrenzt“ heißt: nicht gegen alle, aber gegen viele. Das „plus“ legt noch ein paar wichtige, hartnäckige Viren drauf. Gegen Bakterien und Pilze wirkt ein gutes Salon-Desinfektionsmittel ohnehin.',
+      frage: 'Was heißt „viruzid“?',
+      o: ['Wirkt gegen Viren', 'Wirkt nur gegen Pilze', 'Ist besonders hautschonend'], r: 0,
+      ja: 'Richtig. Zusammen mit Bakterien und Pilzen ergibt das genau den Schutz, den ein Salon braucht. Gegen wirklich alles, auch Sporen, wirkt es aber nicht.',
+      nein: 'Nicht ganz. „Viren“ steckt schon im Wort: viruzid heißt, es wirkt gegen Viren.'
+    },
+    '2-mc18': {
+      bild: 'Die Gefahrensymbole sind Bildersprache: Ein Totenkopf heißt Gift, ein toter Baum mit Fisch heißt Gefahr für die Umwelt. Bei der Flamme kannst du es selbst ablesen. Im Salon findest du sie oft auf Haarspray.',
+      frage: 'Neben was solltest du ein Produkt mit Flammen-Symbol nie sprühen?',
+      o: ['Neben dem heißen Glätteisen oder einer Kerze', 'Neben dem Waschbecken', 'Neben dem Spiegel'], r: 0,
+      ja: 'Genau. Was nicht neben Hitze und Feuer darf, kann selbst schnell Feuer fangen.',
+      nein: 'Nicht ganz. Eine Flamme warnt vor Feuer. Gefährlich wird es also neben Hitze oder offenem Feuer.'
+    },
+
+    // ── Werkzeugkunde: Schere ────────────────────────────────────────────
+    '1-5': {
+      bild: 'Denk an einen Kamm und ein Lineal: Mit dem Lineal ziehst du eine durchgehende Kante, der Kamm lässt Lücken. Eine Schere mit Zähnen schneidet nur die Haare zwischen den Zähnen ab, die anderen bleiben lang. So wird es weniger, aber man sieht keine Kante.',
+      frage: 'Eine Schere hat auf einer Klinge kleine Zähne. Schneidet sie alle Haare der Strähne ab?',
+      o: ['Nein, nur einen Teil, das dünnt aus', 'Ja, alle gleichmäßig', 'Nein, sie schneidet gar nicht'], r: 0,
+      ja: 'Richtig. Weniger Haar, aber keine sichtbare Schnittlinie: Genau das nennt man ausdünnen.',
+      nein: 'Nicht ganz. Die Zähne lassen einen Teil der Haare durch. Nur die übrigen werden abgeschnitten, so wird die Strähne dünner.'
+    },
+    '1-mc35': {
+      bild: 'Eine Profischere ist wie ein gutes Kochmesser: Sie hält viele Jahre, wenn du sie pflegst. Ihr größter Feind sitzt unsichtbar im Gelenk.',
+      frage: 'Was schadet einer Schere am meisten?',
+      o: ['Feuchtigkeit, die im Gelenk bleibt', 'Ein Tropfen Öl', 'Ein weiches Tuch'], r: 0,
+      ja: 'Genau. Darum gehören nach dem Reinigen Abtrocknen und Ölen dazu.',
+      nein: 'Nicht ganz. Öl und ein weiches Tuch pflegen die Schere. Schaden macht Feuchtigkeit, die im Gelenk bleibt und rosten lässt.'
+    },
+
+    // ── Schnittwerkstatt (schnittwerkstatt.html, Wissens-Check) ───────────
+    // Die Fragen dort haben keine id: Schlüssel sw1–sw15 = Reihenfolge im QUIZ,
+    // „zu“ = Anfang des Fragetexts. Passt der Text nicht, zeigt die Seite keinen Knopf.
+    'sw1': {
+      zu: 'Welcher Erhebungswinkel ergibt eine kompakte Form',
+      bild: 'Denk an einen Vorhang: Lässt du ihn hängen, fällt er glatt bis zu einer geraden Kante. Eine kompakte Form ist wie dieser Vorhang: eine ruhige, geschlossene Kontur ohne Stufen.',
+      frage: 'Was passiert mit den Haarlängen, je höher du die Strähnen beim Schneiden anhebst?',
+      o: ['Es entstehen mehr Stufen', 'Alles wird gleich lang', 'Nichts ändert sich'], r: 0,
+      ja: 'Genau. Kompakt heißt keine Stufen, also: gar nicht anheben.',
+      nein: 'Nicht ganz. Je höher du anhebst, desto mehr Stufen entstehen. Für eine kompakte Form ohne Stufen hebst du also nicht an.'
+    },
+    'sw2': {
+      zu: 'Wie wird bei der gleichmäßig stufigen Form gehalten',
+      bild: 'Stell dir einen Igel vor: Alle Stacheln stehen gleich lang von seinem runden Rücken ab. Bei der gleichmäßig stufigen Form sollen alle Haare gleich lang werden, egal wo am runden Kopf.',
+      frage: 'Der Kopf ist rund. Hältst du jede Strähne im gleichen Winkel zum Boden, werden die Längen dann überall gleich?',
+      o: ['Nein, wegen der Rundung nicht', 'Ja, immer', 'Nur im Nacken'], r: 0,
+      ja: 'Richtig. Gleich lang wird es nur, wenn du dich an der Rundung des Kopfes orientierst, nicht am Boden.',
+      nein: 'Nicht ganz. Der Boden ist flach, der Kopf ist rund. Gleich lang wird es nur, wenn du dich an der Kopfrundung orientierst.'
+    },
+    'sw3': {
+      zu: 'Wo sitzt bei der graduierten Form das Gewicht',
+      bild: 'Denk an Dachziegel: Sie liegen übereinander gestapelt, und dort, wo sie aufeinanderliegen, wird das Dach dicker. Bei der graduierten Form stapeln sich die Haarenden genauso und bilden eine sichtbare Kante.',
+      frage: 'Bei der graduierten Form sind die Haare unten kurz und werden nach oben länger. Wo stapeln sich die Enden?',
+      o: ['Etwas oberhalb der unteren Kontur', 'Ganz oben am Oberkopf', 'Nirgends, sie verteilen sich gleichmäßig'], r: 0,
+      ja: 'Genau. Diese gestapelte Kante nennt man Gewichtslinie.',
+      nein: 'Nicht ganz. Die Enden stapeln sich dort, wo die kurzen unteren und die längeren oberen Haare zusammentreffen: knapp über der Kontur.'
+    },
+    'sw4': {
+      zu: 'Wo liegt bei der ansteigenden Form',
+      bild: 'Denk an eine Rampe: Sie beginnt niedrig und steigt dann an. Bei der ansteigenden Form wird das Haar im Profil von vorne nach hinten länger, bis zum höchsten Punkt des Kopfes.',
+      frage: 'Eine Rampe steigt an. Wo ist sie am niedrigsten?',
+      o: ['Am Anfang', 'In der Mitte', 'Am Ende'], r: 0,
+      ja: 'Genau. Und im Profil fängt die Rampe vorne an. Wo ist vorne am Kopf?',
+      nein: 'Nicht ganz. Eine Rampe ist am Anfang am niedrigsten. Im Profil fängt sie vorne am Kopf an.'
+    },
+    'sw5': {
+      zu: 'In welchem Bereich liegt eine mittlere Graduierung',
+      bild: 'Eselsbrücke: Teil die 90° in drei gleich große Stücke. Das erste Stück ist niedrig, das zweite mittel, das dritte hoch.',
+      frage: 'Wie groß ist jedes der drei Stücke, wenn du 90° durch 3 teilst?',
+      o: ['30°', '45°', '60°'], r: 0,
+      ja: 'Richtig. Das mittlere Stück liegt also zwischen 30 und 60 Grad.',
+      nein: 'Nicht ganz: 90 durch 3 sind 30. Das erste Stück geht bis 30°, das mittlere bis 60°.'
+    },
+    'sw6': {
+      zu: 'Was bedeutet „wandernde Leitsträhne“',
+      bild: 'Denk an einen Staffellauf: Jede Läuferin übernimmt den Stab von der vorigen und läuft ein Stück weiter. Bei der wandernden Leitsträhne nimmst du von der vorigen Abteilung ein Stück mit als Längenvorgabe.',
+      frage: 'Wenn jede Abteilung ein Stück der vorigen mitnimmt: Woher kommt die Länge für die neue Abteilung?',
+      o: ['Aus der Abteilung davor', 'Immer aus dem Nacken', 'Von einem festen Punkt am Oberkopf'], r: 0,
+      ja: 'Genau. Die Leitsträhne wandert also mit. Alles zu einem festen Punkt zu führen, ist die feste Leitsträhne.',
+      nein: 'Nicht ganz. Wie beim Staffellauf kommt die Vorgabe immer von der Abteilung direkt davor. Darum heißt sie „wandernd“.'
+    },
+    'sw7': {
+      zu: 'Welche Oberflächenstruktur hat die kompakte Form',
+      bild: 'Leg ein Buch flach hin: Von oben siehst du nur den glatten Deckel, keine einzelnen Seiten. Fächerst du die Seiten auf, siehst du alle Kanten. Die kompakte Form ist das geschlossene Buch.',
+      frage: 'Bei der kompakten Form enden alle Haare auf einer Linie. Sieht man dann einzelne Spitzen an der Oberfläche?',
+      o: ['Nein, die Oberfläche wirkt glatt', 'Ja, überall', 'Nur am Oberkopf'], r: 0,
+      ja: 'Richtig. Für „glatt, ohne sichtbare Spitzen“ gibt es ein Fachwort: das Gegenteil von „aktiviert“.',
+      nein: 'Nicht ganz. Wenn alle Enden auf einer Linie liegen, liegen die Spitzen darunter versteckt. Die Oberfläche wirkt glatt.'
+    },
+    'sw8': {
+      zu: 'Was zeigen die Pfeile in einer Schnittzeichnung',
+      bild: 'Eine Schnittzeichnung ist wie ein Navi: Die Pfeile sagen dir nicht, wo das Haar wächst, sondern wohin du die Strähne führen sollst und wie steil.',
+      frage: 'Was zeigt dir ein Pfeil im Navi?',
+      o: ['Wohin du fahren sollst', 'Wo du herkommst', 'Wie das Wetter wird'], r: 0,
+      ja: 'Genau. In der Schnittzeichnung zeigt der Pfeil, wohin und in welchem Winkel du die Strähne hältst.',
+      nein: 'Nicht ganz. Ein Navi-Pfeil zeigt die Richtung, in die du fahren sollst. In der Schnittzeichnung ist das die Richtung, in die du die Strähne hältst.'
+    },
+    'sw9': {
+      zu: 'Warum sind bei der kompakten Form die inneren Haare länger',
+      bild: 'Stell dir vor, mehrere Leute laufen von verschiedenen Stellen eines Hügels zur selben Ziellinie unten. Wer ganz oben startet, hat den längsten Weg. Beim Kopf ist es genauso: Vom Oberkopf über die Rundung bis zur Kontur ist es am weitesten.',
+      frage: 'Wer hat den längsten Weg zur gemeinsamen Ziellinie unten am Hügel?',
+      o: ['Wer ganz oben startet', 'Wer schon unten steht', 'Alle gleich'], r: 0,
+      ja: 'Richtig. Darum müssen die Haare von oben länger sein, damit sie dieselbe Kontur erreichen.',
+      nein: 'Nicht ganz. Von ganz oben ist der Weg am längsten. Haare vom Oberkopf brauchen also mehr Länge bis zur Kontur.'
+    },
+    'sw10': {
+      zu: 'Welche Abteilungen passen gut zur gleichmäßig stufigen Form',
+      bild: 'Denk an Tortenstücke: Von der Mitte aus geschnitten, folgt jedes Stück der Rundung. Für die gleichmäßig stufige Form brauchst du Abteilungen, die sich gut an den runden Kopf anpassen.',
+      frage: 'Was sollen die Abteilungen bei der gleichmäßig stufigen Form leicht machen?',
+      o: ['Die Strähne senkrecht zur Kopfrundung zu halten', 'Die Strähne flach an den Kopf zu legen', 'Alles zu einem Punkt zu ziehen'], r: 0,
+      ja: 'Genau. Am besten geht das mit Abteilungen, die wie Tortenstücke von einem Punkt ausgehen, oder mit senkrechten.',
+      nein: 'Nicht ganz. Gleichmäßige Stufen entstehen nur, wenn du senkrecht zur Kopfrundung hältst. Die Abteilungen sollen genau das leicht machen.'
+    },
+    'sw11': {
+      zu: 'In welcher Ansicht misst du den Erhebungswinkel',
+      bild: 'Wenn du sehen willst, wie hoch jemand springt, stellst du dich seitlich daneben und nicht dahinter. Von hinten siehst du nur den Rücken.',
+      frage: 'Warum siehst du von hinten schlecht, wie hoch jemand springt?',
+      o: ['Weil man die Höhe nur von der Seite gut einschätzen kann', 'Weil es hinten dunkler ist', 'Weil man von hinten gar nichts sieht'], r: 0,
+      ja: 'Genau. Beim Erhebungswinkel ist es genauso: Du brauchst den Blick von der Seite.',
+      nein: 'Nicht ganz. Von hinten verdeckt der Körper, wie hoch es geht. Die Höhe siehst du nur von der Seite gut.'
+    },
+    'sw12': {
+      zu: 'Wie wird ein stumpfer Pony geschnitten',
+      bild: 'Stumpf heißt wie bei einem Lineal: eine gerade, harte Kante. Damit die Kante gerade bleibt, wenn der Pony fällt, schneidest du ihn genau so, wie er von selbst fällt.',
+      frage: 'Du hebst einen Pony an und schneidest. Was passiert, wenn er danach wieder fällt?',
+      o: ['Er bekommt Stufen statt einer harten Kante', 'Er wird noch gerader', 'Nichts'], r: 0,
+      ja: 'Richtig. Für eine harte, gerade Kante also nicht anheben, sondern natürlich fallen lassen.',
+      nein: 'Nicht ganz. Was beim Schneiden angehoben war, fällt danach in Stufen. Für eine harte Kante bleibt der Pony im natürlichen Fall.'
+    },
+    'sw13': {
+      zu: 'Wo ist ein Curtain-Pony am kürzesten',
+      bild: 'Denk an einen Vorhang am Fenster, der in der Mitte offen ist: In der Mitte ist die Öffnung, zu den Seiten hängt der Stoff tiefer. Genau so sitzt ein Curtain-Pony.',
+      frage: 'Was heißt „Curtain“ auf Deutsch?',
+      o: ['Vorhang', 'Locke', 'Kante'], r: 0,
+      ja: 'Genau. Und wo öffnet sich ein Vorhang, wo hängt er am längsten herunter?',
+      nein: 'Nicht ganz. „Curtain“ heißt Vorhang. Überleg, wo sich ein Vorhang öffnet.'
+    },
+    'sw14': {
+      zu: 'Was passiert, wenn der Kopf beim Schneiden seitlich geneigt ist',
+      bild: 'Stell dir ein schief hängendes Bild vor: Ziehst du darauf eine Linie parallel zum Boden und hängst es dann gerade, ist die Linie schief. Neigt die Kundin den Kopf und du schneidest waagrecht, ist die Linie danach genauso schief.',
+      frage: 'Was solltest du tun, bevor du eine gerade Linie schneidest?',
+      o: ['Auf eine gerade Kopfhaltung achten', 'Schneller schneiden', 'Die Kundin zur Seite drehen'], r: 0,
+      ja: 'Genau. Sonst wird die Linie schief, sobald der Kopf wieder gerade ist, und eine Seite ist kürzer.',
+      nein: 'Nicht ganz. Ist der Kopf geneigt, wird die Linie schief. Deshalb zuerst auf eine gerade Kopfhaltung achten.'
+    },
+    'sw15': {
+      zu: 'Wie wird bei der graduierten Form im Nacken abgeteilt',
+      bild: 'Denk an die Speichen eines Fahrrads: Sie gehen alle von einem Punkt in der Mitte aus und passen sich der Rundung des Rads an.',
+      frage: 'Was ist am Hinterkopf besonders?',
+      o: ['Er ist stark gerundet', 'Er ist ganz flach', 'Dort wächst kein Haar'], r: 0,
+      ja: 'Richtig. Abteilungen, die wie Speichen von einem Punkt ausstrahlen, folgen dieser Rundung am besten.',
+      nein: 'Nicht ganz. Der Hinterkopf ist stark gerundet. Dort helfen Abteilungen, die wie Speichen von einem Punkt ausgehen.'
     }
   };
   // Gleiche Frage in einem anderen Lehrjahr: derselbe Eintrag
   T['1-n11'] = T['1-mc5'];
   T['2-mc12'] = T['1-n12'];
   T['2-mc7'] = T['1-12'];
+  T['1-mc34'] = T['1-5'];
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function wZeile(text) {
@@ -256,48 +462,60 @@
     return '<div style="font-size:13px;color:#4A443A;line-height:1.5;margin-bottom:10px"><b style="color:#896C32">Wörni:</b> ' + esc(text) + '</div>';
   }
 
+  // Aussehen je Seite: nur Klassen und Farben, die es dort schon gibt.
+  // Lernquiz: Link-Knopf wie „Einfacher erklärt“, Antwortfelder .opt/.ric/.fal.
+  var STIL_QUIZ = { knopf: 'pt-edit-k', opt: 'opt', ric: 'ric', fal: 'fal', text: '#2C2C2C', leise: '#6B6560', klein: '#9A9188', linie: '#0001', mitte: true };
+
   window.WOERNI_LEITUNG = {
     texte: T,
-    hat: function (id) { return !!(id && T[id]); },
-    // Knopf (dieselbe Optik wie „Einfacher erklärt“). beiHilfe() wird aufgerufen,
-    // sobald die Hilfe geöffnet wird (Seite wertet die Frage dann wie geraten).
-    knopf: function (id, beiHilfe) {
+    // frage: Fragetext (optional). Steht im Eintrag „zu“, muss die Frage damit
+    // beginnen (Schnittwerkstatt: Fragen ohne feste id, Schlüssel nach Reihenfolge).
+    hat: function (id, frage) {
+      var t = id && T[id];
+      if (!t) return false;
+      return !t.zu || (frage != null && String(frage).indexOf(t.zu) === 0);
+    },
+    // Knopf + Hilfe-Kasten. beiHilfe() wird aufgerufen, sobald die Hilfe
+    // geöffnet wird (Seite wertet die Frage dann wie geraten). stil: siehe STIL_QUIZ.
+    knopf: function (id, beiHilfe, stil) {
       var t = T[id];
       if (!t) return null;
+      var st = stil || STIL_QUIZ;
       var box = document.createElement('div');
       box.className = 'ls-box';
-      box.style.cssText = 'text-align:center;margin-top:4px';
+      box.style.cssText = (st.mitte ? 'text-align:center;' : '') + 'margin-top:4px';
       var b = document.createElement('button');
-      b.type = 'button'; b.className = 'pt-edit-k';
+      b.type = 'button'; b.className = st.knopf;
       b.textContent = 'Wörni, ich steh auf der Leitung';
       b.addEventListener('click', function () {
         if (beiHilfe) beiHilfe();
-        box.style.textAlign = 'left';
-        box.style.cssText += ';margin-top:10px;padding-top:10px;border-top:1px solid #0001';
+        box.style.cssText = 'text-align:left;margin-top:10px;padding-top:10px;border-top:1px solid ' + st.linie + ';display:grid;gap:6px';
         box.innerHTML = wZeile(t.bild) +
-          '<div style="font-size:13px;font-weight:600;color:#2C2C2C;margin:4px 0 8px">' + esc(t.frage) + '</div>';
+          '<div style="font-size:13px;font-weight:600;color:' + st.text + ';margin:4px 0 2px">' + esc(t.frage) + '</div>';
         var fb = document.createElement('div');
-        fb.style.cssText = 'font-size:13px;color:#2C2C2C;line-height:1.5;margin-bottom:8px';
+        fb.style.cssText = 'font-size:13px;color:' + st.text + ';line-height:1.5';
+        var knoepfe = [];
         t.o.forEach(function (txt, i) {
           var ob = document.createElement('button');
-          ob.type = 'button'; ob.className = 'opt'; ob.textContent = txt;
+          ob.type = 'button'; ob.className = st.opt; ob.textContent = txt;
           ob.addEventListener('click', function () {
-            box.querySelectorAll('.opt').forEach(function (x) {
+            knoepfe.forEach(function (x) {
               x.disabled = true;
-              if (x === ob) x.className = 'opt ' + (i === t.r ? 'ric' : 'fal');
+              if (x === ob) x.className = (st.opt ? st.opt + ' ' : '') + (i === t.r ? st.ric : st.fal);
             });
             fb.textContent = i === t.r ? t.ja : t.nein;
             var w = document.createElement('div');
-            w.style.cssText = 'font-size:12px;color:#6B6560;margin-top:6px';
+            w.style.cssText = 'font-size:12px;color:' + st.leise + ';margin-top:6px';
             w.textContent = '➜ Jetzt probier die Frage oben selbst.';
             fb.appendChild(w);
           });
+          knoepfe.push(ob);
           box.appendChild(ob);
         });
         box.appendChild(fb);
         var h = document.createElement('div');
-        h.style.cssText = 'font-size:11px;color:#9A9188;line-height:1.45';
-        h.textContent = 'Mit Hilfe zählt die Frage wie geraten und kommt in die Wiederholung. Dann schaffst du sie das nächste Mal allein.';
+        h.style.cssText = 'font-size:11px;color:' + st.klein + ';line-height:1.45';
+        h.textContent = st.hinweis || 'Mit Hilfe zählt die Frage wie geraten und kommt in die Wiederholung. Dann schaffst du sie das nächste Mal allein.';
         box.appendChild(h);
       });
       box.appendChild(b);
