@@ -23,7 +23,7 @@
 //    (z. B. Gelbstich = Farbproblem, strohiges Haar = Strukturproblem).
 //  - Gegenfrage = Prüffrage aus dem Arbeitsablauf, kein Rätsel.
 //  - Sachlicher Ton wie eine erfahrene Kollegin, ohne Witz.
-//  Überarbeitet: Farbe & Blondierung. Die übrigen Themen folgen.
+//  Überarbeitet: Farbe & Blondierung, Haarkunde, Hautkunde. Die übrigen Themen folgen.
 // Schlüssel = id der Frage in lernquiz.html (FB); Schnittwerkstatt: sw1–sw15.
 // Felder: bild (Bild/Eselsbrücke), frage (Gegenfrage), o (2–3 Antworten),
 //         r (Index der richtigen), ja (nach richtig), nein (nach falsch).
@@ -152,73 +152,73 @@
 
     // ── Haarkunde: Aufbau ────────────────────────────────────────────────
     '1-7': {
-      bild: 'Denk an einen Bleistift: Außen der dünne Lack, der schützt. Darunter das Holz, der dicke Hauptteil. Ganz innen die Mine. Ein Haar ist genauso gebaut: Schutzschicht außen, Rinde in der Mitte, Mark innen.',
+      bild: 'Ein Haar ist von außen nach innen in drei Schichten aufgebaut: außen die Schuppenschicht als Schutz, darunter die Faserschicht, die dem Haar Festigkeit, Elastizität und Farbe gibt, innen das Mark, das bei feinem Haar oft fehlt. Für die Praxis wichtig: Chemische Behandlungen wirken in der mittleren Schicht, die äußere muss dafür geöffnet werden.',
       frage: 'Wie heißt die äußere Schutzschicht des Haares als Fachbegriff?',
       o: ['Cuticula', 'Cortex', 'Keratin'], r: 0,
-      ja: 'Genau. Gefragt sind die drei Fachbegriffe von außen nach innen. Weißt du noch, wie Rinde und Mark heißen?',
-      nein: 'Nicht ganz. Außen liegt die Cuticula, die Schuppenschicht. Cortex ist die Rinde darunter. Keratin ist keine Schicht, sondern der Stoff, aus dem das Haar besteht.'
+      ja: 'Richtig. Kennst du auch die Fachbegriffe für die Faserschicht und das Mark?',
+      nein: 'Nicht ganz. Außen liegt die Cuticula (Schuppenschicht). Cortex ist die Faserschicht darunter, Keratin ist der Baustoff des Haares und keine Schicht.'
     },
     '1-mc2': {
-      bild: 'Die Schuppenschicht ist wie eine durchsichtige Frischhaltefolie um ein Stück Kuchen: Sie schützt, aber die Farbe siehst du vom Kuchen darunter. Die Farbpigmente sitzen also in der dicken Schicht unter den Schuppen.',
-      frage: 'Wohin muss eine dauerhafte Haarfarbe, damit sie hält?',
-      o: ['In die dicke Rinde unter der Schuppenschicht', 'Nur außen auf die Schuppenschicht', 'In die Kopfhaut'], r: 0,
-      ja: 'Richtig. Dort sitzen auch die natürlichen Pigmente. Wie heißt diese Rinde als Fachbegriff?',
-      nein: 'Nicht ganz. Außen auf den Schuppen liegen nur Tönungen, die sich auswaschen. Dauerhafte Farbe und die natürlichen Pigmente sitzen in der Rinde darunter.'
+      bild: 'Die natürlichen Farbpigmente (Melanin) liegen in der Faserschicht unter der Schuppenschicht. Dort arbeiten auch Oxidationsfarbe und Blondierung: Sie müssen durch die geöffnete Schuppenschicht hindurch. Tönungen lagern sich dagegen vor allem außen an und waschen sich deshalb wieder aus.',
+      frage: 'Warum wäscht sich eine Tönung aus, eine Oxidationsfarbe aber nicht?',
+      o: ['Die Tönung bleibt außen, die Oxidationsfarbe wirkt in der Faserschicht', 'Die Tönung enthält mehr Pigment', 'Die Oxidationsfarbe wird kälter ausgespült'], r: 0,
+      ja: 'Richtig. Dauerhafte Farbe und Naturpigment sitzen in derselben Schicht. Wie heißt sie?',
+      nein: 'Nicht ganz. Die Tönung lagert sich außen an. Dauerhafte Farbe und Naturpigment sitzen in der Faserschicht darunter.'
     },
     '1-mc5': {
-      bild: 'Denk an einen nassen Wollpullover: Nass ziehst du ihn leicht in die Länge, und er bleibt ausgeleiert. Nasses Haar ist gequollen und seine Schuppen stehen offen. Darum kämmst du es mit grobem Kamm und von den Spitzen nach oben.',
-      frage: 'Was passiert mit dem Haar, wenn es nass wird?',
-      o: ['Es quillt auf und die Schuppen öffnen sich', 'Es wird härter und fester', 'Es verliert sofort seine Farbe'], r: 0,
-      ja: 'Genau. Gequollenes Haar mit offenen Schuppen lässt sich leicht dehnen und schnell beschädigen.',
-      nein: 'Nicht ganz. Wasser lässt das Haar aufquellen, die Schuppen öffnen sich. Dann ist es weich, dehnbar und empfindlich, nicht fester.'
+      bild: 'Nasses Haar nimmt Wasser in die Faserschicht auf und quillt. Dabei lösen sich die Wasserstoffbrücken im Haar, und die Schuppenschicht steht leicht ab. Nasses Haar ist dadurch dehnbarer und empfindlicher gegen Zug und Reibung.',
+      frage: 'Wie entwirrst du nasses, langes Haar nach der Wäsche?',
+      o: ['Mit grobem Kamm, von den Spitzen zum Ansatz', 'Mit feinem Kamm, vom Ansatz zu den Spitzen', 'Kräftig mit der Bürste, solange es nass ist'], r: 0,
+      ja: 'Richtig. So schonst du das gequollene, dehnbare Haar.',
+      nein: 'Nicht ganz. Nasses Haar ist gequollen und dehnbar. Grob und von den Spitzen aus vermeidet Zug und Bruch.'
     },
     '1-n12': {
-      bild: 'Denk an zwei Schwämme: einen neuen, festen und einen alten, ausgefransten. Der alte saugt Wasser sofort auf, lässt es aber auch schnell wieder heraus. Poröses Haar ist wie der alte Schwamm, oft nach Blondierung oder viel Hitze.',
-      frage: 'Ein Haar mit vielen offenen, beschädigten Schuppen: Was macht es mit Wasser?',
-      o: ['Es saugt es schnell auf', 'Es lässt es ganz abperlen', 'Gar nichts, Haar nimmt kein Wasser auf'], r: 0,
-      ja: 'Genau. Um genau dieses Aufnehmen von Feuchtigkeit und Wirkstoffen geht es bei der Frage.',
-      nein: 'Nicht ganz. Offene Schuppen sind wie Löcher im Schwamm: Wasser und Wirkstoffe gehen schnell hinein und auch schnell wieder hinaus.'
+      bild: 'Porosität beschreibt, wie gut Haar Feuchtigkeit und Wirkstoffe aufnimmt. Sie hängt vom Zustand der Schuppenschicht ab: Bei gesundem Haar liegt sie geschlossen an, nach Blondierung, Hitze oder UV-Strahlung ist sie aufgeraut. Praxis: Poröses Haar nimmt Farbe schneller und oft dunkler oder ungleichmäßig an und verliert sie schneller wieder.',
+      frage: 'Blondierte Längen nehmen eine Tönung deutlich stärker an als der Ansatz. Woran liegt das?',
+      o: ['Die Längen sind poröser', 'Der Ansatz ist wärmer', 'Die Tönung hat zu kurz eingewirkt'], r: 0,
+      ja: 'Richtig. Die Porosität bestimmt, wie viel das Haar aufnimmt.',
+      nein: 'Nicht ganz. Blondierte Längen haben eine aufgeraute Schuppenschicht und nehmen mehr auf als der gesunde Ansatz.'
     },
 
     // ── Haarkunde: Wachstum ──────────────────────────────────────────────
     '1-hk2': {
-      bild: 'Eselsbrücke für die drei Phasen: Anagen, A wie Aufbau (das Haar wächst). Katagen, K wie Kündigung (es hört auf zu wachsen). Telogen, T wie Tschüss (Ruhe, dann fällt es aus).',
-      frage: 'Ein Haar fällt beim Kämmen aus. War es zuletzt noch am Wachsen?',
-      o: ['Nein, es war in der Ruhephase', 'Ja, mitten im Wachstum', 'Es war gerade erst entstanden'], r: 0,
-      ja: 'Richtig. Die Ruhephase ist die letzte. Welcher Buchstabe war „Tschüss“?',
-      nein: 'Nicht ganz. Ein Haar, das normal ausfällt, wächst schon länger nicht mehr. Es war in der letzten Phase, der Ruhephase.'
+      bild: 'Jedes Haar durchläuft drei Phasen: Wachstumsphase (Anagen), Übergangsphase (Katagen) und Ruhephase (Telogen). In der Übergangsphase löst sich das Haar von der Papille und wird nicht mehr versorgt. Danach sitzt es nur noch locker im Follikel, bis es ausfällt. Bis zu etwa 100 Haare am Tag gelten als normal.',
+      frage: 'Ein Haar fällt beim Kämmen ohne Kraftaufwand aus. Wurde es zuletzt noch versorgt?',
+      o: ['Nein, es war schon von der Versorgung gelöst', 'Ja, es war mitten im Wachstum', 'Es war gerade neu entstanden'], r: 0,
+      ja: 'Richtig. Es stand in der letzten der drei Phasen.',
+      nein: 'Nicht ganz. Ein Haar, das ohne Kraft ausfällt, wird nicht mehr versorgt. Es stand in der letzten Phase.'
     },
     '1-mc7': {
-      bild: 'Rechne mit: Haar wächst etwa 1 cm im Monat, also gut 12 cm im Jahr. Eine Kundin mit Haaren bis zur Mitte des Rückens hat etwa 60 cm. So lange muss ein Haar ohne Pause gewachsen sein.',
-      frage: 'Bei etwa 12 cm pro Jahr: Wie lange braucht ein Haar für 60 cm?',
+      bild: 'Wie lang ein Haar werden kann, hängt davon ab, wie lange seine Wachstumsphase dauert. Haar wächst etwa 1 bis 1,5 cm im Monat. Praxis: Wünscht sich eine Kundin sehr langes Haar, entscheidet ihre Wachstumsphase, ob diese Länge erreichbar ist.',
+      frage: 'Haar wächst etwa 12 cm im Jahr. Wie lange braucht es für 60 cm?',
       o: ['Etwa 5 Jahre', 'Etwa 6 Monate', 'Etwa 15 Jahre'], r: 0,
-      ja: 'Genau. Die Wachstumsphase muss also mehrere Jahre dauern. Welche Antwort passt dazu?',
-      nein: 'Nicht ganz: 60 durch 12 sind 5, also etwa 5 Jahre. Die Wachstumsphase dauert demnach mehrere Jahre.'
+      ja: 'Richtig. Die Wachstumsphase muss also mehrere Jahre dauern.',
+      nein: 'Nicht ganz: 60 durch 12 sind 5. Die Wachstumsphase dauert also mehrere Jahre.'
     },
 
     // ── Haarkunde: Pigmente & Farbaufnahme ───────────────────────────────
     '1-hk4': {
-      bild: 'Denk an eine Zwiebel mit drei Schalen: Ganz außen sitzt das Blau, darunter das Rot, ganz innen das Gelb. Beim Aufhellen schälst du von außen nach innen. Deshalb wird dunkles Haar erst rötlich, dann orange, dann gelb.',
+      bild: 'Beim Aufhellen werden die natürlichen Pigmente nicht gleichzeitig abgebaut. Darum wird dunkles Haar zuerst rötlich, dann orange und zuletzt gelb. Diese Abfolge zeigt dir, welche Farbanteile schon fehlen und welche noch im Haar sind. Der Untergrund verrät also, wie weit die Aufhellung fortgeschritten ist.',
       frage: 'Welche Farbe bleibt beim Aufhellen am längsten im Haar?',
       o: ['Gelb', 'Blau', 'Rot'], r: 0,
-      ja: 'Richtig, Gelb ist der innerste Kern. Und was geht dann ganz zuerst?',
-      nein: 'Nicht ganz. Denk an hell blondiertes Haar: Am Ende ist es gelblich, nicht rot oder blau. Gelb bleibt also am längsten.'
+      ja: 'Richtig. Überleg jetzt: Welcher Farbanteil fehlt einem rötlichen Untergrund schon?',
+      nein: 'Nicht ganz. Hell aufgehelltes Haar ist am Ende gelblich. Gelb hält also am längsten.'
     },
     '3-3': {
-      bild: 'Denk an eine Regenjacke und ein Baumwoll-T-Shirt: Auf der Jacke perlt Wasser ab, das Shirt saugt es auf. Grobes graues Haar ist wie die Regenjacke: eine dicke, dicht geschlossene Schuppenschicht. Farbe hat es dort schwer.',
-      frage: 'Bei welchem Haar liegen die Schuppen am dichtesten geschlossen?',
-      o: ['Bei gesundem, grobem Haar', 'Bei blondiertem Haar', 'Bei porösem Haar'], r: 0,
-      ja: 'Genau. Dichte Schuppen lassen Farbe nur langsam hinein. Darum braucht grobes graues Haar oft mehr Zeit.',
-      nein: 'Nicht ganz. Blondiertes und poröses Haar hat offene Schuppen und nimmt Farbe schnell auf. Dicht geschlossen ist gesundes, grobes Haar.'
+      bild: 'Wie schnell Haar Farbe aufnimmt, hängt vor allem von der Schuppenschicht ab. Grobes Haar hat viele, dicht anliegende Schuppenlagen. Bei grauem Haar kommt oft eine glasige, widerstandsfähige Struktur dazu. Praxis: Bei resistentem Grau die volle Einwirkzeit einhalten und, wenn der Hersteller es vorsieht, vorbehandeln.',
+      frage: 'Welches Haar nimmt Farbe am schnellsten auf?',
+      o: ['Poröses, blondiertes Haar', 'Grobes, gesundes graues Haar', 'Mittelstarkes Naturhaar'], r: 0,
+      ja: 'Richtig. Die offene Schuppenschicht lässt Farbe schnell hinein. Am anderen Ende steht Haar mit dicht geschlossener Schuppenschicht.',
+      nein: 'Nicht ganz. Poröses Haar mit offener Schuppenschicht nimmt am schnellsten auf. Dicht geschlossenes Haar am langsamsten.'
     },
 
     // ── Dauerwelle & Umformung ───────────────────────────────────────────
     '2-mc11': {
-      bild: 'Stell dir eine Strickleiter vor: Die zwei Seile sind lange Eiweißketten im Haar, die Sprossen dazwischen feste Schwefel-Verbindungen. Wo die Sprossen sitzen, bestimmt, ob die Leiter gerade hängt oder sich wellt. Eine Dauerwelle setzt die Sprossen neu.',
-      frage: 'Wo im Haar sitzen diese Sprossen, damit sie die Form bestimmen können?',
-      o: ['Im Cortex, der dicken Rinde', 'In der Schuppenschicht', 'In der Kopfhaut'], r: 0,
-      ja: 'Genau. Im Cortex halten Schwefel-Brücken (S-S) das Haar in seiner Form.',
-      nein: 'Nicht ganz. Die Schuppenschicht ist nur die dünne Hülle. Die Form bestimmt der dicke Cortex, und dort sitzen die Sprossen.'
+      bild: 'Im Cortex sind die Keratinketten durch Querverbindungen aneinander gebunden. Die stärksten davon sind Schwefelbrücken (S-S). Sie bestimmen die dauerhafte Form des Haares. Wasserstoffbrücken lösen sich schon beim Nassmachen, Schwefelbrücken nur chemisch.',
+      frage: 'Warum hält eine Föhnfrisur nur bis zur nächsten Wäsche, eine Dauerwelle aber dauerhaft?',
+      o: ['Föhnen verändert nur Wasserstoffbrücken, die Dauerwelle die Schwefelbrücken', 'Die Dauerwelle trocknet länger', 'Föhnen schließt die Cuticula'], r: 0,
+      ja: 'Richtig. Die dauerhafte Form steckt in den Schwefelbrücken im Cortex.',
+      nein: 'Nicht ganz. Wasserstoffbrücken lösen sich beim Waschen wieder. Die Dauerwelle verändert die Schwefelbrücken, darum hält sie.'
     },
     '1-12': {
       bild: 'Denk an Legosteine: Willst du ein Haus umbauen, musst du die Steine zuerst auseinandernehmen. Im Haar halten feste Schwefelbrücken die Form zusammen, wie die Noppen die Legosteine. Bevor das Haar eine neue Form bekommt, muss mit diesen Brücken zuerst etwas passieren.',
@@ -337,81 +337,81 @@
     },
     // ── Hautkunde ────────────────────────────────────────────────────────
     '1-17': {
-      bild: 'Die Haut ist gebaut wie eine Torte: oben eine dünne Glasur, die schützt. In der Mitte der feste Biskuit, in dem alle „Zutaten“ wie Haarwurzeln und Drüsen stecken. Unten eine weiche Polsterschicht aus Fett.',
-      frage: 'Cuticula, Cortex, Medulla: Wozu gehören diese drei Begriffe?',
+      bild: 'Die Haut besteht aus drei Schichten. Die äußere schützt und erneuert sich ständig. Die mittlere enthält Haarwurzeln, Talg- und Schweißdrüsen, Blutgefäße und Nerven. Die untere besteht vor allem aus Fettgewebe und dient als Polster und Wärmeschutz.',
+      frage: 'Cuticula, Cortex, Medulla: Wozu gehören diese Begriffe?',
       o: ['Zum Haar, nicht zur Haut', 'Zur Haut', 'Zu den Nägeln'], r: 0,
-      ja: 'Genau, das ist die Falle. Die Haut hat eigene Schichten: oben, Mitte, unten. Die Mitte ist fest wie Leder.',
-      nein: 'Nicht ganz. Cuticula, Cortex und Medulla sind die Schichten des Haares. Die Haut hat eigene: oben, Mitte, unten, und die Mitte ist fest wie Leder.'
+      ja: 'Richtig, das ist die Falle in der Frage. Die Hautschichten haben deutsche Namen: Oberhaut, Lederhaut und …?',
+      nein: 'Nicht ganz. Cuticula, Cortex und Medulla sind die Schichten des Haares. Die Haut hat eigene Schichten mit deutschen Namen.'
     },
     '1-mc13': {
-      bild: 'Bleib bei der Torte: Die Zutaten stecken im Biskuit in der Mitte, nicht in der dünnen Glasur. In der Haut ist es genauso: Haarwurzeln, Talg- und Schweißdrüsen sitzen in der festen Mittelschicht.',
-      frage: 'Die Oberhaut ist sehr dünn und erneuert sich ständig. Hat eine Haarwurzel dort Platz?',
-      o: ['Nein, dafür ist sie zu dünn', 'Ja, locker', 'Haarwurzeln sitzen im Haar selbst'], r: 0,
-      ja: 'Richtig. Haarwurzeln brauchen Platz und Blutversorgung. Das gibt es erst in der festen Schicht darunter.',
-      nein: 'Nicht ganz. Die Oberhaut ist hauchdünn. Haarwurzeln und Drüsen brauchen mehr Platz und Blutversorgung, die gibt es erst darunter.'
+      bild: 'Die Oberhaut ist dünn, hat keine Blutgefäße und erneuert sich ständig. Haarwurzeln, Talgdrüsen und Schweißdrüsen brauchen dagegen eine Versorgung über das Blut. Sie liegen deshalb in der Schicht darunter, die Blutgefäße und Nerven enthält.',
+      frage: 'Was brauchen Haarwurzeln und Drüsen, das die Oberhaut nicht bietet?',
+      o: ['Blutversorgung', 'Licht', 'Talg'], r: 0,
+      ja: 'Richtig. Darum liegen sie in der mittleren Hautschicht.',
+      nein: 'Nicht ganz. Haarwurzeln und Drüsen müssen über das Blut versorgt werden. Blutgefäße gibt es erst unter der Oberhaut.'
     },
     '1-mc9': {
-      bild: 'Denk an ein Gesichtspeeling bei der Kosmetikerin: Es trägt die oberste Schicht alter Hautzellen ab, darunter kommt frische Haut zum Vorschein. Die Haut macht das auch von selbst: Sie schiebt ständig neue Zellen von unten nach und stößt oben die alten ab, ungefähr einmal im Monat komplett.',
-      frage: 'Wo fallen die alten Hautzellen ab?',
-      o: ['Ganz außen an der Oberfläche', 'Tief unten im Fettgewebe', 'In der Talgdrüse'], r: 0,
-      ja: 'Genau. Welche Schicht liegt ganz außen?',
-      nein: 'Nicht ganz. Alte Zellen werden außen abgestoßen, so wie ein Peeling sie oben abträgt. Die äußerste Schicht erneuert sich also ständig.'
+      bild: 'In der untersten Lage der Oberhaut entstehen ständig neue Zellen. Sie wandern nach oben, verhornen und werden als feine Hornschüppchen abgestoßen, etwa alle vier Wochen komplett. Praxis: Auf gesunder Kopfhaut ist das unsichtbar. Sichtbare Schuppen zeigen, dass dieser Ablauf gestört ist.',
+      frage: 'Was zeigen sichtbare Schuppen auf der Kopfhaut?',
+      o: ['Die Hauterneuerung ist gestört', 'Die Kopfhaut ist besonders gesund', 'Das Haar wächst schneller'], r: 0,
+      ja: 'Richtig. Normalerweise werden die alten Zellen unsichtbar an der Oberfläche abgestoßen. Welche Schicht ist das?',
+      nein: 'Nicht ganz. Gesunde Haut erneuert sich unsichtbar. Sichtbare Schuppen zeigen eine Störung.'
     },
     '1-mc10': {
-      bild: 'Denk an Zitrone und Seife: Zitrone ist sauer, Seife ist alkalisch, reines Wasser liegt mit pH 7 genau in der Mitte. Die Haut hat einen Schutzfilm gegen Keime, und sein Name verrät, auf welcher Seite er liegt.',
-      frage: 'Unter pH 7 ist es sauer, über pH 7 alkalisch. Wo liegt ein „Säure“-Schutzmantel?',
-      o: ['Unter 7', 'Genau bei 7', 'Über 7'], r: 0,
-      ja: 'Richtig. Und zwar nur leicht sauer, nicht wie Zitronensaft. Welche Antwort passt dazu?',
-      nein: 'Nicht ganz. „Säure“ heißt sauer, und sauer ist alles unter pH 7. Der Schutzmantel ist aber nur leicht sauer.'
+      bild: 'Talg und Schweiß bilden auf der Haut einen leicht sauren Film, der Bakterien und Pilze hemmt. Die pH-Skala reicht von sauer (unter 7) über neutral (7) bis alkalisch (über 7). Praxis: Alkalische Produkte wie Farbe oder Dauerwelle stören diesen Film. Ein saures Pflegeprodukt hilft danach, ihn wieder aufzubauen.',
+      frage: 'Warum behandelst du die Kopfhaut nach einer Farbe mit einem sauren Produkt nach?',
+      o: ['Damit sich der Schutzfilm wieder einstellt', 'Damit die Farbe heller wird', 'Damit das Haar schneller trocknet'], r: 0,
+      ja: 'Richtig. Der Schutzfilm ist von Natur aus leicht sauer. Welcher pH-Bereich passt dazu?',
+      nein: 'Nicht ganz. Farbe ist alkalisch und stört den leicht sauren Schutzfilm. Das saure Produkt stellt ihn wieder her.'
     },
     '1-18': {
-      bild: 'Kennst du Haar, das schon am Tag nach der Wäsche fettig aussieht? Dahinter steckt die Drüse, nach der gefragt ist. Was sie bildet, wirkt wie eine körpereigene Handcreme.',
-      frage: 'Was macht Haar am zweiten Tag fettig?',
-      o: ['Ein körpereigenes Fett aus der Kopfhaut', 'Schweiß', 'Neue Hautzellen'], r: 0,
-      ja: 'Genau. Dieses körpereigene Fett heißt Talg. Es hält Haut und Haar geschmeidig.',
-      nein: 'Nicht ganz. Schweiß ist wässrig und kühlt. Fettig wird das Haar durch ein körpereigenes Fett, den Talg.'
+      bild: 'Talgdrüsen sitzen am Haarfollikel und geben ihr Fett direkt in den Haarkanal ab. Talg macht Haut und Haar geschmeidig und bildet zusammen mit Schweiß den Schutzfilm der Haut. Praxis: Produziert die Kopfhaut zu viel davon, wirkt das Haar schnell fettig.',
+      frage: 'Eine Kundin wäscht täglich sehr heiß. Was passiert mit der Talgproduktion?',
+      o: ['Sie wird angeregt', 'Sie hört auf', 'Sie bleibt gleich'], r: 0,
+      ja: 'Richtig. Darum empfiehlst du lauwarmes Wasser und ein mildes Shampoo.',
+      nein: 'Nicht ganz. Heißes Wasser regt die Talgdrüsen an. Das Haar fettet dadurch schneller nach.'
     },
     '1-n4': {
-      bild: 'Denk an Sport im Sommer: Du schwitzt, der Schweiß verdunstet auf der Haut, und das kühlt dich ab. Die Haut ist die Klimaanlage des Körpers.',
-      frage: 'Warum schwitzt du, wenn dir heiß ist?',
-      o: ['Damit der Körper abkühlt', 'Damit die Haut weich wird', 'Damit die Haare wachsen'], r: 0,
-      ja: 'Richtig. Schweiß regelt die Temperatur und nimmt nebenbei ein paar Stoffe aus dem Körper mit nach draußen.',
-      nein: 'Nicht ganz. Schweiß ist die Kühlung des Körpers: Er verdunstet und nimmt dabei Wärme mit.'
+      bild: 'Schweißdrüsen geben Wasser mit gelösten Salzen an die Hautoberfläche ab. Verdunstet der Schweiß, kühlt er den Körper. Nebenbei werden Stoffe ausgeschieden, und der Schweiß trägt zum Schutzfilm der Haut bei.',
+      frage: 'Wie kühlt Schweiß den Körper?',
+      o: ['Er verdunstet auf der Haut und nimmt Wärme mit', 'Er verschließt die Poren', 'Er bildet eine Fettschicht'], r: 0,
+      ja: 'Richtig. Temperatur regeln und Stoffe ausscheiden sind die Aufgaben der Schweißdrüse.',
+      nein: 'Nicht ganz. Schweiß verdunstet auf der Haut und entzieht ihr dabei Wärme. Eine Fettschicht bildet der Talg.'
     },
     '1-16': {
-      bild: 'Stell dir die Haut als Ganzkörper-Jacke vor, die viel mehr kann als wärmen: Sie hält Schmutz und Keime ab, kühlt mit Schweiß, polstert und speichert mit Fett und spürt jede Berührung, wie eine Jacke mit eingebauten Sensoren.',
-      frage: 'Merkst du es, wenn dich jemand am Arm berührt?',
-      o: ['Ja, die Haut spürt Berührung', 'Nein, nur mit den Augen', 'Nur an den Fingern'], r: 0,
-      ja: 'Genau. Die Haut ist also auch ein Sinnesorgan. Welche Antwort zählt mehrere Aufgaben auf?',
-      nein: 'Nicht ganz. Du spürst Berührungen überall auf der Haut. Sie ist also auch ein Sinnesorgan, neben Schutz, Kühlung und Fettspeicher.'
+      bild: 'Die Haut ist das größte Organ des Körpers und erfüllt mehrere Aufgaben gleichzeitig. Im Salon siehst du das ständig: Sie schützt die Kopfhaut bei chemischen Behandlungen, sie schwitzt unter der Wärmehaube, und die Kundin spürt jeden Griff bei der Massage.',
+      frage: 'Die Kundin spürt bei der Kopfmassage jeden Griff. Welche Aufgabe der Haut zeigt das?',
+      o: ['Sinnesorgan', 'Fettspeicher', 'Temperaturregelung'], r: 0,
+      ja: 'Richtig. Die Haut hat aber mehrere Aufgaben. Welche Antwort zählt sie auf?',
+      nein: 'Nicht ganz. Dass die Kundin jeden Griff spürt, zeigt: Die Haut ist auch ein Sinnesorgan.'
     },
     '1-mc12': {
-      bild: 'Schuppen sind wie Kopfschmerzen: Man merkt sie, aber dahinter kann ganz Verschiedenes stecken. Darum gibt es auch nicht das eine Shampoo, das immer hilft.',
-      frage: 'Ein Anti-Schuppen-Shampoo hilft bei einer Kundin gar nicht. Was könnte das heißen?',
-      o: ['Die Schuppen haben eine andere Ursache', 'Sie wäscht zu selten', 'Schuppen kann man nie behandeln'], r: 0,
-      ja: 'Genau. Schuppen haben viele mögliche Ursachen. Achte bei der Frage auf Wörter wie „ausschließlich“, „immer“ oder „nur“.',
-      nein: 'Nicht ganz. Wenn ein Mittel nicht hilft, steckt oft eine andere Ursache dahinter. Schuppen können viele Gründe haben.'
+      bild: 'Schuppen sind ein Befund, keine Diagnose. Mögliche Ursachen sind trockene Kopfhaut, eine Vermehrung des Hefepilzes Malassezia, ungeeignete oder zu aggressive Pflegeprodukte und Hauterkrankungen. Praxis: Ob die Schuppen fein, weiß und rieselnd oder gelblich und fettig sind, gibt einen ersten Hinweis.',
+      frage: 'Ein Anti-Schuppen-Shampoo hilft bei einer Kundin nicht. Was folgerst du?',
+      o: ['Die Ursache ist eine andere, eventuell einen Hautarzt empfehlen', 'Sie muss es länger einwirken lassen', 'Schuppen sind nicht behandelbar'], r: 0,
+      ja: 'Richtig. Achte bei der Quizfrage auf Antworten mit „nur“, „immer“ oder „ausschließlich“.',
+      nein: 'Nicht ganz. Hilft ein Mittel nicht, steckt oft eine andere Ursache dahinter. Schuppen haben viele mögliche Gründe.'
     },
     '3-5': {
-      bild: 'Zerleg das Wort: „Sebum“ ist der Fachbegriff für Talg, „-rhoe“ kommt aus dem Griechischen und heißt fließen. Stell dir einen Wasserhahn vor, der nicht ganz zugedreht ist: Es läuft und läuft. Bei Seborrhoe ist der „Talg-Hahn“ der Kopfhaut zu weit offen.',
-      frage: 'Wenn Talg „fließt“: Ist dann zu viel oder zu wenig davon da?',
-      o: ['Zu viel', 'Zu wenig', 'Gar keiner'], r: 0,
-      ja: 'Richtig. Zu viel Talg macht die Kopfhaut fettig, oft mit fettigen, gelblichen Schuppen.',
-      nein: 'Nicht ganz. Was fließt, ist reichlich da. Bei Seborrhoe wird zu viel Talg gebildet.'
+      bild: 'Zerleg den Fachbegriff: „Sebum“ ist Talg, „-rrhoe“ heißt Fluss. Gemeint ist eine Überproduktion der Talgdrüsen. Bei der Haarwäsche erkennst du sie daran, dass die Kopfhaut schon am Tag nach der Wäsche glänzt und die Schuppen gelblich sind und haften.',
+      frage: 'Welcher Befund bei der Haarwäsche passt zu Seborrhoe?',
+      o: ['Fettig glänzende Kopfhaut mit gelblichen, haftenden Schuppen', 'Feine weiße, rieselnde Schuppen auf trockener Kopfhaut', 'Kreisrunde kahle Stellen'], r: 0,
+      ja: 'Richtig. Feine weiße Schuppen sprechen dagegen eher für trockene Kopfhaut.',
+      nein: 'Nicht ganz. Bei Seborrhoe wird zu viel Talg gebildet: Die Kopfhaut glänzt fettig, die Schuppen sind gelblich und haften.'
     },
     '2-mc15': {
-      bild: 'Der deutsche Name hilft: Schuppenflechte. Man sieht sie oft nicht nur auf der Kopfhaut, sondern auch an Ellbogen und Knien. Wichtig für den Salon: Anstecken kannst du dich nicht.',
-      frage: 'Eine Krankheit kommt immer wieder und geht nie ganz weg. Wie nennt man das?',
-      o: ['Chronisch', 'Ansteckend', 'Normal'], r: 0,
-      ja: 'Genau. Psoriasis ist chronisch, und ihre Schuppen schimmern silbrig.',
+      bild: 'Der deutsche Name ist Schuppenflechte. Typisch sind scharf begrenzte, gerötete Stellen mit dicken Schuppen, oft auch an Ellbogen und Knien. Sie ist nicht ansteckend. Praxis: Keine Coloration oder Dauerwelle auf entzündeten Stellen ohne ärztliche Freigabe.',
+      frage: 'Eine Erkrankung kommt immer wieder und heilt nicht vollständig aus. Wie nennt man das?',
+      o: ['Chronisch', 'Akut', 'Ansteckend'], r: 0,
+      ja: 'Richtig. Psoriasis ist chronisch, ihre Schuppen sind typischerweise silbrig-weiß.',
       nein: 'Nicht ganz. „Chronisch“ heißt: Es kommt immer wieder und bleibt. Ansteckend ist Psoriasis nicht.'
     },
     '2-mc16': {
-      bild: 'Du bist wie ein Rauchmelder: Du merkst, dass etwas nicht stimmt, und schlägst Alarm. Löschen tut aber die Feuerwehr. Merksatz: Die Friseurin erkennt, der Arzt bestimmt, was es ist.',
-      frage: 'Wer darf sagen, welche Hautkrankheit eine Kundin hat?',
-      o: ['Nur ein Arzt oder eine Ärztin', 'Die Friseurin', 'Die Kundin selbst'], r: 0,
-      ja: 'Richtig. Du sprichst es ruhig an und empfiehlst einen Hautarzt. Schweigen ist falsch, Panik auch.',
-      nein: 'Nicht ganz. Eine Diagnose stellt nur ein Arzt. Du siehst es, sprichst es ruhig an und empfiehlst einen Hautarzt.'
+      bild: 'Als Friseurin erkennst du Auffälligkeiten an Kopfhaut und Haut oft als Erste. Eine Diagnose stellen und behandeln darf aber nur ein Arzt. Professionell ist: die Stelle ruhig und diskret ansprechen, keine Vermutung als Diagnose äußern und bei Bedarf auf chemische Behandlungen verzichten.',
+      frage: 'Wer stellt die Diagnose bei einer Hauterkrankung?',
+      o: ['Eine Ärztin oder ein Arzt', 'Die Friseurin', 'Die Kundin selbst'], r: 0,
+      ja: 'Richtig. Deine Aufgabe ist erkennen, ansprechen und weiterleiten.',
+      nein: 'Nicht ganz. Eine Diagnose stellt nur ein Arzt. Du erkennst, sprichst an und leitest weiter.'
     },
 
     // ── Haarwäsche & Kopfmassage ─────────────────────────────────────────
