@@ -33,11 +33,11 @@
       nein: 'Nicht ganz. Orange ist warm wie ein Sonnenuntergang: Darin stecken Rot und Gelb. Welche Grundfarbe fehlt dann noch? Die ist sein Gegenspieler.'
     },
     '1-mc15': {
-      bild: 'Eine Kundin kommt mit hellem Blond, das aussieht wie Stroh. Im Regal steht ein Shampoo genau gegen diesen Gelbstich. Merksatz: Die Gegenfarbe ist immer die Mischung aus den zwei anderen Grundfarben.',
+      bild: 'Ein Farbstich wird mit seiner Komplementärfarbe neutralisiert, also mit der Farbe, die im Farbkreis gegenüberliegt. Sie ist immer die Mischung der beiden anderen Grundfarben. Achtung in der Praxis: Ein Gelbstich ist ein Farbproblem, strohiges Haar ein Strukturproblem. Wirkt blondiertes Haar strohig, ist es porös. Dort nimmt die Gegenfarbe ungleichmäßig auf und kann fleckig wirken. Darum zuerst den Haarzustand beurteilen und pflegen, dann gezielt neutralisieren.',
       frage: 'Gelb ist eine Grundfarbe. Welche zwei Grundfarben bleiben übrig?',
       o: ['Rot und Blau', 'Gelb und Blau', 'Rot und Gelb'], r: 0,
-      ja: 'Richtig. Und was ergeben Rot und Blau gemischt? Genau diese Farbe nimmt dem Blond das Gelb.',
-      nein: 'Nicht ganz. Die drei Grundfarben sind Rot, Gelb und Blau. Nimm Gelb weg, dann bleiben Rot und Blau. Ihre Mischung ist die Gegenfarbe zu Gelb.'
+      ja: 'Richtig. Ihre Mischung ist die Gegenfarbe zu Gelb. Welche Farbe entsteht aus Rot und Blau?',
+      nein: 'Nicht ganz. Die drei Grundfarben sind Rot, Gelb und Blau. Ohne Gelb bleiben Rot und Blau. Ihre Mischung ist die Gegenfarbe zu Gelb.'
     },
     '1-mc16': {
       bild: 'Make-up-Profis decken rote Äderchen im Gesicht nicht mit Hautfarbe ab, sondern mit einem Concealer in der Gegenfarbe von Rot. Im Haar ist es genauso: Gegen einen Rotstich hilft nicht „mehr Braun“, sondern die Gegenfarbe.',
