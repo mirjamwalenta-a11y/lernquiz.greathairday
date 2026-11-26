@@ -18,6 +18,7 @@
 <script src="kompetenzen.js?v=20261119b"></script>  <!-- Kompetenz-Landkarte V2: 17 Kompetenzen -->
 <script src="kompetenz-stand.js?v=20261119a"></script>  <!-- gemeinsame Rechnung für Lernstand (Lehrling und Meisterin) -->
 <script src="quiz-verlauf.js?v=20261115"></script>  <!-- Übungs-Quizze im Verlauf/Kompetenz speichern -->
+<script src="paare-finden.js?v=20261126a"></script>  <!-- Üben: Paare finden (Fachbegriff ↔ Situation) -->
 <script src="https://mirjamwalenta-a11y.github.io/abwesenheiten-ghd/ghd-offline.js" data-schluessel="en_meisterin,m_eingeloggt"></script>  <!-- offline nutzbar: Service Worker, gemerkte Daten, Nachsync -->
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -417,6 +418,7 @@ body.mit-leiste .leiste{display:flex}
     <button class="st-kachel" onclick="window.location.href='https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lernquiz.html?v=20261125a'"><div class="st-ic">❓</div><div class="st-t">Quiz</div><div class="st-d">Schnell-Check oder Lerneinheit</div></button>
     <button class="st-kachel" onclick="zeige('quiz')"><div class="st-ic">🎯</div><div class="st-t">Themen-Quiz</div><div class="st-d">Ein Thema gezielt üben</div></button>
     <button class="st-kachel st-breit" onclick="stWiederholenOeffnen()"><div class="st-ic">🔁</div><div><div class="st-t">Wiederholen</div><div class="st-d" id="st-wdh-desc">Was noch wackelt</div></div></button>
+    <button class="st-kachel st-breit" onclick="paareOeffnen()"><div class="st-ic">🧩</div><div><div class="st-t">Paare finden</div><div class="st-d">Fachbegriff und Situation aus dem Salon zusammenbringen</div></div></button>
   </div>
 </div>
 <div id="p-b-pruefung" class="page">
@@ -652,6 +654,14 @@ body.mit-leiste .leiste{display:flex}
 </div>
 
 <!-- ── QUIZ ── -->
+<!-- Paare finden (paare-finden.js): Fachbegriff ↔ Situation -->
+<div id="p-paare" class="page">
+  <button class="back-btn" onclick="zeige('b-ueben')">← Zurück</button>
+  <div class="tag">greathairday · Üben</div>
+  <h1>🧩 Paare finden</h1>
+  <div class="st-sub" style="margin-bottom:16px">Welcher Fachbegriff gehört zu welcher Situation?</div>
+  <div id="paare-inhalt"></div>
+</div>
 <div id="p-quiz" class="page">
   <button class="back-btn" onclick="zeige('home')">← Zurück</button>
   <div class="tag">greathairday · Wien</div>
@@ -6136,6 +6146,7 @@ zeige = function(seite) {
   if (!sprung && MODULE[hz.get('modul')]) sprung = function(){ MODULE[hz.get('modul')](); };
   if (!sprung && hz.has('sortieren')) sprung = function(){ sortierenOeffnen(hz.get('sortieren')); };
   if (!sprung && hz.has('woerni')) sprung = function(){ woerniOeffnen(); };
+  if (!sprung && hz.has('paare')) sprung = function(){ paareOeffnen(); };
   if (!sprung && hz.has('probezeit')) sprung = function(){ probezeitOeffnen(); };
   if (!sprung && hz.has('regeln')) sprung = function(){ regelnOeffnen(); };
   if (sprung) {
