@@ -23,7 +23,8 @@
 //    (z. B. Gelbstich = Farbproblem, strohiges Haar = Strukturproblem).
 //  - Gegenfrage = Prüffrage aus dem Arbeitsablauf, kein Rätsel.
 //  - Sachlicher Ton wie eine erfahrene Kollegin, ohne Witz.
-//  Überarbeitet: Farbe & Blondierung, Haarkunde, Hautkunde. Die übrigen Themen folgen.
+//  Überarbeitet: Farbe & Blondierung, Haarkunde, Hautkunde, Dauerwelle, Hygiene, Werkzeug.
+//  Noch offen: Haarwäsche, Schnitt (Schnittwerkstatt).
 // Schlüssel = id der Frage in lernquiz.html (FB); Schnittwerkstatt: sw1–sw15.
 // Felder: bild (Bild/Eselsbrücke), frage (Gegenfrage), o (2–3 Antworten),
 //         r (Index der richtigen), ja (nach richtig), nein (nach falsch).
@@ -221,119 +222,119 @@
       nein: 'Nicht ganz. Wasserstoffbrücken lösen sich beim Waschen wieder. Die Dauerwelle verändert die Schwefelbrücken, darum hält sie.'
     },
     '1-12': {
-      bild: 'Denk an Legosteine: Willst du ein Haus umbauen, musst du die Steine zuerst auseinandernehmen. Im Haar halten feste Schwefelbrücken die Form zusammen, wie die Noppen die Legosteine. Bevor das Haar eine neue Form bekommt, muss mit diesen Brücken zuerst etwas passieren.',
-      frage: 'Was muss zuerst passieren, damit glattes Haar die Form des Wicklers annehmen kann?',
-      o: ['Die festen Verbindungen im Haar müssen gelöst werden', 'Das Haar muss gefärbt werden', 'Das Haar muss ganz trocken sein'], r: 0,
-      ja: 'Richtig. Genau das ist die Aufgabe des Wellemittels. Das Festmachen in der neuen Form kommt erst danach.',
-      nein: 'Nicht ganz. Solange die festen Verbindungen halten, springt das Haar in seine alte Form zurück. Sie müssen zuerst gelöst werden.'
+      bild: 'Eine Dauerwelle läuft in zwei chemischen Schritten ab: Zuerst wird das Haar formbar gemacht, dann wird die neue Form festgelegt. Die dauerhafte Form des Haares steckt in den Schwefelbrücken im Cortex. Praxis: Mit der Wellprobe kontrollierst du, ob der erste Schritt weit genug ist, bevor gespült und fixiert wird.',
+      frage: 'Was muss mit den Schwefelbrücken passieren, damit sich das Haar um den Wickler formen lässt?',
+      o: ['Ein Teil davon muss geöffnet werden', 'Sie müssen verstärkt werden', 'Nichts, der Wickler reicht'], r: 0,
+      ja: 'Richtig. Das ist die Aufgabe des Wellemittels. Das Schließen in der neuen Form kommt erst danach.',
+      nein: 'Nicht ganz. Solange die Schwefelbrücken geschlossen sind, hält das Haar seine alte Form. Sie müssen zuerst teilweise geöffnet werden.'
     },
     '2-mc8': {
-      bild: 'Bleib bei den Legosteinen: Das Wellemittel hat das Haus auseinandergenommen, der Wickler gibt die neue Form vor. Jetzt muss jemand die Steine in der neuen Form wieder fest zusammendrücken, sonst fällt alles zusammen.',
-      frage: 'Was passiert, wenn du nach dem Wellemittel den Fixierer weglässt?',
-      o: ['Die Welle hält nicht und das Haar bleibt geschwächt', 'Die Welle wird besonders stark', 'Nichts, der Fixierer ist nur Pflege'], r: 0,
-      ja: 'Genau. Der Fixierer ist der, der die Verbindungen in der neuen Form wieder schließt.',
-      nein: 'Nicht ganz. Ohne Fixierer bleiben die gelösten Verbindungen offen: Die Welle hält nicht, und das Haar ist geschwächt.'
+      bild: 'Nach dem Wellemittel liegt das Haar formbar in der Form des Wicklers. Im zweiten Schritt wird diese Form mit einem Oxidationsmittel dauerhaft festgelegt. Praxis: Vorher gründlich spülen, die Fixierung gleichmäßig auftragen und die Einwirkzeit einhalten.',
+      frage: 'Welcher Stoff steckt meist im Fixierer?',
+      o: ['Wasserstoffperoxid', 'Ammoniak', 'Thioglykolat'], r: 0,
+      ja: 'Richtig. Als Oxidationsmittel legt es die neue Form fest. Was passiert dabei mit den geöffneten Schwefelbrücken?',
+      nein: 'Nicht ganz. Ammoniak und Thioglykolat machen das Haar formbar. Fixiert wird mit einem Oxidationsmittel, meist Wasserstoffperoxid.'
     },
     '2-mc9': {
-      bild: 'Am Samstag einen Marathon laufen und am Sonntag gleich noch einen? Auch ein trainierter Körper braucht dazwischen Pause. Farbe und Dauerwelle sind beide chemische Behandlungen, die das Haar stark fordern.',
-      frage: 'Was haben Coloration und Dauerwelle gemeinsam?',
-      o: ['Beide sind chemische Behandlungen, die das Haar belasten', 'Beide sind reine Pflege', 'Beide wirken nur außen auf der Schuppenschicht'], r: 0,
-      ja: 'Genau. Zwei solche Belastungen direkt hintereinander sind zu viel für das Haar.',
-      nein: 'Nicht ganz. Beide arbeiten mit Chemie im Inneren des Haares. Zwei davon direkt hintereinander belasten es doppelt.'
+      bild: 'Coloration und Dauerwelle sind beide chemische Behandlungen, die in den Cortex eingreifen. Direkt hintereinander summiert sich die Belastung: Das Haar verliert Festigkeit, die Welle wird ungleichmäßig, im schlimmsten Fall bricht das Haar. Praxis: In der Regel kommt zuerst die Dauerwelle, die Farbe mit zeitlichem Abstand danach.',
+      frage: 'Was prüfst du, bevor du bei gefärbtem Haar eine Dauerwelle machst?',
+      o: ['Den Haarzustand, zum Beispiel mit einer Probesträhne', 'Nur die gewünschte Lockengröße', 'Nichts, gefärbtes Haar nimmt die Welle besser an'], r: 0,
+      ja: 'Richtig. Gefärbtes Haar ist schon chemisch belastet. Zwei Behandlungen direkt hintereinander belasten es doppelt.',
+      nein: 'Nicht ganz. Gefärbtes Haar ist vorbelastet. Vor der Dauerwelle prüfst du, ob es eine weitere chemische Behandlung verträgt.'
     },
     '2-mc10': {
-      bild: 'Ein Rezept hat immer mehrere Zutaten: Ein dünner Wickler macht kleine, feste Locken, ein dicker nur Schwung. Aber auch das Mittel, wie lange es wirkt und welches Haar du vor dir hast, spielen mit.',
-      frage: 'Gleiche Wickler, gleiches Mittel, aber einmal feines und einmal sehr grobes Haar. Wird die Welle gleich?',
-      o: ['Nein, die Haarstruktur macht einen Unterschied', 'Ja, immer genau gleich', 'Nur wenn die Kundin es will'], r: 0,
-      ja: 'Richtig. Es zählt also nicht nur eine Sache. Welche Antwort nennt alle Zutaten?',
-      nein: 'Nicht ganz. Feines und grobes Haar reagieren unterschiedlich auf dasselbe Mittel. Es zählen also mehrere Dinge zusammen.'
+      bild: 'Eine Dauerwelle hat nicht nur eine Stellschraube. Typisch im Salon: Zwei Kundinnen bekommen gleiche Wickler und das gleiche Mittel. Eine hat feines, blondiertes Haar, die andere grobes Naturhaar. Das Ergebnis wird trotzdem unterschiedlich. Darum kontrollierst du mit der Wellprobe und nicht nur nach der Uhr.',
+      frage: 'Gleiche Wickler, gleiches Mittel, aber feines blondiertes und grobes Naturhaar. Wird das Ergebnis gleich?',
+      o: ['Nein, die Haarstruktur wirkt mit', 'Ja, immer', 'Nur wenn die Einwirkzeit gleich ist'], r: 0,
+      ja: 'Richtig. Neben Wickler und Mittel zählen also auch Einwirkzeit und Haarstruktur.',
+      nein: 'Nicht ganz. Feines, vorbehandeltes Haar reagiert schneller als grobes Naturhaar. Es zählen mehrere Faktoren zusammen.'
     },
     '3-mc7': {
-      bild: 'Erinnerst du dich an den Tannenzapfen? Alkalisch öffnet die Schuppen weit: Das Mittel kommt schnell und kräftig hinein. Sauer öffnet kaum: Es geht langsamer, dafür schonender. Merksatz: „Alkalisch – A wie Action, sauer – S wie sanft.“',
-      frage: 'Eine Kundin hat gefärbtes, empfindliches Haar und will eine Dauerwelle. Was ist dir am wichtigsten?',
-      o: ['Dass es möglichst schonend ist', 'Dass es möglichst schnell geht', 'Dass die Welle möglichst stark wird'], r: 0,
-      ja: 'Genau. Für empfindliches Haar wählst du die sanfte Variante. Welche war „S wie sanft“?',
-      nein: 'Nicht ganz. Gefärbtes Haar ist schon belastet. Wichtig ist, es zu schonen, auch wenn es dann etwas länger dauert.'
+      bild: 'Der pH-Wert eines Wellemittels steuert, wie stark das Haar quillt. Starke Quellung öffnet das Haar weit, das Mittel dringt schnell und kräftig ein. Geringe Quellung wirkt langsamer und schont das Haar. Praxis: Die Wahl richtet sich nach dem Haarzustand, nicht nach dem Zeitplan.',
+      frage: 'Ein Wellemittel hat einen hohen pH-Wert. Was bedeutet das für die Wirkung?',
+      o: ['Stärker und schneller', 'Schonender und langsamer', 'Kein Unterschied'], r: 0,
+      ja: 'Richtig. Ein hoher pH-Wert heißt alkalisch. Ordne jetzt sauer und alkalisch zu.',
+      nein: 'Nicht ganz. Ein hoher pH-Wert lässt das Haar stark quellen. Das Mittel wirkt dadurch stärker und schneller.'
     },
     // ── Hygiene & Schutzmaßnahmen ────────────────────────────────────────
     '1-1': {
-      bild: 'Denk an deine Küche: Zuerst wischst du die Krümel weg, dann sprühst du gegen Keime. Ganz keimfrei wie im Operationssaal wird es nur mit Spezialgeräten. Drei Stufen, jede stärker als die vorige.',
-      frage: 'Was kommt immer zuerst, bevor du gegen Keime vorgehst?',
-      o: ['Sichtbaren Schmutz und Haare entfernen', 'Gleich das Desinfektionsmittel aufsprühen', 'Das Werkzeug sterilisieren'], r: 0,
-      ja: 'Genau, zuerst reinigen. Auf Schmutz wirkt Desinfektionsmittel schlecht. Wie heißen die zwei stärkeren Stufen danach?',
-      nein: 'Nicht ganz. Auf Haaren und Schmutz kann Desinfektionsmittel nicht richtig wirken. Darum kommt immer zuerst das Reinigen.'
+      bild: 'Hygiene im Salon baut in Stufen aufeinander auf. Die erste entfernt sichtbaren Schmutz und Haare. Die zweite verringert Krankheitserreger so weit, dass keine Ansteckungsgefahr mehr besteht. Die dritte tötet alle Keime einschließlich Sporen ab und ist im Salon nur für bestimmte Instrumente nötig.',
+      frage: 'Welche Stufe tötet auch Sporen ab?',
+      o: ['Sterilisieren', 'Desinfizieren', 'Reinigen'], r: 0,
+      ja: 'Richtig. Das ist die höchste Stufe. Davor kommen das Entfernen von Schmutz und das Verringern der Keime.',
+      nein: 'Nicht ganz. Sporen werden nur beim Sterilisieren abgetötet, der höchsten Stufe.'
     },
     '1-15': {
-      bild: 'Desinfektionsmittel ist wie Sonnencreme: Es schützt nur, wenn es lange genug drauf ist. Sprühen und sofort abwischen ist, als würdest du die Creme gleich wieder abwischen.',
-      frage: 'Was passiert, wenn du Desinfektionsmittel sofort wieder abwischst?',
-      o: ['Es hat keine Zeit zu wirken', 'Es wirkt dann besonders stark', 'Das Werkzeug wird steril'], r: 0,
-      ja: 'Richtig. Es braucht eine Einwirkzeit, also eine Mindestzeit. Die genaue Zeit steht auf dem Produkt.',
-      nein: 'Nicht ganz. Desinfektionsmittel braucht Zeit, um die Keime abzutöten. Wer gleich abwischt, hat umsonst gesprüht.'
+      bild: 'Desinfektionsmittel brauchen eine Mindest-Einwirkzeit, um Keime sicher abzutöten. Sie gilt nur, wenn die Fläche oder das Werkzeug so lange benetzt bleibt. Praxis: Gründlich benetzen, die angegebene Zeit abwarten und erst dann abwischen oder weiterarbeiten.',
+      frage: 'Wo findest du die genaue Einwirkzeit eines Desinfektionsmittels?',
+      o: ['Auf dem Produkt bzw. in der Gebrauchsanweisung', 'Im Terminbuch', 'Das entscheidet jede selbst'], r: 0,
+      ja: 'Richtig. Als Faustregel nennt die Quizfrage eine Mindestzeit.',
+      nein: 'Nicht ganz. Die Einwirkzeit legt der Hersteller fest. Sie steht auf dem Produkt bzw. in der Gebrauchsanweisung.'
     },
     '1-mc23': {
-      bild: 'Stell dir einen Fußballplatz voller Keime vor. Desinfizieren heißt: fast alle vom Platz schicken, so viele, dass keine Gefahr mehr besteht. Sterilisieren heißt: wirklich jeder ist weg, auch der Letzte.',
-      frage: 'Welche Stufe macht ein Werkzeug wirklich ganz keimfrei?',
-      o: ['Sterilisieren', 'Desinfizieren', 'Reinigen'], r: 0,
-      ja: 'Genau. Desinfizieren ist eine Stufe darunter: nicht alle Keime, aber so viele, dass es unbedenklich ist.',
-      nein: 'Nicht ganz. Ganz keimfrei wird es nur beim Sterilisieren. Desinfizieren schafft das nicht ganz, es macht die Keime aber stark weniger.'
+      bild: 'Hygiene kennt verschiedene Stufen. Nur die Sterilisation tötet alle Keime einschließlich Sporen ab. Für Kämme, Scheren und Flächen im Salon reicht in der Regel die Stufe darunter.',
+      frage: 'Ist ein desinfizierter Kamm keimfrei?',
+      o: ['Nein, keimfrei macht nur die Sterilisation', 'Ja, vollständig', 'Ja, wenn er danach trocknet'], r: 0,
+      ja: 'Richtig. Desinfektion verringert die Keime so weit, dass keine Ansteckungsgefahr mehr besteht.',
+      nein: 'Nicht ganz. Keimfrei wird ein Werkzeug nur durch Sterilisation. Desinfektion verringert die Keime auf ein unbedenkliches Maß.'
     },
     '2-13': {
-      bild: 'Deine Hände sind wie eine Brücke zwischen den Kundinnen: Alles, was an ihnen klebt, wandert mit zur nächsten. Die Brücke muss also immer dann sauber sein, wenn jemand Neues sie betritt.',
-      frage: 'Du hast gerade fertig geschnitten, die nächste Kundin wartet schon. Was gehört dazwischen?',
-      o: ['Hände desinfizieren', 'Nichts, die Hände waren ja nur im Haar', 'Nur das Handy weglegen'], r: 0,
-      ja: 'Richtig. Vor und nach jeder Kundin, und immer dann, wenn etwas schmutzig geworden ist.',
-      nein: 'Nicht ganz. Auch im Haar und auf der Kopfhaut sind Keime. Damit sie nicht zur nächsten Kundin wandern, desinfizierst du dazwischen die Hände.'
+      bild: 'Hände sind der häufigste Übertragungsweg für Keime im Salon. Darum werden sie zu festen Zeitpunkten desinfiziert, unabhängig davon, ob sie schmutzig aussehen. Praxis: Händedesinfektionsmittel nach Herstellerangabe einreiben, bis die Hände trocken sind, und die Haut danach pflegen.',
+      frage: 'Du hast eine Kundin fertig geschnitten, die nächste wartet. Was gehört dazwischen?',
+      o: ['Hände desinfizieren', 'Nichts, die Hände sehen sauber aus', 'Nur die Schere abwischen'], r: 0,
+      ja: 'Richtig. Dazu kommen alle Momente, in denen die Hände verschmutzt wurden.',
+      nein: 'Nicht ganz. Zwischen zwei Kundinnen werden die Hände desinfiziert, auch wenn sie sauber aussehen.'
     },
     '2-mc17': {
-      bild: 'Würdest du dich mit einem Handtuch abtrocknen, das gerade jemand Fremdes benutzt hat? Deine Kundin auch nicht. Ein Handtuch berührt Haut und Haar direkt und nimmt Hautschüppchen, Feuchtigkeit und Keime auf.',
-      frage: 'Ein Handtuch sieht nach einer Kundin noch sauber aus. Ist es auch keimfrei?',
-      o: ['Nein, Keime sieht man nicht', 'Ja, sauber aussehen reicht', 'Nur, wenn es weiß ist'], r: 0,
-      ja: 'Genau. Darum zählt nicht, wie es aussieht, sondern ob schon jemand anderer es benutzt hat.',
-      nein: 'Nicht ganz. Keime sind unsichtbar. Ein Handtuch, das eine Kundin berührt hat, ist für die nächste nicht mehr sauber.'
+      bild: 'Handtücher haben direkten Kontakt mit Haut, Haar und Kopfhaut. Sie nehmen Hautschüppchen, Feuchtigkeit und Keime auf, auch wenn man nichts davon sieht. Benutzte Wäsche wird getrennt gesammelt und heiß gewaschen.',
+      frage: 'Wie wäschst du benutzte Handtücher, damit Keime sicher abgetötet werden?',
+      o: ['Bei mindestens 60 °C', 'Kalt, damit sie weich bleiben', 'Gar nicht, Auslüften reicht'], r: 0,
+      ja: 'Richtig. Sauber heißt also frisch gewaschen. Wie oft brauchst du frische Handtücher?',
+      nein: 'Nicht ganz. Keime werden erst bei mindestens 60 °C sicher abgetötet. Auslüften reicht nicht.'
     },
     '1-mc22': {
-      bild: 'Denk an die Kollegin, die abends den Müll ausleert: Eine Klinge in Papier oder im offenen Becher sticht durch den Sack direkt in ihre Hand. Alles Spitze und Scharfe gehört deshalb in einen Behälter, durch den nichts durchkommt.',
-      frage: 'Was muss ein Behälter für gebrauchte Klingen vor allem können?',
-      o: ['Er darf sich nicht durchstechen lassen', 'Er muss schön aussehen', 'Er muss offen sein, damit es schnell geht'], r: 0,
-      ja: 'Richtig. So einen Behälter nennt man stichfest.',
-      nein: 'Nicht ganz. Es geht um Sicherheit: Die Klinge darf niemanden verletzen, auch nicht beim Ausleeren. Der Behälter muss also fest und geschlossen sein.'
+      bild: 'Gebrauchte Rasierklingen sind eine typische Ursache für Schnittverletzungen im Salon, auch bei Kolleginnen, die später den Müll ausleeren. Darum werden sie sofort nach Gebrauch sicher entsorgt: nie lose, nie in Papier gewickelt.',
+      frage: 'Warum gelten gebrauchte Klingen als besonders gefährlich?',
+      o: ['Sie sind scharf und können mit Blut in Kontakt gewesen sein', 'Sie rosten schnell', 'Sie sind teuer'], r: 0,
+      ja: 'Richtig. Sie dürfen niemanden verletzen, auch nicht beim Ausleeren. Was muss der Behälter dafür können?',
+      nein: 'Nicht ganz. Gefährlich sind die Schneide und mögliche Blutreste. Darum braucht es einen Behälter, der sich nicht durchstechen lässt.'
     },
     '2-1': {
-      bild: 'Zerleg das Wort: „Kontakt“ heißt Berührung, „Derma“ heißt Haut. Fehlt noch die Endung. Friseurhände sind fast den ganzen Tag nass und berühren Farbe, Shampoo und Handschuhe.',
-      frage: 'Was bedeutet die Endung „-itis“, wie bei Bronchitis oder Mandelentzündung (Tonsillitis)?',
-      o: ['Entzündung', 'Allergie gegen Haare', 'Haarausfall'], r: 0,
-      ja: 'Genau. Setz die drei Teile zusammen: Berührung, Haut, Entzündung.',
-      nein: 'Nicht ganz. „-itis“ heißt immer Entzündung, wie bei Bronchitis. Setz die drei Teile zusammen: Berührung, Haut, Entzündung.'
+      bild: 'Bei Friseurinnen gehört diese Hauterkrankung zu den häufigsten Berufskrankheiten. Viel Nassarbeit, Shampoo, Farbe und Dauerwellmittel schwächen die Hautbarriere der Hände. Zeichen sind Rötung, Trockenheit, Risse und Brennen. Vorbeugung: Handschuhe bei Nassarbeit und Chemie, Hautschutz vor und Pflege nach der Arbeit.',
+      frage: 'Was bedeutet die Endung „-itis“ in medizinischen Fachbegriffen?',
+      o: ['Entzündung', 'Allergie', 'Ansteckung'], r: 0,
+      ja: 'Richtig. „Derma“ heißt Haut. Zusammen mit „Kontakt“ ergibt sich die Bedeutung.',
+      nein: 'Nicht ganz. „-itis“ steht immer für eine Entzündung. „Derma“ heißt Haut.'
     },
     '3-mc10': {
-      bild: 'Lies das Wort wie ein Etikett: „viruzid“ heißt: wirkt gegen Viren. „Begrenzt“ heißt: nicht gegen alle, aber gegen viele. Das „plus“ legt noch ein paar wichtige, hartnäckige Viren drauf. Gegen Bakterien und Pilze wirkt ein gutes Salon-Desinfektionsmittel ohnehin.',
-      frage: 'Was heißt „viruzid“?',
-      o: ['Wirkt gegen Viren', 'Wirkt nur gegen Pilze', 'Ist besonders hautschonend'], r: 0,
-      ja: 'Richtig. Zusammen mit Bakterien und Pilzen ergibt das genau den Schutz, den ein Salon braucht. Gegen wirklich alles, auch Sporen, wirkt es aber nicht.',
-      nein: 'Nicht ganz. „Viren“ steckt schon im Wort: viruzid heißt, es wirkt gegen Viren.'
+      bild: 'Auf Desinfektionsmitteln steht, gegen welche Erreger sie wirken: „bakterizid“ gegen Bakterien, „levurozid“ gegen Hefepilze. Bei Viren gibt es Stufen: „begrenzt viruzid“ wirkt gegen behüllte Viren, „begrenzt viruzid plus“ zusätzlich gegen einige besonders widerstandsfähige, unbehüllte Viren, „viruzid“ gegen alle Viren.',
+      frage: 'Wirkt ein „begrenzt viruzides“ Mittel gegen alle Viren?',
+      o: ['Nein, nur gegen einen Teil', 'Ja, gegen alle', 'Es wirkt gar nicht gegen Viren'], r: 0,
+      ja: 'Richtig. Das „plus“ erweitert die Wirkung um einige widerstandsfähige Viren. Gegen alle Keime einschließlich Sporen wirkt es aber nicht.',
+      nein: 'Nicht ganz. „Begrenzt“ heißt: gegen einen Teil der Viren. Gegen alle Viren wirkt nur ein „viruzides“ Mittel.'
     },
     '2-mc18': {
-      bild: 'Die Gefahrensymbole sind Bildersprache: Ein Totenkopf heißt Gift, ein toter Baum mit Fisch heißt Gefahr für die Umwelt. Bei der Flamme kannst du es selbst ablesen. Im Salon findest du sie oft auf Haarspray.',
-      frage: 'Neben was solltest du ein Produkt mit Flammen-Symbol nie sprühen?',
-      o: ['Neben dem heißen Glätteisen oder einer Kerze', 'Neben dem Waschbecken', 'Neben dem Spiegel'], r: 0,
-      ja: 'Genau. Was nicht neben Hitze und Feuer darf, kann selbst schnell Feuer fangen.',
-      nein: 'Nicht ganz. Eine Flamme warnt vor Feuer. Gefährlich wird es also neben Hitze oder offenem Feuer.'
+      bild: 'Gefahrstoffe sind mit Symbolen in roten Rauten gekennzeichnet (GHS). Jedes Symbol steht für eine Gefahrenart. Im Salon tragen zum Beispiel Haarspray und manche Stylingprodukte das Flammensymbol. Praxis: Solche Produkte nie in der Nähe von Glätteisen, heißem Föhn oder offener Flamme sprühen.',
+      frage: 'Wo findest du alle Einzelheiten zu den Gefahren eines Produkts?',
+      o: ['Im Sicherheitsdatenblatt', 'Auf dem Kassenbon', 'In der Preisliste'], r: 0,
+      ja: 'Richtig. Das Flammensymbol selbst warnt vor einer Gefahr, die mit Hitze und Feuer zu tun hat.',
+      nein: 'Nicht ganz. Gefahren, Inhaltsstoffe und Erste Hilfe stehen im Sicherheitsdatenblatt.'
     },
 
     // ── Werkzeugkunde: Schere ────────────────────────────────────────────
     '1-5': {
-      bild: 'Denk an einen Kamm und ein Lineal: Mit dem Lineal ziehst du eine durchgehende Kante, der Kamm lässt Lücken. Eine Schere mit Zähnen schneidet nur die Haare zwischen den Zähnen ab, die anderen bleiben lang. So wird es weniger, aber man sieht keine Kante.',
-      frage: 'Eine Schere hat auf einer Klinge kleine Zähne. Schneidet sie alle Haare der Strähne ab?',
-      o: ['Nein, nur einen Teil, das dünnt aus', 'Ja, alle gleichmäßig', 'Nein, sie schneidet gar nicht'], r: 0,
-      ja: 'Richtig. Weniger Haar, aber keine sichtbare Schnittlinie: Genau das nennt man ausdünnen.',
-      nein: 'Nicht ganz. Die Zähne lassen einen Teil der Haare durch. Nur die übrigen werden abgeschnitten, so wird die Strähne dünner.'
+      bild: 'Scheren unterscheiden sich an den Klingen. Mit zwei glatten Klingen schneidest du jede Strähne vollständig durch, für klare Linien und Konturen. Hat eine Klinge Zähne, wird nur ein Teil der Haare erfasst: Das nimmt Volumen heraus, ohne eine sichtbare Schnittkante zu hinterlassen.',
+      frage: 'Du willst dickes Haar ausdünnen, ohne dass eine Kante entsteht. Welche Klinge brauchst du?',
+      o: ['Eine gezahnte Klinge', 'Zwei glatte Klingen', 'Eine stumpfe Klinge'], r: 0,
+      ja: 'Richtig. Gezahnte Klingen dünnen aus, glatte Klingen schneiden klare Linien. Welche Schere hat welche?',
+      nein: 'Nicht ganz. Glatte Klingen schneiden die ganze Strähne und hinterlassen eine Kante. Zum Ausdünnen brauchst du eine gezahnte Klinge.'
     },
     '1-mc35': {
-      bild: 'Eine Profischere ist wie ein gutes Kochmesser: Sie hält viele Jahre, wenn du sie pflegst. Ihr größter Feind sitzt unsichtbar im Gelenk.',
-      frage: 'Was schadet einer Schere am meisten?',
-      o: ['Feuchtigkeit, die im Gelenk bleibt', 'Ein Tropfen Öl', 'Ein weiches Tuch'], r: 0,
-      ja: 'Genau. Darum gehören nach dem Reinigen Abtrocknen und Ölen dazu.',
-      nein: 'Nicht ganz. Öl und ein weiches Tuch pflegen die Schere. Schaden macht Feuchtigkeit, die im Gelenk bleibt und rosten lässt.'
+      bild: 'Eine Profischere ist ein Präzisionswerkzeug. Haare, Feuchtigkeit und Reste von Desinfektionsmittel im Gelenk führen zu Rost und machen sie schwergängig. Sie wird nie fallen gelassen, weil schon ein Sturz die Schneide beschädigen kann.',
+      frage: 'Wer schleift eine Profischere?',
+      o: ['Ein Fachbetrieb', 'Jede im Salon mit einem Messerschärfer', 'Niemand, sie wird nie stumpf'], r: 0,
+      ja: 'Richtig. Die tägliche Pflege machst du selbst. Was gehört nach jeder Kundin dazu?',
+      nein: 'Nicht ganz. Eine Profischere wird nur vom Fachbetrieb geschliffen. Die tägliche Pflege machst du selbst.'
     },
     // ── Hautkunde ────────────────────────────────────────────────────────
     '1-17': {
