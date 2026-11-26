@@ -23,8 +23,7 @@
 //    (z. B. Gelbstich = Farbproblem, strohiges Haar = Strukturproblem).
 //  - Gegenfrage = Prüffrage aus dem Arbeitsablauf, kein Rätsel.
 //  - Sachlicher Ton wie eine erfahrene Kollegin, ohne Witz.
-//  Überarbeitet: Farbe & Blondierung, Haarkunde, Hautkunde, Dauerwelle, Hygiene, Werkzeug.
-//  Noch offen: Haarwäsche, Schnitt (Schnittwerkstatt).
+//  Alle Texte sind nach diesem Standard überarbeitet (2026-11-26).
 // Schlüssel = id der Frage in lernquiz.html (FB); Schnittwerkstatt: sw1–sw15.
 // Felder: bild (Bild/Eselsbrücke), frage (Gegenfrage), o (2–3 Antworten),
 //         r (Index der richtigen), ja (nach richtig), nein (nach falsch).
@@ -417,67 +416,67 @@
 
     // ── Haarwäsche & Kopfmassage ─────────────────────────────────────────
     '1-hw1': {
-      bild: 'Denk an Eltern, die ein Babyfläschchen testen: Sie tropfen die Milch nicht auf die Fingerspitzen. Unsere Hände sind durch Arbeit und Wasser abgehärtet und spüren Hitze schlechter als die Kopfhaut.',
-      frage: 'Wo spürst du Hitze ehrlicher: an den abgehärteten Händen oder an der dünnen Haut innen am Unterarm?',
-      o: ['An der dünnen Haut innen am Unterarm', 'An den Händen', 'Überall gleich'], r: 0,
-      ja: 'Genau. Und danach fragst du trotzdem die Kundin, ob es angenehm ist.',
-      nein: 'Nicht ganz. Die Hände sind abgehärtet. Die dünne Haut innen am Unterarm oder am Handgelenk reagiert ähnlich empfindlich wie die Kopfhaut.'
+      bild: 'Die Haut an den Händen ist durch die Nassarbeit abgehärtet und schätzt Wärme schlecht ein. Die Kopfhaut der Kundin ist deutlich empfindlicher. Darum prüfst du die Wassertemperatur an einer Stelle mit ähnlich dünner, empfindlicher Haut und fragst danach die Kundin.',
+      frage: 'Warum prüfst du die Wassertemperatur nicht an der Handfläche?',
+      o: ['Die Hände sind abgehärtet und spüren Hitze schlechter', 'Weil die Handfläche nass wird', 'Weil es unhygienisch ist'], r: 0,
+      ja: 'Richtig. Die Stelle zum Prüfen soll so empfindlich sein wie die Kopfhaut.',
+      nein: 'Nicht ganz. Die Hände sind abgehärtet und schätzen Hitze falsch ein. Du brauchst eine Stelle mit dünner, empfindlicher Haut.'
     },
     '1-hw2': {
-      bild: 'Denk an ein Bad, in dem du dich richtig wohlfühlst: Das Wasser ist ungefähr so warm wie dein Körper. Zu heißes Wasser reizt die Kopfhaut, die Talgdrüsen arbeiten mehr, und Farbe blutet aus.',
-      frage: 'Wie warm ist dein Körper ungefähr?',
-      o: ['Etwa 37 °C', 'Etwa 25 °C', 'Etwa 45 °C'], r: 0,
-      ja: 'Richtig. Das Wasser für die Haarwäsche ist ungefähr gleich warm, also lauwarm.',
-      nein: 'Nicht ganz. Der Körper hat etwa 37 °C. Ungefähr so warm soll auch das Wasser sein.'
+      bild: 'Für die normale Haarwäsche ist lauwarmes Wasser richtig, ungefähr Körpertemperatur. Zu heißes Wasser reizt die Kopfhaut, regt die Talgdrüsen an und lässt Farbpigmente ausbluten. Zu kaltes Wasser löst Talg und Stylingreste schlecht.',
+      frage: 'Welche Körpertemperatur hat ein gesunder Mensch ungefähr?',
+      o: ['Etwa 37 °C', 'Etwa 32 °C', 'Etwa 40 °C'], r: 0,
+      ja: 'Richtig. Das Wasser für die Haarwäsche liegt ungefähr in diesem Bereich.',
+      nein: 'Nicht ganz. Die Körpertemperatur liegt bei etwa 37 °C. Ungefähr so warm ist das Wasser für die Haarwäsche.'
     },
     '1-hw3': {
-      bild: 'Erinnerst du dich an den Tannenzapfen? Wärme öffnet seine Schuppen, Kälte schließt sie. Bei der Haarwäsche nutzt du das ganz am Ende.',
-      frage: 'Was glänzt mehr: ein glatter Spiegel oder ein zerknülltes Papier?',
-      o: ['Der glatte Spiegel', 'Das zerknüllte Papier', 'Beide gleich'], r: 0,
-      ja: 'Genau. Glatt anliegende Schuppen glänzen wie ein Spiegel. Und was lässt die Schuppen anliegen: warm oder kühl?',
-      nein: 'Nicht ganz. Eine glatte Fläche spiegelt das Licht, eine raue streut es. Glatt anliegende Schuppen glänzen also.'
+      bild: 'Warmes Wasser lässt das Haar leicht quellen, die Schuppenschicht steht etwas ab. Zum Schluss der Wäsche nutzt du den umgekehrten Effekt: Glatt anliegende Schuppen reflektieren das Licht gleichmäßiger, und das Haar lässt sich leichter kämmen.',
+      frage: 'Welche Haaroberfläche reflektiert das Licht am gleichmäßigsten?',
+      o: ['Eine glatt anliegende Schuppenschicht', 'Eine aufgeraute Schuppenschicht', 'Eine gequollene Schuppenschicht'], r: 0,
+      ja: 'Richtig. Und was lässt die Schuppen anliegen: warmes oder kühleres Wasser?',
+      nein: 'Nicht ganz. Nur eine glatte Oberfläche reflektiert das Licht gleichmäßig. Dafür muss die Schuppenschicht anliegen.'
     },
     '1-hw4': {
-      bild: 'Denk an eine Gesichtsbehandlung bei der Kosmetikerin: Dort massiert niemand mit den Fingernägeln. Die Kopfhaut ist genauso empfindlich wie die Haut im Gesicht, und die Kundin soll sich bei dir wohl und sicher fühlen.',
-      frage: 'Was passiert, wenn du die Kopfhaut mit den Nägeln bearbeitest?',
-      o: ['Sie kann gereizt und verletzt werden', 'Das Haar glänzt mehr', 'Das Shampoo schäumt mehr'], r: 0,
-      ja: 'Richtig. Darum nimmst du den weichen, runden Teil vorne an den Fingern.',
-      nein: 'Nicht ganz. Nägel kratzen und können die Kopfhaut verletzen. Du brauchst den weichen Teil der Finger.'
+      bild: 'Bei der Kopfmassage soll die Kopfhaut bewegt und durchblutet werden, ohne sie zu verletzen. Fingernägel können feine Verletzungen und Reizungen verursachen, durch die Keime eindringen. Praxis: Kurze, gepflegte Nägel sind deshalb Teil der Berufshygiene.',
+      frage: 'Was soll eine Kopfmassage bewirken?',
+      o: ['Die Kopfhaut bewegen und durchbluten, ohne sie zu reizen', 'Die Kopfhaut kräftig aufrauen', 'Schuppen abkratzen'], r: 0,
+      ja: 'Richtig. Dafür brauchst du den Teil des Fingers, der fest, aber weich aufsetzt.',
+      nein: 'Nicht ganz. Die Massage soll lockern und durchbluten. Kratzen reizt die Kopfhaut und kann sie verletzen.'
     },
     '1-hw7': {
-      bild: 'Denk an eine alte Jeans: Am Bund ist sie fast wie neu, unten am Saum ausgefranst. Beim Haar ist es genauso: Am Ansatz ist es jung, die Spitzen sind schon Monate oder Jahre alt.',
-      frage: 'Was passiert, wenn du eine Kur auf die Kopfhaut gibst?',
-      o: ['Der Ansatz wird schwer und fettet schneller', 'Die Haare wachsen schneller', 'Gar nichts'], r: 0,
-      ja: 'Genau. Pflege gehört dorthin, wo das Haar schon alt und strapaziert ist.',
-      nein: 'Nicht ganz. Auf der Kopfhaut beschwert Pflege und fettet nach. Sie gehört dorthin, wo das Haar alt und strapaziert ist.'
+      bild: 'Das Haar ist am Ansatz am jüngsten und an den Spitzen am ältesten. Längen und Spitzen haben Monate oder Jahre mit Föhnen, UV-Strahlung und chemischen Behandlungen hinter sich und sind entsprechend strapaziert. Pflege wird dort gebraucht, wo die Schuppenschicht aufgeraut ist. Ausnahme: spezielle Kopfhautpflege.',
+      frage: 'Was passiert, wenn eine normale Spülung auf die Kopfhaut kommt?',
+      o: ['Der Ansatz wird schwer und fettet schneller', 'Das Haar wächst schneller', 'Die Kopfhaut wird gereinigt'], r: 0,
+      ja: 'Richtig. Pflege gehört dorthin, wo das Haar strapaziert ist.',
+      nein: 'Nicht ganz. Auf der Kopfhaut beschwert Pflege den Ansatz und fettet nach. Sie gehört dorthin, wo das Haar strapaziert ist.'
     },
     '1-hw8': {
-      bild: 'Eine Massage tut nur gut, wenn die Kopfhaut gesund ist. Bevor du anfängst, schaust du kurz hin: Ist alles in Ordnung?',
-      frage: 'Was kann passieren, wenn du über eine offene oder entzündete Stelle massierst?',
-      o: ['Es tut weh, und Keime können hineinkommen', 'Die Stelle heilt schneller', 'Nichts'], r: 0,
-      ja: 'Richtig. An solchen Stellen wird nicht massiert.',
-      nein: 'Nicht ganz. Druck auf eine offene oder entzündete Stelle tut weh und kann Keime hineinbringen. Dort wird nicht massiert.'
+      bild: 'Eine Kopfmassage regt die Durchblutung an und übt Druck auf die Kopfhaut aus. Das ist nur bei gesunder Kopfhaut angenehm und unbedenklich. Bei offenen oder entzündeten Stellen kann Druck Schmerzen verursachen, Keime verbreiten und die Heilung stören.',
+      frage: 'Wann schaust du dir die Kopfhaut der Kundin an?',
+      o: ['Vor der Wäsche, beim Durchbürsten', 'Erst nach dem Föhnen', 'Gar nicht, das ist Sache des Arztes'], r: 0,
+      ja: 'Richtig. So erkennst du rechtzeitig, wo nicht massiert werden darf.',
+      nein: 'Nicht ganz. Die Kopfhaut siehst du dir vor der Wäsche beim Durchbürsten an, damit du rechtzeitig reagieren kannst.'
     },
     '1-hw9': {
-      bild: 'Denk an einen Wollpullover: Rubbelst du ihn nass, verfilzt er. Nasses Haar ist gequollen, und seine Schuppen stehen leicht ab.',
-      frage: 'Was passiert mit abstehenden Schuppen, wenn du reibst?',
-      o: ['Sie werden aufgeraut', 'Sie legen sich glatt an', 'Sie fallen ab und wachsen nach'], r: 0,
-      ja: 'Genau. Darum drückst du das Haar sanft aus und wickelst einen Turban.',
-      nein: 'Nicht ganz. Reibung raut die abstehenden Schuppen auf. Das Haar wird stumpf und kann brechen.'
+      bild: 'Nach der Wäsche ist das Haar gequollen, die Schuppenschicht steht leicht ab. In diesem Zustand ist es besonders empfindlich gegen mechanische Belastung. Praxis: Haar sanft mit dem Handtuch ausdrücken und einen Turban wickeln.',
+      frage: 'Was passiert mit einer abstehenden Schuppenschicht, wenn du darüber reibst?',
+      o: ['Sie wird aufgeraut', 'Sie legt sich glatt an', 'Sie wird verstärkt'], r: 0,
+      ja: 'Richtig. Aufgeraute Schuppen machen das Haar stumpf und bruchanfällig.',
+      nein: 'Nicht ganz. Reibung raut die abstehende Schuppenschicht auf. Das Haar wird stumpf und kann brechen.'
     },
     '1-hw15': {
-      bild: 'Denk an einen Feierabend: Schuhe aus und locker werden, aufs Sofa und entspannen, tief durchatmen und zur Mitte finden, und dann Ruhe. Genau so ist die Entspannungshaarwäsche aufgebaut.',
-      frage: 'Womit endet eine Entspannungshaarwäsche für die Kundin?',
-      o: ['Mit Ruhe', 'Mit kräftigem Klopfen', 'Mit kaltem Wasser'], r: 0,
-      ja: 'Genau. Davor kommen Lockern, Entspannen und Ausgleichen. Welche Antwort klingt wie dieser Feierabend?',
-      nein: 'Nicht ganz. Eine Entspannungswäsche endet ruhig, nicht anregend. Davor kommen Lockern, Entspannen und Ausgleichen.'
+      bild: 'Die Entspannungshaarwäsche folgt einem festen Aufbau. Sie führt die Kundin schrittweise von der Anspannung, mit der sie in den Salon kommt, in die Ruhe. Darum beginnt sie lösend, wird dann tief entspannend, gleicht anschließend aus und endet ruhig, ohne anregende Griffe.',
+      frage: 'Womit endet eine Entspannungshaarwäsche?',
+      o: ['Mit einer Ruhephase', 'Mit kräftigem Klopfen', 'Mit kaltem Wasser'], r: 0,
+      ja: 'Richtig. Welche Antwort beschreibt einen Ablauf von lösend bis ruhig?',
+      nein: 'Nicht ganz. Eine Entspannungswäsche endet ruhig. Anregende Griffe wie Klopfen gehören zur vitalisierenden Massage.'
     },
     'b-10': {
-      bild: 'Denk an fettiges Geschirr: Im ersten Spülgang löst sich das gröbste Fett, und das Wasser wird trüb. Erst beim zweiten Mal wird es richtig sauber. Beim Haar schäumt das erste Shampoo oft kaum, weil es mit Fett und Styling beschäftigt ist.',
+      bild: 'Bei der ersten Wäsche bindet das Shampoo vor allem Talg, Stylingreste und Schmutz. Es schäumt deshalb oft kaum. Erst bei der zweiten Wäsche werden Haar und Kopfhaut wirklich gereinigt, und Pflegewirkstoffe können wirken. Praxis: Die Shampoomenge an Haarlänge und Verschmutzung anpassen.',
       frage: 'Warum schäumt das Shampoo bei der ersten Wäsche oft wenig?',
-      o: ['Weil es erst Fett und Styling lösen muss', 'Weil das Wasser zu kalt ist', 'Weil zu viel Shampoo drin ist'], r: 0,
-      ja: 'Richtig. Die erste Wäsche löst, die zweite reinigt richtig. Wie oft wird also grundsätzlich gewaschen?',
-      nein: 'Nicht ganz. Das erste Shampoo kämpft mit Fett und Styling. Erst beim zweiten Mal wird es richtig sauber.'
+      o: ['Es bindet erst Talg und Stylingreste', 'Das Wasser ist zu kalt', 'Es ist zu viel Shampoo'], r: 0,
+      ja: 'Richtig. Die zweite Wäsche reinigt dann richtig. Wie oft wird also grundsätzlich gewaschen?',
+      nein: 'Nicht ganz. Das erste Shampoo ist mit Talg und Stylingresten beschäftigt. Erst die zweite Wäsche reinigt richtig.'
     },
 
     // ── Schnittwerkstatt (schnittwerkstatt.html, Wissens-Check) ───────────
@@ -485,123 +484,123 @@
     // „zu“ = Anfang des Fragetexts. Passt der Text nicht, zeigt die Seite keinen Knopf.
     'sw1': {
       zu: 'Welcher Erhebungswinkel ergibt eine kompakte Form',
-      bild: 'Denk an einen Vorhang: Lässt du ihn hängen, fällt er glatt bis zu einer geraden Kante. Eine kompakte Form ist wie dieser Vorhang: eine ruhige, geschlossene Kontur ohne Stufen.',
-      frage: 'Was passiert mit den Haarlängen, je höher du die Strähnen beim Schneiden anhebst?',
-      o: ['Es entstehen mehr Stufen', 'Alles wird gleich lang', 'Nichts ändert sich'], r: 0,
-      ja: 'Genau. Kompakt heißt keine Stufen, also: gar nicht anheben.',
-      nein: 'Nicht ganz. Je höher du anhebst, desto mehr Stufen entstehen. Für eine kompakte Form ohne Stufen hebst du also nicht an.'
+      bild: 'Der Erhebungswinkel beschreibt, wie weit eine Strähne beim Schneiden aus ihrem natürlichen Fall angehoben wird. Je weiter du anhebst, desto mehr Stufung entsteht. Eine kompakte Form hat eine geschlossene, ruhige Kontur ohne Stufung.',
+      frage: 'Was passiert mit der Stufung, je höher du die Strähnen anhebst?',
+      o: ['Sie nimmt zu', 'Sie nimmt ab', 'Sie bleibt gleich'], r: 0,
+      ja: 'Richtig. Keine Stufung heißt also: gar nicht anheben.',
+      nein: 'Nicht ganz. Je höher du anhebst, desto mehr Stufung entsteht. Für eine kompakte Form wird nicht angehoben.'
     },
     'sw2': {
       zu: 'Wie wird bei der gleichmäßig stufigen Form gehalten',
-      bild: 'Stell dir einen Igel vor: Alle Stacheln stehen gleich lang von seinem runden Rücken ab. Bei der gleichmäßig stufigen Form sollen alle Haare gleich lang werden, egal wo am runden Kopf.',
-      frage: 'Der Kopf ist rund. Hältst du jede Strähne im gleichen Winkel zum Boden, werden die Längen dann überall gleich?',
-      o: ['Nein, wegen der Rundung nicht', 'Ja, immer', 'Nur im Nacken'], r: 0,
-      ja: 'Richtig. Gleich lang wird es nur, wenn du dich an der Rundung des Kopfes orientierst, nicht am Boden.',
-      nein: 'Nicht ganz. Der Boden ist flach, der Kopf ist rund. Gleich lang wird es nur, wenn du dich an der Kopfrundung orientierst.'
+      bild: 'Bei der gleichmäßig stufigen Form sollen alle Haare überall gleich lang werden. Der Kopf ist aber rund. Darum richtest du den Haltewinkel nicht am Boden aus, sondern an der Kopfoberfläche an der Stelle, an der du gerade schneidest.',
+      frage: 'Du hältst jede Strähne im gleichen Winkel zum Boden. Werden die Längen auf dem runden Kopf gleich?',
+      o: ['Nein, wegen der Kopfrundung nicht', 'Ja, immer', 'Nur am Hinterkopf'], r: 0,
+      ja: 'Richtig. Gleich lang wird es nur, wenn du den Winkel an der Kopfrundung ausrichtest.',
+      nein: 'Nicht ganz. Der Boden ist flach, der Kopf rund. Gleich lang wird es nur mit einem Winkel zur Kopfrundung.'
     },
     'sw3': {
       zu: 'Wo sitzt bei der graduierten Form das Gewicht',
-      bild: 'Denk an Dachziegel: Sie liegen übereinander gestapelt, und dort, wo sie aufeinanderliegen, wird das Dach dicker. Bei der graduierten Form stapeln sich die Haarenden genauso und bilden eine sichtbare Kante.',
-      frage: 'Bei der graduierten Form sind die Haare unten kurz und werden nach oben länger. Wo stapeln sich die Enden?',
-      o: ['Etwas oberhalb der unteren Kontur', 'Ganz oben am Oberkopf', 'Nirgends, sie verteilen sich gleichmäßig'], r: 0,
-      ja: 'Genau. Diese gestapelte Kante nennt man Gewichtslinie.',
-      nein: 'Nicht ganz. Die Enden stapeln sich dort, wo die kurzen unteren und die längeren oberen Haare zusammentreffen: knapp über der Kontur.'
+      bild: 'Bei der graduierten Form sind die Haare unten kürzer und werden nach oben länger. Die Haarenden liegen dadurch übereinander und bilden eine sichtbare Fülle. Diese Linie bestimmt, wo die Form optisch Breite bekommt.',
+      frage: 'Wo treffen bei der graduierten Form die kurzen unteren und die längeren oberen Haare zusammen?',
+      o: ['Knapp über der unteren Kontur', 'Ganz oben am Oberkopf', 'Nirgends'], r: 0,
+      ja: 'Richtig. Dort stapeln sich die Enden. Wie heißt diese Linie?',
+      nein: 'Nicht ganz. Die Enden stapeln sich knapp über der Kontur, dort, wo kurze und längere Haare zusammentreffen.'
     },
     'sw4': {
       zu: 'Wo liegt bei der ansteigenden Form',
-      bild: 'Denk an eine Rampe: Sie beginnt niedrig und steigt dann an. Bei der ansteigenden Form wird das Haar im Profil von vorne nach hinten länger, bis zum höchsten Punkt des Kopfes.',
-      frage: 'Eine Rampe steigt an. Wo ist sie am niedrigsten?',
-      o: ['Am Anfang', 'In der Mitte', 'Am Ende'], r: 0,
-      ja: 'Genau. Und im Profil fängt die Rampe vorne an. Wo ist vorne am Kopf?',
-      nein: 'Nicht ganz. Eine Rampe ist am Anfang am niedrigsten. Im Profil fängt sie vorne am Kopf an.'
+      bild: 'Bei der ansteigenden Form wird das Haar im Profil von vorne nach hinten länger, bis zum höchsten Punkt des Kopfes. Sie öffnet das Gesicht und gibt Länge am Oberkopf. Praxis: Die Leitlänge legst du dort fest, wo die Form beginnt.',
+      frage: 'Wo beginnt im Profil eine Form, die nach hinten länger wird?',
+      o: ['Vorne an der Stirn', 'Am Hinterkopf', 'Im Nacken'], r: 0,
+      ja: 'Richtig. Der Anfang ist der kürzeste Punkt.',
+      nein: 'Nicht ganz. Wird die Form nach hinten länger, beginnt sie vorne. Dort ist sie am kürzesten.'
     },
     'sw5': {
       zu: 'In welchem Bereich liegt eine mittlere Graduierung',
-      bild: 'Eselsbrücke: Teil die 90° in drei gleich große Stücke. Das erste Stück ist niedrig, das zweite mittel, das dritte hoch.',
-      frage: 'Wie groß ist jedes der drei Stücke, wenn du 90° durch 3 teilst?',
+      bild: 'Graduierungen werden nach ihrem Erhebungswinkel eingeteilt. Der Bereich zwischen 0° und 90° wird dafür in drei gleich große Abschnitte geteilt: niedrige, mittlere und hohe Graduierung.',
+      frage: 'Wie groß ist jeder der drei Abschnitte zwischen 0° und 90°?',
       o: ['30°', '45°', '60°'], r: 0,
-      ja: 'Richtig. Das mittlere Stück liegt also zwischen 30 und 60 Grad.',
-      nein: 'Nicht ganz: 90 durch 3 sind 30. Das erste Stück geht bis 30°, das mittlere bis 60°.'
+      ja: 'Richtig. Der mittlere Abschnitt liegt also zwischen 30° und 60°.',
+      nein: 'Nicht ganz: 90° durch 3 sind 30°. Niedrig bis 30°, mittel bis 60°, hoch bis 90°.'
     },
     'sw6': {
       zu: 'Was bedeutet „wandernde Leitsträhne“',
-      bild: 'Denk an einen Staffellauf: Jede Läuferin übernimmt den Stab von der vorigen und läuft ein Stück weiter. Bei der wandernden Leitsträhne nimmst du von der vorigen Abteilung ein Stück mit als Längenvorgabe.',
-      frage: 'Wenn jede Abteilung ein Stück der vorigen mitnimmt: Woher kommt die Länge für die neue Abteilung?',
-      o: ['Aus der Abteilung davor', 'Immer aus dem Nacken', 'Von einem festen Punkt am Oberkopf'], r: 0,
-      ja: 'Genau. Die Leitsträhne wandert also mit. Alles zu einem festen Punkt zu führen, ist die feste Leitsträhne.',
-      nein: 'Nicht ganz. Wie beim Staffellauf kommt die Vorgabe immer von der Abteilung direkt davor. Darum heißt sie „wandernd“.'
+      bild: 'Eine Leitsträhne gibt die Länge vor, an der du schneidest. Es gibt zwei Arten: Bei der festen Leitsträhne werden alle Strähnen zu einem Punkt geführt. Bei der anderen nimmst du von jeder fertigen Abteilung einen Teil in die nächste mit.',
+      frage: 'Was entsteht, wenn alle Strähnen zu einem festen Punkt geführt werden?',
+      o: ['Eine Längenzunahme weg von diesem Punkt', 'Überall gleiche Längen', 'Eine kompakte Form'], r: 0,
+      ja: 'Richtig. Das ist die feste Leitsträhne. Bei der wandernden nimmst du dagegen von jeder Abteilung etwas mit.',
+      nein: 'Nicht ganz. Werden alle Strähnen zu einem Punkt geführt, wird das Haar weg von diesem Punkt länger. Das ist die feste Leitsträhne.'
     },
     'sw7': {
       zu: 'Welche Oberflächenstruktur hat die kompakte Form',
-      bild: 'Leg ein Buch flach hin: Von oben siehst du nur den glatten Deckel, keine einzelnen Seiten. Fächerst du die Seiten auf, siehst du alle Kanten. Die kompakte Form ist das geschlossene Buch.',
-      frage: 'Bei der kompakten Form enden alle Haare auf einer Linie. Sieht man dann einzelne Spitzen an der Oberfläche?',
-      o: ['Nein, die Oberfläche wirkt glatt', 'Ja, überall', 'Nur am Oberkopf'], r: 0,
-      ja: 'Richtig. Für „glatt, ohne sichtbare Spitzen“ gibt es ein Fachwort: das Gegenteil von „aktiviert“.',
-      nein: 'Nicht ganz. Wenn alle Enden auf einer Linie liegen, liegen die Spitzen darunter versteckt. Die Oberfläche wirkt glatt.'
+      bild: 'Bei der Oberflächenstruktur unterscheidet man zwei Wirkungen: aktiviert, wenn die Haarenden sichtbar über die Fläche verteilt sind, und unaktiviert, wenn die Fläche glatt und geschlossen wirkt. Entscheidend ist, wo die Haarenden liegen.',
+      frage: 'Bei der kompakten Form enden alle Haare auf einer Linie. Sind die Haarenden an der Oberfläche sichtbar?',
+      o: ['Nein, sie liegen unter der Fläche', 'Ja, überall', 'Nur am Oberkopf'], r: 0,
+      ja: 'Richtig. Welcher Begriff passt also zur Oberfläche?',
+      nein: 'Nicht ganz. Enden alle Haare auf einer Linie, liegen die Spitzen unter der Fläche. Die Oberfläche wirkt glatt.'
     },
     'sw8': {
       zu: 'Was zeigen die Pfeile in einer Schnittzeichnung',
-      bild: 'Eine Schnittzeichnung ist wie ein Navi: Die Pfeile sagen dir nicht, wo das Haar wächst, sondern wohin du die Strähne führen sollst und wie steil.',
-      frage: 'Was zeigt dir ein Pfeil im Navi?',
-      o: ['Wohin du fahren sollst', 'Wo du herkommst', 'Wie das Wetter wird'], r: 0,
-      ja: 'Genau. In der Schnittzeichnung zeigt der Pfeil, wohin und in welchem Winkel du die Strähne hältst.',
-      nein: 'Nicht ganz. Ein Navi-Pfeil zeigt die Richtung, in die du fahren sollst. In der Schnittzeichnung ist das die Richtung, in die du die Strähne hältst.'
+      bild: 'Eine Schnittzeichnung ist der Arbeitsplan für einen Haarschnitt. Sie zeigt Abteilungen, Schnittlinien und die Haltung der Strähnen. Wer sie lesen kann, kann einen Schnitt nachvollziehbar wiederholen.',
+      frage: 'In einer Schnittzeichnung zeigt ein Pfeil steil nach oben. Was bedeutet das für die Strähne?',
+      o: ['Sie wird stark angehoben', 'Sie wird nach unten gekämmt', 'Sie wird nicht geschnitten'], r: 0,
+      ja: 'Richtig. Pfeile zeigen Richtung und Winkel, in denen du die Strähne hältst.',
+      nein: 'Nicht ganz. Ein Pfeil steil nach oben bedeutet: Die Strähne wird stark angehoben.'
     },
     'sw9': {
       zu: 'Warum sind bei der kompakten Form die inneren Haare länger',
-      bild: 'Stell dir vor, mehrere Leute laufen von verschiedenen Stellen eines Hügels zur selben Ziellinie unten. Wer ganz oben startet, hat den längsten Weg. Beim Kopf ist es genauso: Vom Oberkopf über die Rundung bis zur Kontur ist es am weitesten.',
-      frage: 'Wer hat den längsten Weg zur gemeinsamen Ziellinie unten am Hügel?',
-      o: ['Wer ganz oben startet', 'Wer schon unten steht', 'Alle gleich'], r: 0,
-      ja: 'Richtig. Darum müssen die Haare von oben länger sein, damit sie dieselbe Kontur erreichen.',
-      nein: 'Nicht ganz. Von ganz oben ist der Weg am längsten. Haare vom Oberkopf brauchen also mehr Länge bis zur Kontur.'
+      bild: 'Bei der kompakten Form enden alle Haare auf einer gemeinsamen Kontur. Die Haare entspringen aber an verschiedenen Stellen der Kopfrundung. Je höher am Kopf ein Haar wächst, desto weiter ist sein Weg über die Rundung bis zur Kontur.',
+      frage: 'Ein Haar wächst am Oberkopf, ein anderes im Nacken. Welches braucht mehr Länge bis zur gemeinsamen Kontur?',
+      o: ['Das vom Oberkopf', 'Das aus dem Nacken', 'Beide gleich viel'], r: 0,
+      ja: 'Richtig. Darum sind die inneren, oberen Haare länger.',
+      nein: 'Nicht ganz. Vom Oberkopf ist der Weg über die Kopfrundung zur Kontur länger. Dieses Haar braucht mehr Länge.'
     },
     'sw10': {
       zu: 'Welche Abteilungen passen gut zur gleichmäßig stufigen Form',
-      bild: 'Denk an Tortenstücke: Von der Mitte aus geschnitten, folgt jedes Stück der Rundung. Für die gleichmäßig stufige Form brauchst du Abteilungen, die sich gut an den runden Kopf anpassen.',
-      frage: 'Was sollen die Abteilungen bei der gleichmäßig stufigen Form leicht machen?',
+      bild: 'Die Abteilung bestimmt, wie leicht sich eine Strähne im richtigen Winkel halten lässt. Darum wählst du die Abteilung passend zu der Form, die entstehen soll.',
+      frage: 'Was soll die Abteilung bei der gleichmäßig stufigen Form leicht machen?',
       o: ['Die Strähne senkrecht zur Kopfrundung zu halten', 'Die Strähne flach an den Kopf zu legen', 'Alles zu einem Punkt zu ziehen'], r: 0,
-      ja: 'Genau. Am besten geht das mit Abteilungen, die wie Tortenstücke von einem Punkt ausgehen, oder mit senkrechten.',
-      nein: 'Nicht ganz. Gleichmäßige Stufen entstehen nur, wenn du senkrecht zur Kopfrundung hältst. Die Abteilungen sollen genau das leicht machen.'
+      ja: 'Richtig. Das gelingt mit Abteilungen, die der Kopfrundung folgen.',
+      nein: 'Nicht ganz. Bei der gleichmäßig stufigen Form hältst du senkrecht zur Kopfrundung. Die Abteilung soll genau das leicht machen.'
     },
     'sw11': {
       zu: 'In welcher Ansicht misst du den Erhebungswinkel',
-      bild: 'Wenn du sehen willst, wie hoch jemand springt, stellst du dich seitlich daneben und nicht dahinter. Von hinten siehst du nur den Rücken.',
-      frage: 'Warum siehst du von hinten schlecht, wie hoch jemand springt?',
-      o: ['Weil man die Höhe nur von der Seite gut einschätzen kann', 'Weil es hinten dunkler ist', 'Weil man von hinten gar nichts sieht'], r: 0,
-      ja: 'Genau. Beim Erhebungswinkel ist es genauso: Du brauchst den Blick von der Seite.',
-      nein: 'Nicht ganz. Von hinten verdeckt der Körper, wie hoch es geht. Die Höhe siehst du nur von der Seite gut.'
+      bild: 'Der Erhebungswinkel beschreibt, wie weit eine Strähne aus dem natürlichen Fall nach oben angehoben wird. Um ihn zu beurteilen, brauchst du einen Blickwinkel, aus dem du die Bewegung nach oben und den Kopf als Bezug gleichzeitig siehst.',
+      frage: 'Warum ist die Ansicht von hinten dafür ungeeignet?',
+      o: ['Die Bewegung nach oben ist von hinten kaum einzuschätzen', 'Hinten ist das Licht schlechter', 'Hinten gibt es keine Strähnen'], r: 0,
+      ja: 'Richtig. Du brauchst den Blick von der Seite.',
+      nein: 'Nicht ganz. Von hinten siehst du kaum, wie weit die Strähne nach oben geht. Dafür brauchst du den Blick von der Seite.'
     },
     'sw12': {
       zu: 'Wie wird ein stumpfer Pony geschnitten',
-      bild: 'Stumpf heißt wie bei einem Lineal: eine gerade, harte Kante. Damit die Kante gerade bleibt, wenn der Pony fällt, schneidest du ihn genau so, wie er von selbst fällt.',
-      frage: 'Du hebst einen Pony an und schneidest. Was passiert, wenn er danach wieder fällt?',
-      o: ['Er bekommt Stufen statt einer harten Kante', 'Er wird noch gerader', 'Nichts'], r: 0,
-      ja: 'Richtig. Für eine harte, gerade Kante also nicht anheben, sondern natürlich fallen lassen.',
-      nein: 'Nicht ganz. Was beim Schneiden angehoben war, fällt danach in Stufen. Für eine harte Kante bleibt der Pony im natürlichen Fall.'
+      bild: 'Ein stumpfer Pony hat eine klare, harte Kante. Jede Anhebung beim Schneiden erzeugt Stufung, die diese Kante weicher macht. Praxis: Den Pony trocken nachkontrollieren, weil er nach dem Trocknen kürzer fällt.',
+      frage: 'Was passiert mit der Kante, wenn du einen Pony beim Schneiden anhebst?',
+      o: ['Sie wird weicher, es entsteht Stufung', 'Sie wird härter', 'Nichts'], r: 0,
+      ja: 'Richtig. Für eine harte Kante bleibt der Pony im natürlichen Fall.',
+      nein: 'Nicht ganz. Anheben erzeugt Stufung und macht die Kante weicher. Für eine harte Kante bleibt der Pony im natürlichen Fall.'
     },
     'sw13': {
       zu: 'Wo ist ein Curtain-Pony am kürzesten',
-      bild: 'Denk an einen Vorhang am Fenster, der in der Mitte offen ist: In der Mitte ist die Öffnung, zu den Seiten hängt der Stoff tiefer. Genau so sitzt ein Curtain-Pony.',
-      frage: 'Was heißt „Curtain“ auf Deutsch?',
-      o: ['Vorhang', 'Locke', 'Kante'], r: 0,
-      ja: 'Genau. Und wo öffnet sich ein Vorhang, wo hängt er am längsten herunter?',
-      nein: 'Nicht ganz. „Curtain“ heißt Vorhang. Überleg, wo sich ein Vorhang öffnet.'
+      bild: '„Curtain“ ist das englische Wort für Vorhang. Der Pony ist in der Mitte geteilt, fällt zu beiden Seiten und umrahmt das Gesicht bis etwa zu den Wangenknochen.',
+      frage: 'Wohin fällt ein Curtain-Pony?',
+      o: ['Von der Mitte zu beiden Seiten', 'Gerade nach vorne in die Stirn', 'Ganz nach hinten'], r: 0,
+      ja: 'Richtig. Wo ist er dann am kürzesten?',
+      nein: 'Nicht ganz. Der Curtain-Pony ist in der Mitte geteilt und fällt zu beiden Seiten.'
     },
     'sw14': {
       zu: 'Was passiert, wenn der Kopf beim Schneiden seitlich geneigt ist',
-      bild: 'Stell dir ein schief hängendes Bild vor: Ziehst du darauf eine Linie parallel zum Boden und hängst es dann gerade, ist die Linie schief. Neigt die Kundin den Kopf und du schneidest waagrecht, ist die Linie danach genauso schief.',
-      frage: 'Was solltest du tun, bevor du eine gerade Linie schneidest?',
-      o: ['Auf eine gerade Kopfhaltung achten', 'Schneller schneiden', 'Die Kundin zur Seite drehen'], r: 0,
-      ja: 'Genau. Sonst wird die Linie schief, sobald der Kopf wieder gerade ist, und eine Seite ist kürzer.',
-      nein: 'Nicht ganz. Ist der Kopf geneigt, wird die Linie schief. Deshalb zuerst auf eine gerade Kopfhaltung achten.'
+      bild: 'Beim Schneiden einer Linie ist die Kopfhaltung der Bezug. Neigt die Kundin den Kopf zur Seite und du schneidest waagrecht, verschiebt sich die Linie, sobald der Kopf wieder gerade ist. Praxis: Kopf gerade ausrichten, die Kundin bitten, die Beine nicht übereinanderzuschlagen, und die Linie im Spiegel kontrollieren.',
+      frage: 'Was tust du, bevor du eine gerade Linie schneidest?',
+      o: ['Die Kopfhaltung gerade ausrichten', 'Schneller schneiden', 'Die Kundin zur Seite drehen'], r: 0,
+      ja: 'Richtig. Sonst ist eine Seite kürzer, sobald der Kopf wieder gerade ist.',
+      nein: 'Nicht ganz. Zuerst richtest du die Kopfhaltung gerade aus. Sonst wird die Linie schief.'
     },
     'sw15': {
       zu: 'Wie wird bei der graduierten Form im Nacken abgeteilt',
-      bild: 'Denk an die Speichen eines Fahrrads: Sie gehen alle von einem Punkt in der Mitte aus und passen sich der Rundung des Rads an.',
-      frage: 'Was ist am Hinterkopf besonders?',
-      o: ['Er ist stark gerundet', 'Er ist ganz flach', 'Dort wächst kein Haar'], r: 0,
-      ja: 'Richtig. Abteilungen, die wie Speichen von einem Punkt ausstrahlen, folgen dieser Rundung am besten.',
-      nein: 'Nicht ganz. Der Hinterkopf ist stark gerundet. Dort helfen Abteilungen, die wie Speichen von einem Punkt ausgehen.'
+      bild: 'Der Hinterkopf ist stark gerundet. Die Abteilungen sollen sich dieser Rundung anpassen, damit die Graduierung im Nacken gleichmäßig aufgebaut werden kann.',
+      frage: 'Was ist am Hinterkopf beim Abteilen besonders zu beachten?',
+      o: ['Die starke Rundung', 'Dass dort kein Haar wächst', 'Dass er ganz flach ist'], r: 0,
+      ja: 'Richtig. Die Abteilungen müssen dieser Rundung folgen. Welche Abteilung tut das?',
+      nein: 'Nicht ganz. Der Hinterkopf ist stark gerundet. Die Abteilungen müssen sich daran anpassen.'
     }
   };
   // Gleiche Frage in einem anderen Lehrjahr: derselbe Eintrag

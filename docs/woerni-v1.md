@@ -172,4 +172,4 @@ Antippen; danach beantwortet der Lehrling die eigentliche Frage selbst.
 - **Schreibstandard seit 2026-11-26** (Vorgabe der Inhaberin): Fachlogik zuerst,
   Beispiele aus dem Salon statt Alltagsvergleichen, Praxis-Hinweise gegen falsche
   Behandlungslogik, Gegenfrage als Prüffrage aus dem Arbeitsablauf, sachlicher Ton.
-  Überarbeitet: Farbe & Blondierung, Haarkunde, Hautkunde, Dauerwelle, Hygiene, Werkzeug; offen: Haarwäsche, Schnitt.
+  Alle Texte sind nach diesem Standard überarbeitet (2026-11-26).
