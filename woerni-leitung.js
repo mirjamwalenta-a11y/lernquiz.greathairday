@@ -15,6 +15,15 @@
 //  - Nichts wird gespeichert, nichts geht an den Server, keine Namen
 //    (CLAUDE.md, Regel 2).
 //
+// Schreibstandard (seit 2026-11-26, Vorgabe der Inhaberin):
+//  - Erst die Fachlogik, kurz und korrekt, in der Sprache des Berufs.
+//  - Beispiele kommen aus dem Salon (Behandlung, Befund, typischer Fehler),
+//    keine Vergleiche mit Tieren, Spielzeug, Sport oder Küche.
+//  - Wo nötig ein Praxis-Hinweis, der falsche Behandlungslogik verhindert
+//    (z. B. Gelbstich = Farbproblem, strohiges Haar = Strukturproblem).
+//  - Gegenfrage = Prüffrage aus dem Arbeitsablauf, kein Rätsel.
+//  - Sachlicher Ton wie eine erfahrene Kollegin, ohne Witz.
+//  Überarbeitet: Farbe & Blondierung. Die übrigen Themen folgen.
 // Schlüssel = id der Frage in lernquiz.html (FB); Schnittwerkstatt: sw1–sw15.
 // Felder: bild (Bild/Eselsbrücke), frage (Gegenfrage), o (2–3 Antworten),
 //         r (Index der richtigen), ja (nach richtig), nein (nach falsch).
@@ -26,11 +35,11 @@
   var T = {
     // ── Farbkreis & Gegenfarben ──────────────────────────────────────────
     '1-mc14': {
-      bild: 'Stell dir den Farbkreis wie zwei gleich starke Leute beim Tauziehen vor. Wer sich genau gegenübersteht, hebt sich auf: Am Ende bewegt sich nichts, das Haar wirkt neutral. Typisch im Salon: Dunkles Haar wird aufgehellt und schaut danach orange aus.',
-      frage: 'Orange ist eine Mischfarbe. Aus welchen zwei Grundfarben besteht es?',
-      o: ['Rot und Gelb', 'Rot und Blau', 'Gelb und Blau'], r: 0,
-      ja: 'Genau. Im Orange stecken schon Rot und Gelb. Die Grundfarbe, die darin fehlt, ist sein Gegenspieler.',
-      nein: 'Nicht ganz. Orange ist warm wie ein Sonnenuntergang: Darin stecken Rot und Gelb. Welche Grundfarbe fehlt dann noch? Die ist sein Gegenspieler.'
+      bild: 'Ein Farbstich wird mit seiner Komplementärfarbe neutralisiert, also mit der Farbe, die im Farbkreis gegenüberliegt. Typisch im Salon: Wird dunkles Haar aufgehellt, zeigt sich ab etwa Tonhöhe 6 ein oranger Untergrund. Den gleichst du in der Folgebehandlung mit dem passenden Reflex aus. Achtung: Zu viel Gegenfarbe macht das Ergebnis stumpf und gräulich, darum sparsam dosieren.',
+      frage: 'Mit welchem Reflex arbeitest du gegen einen Orangestich?',
+      o: ['Asch', 'Gold', 'Kupfer'], r: 0,
+      ja: 'Richtig. Asch steht für Blau, die Komplementärfarbe zu Orange.',
+      nein: 'Nicht ganz. Gold und Kupfer sind warme Reflexe und verstärken den Orangestich. Gegen Orange arbeitet Asch, also Blau.'
     },
     '1-mc15': {
       bild: 'Ein Farbstich wird mit seiner Komplementärfarbe neutralisiert, also mit der Farbe, die im Farbkreis gegenüberliegt. Sie ist immer die Mischung der beiden anderen Grundfarben. Achtung in der Praxis: Ein Gelbstich ist ein Farbproblem, strohiges Haar ein Strukturproblem. Wirkt blondiertes Haar strohig, ist es porös. Dort nimmt die Gegenfarbe ungleichmäßig auf und kann fleckig wirken. Darum zuerst den Haarzustand beurteilen und pflegen, dann gezielt neutralisieren.',
@@ -40,105 +49,105 @@
       nein: 'Nicht ganz. Die drei Grundfarben sind Rot, Gelb und Blau. Ohne Gelb bleiben Rot und Blau. Ihre Mischung ist die Gegenfarbe zu Gelb.'
     },
     '1-mc16': {
-      bild: 'Make-up-Profis decken rote Äderchen im Gesicht nicht mit Hautfarbe ab, sondern mit einem Concealer in der Gegenfarbe von Rot. Im Haar ist es genauso: Gegen einen Rotstich hilft nicht „mehr Braun“, sondern die Gegenfarbe.',
+      bild: 'Auch ein Rotstich wird mit der Komplementärfarbe neutralisiert, also mit der Mischung der beiden anderen Grundfarben. Typisch im Salon: Ein Braun fällt nach dem Färben zu rot aus. Am Haar heißt dieser ausgleichende Reflex Matt. Achtung: Matt-Reflexe sparsam einsetzen, zu viel wirkt schnell grünstichig.',
       frage: 'Rot ist eine Grundfarbe. Welche zwei Grundfarben bleiben übrig?',
       o: ['Gelb und Blau', 'Orange und Violett', 'Rot und Gelb'], r: 0,
-      ja: 'Genau. Gelb und Blau gemischt ergeben die Farbe, die Rot gegenüberliegt.',
-      nein: 'Nicht ganz. Grundfarben sind nur Rot, Gelb und Blau. Ohne Rot bleiben Gelb und Blau. Was ergeben die beiden zusammen?'
+      ja: 'Richtig. Ihre Mischung neutralisiert Rot. Welche Farbe entsteht aus Gelb und Blau?',
+      nein: 'Nicht ganz. Grundfarben sind nur Rot, Gelb und Blau. Ohne Rot bleiben Gelb und Blau, ihre Mischung neutralisiert Rot.'
     },
 
     // ── Oxidant / Wasserstoffperoxid ─────────────────────────────────────
     '1-mc19': {
-      bild: 'Stell dir die Farbcreme als Auto vor und den Oxidant als Motor. Ohne Motor fährt nichts. Der Motor macht zwei Dinge auf einmal: Er hellt das eigene Pigment der Kundin ein Stück auf und lässt aus den farblosen Vorstufen im Haar die fertige Farbe entstehen.',
-      frage: 'Was passiert, wenn du Oxidationsfarbe ganz ohne Oxidant aufträgst?',
-      o: ['Fast nichts, die Farbe entwickelt sich nicht', 'Das Haar wird sofort viel heller', 'Die Farbe hält besonders lange'], r: 0,
-      ja: 'Richtig. Erst der Oxidant bringt die Farbe in Gang, und dabei hellt er auch auf.',
-      nein: 'Nicht ganz. Ohne Oxidant passiert in der Farbcreme fast nichts. Er ist der Teil, der arbeitet: aufhellen und Farbe entwickeln.'
+      bild: 'Oxidationsfarbe wirkt erst, wenn du sie mit Oxidant (Wasserstoffperoxid) mischst. Er erfüllt zwei Aufgaben gleichzeitig: Er hellt das natürliche Pigment im Haar auf, und er entwickelt die zunächst farblosen Farbvorstufen im Cortex zur fertigen Farbe. Darum bestimmt die Oxidant-Stärke, wie stark aufgehellt wird.',
+      frage: 'Du trägst Oxidationsfarbe ohne Oxidant auf. Was passiert?',
+      o: ['Die Farbe entwickelt sich nicht', 'Das Haar wird stärker aufgehellt', 'Die Farbe hält länger'], r: 0,
+      ja: 'Richtig. Ohne Oxidant gibt es weder Farbentwicklung noch Aufhellung.',
+      nein: 'Nicht ganz. Ohne Oxidant entwickeln sich die Farbvorstufen nicht, und es wird nichts aufgehellt.'
     },
     '1-ft2': {
-      bild: 'Denk an Laufen: 3 % ist ein Spaziergang, 12 % ein Sprint. Je höher die Zahl, desto mehr Aufhellung, und desto mehr wird das Haar beansprucht.',
-      frage: 'Eine Kundin will ihre Haare eine Stufe dunkler färben. Braucht die Farbe dafür viel Aufhellkraft?',
-      o: ['Nein, kaum oder gar keine', 'Ja, möglichst viel', 'Das hängt nur von der Haarlänge ab'], r: 0,
-      ja: 'Genau. Wenig Aufhellung heißt: die kleinste Prozentzahl.',
-      nein: 'Nicht ganz. Wer dunkler werden will, braucht keine Aufhellung. Also nimmst du die kleinste Prozentzahl.'
+      bild: 'Die Prozentzahl gibt die Konzentration des Wasserstoffperoxids an. Je höher sie ist, desto stärker wird aufgehellt und desto mehr wird das Haar belastet. In der Praxis wählst du immer die niedrigste Stärke, die für das Ziel reicht.',
+      frage: 'Eine Kundin möchte eine Tonhöhe dunkler werden. Wie viel Aufhellkraft braucht die Farbe?',
+      o: ['Keine oder kaum welche', 'Möglichst viel', 'So viel wie bei einer Blondierung'], r: 0,
+      ja: 'Richtig. Dafür reicht die niedrigste Oxidant-Stärke.',
+      nein: 'Nicht ganz. Wer dunkler werden will, braucht keine Aufhellung. Dafür reicht die niedrigste Oxidant-Stärke.'
     },
     '1-ft3': {
-      bild: 'Merk dir nur ein Paar: 3 % = 10 Vol. Alle anderen sind Vielfache davon: doppelt, dreifach, vierfach. So musst du keine Tabelle auswendig lernen.',
-      frage: '6 % ist wie viel Mal so viel wie 3 %?',
+      bild: 'Oxidant wird je nach Hersteller in Prozent oder in Volumen (Vol) angegeben. Das Verhältnis ist fest: 3 % entsprechen 10 Vol, jede höhere Stufe ist ein Vielfaches davon. Wichtig beim Mischen, wenn Rezeptur und Flasche unterschiedlich beschriftet sind.',
+      frage: 'Wie oft passt 3 % in 6 %?',
       o: ['2-mal', '3-mal', '6-mal'], r: 0,
-      ja: 'Richtig, doppelt so viel. Dann ist auch die Vol-Zahl doppelt so groß wie bei 3 %.',
-      nein: 'Nicht ganz: 3 + 3 = 6, also 2-mal. Und wenn 3 % = 10 Vol sind, was ist dann das Doppelte?'
+      ja: 'Richtig. Dann ist auch die Vol-Zahl doppelt so hoch wie bei 3 %.',
+      nein: 'Nicht ganz: 6 % sind 2-mal 3 %. Die Vol-Zahl verdoppelt sich genauso.'
     },
 
     // ── Was Farbe kann und was nicht ─────────────────────────────────────
     '1-ft6': {
-      bild: 'Stell dir getönte Sonnenbrillengläser vor: Legst du ein helles Glas auf ein dunkles, wird es nicht heller, nur noch dunkler. Haarfarbe legt sich wie ein weiteres Glas dazu. Das alte Glas muss erst weg.',
-      frage: 'Was kann künstliche Farbpigmente aus dem Haar entfernen?',
-      o: ['Blondierung oder Farbabzug', 'Eine hellere Haarfarbe', 'Eine längere Einwirkzeit'], r: 0,
-      ja: 'Richtig. Nur die schaffen das. Eine Haarfarbe allein bekommt Farbe nicht heller.',
-      nein: 'Nicht ganz. Haarfarbe legt nur dazu, sie nimmt nichts weg. Künstliche Pigmente bekommst du nur mit Blondierung oder Farbabzug heraus.'
+      bild: 'Oxidationsfarbe kann nur natürliches Pigment aufhellen. Künstliche Farbpigmente aus einer früheren Coloration bleiben im Haar und werden von einer neuen Farbe nur überlagert. Typisch im Salon: Eine Kundin mit dunkel gefärbten Längen möchte heller werden. Eine hellere Farbe allein ergibt dann nur einen hellen Ansatz und unveränderte Längen.',
+      frage: 'Womit entfernst du künstliche Farbpigmente aus dem Haar?',
+      o: ['Mit Farbabzug oder Blondierung', 'Mit einer helleren Haarfarbe', 'Mit einer längeren Einwirkzeit'], r: 0,
+      ja: 'Richtig. Erst danach kann eine neue, hellere Farbe gleichmäßig wirken.',
+      nein: 'Nicht ganz. Eine hellere Farbe oder mehr Zeit ändert an künstlichen Pigmenten nichts. Dafür braucht es Farbabzug oder Blondierung.'
     },
     '1-ft7': {
-      bild: 'Die Schuppenschicht ist wie ein Tannenzapfen: Im kalten, nassen Wald ist er fest zu. Auf der warmen Heizung gehen seine Schuppen auf. Alkalische Mittel wie Ammoniak sind im Haar die „Heizung“. Saure Pflege legt die Schuppen danach wieder an.',
-      frage: 'Die Farbe soll ins Innere des Haares (Cortex). Was muss sie dafür überwinden?',
-      o: ['Die Schuppenschicht (Cuticula)', 'Die Kopfhaut', 'Das Mark (Medulla)'], r: 0,
-      ja: 'Genau. Und das Alkalisierungsmittel ist der Teil, der diese Tür aufmacht.',
-      nein: 'Nicht ganz. Die Schuppenschicht liegt außen wie ein Dach. Damit die Farbe nach innen kommt, muss jemand sie öffnen.'
+      bild: 'Alkalisierungsmittel heben den pH-Wert an. Das Haar quillt, die Cuticula öffnet sich, und die Farbvorstufen gelangen in den Cortex. Darum behandelst du nach der Coloration mit einem sauren Produkt nach.',
+      frage: 'Warum folgt nach der Coloration ein saures Pflegeprodukt?',
+      o: ['Weil es die geöffnete Cuticula wieder schließt', 'Weil es die Farbe dunkler macht', 'Weil es die Einwirkzeit verlängert'], r: 0,
+      ja: 'Richtig. Vorher hat das Alkalisierungsmittel die Cuticula geöffnet, damit die Farbe eindringen kann.',
+      nein: 'Nicht ganz. Das Alkalisierungsmittel öffnet die Cuticula, damit die Farbe eindringt. Das saure Produkt schließt sie danach wieder.'
     },
 
     // ── Auftragen ────────────────────────────────────────────────────────
     '1-ft4': {
-      bild: 'Denk an einen Kuchen im Ofen: Was näher an der Hitze ist, ist schneller fertig. Der Ansatz liegt direkt an der warmen Kopfhaut. Dort „backt“ die Farbe schneller.',
-      frage: 'Wo ist das Haar beim Färben am wärmsten?',
-      o: ['Am Ansatz, nah an der Kopfhaut', 'In den Spitzen', 'Überall gleich warm'], r: 0,
-      ja: 'Richtig. Was schneller reagiert, kommt später dran, damit am Ende alles gleich hell ist.',
-      nein: 'Nicht ganz. Die Kopfhaut gibt Körperwärme ab, deshalb ist es am Ansatz am wärmsten. Und Wärme macht die Farbe schneller.'
+      bild: 'Am Ansatz wirkt die Körperwärme der Kopfhaut. Wärme beschleunigt die Reaktion, dort hellt die Farbe schneller und stärker auf. Bei einer Erstfärbung, die heller werden soll, entsteht sonst ein „heißer Ansatz“: Der Ansatz wird heller und wärmer als Längen und Spitzen.',
+      frage: 'Was passiert, wenn du bei einer aufhellenden Erstfärbung am Ansatz beginnst?',
+      o: ['Der Ansatz wird heller als die Längen', 'Die Längen werden heller als der Ansatz', 'Das Ergebnis wird gleichmäßiger'], r: 0,
+      ja: 'Richtig. Überleg jetzt, in welcher Reihenfolge du auftragen musst, damit alles gleich hell wird.',
+      nein: 'Nicht ganz. Am Ansatz reagiert die Farbe wegen der Körperwärme schneller. Er würde heller als der Rest.'
     },
     '1-ft8': {
-      bild: 'Stell dir vor, du bügelst ein Hemd und fährst immer wieder über dieselbe Stelle: Irgendwann ist der Stoff durch. Bereits blondiertes Haar hat seine „Bügelrunde“ schon hinter sich. Noch einmal drüber, und es bricht.',
-      frage: 'Welches Haar braucht bei einer Ansatzblondierung wirklich Blondierung?',
-      o: ['Nur das nachgewachsene, noch dunkle Haar', 'Das ganze Haar vom Ansatz bis zur Spitze', 'Nur die Spitzen'], r: 0,
-      ja: 'Genau. Das schon Blondierte schützt du, also nicht überlappen.',
-      nein: 'Nicht ganz. Die Längen sind schon hell, sie brauchen keine zweite Runde. Nur das Nachgewachsene ist noch dunkel.'
+      bild: 'Bei der Ansatzblondierung wird nur das nachgewachsene Haar behandelt. Die Längen sind bereits blondiert und dadurch vorgeschädigt. Überlappt die Blondierung auf diese Bereiche, entsteht dort eine Bruchstelle. Zusätzlich gilt: Direkt auf der Kopfhaut nur niedrige Oxidant-Stärken verwenden.',
+      frage: 'Was passiert, wenn die Blondierung auf bereits blondierte Längen überlappt?',
+      o: ['Dort kann das Haar abbrechen', 'Das Ergebnis wird gleichmäßiger', 'Nichts, das Haar ist ja schon hell'], r: 0,
+      ja: 'Richtig. Darum arbeitest du exakt am Übergang und nur am Nachwuchs.',
+      nein: 'Nicht ganz. Blondiertes Haar ist vorgeschädigt. Eine zweite Blondierung darauf kann es abbrechen lassen.'
     },
 
     // ── Untergrund & Aufhellen ───────────────────────────────────────────
     '2-mc1': {
-      bild: 'Aufhellen ist wie eine Treppe: Von Dunkelbraun geht es über Rot und Orange nach Gelb, ganz oben wird es hellgelb. Dunkles Haar steht noch weit unten auf der Treppe.',
-      frage: 'Dunkles Haar wird zum ersten Mal aufgehellt. Ist es dann schon gelb?',
-      o: ['Nein, zuerst kommen warme, rötliche Töne', 'Ja, sofort hellgelb', 'Es wird zuerst bläulich'], r: 0,
-      ja: 'Genau. Beim Aufhellen zeigt dunkles Haar zuerst Rot und Orange. Bis Gelb ist es noch ein Stück.',
-      nein: 'Nicht ganz. Dunkles Haar hat viel rotes Pigment. Das zeigt sich beim Aufhellen zuerst, Gelb kommt erst viel später.'
+      bild: 'Beim Aufhellen wird das natürliche Pigment schrittweise abgebaut. Dunkles Haar enthält viel Pigment mit rotem Anteil. Darum durchläuft es Untergrundtöne von Rot über Orange bis Gelb: je heller, desto gelber. Der Untergrund bestimmt, mit welchem Reflex du danach ausgleichst.',
+      frage: 'Welcher Untergrund zeigt sich erst ganz am Ende einer starken Aufhellung?',
+      o: ['Gelb', 'Rot', 'Rot-Orange'], r: 0,
+      ja: 'Richtig. Gelb kommt zuletzt. Dunkles Haar steht nach der ersten Aufhellung noch im roten Bereich.',
+      nein: 'Nicht ganz. Gelb ist der letzte Untergrund. Dunkles Haar zeigt zuerst rote Töne.'
     },
     '2-wk2': {
-      bild: 'Jedes Haar hat warme Pigmente im Untergrund, wie ein orangefarbener Teppich unter dem Sofa. Für einen warmen Farbton stört der Teppich kaum. Für einen kühlen Ton wie Asch oder Beige muss mehr davon weg, sonst scheint er durch.',
-      frage: 'Was muss bei einem kühlen Wunschton stärker abgebaut werden?',
-      o: ['Die warmen Naturpigmente im Untergrund', 'Die Schuppenschicht', 'Die kühlen Pigmente'], r: 0,
-      ja: 'Richtig. Mehr abbauen heißt: weiter aufhellen als bei warmen Tönen. Für warm sind es ½ bis 1½ Tonhöhen, für kühl also etwas mehr.',
-      nein: 'Nicht ganz. Kühle Töne vertragen keinen warmen Untergrund. Die warmen Pigmente müssen also weiter abgebaut werden als bei warmen Tönen.'
+      bild: 'Jedes Naturhaar hat einen warmen Untergrund. Warme Zieltöne vertragen ihn, weil er im Ergebnis mitarbeitet. Kühle Zieltöne wie Asch oder Beige werden von ihm überdeckt. Darum muss für kühle Töne weiter vorgehellt werden als für warme (Warm-Kalt-Gesetz).',
+      frage: 'Was passiert, wenn du für einen Aschton nur so weit aufhellst wie für einen warmen Ton?',
+      o: ['Der warme Untergrund scheint durch, das Asch wirkt nicht', 'Das Ergebnis wird besonders kühl', 'Das Haar wird dunkler als geplant'], r: 0,
+      ja: 'Richtig. Für kühle Töne musst du also weiter aufhellen als für warme.',
+      nein: 'Nicht ganz. Der warme Untergrund überdeckt kühle Töne. Darum braucht ein kühler Ton mehr Vorhellung.'
     },
     '3-vp1': {
-      bild: 'Stell dir stark aufgehelltes Haar wie eine Wand ohne Grundierung vor: Streichst du dunkle Farbe direkt drauf, wird sie fleckig, grau oder grünlich. Die warmen Pigmente, die beim Aufhellen verloren gingen, musst du erst wieder „hineingrundieren“.',
-      frage: 'Was fehlt hellem, aufgehelltem Haar, wenn es wieder viel dunkler werden soll?',
-      o: ['Die warmen Pigmente (Rot, Orange, Gold)', 'Die Schuppenschicht', 'Kühle Asch-Pigmente'], r: 0,
-      ja: 'Richtig. Bei einem großen Sprung nach dunkel fehlt viel davon. Dann bringst du sie zuerst zurück.',
-      nein: 'Nicht ganz. Beim Aufhellen gehen die warmen Pigmente verloren. Genau die fehlen, wenn das Haar wieder dunkel werden soll.'
+      bild: 'Beim Aufhellen gehen die warmen Pigmente verloren. Soll stark aufgehelltes Haar wieder deutlich dunkler werden, fehlen sie. Eine dunkle Farbe allein wirkt dann fahl, gräulich oder grünstichig und hält schlecht. Deshalb ersetzt du zuerst die fehlenden warmen Pigmente.',
+      frage: 'Was passiert, wenn du sehr helles Haar ohne Vorbereitung mehrere Tonhöhen dunkler färbst?',
+      o: ['Das Ergebnis wirkt fahl oder grünstichig', 'Die Farbe wird besonders warm', 'Nichts, die Farbe deckt normal'], r: 0,
+      ja: 'Richtig. Je größer der Sprung nach dunkel, desto eher brauchst du die Vorpigmentierung.',
+      nein: 'Nicht ganz. Ohne die fehlenden warmen Pigmente wirkt eine dunkle Farbe auf hellem Haar fahl oder grünstichig.'
     },
 
     // ── Farbnummern ──────────────────────────────────────────────────────
     '2-mc2': {
-      bild: 'Denk an ein Haus mit 10 Stockwerken: Im Keller (1) ist es schwarz, ganz oben (10) hellblond. Die erste Zahl sagt dir das Stockwerk. Erst nach dem Punkt kommt die „Wandfarbe“ im Zimmer.',
+      bild: 'Die Skala der Tonhöhen reicht von 1 (Schwarz) bis 10 (hellstes Blond). Eine Farbnummer beschreibt zwei Dinge: wie hell die Farbe ist und in welche Farbrichtung sie geht. In der Beratung bestimmst du zuerst die Helligkeit, dann die Farbrichtung.',
       frage: 'Welche Farbe ist heller: 5.0 oder 8.0?',
       o: ['8.0', '5.0', 'Beide gleich hell'], r: 0,
-      ja: 'Richtig. Die größere erste Zahl ist heller. Die erste Zahl beschreibt also, wie hell oder dunkel die Farbe ist.',
-      nein: 'Nicht ganz. Je höher das Stockwerk, desto heller: 8 ist weiter oben als 5.'
+      ja: 'Richtig. Die erste Zahl zeigt also, wie hell die Farbe ist.',
+      nein: 'Nicht ganz. Auf der Skala ist 8 heller als 5. Die erste Zahl zeigt also die Helligkeit.'
     },
     '2-mc3': {
-      bild: 'Die Zahl vor dem Punkt ist das Stockwerk (wie hell), die Zahl danach ist die „Wandfarbe“ (welcher Farbton). Merksatz: „Eins ist Asche, drei ist Gold.“ Eine 7.3 auf der Farbkarte ist ein warmes, sonniges Mittelblond.',
-      frage: 'Was steht vor dem Punkt, was danach?',
-      o: ['Vorne die Helligkeit, danach der Farbton (Reflex)', 'Vorne die Einwirkzeit, danach der Oxidant', 'Beides beschreibt nur die Helligkeit'], r: 0,
-      ja: 'Genau. Die Zahl nach dem Punkt ist also ein Farbton. Welcher war beim Merksatz die Drei?',
-      nein: 'Nicht ganz. Vorne steht, wie hell die Farbe ist. Nach dem Punkt kommt der Farbton, also der Reflex.'
+      bild: 'Nach dem Punkt steht der Reflex, also die Farbrichtung. Bei unserer Farbkarte beginnen die Reflexe mit .1 Asch und .2 Irisé (Violett), danach folgen die warmen Reflexe. Steht eine zweite Ziffer dahinter, ist sie der schwächere Nebenreflex.',
+      frage: 'Was beschreibt die Zahl nach dem Punkt?',
+      o: ['Den Reflex, also die Farbrichtung', 'Die Einwirkzeit', 'Die Oxidant-Stärke'], r: 0,
+      ja: 'Richtig. Zähl jetzt weiter: Nach .1 Asch und .2 Irisé kommt der erste warme Reflex.',
+      nein: 'Nicht ganz. Einwirkzeit und Oxidant stehen nicht in der Farbnummer. Nach dem Punkt steht der Reflex.'
     },
 
     // ── Haarkunde: Aufbau ────────────────────────────────────────────────
