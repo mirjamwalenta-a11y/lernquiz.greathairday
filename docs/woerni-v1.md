@@ -173,3 +173,20 @@ Antippen; danach beantwortet der Lehrling die eigentliche Frage selbst.
   Beispiele aus dem Salon statt Alltagsvergleichen, Praxis-Hinweise gegen falsche
   Behandlungslogik, Gegenfrage als Prüffrage aus dem Arbeitsablauf, sachlicher Ton.
   Alle Texte sind nach diesem Standard überarbeitet (2026-11-26).
+
+## Wörni-Texte im Meisterin-Bereich bearbeiten (2026-11-26)
+
+Meisterin-Bereich › Fragen & Lernpläne › „Wörni-Texte prüfen“: Hilfetexte und Paare
+lassen sich bearbeiten, löschen und neu anlegen; „Original wiederherstellen“ verwirft
+eine Änderung, gelöschte Grundtexte lassen sich wiederherstellen.
+
+- Grundtexte bleiben in `woerni-leitung.js` und `paare-finden.js`. Gespeichert werden
+  nur die Änderungen, in der vorhandenen Tabelle `lerntool_daten`
+  (typ `woerni_leitung` / `paare_finden`). Keine neue Tabelle.
+- Rechte wie bei Farb-Zeiten/Farb-Nummern: lesen alle Angemeldeten
+  (`lerntool_daten_lesen`), schreiben nur die Meisterin, serverseitig über
+  `ist_meisterin()` (`lerntool_daten_meisterin`).
+- `woerni-texte-daten.js` lädt die Änderungen in Lernquiz, Lern-Tool und
+  Schnittwerkstatt und wendet sie an; offline gilt der zuletzt geladene Stand.
+- Neue Hilfetexte nur für Multiple-Choice-Fragen des Lernquiz, die noch keinen haben.
+  Jeder Fachbegriff bei „Paare finden“ darf nur einmal vorkommen.
