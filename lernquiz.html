@@ -575,7 +575,7 @@ div.mb-wb-p{cursor:default}
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261125a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261125a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
-      <button class="mb-k mb-breit" id="btn-mb-wt"><div class="mb-ic">🧩</div><div><b>Wörni-Texte prüfen</b><small>Hilfetexte „Ich steh auf der Leitung“ und Paare aus „Paare finden“ – durchlesen und abhaken</small></div></button>
+      <button class="mb-k mb-breit" id="btn-mb-wt"><div class="mb-ic">🧩</div><div><b>Wörni-Texte prüfen</b><small>Hilfetexte „Ich steh auf der Leitung“ und Paare aus „Paare finden“ – durchlesen, bearbeiten, löschen, neue anlegen</small></div></button>
     </div>
   </div>
 </div>
@@ -618,7 +618,7 @@ div.mb-wb-p{cursor:default}
     <button class="mb-zurueck" id="btn-wt-back">← Meisterin-Bereich</button>
     <div class="mb-tag">greathairday · Meisterin</div>
     <h2 class="mb-h">🧩 Wörni-Texte prüfen</h2>
-    <p class="mb-sub">Alle Texte, die Wörni den Lehrlingen zeigt: die Hilfe hinter „Ich steh auf der Leitung“ und die Paare aus „Paare finden“. Bitte fachlich durchlesen. Das Häkchen „Geprüft“ merkt sich nur dieses Gerät. Änderungswünsche mit Fragennummer oder Begriff weitergeben, z.&nbsp;B. „3-5“ oder „Seborrhoe“.</p>
+    <p class="mb-sub">Alle Texte, die Wörni den Lehrlingen zeigt: die Hilfe hinter „Ich steh auf der Leitung“ und die Paare aus „Paare finden“. Du kannst jeden Text bearbeiten oder löschen und neue anlegen. Änderungen gelten sofort für alle Lehrlinge; mit „Original wiederherstellen“ machst du sie rückgängig. Das Häkchen „Geprüft“ merkt sich nur dieses Gerät.</p>
     <div id="wt-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
@@ -5346,7 +5346,8 @@ async function claudeAnfrage(system, userText, maxTokens) {
 <script src="leichte-sprache.js?v=20261125c"></script>  <!-- „Einfacher erklärt“: einfache Fassungen der Erklärungen -->
 <script src="woerni-leitung.js?v=20261126f"></script>  <!-- „Wörni, ich steh auf der Leitung“: Bild + Gegenfrage statt Lösung -->
 <script src="paare-finden.js?v=20261126b"></script>  <!-- Paare aus „Paare finden“ (für „Wörni-Texte prüfen“) -->
-<script src="woerni-texte-pruefen.js?v=20261126a"></script>  <!-- Meisterin: Wörni-Texte prüfen -->
+<script src="woerni-texte-daten.js?v=20261126a"></script>  <!-- Änderungen der Meisterin an Wörni-Texten (lerntool_daten) -->
+<script src="woerni-texte-pruefen.js?v=20261126b"></script>  <!-- Meisterin: Wörni-Texte prüfen und bearbeiten -->
 <script src="praxis-fotos.js?v=20261116d"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="einreichungen.js?v=20261122a"></script>  <!-- Meisterin: Einreichungen & Projekte (supabase/20261122_einreichungen.sql) -->
 <script src="fachbegriffe.js?v=20261118a" data-ziele="#q-txt ; #q-feedback" data-unter="#q-txt" defer></script>  <!-- 📖 Fachbegriffe antippen: Erklärung + Übersetzung -->
