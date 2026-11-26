@@ -492,7 +492,7 @@ div.mb-wb-p{cursor:default}
         <button class="mb-k" data-mb-bereich="s-b-schnitt"><div class="mb-ic">✂</div><b>Schnitt &amp; Form</b><small>Schnittwerkstatt, Schnitt-Designer, Gesichtskompass, Werkzeug</small></button>
         <button class="mb-k" data-mb-bereich="s-b-praxis"><div class="mb-ic">💆</div><b>Praxis</b><small>Praxis-Module, Praxis-Check, Tagebuch, Ausbildungsbericht, Visagistik</small></button>
         <button class="mb-k" data-mb-bereich="s-b-pruefung"><div class="mb-ic">🎓</div><b>Prüfung</b><small>Zwischenprüfung, Prüfgespräch, LAP-Fragen, Betriebs-Quiz</small></button>
-        <button class="mb-k" data-mb-bereich="s-b-inhalte"><div class="mb-ic">❓</div><b>Fragen &amp; Lernpläne</b><small>Quiz-Fragen, Lernpläne, Lerntipps, Englisch</small></button>
+        <button class="mb-k" data-mb-bereich="s-b-inhalte"><div class="mb-ic">❓</div><b>Fragen &amp; Lernpläne</b><small>Quiz-Fragen, Lernpläne, Lerntipps, Englisch, Wörni-Texte</small></button>
         <button class="mb-k" data-mb-bereich="s-b-selbst"><div class="mb-ic">🏠</div><b>Selbst ansehen</b><small>Wie Lehrlinge es sehen, Mein Lernbereich</small></button>
         <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/schnuppertag.html?v=20261121a"><div class="mb-ic">🌱</div><div><b>Schnuppertag &amp; Probezeit</b><small>Bewerber, Eignungstest, Probezeiten mit Wochen, Zielen und Wochenquiz</small></div></a>
         <button class="mb-k mb-breit" id="btn-mb-rm"><div class="mb-ic">💬</div><div><b>Rückmeldungen der Lehrlinge</b><small>Was die App deinen Lehrlingen bringt – mit freigegebenen Zitaten</small></div></button>
@@ -575,6 +575,7 @@ div.mb-wb-p{cursor:default}
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261125a#admin-lernplan"><div class="mb-ic">📅</div><b>Lernpläne</b><small>Wochenpläne pro Lehrjahr</small></a>
       <a class="mb-k" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/lerntool.html?v=20261125a#admin-tipps"><div class="mb-ic">💡</div><b>Lerntipps</b><small>Tipps pro Thema</small></a>
       <a class="mb-k mb-breit" href="https://mirjamwalenta-a11y.github.io/lernquiz.greathairday/meisterin.html?v=20261115b#en-verlauf"><div class="mb-ic">📊</div><div><b>Englisch-Verlauf</b><small>Fortschritt aller Lehrlinge</small></div></a>
+      <button class="mb-k mb-breit" id="btn-mb-wt"><div class="mb-ic">🧩</div><div><b>Wörni-Texte prüfen</b><small>Hilfetexte „Ich steh auf der Leitung“ und Paare aus „Paare finden“ – durchlesen und abhaken</small></div></button>
     </div>
   </div>
 </div>
@@ -609,6 +610,16 @@ div.mb-wb-p{cursor:default}
     <h2 class="mb-h">⏱ Farb-Zeiten</h2>
     <p class="mb-sub">Trag die Zeiten aus der Gebrauchsanweisung eurer Farbe ein. Sie gelten im Farblabor (Timer, Rezeptur, Auftragen, Spiele) und auf dem Spickzettel.</p>
     <div id="fz-inhalt"><div class="laden">Wird geladen…</div></div>
+  </div>
+</div>
+
+<div id="s-woerni-texte" class="seite">
+  <div style="padding-top:4px">
+    <button class="mb-zurueck" id="btn-wt-back">← Meisterin-Bereich</button>
+    <div class="mb-tag">greathairday · Meisterin</div>
+    <h2 class="mb-h">🧩 Wörni-Texte prüfen</h2>
+    <p class="mb-sub">Alle Texte, die Wörni den Lehrlingen zeigt: die Hilfe hinter „Ich steh auf der Leitung“ und die Paare aus „Paare finden“. Bitte fachlich durchlesen. Das Häkchen „Geprüft“ merkt sich nur dieses Gerät. Änderungswünsche mit Fragennummer oder Begriff weitergeben, z.&nbsp;B. „3-5“ oder „Seborrhoe“.</p>
+    <div id="wt-inhalt"><div class="laden">Wird geladen…</div></div>
   </div>
 </div>
 
@@ -4904,6 +4915,8 @@ window.addEventListener('DOMContentLoaded',function(){
   document.getElementById('btn-mb-fz').addEventListener('click',zeigeFarbZeiten);
   document.getElementById('btn-mb-fn').addEventListener('click',zeigeFarbNummern);
   document.getElementById('btn-fn-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
+  document.getElementById('btn-mb-wt').addEventListener('click',function(){if(window.zeigeWoerniTexte)zeigeWoerniTexte();});
+  document.getElementById('btn-wt-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-fz-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('btn-ff-back').addEventListener('click',function(){ladeDashboard();zeige(MB_BEREICH||'s-dashboard');});
   document.getElementById('mb-wahl-zu').addEventListener('click',function(){document.getElementById('mb-wahl').hidden=true;});
@@ -5332,6 +5345,8 @@ async function claudeAnfrage(system, userText, maxTokens) {
 <script src="vorlesen.js?v=20261116c" data-ziele="#q-txt | #q-antwort .opt ; #q-feedback" defer></script>  <!-- 🔊 Vorlesen: Frage, Antworten, Erklärung -->
 <script src="leichte-sprache.js?v=20261125c"></script>  <!-- „Einfacher erklärt“: einfache Fassungen der Erklärungen -->
 <script src="woerni-leitung.js?v=20261126a"></script>  <!-- „Wörni, ich steh auf der Leitung“: Bild + Gegenfrage statt Lösung -->
+<script src="paare-finden.js?v=20261126a"></script>  <!-- Paare aus „Paare finden“ (für „Wörni-Texte prüfen“) -->
+<script src="woerni-texte-pruefen.js?v=20261126a"></script>  <!-- Meisterin: Wörni-Texte prüfen -->
 <script src="praxis-fotos.js?v=20261116d"></script>  <!-- Fotos im Praxis-Tagebuch (supabase/20261116_praxis_fotos.sql) -->
 <script src="einreichungen.js?v=20261122a"></script>  <!-- Meisterin: Einreichungen & Projekte (supabase/20261122_einreichungen.sql) -->
 <script src="fachbegriffe.js?v=20261118a" data-ziele="#q-txt ; #q-feedback" data-unter="#q-txt" defer></script>  <!-- 📖 Fachbegriffe antippen: Erklärung + Übersetzung -->
