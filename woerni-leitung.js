@@ -342,11 +342,11 @@
       nein: 'Nicht ganz. Die Oberhaut ist hauchdünn. Haarwurzeln und Drüsen brauchen mehr Platz und Blutversorgung, die gibt es erst darunter.'
     },
     '1-mc9': {
-      bild: 'Denk an den Staub in der Wohnung: Ein großer Teil davon sind abgestorbene Hautzellen. Die Haut schiebt ständig neue Zellen von unten nach und stößt oben die alten ab, ungefähr einmal im Monat komplett.',
+      bild: 'Denk an ein Gesichtspeeling bei der Kosmetikerin: Es trägt die oberste Schicht alter Hautzellen ab, darunter kommt frische Haut zum Vorschein. Die Haut macht das auch von selbst: Sie schiebt ständig neue Zellen von unten nach und stößt oben die alten ab, ungefähr einmal im Monat komplett.',
       frage: 'Wo fallen die alten Hautzellen ab?',
       o: ['Ganz außen an der Oberfläche', 'Tief unten im Fettgewebe', 'In der Talgdrüse'], r: 0,
       ja: 'Genau. Welche Schicht liegt ganz außen?',
-      nein: 'Nicht ganz. Alte Zellen werden außen abgestoßen, wie Staub, der von der Oberfläche fällt. Die äußerste Schicht erneuert sich also ständig.'
+      nein: 'Nicht ganz. Alte Zellen werden außen abgestoßen, so wie ein Peeling sie oben abträgt. Die äußerste Schicht erneuert sich also ständig.'
     },
     '1-mc10': {
       bild: 'Denk an Zitrone und Seife: Zitrone ist sauer, Seife ist alkalisch, reines Wasser liegt mit pH 7 genau in der Mitte. Die Haut hat einen Schutzfilm gegen Keime, und sein Name verrät, auf welcher Seite er liegt.',
@@ -384,7 +384,7 @@
       nein: 'Nicht ganz. Wenn ein Mittel nicht hilft, steckt oft eine andere Ursache dahinter. Schuppen können viele Gründe haben.'
     },
     '3-5': {
-      bild: 'Zerleg das Wort: „Sebum“ ist Latein für Talg. „-rhoe“ heißt fließen, wie bei Durchfall (Diarrhoe). Seborrhoe heißt also wörtlich: Der Talg fließt.',
+      bild: 'Zerleg das Wort: „Sebum“ ist der Fachbegriff für Talg, „-rhoe“ kommt aus dem Griechischen und heißt fließen. Stell dir einen Wasserhahn vor, der nicht ganz zugedreht ist: Es läuft und läuft. Bei Seborrhoe ist der „Talg-Hahn“ der Kopfhaut zu weit offen.',
       frage: 'Wenn Talg „fließt“: Ist dann zu viel oder zu wenig davon da?',
       o: ['Zu viel', 'Zu wenig', 'Gar keiner'], r: 0,
       ja: 'Richtig. Zu viel Talg macht die Kopfhaut fettig, oft mit fettigen, gelblichen Schuppen.',
@@ -428,7 +428,7 @@
       nein: 'Nicht ganz. Eine glatte Fläche spiegelt das Licht, eine raue streut es. Glatt anliegende Schuppen glänzen also.'
     },
     '1-hw4': {
-      bild: 'Wie kratzt du einen Mückenstich? Mit den Nägeln, und danach ist die Haut rot. Bei der Kopfmassage soll genau das nicht passieren.',
+      bild: 'Denk an eine Gesichtsbehandlung bei der Kosmetikerin: Dort massiert niemand mit den Fingernägeln. Die Kopfhaut ist genauso empfindlich wie die Haut im Gesicht, und die Kundin soll sich bei dir wohl und sicher fühlen.',
       frage: 'Was passiert, wenn du die Kopfhaut mit den Nägeln bearbeitest?',
       o: ['Sie kann gereizt und verletzt werden', 'Das Haar glänzt mehr', 'Das Shampoo schäumt mehr'], r: 0,
       ja: 'Richtig. Darum nimmst du den weichen, runden Teil vorne an den Fingern.',
