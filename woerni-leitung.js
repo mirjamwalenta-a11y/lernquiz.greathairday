@@ -428,7 +428,7 @@
       nein: 'Nicht ganz. Eine glatte Fläche spiegelt das Licht, eine raue streut es. Glatt anliegende Schuppen glänzen also.'
     },
     '1-hw4': {
-      bild: 'Stell dir vor, du streichst über ein feines Seidentuch: Mit den Fingernägeln ziehst du Fäden, mit den weichen Fingerkuppen gleitest du sanft darüber. Die Kopfhaut ist genauso empfindlich.',
+      bild: 'Denk an eine Gesichtsbehandlung bei der Kosmetikerin: Dort massiert niemand mit den Fingernägeln. Die Kopfhaut ist genauso empfindlich wie die Haut im Gesicht, und die Kundin soll sich bei dir wohl und sicher fühlen.',
       frage: 'Was passiert, wenn du die Kopfhaut mit den Nägeln bearbeitest?',
       o: ['Sie kann gereizt und verletzt werden', 'Das Haar glänzt mehr', 'Das Shampoo schäumt mehr'], r: 0,
       ja: 'Richtig. Darum nimmst du den weichen, runden Teil vorne an den Fingern.',
