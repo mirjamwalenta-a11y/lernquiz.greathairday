@@ -12,12 +12,15 @@
 //  - Regelbasiert, keine KI, keine neue Tabelle. Aussehen: nur vorhandene Klassen
 //    des Lern-Tools (.card, .btn-toggle, .opt-btn, .fb-g/.fb-r, .btn-primary, .btn-ghost).
 //  - Keine Namen von Personen (CLAUDE.md, Regel 2). Inhalte fachlich durch die Meisterin prüfen.
+//  - Schreibstandard wie woerni-leitung.js: sachlich, fachlich genau, keine Alltagsvergleiche.
+//    Jede Situation muss eindeutig zu genau einem Begriff passen, auch in gemischten Runden
+//    (geprüft 2026-11-26).
 //
 // Felder je Paar: b = Fachbegriff, s = Situation/Beschreibung, lj = ab Lehrjahr (1–3).
 (function () {
   var THEMEN = [
     { k: 'farbe', n: 'Farbe', th: 'Farbenlehre & Coloration', p: [
-      { b: 'Komplementärfarbe', s: 'Blau gegen Orange, Violett gegen Gelb: die Farbe, die einen Farbstich aufhebt.', lj: 1 },
+      { b: 'Komplementärfarbe', s: 'Die Farbe, die im Farbkreis gegenüberliegt und einen Farbstich neutralisiert, zum Beispiel Blau gegen Orange.', lj: 1 },
       { b: 'Tonhöhe', s: 'Die Zahl vor dem Punkt auf der Tube. Sie sagt, wie hell oder dunkel die Farbe ist.', lj: 1 },
       { b: 'Reflex', s: 'Die Zahl nach dem Punkt auf der Tube, zum Beispiel .3 für Gold.', lj: 1 },
       { b: 'Oxidant', s: 'Wird zur Farbcreme gemischt, hellt das Naturpigment auf und entwickelt die Farbe.', lj: 1 },
@@ -28,20 +31,20 @@
       { b: 'Vorpigmentierung', s: 'Sehr helles Haar soll viel dunkler werden: Zuerst kommen warme Pigmente zurück ins Haar.', lj: 3 }
     ]},
     { k: 'haar', n: 'Haarkunde', th: 'Haarkunde & Haarstruktur', p: [
-      { b: 'Cuticula', s: 'Die äußere Schuppenschicht. Liegt sie glatt an, glänzt das Haar.', lj: 1 },
+      { b: 'Cuticula', s: 'Die äußere Schutzschicht des Haares aus dachziegelartig übereinanderliegenden Zellen.', lj: 1 },
       { b: 'Cortex', s: 'Die dicke Rinde im Inneren des Haares. Hier sitzen die Farbpigmente.', lj: 1 },
       { b: 'Keratin', s: 'Das Eiweiß, aus dem das Haar hauptsächlich besteht.', lj: 1 },
       { b: 'Anagen', s: 'Die Wachstumsphase. Sie dauert Jahre, und rund 85 % der Haare sind gerade darin.', lj: 1 },
       { b: 'Telogen', s: 'Die Ruhephase. Das Haar löst sich und fällt beim Kämmen aus.', lj: 1 },
-      { b: 'Porosität', s: 'Blondiertes Haar saugt die Kur sofort auf und ist schnell wieder trocken.', lj: 1 },
+      { b: 'Porosität', s: 'Blondiertes Haar nimmt Pflege und Farbe sehr schnell auf und verliert Feuchtigkeit schnell wieder.', lj: 1 },
       { b: 'Disulfidbrücken', s: 'Feste Schwefelverbindungen im Cortex, die die Form des Haares halten.', lj: 2 },
       { b: 'Eumelanin', s: 'Das dunkle, braun-schwarze Pigment im Haar.', lj: 2 },
       { b: 'Phäomelanin', s: 'Das rot-gelbe Pigment, das bei rotblondem Haar überwiegt.', lj: 2 },
-      { b: 'Alopecia areata', s: 'Kreisrunde kahle Stellen auf dem Kopf. Dort keine Chemie auftragen.', lj: 3 }
+      { b: 'Alopecia areata', s: 'Kreisrunde kahle Stellen auf dem Kopf. Dort keine Chemie auftragen und an einen Arzt verweisen.', lj: 3 }
     ]},
     { k: 'haut', n: 'Hautkunde', th: 'Hautkunde', p: [
-      { b: 'Talgdrüse', s: 'Sie bildet das körpereigene Fett, das Haar am zweiten Tag fettig aussehen lässt.', lj: 1 },
-      { b: 'Schweißdrüse', s: 'Sie kühlt den Körper, wenn es heiß ist.', lj: 1 },
+      { b: 'Talgdrüse', s: 'Sie sitzt am Haarfollikel und bildet das körpereigene Fett, das Haut und Haar geschmeidig hält.', lj: 1 },
+      { b: 'Schweißdrüse', s: 'Sie gibt Schweiß ab, der beim Verdunsten den Körper kühlt.', lj: 1 },
       { b: 'Oberhaut', s: 'Die äußere Hautschicht. Sie erneuert sich ungefähr jeden Monat.', lj: 1 },
       { b: 'Lederhaut', s: 'Die mittlere Hautschicht mit Haarwurzeln, Talg- und Schweißdrüsen.', lj: 1 },
       { b: 'Säureschutzmantel', s: 'Der leicht saure Schutzfilm der Haut, pH 4,5 bis 5,5. Er wehrt Keime ab.', lj: 1 },
@@ -52,11 +55,11 @@
     { k: 'hygiene', n: 'Hygiene', th: 'Hygiene & Schutzmaßnahmen', p: [
       { b: 'Reinigen', s: 'Haare und Schmutz von Kamm und Schere entfernen. Das kommt immer zuerst.', lj: 1 },
       { b: 'Desinfizieren', s: 'Die Keime auf dem Werkzeug so stark verringern, dass keine Gefahr mehr besteht.', lj: 1 },
-      { b: 'Sterilisieren', s: 'Wirklich alle Keime abtöten, auch Sporen, wie im Operationssaal.', lj: 1 },
+      { b: 'Sterilisieren', s: 'Alle Keime abtöten, auch Sporen. Im Salon nur für bestimmte Instrumente nötig.', lj: 1 },
       { b: 'Einwirkzeit', s: 'Das Desinfektionsmittel bleibt auf der Fläche, bis die angegebene Zeit vorbei ist.', lj: 1 },
       { b: 'Stichfester Behälter', s: 'Hier kommen gebrauchte Rasierklingen hinein.', lj: 1 },
       { b: 'Sicherheitsdatenblatt', s: 'Hier stehen Gefahren, Inhaltsstoffe und Erste Hilfe zu einem Produkt.', lj: 2 },
-      { b: 'Begrenzt viruzid plus', s: 'Steht auf dem Desinfektionsmittel: Es wirkt gegen viele Viren, auch gegen einige besonders hartnäckige.', lj: 3 }
+      { b: 'Begrenzt viruzid plus', s: 'Angabe auf dem Desinfektionsmittel: wirkt gegen behüllte Viren und zusätzlich gegen einige besonders widerstandsfähige.', lj: 3 }
     ]},
     { k: 'waesche', n: 'Haarwäsche', th: 'Haarwäsche & Kopfmassage', p: [
       { b: 'Lauwarm', s: 'Etwa 36 bis 38 °C, ungefähr Körpertemperatur.', lj: 1 },
@@ -64,13 +67,13 @@
       { b: 'Turban', s: 'Nach der Wäsche wird das Haar sanft ausgedrückt und darin eingewickelt.', lj: 1 },
       { b: 'Kühl ausspülen', s: 'Zum Schluss legt sich die Schuppenschicht an, und das Haar glänzt mehr.', lj: 1 },
       { b: 'Zweite Wäsche', s: 'Erst jetzt schäumt das Shampoo richtig, weil Fett und Styling schon gelöst sind.', lj: 1 },
-      { b: 'Kur', s: 'Pflege, die in Längen und Spitzen gehört, nicht auf die Kopfhaut.', lj: 1 },
+      { b: 'Kur', s: 'Normale Pflege, die in Längen und Spitzen gehört, nicht auf die Kopfhaut.', lj: 1 },
       { b: 'Greifbewegung', s: 'Damit beginnt die Basismassage, an der oberen Halswirbelsäule.', lj: 1 },
       { b: 'Klopfmassage', s: 'Mit den Handkanten beider Hände, leicht federnd. Sie wirkt belebend.', lj: 1 }
     ]},
     { k: 'welle', n: 'Dauerwelle', th: 'Dauerwelle & Umformung', p: [
-      { b: 'Wellemittel', s: 'Es löst die Schwefelbrücken, damit das Haar die Form des Wicklers annimmt.', lj: 1 },
-      { b: 'Fixierung', s: 'Sie schließt die Schwefelbrücken in der neuen Form, damit die Welle hält.', lj: 2 },
+      { b: 'Wellemittel', s: 'Es öffnet einen Teil der Schwefelbrücken, damit das Haar die Form des Wicklers annimmt.', lj: 1 },
+      { b: 'Fixierung', s: 'Sie schließt die geöffneten Schwefelbrücken in der neuen Form, damit die Welle hält.', lj: 2 },
       { b: 'Saure Dauerwelle', s: 'Schonender und langsamer. Gut für gefärbtes oder empfindliches Haar.', lj: 3 },
       { b: 'Alkalische Dauerwelle', s: 'Stärker und schneller. Für gesundes, kräftiges Haar.', lj: 3 },
       { b: 'Relaxer', s: 'Er glättet krauses Haar dauerhaft auf chemischem Weg.', lj: 3 },
