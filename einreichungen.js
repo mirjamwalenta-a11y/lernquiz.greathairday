@@ -639,7 +639,7 @@
   function wortZahl(t) { return (String(t || '').match(/\S+/g) || []).length; }
   function sek(t) { return Math.round(wortZahl(t) / TEMPO[ER.akt.pitch.tempo] * 60); }
   function saetze(t) {
-    return String(t || '').replace(/\s+/g, ' ').trim().split(/(?<=[.!?…])\s+(?=[A-ZÄÖÜ„"»0-9])/)
+    return String(t || '').replace(/\s+/g, ' ').trim().replace(/([.!?…])\s+(?=[A-ZÄÖÜ„"»0-9])/g, '$1\n').split('\n')
       .map(function (s) { return s.trim(); }).filter(function (s) { return s.length >= 20 && s.length <= 320; });
   }
   // Grün = passt, gold = noch viel Luft, rot = zu lang (Farben aus STUFEN)
