@@ -14,6 +14,13 @@
 // „klar / teilweise klar / zu allgemein“ und die Hinweise schreibt die
 // Meisterin selbst. Keine KI, nichts verlässt die eigene Datenbank.
 //
+// Reiter „2-Minuten-Pitch“ (supabase/20261128_einreichungen_pitch.sql, Spalte
+// pitch): baut aus der eigenen Einreichung einen Pitch in vier Zeitabschnitten
+// – als Sprechtext, Video-Drehbuch oder schriftliche Kurzfassung – mit
+// Zeitmessung, Probe mit Stoppuhr und Hinweisen (z. B. Zahl ohne Beleg). Er
+// erfindet nichts: Bausteine kommen nur aus Einreichung und Belegen, den Text
+// schreibt die Meisterin.
+//
 // Braucht aus lernquiz.html: sb, ISTMEISTERIN, escHtml, zeige, ladeDashboard, MB_BEREICH.
 (function () {
   var BUCKET = 'einreichung-belege';
@@ -130,12 +137,14 @@
         (e.kernbotschaft ? '<div class="tb-d">' + esc(e.kernbotschaft) + '</div>' : '<div class="tb-d">Noch keine Kernbotschaft.</div>') +
         '<div class="tb-d" style="margin-top:4px">' + (zahl[e.id] || 0) + (zahl[e.id] === 1 ? ' Beleg' : ' Belege') + ' · Check: ' + eingeschaetzt + ' von 5 Abschnitten eingeschätzt' + (allg ? ', ' + allg + ' zu allgemein' : '') + '</div>' +
         '<div class="tb-knoepfe"><button class="tb-los" data-er-auf="' + esc(e.id) + '">Öffnen</button>' +
-        '<button class="tb-edit" data-er-check="' + esc(e.id) + '">Wettbewerbs-Check</button></div></div>';
+        '<button class="tb-edit" data-er-check="' + esc(e.id) + '">Wettbewerbs-Check</button>' +
+        '<button class="tb-edit" data-er-pitch="' + esc(e.id) + '">2-Minuten-Pitch</button></div></div>';
     });
     h += '<button class="mb-neu" id="er-neu">+ Neue Einreichung</button><div id="er-neu-form" hidden></div>';
     box.innerHTML = h;
     box.querySelectorAll('[data-er-auf]').forEach(function (b) { b.onclick = function () { oeffnen(b.dataset.erAuf, 'text'); }; });
     box.querySelectorAll('[data-er-check]').forEach(function (b) { b.onclick = function () { oeffnen(b.dataset.erCheck, 'check'); }; });
+    box.querySelectorAll('[data-er-pitch]').forEach(function (b) { b.onclick = function () { oeffnen(b.dataset.erPitch, 'pitch'); }; });
     $('er-neu').onclick = neuForm;
   }
 
@@ -165,7 +174,7 @@
   async function oeffnen(id, tab) {
     var e = ER.liste.filter(function (x) { return String(x.id) === String(id); })[0];
     if (!e) return;
-    ER.akt = JSON.parse(JSON.stringify(e)); ER.akt.pruefung = pruefung(ER.akt);
+    ER.akt = JSON.parse(JSON.stringify(e)); ER.akt.pruefung = pruefung(ER.akt); pitchNorm(ER.akt);
     ER.tab = tab || 'text'; ER.geaendert = false; ER.beleg = null;
     var box = $('er-inhalt'); box.innerHTML = '<div class="laden">Wird geladen…</div>';
     window.scrollTo(0, 0);
@@ -193,7 +202,8 @@
       '<div class="tb-w" style="font-size:17px;margin-bottom:10px">' + esc(e.titel) + '</div>' +
       '<div class="tb-filter" role="tablist">' +
         '<button data-er-tab="text" aria-pressed="' + (ER.tab === 'text') + '">Einreichung</button>' +
-        '<button data-er-tab="check" aria-pressed="' + (ER.tab === 'check') + '">Wettbewerbs-Check</button></div>' +
+        '<button data-er-tab="check" aria-pressed="' + (ER.tab === 'check') + '">Wettbewerbs-Check</button>' +
+        '<button data-er-tab="pitch" aria-pressed="' + (ER.tab === 'pitch') + '">2-Minuten-Pitch</button></div>' +
       '<div id="er-tab"></div>';
     $('er-inhalt').innerHTML = h;
     $('er-zur-liste').onclick = async function () { if (await verlassenOk()) zeigeEinreichungen(); };
@@ -204,7 +214,7 @@
         ER.tab = b.dataset.erTab; detailZeigen();
       };
     });
-    if (ER.tab === 'check') checkZeigen(); else textZeigen();
+    if (ER.tab === 'check') checkZeigen(); else if (ER.tab === 'pitch') pitchZeigen(); else textZeigen();
   }
 
   // Ungespeicherte Änderungen: beim Verlassen speichern oder verwerfen
@@ -269,26 +279,33 @@
       });
       p.schwaechen = [0, 1, 2].map(function (i) { return w('er-c-s' + i).trim().slice(0, 400); });
     }
+    if ($('er-p-hook') && e.pitch) {
+      PITCH_TEILE.forEach(function (t) {
+        e.pitch.teile[t.key].text = w('er-p-' + t.key).slice(0, 3000);
+        e.pitch.teile[t.key].bild = w('er-p-' + t.key + '-bild').slice(0, 400);
+      });
+      e.pitch.merksatz = w('er-p-merksatz').trim().slice(0, 300);
+    }
   }
 
   async function speichern() {
     felderLesen();
     var e = ER.akt, f = $('er-fehler');
     if (f) f.textContent = '';
-    var r = await sb.from('einreichungen').update({
+    var r = await sb.from('einreichungen').update(Object.assign({
       titel: e.titel, wettbewerb: e.wettbewerb, deadline: e.deadline, kernbotschaft: e.kernbotschaft,
       anforderungen: e.anforderungen, ausgangslage: e.ausgangslage, loesung: e.loesung, wirkung: e.wirkung,
       luecken: e.luecken, pruefung: e.pruefung
-    }).eq('id', e.id).select('*').single();
+    }, e.pitch ? {pitch: e.pitch} : {})).eq('id', e.id).select('*').single();
     if (r.error) {
       var m = 'Konnte nicht gespeichert werden: ' + r.error.message;
       if (f) f.textContent = m; else alert(m);
       return false;
     }
     ER.geaendert = false;
-    var neu = r.data; neu.pruefung = pruefung(neu);
+    var neu = r.data; neu.pruefung = pruefung(neu); pitchNorm(neu);
     ER.liste = ER.liste.map(function (x) { return String(x.id) === String(neu.id) ? neu : x; });
-    ER.akt = JSON.parse(JSON.stringify(neu)); ER.akt.pruefung = pruefung(ER.akt);
+    ER.akt = JSON.parse(JSON.stringify(neu)); ER.akt.pruefung = pruefung(ER.akt); pitchNorm(ER.akt);
     return true;
   }
 
@@ -576,6 +593,378 @@
         alert('Alle drei Felder sind schon ausgefüllt. Leere zuerst eines.');
       };
     });
+  }
+
+  // ── Tab „2-Minuten-Pitch“ ─────────────────────────────────────────
+  // Vier Zeitabschnitte, gebaut aus der eigenen Einreichung. Die Bausteine
+  // sind wörtliche Sätze aus Einreichung und Belegen – nichts wird erfunden,
+  // keine KI. Zeit = Wörter ÷ Sprechtempo. Die Hinweise bewerten nicht, sie
+  // zeigen nur, was auffällt (zu lang, Zahl ohne Herkunft, allgemeine Wörter).
+  var PITCH_TEILE = [
+    {key: 'hook', name: 'Hook', von: 0, bis: 20, quellen: ['ausgangslage', 'belege', 'kernbotschaft'],
+     frage: 'Womit hast du in 20 Sekunden die Aufmerksamkeit? Fang beim Publikum an, nicht bei der App: ein Moment aus dem Salon, ein Gegensatz oder eine Frage.'},
+    {key: 'loesung', name: 'Problem & Lösung', von: 20, bis: 50, quellen: ['ausgangslage', 'loesung'],
+     frage: 'Was fehlt im Ausbildungsalltag – und was macht ihr anders? In einfachen Worten, ohne Fachjargon.'},
+    {key: 'zeigen', name: 'Zeigen statt erzählen', von: 50, bis: 90, quellen: ['loesung', 'wirkung'],
+     frage: 'Zwei, drei Dinge, die man in der App sieht und die es so sonst nicht gibt. Am besten läuft dazu der Bildschirm mit.'},
+    {key: 'schluss', name: 'Beleg & Schluss', von: 90, bis: 120, quellen: ['belege', 'wirkung', 'kernbotschaft'],
+     frage: 'Ein echter Beleg (Beobachtung, Aussage, Zahl) – und am Ende der Satz, der hängen bleibt.'}
+  ];
+  var PITCH_TEIL = {}; PITCH_TEILE.forEach(function (t) { PITCH_TEIL[t.key] = t; });
+  var TEMPI = [['ruhig', 120, 'ruhig'], ['normal', 135, 'normal'], ['zuegig', 150, 'zügig']];
+  var TEMPO = {}; TEMPI.forEach(function (t) { TEMPO[t[0]] = t[1]; });
+  var HOOK_MUSTER = [
+    ['Szene', 'Ein Moment aus dem Salon, in dem das Problem sichtbar wird. Ohne echten Namen.', 'Ein Lehrling … Sie ist sich sicher – und …'],
+    ['Gegensatz', 'Was alle erwarten – und was im Handwerk wirklich zählt.', 'Die meisten … zählen … Im Salon zählt aber …'],
+    ['Frage', 'Eine Frage, auf die das Publikum keine schnelle Antwort hat.', 'Woran erkennen Sie, ob ein Lehrling … wirklich kann?']
+  ];
+  var FASSUNGEN = [['sprechen', 'Sprechtext'], ['video', 'Video-Drehbuch'], ['schrift', 'Schriftlich']];
+  var GRENZEN = [500, 1000, 1500, 2500];
+  var PR = null;   // laufende Probe
+
+  function pitchNorm(e) {
+    if (!e || !Object.prototype.hasOwnProperty.call(e, 'pitch')) return;   // Spalte fehlt noch
+    var p = e.pitch && typeof e.pitch === 'object' && !Array.isArray(e.pitch) ? e.pitch : {};
+    if (!p.teile || typeof p.teile !== 'object') p.teile = {};
+    PITCH_TEILE.forEach(function (t) {
+      var x = p.teile[t.key];
+      if (!x || typeof x !== 'object') x = p.teile[t.key] = {};
+      x.text = String(x.text || ''); x.bild = String(x.bild || '');
+    });
+    p.merksatz = String(p.merksatz || '');
+    if (!TEMPO[p.tempo]) p.tempo = 'normal';
+    e.pitch = p;
+  }
+  function zeit(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function wortZahl(t) { return (String(t || '').match(/\S+/g) || []).length; }
+  function sek(t) { return Math.round(wortZahl(t) / TEMPO[ER.akt.pitch.tempo] * 60); }
+  function saetze(t) {
+    return String(t || '').replace(/\s+/g, ' ').trim().split(/(?<=[.!?…])\s+(?=[A-ZÄÖÜ„"»0-9])/)
+      .map(function (s) { return s.trim(); }).filter(function (s) { return s.length >= 20 && s.length <= 320; });
+  }
+  // Grün = passt, gold = noch viel Luft, rot = zu lang (Farben aus STUFEN)
+  function zeitStufe(s, plan, n) {
+    if (!n) return null;
+    if (s > plan * 1.15) return STUFE.allgemein;
+    if (s < plan * 0.5) return STUFE.teilweise;
+    return STUFE.klar;
+  }
+  function merksatzFehltImSchluss(p) {
+    var m = p.merksatz.trim();
+    return m && p.teile.schluss.text.indexOf(m) < 0;
+  }
+
+  function pitchZeigen() {
+    var e = ER.akt;
+    if (!e.pitch) {
+      $('er-tab').innerHTML = '<p class="mb-sub">Der Pitch braucht noch die Datenbank-Änderung (supabase/20261128_einreichungen_pitch.sql im Supabase SQL-Editor ausführen).</p>';
+      return;
+    }
+    var p = e.pitch;
+    ER.fassung = ER.fassung || 'sprechen'; ER.grenze = ER.grenze || 1000;
+    var h = '<p class="mb-sub">Zwei Minuten, vier Abschnitte. Die Bausteine kommen wörtlich aus deiner Einreichung und deinen Belegen – erfunden wird nichts, keine KI. Daraus entstehen Sprechtext, Video-Drehbuch und eine schriftliche Kurzfassung.</p>' +
+      '<div class="pte-l" style="margin-top:0">Sprechtempo</div><div class="tb-filter">' +
+      TEMPI.map(function (t) { return '<button data-er-tempo="' + t[0] + '" aria-pressed="' + (p.tempo === t[0]) + '">' + esc(t[2]) + ' · ' + t[1] + ' Wörter/Min.</button>'; }).join('') + '</div>';
+    PITCH_TEILE.forEach(function (t) {
+      var x = p.teile[t.key];
+      h += '<div class="tb-e" id="er-p-' + t.key + '-karte" style="border-left-color:#E4DBC5;padding:14px;margin-bottom:12px">' +
+        '<div class="lab">' + zeit(t.von) + '–' + zeit(t.bis) + ' · ' + esc(t.name) + '</div>' +
+        '<p class="tb-d" style="margin-bottom:8px">' + esc(t.frage) + '</p>' +
+        (t.key === 'hook' ? '<div class="pte-l" style="margin-top:0">Gerüst</div><div class="tb-knoepfe" style="margin-top:0">' +
+          HOOK_MUSTER.map(function (m, i) { return '<button class="tb-edit" data-er-muster="' + i + '">' + esc(m[0]) + '</button>'; }).join('') +
+          '</div><div class="tb-d" id="er-p-muster-info" style="margin-top:4px"></div>' : '') +
+        '<label class="pte-l" for="er-p-' + t.key + '">Gesprochen</label><textarea id="er-p-' + t.key + '" data-er-p rows="5" maxlength="3000">' + esc(x.text) + '</textarea>' +
+        '<div class="tb-d" id="er-p-' + t.key + '-zeit"></div>' +
+        '<label class="pte-l" for="er-p-' + t.key + '-bild">Im Bild <span>(fürs Video, z. B. welcher Bildschirm)</span></label>' +
+        '<input id="er-p-' + t.key + '-bild" data-er-p maxlength="400" style="margin-bottom:0" value="' + esc(x.bild) + '">' +
+        '<div class="tb-knoepfe"><button class="tb-edit" data-er-bst="' + t.key + '" aria-expanded="false">Bausteine aus der Einreichung</button></div>' +
+        '<div id="er-p-' + t.key + '-bst" hidden></div></div>';
+    });
+    h += '<div class="paz-karte"><div class="lab">Satz zum Merken</div>' +
+      '<p class="tb-d" style="margin-bottom:8px">Der eine Satz, den die Jury beim Rausgehen noch im Kopf hat. Kurz, ohne Fachwort.</p>' +
+      '<textarea id="er-p-merksatz" data-er-p rows="2" maxlength="300">' + esc(p.merksatz) + '</textarea>' +
+      (String(e.kernbotschaft || '').trim() ? '<div class="tb-knoepfe"><button class="tb-edit" id="er-p-kern">Kernbotschaft übernehmen</button></div>' : '') + '</div>' +
+      '<div class="paz-karte"><div class="lab">Gesamt</div><div class="tb-w" id="er-p-gesamt"></div><div class="tb-d" id="er-p-letzte"></div>' +
+      '<button class="btn btn-h" id="er-p-probe" style="margin-top:10px">▶ Probe mit Stoppuhr</button></div>' +
+      '<div class="paz-karte"><div class="lab">Auffällig im Pitch</div><div id="er-p-auff"></div></div>' +
+      '<div class="paz-karte"><div class="lab">Fassung</div><div class="tb-filter">' +
+      FASSUNGEN.map(function (f) { return '<button data-er-fassung="' + f[0] + '" aria-pressed="' + (ER.fassung === f[0]) + '">' + esc(f[1]) + '</button>'; }).join('') +
+      '</div><div id="er-p-fassung"></div>' +
+      '<div class="tb-knoepfe"><button class="tb-edit" id="er-p-kopieren">Text kopieren</button><span class="tb-d" id="er-p-kopiert" aria-live="polite"></span></div></div>' +
+      '<div id="er-fehler" class="pte-fehler" aria-live="polite"></div>' +
+      '<button class="btn btn-g" id="er-p-speichern" style="margin:6px 0 20px">Pitch speichern</button>';
+    $('er-tab').innerHTML = h;
+
+    var warten = null;
+    $('er-tab').querySelectorAll('[data-er-p]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        ER.geaendert = true;
+        clearTimeout(warten); warten = setTimeout(pitchAktualisieren, 250);
+      });
+    });
+    $('er-tab').querySelectorAll('[data-er-tempo]').forEach(function (b) {
+      b.onclick = function () {
+        ER.akt.pitch.tempo = b.dataset.erTempo; ER.geaendert = true;
+        document.querySelectorAll('[data-er-tempo]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        pitchAktualisieren();
+      };
+    });
+    $('er-tab').querySelectorAll('[data-er-muster]').forEach(function (b) {
+      b.onclick = function () {
+        var m = HOOK_MUSTER[+b.dataset.erMuster];
+        $('er-p-muster-info').textContent = m[0] + ': ' + m[1] + ' Die Lücken (…) füllst du mit deinem echten Beispiel.';
+        einsetzen('hook', m[2]);
+      };
+    });
+    $('er-tab').querySelectorAll('[data-er-bst]').forEach(function (b) {
+      b.onclick = function () {
+        var box = $('er-p-' + b.dataset.erBst + '-bst'), auf = box.hidden;
+        box.hidden = !auf; b.setAttribute('aria-expanded', String(auf));
+        if (auf) bausteineZeigen(b.dataset.erBst);
+      };
+    });
+    if ($('er-p-kern')) $('er-p-kern').onclick = function () {
+      var el = $('er-p-merksatz');
+      if (el.value.trim() && !confirm('Den Satz zum Merken durch die Kernbotschaft ersetzen?')) return;
+      el.value = String(ER.akt.kernbotschaft || '').trim().slice(0, 300); ER.geaendert = true; pitchAktualisieren();
+    };
+    $('er-tab').querySelectorAll('[data-er-fassung]').forEach(function (b) {
+      b.onclick = function () {
+        ER.fassung = b.dataset.erFassung;
+        document.querySelectorAll('[data-er-fassung]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        fassungZeigen();
+      };
+    });
+    $('er-p-kopieren').onclick = kopieren;
+    $('er-p-probe').onclick = probeStarten;
+    $('er-p-speichern').onclick = async function () {
+      this.disabled = true;
+      var ok = await speichern();
+      this.disabled = false;
+      if (ok) { this.textContent = '✓ Gespeichert'; var b = this; setTimeout(function () { b.textContent = 'Pitch speichern'; }, 1800); }
+    };
+    pitchAktualisieren();
+  }
+
+  function einsetzen(key, text) {
+    var el = $('er-p-' + key);
+    el.value = (el.value.trim() ? el.value.replace(/\s+$/, '') + ' ' : '') + text;
+    el.value = el.value.slice(0, 3000);
+    ER.geaendert = true;
+    pitchAktualisieren();
+    if (!$('er-p-' + key + '-bst').hidden) bausteineZeigen(key);
+  }
+
+  function bausteine(key) {
+    var e = ER.akt, out = [];
+    PITCH_TEIL[key].quellen.forEach(function (q) {
+      if (q === 'belege') {
+        ER.belege.forEach(function (b) {
+          var erster = saetze(b.inhalt)[0] || String(b.inhalt || '').trim();
+          out.push({quelle: 'Beleg · ' + (ART_NAME[b.art] || b.art), text: (b.titel + (erster ? '. ' + erster : '')).replace(/\.\.+/g, '.').slice(0, 400)});
+        });
+      } else if (q === 'kernbotschaft') {
+        if (String(e.kernbotschaft || '').trim()) out.push({quelle: 'Kernbotschaft', text: e.kernbotschaft.trim()});
+      } else {
+        saetze(e[q]).forEach(function (s) { out.push({quelle: ABSCHNITT_NAME[q], text: s}); });
+      }
+    });
+    return out.slice(0, 14);
+  }
+  function bausteineZeigen(key) {
+    var box = $('er-p-' + key + '-bst'), liste = bausteine(key), drin = $('er-p-' + key).value;
+    if (!liste.length) {
+      box.innerHTML = '<p class="tb-d" style="margin-top:8px">Dazu steht in der Einreichung noch nichts. Zuerst im Reiter „Einreichung“ die Abschnitte ' +
+        PITCH_TEIL[key].quellen.map(function (q) { return q === 'belege' ? 'Belege' : q === 'kernbotschaft' ? 'Kernbotschaft' : ABSCHNITT_NAME[q]; }).join(', ') + ' ausfüllen.</p>';
+      return;
+    }
+    box.innerHTML = '<p class="tb-d" style="margin:8px 0 2px">Wörtlich aus deiner Einreichung. Übernehmen hängt den Satz an – danach für das Sprechen kürzen.</p>' +
+      liste.map(function (b, i) {
+        var schon = drin.indexOf(b.text) >= 0;
+        return '<div class="tb-knoepfe" style="margin-top:6px;flex-wrap:nowrap;align-items:flex-start"><span class="tb-d" style="flex:1"><b>' + esc(b.quelle) + '</b> · ' + esc(b.text) + '</span>' +
+          (schon ? '<span class="tb-d">✓ drin</span>' : '<button class="tb-edit" data-er-nimm="' + i + '">übernehmen</button>') + '</div>';
+      }).join('');
+    box.querySelectorAll('[data-er-nimm]').forEach(function (b) { b.onclick = function () { einsetzen(key, liste[+b.dataset.erNimm].text); }; });
+  }
+
+  function pitchAktualisieren() {
+    if (!$('er-p-hook')) return;
+    felderLesen();
+    var p = ER.akt.pitch, wpm = TEMPO[p.tempo], gesamt = 0, woerterGesamt = 0;
+    PITCH_TEILE.forEach(function (t) {
+      var text = p.teile[t.key].text, n = wortZahl(text), s = sek(text), plan = t.bis - t.von, st = zeitStufe(s, plan, n);
+      gesamt += s; woerterGesamt += n;
+      $('er-p-' + t.key + '-zeit').innerHTML = n
+        ? '<span style="color:' + st[2] + ';font-weight:600">ca. ' + s + ' s</span> von ' + plan + ' s · ' + n + ' Wörter' +
+          (st === STUFE.allgemein ? ' – kürzen, etwa auf ' + Math.round(plan * wpm / 60) + ' Wörter' : st === STUFE.teilweise ? ' – hier ist noch Luft' : '')
+        : 'Noch leer · Ziel ' + plan + ' s, das sind etwa ' + Math.round(plan * wpm / 60) + ' Wörter';
+      $('er-p-' + t.key + '-karte').style.borderLeftColor = st ? st[2] : '#E4DBC5';
+    });
+    var g = gesamt > 125 ? STUFE.allgemein : STUFE.klar;
+    $('er-p-gesamt').innerHTML = '<span style="color:' + (woerterGesamt ? g[2] : 'inherit') + '">ca. ' + zeit(gesamt) + '</span> von 2:00 · ' + woerterGesamt + ' Wörter';
+    var pr = p.probe;
+    $('er-p-letzte').textContent = pr && Array.isArray(pr.sek) && pr.sek.length
+      ? 'Letzte Probe' + (pr.datum ? ' am ' + datumDE(pr.datum) : '') + ': ' + zeit(pr.sek.reduce(function (a, b) { return a + b; }, 0)) + ' (' + pr.sek.map(zeit).join(' · ') + ')'
+      : 'Die Zeit ist geschätzt. Genau weißt du es erst nach einer Probe laut gesprochen.';
+    var auff = pitchAuffaelligkeiten(gesamt);
+    $('er-p-auff').innerHTML = auff.length
+      ? '<ul class="ber-meth" style="margin:0">' + auff.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'
+      : '<div class="tb-mnotiz" style="margin-top:0">Formal fällt nichts auf. Ob der Pitch trägt, merkst du beim lauten Proben vor jemandem, der die App nicht kennt.</div>';
+    fassungZeigen();
+  }
+
+  function zahlenIn(t) {
+    return (String(t || '').match(/\d+(?:[.,]\d+)?/g) || []).map(function (z) { return z.replace(',', '.'); });
+  }
+  function pitchAuffaelligkeiten(gesamt) {
+    var e = ER.akt, p = e.pitch, out = [];
+    var texte = PITCH_TEILE.map(function (t) { return p.teile[t.key].text; });
+    var alle = texte.concat([p.merksatz]).join('\n');
+    var leer = PITCH_TEILE.filter(function (t) { return !p.teile[t.key].text.trim(); });
+    if (leer.length === PITCH_TEILE.length) return ['Noch leer. Tipp: bei jedem Abschnitt „Bausteine aus der Einreichung“ öffnen, passende Sätze übernehmen und dann fürs Sprechen kürzen.'];
+    if (leer.length) out.push('Noch leer: ' + leer.map(function (t) { return t.name; }).join(', ') + '.');
+    PITCH_TEILE.forEach(function (t) {
+      var s = sek(p.teile[t.key].text), plan = t.bis - t.von;
+      if (s > plan * 1.15) out.push(t.name + ': ca. ' + s + ' s statt ' + plan + ' s.');
+    });
+    if (gesamt > 125) out.push('Insgesamt ca. ' + zeit(gesamt) + ' – über zwei Minuten. Was kann weg, ohne dass der Kern fehlt?');
+    else if (!leer.length && gesamt < 90) out.push('Insgesamt erst ca. ' + zeit(gesamt) + ' – Platz für einen konkreten Beleg mehr.');
+    if (/^\s*(wir|unser\w*|ich|mein\w*|die app|unsere app|great hair day|die great hair day)\b/i.test(p.teile.hook.text))
+      out.push('Der Hook beginnt bei euch. Stärker ist ein Einstieg beim Publikum: ein Moment aus dem Salon, ein Gegensatz, eine Frage.');
+    var allg = allgemeineWoerter(alle);
+    if (allg.length) out.push('Allgemeine Wörter: ' + allg.slice(0, 5).map(function (w) { return '„' + w + '“'; }).join(', ') + ' – lieber zeigen, woran man es sieht.');
+    if (/\bbis zu\b/i.test(alle)) out.push('„bis zu …“ klingt nach Werbung. Besser die echte Zahl aus einem Beleg, mit Zeitraum.');
+    var bekannt = {};
+    [e.ausgangslage, e.loesung, e.wirkung, e.kernbotschaft, e.anforderungen].concat(ER.belege.map(function (b) { return b.titel + ' ' + b.inhalt + ' ' + b.quelle; }))
+      .forEach(function (t) { zahlenIn(t).forEach(function (z) { bekannt[z] = 1; }); });
+    var fremd = [];
+    zahlenIn(alle).forEach(function (z) { if (!bekannt[z] && fremd.indexOf(z) < 0) fremd.push(z); });
+    if (fremd.length) out.push('Zahl ohne Herkunft: ' + fremd.slice(0, 5).map(function (z) { return '„' + z.replace('.', ',') + '“'; }).join(', ') + ' – steht weder in der Einreichung noch in einem Beleg. Woher stammt sie?');
+    var lang = 0;
+    texte.forEach(function (t) { String(t).split(/[.!?…]+\s+/).forEach(function (s) { if (wortZahl(s) > 25) lang++; }); });
+    if (lang) out.push(lang + (lang === 1 ? ' Satz hat' : ' Sätze haben') + ' mehr als 25 Wörter – gesprochen schwer zu folgen. Teilen.');
+    if (p.teile.schluss.text.trim() && !hatKonkretes(p.teile.schluss.text)) out.push('Im Schluss steht kein konkreter Beleg (Beobachtung, Zitat, Zahl).');
+    if (!ER.belege.length) out.push('In der Einreichung gibt es noch keine Belege – ohne Beleg bleibt der Pitch eine Behauptung.');
+    var m = p.merksatz.trim();
+    if (!m) out.push('Satz zum Merken fehlt.');
+    else if (wortZahl(m) > 15) out.push('Der Satz zum Merken hat ' + wortZahl(m) + ' Wörter – unter 15 bleibt er eher hängen.');
+    return out;
+  }
+
+  function fassungText(f) {
+    var p = ER.akt.pitch;
+    if (f === 'video') {
+      return PITCH_TEILE.map(function (t) {
+        var x = p.teile[t.key], ton = x.text.trim() + (t.key === 'schluss' && merksatzFehltImSchluss(p) ? ' ' + p.merksatz.trim() : '');
+        return zeit(t.von) + '–' + zeit(t.bis) + ' · ' + t.name + '\nIm Bild: ' + (x.bild.trim() || '(noch offen)') + '\nTon: ' + (ton.trim() || '(noch leer)');
+      }).join('\n\n');
+    }
+    if (f === 'schrift') {
+      var absaetze = PITCH_TEILE.map(function (t) { return p.teile[t.key].text.trim(); }).filter(Boolean);
+      if (p.merksatz.trim()) absaetze.unshift(p.merksatz.trim());
+      return absaetze.join('\n\n');
+    }
+    var teile = PITCH_TEILE.map(function (t) { return '[' + zeit(t.von) + '] ' + t.name + '\n' + (p.teile[t.key].text.trim() || '(noch leer)'); });
+    if (merksatzFehltImSchluss(p)) teile.push('Zum Schluss:\n' + p.merksatz.trim());
+    return teile.join('\n\n');
+  }
+  function fassungZeigen() {
+    var box = $('er-p-fassung'); if (!box) return;
+    var t = fassungText(ER.fassung), h = '';
+    if (ER.fassung === 'video') {
+      var offen = PITCH_TEILE.filter(function (x) { return !ER.akt.pitch.teile[x.key].bild.trim(); }).length;
+      h += '<p class="tb-d" style="margin-bottom:8px">Bild und Ton nebeneinander zum Drehen. Den Ton auch als Untertitel einblenden – viele schauen ohne Ton.' +
+        (offen ? ' Bei ' + offen + (offen === 1 ? ' Abschnitt' : ' Abschnitten') + ' fehlt noch „Im Bild“.' : '') + '</p>';
+    } else if (ER.fassung === 'schrift') {
+      var n = t.length, ueber = n > ER.grenze;
+      h += '<p class="tb-d" style="margin-bottom:6px">Für Formularfelder: Satz zum Merken zuerst, dann die vier Abschnitte als Absätze. Fürs Lesen darfst du ausführlicher sein als beim Sprechen.</p>' +
+        '<div class="tb-filter" style="margin-bottom:6px">' + GRENZEN.map(function (g) { return '<button data-er-grenze="' + g + '" aria-pressed="' + (ER.grenze === g) + '">' + g + ' Zeichen</button>'; }).join('') + '</div>' +
+        '<div class="tb-d" style="margin-bottom:6px' + (ueber ? ';color:#C44030;font-weight:600' : '') + '">' + n + ' von ' + ER.grenze + ' Zeichen' + (ueber ? ' – ' + (n - ER.grenze) + ' zu viel' : '') + '</div>';
+    } else {
+      h += '<p class="tb-d" style="margin-bottom:8px">Zum Ausdrucken oder als Spickzettel. Laut proben, nicht auswendig lernen – Stichworte reichen.</p>';
+    }
+    h += '<div class="tb-e" style="border-left-color:#896C32;white-space:pre-line;font-size:13px;line-height:1.5;color:#211D17">' + esc(t) + '</div>';
+    box.innerHTML = h;
+    box.querySelectorAll('[data-er-grenze]').forEach(function (b) { b.onclick = function () { ER.grenze = +b.dataset.erGrenze; fassungZeigen(); }; });
+  }
+  function kopieren() {
+    var t = fassungText(ER.fassung), info = $('er-p-kopiert');
+    function ok() { info.textContent = '✓ kopiert'; setTimeout(function () { info.textContent = ''; }, 1800); }
+    function alt() {
+      var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); ok(); } catch (e) { info.textContent = 'Kopieren ging nicht – bitte markieren und kopieren.'; }
+      ta.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, alt); else alt();
+  }
+
+  // ── Probe mit Stoppuhr ────────────────────────────────────────────
+  function probeStarten() {
+    pitchAktualisieren();
+    var o = $('er-probe');
+    if (!o) {
+      o = document.createElement('div'); o.id = 'er-probe'; o.className = 'mb-wahl'; o.hidden = true; o.style.alignItems = 'center';
+      o.innerHTML = '<div class="mb-wahl-box" role="dialog" aria-modal="true" aria-labelledby="er-probe-titel" style="max-height:100%;overflow-y:auto">' +
+        '<b id="er-probe-titel">Probe</b><div id="er-probe-inhalt"></div></div>';
+      document.body.appendChild(o);
+      document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !o.hidden) probeSchliessen(); });
+    }
+    PR = {idx: -1, start: 0, teilStart: 0, marken: [], uhr: null};
+    o.hidden = false;
+    probeZeigen();
+  }
+  function probeSchliessen() {
+    if (PR && PR.uhr) clearInterval(PR.uhr);
+    PR = null;
+    $('er-probe').hidden = true;
+    pitchAktualisieren();
+  }
+  function probeZeigen() {
+    var box = $('er-probe-inhalt'), p = ER.akt.pitch;
+    if (PR.idx < 0) {
+      box.innerHTML = '<p class="tb-d" style="margin-bottom:10px">Sprich laut, wie vor der Jury. Tippe nach jedem Abschnitt auf „Weiter“. Am Ende siehst du, wo du über der Zeit warst. Es wird nichts aufgenommen.</p>' +
+        '<button class="btn btn-g" id="er-pr-los">▶ Los</button><button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Abbrechen</button>';
+      $('er-pr-los').onclick = function () { PR.start = PR.teilStart = Date.now(); PR.idx = 0; PR.uhr = setInterval(uhrZeigen, 250); probeZeigen(); };
+      $('er-pr-zu').onclick = probeSchliessen;
+      $('er-pr-los').focus();
+      return;
+    }
+    if (PR.idx >= PITCH_TEILE.length) {
+      clearInterval(PR.uhr); PR.uhr = null;
+      var summe = PR.marken.reduce(function (a, b) { return a + b; }, 0);
+      p.probe = {datum: heuteISO(), sek: PR.marken.slice()}; ER.geaendert = true;
+      box.innerHTML = PITCH_TEILE.map(function (t, i) {
+        var plan = t.bis - t.von, s = PR.marken[i], st = s > plan * 1.15 ? STUFE.allgemein : s > plan * 1.0 ? STUFE.teilweise : STUFE.klar;
+        return '<div class="tb-k" style="margin-bottom:6px"><span>' + esc(t.name) + '</span><span style="color:' + st[2] + ';font-weight:600">' + zeit(s) + ' / ' + zeit(plan) + '</span></div>';
+      }).join('') +
+        '<div class="tb-w" style="margin:10px 0;color:' + (summe > 125 ? STUFE.allgemein[2] : STUFE.klar[2]) + '">Gesamt ' + zeit(summe) + ' von 2:00</div>' +
+        '<p class="tb-d" style="margin-bottom:10px">Wird mit „Pitch speichern“ gespeichert.</p>' +
+        '<button class="btn btn-g" id="er-pr-nochmal">Nochmal</button><button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Schließen</button>';
+      $('er-pr-nochmal').onclick = function () { PR = {idx: -1, start: 0, teilStart: 0, marken: [], uhr: null}; probeZeigen(); };
+      $('er-pr-zu').onclick = probeSchliessen;
+      return;
+    }
+    var t = PITCH_TEILE[PR.idx], text = p.teile[t.key].text.trim();
+    if (t.key === 'schluss' && merksatzFehltImSchluss(p)) text += (text ? '\n\n' : '') + p.merksatz.trim();
+    var letzter = PR.idx === PITCH_TEILE.length - 1;
+    box.innerHTML = '<div class="lab">' + zeit(t.von) + '–' + zeit(t.bis) + ' · ' + esc(t.name) + ' (' + (PR.idx + 1) + ' von ' + PITCH_TEILE.length + ')</div>' +
+      '<div class="tb-d" id="er-pr-uhr" style="margin-bottom:8px"></div>' +
+      '<div class="tb-w" style="font-size:17px;font-weight:400;line-height:1.5;white-space:pre-line;margin-bottom:12px">' + (text ? esc(text) : '(noch kein Text)') + '</div>' +
+      '<button class="btn btn-g" id="er-pr-weiter">' + (letzter ? 'Fertig' : 'Weiter →') + '</button><button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Abbrechen</button>';
+    $('er-pr-weiter').onclick = function () {
+      var jetzt = Date.now();
+      PR.marken.push(Math.round((jetzt - PR.teilStart) / 1000)); PR.teilStart = jetzt; PR.idx++;
+      probeZeigen();
+    };
+    $('er-pr-zu').onclick = probeSchliessen;
+    $('er-pr-weiter').focus();
+    uhrZeigen();
+  }
+  function uhrZeigen() {
+    var el = $('er-pr-uhr'); if (!el || !PR || PR.idx < 0 || PR.idx >= PITCH_TEILE.length) return;
+    var t = PITCH_TEILE[PR.idx], jetzt = Date.now(), ab = (jetzt - PR.teilStart) / 1000, plan = t.bis - t.von;
+    el.innerHTML = 'Abschnitt <span style="font-weight:600;color:' + (ab > plan ? STUFE.allgemein[2] : 'inherit') + '">' + zeit(ab) + '</span> von ' + zeit(plan) + ' · gesamt ' + zeit((jetzt - PR.start) / 1000);
   }
 
   window.zeigeEinreichungen = zeigeEinreichungen;
