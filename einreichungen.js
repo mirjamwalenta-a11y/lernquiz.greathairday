@@ -15,11 +15,13 @@
 // Meisterin selbst. Keine KI, nichts verlässt die eigene Datenbank.
 //
 // Reiter „2-Minuten-Pitch“ (supabase/20261128_einreichungen_pitch.sql, Spalte
-// pitch): baut aus der eigenen Einreichung einen Pitch in vier Zeitabschnitten
-// – als Sprechtext, Video-Drehbuch oder schriftliche Kurzfassung – mit
-// Zeitmessung, Probe mit Stoppuhr und Hinweisen (z. B. Zahl ohne Beleg). Er
-// erfindet nichts: Bausteine kommen nur aus Einreichung und Belegen, den Text
-// schreibt die Meisterin.
+// pitch): baut aus der eigenen Einreichung einen Pitch in fünf Teilen (Hook,
+// Problem, Lösung, Impact, Abschluss) für drei Jurys (Staatspreis, Mercur
+// Digitalisierung, Mercur Kreativität), 2 Minuten oder 60 Sekunden – als
+// Sprechtext, Video-Drehbuch oder schriftliche Kurzfassung – mit Zeitmessung,
+// Probe mit Stoppuhr, Hinweisen (z. B. Zahl ohne Beleg) und Jury-Stresstest.
+// Er erfindet nichts: Bausteine kommen nur aus Einreichung und Belegen, die
+// Entwürfe nennen nur, was die App kann, Belege kommen in [Platzhalter].
 //
 // Braucht aus lernquiz.html: sb, ISTMEISTERIN, escHtml, zeige, ladeDashboard, MB_BEREICH.
 (function () {
@@ -280,11 +282,13 @@
       p.schwaechen = [0, 1, 2].map(function (i) { return w('er-c-s' + i).trim().slice(0, 400); });
     }
     if ($('er-p-hook') && e.pitch) {
+      var v = version(), pm = e.pitch.modus;
       PITCH_TEILE.forEach(function (t) {
-        e.pitch.teile[t.key].text = w('er-p-' + t.key).slice(0, 3000);
-        e.pitch.teile[t.key].bild = w('er-p-' + t.key + '-bild').slice(0, 400);
+        v.teile[t.key].text = w('er-p-' + t.key).slice(0, 1200);
+        v.teile[t.key].bild = w('er-p-' + t.key + '-bild').slice(0, 200);
       });
-      e.pitch.merksatz = w('er-p-merksatz').trim().slice(0, 300);
+      v.merksatz = w('er-p-merksatz').trim().slice(0, 300);
+      FRAGEN[pm].forEach(function (q, i) { if ($('er-p-a' + i)) e.pitch.antworten[pm][i] = w('er-p-a' + i).slice(0, 600); });
     }
   }
 
@@ -596,49 +600,213 @@
   }
 
   // ── Tab „2-Minuten-Pitch“ ─────────────────────────────────────────
-  // Vier Zeitabschnitte, gebaut aus der eigenen Einreichung. Die Bausteine
-  // sind wörtliche Sätze aus Einreichung und Belegen – nichts wird erfunden,
-  // keine KI. Zeit = Wörter ÷ Sprechtempo. Die Hinweise bewerten nicht, sie
-  // zeigen nur, was auffällt (zu lang, Zahl ohne Herkunft, allgemeine Wörter).
+  // Fünf Teile (Hook, Problem, Lösung, Impact, Abschluss), wahlweise 2 Minuten
+  // oder 60 Sekunden, für drei Jury-Perspektiven (Staatspreis, Mercur
+  // Digitalisierung, Mercur Kreativität). Je Jury und Länge gibt es eine
+  // eigene Fassung. Die Bausteine sind wörtliche Sätze aus Einreichung und
+  // Belegen; die Entwürfe (PITCH_VORLAGEN) nennen nur, was die App wirklich
+  // kann, und lassen [Platzhalter] für echte Belege. Keine KI. Zeit = Wörter ÷
+  // Sprechtempo. Die Hinweise bewerten nicht, sie zeigen nur, was auffällt.
+  // Dazu der Jury-Stresstest: typische kritische Fragen je Jury, eigene
+  // Antworten (Ziel 20 Sekunden) und Üben mit Stoppuhr.
   var PITCH_TEILE = [
-    {key: 'hook', name: 'Hook', von: 0, bis: 20, quellen: ['ausgangslage', 'belege', 'kernbotschaft'],
-     frage: 'Womit hast du in 20 Sekunden die Aufmerksamkeit? Fang beim Publikum an, nicht bei der App: ein Moment aus dem Salon, ein Gegensatz oder eine Frage.'},
-    {key: 'loesung', name: 'Problem & Lösung', von: 20, bis: 50, quellen: ['ausgangslage', 'loesung'],
-     frage: 'Was fehlt im Ausbildungsalltag – und was macht ihr anders? In einfachen Worten, ohne Fachjargon.'},
-    {key: 'zeigen', name: 'Zeigen statt erzählen', von: 50, bis: 90, quellen: ['loesung', 'wirkung'],
-     frage: 'Zwei, drei Dinge, die man in der App sieht und die es so sonst nicht gibt. Am besten läuft dazu der Bildschirm mit.'},
-    {key: 'schluss', name: 'Beleg & Schluss', von: 90, bis: 120, quellen: ['belege', 'wirkung', 'kernbotschaft'],
-     frage: 'Ein echter Beleg (Beobachtung, Aussage, Zahl) – und am Ende der Satz, der hängen bleibt.'}
+    {key: 'hook', name: 'Hook', quellen: ['ausgangslage', 'belege', 'kernbotschaft'],
+     frage: 'Ein starker Einstieg: eine Szene aus dem Salon, eine Frage oder eine belegte Zahl. Beim Publikum anfangen, nicht bei der App.'},
+    {key: 'problem', name: 'Das Problem', quellen: ['ausgangslage'],
+     frage: 'Der Schmerzpunkt im Salonalltag, auf den Punkt gebracht.'},
+    {key: 'loesung', name: 'Die Lösung', quellen: ['loesung'],
+     frage: 'Der Aha-Moment: was die App macht, am besten mit Bildschirm (Farblabor, Schnittwerkstatt, kurze Einheiten, Kompetenz-Landkarte).'},
+    {key: 'impact', name: 'Der Impact', quellen: ['wirkung', 'belege'],
+     frage: 'Was verändert sich konkret für Lehrling, Salon und Branche? Mit einem echten Beleg.'},
+    {key: 'schluss', name: 'Abschluss', quellen: ['kernbotschaft', 'belege'],
+     frage: 'Ein Schlusssatz, der hängen bleibt, oder ein klarer nächster Schritt.'}
   ];
   var PITCH_TEIL = {}; PITCH_TEILE.forEach(function (t) { PITCH_TEIL[t.key] = t; });
-  var TEMPI = [['ruhig', 120, 'ruhig'], ['normal', 135, 'normal'], ['zuegig', 150, 'zügig']];
+  // Zeitmarken je Länge (Sekunden): Grenzen zwischen den fünf Teilen
+  var ZEITEN = {120: [0, 15, 40, 80, 105, 120], 60: [0, 10, 20, 40, 50, 60]};
+  var LAENGEN = [[120, '2 Minuten'], [60, '60 Sekunden']];
+  var TEMPI = [['ruhig', 120, 'ruhig'], ['normal', 130, 'normal'], ['zuegig', 150, 'zügig']];
   var TEMPO = {}; TEMPI.forEach(function (t) { TEMPO[t[0]] = t[1]; });
+  var MODI = {
+    staatspreis: {name: 'Staatspreis Lehrlingsausbildung', kurz: 'Staatspreis',
+      fokus: 'Pädagogische Qualität, Motivation der Lehrlinge, Entlastung der Ausbilderin, Vorbild für die Branche.',
+      stil: 'Empathisch, praxisnah, wertschätzend.',
+      tipps: {hook: 'Eine Szene aus dem Ausbildungsalltag.', problem: 'Was erleben Lehrling und Ausbilderin?',
+              loesung: 'Wie lernt der Lehrling damit, und wie entlastet es die Ausbilderin?', impact: 'Was macht ein Lehrling jetzt anders als vorher?',
+              schluss: 'Ein Satz, der die Haltung zeigt.'}},
+    digitalisierung: {name: 'Mercur · Digitalisierung', kurz: 'Mercur Digitalisierung',
+      fokus: 'Technologischer Innovationsgrad, digitale Transformation des Handwerks, wirtschaftlicher Nutzen (Zeit, Material), Übertragbarkeit auf andere Betriebe und Lehrberufe.',
+      stil: 'Präzise, wirtschaftlich, zukunftsweisend. Zahlen nur aus Belegen.',
+      tipps: {hook: 'Ein Kosten- oder Zeitproblem, das jede Inhaberin kennt.', problem: 'Wo gehen heute Zeit und Material verloren?',
+              loesung: 'Was ist technisch neu? Was können andere Lern-Apps nicht?', impact: 'Eine belegte Zahl und die Übertragbarkeit.',
+              schluss: 'Der nächste Schritt (andere Salons, Innung, Berufsschule).'}},
+    kreativitaet: {name: 'Mercur · Kreativität', kurz: 'Mercur Kreativität',
+      fokus: 'Ausbildung neu gedacht, Erlebnis in der App, Spiel und Serie, ein geschützter Raum zum Ausprobieren ohne Angst vor Fehlern.',
+      stil: 'Bildhaft, modern, packend. Ohne Werbesprache.',
+      tipps: {hook: 'Ein Bild oder eine Frage, die neugierig macht.', problem: 'Warum bremst die heutige Ausbildung das Ausprobieren?',
+              loesung: 'Wie fühlt sich das Lernen in der App an?', impact: 'Woran sieht man, dass jemand mutiger wird?',
+              schluss: 'Ein Bild, das bleibt.'}}
+  };
+  var MODUS_LISTE = ['staatspreis', 'digitalisierung', 'kreativitaet'];
+  // Entwürfe: nur was die App heute kann (docs/innovationspreis-beschreibung.md,
+  // Farblabor, Schnittwerkstatt). Echte Belege und Zahlen kommen in die [Platzhalter].
+  var PITCH_VORLAGEN = {
+    staatspreis: {
+      120: {
+        hook: 'Samstag, zehn Uhr, der Salon ist voll. Unser Lehrling soll eine Farbe anmischen. Und niemand hat Zeit zu erklären, warum beim Aufhellen plötzlich Orange durchkommt.',
+        problem: 'Ausbildung passiert bei uns zwischen zwei Kundinnen. Die Berufsschule erklärt die Theorie, der Salon verlangt Können. Dazwischen fehlt die Brücke, und der Ausbilderin fehlt die Zeit. Fehler passieren dann am Kopf einer Kundin.',
+        loesung: 'Deshalb haben wir die Great Hair Day Academy gebaut. Kurze Einheiten, die in jeden Leerlauf passen. Im Farblabor mischt der Lehrling aus Gelb, Rot und Blau, sieht, welcher Untergrund beim Aufhellen kommt, und neutralisiert ihn, bevor eine Tube aufgeht. In der Schnittwerkstatt verändert er den Erhebungswinkel und sieht, wann aus kompakt stufig wird, vor dem ersten echten Schnitt. Und bei jeder Antwort sagt er, ob er sicher ist oder rät. Sicher, aber falsch: Genau das ist gefährlich, und genau das sieht die Meisterin.',
+        impact: '17 Kompetenzen, jede mit vier Stufen. Grün wird eine Kompetenz erst, wenn die Meisterin sie im Salon gesehen hat. Ich muss nicht mehr suchen, wo es hakt, die App zeigt es mir. Fachbegriffe gibt es in sieben Sprachen und in Leichter Sprache. So kommt auch mit, wer Deutsch nicht als Erstsprache hat. [Platzhalter: eine echte Beobachtung, z. B. was ein Lehrling heute anders macht als vorher]',
+        schluss: 'Entwickelt in einem Wiener Salon, mit unseren eigenen Lehrlingen. Die App bereitet vor, die Meisterin entscheidet.',
+        merksatz: 'Grün wird’s erst, wenn die Meisterin nickt.',
+        bild: {hook: 'Du im Salon, im Hintergrund Betrieb', problem: 'Hände an der Farbschale, dann ein Berufsschulheft',
+               loesung: 'Handy: Farblabor, Schnittwerkstatt, Frage „sicher oder geraten?“', impact: 'Kompetenz-Landkarte, eine Kompetenz wird grün',
+               schluss: 'Du in die Kamera, dann Logo'}
+      },
+      60: {
+        hook: 'Samstag, zehn Uhr, der Salon ist voll, und ein Lehrling soll eine Farbe anmischen.',
+        problem: 'Ausbildung passiert bei uns zwischen zwei Kundinnen. Für Erklärungen fehlt die Zeit.',
+        loesung: 'Die Great Hair Day Academy hat kurze Einheiten für jeden Leerlauf. Im Farblabor wird gemischt und neutralisiert, bevor eine Tube aufgeht. In der Schnittwerkstatt werden Winkel geübt, vor dem ersten echten Schnitt. Und bei jeder Antwort sagt der Lehrling, ob er sicher ist oder rät.',
+        impact: '17 Kompetenzen, vier Stufen. Grün wird es erst, wenn ich es im Salon gesehen habe. Fachbegriffe gibt es in sieben Sprachen.',
+        schluss: 'Entwickelt in einem Wiener Salon. Die App bereitet vor, die Meisterin entscheidet.',
+        merksatz: 'Grün wird’s erst, wenn die Meisterin nickt.',
+        bild: {hook: 'Salon in Betrieb', problem: 'Ausbilderin zwischen zwei Kundinnen', loesung: 'Handy: Farblabor, dann Schnittwerkstatt',
+               impact: 'Kompetenz-Landkarte', schluss: 'Du in die Kamera'}
+      }
+    },
+    digitalisierung: {
+      120: {
+        hook: 'Jede Farbe, die ein Lehrling falsch anmischt, kostet zweimal: das Material und die Zeit der Meisterin, die es korrigiert.',
+        problem: 'Im Handwerk lernt man am echten Kunden. Das ist teuer, wenn es schiefgeht, und es braucht Zeit, die im Betrieb fehlt. Lern-Apps zählen richtige Antworten. Ob jemand eine Farbe sicher anmischen kann, sehen sie nicht.',
+        loesung: 'Die Great Hair Day Academy verbindet Lernen, Praxis und das Urteil der Meisterin in einem System. Im Farblabor wird gemischt und neutralisiert, bevor eine Tube aufgeht. In der Schnittwerkstatt werden Winkel und Grundformen geübt, vor dem ersten echten Schnitt. Jeden Tag wählt die App das wichtigste Thema und sagt in einem Satz, warum. Keine Blackbox. Und sie erkennt, wenn jemand sicher ist und trotzdem falsch liegt.',
+        impact: 'Die Meisterin sieht auf einen Blick, wo sie gebraucht wird, statt zu suchen. Grün wird eine Kompetenz erst nach ihrer Bestätigung in der Praxis. [Platzhalter: eine belegte Zahl, z. B. Rückmeldungen der Lehrlinge aus dem Ausbildungsbericht] Das Modell funktioniert für jeden Lehrberuf mit Praxis am Menschen oder am Material.',
+        schluss: 'Entwickelt in einem Wiener Salon. Als Nächstes für andere Salons, im Gespräch mit Innung und Berufsschule.',
+        merksatz: 'Digitalisierung, die das Handwerk nicht ersetzt, sondern sichtbar macht.',
+        bild: {hook: 'Volle Farbschale, die weggeworfen wird', problem: 'Ausbilderin zwischen zwei Kundinnen',
+               loesung: 'Handy: Farblabor, Schnittwerkstatt, „Heute für dich“', impact: 'Ansicht der Meisterin „Wo braucht dich …?“',
+               schluss: 'Du in die Kamera'}
+      },
+      60: {
+        hook: 'Jede falsch gemischte Farbe kostet zweimal: Material und die Zeit der Meisterin.',
+        problem: 'Lern-Apps zählen richtige Antworten. Ob jemand sicher mischen kann, sehen sie nicht.',
+        loesung: 'Die Great Hair Day Academy verbindet Lernen, Praxis und das Urteil der Meisterin. Farblabor und Schnittwerkstatt ersetzen den ersten Versuch an der Kundin. Jeden Tag wählt die App das wichtigste Thema und sagt, warum. Und sie erkennt, wenn jemand sicher ist und trotzdem falsch liegt.',
+        impact: 'Die Meisterin sieht sofort, wo sie gebraucht wird. [Platzhalter: eine belegte Zahl] Das Prinzip passt auf jeden Lehrberuf mit Praxis.',
+        schluss: '',
+        merksatz: 'Digitalisierung, die das Handwerk nicht ersetzt, sondern sichtbar macht.',
+        bild: {hook: 'Farbschale', problem: 'Quiz-Punkte auf einem Handy', loesung: 'Farblabor, Schnittwerkstatt', impact: 'Ansicht der Meisterin', schluss: 'Du in die Kamera'}
+      }
+    },
+    kreativitaet: {
+      120: {
+        hook: 'Was wäre, wenn man in der Lehre Fehler machen dürfte, ohne dass eine Kundin sie ausbaden muss?',
+        problem: 'Wer im Salon lernt, lernt unter Beobachtung. Jeder Versuch passiert am echten Kopf. Das macht vorsichtig. Und Vorsicht ist das Gegenteil von Kreativität.',
+        loesung: 'Die Great Hair Day Academy ist ein geschützter Raum zum Ausprobieren. Im Farblabor entsteht jede Farbe aus Gelb, Rot und Blau. Man sieht, was beim Aufhellen zum Vorschein kommt, und neutralisiert es im Spiel. In der Schnittwerkstatt dreht man den Kopf, verändert den Winkel und sieht sofort, wie aus einer kompakten Form eine stufige wird. Jede Übung zählt für die eigene Serie. Wer lieber hört, lässt sich die Fragen vorlesen.',
+        impact: 'Aus Ausprobieren wird Können. Grün wird eine Kompetenz erst, wenn die Meisterin sie im Salon gesehen hat. Bis dahin darf alles schiefgehen, nur eben nicht beim Kunden. [Platzhalter: ein echter Satz eines Lehrlings, mit Erlaubnis und ohne Namen]',
+        schluss: 'Entwickelt in einem Wiener Salon. Damit jeder Tag ein Great Hair Day wird.',
+        merksatz: 'Erst im Labor mutig sein, dann am Kopf sicher.',
+        bild: {hook: 'Drei Farbtropfen laufen ineinander', problem: 'Ein Lehrling zögert vor der Kundin',
+               loesung: 'Farblabor-Spiel, dann Winkel-Labor', impact: 'Kompetenz-Landkarte füllt sich', schluss: 'Fertige Frisur, du lächelst in die Kamera'}
+      },
+      60: {
+        hook: 'Was wäre, wenn man in der Lehre Fehler machen dürfte, ohne dass eine Kundin sie ausbaden muss?',
+        problem: 'Wer am echten Kopf lernt, wird vorsichtig. Und Vorsicht bremst Kreativität.',
+        loesung: 'Die Great Hair Day Academy ist ein geschützter Raum zum Ausprobieren. Im Farblabor entsteht jede Farbe aus Gelb, Rot und Blau. In der Schnittwerkstatt verändert man den Winkel und sieht sofort die Form. Jede Übung zählt für die eigene Serie.',
+        impact: 'Aus Ausprobieren wird Können. Grün wird eine Kompetenz erst mit der Bestätigung der Meisterin.',
+        schluss: '',
+        merksatz: 'Erst im Labor mutig sein, dann am Kopf sicher.',
+        bild: {hook: 'Farbtropfen', problem: 'Lehrling zögert', loesung: 'Farblabor, Winkel-Labor', impact: 'Kompetenz-Landkarte', schluss: 'Fertige Frisur'}
+      }
+    }
+  };
+  // Jury-Stresstest: die wahrscheinlichsten kritischen Fragen und ein Vorschlag
+  // für eine Antwort in etwa 20 Sekunden. nach = Nachfrage nach einer guten Antwort.
+  var FRAGEN = {
+    staatspreis: [
+      {f: 'Ersetzt die App nicht das, was eigentlich die Ausbilderin leisten sollte?',
+       a: 'Nein, im Gegenteil. Die App entscheidet nichts allein. Grün wird eine Kompetenz erst, wenn ich sie im Salon gesehen habe. Die App nimmt mir das Suchen ab: Ich sehe, wo ein Lehrling mich braucht, und habe dafür mehr Zeit im Gespräch statt weniger.'},
+      {f: 'Woran sehen Sie, dass die Lehrlinge dadurch wirklich besser werden?',
+       a: 'Wir messen nicht nur Quizpunkte, sondern vier Stufen: weiß ich, kann ich anwenden, im Salon gemacht, von der Meisterin bestätigt. Dazu fragen wir die Lehrlinge regelmäßig, ob es hilft. [Platzhalter: eine echte Beobachtung oder Zahl aus dem Ausbildungsbericht]'},
+      {f: 'Jugendliche hängen ohnehin am Handy. Und was ist mit ihren Daten?',
+       a: 'Die Einheiten sind kurz und enden im Salon, mit einem konkreten Auftrag für die nächste Kundin. Das Handy führt also zurück in die Praxis. Lehrlinge sind oft minderjährig: Jeder sieht nur seine eigenen Daten, Rollen prüft der Server, und Zitate gibt es nur mit Einwilligung.'},
+      {f: 'Sie sagen, die Meisterin bestätigt. Wie oft schaffen Sie das im Alltag wirklich?', nach: true,
+       a: 'Die App sagt mir, welche Kompetenz bereit für einen Praxis-Check ist. Ich muss also nicht alles prüfen, sondern nur das, was ansteht. Der Check läuft mit einer Checkliste, direkt bei einer echten Behandlung. [Platzhalter: wie oft das bei dir tatsächlich passiert]'}
+    ],
+    digitalisierung: [
+      {f: 'Was bringt das wirtschaftlich? Nennen Sie eine Zahl.',
+       a: 'Die Kompetenz-Landkarte ist seit November im Einsatz. Belastbare Zahlen zu Material und Zeit messen wir gerade. [Platzhalter: belegte Zahl, falls vorhanden] Schon heute sieht man: Fehler beim Mischen passieren im Farblabor statt an der Kundin, und die Meisterin muss nicht mehr suchen, wo es hakt.'},
+      {f: 'Funktioniert das auch ohne Sie und außerhalb Ihres Salons?',
+       a: 'Die Inhalte folgen dem Berufsbild, nicht unserem Salon: 17 Kompetenzen, Praxis-Checks für elf Behandlungen. Jede Meisterin bestätigt in ihrem eigenen Betrieb. Ein Angebot für andere Salons ist geplant, Gespräche mit Landesinnung und Berufsschule auch. Das Prinzip passt auf jeden Lehrberuf mit Praxis.'},
+      {f: 'Lern-Apps gibt es viele. Was ist hier die Innovation?',
+       a: 'Andere Apps zählen richtige Antworten. Wir verbinden Wissen, Anwendung, Praxis und das Urteil der Fachfrau. Die App erkennt, wenn jemand sicher ist und falsch liegt. Und jede Empfehlung sagt, warum. Können statt Punkte, Mensch in der Schleife, keine Blackbox.'},
+      {f: 'Was passiert, wenn andere Salons das nutzen? Wer pflegt die Inhalte?', nach: true,
+       a: 'Die Inhalte folgen dem Berufsbild und sind für alle gleich. Jede Meisterin bestätigt nur in ihrem Betrieb. Wie wir das Angebot für andere Salons organisieren, klären wir gerade, auch mit Innung und Berufsschule. Erst die Wirkung bei uns belegen, dann ausrollen.'}
+    ],
+    kreativitaet: [
+      {f: 'Ist Gamification nicht nur Spielerei?',
+       a: 'Das Spiel ist der Einstieg, nicht das Ziel. Die Serie motiviert zum Üben, aber Grün wird eine Kompetenz nur mit Bestätigung der Meisterin. Im Farblabor spielt man mit Farben und lernt dabei, den Untergrund zu neutralisieren. Das ist danach genau die Entscheidung an der Kundin.'},
+      {f: 'Haare sind Handwerk. Kann man das am Bildschirm lernen?',
+       a: 'Das Gefühl in der Hand nicht, das bleibt im Salon. Aber das Verstehen davor: warum ein Winkel stufig macht, warum Orange durchkommt. Das Handy übernimmt das Verstehen, der Salon das Können. Und die App schickt den Lehrling ausdrücklich zurück an den Platz.'},
+      {f: 'Was ist anders als ein gutes YouTube-Tutorial?',
+       a: 'Ein Video schaut man an. Bei uns probiert man aus: Winkel verändern, Farben mischen, Fehler machen ohne Folgen. Die App merkt sich, wo jemand unsicher ist, und die Meisterin sieht es. Ein Tutorial kennt seinen Zuschauer nicht, unsere App kennt den Lehrling.'},
+      {f: 'Der geschützte Raum ist nett, aber woran merkt man, dass jemand mutiger geworden ist?', nach: true,
+       a: 'Daran, dass Lehrlinge Dinge im Salon anbieten, die sie vorher nicht angegriffen hätten. [Platzhalter: eine echte Beobachtung] Genau dafür gibt es das Praxis-Tagebuch: Was im Labor geübt wurde, steht dort, wenn es am Kopf passiert ist.'}
+    ]
+  };
+  var ANTWORT_SEK = 20;
   var HOOK_MUSTER = [
-    ['Szene', 'Ein Moment aus dem Salon, in dem das Problem sichtbar wird. Ohne echten Namen.', 'Ein Lehrling … Sie ist sich sicher – und …'],
-    ['Gegensatz', 'Was alle erwarten – und was im Handwerk wirklich zählt.', 'Die meisten … zählen … Im Salon zählt aber …'],
-    ['Frage', 'Eine Frage, auf die das Publikum keine schnelle Antwort hat.', 'Woran erkennen Sie, ob ein Lehrling … wirklich kann?']
+    ['Szene', 'Ein Moment aus dem Salon, in dem das Problem sichtbar wird. Ohne echten Namen.', 'Ein Lehrling … Sie ist sich sicher, und …'],
+    ['Frage', 'Eine Frage, auf die das Publikum keine schnelle Antwort hat.', 'Woran erkennen Sie, ob ein Lehrling … wirklich kann?'],
+    ['Zahl', 'Eine Zahl aus einem Beleg, die überrascht.', '[Zahl aus einem Beleg] …']
   ];
   var FASSUNGEN = [['sprechen', 'Sprechtext'], ['video', 'Video-Drehbuch'], ['schrift', 'Schriftlich']];
   var GRENZEN = [500, 1000, 1500, 2500];
-  var PR = null;   // laufende Probe
+  var PR = null;   // laufende Probe oder Fragen-Übung
 
-  function pitchNorm(e) {
-    if (!e || !Object.prototype.hasOwnProperty.call(e, 'pitch')) return;   // Spalte fehlt noch
-    var p = e.pitch && typeof e.pitch === 'object' && !Array.isArray(e.pitch) ? e.pitch : {};
-    if (!p.teile || typeof p.teile !== 'object') p.teile = {};
+  function istObjekt(x) { return x && typeof x === 'object' && !Array.isArray(x); }
+  function versionNorm(v) {
+    v = istObjekt(v) ? v : {};
+    if (!istObjekt(v.teile)) v.teile = {};
     PITCH_TEILE.forEach(function (t) {
-      var x = p.teile[t.key];
-      if (!x || typeof x !== 'object') x = p.teile[t.key] = {};
+      var x = v.teile[t.key];
+      if (!istObjekt(x)) x = v.teile[t.key] = {};
       x.text = String(x.text || ''); x.bild = String(x.bild || '');
     });
-    p.merksatz = String(p.merksatz || '');
+    v.merksatz = String(v.merksatz || '');
+    return v;
+  }
+  function pitchNorm(e) {
+    if (!e || !Object.prototype.hasOwnProperty.call(e, 'pitch')) return;   // Spalte fehlt noch
+    var p = istObjekt(e.pitch) ? e.pitch : {};
+    if (!MODI[p.modus]) p.modus = e.wettbewerb === 'mercur' ? 'digitalisierung' : 'staatspreis';
+    p.laenge = +p.laenge === 60 ? 60 : 120;
     if (!TEMPO[p.tempo]) p.tempo = 'normal';
+    if (!istObjekt(p.versionen)) p.versionen = {};
+    // Erste Fassung (28.11.2026): vier Teile hook, loesung, zeigen, schluss
+    if (istObjekt(p.teile)) {
+      var alt = p.teile, k = p.modus + '-120';
+      if (!p.versionen[k]) p.versionen[k] = {teile: {hook: alt.hook, problem: alt.loesung, loesung: alt.zeigen, schluss: alt.schluss}, merksatz: p.merksatz, probe: p.probe};
+      delete p.teile; delete p.merksatz; delete p.probe;
+    }
+    Object.keys(p.versionen).forEach(function (k) { p.versionen[k] = versionNorm(p.versionen[k]); });
+    if (!istObjekt(p.antworten)) p.antworten = {};
+    MODUS_LISTE.forEach(function (m) {
+      if (!Array.isArray(p.antworten[m])) p.antworten[m] = [];
+      FRAGEN[m].forEach(function (q, i) { p.antworten[m][i] = String(p.antworten[m][i] || ''); });
+    });
     e.pitch = p;
   }
+  function version() {
+    var p = ER.akt.pitch, k = p.modus + '-' + p.laenge;
+    if (!p.versionen[k]) p.versionen[k] = versionNorm({});
+    return p.versionen[k];
+  }
+  function grenzen() { return ZEITEN[ER.akt.pitch.laenge]; }
+  function vonBis(key) { var g = grenzen(), i = PITCH_TEILE.indexOf(PITCH_TEIL[key]); return [g[i], g[i + 1]]; }
   function zeit(s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
   function wortZahl(t) { return (String(t || '').match(/\S+/g) || []).length; }
   function sek(t) { return Math.round(wortZahl(t) / TEMPO[ER.akt.pitch.tempo] * 60); }
   function saetze(t) {
+    // ohne Lookbehind, damit es auch in älteren Safari-Versionen läuft
     return String(t || '').replace(/\s+/g, ' ').trim().replace(/([.!?…])\s+(?=[A-ZÄÖÜ„"»0-9])/g, '$1\n').split('\n')
       .map(function (s) { return s.trim(); }).filter(function (s) { return s.length >= 20 && s.length <= 320; });
   }
@@ -649,9 +817,14 @@
     if (s < plan * 0.5) return STUFE.teilweise;
     return STUFE.klar;
   }
-  function merksatzFehltImSchluss(p) {
-    var m = p.merksatz.trim();
-    return m && p.teile.schluss.text.indexOf(m) < 0;
+  function merksatzFehltImSchluss(v) {
+    var m = v.merksatz.trim();
+    return m && v.teile.schluss.text.indexOf(m) < 0;
+  }
+  function filterHtml(attr, liste, wert) {
+    return '<div class="tb-filter">' + liste.map(function (x) {
+      return '<button ' + attr + '="' + x[0] + '" aria-pressed="' + (String(wert) === String(x[0])) + '">' + esc(x[1]) + '</button>';
+    }).join('') + '</div>';
   }
 
   function pitchZeigen() {
@@ -660,37 +833,41 @@
       $('er-tab').innerHTML = '<p class="mb-sub">Der Pitch braucht noch die Datenbank-Änderung (supabase/20261128_einreichungen_pitch.sql im Supabase SQL-Editor ausführen).</p>';
       return;
     }
-    var p = e.pitch;
+    var p = e.pitch, v = version(), m = MODI[p.modus], g = grenzen();
     ER.fassung = ER.fassung || 'sprechen'; ER.grenze = ER.grenze || 1000;
-    var h = '<p class="mb-sub">Zwei Minuten, vier Abschnitte. Die Bausteine kommen wörtlich aus deiner Einreichung und deinen Belegen – erfunden wird nichts, keine KI. Daraus entstehen Sprechtext, Video-Drehbuch und eine schriftliche Kurzfassung.</p>' +
-      '<div class="pte-l" style="margin-top:0">Sprechtempo</div><div class="tb-filter">' +
-      TEMPI.map(function (t) { return '<button data-er-tempo="' + t[0] + '" aria-pressed="' + (p.tempo === t[0]) + '">' + esc(t[2]) + ' · ' + t[1] + ' Wörter/Min.</button>'; }).join('') + '</div>';
-    PITCH_TEILE.forEach(function (t) {
-      var x = p.teile[t.key];
+    var h = '<p class="mb-sub">Fünf Teile, für die Jury, die du wählst. Die Bausteine kommen wörtlich aus deiner Einreichung und deinen Belegen, keine KI. Der Entwurf nennt nur, was die App wirklich kann; echte Belege kommen in die [Platzhalter]. Jede Jury und Länge hat eine eigene Fassung.</p>' +
+      '<div class="pte-l" style="margin-top:0">Jury</div>' + filterHtml('data-er-modus', MODUS_LISTE.map(function (k) { return [k, MODI[k].name]; }), p.modus) +
+      '<div class="tb-mnotiz" style="margin:-6px 0 12px"><b>Worauf diese Jury schaut:</b> ' + esc(m.fokus) + '<br><b>Ton:</b> ' + esc(m.stil) + '</div>' +
+      '<div class="pte-l" style="margin-top:0">Länge</div>' + filterHtml('data-er-laenge', LAENGEN, p.laenge) +
+      '<div class="pte-l" style="margin-top:0">Sprechtempo</div>' + filterHtml('data-er-tempo', TEMPI.map(function (t) { return [t[0], t[2] + ' · ' + t[1] + ' Wörter/Min.']; }), p.tempo) +
+      '<div class="tb-knoepfe" style="margin:-4px 0 14px"><button class="tb-edit" id="er-p-vorlage">Entwurf für ' + esc(m.kurz) + ' · ' + (p.laenge === 60 ? '60 s' : '2 Min.') + ' einsetzen</button></div>';
+    PITCH_TEILE.forEach(function (t, i) {
+      var x = v.teile[t.key];
       h += '<div class="tb-e" id="er-p-' + t.key + '-karte" style="border-left-color:#E4DBC5;padding:14px;margin-bottom:12px">' +
-        '<div class="lab">' + zeit(t.von) + '–' + zeit(t.bis) + ' · ' + esc(t.name) + '</div>' +
-        '<p class="tb-d" style="margin-bottom:8px">' + esc(t.frage) + '</p>' +
+        '<div class="lab">' + zeit(g[i]) + '–' + zeit(g[i + 1]) + ' · ' + esc(t.name) + '</div>' +
+        '<p class="tb-d">' + esc(t.frage) + '</p>' +
+        '<p class="tb-d" style="margin-bottom:8px"><b>' + esc(m.kurz) + ':</b> ' + esc(m.tipps[t.key]) + '</p>' +
         (t.key === 'hook' ? '<div class="pte-l" style="margin-top:0">Gerüst</div><div class="tb-knoepfe" style="margin-top:0">' +
-          HOOK_MUSTER.map(function (m, i) { return '<button class="tb-edit" data-er-muster="' + i + '">' + esc(m[0]) + '</button>'; }).join('') +
+          HOOK_MUSTER.map(function (mu, j) { return '<button class="tb-edit" data-er-muster="' + j + '">' + esc(mu[0]) + '</button>'; }).join('') +
           '</div><div class="tb-d" id="er-p-muster-info" style="margin-top:4px"></div>' : '') +
-        '<label class="pte-l" for="er-p-' + t.key + '">Gesprochen</label><textarea id="er-p-' + t.key + '" data-er-p rows="5" maxlength="3000">' + esc(x.text) + '</textarea>' +
+        '<label class="pte-l" for="er-p-' + t.key + '">Gesprochen</label><textarea id="er-p-' + t.key + '" data-er-p rows="5" maxlength="1200">' + esc(x.text) + '</textarea>' +
         '<div class="tb-d" id="er-p-' + t.key + '-zeit"></div>' +
         '<label class="pte-l" for="er-p-' + t.key + '-bild">Im Bild <span>(fürs Video, z. B. welcher Bildschirm)</span></label>' +
-        '<input id="er-p-' + t.key + '-bild" data-er-p maxlength="400" style="margin-bottom:0" value="' + esc(x.bild) + '">' +
+        '<input id="er-p-' + t.key + '-bild" data-er-p maxlength="200" style="margin-bottom:0" value="' + esc(x.bild) + '">' +
         '<div class="tb-knoepfe"><button class="tb-edit" data-er-bst="' + t.key + '" aria-expanded="false">Bausteine aus der Einreichung</button></div>' +
         '<div id="er-p-' + t.key + '-bst" hidden></div></div>';
     });
     h += '<div class="paz-karte"><div class="lab">Satz zum Merken</div>' +
-      '<p class="tb-d" style="margin-bottom:8px">Der eine Satz, den die Jury beim Rausgehen noch im Kopf hat. Kurz, ohne Fachwort.</p>' +
-      '<textarea id="er-p-merksatz" data-er-p rows="2" maxlength="300">' + esc(p.merksatz) + '</textarea>' +
+      '<p class="tb-d" style="margin-bottom:8px">Der eine Satz, den die Jury beim Rausgehen noch im Kopf hat. Kurz, ohne Fachwort. Er kommt ans Ende des Abschlusses.</p>' +
+      '<textarea id="er-p-merksatz" data-er-p rows="2" maxlength="300">' + esc(v.merksatz) + '</textarea>' +
       (String(e.kernbotschaft || '').trim() ? '<div class="tb-knoepfe"><button class="tb-edit" id="er-p-kern">Kernbotschaft übernehmen</button></div>' : '') + '</div>' +
       '<div class="paz-karte"><div class="lab">Gesamt</div><div class="tb-w" id="er-p-gesamt"></div><div class="tb-d" id="er-p-letzte"></div>' +
       '<button class="btn btn-h" id="er-p-probe" style="margin-top:10px">▶ Probe mit Stoppuhr</button></div>' +
       '<div class="paz-karte"><div class="lab">Auffällig im Pitch</div><div id="er-p-auff"></div></div>' +
-      '<div class="paz-karte"><div class="lab">Fassung</div><div class="tb-filter">' +
-      FASSUNGEN.map(function (f) { return '<button data-er-fassung="' + f[0] + '" aria-pressed="' + (ER.fassung === f[0]) + '">' + esc(f[1]) + '</button>'; }).join('') +
-      '</div><div id="er-p-fassung"></div>' +
+      '<div class="paz-karte"><div class="lab">Fassung</div>' + filterHtml('data-er-fassung', FASSUNGEN, ER.fassung) +
+      '<div id="er-p-fassung"></div>' +
       '<div class="tb-knoepfe"><button class="tb-edit" id="er-p-kopieren">Text kopieren</button><span class="tb-d" id="er-p-kopiert" aria-live="polite"></span></div></div>' +
+      stresstestHtml() +
       '<div id="er-fehler" class="pte-fehler" aria-live="polite"></div>' +
       '<button class="btn btn-g" id="er-p-speichern" style="margin:6px 0 20px">Pitch speichern</button>';
     $('er-tab').innerHTML = h;
@@ -702,6 +879,18 @@
         clearTimeout(warten); warten = setTimeout(pitchAktualisieren, 250);
       });
     });
+    function umschalten(attr, feld, zahl) {
+      $('er-tab').querySelectorAll('[' + attr + ']').forEach(function (b) {
+        b.onclick = function () {
+          felderLesen();   // aktuelle Fassung zuerst merken
+          var wert = b.getAttribute(attr);
+          ER.akt.pitch[feld] = zahl ? +wert : wert; ER.geaendert = true;
+          var y = window.scrollY; pitchZeigen(); window.scrollTo(0, y);
+        };
+      });
+    }
+    umschalten('data-er-modus', 'modus');
+    umschalten('data-er-laenge', 'laenge', true);
     $('er-tab').querySelectorAll('[data-er-tempo]').forEach(function (b) {
       b.onclick = function () {
         ER.akt.pitch.tempo = b.dataset.erTempo; ER.geaendert = true;
@@ -709,11 +898,12 @@
         pitchAktualisieren();
       };
     });
+    $('er-p-vorlage').onclick = vorlageEinsetzen;
     $('er-tab').querySelectorAll('[data-er-muster]').forEach(function (b) {
       b.onclick = function () {
-        var m = HOOK_MUSTER[+b.dataset.erMuster];
-        $('er-p-muster-info').textContent = m[0] + ': ' + m[1] + ' Die Lücken (…) füllst du mit deinem echten Beispiel.';
-        einsetzen('hook', m[2]);
+        var mu = HOOK_MUSTER[+b.dataset.erMuster];
+        $('er-p-muster-info').textContent = mu[0] + ': ' + mu[1] + ' Die Lücken (…) füllst du mit deinem echten Beispiel.';
+        einsetzen('hook', mu[2]);
       };
     });
     $('er-tab').querySelectorAll('[data-er-bst]').forEach(function (b) {
@@ -735,8 +925,16 @@
         fassungZeigen();
       };
     });
+    $('er-tab').querySelectorAll('[data-er-vorschlag]').forEach(function (b) {
+      b.onclick = function () {
+        var i = +b.dataset.erVorschlag, el = $('er-p-a' + i);
+        if (el.value.trim() && !confirm('Deine Antwort durch den Vorschlag ersetzen?')) return;
+        el.value = FRAGEN[ER.akt.pitch.modus][i].a; ER.geaendert = true; pitchAktualisieren();
+      };
+    });
     $('er-p-kopieren').onclick = kopieren;
-    $('er-p-probe').onclick = probeStarten;
+    $('er-p-probe').onclick = function () { probeStarten('pitch'); };
+    $('er-p-fragen').onclick = function () { probeStarten('fragen'); };
     $('er-p-speichern').onclick = async function () {
       this.disabled = true;
       var ok = await speichern();
@@ -746,10 +944,38 @@
     pitchAktualisieren();
   }
 
+  function stresstestHtml() {
+    var p = ER.akt.pitch, m = MODI[p.modus], ziel = Math.round(ANTWORT_SEK * TEMPO[p.tempo] / 60);
+    return '<div class="paz-karte"><div class="lab">Jury-Stresstest · ' + esc(m.kurz) + '</div>' +
+      '<p class="tb-d" style="margin-bottom:8px">Die Fragen, die diese Jury am ehesten stellt. Ziel: eine Antwort in etwa ' + ANTWORT_SEK + ' Sekunden, das sind rund ' + ziel + ' Wörter. Der Vorschlag nennt nur, was die App kann; [Platzhalter] mit echten Belegen füllen. Merk dir pro Antwort einen Kernsatz, nicht den ganzen Text.</p>' +
+      FRAGEN[p.modus].map(function (q, i) {
+        return '<div class="tb-e" id="er-p-a' + i + '-karte" style="border-left-color:#E4DBC5">' +
+          (q.nach ? '<div class="lab" style="margin-bottom:2px">Die Jury bohrt nach</div>' : '') +
+          '<div class="tb-w">' + (i + 1) + '. „' + esc(q.f) + '“</div>' +
+          '<label class="pte-l" for="er-p-a' + i + '">Deine Antwort</label><textarea id="er-p-a' + i + '" data-er-p rows="3" maxlength="600">' + esc(p.antworten[p.modus][i]) + '</textarea>' +
+          '<div class="tb-d" id="er-p-a' + i + '-zeit"></div>' +
+          '<div class="tb-knoepfe"><button class="tb-edit" data-er-vorschlag="' + i + '">Vorschlag einsetzen</button></div></div>';
+      }).join('') +
+      '<button class="btn btn-h" id="er-p-fragen" style="margin-top:6px">▶ Fragen üben mit Stoppuhr</button></div>';
+  }
+
+  function vorlageEinsetzen() {
+    var p = ER.akt.pitch, vl = PITCH_VORLAGEN[p.modus][p.laenge];
+    var belegt = PITCH_TEILE.some(function (t) { return $('er-p-' + t.key).value.trim() || $('er-p-' + t.key + '-bild').value.trim(); }) || $('er-p-merksatz').value.trim();
+    if (belegt && !confirm('Diese Fassung (' + MODI[p.modus].kurz + ', ' + (p.laenge === 60 ? '60 Sekunden' : '2 Minuten') + ') durch den Entwurf ersetzen? Was du hier geschrieben hast, geht verloren.')) return;
+    PITCH_TEILE.forEach(function (t) {
+      $('er-p-' + t.key).value = vl[t.key] || '';
+      $('er-p-' + t.key + '-bild').value = (vl.bild && vl.bild[t.key]) || '';
+    });
+    $('er-p-merksatz').value = vl.merksatz || '';
+    ER.geaendert = true;
+    pitchAktualisieren();
+  }
+
   function einsetzen(key, text) {
     var el = $('er-p-' + key);
     el.value = (el.value.trim() ? el.value.replace(/\s+$/, '') + ' ' : '') + text;
-    el.value = el.value.slice(0, 3000);
+    el.value = el.value.slice(0, 1200);
     ER.geaendert = true;
     pitchAktualisieren();
     if (!$('er-p-' + key + '-bst').hidden) bausteineZeigen(key);
@@ -774,11 +1000,11 @@
   function bausteineZeigen(key) {
     var box = $('er-p-' + key + '-bst'), liste = bausteine(key), drin = $('er-p-' + key).value;
     if (!liste.length) {
-      box.innerHTML = '<p class="tb-d" style="margin-top:8px">Dazu steht in der Einreichung noch nichts. Zuerst im Reiter „Einreichung“ die Abschnitte ' +
-        PITCH_TEIL[key].quellen.map(function (q) { return q === 'belege' ? 'Belege' : q === 'kernbotschaft' ? 'Kernbotschaft' : ABSCHNITT_NAME[q]; }).join(', ') + ' ausfüllen.</p>';
+      box.innerHTML = '<p class="tb-d" style="margin-top:8px">Dazu steht in der Einreichung noch nichts. Zuerst im Reiter „Einreichung“ ausfüllen: ' +
+        PITCH_TEIL[key].quellen.map(function (q) { return q === 'belege' ? 'Belege' : q === 'kernbotschaft' ? 'Kernbotschaft' : ABSCHNITT_NAME[q]; }).join(', ') + '.</p>';
       return;
     }
-    box.innerHTML = '<p class="tb-d" style="margin:8px 0 2px">Wörtlich aus deiner Einreichung. Übernehmen hängt den Satz an – danach für das Sprechen kürzen.</p>' +
+    box.innerHTML = '<p class="tb-d" style="margin:8px 0 2px">Wörtlich aus deiner Einreichung. Übernehmen hängt den Satz an, danach fürs Sprechen kürzen.</p>' +
       liste.map(function (b, i) {
         var schon = drin.indexOf(b.text) >= 0;
         return '<div class="tb-knoepfe" style="margin-top:6px;flex-wrap:nowrap;align-items:flex-start"><span class="tb-d" style="flex:1"><b>' + esc(b.quelle) + '</b> · ' + esc(b.text) + '</span>' +
@@ -790,19 +1016,21 @@
   function pitchAktualisieren() {
     if (!$('er-p-hook')) return;
     felderLesen();
-    var p = ER.akt.pitch, wpm = TEMPO[p.tempo], gesamt = 0, woerterGesamt = 0;
+    var p = ER.akt.pitch, v = version(), wpm = TEMPO[p.tempo], gesamt = 0, woerterGesamt = 0;
     PITCH_TEILE.forEach(function (t) {
-      var text = p.teile[t.key].text, n = wortZahl(text), s = sek(text), plan = t.bis - t.von, st = zeitStufe(s, plan, n);
+      var vb = vonBis(t.key), plan = vb[1] - vb[0];
+      var text = v.teile[t.key].text + (t.key === 'schluss' && merksatzFehltImSchluss(v) ? ' ' + v.merksatz : '');
+      var n = wortZahl(text), s = sek(text), st = zeitStufe(s, plan, n);
       gesamt += s; woerterGesamt += n;
       $('er-p-' + t.key + '-zeit').innerHTML = n
-        ? '<span style="color:' + st[2] + ';font-weight:600">ca. ' + s + ' s</span> von ' + plan + ' s · ' + n + ' Wörter' +
+        ? '<span style="color:' + st[2] + ';font-weight:600">ca. ' + s + ' s</span> von ' + plan + ' s · ' + n + ' Wörter' + (t.key === 'schluss' && merksatzFehltImSchluss(v) ? ' (mit Satz zum Merken)' : '') +
           (st === STUFE.allgemein ? ' – kürzen, etwa auf ' + Math.round(plan * wpm / 60) + ' Wörter' : st === STUFE.teilweise ? ' – hier ist noch Luft' : '')
         : 'Noch leer · Ziel ' + plan + ' s, das sind etwa ' + Math.round(plan * wpm / 60) + ' Wörter';
       $('er-p-' + t.key + '-karte').style.borderLeftColor = st ? st[2] : '#E4DBC5';
     });
-    var g = gesamt > 125 ? STUFE.allgemein : STUFE.klar;
-    $('er-p-gesamt').innerHTML = '<span style="color:' + (woerterGesamt ? g[2] : 'inherit') + '">ca. ' + zeit(gesamt) + '</span> von 2:00 · ' + woerterGesamt + ' Wörter';
-    var pr = p.probe;
+    var g = gesamt > p.laenge * 1.04 ? STUFE.allgemein : STUFE.klar;
+    $('er-p-gesamt').innerHTML = '<span style="color:' + (woerterGesamt ? g[2] : 'inherit') + '">ca. ' + zeit(gesamt) + '</span> von ' + zeit(p.laenge) + ' · ' + woerterGesamt + ' Wörter';
+    var pr = v.probe;
     $('er-p-letzte').textContent = pr && Array.isArray(pr.sek) && pr.sek.length
       ? 'Letzte Probe' + (pr.datum ? ' am ' + datumDE(pr.datum) : '') + ': ' + zeit(pr.sek.reduce(function (a, b) { return a + b; }, 0)) + ' (' + pr.sek.map(zeit).join(' · ') + ')'
       : 'Die Zeit ist geschätzt. Genau weißt du es erst nach einer Probe laut gesprochen.';
@@ -810,6 +1038,13 @@
     $('er-p-auff').innerHTML = auff.length
       ? '<ul class="ber-meth" style="margin:0">' + auff.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'
       : '<div class="tb-mnotiz" style="margin-top:0">Formal fällt nichts auf. Ob der Pitch trägt, merkst du beim lauten Proben vor jemandem, der die App nicht kennt.</div>';
+    FRAGEN[p.modus].forEach(function (q, i) {
+      var a = p.antworten[p.modus][i], n = wortZahl(a), s = sek(a);
+      var st = !n ? null : s > ANTWORT_SEK * 1.25 ? STUFE.allgemein : s > ANTWORT_SEK ? STUFE.teilweise : STUFE.klar;
+      $('er-p-a' + i + '-zeit').innerHTML = n ? '<span style="color:' + st[2] + ';font-weight:600">ca. ' + s + ' s</span> von ' + ANTWORT_SEK + ' s · ' + n + ' Wörter' +
+        (/\[platzhalter/i.test(a) ? ' · Platzhalter noch offen' : '') : 'Noch keine Antwort';
+      $('er-p-a' + i + '-karte').style.borderLeftColor = st ? st[2] : '#E4DBC5';
+    });
     fassungZeigen();
   }
 
@@ -817,20 +1052,22 @@
     return (String(t || '').match(/\d+(?:[.,]\d+)?/g) || []).map(function (z) { return z.replace(',', '.'); });
   }
   function pitchAuffaelligkeiten(gesamt) {
-    var e = ER.akt, p = e.pitch, out = [];
-    var texte = PITCH_TEILE.map(function (t) { return p.teile[t.key].text; });
-    var alle = texte.concat([p.merksatz]).join('\n');
-    var leer = PITCH_TEILE.filter(function (t) { return !p.teile[t.key].text.trim(); });
-    if (leer.length === PITCH_TEILE.length) return ['Noch leer. Tipp: bei jedem Abschnitt „Bausteine aus der Einreichung“ öffnen, passende Sätze übernehmen und dann fürs Sprechen kürzen.'];
+    var e = ER.akt, p = e.pitch, v = version(), out = [];
+    var texte = PITCH_TEILE.map(function (t) { return v.teile[t.key].text; });
+    var alle = texte.concat([v.merksatz]).join('\n');
+    var leer = PITCH_TEILE.filter(function (t) { return !v.teile[t.key].text.trim(); });
+    if (leer.length === PITCH_TEILE.length) return ['Noch leer. Tipp: „Entwurf einsetzen“ oder bei jedem Teil „Bausteine aus der Einreichung“ öffnen und passende Sätze übernehmen.'];
     if (leer.length) out.push('Noch leer: ' + leer.map(function (t) { return t.name; }).join(', ') + '.');
+    var platz = (alle.match(/\[platzhalter/gi) || []).length;
+    if (platz) out.push(platz + (platz === 1 ? ' Platzhalter ist' : ' Platzhalter sind') + ' noch offen. Vor dem Dreh mit echten Belegen füllen oder streichen.');
     PITCH_TEILE.forEach(function (t) {
-      var s = sek(p.teile[t.key].text), plan = t.bis - t.von;
+      var vb = vonBis(t.key), plan = vb[1] - vb[0], s = sek(v.teile[t.key].text + (t.key === 'schluss' && merksatzFehltImSchluss(v) ? ' ' + v.merksatz : ''));
       if (s > plan * 1.15) out.push(t.name + ': ca. ' + s + ' s statt ' + plan + ' s.');
     });
-    if (gesamt > 125) out.push('Insgesamt ca. ' + zeit(gesamt) + ' – über zwei Minuten. Was kann weg, ohne dass der Kern fehlt?');
-    else if (!leer.length && gesamt < 90) out.push('Insgesamt erst ca. ' + zeit(gesamt) + ' – Platz für einen konkreten Beleg mehr.');
-    if (/^\s*(wir|unser\w*|ich|mein\w*|die app|unsere app|great hair day|die great hair day)\b/i.test(p.teile.hook.text))
-      out.push('Der Hook beginnt bei euch. Stärker ist ein Einstieg beim Publikum: ein Moment aus dem Salon, ein Gegensatz, eine Frage.');
+    if (gesamt > p.laenge * 1.04) out.push('Insgesamt ca. ' + zeit(gesamt) + ', über ' + zeit(p.laenge) + '. Was kann weg, ohne dass der Kern fehlt?');
+    else if (!leer.length && gesamt < p.laenge * 0.75) out.push('Insgesamt erst ca. ' + zeit(gesamt) + '. Platz für einen konkreten Beleg mehr.');
+    if (/^\s*(wir|unser\w*|ich|mein\w*|die app|unsere app|great hair day|die great hair day)\b/i.test(v.teile.hook.text))
+      out.push('Der Hook beginnt bei euch. Stärker ist ein Einstieg beim Publikum: ein Moment aus dem Salon, eine Frage, eine Zahl.');
     var allg = allgemeineWoerter(alle);
     if (allg.length) out.push('Allgemeine Wörter: ' + allg.slice(0, 5).map(function (w) { return '„' + w + '“'; }).join(', ') + ' – lieber zeigen, woran man es sieht.');
     if (/\bbis zu\b/i.test(alle)) out.push('„bis zu …“ klingt nach Werbung. Besser die echte Zahl aus einem Beleg, mit Zeitraum.');
@@ -839,49 +1076,54 @@
       .forEach(function (t) { zahlenIn(t).forEach(function (z) { bekannt[z] = 1; }); });
     var fremd = [];
     zahlenIn(alle).forEach(function (z) { if (!bekannt[z] && fremd.indexOf(z) < 0) fremd.push(z); });
-    if (fremd.length) out.push('Zahl ohne Herkunft: ' + fremd.slice(0, 5).map(function (z) { return '„' + z.replace('.', ',') + '“'; }).join(', ') + ' – steht weder in der Einreichung noch in einem Beleg. Woher stammt sie?');
+    if (fremd.length) out.push('Zahl ohne Herkunft: ' + fremd.slice(0, 5).map(function (z) { return '„' + z.replace('.', ',') + '“'; }).join(', ') + ' – steht weder in der Einreichung noch in einem Beleg. Dort ergänzen oder weglassen.');
     var lang = 0;
     texte.forEach(function (t) { String(t).split(/[.!?…]+\s+/).forEach(function (s) { if (wortZahl(s) > 25) lang++; }); });
-    if (lang) out.push(lang + (lang === 1 ? ' Satz hat' : ' Sätze haben') + ' mehr als 25 Wörter – gesprochen schwer zu folgen. Teilen.');
-    if (p.teile.schluss.text.trim() && !hatKonkretes(p.teile.schluss.text)) out.push('Im Schluss steht kein konkreter Beleg (Beobachtung, Zitat, Zahl).');
-    if (!ER.belege.length) out.push('In der Einreichung gibt es noch keine Belege – ohne Beleg bleibt der Pitch eine Behauptung.');
-    var m = p.merksatz.trim();
+    if (lang) out.push(lang + (lang === 1 ? ' Satz hat' : ' Sätze haben') + ' mehr als 25 Wörter, gesprochen schwer zu folgen. Teilen.');
+    var imp = v.teile.impact.text;
+    if (imp.trim() && !hatKonkretes(imp.replace(/\[platzhalter[^\]]*\]/gi, ''))) out.push('Im Impact steht noch kein konkreter Beleg (Beobachtung, Zitat, Zahl).');
+    if (p.modus === 'digitalisierung' && imp.trim() && !/\d/.test(imp.replace(/\[platzhalter[^\]]*\]/gi, ''))) out.push('Mercur Digitalisierung: Diese Jury fragt nach Zahlen. Im Impact steht noch keine (aus einem Beleg).');
+    if (p.modus === 'staatspreis' && !/lehrling|auszubildend/i.test(alle)) out.push('Staatspreis: Lehrlinge kommen im Pitch nicht vor.');
+    if (p.modus === 'kreativitaet' && !/ausprobier|spiel|fehler|mutig|experiment/i.test(alle)) out.push('Mercur Kreativität: Der geschützte Raum zum Ausprobieren kommt nicht vor.');
+    if (!ER.belege.length) out.push('In der Einreichung gibt es noch keine Belege. Ohne Beleg bleibt der Pitch eine Behauptung.');
+    var m = v.merksatz.trim();
     if (!m) out.push('Satz zum Merken fehlt.');
-    else if (wortZahl(m) > 15) out.push('Der Satz zum Merken hat ' + wortZahl(m) + ' Wörter – unter 15 bleibt er eher hängen.');
+    else if (wortZahl(m) > 15) out.push('Der Satz zum Merken hat ' + wortZahl(m) + ' Wörter. Unter 15 bleibt er eher hängen.');
     return out;
   }
 
   function fassungText(f) {
-    var p = ER.akt.pitch;
+    var v = version(), g = grenzen();
+    function schlussText(t) { return v.teile[t.key].text.trim() + (t.key === 'schluss' && merksatzFehltImSchluss(v) ? (v.teile.schluss.text.trim() ? ' ' : '') + v.merksatz.trim() : ''); }
     if (f === 'video') {
-      return PITCH_TEILE.map(function (t) {
-        var x = p.teile[t.key], ton = x.text.trim() + (t.key === 'schluss' && merksatzFehltImSchluss(p) ? ' ' + p.merksatz.trim() : '');
-        return zeit(t.von) + '–' + zeit(t.bis) + ' · ' + t.name + '\nIm Bild: ' + (x.bild.trim() || '(noch offen)') + '\nTon: ' + (ton.trim() || '(noch leer)');
+      return PITCH_TEILE.map(function (t, i) {
+        var x = v.teile[t.key], ton = schlussText(t);
+        return zeit(g[i]) + '–' + zeit(g[i + 1]) + ' · ' + t.name + '\nIm Bild: ' + (x.bild.trim() || '(noch offen)') + '\nTon: ' + (ton.trim() || '(noch leer)');
       }).join('\n\n');
     }
     if (f === 'schrift') {
-      var absaetze = PITCH_TEILE.map(function (t) { return p.teile[t.key].text.trim(); }).filter(Boolean);
-      if (p.merksatz.trim()) absaetze.unshift(p.merksatz.trim());
+      var absaetze = PITCH_TEILE.map(function (t) { return v.teile[t.key].text.trim(); }).filter(Boolean);
+      if (v.merksatz.trim()) absaetze.unshift(v.merksatz.trim());
       return absaetze.join('\n\n');
     }
-    var teile = PITCH_TEILE.map(function (t) { return '[' + zeit(t.von) + '] ' + t.name + '\n' + (p.teile[t.key].text.trim() || '(noch leer)'); });
-    if (merksatzFehltImSchluss(p)) teile.push('Zum Schluss:\n' + p.merksatz.trim());
+    var teile = PITCH_TEILE.map(function (t, i) { return '[' + zeit(g[i]) + '] ' + t.name + '\n' + (v.teile[t.key].text.trim() || '(noch leer)'); });
+    if (merksatzFehltImSchluss(v)) teile.push('Zum Schluss:\n' + v.merksatz.trim());
     return teile.join('\n\n');
   }
   function fassungZeigen() {
     var box = $('er-p-fassung'); if (!box) return;
     var t = fassungText(ER.fassung), h = '';
     if (ER.fassung === 'video') {
-      var offen = PITCH_TEILE.filter(function (x) { return !ER.akt.pitch.teile[x.key].bild.trim(); }).length;
-      h += '<p class="tb-d" style="margin-bottom:8px">Bild und Ton nebeneinander zum Drehen. Den Ton auch als Untertitel einblenden – viele schauen ohne Ton.' +
-        (offen ? ' Bei ' + offen + (offen === 1 ? ' Abschnitt' : ' Abschnitten') + ' fehlt noch „Im Bild“.' : '') + '</p>';
+      var v = version(), offen = PITCH_TEILE.filter(function (x) { return !v.teile[x.key].bild.trim(); }).length;
+      h += '<p class="tb-d" style="margin-bottom:8px">Bild und Ton nebeneinander zum Drehen. Den Ton auch als Untertitel einblenden, viele schauen ohne Ton. In der moment app unter „Pitch zu Reel“ einfügen, dort wird daraus ein Reel.' +
+        (offen ? ' Bei ' + offen + (offen === 1 ? ' Teil' : ' Teilen') + ' fehlt noch „Im Bild“.' : '') + '</p>';
     } else if (ER.fassung === 'schrift') {
       var n = t.length, ueber = n > ER.grenze;
-      h += '<p class="tb-d" style="margin-bottom:6px">Für Formularfelder: Satz zum Merken zuerst, dann die vier Abschnitte als Absätze. Fürs Lesen darfst du ausführlicher sein als beim Sprechen.</p>' +
-        '<div class="tb-filter" style="margin-bottom:6px">' + GRENZEN.map(function (g) { return '<button data-er-grenze="' + g + '" aria-pressed="' + (ER.grenze === g) + '">' + g + ' Zeichen</button>'; }).join('') + '</div>' +
+      h += '<p class="tb-d" style="margin-bottom:6px">Für Formularfelder: Satz zum Merken zuerst, dann die fünf Teile als Absätze. Fürs Lesen darfst du ausführlicher sein als beim Sprechen.</p>' +
+        '<div class="tb-filter" style="margin-bottom:6px">' + GRENZEN.map(function (gz) { return '<button data-er-grenze="' + gz + '" aria-pressed="' + (ER.grenze === gz) + '">' + gz + ' Zeichen</button>'; }).join('') + '</div>' +
         '<div class="tb-d" style="margin-bottom:6px' + (ueber ? ';color:#C44030;font-weight:600' : '') + '">' + n + ' von ' + ER.grenze + ' Zeichen' + (ueber ? ' – ' + (n - ER.grenze) + ' zu viel' : '') + '</div>';
     } else {
-      h += '<p class="tb-d" style="margin-bottom:8px">Zum Ausdrucken oder als Spickzettel. Laut proben, nicht auswendig lernen – Stichworte reichen.</p>';
+      h += '<p class="tb-d" style="margin-bottom:8px">Zum Ausdrucken oder als Spickzettel. Laut proben, nicht auswendig lernen, Stichworte reichen. Für die moment app („Pitch zu Reel“) diesen Text kopieren.</p>';
     }
     h += '<div class="tb-e" style="border-left-color:#896C32;white-space:pre-line;font-size:13px;line-height:1.5;color:#211D17">' + esc(t) + '</div>';
     box.innerHTML = h;
@@ -893,14 +1135,14 @@
     function alt() {
       var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
       document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); ok(); } catch (e) { info.textContent = 'Kopieren ging nicht – bitte markieren und kopieren.'; }
+      try { document.execCommand('copy'); ok(); } catch (e) { info.textContent = 'Kopieren ging nicht, bitte markieren und kopieren.'; }
       ta.remove();
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, alt); else alt();
   }
 
-  // ── Probe mit Stoppuhr ────────────────────────────────────────────
-  function probeStarten() {
+  // ── Probe mit Stoppuhr / Fragen üben ──────────────────────────────
+  function probeStarten(art) {
     pitchAktualisieren();
     var o = $('er-probe');
     if (!o) {
@@ -910,7 +1152,8 @@
       document.body.appendChild(o);
       document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !o.hidden) probeSchliessen(); });
     }
-    PR = {idx: -1, start: 0, teilStart: 0, marken: [], uhr: null};
+    $('er-probe-titel').textContent = art === 'fragen' ? 'Jury-Fragen üben' : 'Probe';
+    PR = {art: art, idx: -1, start: 0, teilStart: 0, marken: [], uhr: null, antwort: false};
     o.hidden = false;
     probeZeigen();
   }
@@ -920,41 +1163,71 @@
     $('er-probe').hidden = true;
     pitchAktualisieren();
   }
+  function anzahl() { return PR.art === 'fragen' ? FRAGEN[ER.akt.pitch.modus].length : PITCH_TEILE.length; }
+  function planSek(i) { if (PR.art === 'fragen') return ANTWORT_SEK; var g = grenzen(); return g[i + 1] - g[i]; }
+  function stufeZeit(s, plan) { return s > plan * 1.15 ? STUFE.allgemein : s > plan ? STUFE.teilweise : STUFE.klar; }
+  function nochmal() { PR = {art: PR.art, idx: -1, start: 0, teilStart: 0, marken: [], uhr: null, antwort: false}; probeZeigen(); }
   function probeZeigen() {
-    var box = $('er-probe-inhalt'), p = ER.akt.pitch;
+    var box = $('er-probe-inhalt'), p = ER.akt.pitch, v = version(), n = anzahl();
     if (PR.idx < 0) {
-      box.innerHTML = '<p class="tb-d" style="margin-bottom:10px">Sprich laut, wie vor der Jury. Tippe nach jedem Abschnitt auf „Weiter“. Am Ende siehst du, wo du über der Zeit warst. Es wird nichts aufgenommen.</p>' +
+      box.innerHTML = '<p class="tb-d" style="margin-bottom:10px">' + (PR.art === 'fragen'
+          ? 'Die Fragen der Jury ' + esc(MODI[p.modus].kurz) + ' kommen nacheinander. Antworte laut, ohne abzulesen, und tippe auf „Fertig“, wenn du fertig bist. Danach siehst du deine Zeit und deine vorbereitete Antwort. Ziel: ' + ANTWORT_SEK + ' Sekunden. Es wird nichts aufgenommen.'
+          : 'Sprich laut, wie vor der Jury. Tippe nach jedem Teil auf „Weiter“. Am Ende siehst du, wo du über der Zeit warst. Es wird nichts aufgenommen.') + '</p>' +
         '<button class="btn btn-g" id="er-pr-los">▶ Los</button><button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Abbrechen</button>';
       $('er-pr-los').onclick = function () { PR.start = PR.teilStart = Date.now(); PR.idx = 0; PR.uhr = setInterval(uhrZeigen, 250); probeZeigen(); };
       $('er-pr-zu').onclick = probeSchliessen;
       $('er-pr-los').focus();
       return;
     }
-    if (PR.idx >= PITCH_TEILE.length) {
+    if (PR.idx >= n) {
       clearInterval(PR.uhr); PR.uhr = null;
       var summe = PR.marken.reduce(function (a, b) { return a + b; }, 0);
-      p.probe = {datum: heuteISO(), sek: PR.marken.slice()}; ER.geaendert = true;
-      box.innerHTML = PITCH_TEILE.map(function (t, i) {
-        var plan = t.bis - t.von, s = PR.marken[i], st = s > plan * 1.15 ? STUFE.allgemein : s > plan * 1.0 ? STUFE.teilweise : STUFE.klar;
-        return '<div class="tb-k" style="margin-bottom:6px"><span>' + esc(t.name) + '</span><span style="color:' + st[2] + ';font-weight:600">' + zeit(s) + ' / ' + zeit(plan) + '</span></div>';
+      if (PR.art === 'pitch') { v.probe = {datum: heuteISO(), sek: PR.marken.slice()}; ER.geaendert = true; }
+      var namen = PR.art === 'fragen' ? FRAGEN[p.modus].map(function (q, i) { return 'Frage ' + (i + 1); }) : PITCH_TEILE.map(function (t) { return t.name; });
+      box.innerHTML = namen.map(function (name, i) {
+        var plan = planSek(i), s = PR.marken[i], st = stufeZeit(s, plan);
+        return '<div class="tb-k" style="margin-bottom:6px"><span>' + esc(name) + '</span><span style="color:' + st[2] + ';font-weight:600">' + zeit(s) + ' / ' + zeit(plan) + '</span></div>';
       }).join('') +
-        '<div class="tb-w" style="margin:10px 0;color:' + (summe > 125 ? STUFE.allgemein[2] : STUFE.klar[2]) + '">Gesamt ' + zeit(summe) + ' von 2:00</div>' +
-        '<p class="tb-d" style="margin-bottom:10px">Wird mit „Pitch speichern“ gespeichert.</p>' +
+        (PR.art === 'pitch'
+          ? '<div class="tb-w" style="margin:10px 0;color:' + (summe > p.laenge * 1.04 ? STUFE.allgemein[2] : STUFE.klar[2]) + '">Gesamt ' + zeit(summe) + ' von ' + zeit(p.laenge) + '</div><p class="tb-d" style="margin-bottom:10px">Wird mit „Pitch speichern“ gespeichert.</p>'
+          : '<p class="tb-d" style="margin:10px 0">Über ' + ANTWORT_SEK + ' Sekunden? Merk dir nur den Kernsatz der Antwort und hör danach auf.</p>') +
         '<button class="btn btn-g" id="er-pr-nochmal">Nochmal</button><button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Schließen</button>';
-      $('er-pr-nochmal').onclick = function () { PR = {idx: -1, start: 0, teilStart: 0, marken: [], uhr: null}; probeZeigen(); };
+      $('er-pr-nochmal').onclick = nochmal;
       $('er-pr-zu').onclick = probeSchliessen;
       return;
     }
-    var t = PITCH_TEILE[PR.idx], text = p.teile[t.key].text.trim();
-    if (t.key === 'schluss' && merksatzFehltImSchluss(p)) text += (text ? '\n\n' : '') + p.merksatz.trim();
-    var letzter = PR.idx === PITCH_TEILE.length - 1;
-    box.innerHTML = '<div class="lab">' + zeit(t.von) + '–' + zeit(t.bis) + ' · ' + esc(t.name) + ' (' + (PR.idx + 1) + ' von ' + PITCH_TEILE.length + ')</div>' +
-      '<div class="tb-d" id="er-pr-uhr" style="margin-bottom:8px"></div>' +
-      '<div class="tb-w" style="font-size:17px;font-weight:400;line-height:1.5;white-space:pre-line;margin-bottom:12px">' + (text ? esc(text) : '(noch kein Text)') + '</div>' +
-      '<button class="btn btn-g" id="er-pr-weiter">' + (letzter ? 'Fertig' : 'Weiter →') + '</button><button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Abbrechen</button>';
+    var letzter = PR.idx === n - 1, h;
+    if (PR.art === 'fragen') {
+      var q = FRAGEN[p.modus][PR.idx];
+      h = '<div class="lab">' + (q.nach ? 'Die Jury bohrt nach · ' : '') + 'Frage ' + (PR.idx + 1) + ' von ' + n + '</div>' +
+        '<div class="tb-d" id="er-pr-uhr" style="margin-bottom:8px"></div>' +
+        '<div class="tb-w" style="font-size:17px;line-height:1.5;margin-bottom:12px">„' + esc(q.f) + '“</div>';
+      if (PR.antwort) {
+        var s = PR.marken[PR.idx], st = stufeZeit(s, ANTWORT_SEK), eigen = p.antworten[p.modus][PR.idx].trim();
+        h += '<div class="tb-d" style="margin-bottom:6px">Deine Zeit: <span style="color:' + st[2] + ';font-weight:600">' + zeit(s) + '</span> von ' + zeit(ANTWORT_SEK) + '</div>' +
+          '<div class="tb-mnotiz" style="margin:0 0 12px;white-space:pre-line"><b>' + (eigen ? 'Deine vorbereitete Antwort' : 'Vorschlag') + ':</b> ' + esc(eigen || q.a) + '</div>' +
+          '<button class="btn btn-g" id="er-pr-weiter">' + (letzter ? 'Auswertung' : 'Nächste Frage →') + '</button>';
+      } else {
+        h += '<button class="btn btn-g" id="er-pr-weiter">Fertig</button>';
+      }
+    } else {
+      var t = PITCH_TEILE[PR.idx], g = grenzen(), text = v.teile[t.key].text.trim();
+      if (t.key === 'schluss' && merksatzFehltImSchluss(v)) text += (text ? '\n\n' : '') + v.merksatz.trim();
+      h = '<div class="lab">' + zeit(g[PR.idx]) + '–' + zeit(g[PR.idx + 1]) + ' · ' + esc(t.name) + ' (' + (PR.idx + 1) + ' von ' + n + ')</div>' +
+        '<div class="tb-d" id="er-pr-uhr" style="margin-bottom:8px"></div>' +
+        '<div class="tb-w" style="font-size:17px;font-weight:400;line-height:1.5;white-space:pre-line;margin-bottom:12px">' + (text ? esc(text) : '(noch kein Text)') + '</div>' +
+        '<button class="btn btn-g" id="er-pr-weiter">' + (letzter ? 'Fertig' : 'Weiter →') + '</button>';
+    }
+    box.innerHTML = h + '<button class="mb-abm" id="er-pr-zu" style="width:100%;margin-top:6px">Abbrechen</button>';
     $('er-pr-weiter').onclick = function () {
       var jetzt = Date.now();
-      PR.marken.push(Math.round((jetzt - PR.teilStart) / 1000)); PR.teilStart = jetzt; PR.idx++;
+      if (PR.art === 'fragen' && !PR.antwort) {
+        PR.marken.push(Math.round((jetzt - PR.teilStart) / 1000)); PR.antwort = true;   // Uhr steht, Antwort zeigen
+      } else if (PR.art === 'fragen') {
+        PR.antwort = false; PR.teilStart = Date.now(); PR.idx++;
+      } else {
+        PR.marken.push(Math.round((jetzt - PR.teilStart) / 1000)); PR.teilStart = jetzt; PR.idx++;
+      }
       probeZeigen();
     };
     $('er-pr-zu').onclick = probeSchliessen;
@@ -962,9 +1235,11 @@
     uhrZeigen();
   }
   function uhrZeigen() {
-    var el = $('er-pr-uhr'); if (!el || !PR || PR.idx < 0 || PR.idx >= PITCH_TEILE.length) return;
-    var t = PITCH_TEILE[PR.idx], jetzt = Date.now(), ab = (jetzt - PR.teilStart) / 1000, plan = t.bis - t.von;
-    el.innerHTML = 'Abschnitt <span style="font-weight:600;color:' + (ab > plan ? STUFE.allgemein[2] : 'inherit') + '">' + zeit(ab) + '</span> von ' + zeit(plan) + ' · gesamt ' + zeit((jetzt - PR.start) / 1000);
+    var el = $('er-pr-uhr'); if (!el || !PR || PR.idx < 0 || PR.idx >= anzahl()) return;
+    if (PR.art === 'fragen' && PR.antwort) { el.textContent = ''; return; }
+    var jetzt = Date.now(), ab = (jetzt - PR.teilStart) / 1000, plan = planSek(PR.idx);
+    el.innerHTML = (PR.art === 'fragen' ? 'Antwort ' : 'Teil ') + '<span style="font-weight:600;color:' + (ab > plan ? STUFE.allgemein[2] : 'inherit') + '">' + zeit(ab) + '</span> von ' + zeit(plan) +
+      (PR.art === 'pitch' ? ' · gesamt ' + zeit((jetzt - PR.start) / 1000) : '');
   }
 
   window.zeigeEinreichungen = zeigeEinreichungen;
